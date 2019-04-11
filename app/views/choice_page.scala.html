@@ -16,31 +16,32 @@
 
 @import config.AppConfig
 @import controllers.routes._
+@import forms.Choice
 @import forms.Choice.AllowedChoiceValues._
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
-@(appConfig: AppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
+@(form: Form[Choice])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
-    @main_template(
-        title = messages("movement.choice.description"),
-        appConfig = appConfig
-    ) {
+@main_template(
+    title = messages("movement.choice.description"),
+    appConfig = appConfig
+) {
 
-        @helpers.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
-            @components.back_link("start")
+    @helpers.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
+        @components.back_link("start")
 
-            @components.heading("", "movement.choice.description")
+        @components.heading("", "movement.choice.description")
 
-            @components.input_radio(
-                field = form("choice"),
-                legend = "",
-                inputs = Seq(
-                    RadioOption("Arrival", Arrival, messages("movement.choice.EAL")),
-                    RadioOption("Departure", Departure, messages("movement.choice.EDL"))
-                )
+        @components.input_radio(
+            field = form("choice"),
+            legend = "",
+            inputs = Seq(
+                RadioOption("Arrival", Arrival, messages("movement.choice.EAL")),
+                RadioOption("Departure", Departure, messages("movement.choice.EDL"))
             )
+        )
 
-            @components.submit_button()
-        }
+        @components.submit_button()
     }
+}

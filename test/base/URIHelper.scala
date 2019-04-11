@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package controllers.util
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+package base
 
-object CacheIdGenerator {
+trait URIHelper {
+  val contextPath: String = "/customs-movements"
 
-  def eoriCacheId()(implicit request: JourneyRequest[_]): String =
-    request.authenticatedRequest.user.eori
-
-  def cacheId()(implicit request: AuthenticatedRequest[_]): String =
-    request.user.eori
-
-  def movementCacheId()(implicit request: JourneyRequest[_]): String =
-    s"movement-${request.authenticatedRequest.user.eori}"
+  def uriWithContextPath(path: String): String = s"$contextPath$path"
 }

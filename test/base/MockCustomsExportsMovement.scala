@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.util
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+package base
 
-object CacheIdGenerator {
+import connectors.CustomsDeclareExportsMovementsConnector
+import org.scalatest.mockito.MockitoSugar
 
-  def eoriCacheId()(implicit request: JourneyRequest[_]): String =
-    request.authenticatedRequest.user.eori
-
-  def cacheId()(implicit request: AuthenticatedRequest[_]): String =
-    request.user.eori
-
-  def movementCacheId()(implicit request: JourneyRequest[_]): String =
-    s"movement-${request.authenticatedRequest.user.eori}"
+trait MockCustomsExportsMovement extends MockitoSugar {
+  val mockCustomsExportsMovementConnector: CustomsDeclareExportsMovementsConnector =
+    mock[CustomsDeclareExportsMovementsConnector]
 }

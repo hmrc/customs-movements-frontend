@@ -21,10 +21,9 @@ import java.util.UUID
 import akka.stream.Materializer
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
-import connectors.{CustomsDeclareExportsMovementsConnector, NrsConnector}
+import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.FakeAuthAction
 import metrics.MovementsMetrics
-import models.NrsSubmissionResponse
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -46,13 +45,14 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAs
 import play.api.test.FakeRequest
 import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
-import services.{CustomsCacheService,  NRSService}
+import services.CustomsCacheService
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@deprecated("Use MovementBaseSpec instead", "2019-04-15")
 trait CustomExportsBaseSpec
     extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with MockAuthAction
     with MockConnectors with BeforeAndAfter {
@@ -60,7 +60,6 @@ trait CustomExportsBaseSpec
   protected val contextPath: String = "/customs-movements"
 
   val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
-  val mockNrsService: NRSService = mock[NRSService]
   val mockMetrics: MovementsMetrics = mock[MovementsMetrics]
 
   SharedMetricRegistries.clear()
@@ -70,8 +69,6 @@ trait CustomExportsBaseSpec
       bind[AuthConnector].to(mockAuthConnector),
       bind[CustomsCacheService].to(mockCustomsCacheService),
       bind[CustomsDeclareExportsMovementsConnector].to(mockCustomsDeclareExportsMovementsConnector),
-      bind[NrsConnector].to(mockNrsConnector),
-      bind[NRSService].to(mockNrsService),
       bind[MovementsMetrics].to(mockMetrics)
     )
     .build()
@@ -168,7 +165,4 @@ trait CustomExportsBaseSpec
       .thenReturn(Future.successful(CacheMap(id, Map.empty)))
   }
 
-  def withNrsSubmission(): OngoingStubbing[Future[NrsSubmissionResponse]] =
-    when(mockNrsService.submit(any(), any(), any())(any(), any(), any()))
-      .thenReturn(Future.successful(NrsSubmissionResponse("submissionid1")))
 }

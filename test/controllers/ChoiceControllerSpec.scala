@@ -99,7 +99,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-movements/ducr"))
+      header.headers.get("Location") must be(Some("/customs-movements/consignment-references"))
     }
 
     "redirect to departure page when \"Departure\" is selected" in {
@@ -109,7 +109,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-movements/ducr"))
+      header.headers.get("Location") must be(Some("/customs-movements/consignment-references"))
     }
 
 

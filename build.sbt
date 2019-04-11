@@ -15,7 +15,6 @@ val appName = "customs-movements-frontend"
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
   .settings(
-    scalacOptions ++= Seq("-Xfatal-warnings", "-feature"),
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
@@ -64,7 +63,7 @@ lazy val scoverageSettings: Seq[Setting[_]] = Seq(
     ,"test\\..*"
     ,".*(BuildInfo|Routes|Options|TestingUtilitiesController).*"
   ).mkString(";"),
-  coverageMinimum := 81,
+  coverageMinimum := 80,
   coverageFailOnMinimum := true,
   coverageHighlighting := true,
   parallelExecution in Test := false

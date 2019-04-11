@@ -18,9 +18,10 @@ package controllers
 
 import base.CustomExportsBaseSpec
 import base.ExportsTestData._
+import forms.Choice
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.{BeforeAndAfter, BeforeAndAfterEach}
+import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
@@ -39,6 +40,7 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     authorizedUser()
     reset(mockCustomsCacheService)
     reset(mockCustomsDeclareExportsMovementsConnector)
+    withCaching(Some(Choice("EAL")), Choice.choiceId)
   }
 
   "MovementSummaryController.displaySummary()" when {

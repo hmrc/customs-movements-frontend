@@ -18,11 +18,10 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.eoriCacheId
+import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice
-import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
-import handlers.ErrorHandler
+import forms.Choice.AllowedChoiceValues._
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,45 +33,34 @@ import views.html.choice_page
 import scala.concurrent.{ExecutionContext, Future}
 
 class ChoiceController @Inject()(
-    appConfig: AppConfig,
-    override val messagesApi: MessagesApi,
-    authenticate: AuthAction,
-    customsCacheService: CustomsCacheService,
-    errorHandler: ErrorHandler
-)(implicit ec: ExecutionContext)
-    extends FrontendController
-    with I18nSupport {
+  override val messagesApi: MessagesApi,
+  authenticate: AuthAction,
+  customsCacheService: CustomsCacheService
+)(implicit appConfig: AppConfig, ec: ExecutionContext)
+    extends FrontendController with I18nSupport {
 
-  def displayChoiceForm(): Action[AnyContent] = authenticate.async {
-    implicit request =>
-      customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, choiceId).map {
-        case Some(data) => Ok(choice_page(appConfig, Choice.form().fill(data)))
-        case _          => Ok(choice_page(appConfig, Choice.form()))
-      }
+  def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsCacheService.fetchAndGetEntry[Choice](cacheId, choiceId)
+      .map(data => Ok(choice_page(data.fold(form)(form.fill(_)))))
   }
 
-  def submitChoice(): Action[AnyContent] = authenticate.async {
-    implicit request =>
-      form()
-        .bindFromRequest()
-        .fold(
-          (formWithErrors: Form[Choice]) =>
-            Future.successful(
-              BadRequest(choice_page(appConfig, formWithErrors))),
-          validChoice =>
-            customsCacheService
-              .cache[Choice](eoriCacheId, choiceId, validChoice)
-              .map { _ =>
-                validChoice.value match {
-                  case Arrival | Departure =>
-                    Redirect(controllers.movement.routes.MovementController
-                      .displayDucrPage())
-                  case _ =>
-                    Redirect(
-                      controllers.routes.ChoiceController.displayChoiceForm())
-                }
-            }
-        )
+  def submitChoice(): Action[AnyContent] = authenticate.async { implicit request =>
+    form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[Choice]) =>
+          Future.successful(BadRequest(choice_page(formWithErrors))),
+        validChoice =>
+          customsCacheService
+            .cache[Choice](cacheId, choiceId, validChoice)
+            .map { _ =>
+              validChoice.value match {
+                case Arrival | Departure =>
+                  Redirect(controllers.routes.ConsignmentReferencesController.displayPage())
+                case _ =>
+                  Redirect(controllers.routes.ChoiceController.displayChoiceForm())
+              }
+          }
+      )
   }
-
 }

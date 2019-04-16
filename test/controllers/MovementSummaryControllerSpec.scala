@@ -162,10 +162,9 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
         route(app, postRequest(uriSummary, emptyForm)).get.futureValue
 
-        verify(mockCustomsCacheService).fetchMovementRequest(any(), any())(any(), any())
+        verify(mockCustomsCacheService)
+          .fetchMovementRequest(any(), any())(any(), any())
       }
-
-
 
       "redirect to confirmation page" in {
         mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
@@ -188,7 +187,8 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
         route(app, getRequest(uriConfirmation)).get.futureValue
 
-        verify(mockCustomsCacheService).fetchMovementRequest(any(), any())(any(), any())
+        verify(mockCustomsCacheService)
+          .fetchMovementRequest(any(), any())(any(), any())
       }
 
       "clean the cache" in {

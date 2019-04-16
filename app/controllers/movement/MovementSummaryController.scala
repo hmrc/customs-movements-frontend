@@ -49,20 +49,21 @@ class MovementSummaryController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  def displaySummary(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val form = Form(
-      MovementRequestSummaryMappingProvider
-        .provideMappingForMovementSummaryPage()
-    )
+  def displaySummary(): Action[AnyContent] =
+    (authenticate andThen journeyType).async { implicit request =>
+      val form = Form(
+        MovementRequestSummaryMappingProvider
+          .provideMappingForMovementSummaryPage()
+      )
 
-    customsCacheService
-      .fetchMovementRequest(movementCacheId, request.authenticatedRequest.user.eori)
-      .map {
-        case Some(data) =>
-          Ok(movement_summary_page(appConfig, form.fill(data)))
-        case _ => handleError(s"Could not obtain data from DB")
-      }
-  }
+      customsCacheService
+        .fetchMovementRequest(movementCacheId, request.authenticatedRequest.user.eori)
+        .map {
+          case Some(data) =>
+            Ok(movement_summary_page(appConfig, form.fill(data)))
+          case _ => handleError(s"Could not obtain data from DB")
+        }
+    }
 
   private def parseDUCR(ucrBlock: UcrBlock): Option[String] =
     ucrBlock.ucrType match {
@@ -70,51 +71,53 @@ class MovementSummaryController @Inject()(
       case _   => None
     }
 
-  def submitMovementRequest(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
-      .fetchMovementRequest(movementCacheId, request.authenticatedRequest.user.eori)
-      .flatMap {
-        case Some(data) => {
-          val ducrVal = parseDUCR(data.ucrBlock).getOrElse("")
-          val eoriVal = request.authenticatedRequest.user.eori
-          val mucrVal = data.masterUCR
-          val movementType = "EAL" // EDL for departure
+  def submitMovementRequest(): Action[AnyContent] =
+    (authenticate andThen journeyType).async { implicit request =>
+      customsCacheService
+        .fetchMovementRequest(movementCacheId, request.authenticatedRequest.user.eori)
+        .flatMap {
+          case Some(data) => {
+            val ducrVal = parseDUCR(data.ucrBlock).getOrElse("")
+            val eoriVal = request.authenticatedRequest.user.eori
+            val mucrVal = data.masterUCR
+            val movementType = "EAL" // EDL for departure
 
-          val metricIdentifier = getMetricIdentifierFrom(data)
-          exportsMetrics.startTimer(metricIdentifier)
+            val metricIdentifier = getMetricIdentifierFrom(data)
+            exportsMetrics.startTimer(metricIdentifier)
 
-          customsDeclareExportsMovementsConnector
-            .submitMovementDeclaration(ducrVal, mucrVal, movementType, data.toXml)
-            .map(
-              submitResponse =>
-                submitResponse.status match {
-                  case ACCEPTED =>
-                    exportsMetrics.incrementCounter(metricIdentifier)
-                    Redirect(
-                      controllers.movement.routes.MovementSummaryController
-                        .displayConfirmation()
-                    )
-                  case _ => handleError(s"Unable to save data")
-              }
-            )
-        }
-        case _ =>
-          Future.successful(handleError(s"Could not obtain data from DB"))
-      }
-  }
-
-  def displayConfirmation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
-      .fetchMovementRequest(movementCacheId, request.authenticatedRequest.user.eori)
-      .flatMap {
-        case Some(data) =>
-          customsCacheService.remove(movementCacheId).map { _ =>
-            Ok(movement_confirmation_page(appConfig, data.messageCode, data.ucrBlock.ucr))
+            customsDeclareExportsMovementsConnector
+              .submitMovementDeclaration(ducrVal, mucrVal, movementType, data.toXml)
+              .map(
+                submitResponse =>
+                  submitResponse.status match {
+                    case ACCEPTED =>
+                      exportsMetrics.incrementCounter(metricIdentifier)
+                      Redirect(
+                        controllers.movement.routes.MovementSummaryController
+                          .displayConfirmation()
+                      )
+                    case _ => handleError(s"Unable to save data")
+                }
+              )
           }
-        case _ =>
-          Future.successful(handleError(s"Could not obtain data from DB"))
-      }
-  }
+          case _ =>
+            Future.successful(handleError(s"Could not obtain data from DB"))
+        }
+    }
+
+  def displayConfirmation(): Action[AnyContent] =
+    (authenticate andThen journeyType).async { implicit request =>
+      customsCacheService
+        .fetchMovementRequest(movementCacheId, request.authenticatedRequest.user.eori)
+        .flatMap {
+          case Some(data) =>
+            customsCacheService.remove(movementCacheId).map { _ =>
+              Ok(movement_confirmation_page(appConfig, data.messageCode, data.ucrBlock.ucr))
+            }
+          case _ =>
+            Future.successful(handleError(s"Could not obtain data from DB"))
+        }
+    }
 
   private def handleError(logMessage: String)(implicit request: JourneyRequest[_]): Result = {
     Logger.error(logMessage)

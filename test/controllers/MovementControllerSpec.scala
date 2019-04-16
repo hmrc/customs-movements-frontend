@@ -65,7 +65,8 @@ class MovementControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
       "validate form with minimum values - incorrect values" in {
         withCaching(None, MovementFormsAndIds.goodsDateId)
 
-        val result = route(app, postRequest(goodsDateUri, wrongMinimumGoodsDate)).get
+        val result =
+          route(app, postRequest(goodsDateUri, wrongMinimumGoodsDate)).get
         val stringResult = contentAsString(result)
 
         stringResult must include(messages("movement.date.incorrectDay"))
@@ -78,7 +79,8 @@ class MovementControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
       "validate form with maximum values - incorrect values" in {
         withCaching(None, MovementFormsAndIds.goodsDateId)
 
-        val result = route(app, postRequest(goodsDateUri, wrongMaximumGoodsDate)).get
+        val result =
+          route(app, postRequest(goodsDateUri, wrongMaximumGoodsDate)).get
         val stringResult = contentAsString(result)
 
         stringResult must include(messages("movement.date.incorrectDay"))
@@ -177,7 +179,8 @@ class MovementControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
         withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.transportId)
 
-        val result = route(app, postRequest(transportUri, incorrectTransport)).get
+        val result =
+          route(app, postRequest(transportUri, incorrectTransport)).get
         val stringResult = contentAsString(result)
 
         stringResult must include("Maximum length is 1")

@@ -34,19 +34,23 @@ trait MockConnectors extends MockitoSugar {
 
   @deprecated("Please use mock directly", "2019-04-15")
   def successfulMovementsResponse(): OngoingStubbing[Future[CustomsDeclareExportsMovementsResponse]] =
-    when(mockCustomsDeclareExportsMovementsConnector.saveMovementSubmission(any())(any(), any()))
-      .thenReturn(Future.successful(CustomsDeclareExportsMovementsResponse(OK, "")))
+    when(
+      mockCustomsDeclareExportsMovementsConnector
+        .saveMovementSubmission(any())(any(), any())
+    ).thenReturn(Future.successful(CustomsDeclareExportsMovementsResponse(OK, "")))
 
   @deprecated("Please use mock directly", "2019-04-15")
   def sendMovementRequest(): OngoingStubbing[Future[HttpResponse]] =
-    when(mockCustomsDeclareExportsMovementsConnector
-      .submitMovementDeclaration(any[String], any[Option[String]], any[String], any[String])(any(), any()))
-      .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+    when(
+      mockCustomsDeclareExportsMovementsConnector
+        .submitMovementDeclaration(any[String], any[Option[String]], any[String], any[String])(any(), any())
+    ).thenReturn(Future.successful(HttpResponse(ACCEPTED)))
 
   @deprecated("Please use mock directly", "2019-04-15")
   def sendMovementRequest400Response(): OngoingStubbing[Future[HttpResponse]] =
-  when(mockCustomsDeclareExportsMovementsConnector
-    .submitMovementDeclaration(any[String], any[Option[String]], any[String], any[String])(any(), any()))
-    .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
+    when(
+      mockCustomsDeclareExportsMovementsConnector
+        .submitMovementDeclaration(any[String], any[Option[String]], any[String], any[String])(any(), any())
+    ).thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
 }

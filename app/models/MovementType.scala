@@ -25,12 +25,12 @@ case object Arrival extends MovementType
 case object Departure extends MovementType
 
 case class MovementSubmission(
-    eori: String,
-    conversationId: String,
-    ducr: String,
-    mucr: Option[String] = None,
-    movementType: String,
-    status: Option[String] = Some("Pending")
+  eori: String,
+  conversationId: String,
+  ducr: String,
+  mucr: Option[String] = None,
+  movementType: String,
+  status: Option[String] = Some("Pending")
 )
 
 object MovementSubmission {

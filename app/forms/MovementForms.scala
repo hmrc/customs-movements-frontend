@@ -23,18 +23,10 @@ import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.wco.dec.inventorylinking.common.{
-  AgentDetails,
-  TransportDetails,
-  UcrBlock
-}
+import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
-case class GoodsDateForm(day: String,
-                         month: String,
-                         year: String,
-                         hour: Option[String],
-                         minute: Option[String])
+case class GoodsDateForm(day: String, month: String, year: String, hour: Option[String], minute: Option[String])
 
 object GoodsDateForm {
   implicit val format = Json.format[GoodsDateForm]
@@ -49,23 +41,23 @@ object GoodsDateForm {
     "day" -> text().verifying("Day is incorrect", days.contains(_)),
     "month" -> text().verifying("Month is incorrect", months.contains(_)),
     "year" -> text()
-      .verifying("Year is incorrect",
-                 year =>
-                   if (year.isEmpty) false
-                   else year.toInt >= LocalDateTime.now().getYear),
-    "hour" -> optional(
-      text().verifying("Hour is incorrect", hours.contains(_))),
-    "minute" -> optional(
-      text().verifying("Minutes are incorrect", minutes.contains(_)))
+      .verifying(
+        "Year is incorrect",
+        year =>
+          if (year.isEmpty) false
+          else year.toInt >= LocalDateTime.now().getYear
+      ),
+    "hour" -> optional(text().verifying("Hour is incorrect", hours.contains(_))),
+    "minute" -> optional(text().verifying("Minutes are incorrect", minutes.contains(_)))
   )(GoodsDateForm.apply)(GoodsDateForm.unapply)
   //scalastyle:on magic.number
 }
 
 case class LocationForm(
-    agentLocation: Option[String],
-    agentRole: Option[String],
-    goodsLocation: Option[String],
-    shed: Option[String]
+  agentLocation: Option[String],
+  agentRole: Option[String],
+  goodsLocation: Option[String],
+  shed: Option[String]
 )
 
 object LocationForm {
@@ -80,9 +72,9 @@ object LocationForm {
 }
 
 case class TransportForm(
-    transportId: Option[String],
-    transportMode: Option[String],
-    transportNationality: Option[String]
+  transportId: Option[String],
+  transportMode: Option[String],
+  transportNationality: Option[String]
 )
 
 object TransportForm {
@@ -109,16 +101,18 @@ object MovementFormsAndIds {
 
 object Movement {
 
-  def createMovementRequest(cacheMap: CacheMap,
-                            eori: String,
-                            choice: Choice): InventoryLinkingMovementRequest = {
+  def createMovementRequest(cacheMap: CacheMap, eori: String, choice: Choice): InventoryLinkingMovementRequest = {
     val ducrForm = cacheMap.getEntry[Ducr](Ducr.id).getOrElse(Ducr(""))
     val goodsDate =
       cacheMap.getEntry[GoodsDateForm](MovementFormsAndIds.goodsDateId)
     val location =
-      cacheMap.getEntry[LocationForm](MovementFormsAndIds.locationId).getOrElse(LocationForm(None, None, None, None))
+      cacheMap
+        .getEntry[LocationForm](MovementFormsAndIds.locationId)
+        .getOrElse(LocationForm(None, None, None, None))
     val transport =
-      cacheMap.getEntry[TransportForm](MovementFormsAndIds.transportId).getOrElse(TransportForm(None, None, None))
+      cacheMap
+        .getEntry[TransportForm](MovementFormsAndIds.transportId)
+        .getOrElse(TransportForm(None, None, None))
 
     // TODO: ucrType is hardcoded need to UPDATE after we allow user input for mucr
     InventoryLinkingMovementRequest(
@@ -127,10 +121,8 @@ object Movement {
               .equals(AllowedChoiceValues.Departure))
           choice.value
         else "",
-      agentDetails = Some(
-        AgentDetails(eori = Some(eori),
-                     agentLocation = location.agentLocation,
-                     agentRole = location.agentRole)),
+      agentDetails =
+        Some(AgentDetails(eori = Some(eori), agentLocation = location.agentLocation, agentRole = location.agentRole)),
       ucrBlock = UcrBlock(ucr = ducrForm.ducr, ucrType = "D"),
       goodsLocation = location.goodsLocation.getOrElse(""),
       goodsArrivalDateTime =

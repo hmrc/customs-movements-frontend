@@ -40,7 +40,8 @@ case class JourneyAction @Inject()(customsCacheService: CustomsCacheService)(imp
       .fetchAndGetEntry[Choice](cacheId()(request), choiceId)
       .map {
         case Some(choice) => Right(JourneyRequest(request, choice))
-        case _            => Left(Conflict("Could not obtain information about journey type"))
+        case _ =>
+          Left(Conflict("Could not obtain information about journey type"))
       }
   }
 }

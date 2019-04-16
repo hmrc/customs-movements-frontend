@@ -16,10 +16,7 @@
 
 package utils
 
-case class RadioOption(id: String,
-                       value: String,
-                       messageKey: String,
-                       hint: Option[String] = None)
+case class RadioOption(id: String, value: String, messageKey: String, hint: Option[String] = None)
 
 object RadioOption {
   def apply(keyPrefix: String, option: String): RadioOption =

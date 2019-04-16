@@ -62,5 +62,6 @@ object ChoiceSpec {
   val incorrectChoiceJSON: JsValue = createChoiceJSON("InvalidChoice")
   val emptyChoiceJSON: JsValue = createChoiceJSON()
 
-  def createChoiceJSON(choiceValue: String = ""): JsValue = JsObject(Map("choice" -> JsString(choiceValue)))
+  def createChoiceJSON(choiceValue: String = ""): JsValue =
+    JsObject(Map("choice" -> JsString(choiceValue)))
 }

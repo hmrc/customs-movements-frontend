@@ -26,8 +26,7 @@ import uk.gov.hmrc.play.bootstrap.controller.BaseController
 import scala.concurrent.Future
 
 @Singleton
-class FeatureSwitchController @Inject()(implicit val appConfig: AppConfig)
-    extends BaseController {
+class FeatureSwitchController @Inject()(implicit val appConfig: AppConfig) extends BaseController {
 
   def set(feature: Feature, status: FeatureStatus): Action[AnyContent] =
     Action.async { implicit req =>

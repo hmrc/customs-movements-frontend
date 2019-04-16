@@ -29,9 +29,7 @@ object Ducr {
   private val ducrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
 
   val ducrMapping =
-    mapping(
-      "ducr" -> text().verifying(pattern(ducrFormat.r, error = "error.ducr")))(
-      Ducr.apply)(Ducr.unapply)
+    mapping("ducr" -> text().verifying(pattern(ducrFormat.r, error = "error.ducr")))(Ducr.apply)(Ducr.unapply)
 
   val id = "DUCR"
 

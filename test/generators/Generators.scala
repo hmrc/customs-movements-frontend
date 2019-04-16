@@ -16,7 +16,6 @@
 
 package generators
 
-
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
@@ -27,7 +26,8 @@ trait Generators {
 
   def genIntersperseString(gen: Gen[String], value: String, frequencyV: Int = 1, frequencyN: Int = 10): Gen[String] = {
 
-    val genValue: Gen[Option[String]] = Gen.frequency(frequencyN -> None, frequencyV -> Gen.const(Some(value)))
+    val genValue: Gen[Option[String]] =
+      Gen.frequency(frequencyN -> None, frequencyV -> Gen.const(Some(value)))
 
     for {
       seq1 <- gen
@@ -95,7 +95,6 @@ trait Generators {
   def stringsExceptSpecificValues(excluded: Set[String]): Gen[String] =
     nonEmptyString suchThat (!excluded.contains(_))
 
-
   def caseClassToSeq(cc: AnyRef) =
     (Map[String, String]() /: cc.getClass.getDeclaredFields) { (a, f) =>
       f.setAccessible(true)
@@ -115,7 +114,8 @@ trait Generators {
     Choose.xmap[Long, BigInt](BigInt(_), _.toLong)
 
   def decimal(minSize: Int, maxSize: Int, scale: Int): Gen[BigDecimal] = {
-    val min = if (minSize <= 0) BigInt(0) else BigInt("1" + ("0" * (minSize - 1)))
+    val min =
+      if (minSize <= 0) BigInt(0) else BigInt("1" + ("0" * (minSize - 1)))
     choose[BigInt](min, BigInt("9" * maxSize)).map(BigDecimal(_, scale))
   }
   def posDecimal(precision: Int, scale: Int): Gen[BigDecimal] =

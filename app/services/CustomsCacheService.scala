@@ -30,8 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 // $COVERAGE-OFF$Trivial
 
 @Singleton
-class CustomsHttpCaching @Inject()(cfg: AppConfig, httpClient: HttpClient)
-    extends ShortLivedHttpCaching {
+class CustomsHttpCaching @Inject()(cfg: AppConfig, httpClient: HttpClient) extends ShortLivedHttpCaching {
 
   override def defaultSource: String = cfg.keyStoreSource
 
@@ -43,8 +42,7 @@ class CustomsHttpCaching @Inject()(cfg: AppConfig, httpClient: HttpClient)
 }
 
 @Singleton
-class CustomsCacheService @Inject()(caching: CustomsHttpCaching,
-                                    applicationCrypto: ApplicationCrypto)
+class CustomsCacheService @Inject()(caching: CustomsHttpCaching, applicationCrypto: ApplicationCrypto)
     extends ShortLivedCache {
 
   override implicit val crypto: CompositeSymmetricCrypto =
@@ -54,18 +52,12 @@ class CustomsCacheService @Inject()(caching: CustomsHttpCaching,
   // $COVERAGE-ON$
 
   def fetchMovementRequest(
-      cacheId: String,
-      eori: String
-  )(implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[Option[InventoryLinkingMovementRequest]] =
+    cacheId: String,
+    eori: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[InventoryLinkingMovementRequest]] =
     fetch(cacheId).zip(fetch(eori)).map {
-      case (Some(cacheMap), Some(choice))
-          if (choice.getEntry[Choice](Choice.choiceId).isDefined) =>
-        Some(
-          Movement.createMovementRequest(
-            cacheMap,
-            eori,
-            choice.getEntry[Choice](Choice.choiceId).get))
+      case (Some(cacheMap), Some(choice)) if (choice.getEntry[Choice](Choice.choiceId).isDefined) =>
+        Some(Movement.createMovementRequest(cacheMap, eori, choice.getEntry[Choice](Choice.choiceId).get))
       case _ => None
     }
 }

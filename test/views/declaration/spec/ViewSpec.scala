@@ -37,12 +37,14 @@ trait ViewSpec extends PlaySpec with OneAppPerSuite with ViewValidator {
   implicit lazy val appConfig: AppConfig = injector.instanceOf[AppConfig]
 
   implicit lazy val messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
-  implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
+  implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
+    FakeRequest("", "")
   implicit lazy val messages: Messages = messagesApi.preferred(FakeRequest())
   implicit lazy val flash: Flash = new Flash()
   implicit lazy val countries: List[Country] = Countries.allCountries
 
-  def assertMessage(key: String, expected: String): Unit = messages(key) must be(expected)
+  def assertMessage(key: String, expected: String): Unit =
+    messages(key) must be(expected)
 
   def fakeJourneyRequest(choice: String): JourneyRequest[AnyContentAsEmpty.type] =
     JourneyRequest(AuthenticatedRequest(fakeRequest, ExportsTestData.newUser("", "")), new Choice(choice))

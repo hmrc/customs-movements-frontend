@@ -85,7 +85,8 @@ trait CustomExportsBaseSpec
 
   val cfg: CSRFConfig = injector.instanceOf[CSRFConfigProvider].get
 
-  val token: String = injector.instanceOf[CSRFFilter].tokenProvider.generateToken
+  val token: String =
+    injector.instanceOf[CSRFFilter].tokenProvider.generateToken
 
   def fakeRequest = FakeRequest("", "")
 
@@ -107,7 +108,8 @@ trait CustomExportsBaseSpec
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
-    val tags = Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
+    val tags =
+      Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
     FakeRequest("GET", uri)
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
       .withSession(session.toSeq: _*)
@@ -123,7 +125,8 @@ trait CustomExportsBaseSpec
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
-    val tags = Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
+    val tags =
+      Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
     FakeRequest("POST", uri)
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
       .withSession(session.toSeq: _*)
@@ -139,7 +142,8 @@ trait CustomExportsBaseSpec
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
-    val tags = Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
+    val tags =
+      Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
     FakeRequest("POST", uri)
       .withHeaders(Map(cfg.headerName -> token).toSeq: _*)
       .withSession(session.toSeq: _*)
@@ -148,11 +152,15 @@ trait CustomExportsBaseSpec
   }
 
   def withCaching[T](form: Option[Form[T]]): OngoingStubbing[Future[CacheMap]] = {
-    when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(), any())(any(), any(), any()))
-      .thenReturn(Future.successful(form))
+    when(
+      mockCustomsCacheService
+        .fetchAndGetEntry[Form[T]](any(), any())(any(), any(), any())
+    ).thenReturn(Future.successful(form))
 
-    when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))
-      .thenReturn(Future.successful(CacheMap("id1", Map.empty)))
+    when(
+      mockCustomsCacheService
+        .cache[T](any(), any(), any())(any(), any(), any())
+    ).thenReturn(Future.successful(CacheMap("id1", Map.empty)))
   }
 
   def withCaching[T](dataToReturn: Option[T], id: String): OngoingStubbing[Future[CacheMap]] = {
@@ -161,8 +169,10 @@ trait CustomExportsBaseSpec
         .fetchAndGetEntry[T](any(), ArgumentMatchers.eq(id))(any(), any(), any())
     ).thenReturn(Future.successful(dataToReturn))
 
-    when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))
-      .thenReturn(Future.successful(CacheMap(id, Map.empty)))
+    when(
+      mockCustomsCacheService
+        .cache[T](any(), any(), any())(any(), any(), any())
+    ).thenReturn(Future.successful(CacheMap(id, Map.empty)))
   }
 
 }

@@ -25,15 +25,13 @@ object FormAction {
   private val removeLabel = Remove.toString
 
   def fromUrlEncoded(input: Map[String, Seq[String]]): FormAction =
-    input
-      .flatMap {
-        case (`addLabel`, _)             => Some(Add)
-        case (`saveAndContinueLabel`, _) => Some(SaveAndContinue)
-        case (`continueLabel`, _)        => Some(Continue)
-        case (`removeLabel`, values)     => Some(Remove(values))
-        case _                           => None
-      }
-      .headOption
+    input.flatMap {
+      case (`addLabel`, _)             => Some(Add)
+      case (`saveAndContinueLabel`, _) => Some(SaveAndContinue)
+      case (`continueLabel`, _)        => Some(Continue)
+      case (`removeLabel`, values)     => Some(Remove(values))
+      case _                           => None
+    }.headOption
       .getOrElse(Unknown)
 }
 

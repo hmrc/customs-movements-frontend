@@ -57,7 +57,8 @@ trait MovementApp
 
   val cfg: CSRFConfig = app.injector.instanceOf[CSRFConfigProvider].get
 
-  val token: String = app.injector.instanceOf[CSRFFilter].tokenProvider.generateToken
+  val token: String =
+    app.injector.instanceOf[CSRFFilter].tokenProvider.generateToken
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
@@ -78,7 +79,8 @@ trait MovementApp
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
-    val tags = Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
+    val tags =
+      Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
     FakeRequest("GET", uri)
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
       .withSession(session.toSeq: _*)
@@ -94,7 +96,8 @@ trait MovementApp
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
-    val tags = Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
+    val tags =
+      Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
     FakeRequest("POST", uri)
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
       .withSession(session.toSeq: _*)

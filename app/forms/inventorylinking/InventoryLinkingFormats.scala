@@ -17,11 +17,7 @@
 package forms.inventorylinking
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.wco.dec.inventorylinking.common.{
-  AgentDetails,
-  TransportDetails,
-  UcrBlock
-}
+import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 object InventoryLinkingFormats {

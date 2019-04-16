@@ -53,46 +53,35 @@ object FieldValidator {
 
   val nonEmpty: String => Boolean = (input: String) => input.nonEmpty
 
-  val noLongerThan: Int => String => Boolean = (length: Int) =>
-    (input: String) => input.length <= length
+  val noLongerThan: Int => String => Boolean = (length: Int) => (input: String) => input.length <= length
 
-  val noShorterThan: Int => String => Boolean = (length: Int) =>
-    (input: String) => input.length >= length
+  val noShorterThan: Int => String => Boolean = (length: Int) => (input: String) => input.length >= length
 
-  val hasSpecificLength: Int => String => Boolean = (length: Int) =>
-    (input: String) => input.length == length
+  val hasSpecificLength: Int => String => Boolean = (length: Int) => (input: String) => input.length == length
 
   val lengthInRange: Int => Int => String => Boolean = (min: Int) =>
     (max: Int) => (input: String) => input.length >= min && input.length <= max
 
   val isNumeric: String => Boolean = (input: String) => input.forall(_.isDigit)
 
-  val isAllCapitalLetter: String => Boolean = (input: String) =>
-    input.forall(_.isUpper)
+  val isAllCapitalLetter: String => Boolean = (input: String) => input.forall(_.isUpper)
 
-  val isAlphabetic: String => Boolean = (input: String) =>
-    input.forall(_.isLetter)
+  val isAlphabetic: String => Boolean = (input: String) => input.forall(_.isLetter)
 
-  val isAlphanumeric: String => Boolean = (input: String) =>
-    input.forall(_.isLetterOrDigit)
+  val isAlphanumeric: String => Boolean = (input: String) => input.forall(_.isLetterOrDigit)
 
   val isAlphanumericWithSpecialCharacters: Set[Char] => String => Boolean =
-    (allowedChars: Set[Char]) =>
-      (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedChars)
+    (allowedChars: Set[Char]) => (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedChars)
 
   val isAlphanumericWithAllowedSpecialCharacters: String => Boolean =
-    (input: String) =>
-      input.filter(!_.isLetterOrDigit).forall(allowedSpecialChars)
+    (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedSpecialChars)
 
-  val startsWithCapitalLetter: String => Boolean = (input: String) =>
-    input.headOption.exists(_.isUpper)
+  val startsWithCapitalLetter: String => Boolean = (input: String) => input.headOption.exists(_.isUpper)
 
   val isContainedIn: Iterable[String] => String => Boolean =
-    (iterable: Iterable[String]) =>
-      (input: String) => iterable.exists(_ == input)
+    (iterable: Iterable[String]) => (input: String) => iterable.exists(_ == input)
 
-  val containsNotOnlyZeros: String => Boolean = (input: String) =>
-    !input.matches(zerosOnlyRegexValue)
+  val containsNotOnlyZeros: String => Boolean = (input: String) => !input.matches(zerosOnlyRegexValue)
 
   val isTailNumeric: String => Boolean = (input: String) =>
     Try(input.tail) match {
@@ -101,9 +90,7 @@ object FieldValidator {
   }
 
   val isDecimalWithNoMoreDecimalPlacesThan: Int => String => Boolean =
-    (decimalPlaces: Int) =>
-      (input: String) =>
-        input.matches(noMoreDecimalPlacesThanRegexValue(decimalPlaces))
+    (decimalPlaces: Int) => (input: String) => input.matches(noMoreDecimalPlacesThanRegexValue(decimalPlaces))
 
   val validateDecimal: Int => Int => String => Boolean = (totalLength: Int) =>
     (decimalPlaces: Int) =>
@@ -115,12 +102,9 @@ object FieldValidator {
           case _                        => false
   }
 
-  val containsDuplicates: Iterable[_] => Boolean = (input: Iterable[_]) =>
-    input.toSet.size != input.size
+  val containsDuplicates: Iterable[_] => Boolean = (input: Iterable[_]) => input.toSet.size != input.size
 
-  val areAllElementsUnique: Iterable[_] => Boolean = (input: Iterable[_]) =>
-    input.toSet.size == input.size
+  val areAllElementsUnique: Iterable[_] => Boolean = (input: Iterable[_]) => input.toSet.size == input.size
 
-  val ofPattern: String => String => Boolean = (pattern: String) =>
-    (input: String) => input.matches(pattern)
+  val ofPattern: String => String => Boolean = (pattern: String) => (input: String) => input.matches(pattern)
 }

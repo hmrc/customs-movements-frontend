@@ -35,6 +35,8 @@ trait MockCustomsCacheService extends MockitoSugar {
       .thenReturn(Future.successful(dateToReturn))
 
   def withCaching(formId: String): OngoingStubbing[Future[CacheMap]] =
-    when(mockCustomsCacheService.cache(any(), ArgumentMatchers.eq(formId), any())(any(), any(), any()))
-      .thenReturn(Future.successful(CacheMap("", Map.empty)))
+    when(
+      mockCustomsCacheService
+        .cache(any(), ArgumentMatchers.eq(formId), any())(any(), any(), any())
+    ).thenReturn(Future.successful(CacheMap("", Map.empty)))
 }

@@ -18,18 +18,13 @@ package forms.inventorylinking
 
 import play.api.data.Forms.{mapping, nonEmptyText, optional, text}
 import play.api.data.Mapping
-import uk.gov.hmrc.wco.dec.inventorylinking.common.{
-  AgentDetails,
-  TransportDetails,
-  UcrBlock
-}
+import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 //noinspection ConvertibleToMethodValue
 object MovementRequestSummaryMappingProvider {
 
-  def provideMappingForMovementSummaryPage()
-    : Mapping[InventoryLinkingMovementRequest] = buildMapping()
+  def provideMappingForMovementSummaryPage(): Mapping[InventoryLinkingMovementRequest] = buildMapping()
 
   private val ucrTypeAllowedValues = Set("D", "M")
   private val masterOptAllowedValues = Set("A", "F", "R", "X")
@@ -57,8 +52,7 @@ object MovementRequestSummaryMappingProvider {
     "ucr" -> nonEmptyText(maxLength = ucrMaxLength)
       .verifying("Please, provide valid UCR", _.matches(ucrValidationPattern)),
     "ucrType" -> nonEmptyText(maxLength = 1)
-      .verifying("Allowed values are: \"D\", \"M\"",
-                 ucrTypeAllowedValues.contains(_))
+      .verifying("Allowed values are: \"D\", \"M\"", ucrTypeAllowedValues.contains(_))
   )(UcrBlock.apply)(UcrBlock.unapply)
 
   private val transportDetailsMapping = mapping(
@@ -78,18 +72,14 @@ object MovementRequestSummaryMappingProvider {
       "shedOPID" -> optional(text(maxLength = shedOPIDMaxLength)),
       "masterUCR" -> optional(
         text(maxLength = masterUCRMaxLength)
-          .verifying("Please, provide valid UCR",
-                     ucr => ucr.matches(ucrValidationPattern))
+          .verifying("Please, provide valid UCR", ucr => ucr.matches(ucrValidationPattern))
       ),
       "masterOpt" -> optional(
         text(maxLength = 1)
-          .verifying("Allowed values are: \"A\", \"F\", \"R\", \"X\"",
-                     s => masterOptAllowedValues.contains(s))
+          .verifying("Allowed values are: \"A\", \"F\", \"R\", \"X\"", s => masterOptAllowedValues.contains(s))
       ),
-      "movementReference" -> optional(
-        text(maxLength = movementReferenceMaxLength)),
+      "movementReference" -> optional(text(maxLength = movementReferenceMaxLength)),
       "transportDetails" -> optional(transportDetailsMapping)
-    )(InventoryLinkingMovementRequest.apply)(
-      InventoryLinkingMovementRequest.unapply)
+    )(InventoryLinkingMovementRequest.apply)(InventoryLinkingMovementRequest.unapply)
 
 }

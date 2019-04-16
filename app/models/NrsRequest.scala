@@ -38,15 +38,15 @@ object NRSSubmission {
 }
 
 case class Metadata(
-    businessId: String,
-    notableEvent: String,
-    payloadContentType: String,
-    payloadSha256Checksum: Option[String],
-    userSubmissionTimestamp: DateTime,
-    identityData: IdentityData,
-    userAuthToken: String,
-    headerData: HeaderData,
-    searchKeys: SearchKeys
+  businessId: String,
+  notableEvent: String,
+  payloadContentType: String,
+  payloadSha256Checksum: Option[String],
+  userSubmissionTimestamp: DateTime,
+  identityData: IdentityData,
+  userAuthToken: String,
+  headerData: HeaderData,
+  searchKeys: SearchKeys
 )
 
 object Metadata {
@@ -57,26 +57,26 @@ object Metadata {
 }
 
 case class IdentityData(
-    internalId: Option[String] = None,
-    externalId: Option[String] = None,
-    agentCode: Option[String] = None,
-    credentials: Option[Credentials] = None,
-    confidenceLevel: Option[ConfidenceLevel] = None,
-    nino: Option[String] = None,
-    saUtr: Option[String] = None,
-    name: Option[Name] = None,
-    dateOfBirth: Option[LocalDate] = None,
-    email: Option[String] = None,
-    agentInformation: Option[AgentInformation] = None,
-    groupIdentifier: Option[String] = None,
-    credentialRole: Option[String] = None,
-    mdtpInformation: Option[MdtpInformation] = None,
-    itmpName: Option[ItmpName] = None,
-    itmpDateOfBirth: Option[LocalDate] = None,
-    itmpAddress: Option[ItmpAddress] = None,
-    affinityGroup: Option[AffinityGroup] = None,
-    credentialStrength: Option[String] = None,
-    loginTimes: Option[LoginTimes] = None
+  internalId: Option[String] = None,
+  externalId: Option[String] = None,
+  agentCode: Option[String] = None,
+  credentials: Option[Credentials] = None,
+  confidenceLevel: Option[ConfidenceLevel] = None,
+  nino: Option[String] = None,
+  saUtr: Option[String] = None,
+  name: Option[Name] = None,
+  dateOfBirth: Option[LocalDate] = None,
+  email: Option[String] = None,
+  agentInformation: Option[AgentInformation] = None,
+  groupIdentifier: Option[String] = None,
+  credentialRole: Option[String] = None,
+  mdtpInformation: Option[MdtpInformation] = None,
+  itmpName: Option[ItmpName] = None,
+  itmpDateOfBirth: Option[LocalDate] = None,
+  itmpAddress: Option[ItmpAddress] = None,
+  affinityGroup: Option[AffinityGroup] = None,
+  credentialStrength: Option[String] = None,
+  loginTimes: Option[LoginTimes] = None
 )
 
 object IdentityData {
@@ -94,15 +94,15 @@ object IdentityData {
 }
 
 case class HeaderData(
-    publicIp: Option[String] = None,
-    port: Option[String] = None,
-    deviceId: Option[String] = None,
-    userId: Option[String] = None,
-    timeZone: Option[String] = None,
-    localIp: Option[String] = None,
-    screenResolution: Option[String] = None,
-    windowSize: Option[String] = None,
-    colourDepth: Option[String] = None
+  publicIp: Option[String] = None,
+  port: Option[String] = None,
+  deviceId: Option[String] = None,
+  userId: Option[String] = None,
+  timeZone: Option[String] = None,
+  localIp: Option[String] = None,
+  screenResolution: Option[String] = None,
+  windowSize: Option[String] = None,
+  colourDepth: Option[String] = None
 )
 
 object HeaderData {

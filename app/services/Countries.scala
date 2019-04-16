@@ -49,8 +49,7 @@ object Countries {
               Country(c.value, countryCode(cc.value))
           }
         case _ =>
-          throw new IllegalArgumentException(
-            "Could not read JSON array of countries from : " + jsonFile)
+          throw new IllegalArgumentException("Could not read JSON array of countries from : " + jsonFile)
       }
 
     fromJsonFile.sortBy(_.countryName)

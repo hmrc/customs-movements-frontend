@@ -45,7 +45,8 @@ class ConsignmentReferencesSpec extends WordSpec with MustMatchers {
   "Consignment References mapping" should {
     "return errors for empty fields" in {
       val inputData = ConsignmentReferences("", "")
-      val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
+      val errors =
+        ConsignmentReferences.form().fillAndValidate(inputData).errors
 
       errors.length must be(2)
       errors must contain(FormError("eori", "consignmentReferences.eori.empty"))
@@ -54,7 +55,8 @@ class ConsignmentReferencesSpec extends WordSpec with MustMatchers {
 
     "return error for incorrect reference" in {
       val inputData = ConsignmentReferences("eori", "Incorrect reference")
-      val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
+      val errors =
+        ConsignmentReferences.form().fillAndValidate(inputData).errors
 
       errors.length must be(1)
       errors.head must be(FormError("reference", "consignmentReferences.reference.error"))
@@ -62,7 +64,8 @@ class ConsignmentReferencesSpec extends WordSpec with MustMatchers {
 
     "no errors when data is correct" in {
       val inputData = ConsignmentReferences("eori", "Ducr")
-      val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
+      val errors =
+        ConsignmentReferences.form().fillAndValidate(inputData).errors
 
       errors.length must be(0)
     }

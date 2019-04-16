@@ -37,7 +37,8 @@ object ConsignmentReferences {
   import AllowedReferences._
 
   //TODO Remove AllowedReferences below - after get rid of DUCR model
-  val allowedReferenceAnswers: Seq[String] = Seq(AllowedReferences.Ducr, Mucr, Mrn)
+  val allowedReferenceAnswers: Seq[String] =
+    Seq(AllowedReferences.Ducr, Mucr, Mrn)
 
   val mapping = Forms.mapping(
     "eori" -> text()

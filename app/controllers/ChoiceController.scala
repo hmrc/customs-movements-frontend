@@ -40,7 +40,8 @@ class ChoiceController @Inject()(
     extends FrontendController with I18nSupport {
 
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[Choice](cacheId, choiceId)
+    customsCacheService
+      .fetchAndGetEntry[Choice](cacheId, choiceId)
       .map(data => Ok(choice_page(data.fold(form)(form.fill(_)))))
   }
 
@@ -48,15 +49,17 @@ class ChoiceController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Choice]) =>
-          Future.successful(BadRequest(choice_page(formWithErrors))),
+        (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choice_page(formWithErrors))),
         validChoice =>
           customsCacheService
             .cache[Choice](cacheId, choiceId, validChoice)
             .map { _ =>
               validChoice.value match {
                 case Arrival | Departure =>
-                  Redirect(controllers.routes.ConsignmentReferencesController.displayPage())
+                  Redirect(
+                    controllers.routes.ConsignmentReferencesController
+                      .displayPage()
+                  )
                 case _ =>
                   Redirect(controllers.routes.ChoiceController.displayChoiceForm())
               }

@@ -19,9 +19,7 @@ package models
 import play.api.libs.json.Json
 import uk.gov.hmrc.auth.core.Enrolments
 
-case class SignedInUser(eori: String,
-                        enrolments: Enrolments,
-                        identityData: IdentityData)
+case class SignedInUser(eori: String, enrolments: Enrolments, identityData: IdentityData)
 
 case class CustomsDeclareExportsResponse(status: Int, message: String)
 

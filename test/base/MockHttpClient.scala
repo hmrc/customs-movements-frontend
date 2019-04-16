@@ -49,7 +49,8 @@ class MockHttpClient[A, B](
     (url, body, headers) match {
       case _ if !isAuthenticated(hc) =>
         throw new UnauthorizedException("Request is not authenticated")
-      case _ if forceServerError => throw new InternalServerException("Internal service problem")
+      case _ if forceServerError =>
+        throw new InternalServerException("Internal service problem")
       case _ if url == expectedUrl && headers == expectedHeaders =>
         Future.successful(result.asInstanceOf[O])
       case error => throw new BadRequestException(error.toString)
@@ -65,7 +66,9 @@ class MockHttpClient[A, B](
         throw new UnauthorizedException("Request is not authenticated")
       case _ if forceServerError =>
         throw new InternalServerException("Internal service problem")
-      case _ if url == expectedUrl && body.asInstanceOf[A] == expectedBody && headers == expectedHeaders =>
+      case _
+          if url == expectedUrl && body
+            .asInstanceOf[A] == expectedBody && headers == expectedHeaders =>
         Future.successful(result.asInstanceOf[O])
       case _ =>
         throw new BadRequestException(
@@ -74,5 +77,6 @@ class MockHttpClient[A, B](
     }
   //scalastyle:on method.name
 
-  private def isAuthenticated(hc: HeaderCarrier): Boolean = hc.authorization.isDefined
+  private def isAuthenticated(hc: HeaderCarrier): Boolean =
+    hc.authorization.isDefined
 }

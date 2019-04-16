@@ -21,10 +21,9 @@ import java.util.UUID
 import akka.stream.Materializer
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
-import connectors.{CustomsDeclareExportsMovementsConnector, NrsConnector}
+import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.FakeAuthAction
 import metrics.MovementsMetrics
-import models.NrsSubmissionResponse
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -46,13 +45,14 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAs
 import play.api.test.FakeRequest
 import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
-import services.{CustomsCacheService,  NRSService}
+import services.CustomsCacheService
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@deprecated("Use MovementBaseSpec instead", "2019-04-15")
 trait CustomExportsBaseSpec
     extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with MockAuthAction
     with MockConnectors with BeforeAndAfter {
@@ -60,7 +60,6 @@ trait CustomExportsBaseSpec
   protected val contextPath: String = "/customs-movements"
 
   val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
-  val mockNrsService: NRSService = mock[NRSService]
   val mockMetrics: MovementsMetrics = mock[MovementsMetrics]
 
   SharedMetricRegistries.clear()
@@ -70,8 +69,6 @@ trait CustomExportsBaseSpec
       bind[AuthConnector].to(mockAuthConnector),
       bind[CustomsCacheService].to(mockCustomsCacheService),
       bind[CustomsDeclareExportsMovementsConnector].to(mockCustomsDeclareExportsMovementsConnector),
-      bind[NrsConnector].to(mockNrsConnector),
-      bind[NRSService].to(mockNrsService),
       bind[MovementsMetrics].to(mockMetrics)
     )
     .build()
@@ -88,7 +85,8 @@ trait CustomExportsBaseSpec
 
   val cfg: CSRFConfig = injector.instanceOf[CSRFConfigProvider].get
 
-  val token: String = injector.instanceOf[CSRFFilter].tokenProvider.generateToken
+  val token: String =
+    injector.instanceOf[CSRFFilter].tokenProvider.generateToken
 
   def fakeRequest = FakeRequest("", "")
 
@@ -110,7 +108,8 @@ trait CustomExportsBaseSpec
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
-    val tags = Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
+    val tags =
+      Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
     FakeRequest("GET", uri)
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
       .withSession(session.toSeq: _*)
@@ -126,7 +125,8 @@ trait CustomExportsBaseSpec
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
-    val tags = Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
+    val tags =
+      Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
     FakeRequest("POST", uri)
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
       .withSession(session.toSeq: _*)
@@ -142,7 +142,8 @@ trait CustomExportsBaseSpec
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
-    val tags = Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
+    val tags =
+      Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
     FakeRequest("POST", uri)
       .withHeaders(Map(cfg.headerName -> token).toSeq: _*)
       .withSession(session.toSeq: _*)
@@ -151,11 +152,15 @@ trait CustomExportsBaseSpec
   }
 
   def withCaching[T](form: Option[Form[T]]): OngoingStubbing[Future[CacheMap]] = {
-    when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(), any())(any(), any(), any()))
-      .thenReturn(Future.successful(form))
+    when(
+      mockCustomsCacheService
+        .fetchAndGetEntry[Form[T]](any(), any())(any(), any(), any())
+    ).thenReturn(Future.successful(form))
 
-    when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))
-      .thenReturn(Future.successful(CacheMap("id1", Map.empty)))
+    when(
+      mockCustomsCacheService
+        .cache[T](any(), any(), any())(any(), any(), any())
+    ).thenReturn(Future.successful(CacheMap("id1", Map.empty)))
   }
 
   def withCaching[T](dataToReturn: Option[T], id: String): OngoingStubbing[Future[CacheMap]] = {
@@ -164,11 +169,10 @@ trait CustomExportsBaseSpec
         .fetchAndGetEntry[T](any(), ArgumentMatchers.eq(id))(any(), any(), any())
     ).thenReturn(Future.successful(dataToReturn))
 
-    when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))
-      .thenReturn(Future.successful(CacheMap(id, Map.empty)))
+    when(
+      mockCustomsCacheService
+        .cache[T](any(), any(), any())(any(), any(), any())
+    ).thenReturn(Future.successful(CacheMap(id, Map.empty)))
   }
 
-  def withNrsSubmission(): OngoingStubbing[Future[NrsSubmissionResponse]] =
-    when(mockNrsService.submit(any(), any(), any())(any(), any(), any()))
-      .thenReturn(Future.successful(NrsSubmissionResponse("submissionid1")))
 }

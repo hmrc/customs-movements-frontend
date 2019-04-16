@@ -35,17 +35,12 @@ object MultipleItemsHelper {
     * @tparam A - type of case class represents form
     * @return Either which can contain Form with errors or Sequence ready to insert to db
     */
-  def add[A](form: Form[A],
-             cachedData: Seq[A],
-             limit: Int): Either[Form[A], Seq[A]] = form.value match {
+  def add[A](form: Form[A], cachedData: Seq[A], limit: Int): Either[Form[A], Seq[A]] = form.value match {
     case Some(document) => prepareData(form, document, cachedData, limit)
     case _              => Left(form)
   }
 
-  private def prepareData[A](form: Form[A],
-                             document: A,
-                             cachedData: Seq[A],
-                             limit: Int): Either[Form[A], Seq[A]] =
+  private def prepareData[A](form: Form[A], document: A, cachedData: Seq[A], limit: Int): Either[Form[A], Seq[A]] =
     (duplication(document, cachedData) ++ limitOfElems(limit, cachedData)) match {
       case Seq()  => Right(addElement(document, cachedData))
       case errors => Left(form.copy(errors = errors))
@@ -91,9 +86,7 @@ object MultipleItemsHelper {
     * @tparam A - type of case class represents form
     * @return Form with updated errors
     */
-  def continue[A](form: Form[A],
-                  cachedData: Seq[A],
-                  isMandatory: Boolean): Form[A] = {
+  def continue[A](form: Form[A], cachedData: Seq[A], isMandatory: Boolean): Form[A] = {
     val errors = checkInputs(form) ++ checkMandatory(isMandatory, cachedData)
     form.copy(errors = errors)
   }
@@ -102,8 +95,7 @@ object MultipleItemsHelper {
     if (!isFormEmpty(form)) Seq(FormError("", "supplementary.continue.error"))
     else Seq.empty
 
-  private def checkMandatory[A](isMandatory: Boolean,
-                                cachedData: Seq[A]): Seq[FormError] =
+  private def checkMandatory[A](isMandatory: Boolean, cachedData: Seq[A]): Seq[FormError] =
     if (isMandatory && cachedData.isEmpty)
       Seq(FormError("", "supplementary.continue.mandatory"))
     else Seq.empty
@@ -118,10 +110,7 @@ object MultipleItemsHelper {
     * @tparam A - type of case class represents form
     * @return Form with updated errors or Sequence ready to insert to db
     */
-  def saveAndContinue[A](form: Form[A],
-                         cachedData: Seq[A],
-                         isMandatory: Boolean,
-                         limit: Int): Either[Form[A], Seq[A]] =
+  def saveAndContinue[A](form: Form[A], cachedData: Seq[A], isMandatory: Boolean, limit: Int): Either[Form[A], Seq[A]] =
     if (!isFormEmpty(form)) add(form, cachedData, limit)
     else {
       val mandatoryFieldsError = checkMandatory(isMandatory, cachedData)

@@ -33,11 +33,13 @@ import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMov
 
 object ExportsTestData {
 
-  val nrsCredentials = Credentials(providerId = "providerId", providerType = "providerType")
+  val nrsCredentials =
+    Credentials(providerId = "providerId", providerType = "providerType")
   val nrsGroupIdentifierValue = Some("groupIdentifierValue")
   val nrsCredentialRole = Some(User)
   val nrsMdtpInformation = MdtpInformation("deviceId", "sessionId")
-  val nrsItmpName = ItmpName(Some("givenName"), Some("middleName"), Some("familyName"))
+  val nrsItmpName =
+    ItmpName(Some("givenName"), Some("middleName"), Some("familyName"))
   val nrsItmpAddress = ItmpAddress(
     Some("line1"),
     Some("line2"),
@@ -85,7 +87,7 @@ object ExportsTestData {
         Some(LoginTimes(DateTime.now, None))
       )
     )
-  
+
   val wrongJson: JsValue = JsObject(Map("ducr" -> JsString("")))
 
   val correctDucrJson: JsValue = JsObject(Map("ducr" -> JsString("5GB123456789000-123ABC456DEFIIIII")))

@@ -54,7 +54,9 @@ object XmlBehaviours extends PlaySpec {
         .map(res => getClass.getResource(res).toString)
         .map(systemId => new StreamSource(systemId))
         .toArray[Source]
-      SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(sources)
+      SchemaFactory
+        .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+        .newSchema(sources)
     }
     val validator = schema.newValidator()
     validator.validate(new StreamSource(new StringReader(xml)))

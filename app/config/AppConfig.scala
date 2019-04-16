@@ -26,10 +26,8 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 
 @Singleton
-class AppConfig @Inject()(override val runModeConfiguration: Configuration,
-                          val environment: Environment)
-    extends ServicesConfig
-    with AppName {
+class AppConfig @Inject()(override val runModeConfiguration: Configuration, val environment: Environment)
+    extends ServicesConfig with AppName {
 
   override protected def mode: Mode = environment.mode
 
@@ -45,8 +43,7 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration,
   lazy val keyStoreUrl: String = baseUrl("keystore")
   lazy val sessionCacheDomain: String = getConfString(
     "cachable.session-cache.domain",
-    throw new Exception(
-      s"Could not find config 'cachable.session-cache.domain'")
+    throw new Exception(s"Could not find config 'cachable.session-cache.domain'")
   )
 
   lazy val analyticsToken = loadConfig(s"google-analytics.token")
@@ -56,19 +53,16 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration,
   lazy val loginUrl = loadConfig("urls.login")
   lazy val loginContinueUrl = loadConfig("urls.loginContinue")
 
-  lazy val customsDeclareExportsMovements = baseUrl(
-    "customs-declare-exports-movements")
+  lazy val customsDeclareExportsMovements = baseUrl("customs-declare-exports-movements")
 
   lazy val saveMovementSubmission = getConfString(
     "customs-declare-exports-movements.save-movement-uri",
-    throw new IllegalStateException(
-      "Missing configuration for Customs Declarations Exports Movement submission URI")
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports Movement submission URI")
   )
 
   lazy val fetchNotifications = getConfString(
     "customs-declare-exports.fetch-notifications",
-    throw new IllegalStateException(
-      "Missing configuration for Customs Declarations Exports fetch notification URI")
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports fetch notification URI")
   )
 
   lazy val languageTranslationEnabled =
@@ -78,15 +72,12 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration,
 
   lazy val countriesCsvFilename: String = loadConfig("countryCodesCsvFilename")
 
-  lazy val countryCodesJsonFilename: String = loadConfig(
-    "countryCodesJsonFilename")
+  lazy val countryCodesJsonFilename: String = loadConfig("countryCodesJsonFilename")
 
   lazy val nrsServiceUrl: String = baseUrl("nrs")
 
   lazy val nrsApiKey =
-    getConfString(
-      "nrs.apikey",
-      throw new IllegalStateException("Missing configuration for nrs apikey"))
+    getConfString("nrs.apikey", throw new IllegalStateException("Missing configuration for nrs apikey"))
 
   def languageMap: Map[String, Lang] =
     Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))

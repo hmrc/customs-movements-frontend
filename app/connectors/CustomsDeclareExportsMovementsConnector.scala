@@ -29,16 +29,11 @@ import uk.gov.hmrc.wco.dec.MetaData
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CustomsDeclareExportsMovementsConnector @Inject()(
-    appConfig: AppConfig,
-    httpClient: HttpClient) {
+class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
 
-  def submitMovementDeclaration(ducr: String,
-                                mucr: Option[String],
-                                movementType: String,
-                                xmlBody: String)(
-      implicit hc: HeaderCarrier,
-      ec: ExecutionContext
+  def submitMovementDeclaration(ducr: String, mucr: Option[String], movementType: String, xmlBody: String)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
   ): Future[HttpResponse] =
     httpClient
       .POSTString[HttpResponse](
@@ -53,15 +48,13 @@ class CustomsDeclareExportsMovementsConnector @Inject()(
         )
       )
       .map { response =>
-        Logger.debug(
-          s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response is --> ${response.toString}")
+        Logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response is --> ${response.toString}")
         response
       }
 
   def saveMovementSubmission(
-      body: MovementSubmission
-  )(implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[CustomsDeclareExportsMovementsResponse] =
+    body: MovementSubmission
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsMovementsResponse] =
     httpClient
       .POST[MovementSubmission, CustomsDeclareExportsMovementsResponse](
         s"${appConfig.customsDeclareExportsMovements}${appConfig.saveMovementSubmission}",
@@ -69,8 +62,7 @@ class CustomsDeclareExportsMovementsConnector @Inject()(
         Seq()
       )
       .map { response =>
-        Logger.debug(
-          s"CUSTOMS_DECLARE_EXPORTS save movement response is --> ${response.toString}")
+        Logger.debug(s"CUSTOMS_DECLARE_EXPORTS save movement response is --> ${response.toString}")
         response
       }
 

@@ -28,7 +28,7 @@ import views.tags.ViewTest
 class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
   private val form: Form[Choice] = Choice.form()
-  private def createView(form: Form[Choice] = form): Html = choice_page(appConfig, form)
+  private def createView(form: Form[Choice] = form): Html = choice_page(form)
 
   "Choice View" should {
 
@@ -73,7 +73,6 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(departureDec))
     }
 
-
     "display \"Back\" button that links to \"Make an export declaration\" page" in {
 
       val backButton = getElementById(createView(), "link-back")
@@ -110,11 +109,9 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
   "Choice View when filled" should {
 
-
     "display selected 1st radio button - Arrival (EAL)" in {
 
       val view = createView(Choice.form().fill(Choice("EAL")))
-
 
       val optionThree = getElementById(view, "Arrival")
       optionThree.attr("checked") must be("checked")
@@ -143,6 +140,5 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(departureDec))
 
     }
-
   }
 }

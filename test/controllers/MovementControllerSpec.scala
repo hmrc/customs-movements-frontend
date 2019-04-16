@@ -25,8 +25,7 @@ import play.api.test.Helpers._
 
 class MovementControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
-  val ducrUri = uriWithContextPath("/ducr")
-  val goodsDateUri = uriWithContextPath("/goodsDate")
+  val goodsDateUri = uriWithContextPath("/goods-date")
   val locationUri = uriWithContextPath("/location")
   val transportUri = uriWithContextPath("/transport")
 
@@ -35,77 +34,6 @@ class MovementControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
   }
 
   "Movement Controller" when {
-
-    "DUCR screen " should {
-
-      "return http code 200 with success" in {
-
-        withCaching(Some(Choice("EAL")), Choice.choiceId)
-        withCaching(None, Ducr.id)
-
-        val result = route(app, getRequest(ducrUri)).get
-
-        status(result) must be(OK)
-      }
-
-      "display form for arrival" in {
-
-        withCaching(Some(Choice("EAL")), Choice.choiceId)
-        withCaching(None, Ducr.id)
-
-        val result = route(app, getRequest(ducrUri)).get
-        val stringResult = contentAsString(result)
-
-        stringResult must include(messages("movement.ducr"))
-        stringResult must include(messages("movement.ducr.label"))
-      }
-
-      "display form for departure" in {
-
-        withCaching(Some(Choice("EDL")), Choice.choiceId)
-        withCaching(None, Ducr.id)
-
-        val result = route(app, getRequest(ducrUri)).get
-        val stringResult = contentAsString(result)
-
-        stringResult must include(messages("movement.ducr"))
-        stringResult must include(messages("movement.ducr.label"))
-      }
-
-      "validated submitted form for arrival" in {
-        withCaching(None, Ducr.id)
-
-        val emptyForm = JsObject(Map("" -> JsString("")))
-        val result = route(app, postRequest(ducrUri, emptyForm)).get
-        val stringResult = contentAsString(result)
-
-        stringResult must include(messages("error.required"))
-        stringResult must include(messages("movement.ducr"))
-        stringResult must include(messages("movement.ducr.label"))
-      }
-
-      "validated submitted form for departure" in {
-        withCaching(None, Ducr.id)
-
-        val emptyForm = JsObject(Map("" -> JsString("")))
-        val result = route(app, postRequest(ducrUri, emptyForm)).get
-        val stringResult = contentAsString(result)
-
-        stringResult must include(messages("error.required"))
-        stringResult must include(messages("movement.ducr"))
-        stringResult must include(messages("movement.ducr.label"))
-      }
-
-      "redirect to goods date page" in {
-        withCaching(None, Ducr.id)
-
-        val result = route(app, postRequest(ducrUri, correctDucrJson)).get
-        val header = result.futureValue.header
-
-        status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-movements/goodsDate"))
-      }
-    }
 
     "goods date" should {
 
@@ -137,7 +65,8 @@ class MovementControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
       "validate form with minimum values - incorrect values" in {
         withCaching(None, MovementFormsAndIds.goodsDateId)
 
-        val result = route(app, postRequest(goodsDateUri, wrongMinimumGoodsDate)).get
+        val result =
+          route(app, postRequest(goodsDateUri, wrongMinimumGoodsDate)).get
         val stringResult = contentAsString(result)
 
         stringResult must include(messages("movement.date.incorrectDay"))
@@ -150,7 +79,8 @@ class MovementControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
       "validate form with maximum values - incorrect values" in {
         withCaching(None, MovementFormsAndIds.goodsDateId)
 
-        val result = route(app, postRequest(goodsDateUri, wrongMaximumGoodsDate)).get
+        val result =
+          route(app, postRequest(goodsDateUri, wrongMaximumGoodsDate)).get
         val stringResult = contentAsString(result)
 
         stringResult must include(messages("movement.date.incorrectDay"))
@@ -249,7 +179,8 @@ class MovementControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
         withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.transportId)
 
-        val result = route(app, postRequest(transportUri, incorrectTransport)).get
+        val result =
+          route(app, postRequest(transportUri, incorrectTransport)).get
         val stringResult = contentAsString(result)
 
         stringResult must include("Maximum length is 1")

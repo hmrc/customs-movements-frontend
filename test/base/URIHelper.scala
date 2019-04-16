@@ -14,24 +14,10 @@
  * limitations under the License.
  */
 
-package forms
+package base
 
-import play.api.data.Form
-import play.api.data.Forms.{mapping, text}
-import play.api.data.validation.Constraints.pattern
-import play.api.libs.json.Json
+trait URIHelper {
+  val contextPath: String = "/customs-movements"
 
-case class Ducr(ducr: String)
-
-object Ducr {
-  implicit val format = Json.format[Ducr]
-
-  private val ducrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
-
-  val ducrMapping =
-    mapping("ducr" -> text().verifying(pattern(ducrFormat.r, error = "error.ducr")))(Ducr.apply)(Ducr.unapply)
-
-  val id = "DUCR"
-
-  def form(): Form[Ducr] = Form(ducrMapping)
+  def uriWithContextPath(path: String): String = s"$contextPath$path"
 }

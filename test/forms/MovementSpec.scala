@@ -40,7 +40,8 @@ class MovementSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
   "Movements form " should {
     "create MovementRequest for an input cacheMap" in {
-      val result = Movement.createMovementRequest(getMovementCacheMap("id1", "EAL"), "eori1", Choice("EAL"))
+      val result =
+        Movement.createMovementRequest(getMovementCacheMap("id1", "EAL"), "eori1", Choice("EAL"))
       result must be(expected)
     }
   }

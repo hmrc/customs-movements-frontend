@@ -16,7 +16,6 @@
 
 package views
 
-
 import helpers.views.declaration.StartMessages
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -82,7 +81,8 @@ class StartViewSpec extends ViewSpec with StartMessages {
 
     "display \"Export\" description" in {
 
-      getElementByCss(createView(), "article>div>div>p:nth-child(2)").text() must be(messages(description))
+      getElementByCss(createView(), "article>div>div>p:nth-child(2)")
+        .text() must be(messages(description))
     }
 
     "display list header" in {
@@ -94,19 +94,22 @@ class StartViewSpec extends ViewSpec with StartMessages {
 
       "first element" in {
 
-        getElementByCss(createView(), "article>div>div>ul>li:nth-child(1)").text() must be(messages(listItemOne))
+        getElementByCss(createView(), "article>div>div>ul>li:nth-child(1)")
+          .text() must be(messages(listItemOne))
       }
 
       "second element" in {
 
-        getElementByCss(createView(), "article>div>div>ul>li:nth-child(2)").text() must be(
+        getElementByCss(createView(), "article>div>div>ul>li:nth-child(2)")
+          .text() must be(
           messages(listItemTwoPreUrl) + " " + messages(listItemTwoUrl) + " " + messages(listItemTwoPostUrl)
         )
       }
 
       "link in second element to \"EORI\" page" in {
 
-        val link = getElementByCss(createView(), "article>div>div>ul>li:nth-child(2)>a")
+        val link =
+          getElementByCss(createView(), "article>div>div>ul>li:nth-child(2)>a")
 
         link.text() must be(messages(listItemTwoUrl))
         link.attr("href") must be("http://www.gov.uk/eori")
@@ -114,29 +117,32 @@ class StartViewSpec extends ViewSpec with StartMessages {
 
       "third element" in {
 
-        getElementByCss(createView(), "article>div>div>ul>li:nth-child(3)").text() must be(messages(listItemThree))
+        getElementByCss(createView(), "article>div>div>ul>li:nth-child(3)")
+          .text() must be(messages(listItemThree))
       }
 
       "fourth element" in {
 
-        getElementByCss(createView(), "article>div>div>ul>li:nth-child(4)").text() must be(messages(listItemFour))
+        getElementByCss(createView(), "article>div>div>ul>li:nth-child(4)")
+          .text() must be(messages(listItemFour))
       }
 
       "fifth element" in {
 
-        getElementByCss(createView(), "article>div>div>ul>li:nth-child(5)").text() must be(messages(listItemFive))
+        getElementByCss(createView(), "article>div>div>ul>li:nth-child(5)")
+          .text() must be(messages(listItemFive))
       }
 
       "sixth element" in {
 
-        getElementByCss(createView(), "article>div>div>ul>li:nth-child(6)").text() must be(
-          messages(listItemSix) + " " + messages(listItemSixUrl)
-        )
+        getElementByCss(createView(), "article>div>div>ul>li:nth-child(6)")
+          .text() must be(messages(listItemSix) + " " + messages(listItemSixUrl))
       }
 
       "link in sixth element to \"Commodity codes\" page" in {
 
-        val link = getElementByCss(createView(), "article>div>div>ul>li:nth-child(6)>a")
+        val link =
+          getElementByCss(createView(), "article>div>div>ul>li:nth-child(6)>a")
 
         link.text() must be(messages(listItemSixUrl))
         link.attr("href") must be("https://www.gov.uk/trade-tariff")
@@ -144,14 +150,14 @@ class StartViewSpec extends ViewSpec with StartMessages {
 
       "seventh element" in {
 
-        getElementByCss(createView(), "article>div>div>ul>li:nth-child(7)").text() must be(
-          messages(listItemSevenUrl) + " " + messages(listItemSeven)
-        )
+        getElementByCss(createView(), "article>div>div>ul>li:nth-child(7)")
+          .text() must be(messages(listItemSevenUrl) + " " + messages(listItemSeven))
       }
 
       "link in seventh element to\"Customs procedure codes\" page" in {
 
-        val link = getElementByCss(createView(), "article>div>div>ul>li:nth-child(7)>a")
+        val link =
+          getElementByCss(createView(), "article>div>div>ul>li:nth-child(7)>a")
 
         link.text() must be(messages(listItemSevenUrl))
         link.attr("href") must be(
@@ -162,12 +168,14 @@ class StartViewSpec extends ViewSpec with StartMessages {
 
     "display \"Start Now\" button" in {
 
-      getElementByCss(createView(), "article>div>div>p:nth-child(5)>a").text() must be(messages(buttonName))
+      getElementByCss(createView(), "article>div>div>p:nth-child(5)>a")
+        .text() must be(messages(buttonName))
     }
 
     "display message under button" in {
 
-      getElementByCss(createView(), "article>div>div>p:nth-child(6)").text() must be(messages(additionalInformation))
+      getElementByCss(createView(), "article>div>div>p:nth-child(6)")
+        .text() must be(messages(additionalInformation))
     }
 
     "display \"Help and Support\" header" in {
@@ -184,7 +192,8 @@ class StartViewSpec extends ViewSpec with StartMessages {
 
     "display link to \"General Enquires page\"" in {
 
-      val link = getElementByCss(createView(), "article>div>div>div>p:nth-child(3)>a")
+      val link =
+        getElementByCss(createView(), "article>div>div>div>p:nth-child(3)>a")
 
       link.text() must be(messages(enquiries))
       link.attr("href") must be(

@@ -28,18 +28,15 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector)(
-    implicit ec: ExecutionContext)
-    extends AuthAction
-    with AuthorisedFunctions {
+class AuthActionImpl @Inject()(override val authConnector: AuthConnector)(implicit ec: ExecutionContext)
+    extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](
-      request: Request[A],
-      block: (AuthenticatedRequest[A]) => Future[Result]
+    request: Request[A],
+    block: (AuthenticatedRequest[A]) => Future[Result]
   ): Future[Result] = {
     implicit val hc: HeaderCarrier =
-      HeaderCarrierConverter.fromHeadersAndSession(request.headers,
-                                                   Some(request.session))
+      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     authorised(Enrolment("HMRC-CUS-ORG"))
       .retrieve(
@@ -94,8 +91,6 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)(
 }
 
 @ImplementedBy(classOf[AuthActionImpl])
-trait AuthAction
-    extends ActionBuilder[AuthenticatedRequest]
-    with ActionFunction[Request, AuthenticatedRequest]
+trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]
 
 case class NoExternalId() extends NoActiveSession("No externalId was found")

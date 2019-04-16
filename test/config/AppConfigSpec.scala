@@ -188,7 +188,6 @@ class AppConfigSpec extends CustomExportsBaseSpec {
     )
   }
 
-
   "throw an exception when countryCodesJsonFilename is missing" in {
     intercept[Exception](emptyConfigService.countryCodesJsonFilename).getMessage must be(
       "Missing configuration key: countryCodesJsonFilename"
@@ -202,16 +201,11 @@ class AppConfigSpec extends CustomExportsBaseSpec {
   }
 
   "throw an exception when nrs.host is missing" in {
-    intercept[Exception](emptyConfigService.nrsServiceUrl).getMessage must be(
-      "Could not find config nrs.host"
-    )
+    intercept[Exception](emptyConfigService.nrsServiceUrl).getMessage must be("Could not find config nrs.host")
   }
 
   "throw an exception when nrs apikey is missing" in {
-    intercept[Exception](emptyConfigService.nrsApiKey).getMessage must be(
-      "Missing configuration for nrs apikey"
-    )
+    intercept[Exception](emptyConfigService.nrsApiKey).getMessage must be("Missing configuration for nrs apikey")
   }
-
 
 }

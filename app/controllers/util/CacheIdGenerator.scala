@@ -19,18 +19,12 @@ import models.requests.{AuthenticatedRequest, JourneyRequest}
 
 object CacheIdGenerator {
 
-  def eoriCacheId()(implicit request: AuthenticatedRequest[_]): String =
+  def eoriCacheId()(implicit request: JourneyRequest[_]): String =
+    request.authenticatedRequest.user.eori
+
+  def cacheId()(implicit request: AuthenticatedRequest[_]): String =
     request.user.eori
 
-  def goodsItemCacheId()(implicit request: JourneyRequest[_]): String =
-    s"suppl-items-${request.authenticatedRequest.user.eori}"
-
-  def movementCacheId()(implicit request: AuthenticatedRequest[_]): String =
-    s"movement-${request.user.eori}"
-
-  def fullDecCacheId()(implicit request: AuthenticatedRequest[_]): String =
-    s"standard-${request.user.eori}"
-
-  def cacheId()(implicit request: JourneyRequest[_]): String =
-    s"${request.choice.value}-${request.authenticatedRequest.user.eori}"
+  def movementCacheId()(implicit request: JourneyRequest[_]): String =
+    s"movement-${request.authenticatedRequest.user.eori}"
 }

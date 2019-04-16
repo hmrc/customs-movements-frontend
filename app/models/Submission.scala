@@ -19,12 +19,12 @@ package models
 import play.api.libs.json.Json
 
 case class Submission(
-    eori: String,
-    conversationId: String,
-    ducr: String,
-    lrn: Option[String] = None,
-    mrn: Option[String] = None,
-    status: Status
+  eori: String,
+  conversationId: String,
+  ducr: String,
+  lrn: Option[String] = None,
+  mrn: Option[String] = None,
+  status: Status
 )
 
 object Submission {
@@ -32,14 +32,14 @@ object Submission {
 }
 
 case class SubmissionData(
-    eori: String,
-    conversationId: String,
-    ducr: String,
-    mrn: Option[String],
-    lrn: Option[String],
-    submittedTimestamp: Long,
-    status: Status,
-    noOfNotifications: Int
+  eori: String,
+  conversationId: String,
+  ducr: String,
+  mrn: Option[String],
+  lrn: Option[String],
+  submittedTimestamp: Long,
+  status: Status,
+  noOfNotifications: Int
 )
 
 object SubmissionData {

@@ -60,6 +60,7 @@ object CustomsDeclareExportsMovementsConnectorSpec {
   val expectedHeaders: Seq[(String, String)] = Seq.empty
 
   val falseServerError: Boolean = false
-  val movementSubmission = MovementSubmission("eori1", "convid1", "ducr1", None, "EAL")
+  val movementSubmission =
+    MovementSubmission("eori1", "convid1", "ducr1", None, "EAL")
 
 }

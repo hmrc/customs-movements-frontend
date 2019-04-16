@@ -28,7 +28,9 @@ class ErrorHandlerSpec extends CustomExportsBaseSpec {
 
   "ErrorHandlerSpec" should {
     "standardErrorTemplate" in {
-      val result = errorHandler.standardErrorTemplate("Page Title", "Heading", "Message")(FakeRequest()).body
+      val result = errorHandler
+        .standardErrorTemplate("Page Title", "Heading", "Message")(FakeRequest())
+        .body
 
       result must include("Page Title")
       result must include("Heading")
@@ -46,7 +48,8 @@ class ErrorHandlerSpec extends CustomExportsBaseSpec {
     }
 
     "handle insufficient enrolments authorisation exception" in {
-      val res = errorHandler.resolveError(req, new InsufficientEnrolments("HMRC-CUS-ORG"))
+      val res =
+        errorHandler.resolveError(req, new InsufficientEnrolments("HMRC-CUS-ORG"))
       res.header.status must be(Status.SEE_OTHER)
       res.header.headers.get(HeaderNames.LOCATION) must be(Some("/customs-movements/unauthorised"))
     }

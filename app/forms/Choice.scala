@@ -34,11 +34,9 @@ object Choice {
   val choiceMapping: Mapping[Choice] = Forms.single(
     "choice" -> optional(
       text()
-        .verifying("choicePage.input.error.incorrectValue",
-                   isContainedIn(correctChoices))
+        .verifying("choicePage.input.error.incorrectValue", isContainedIn(correctChoices))
     ).verifying("choicePage.input.error.empty", _.isDefined)
-      .transform[Choice](value => Choice(value.getOrElse("")),
-                         choice => Some(choice.value))
+      .transform[Choice](value => Choice(value.getOrElse("")), choice => Some(choice.value))
   )
 
   def form(): Form[Choice] = Form(choiceMapping)

@@ -17,7 +17,7 @@
 package controllers.actions
 
 import com.google.inject.Inject
-import controllers.util.CacheIdGenerator.eoriCacheId
+import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice
 import forms.Choice.choiceId
 import models.requests.{AuthenticatedRequest, JourneyRequest}
@@ -29,18 +29,15 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class JourneyAction @Inject()(customsCacheService: CustomsCacheService)(
-    implicit ec: ExecutionContext)
+case class JourneyAction @Inject()(customsCacheService: CustomsCacheService)(implicit ec: ExecutionContext)
     extends ActionRefiner[AuthenticatedRequest, JourneyRequest] {
 
-  override def refine[A](request: AuthenticatedRequest[A])
-    : Future[Either[Result, JourneyRequest[A]]] = {
+  override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
     implicit val hc: HeaderCarrier =
-      HeaderCarrierConverter.fromHeadersAndSession(request.headers,
-                                                   Some(request.session))
+      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     customsCacheService
-      .fetchAndGetEntry[Choice](eoriCacheId()(request), choiceId)
+      .fetchAndGetEntry[Choice](cacheId()(request), choiceId)
       .map {
         case Some(choice) => Right(JourneyRequest(request, choice))
         case _ =>

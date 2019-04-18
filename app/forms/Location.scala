@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package forms
 
-import base.CustomExportsBaseSpec
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.InsufficientEnrolments
+import play.api.data.{Form, Forms}
+import play.api.data.Forms.{optional, text}
+import play.api.libs.json.Json
+import utils.validators.forms.FieldValidator._
 
-class AuthActionSpec extends CustomExportsBaseSpec {
+case class Location(goodsLocation: Option[String])
 
-  val uri = uriWithContextPath("/choice")
+object Location {
+  implicit val format = Json.format[Location]
 
-  // should we check other missing fields ?
-  "Auth Action" should {
+  val formId = "Location"
 
-    "return InsufficientEnrolments when EORI number is missing" in {
-      userWithoutEori()
+  val mapping = Forms.mapping(
+    "goodsLocation" -> optional(text().verifying("location.error", hasSpecificLength(7) and isAlphanumeric))
+  )(Location.apply)(Location.unapply)
 
-      val result = route(app, FakeRequest("GET", uri)).get
-
-      intercept[InsufficientEnrolments](status(result))
-    }
-  }
+  def form(): Form[Location] = Form(mapping)
 }

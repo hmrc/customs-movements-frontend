@@ -19,8 +19,8 @@ package controllers
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.movementCacheId
-import forms.{Choice, ConsignmentReferences}
-import forms.ConsignmentReferences._
+import forms.Location
+import forms.Location._
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
@@ -28,12 +28,12 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.consignment_references
+import views.html.location
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ConsignmentReferencesController @Inject()(
+class LocationController @Inject()(
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -44,27 +44,20 @@ class ConsignmentReferencesController @Inject()(
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
-      .fetchAndGetEntry[ConsignmentReferences](movementCacheId, formId)
-      .map(data => Ok(consignment_references(data.fold(form)(form.fill(_)))))
+      .fetchAndGetEntry[Location](movementCacheId, formId)
+      .map(data => Ok(location(data.fold(form)(form.fill(_)), request.choice.value)))
   }
 
-  def saveConsignmentReferences(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ConsignmentReferences]) =>
-          Future.successful(BadRequest(consignment_references(formWithErrors))),
+        (formWithErrors: Form[Location]) =>
+          Future.successful(BadRequest(location(formWithErrors, request.choice.value))),
         validForm =>
           customsCacheService
-            .cache[ConsignmentReferences](movementCacheId(), formId, validForm)
-            .map { _ =>
-              request.choice match {
-                case Choice(Choice.AllowedChoiceValues.Arrival) =>
-                  Redirect(controllers.movement.routes.MovementController.displayGoodsDate())
-                case Choice(Choice.AllowedChoiceValues.Departure) =>
-                  Redirect(controllers.routes.LocationController.displayPage())
-              }
-          }
+            .cache[Location](movementCacheId(), formId, validForm)
+            .map(_ => Redirect(controllers.movement.routes.MovementController.displayTransport()))
       )
   }
 }

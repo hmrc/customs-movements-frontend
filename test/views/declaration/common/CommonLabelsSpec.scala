@@ -15,8 +15,7 @@
  */
 
 package views.declaration.common
-
-import helpers.views.declaration.CommonMessages
+import helpers.views.CommonMessages
 import views.declaration.spec.ViewSpec
 import views.tags.ViewTest
 

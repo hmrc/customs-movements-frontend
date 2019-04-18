@@ -47,7 +47,7 @@ trait ViewSpec extends PlaySpec with OneAppPerSuite with ViewValidator {
     messages(key) must be(expected)
 
   def fakeJourneyRequest(choice: String): JourneyRequest[AnyContentAsEmpty.type] =
-    JourneyRequest(AuthenticatedRequest(fakeRequest, ExportsTestData.newUser("", "")), new Choice(choice))
+    JourneyRequest(AuthenticatedRequest(fakeRequest, ExportsTestData.newUser("")), new Choice(choice))
 
   SharedMetricRegistries.clear()
 }

@@ -28,6 +28,13 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
 
   trait SetUp {
     authorizedUser()
+  }
+
+  trait ArrivalSetUp extends SetUp {
+    withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Arrival)))
+  }
+
+  trait DepartureSetUp extends SetUp {
     withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Departure)))
   }
 
@@ -35,7 +42,7 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
 
     "return 200 for get request" when {
 
-      "cache is empty" in new SetUp {
+      "cache is empty" in new ArrivalSetUp {
 
         authorizedUser()
         withCaching(ConsignmentReferences.formId, None)
@@ -45,7 +52,7 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
         status(result) must be(OK)
       }
 
-      "cache contains data" in new SetUp {
+      "cache contains data" in new ArrivalSetUp {
 
         authorizedUser()
         withCaching(ConsignmentReferences.formId, Some(ConsignmentReferences("eori", "Ducr")))
@@ -56,7 +63,7 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
       }
     }
 
-    "return BadRequest for incorrect form" in new SetUp {
+    "return BadRequest for incorrect form" in new ArrivalSetUp {
 
       authorizedUser()
 
@@ -67,16 +74,32 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
       status(result) must be(BAD_REQUEST)
     }
 
-    "return Redirect for correct form" in new SetUp {
+    "redirect to goods date for correct form in arrival journey" in new ArrivalSetUp {
 
       authorizedUser()
       withCaching(ConsignmentReferences.formId)
 
-      val incorrectForm: JsValue = JsObject(Map("eori" -> JsString("eori"), "reference" -> JsString("Ducr")))
+      val correctForm: JsValue = JsObject(Map("eori" -> JsString("eori"), "reference" -> JsString("Ducr")))
 
-      val result = route(app, postRequest(uri, incorrectForm)).get
+      val result = route(app, postRequest(uri, correctForm)).get
+      val headers = result.futureValue.header.headers
 
       status(result) must be(SEE_OTHER)
+      headers.get("Location") must be(Some("/customs-movements/goods-date"))
+    }
+
+    "redirect to location for correct form in departure journey" in new DepartureSetUp {
+
+      authorizedUser()
+      withCaching(ConsignmentReferences.formId)
+
+      val correctForm: JsValue = JsObject(Map("eori" -> JsString("eori"), "reference" -> JsString("Ducr")))
+
+      val result = route(app, postRequest(uri, correctForm)).get
+      val headers = result.futureValue.header.headers
+
+      status(result) must be(SEE_OTHER)
+      headers.get("Location") must be(Some("/customs-movements/location"))
     }
   }
 }

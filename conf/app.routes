@@ -29,9 +29,9 @@ POST        /goods-date                    controllers.movement.MovementControll
 
 # Goods location page
 
-GET         /location                      controllers.movement.MovementController.displayLocation()
+GET         /location                      controllers.LocationController.displayPage()
 
-POST        /location                      controllers.movement.MovementController.saveLocation()
+POST        /location                      controllers.LocationController.saveLocation()
 
 # Transport page
 

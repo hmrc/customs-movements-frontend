@@ -53,24 +53,6 @@ object GoodsDateForm {
   //scalastyle:on magic.number
 }
 
-case class LocationForm(
-  agentLocation: Option[String],
-  agentRole: Option[String],
-  goodsLocation: Option[String],
-  shed: Option[String]
-)
-
-object LocationForm {
-  implicit val format = Json.format[LocationForm]
-
-  val locationMapping = mapping(
-    "agentLocation" -> optional(text()),
-    "agentRole" -> optional(text()),
-    "goodsLocation" -> optional(text()),
-    "shed" -> optional(text())
-  )(LocationForm.apply)(LocationForm.unapply)
-}
-
 case class TransportForm(
   transportId: Option[String],
   transportMode: Option[String],
@@ -92,7 +74,7 @@ object MovementFormsAndIds {
   val goodsDateForm = Form(GoodsDateForm.goodsDateMapping)
   val goodsDateId = "GoodsDate"
 
-  val locationForm = Form(LocationForm.locationMapping)
+  val locationForm = Location.form()
   val locationId = "Location"
 
   val transportForm = Form(TransportForm.transportMapping)
@@ -102,13 +84,14 @@ object MovementFormsAndIds {
 object Movement {
 
   def createMovementRequest(cacheMap: CacheMap, eori: String, choice: Choice): InventoryLinkingMovementRequest = {
-    val ducrForm = cacheMap.getEntry[Ducr](Ducr.id).getOrElse(Ducr(""))
+    val referencesForm =
+      cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.formId).getOrElse(ConsignmentReferences("", ""))
     val goodsDate =
       cacheMap.getEntry[GoodsDateForm](MovementFormsAndIds.goodsDateId)
     val location =
       cacheMap
-        .getEntry[LocationForm](MovementFormsAndIds.locationId)
-        .getOrElse(LocationForm(None, None, None, None))
+        .getEntry[Location](MovementFormsAndIds.locationId)
+        .getOrElse(Location(None))
     val transport =
       cacheMap
         .getEntry[TransportForm](MovementFormsAndIds.transportId)
@@ -121,9 +104,8 @@ object Movement {
               .equals(AllowedChoiceValues.Departure))
           choice.value
         else "",
-      agentDetails =
-        Some(AgentDetails(eori = Some(eori), agentLocation = location.agentLocation, agentRole = location.agentRole)),
-      ucrBlock = UcrBlock(ucr = ducrForm.ducr, ucrType = "D"),
+      agentDetails = Some(AgentDetails(eori = Some(eori), agentLocation = location.goodsLocation)),
+      ucrBlock = UcrBlock(ucr = referencesForm.reference, ucrType = "D"),
       goodsLocation = location.goodsLocation.getOrElse(""),
       goodsArrivalDateTime =
         if (choice.value.equals("EAL") && goodsDate.isDefined)
@@ -133,7 +115,6 @@ object Movement {
         if (choice.value.equals("EDL") && goodsDate.isDefined)
           Some(extractDateTime(goodsDate.getOrElse(GoodsDateForm("", "", "", None, None))))
         else None,
-      shedOPID = location.shed,
       masterUCR = None,
       masterOpt = None,
       movementReference = None,

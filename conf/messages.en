@@ -210,3 +210,8 @@ consignmentReferences.reference.mucr = MUCR
 consignmentReferences.reference.mrn = MRN
 consignmentReferences.reference.empty = Please choose reference
 consignmentReferences.reference.error = Incorrect reference
+
+location.title = Location
+location.question = Where are the goods located?
+location.hint = The 7 digit code of where the goods are located
+location.error = Code must have exactly 7 digits

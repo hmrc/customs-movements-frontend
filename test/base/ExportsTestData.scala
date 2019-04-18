@@ -16,18 +16,15 @@
 
 package base
 
+import forms.Choice
 import forms.Choice._
-import forms.MovementFormsAndIds._
-import forms.{Choice, Ducr, GoodsDateForm}
-import models.{IdentityData, SignedInUser}
+import models.SignedInUser
 import org.joda.time.DateTimeZone.UTC
 import org.joda.time.{DateTime, LocalDate}
 import play.api.libs.json._
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
-import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments, User}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
@@ -60,33 +57,8 @@ object ExportsTestData {
 
   val nrsLoginTimes = LoginTimes(currentLoginTime, Some(previousLoginTime))
 
-  def newUser(eori: String, externalId: String): SignedInUser =
-    SignedInUser(
-      eori,
-      Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori))),
-      IdentityData(
-        Some("Int-ba17b467-90f3-42b6-9570-73be7b78eb2b"),
-        Some(externalId),
-        None,
-        Some(nrsCredentials),
-        Some(L50),
-        None,
-        None,
-        Some(Name(Some("Aldo"), Some("Rain"))),
-        Some(LocalDate.now().minusYears(25)),
-        Some("amina@hmrc.co.uk"),
-        Some(AgentInformation(Some("agentId"), Some("agentCode"), Some("agentFriendlyName"))),
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        Some("crdentialStrength 50"),
-        Some(LoginTimes(DateTime.now, None))
-      )
-    )
+  def newUser(eori: String): SignedInUser =
+    SignedInUser(eori, Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori))))
 
   val wrongJson: JsValue = JsObject(Map("ducr" -> JsString("")))
 
@@ -173,13 +145,4 @@ object ExportsTestData {
 
   val choiceForm = Json.toJson(Choice("EAL"))
 
-  def getMovementCacheMap(id: String, movementType: String): CacheMap = {
-    val data = Map(
-      Ducr.id -> correctDucrJson,
-      goodsDateId -> Json.toJson(GoodsDateForm("01", "02", "2020", None, None)),
-      locationId -> location,
-      transportId -> correctTransport
-    )
-    CacheMap(id, data)
-  }
 }

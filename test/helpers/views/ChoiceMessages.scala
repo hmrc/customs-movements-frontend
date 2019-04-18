@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package helpers.views.declaration
+package helpers.views
 
 trait ChoiceMessages {
 

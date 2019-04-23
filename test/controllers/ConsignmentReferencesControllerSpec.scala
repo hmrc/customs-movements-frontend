@@ -55,7 +55,7 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
       "cache contains data" in new ArrivalSetUp {
 
         authorizedUser()
-        withCaching(ConsignmentReferences.formId, Some(ConsignmentReferences("eori", "Ducr")))
+        withCaching(ConsignmentReferences.formId, Some(ConsignmentReferences("eori", "Ducr", "123456")))
 
         val result = route(app, getRequest(uri)).get
 
@@ -67,7 +67,9 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
 
       authorizedUser()
 
-      val incorrectForm: JsValue = JsObject(Map("eori" -> JsString("eori"), "reference" -> JsString("reference")))
+      val incorrectForm: JsValue = JsObject(
+        Map("eori" -> JsString("eori"), "reference" -> JsString("reference"), "referenceValue" -> JsString(""))
+      )
 
       val result = route(app, postRequest(uri, incorrectForm)).get
 
@@ -79,7 +81,9 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
       authorizedUser()
       withCaching(ConsignmentReferences.formId)
 
-      val correctForm: JsValue = JsObject(Map("eori" -> JsString("eori"), "reference" -> JsString("Ducr")))
+      val correctForm: JsValue = JsObject(
+        Map("eori" -> JsString("eori"), "reference" -> JsString("Ducr"), "referenceValue" -> JsString("123456"))
+      )
 
       val result = route(app, postRequest(uri, correctForm)).get
       val headers = result.futureValue.header.headers
@@ -93,7 +97,9 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
       authorizedUser()
       withCaching(ConsignmentReferences.formId)
 
-      val correctForm: JsValue = JsObject(Map("eori" -> JsString("eori"), "reference" -> JsString("Ducr")))
+      val correctForm: JsValue = JsObject(
+        Map("eori" -> JsString("eori"), "reference" -> JsString("Ducr"), "referenceValue" -> JsString("123456"))
+      )
 
       val result = route(app, postRequest(uri, correctForm)).get
       val headers = result.futureValue.header.headers

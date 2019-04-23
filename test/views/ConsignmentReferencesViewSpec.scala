@@ -39,10 +39,10 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
         "The number starts with a country code, for example, FR for France, and is then followed by up to 15 digits"
       )
       assertMessage(referenceQuestion, "Which reference are you entering to arrive the goods?")
-      assertMessage(referenceHint, "This can be a DUCR, MUCR or MRN")
+      assertMessage(referenceHint, "This can be a DUCR or MUCR")
       assertMessage(referenceDucr, "DUCR")
       assertMessage(referenceMucr, "MUCR")
-      assertMessage(referenceMrn, "MRN")
+      assertMessage(referenceValue, "Enter reference")
     }
 
     "have a proper labels for error messages" in {
@@ -50,6 +50,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       assertMessage(eoriEmpty, "EORI number cannot be empty")
       assertMessage(referenceEmpty, "Please choose reference")
       assertMessage(referenceError, "Incorrect reference")
+      assertMessage(referenceValueEmpty, "Please enter reference")
     }
   }
 
@@ -84,7 +85,11 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
       getElementById(createView(), "Ducr-label").text() must be(messages(referenceDucr))
       getElementById(createView(), "Mucr-label").text() must be(messages(referenceMucr))
-      getElementById(createView(), "Mrn-label").text() must be(messages(referenceMrn))
+    }
+
+    "display reference value text input" in {
+
+      getElementById(createView(), "referenceValue-label").text() must be(messages(referenceValue))
     }
 
     "display \"Back\" buttion that links to start page" in {

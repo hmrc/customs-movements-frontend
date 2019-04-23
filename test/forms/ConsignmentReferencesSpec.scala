@@ -28,13 +28,11 @@ class ConsignmentReferencesSpec extends FormBaseSpec {
 
       allowedReferences must contain(AllowedReferences.Ducr)
       allowedReferences must contain(AllowedReferences.Mucr)
-      allowedReferences must contain(AllowedReferences.Mrn)
     }
 
     "has correct allowed references" in {
       ConsignmentReferences.AllowedReferences.Ducr must be("Ducr")
       ConsignmentReferences.AllowedReferences.Mucr must be("Mucr")
-      ConsignmentReferences.AllowedReferences.Mrn must be("Mrn")
     }
 
     "contains formId" in {
@@ -44,16 +42,17 @@ class ConsignmentReferencesSpec extends FormBaseSpec {
 
   "Consignment References mapping" should {
     "return errors for empty fields" in {
-      val inputData = ConsignmentReferences("", "")
+      val inputData = ConsignmentReferences("", "", "")
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
-      errors.length must be(2)
+      errors.length must be(3)
       errors must contain(FormError("eori", "consignmentReferences.eori.empty"))
       errors must contain(FormError("reference", "consignmentReferences.reference.empty"))
+      errors must contain(FormError("referenceValue", "consignmentReferences.reference.value.empty"))
     }
 
     "return error for incorrect reference" in {
-      val inputData = ConsignmentReferences("eori", "Incorrect reference")
+      val inputData = ConsignmentReferences("eori", "Incorrect reference", "12345")
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
       errors.length must be(1)
@@ -61,7 +60,7 @@ class ConsignmentReferencesSpec extends FormBaseSpec {
     }
 
     "no errors when data is correct" in {
-      val inputData = ConsignmentReferences("eori", "Ducr")
+      val inputData = ConsignmentReferences("eori", "Ducr", "123456")
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
       errors.length must be(0)

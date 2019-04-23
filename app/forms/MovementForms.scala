@@ -85,7 +85,9 @@ object Movement {
 
   def createMovementRequest(cacheMap: CacheMap, eori: String, choice: Choice): InventoryLinkingMovementRequest = {
     val referencesForm =
-      cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.formId).getOrElse(ConsignmentReferences("", ""))
+      cacheMap
+        .getEntry[ConsignmentReferences](ConsignmentReferences.formId)
+        .getOrElse(ConsignmentReferences("", "", ""))
     val goodsDate =
       cacheMap.getEntry[GoodsDateForm](MovementFormsAndIds.goodsDateId)
     val location =

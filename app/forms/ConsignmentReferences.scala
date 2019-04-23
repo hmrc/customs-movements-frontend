@@ -21,7 +21,7 @@ import play.api.data.Forms.text
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class ConsignmentReferences(eori: String, reference: String)
+case class ConsignmentReferences(eori: String, reference: String, referenceValue: String)
 
 object ConsignmentReferences {
   implicit val format = Json.format[ConsignmentReferences]
@@ -31,21 +31,20 @@ object ConsignmentReferences {
   object AllowedReferences {
     val Ducr = "Ducr"
     val Mucr = "Mucr"
-    val Mrn = "Mrn"
   }
 
   import AllowedReferences._
 
-  //TODO Remove AllowedReferences below - after get rid of DUCR model
-  val allowedReferenceAnswers: Seq[String] =
-    Seq(AllowedReferences.Ducr, Mucr, Mrn)
+  val allowedReferenceAnswers: Seq[String] = Seq(Ducr, Mucr)
 
   val mapping = Forms.mapping(
     "eori" -> text()
       .verifying("consignmentReferences.eori.empty", nonEmpty),
     "reference" -> text()
       .verifying("consignmentReferences.reference.empty", nonEmpty)
-      .verifying("consignmentReferences.reference.error", isEmpty or isContainedIn(allowedReferenceAnswers))
+      .verifying("consignmentReferences.reference.error", isEmpty or isContainedIn(allowedReferenceAnswers)),
+    "referenceValue" -> text()
+      .verifying("consignmentReferences.reference.value.empty", nonEmpty)
   )(ConsignmentReferences.apply)(ConsignmentReferences.unapply)
 
   def form(): Form[ConsignmentReferences] = Form(mapping)

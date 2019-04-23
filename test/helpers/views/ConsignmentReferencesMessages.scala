@@ -30,4 +30,6 @@ trait ConsignmentReferencesMessages {
   val referenceMrn = consignmentReferences + ".reference.mrn"
   val referenceEmpty = consignmentReferences + ".reference.empty"
   val referenceError = consignmentReferences + ".reference.error"
+  val referenceValue = consignmentReferences + ".reference.value"
+  val referenceValueEmpty = consignmentReferences + ".reference.value.empty"
 }

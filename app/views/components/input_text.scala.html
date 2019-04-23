@@ -24,13 +24,13 @@
 
 <div class="form-field @if(field.hasErrors){form-field--error}">
     <label class="form-label" for="@{field.id}">
-        <span class="@if(labelClass.nonEmpty){@labelClass}">@label</span>
+        <span id="@{field.id}-label" class="@if(labelClass.nonEmpty){@labelClass}">@label</span>
         @if(hint.nonEmpty){
-        <span class="form-hint">@hint</span>
+            <span id="@{field.id}-hint" class="form-hint">@hint</span>
         }
         @field.errors.map { error =>
-        <span class="error-notification"
-              id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
+            <span class="error-notification"
+                id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
         }
     </label>
     <div class="form-control-wrapper">
@@ -40,7 +40,7 @@
                 id="@{field.id}"
                 name="@{field.name}"
                 value="@{field.value}"
-                @if(field.hasErrors){aria-describedby="error-message-@{field.id}-input" }
+                @if(field.hasErrors){aria-describedby="error-message-@{field.id}-input"}
         />
     </div>
 </div>

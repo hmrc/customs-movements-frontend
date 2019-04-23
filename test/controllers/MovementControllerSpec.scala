@@ -18,7 +18,7 @@ package controllers
 
 import base.CustomExportsBaseSpec
 import base.ExportsTestData._
-import forms.{Choice, Ducr, MovementFormsAndIds}
+import forms.{Choice, MovementFormsAndIds}
 import org.scalatest.BeforeAndAfter
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
@@ -98,57 +98,6 @@ class MovementControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-movements/location"))
-      }
-    }
-
-    "location" should {
-
-      "return http code 200 with success" in {
-
-        withCaching(Some(Choice("EAL")), Choice.choiceId)
-        withCaching(None, MovementFormsAndIds.locationId)
-
-        val result = route(app, getRequest(locationUri)).get
-
-        status(result) must be(OK)
-      }
-
-      "display form" in {
-
-        withCaching(Some(Choice("EAL")), Choice.choiceId)
-        withCaching(None, MovementFormsAndIds.locationId)
-
-        val result = route(app, getRequest(locationUri)).get
-        val stringResult = contentAsString(result)
-
-        stringResult must include(messages("movement.agentLocation"))
-        stringResult must include(messages("movement.agentRole"))
-        stringResult must include(messages("movement.goodsLocation"))
-        stringResult must include(messages("movement.shed"))
-      }
-
-      "redirect to the next page with empty input data" in {
-
-        withCaching(Some(Choice("EAL")), Choice.choiceId)
-        withCaching(None, MovementFormsAndIds.locationId)
-
-        val result = route(app, postRequest(locationUri, emptyLocation)).get
-        val header = result.futureValue.header
-
-        status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-movements/transport"))
-      }
-
-      "redirect to the next page with correct input data" in {
-
-        withCaching(Some(Choice("EAL")), Choice.choiceId)
-        withCaching(None, MovementFormsAndIds.locationId)
-
-        val result = route(app, postRequest(locationUri, location)).get
-        val header = result.futureValue.header
-
-        status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-movements/transport"))
       }
     }
 

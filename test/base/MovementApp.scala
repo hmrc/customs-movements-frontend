@@ -75,10 +75,7 @@ trait MovementApp
     uri: String,
     headers: Map[String, String] = Map.empty
   ): FakeRequest[AnyContentAsEmpty.type] = {
-    val session: Map[String, String] = Map(
-      SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
-      SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
-    )
+    val session: Map[String, String] = Map(SessionKeys.sessionId -> s"session-${UUID.randomUUID()}")
     val tags =
       Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
     FakeRequest("GET", uri)
@@ -92,10 +89,7 @@ trait MovementApp
     body: JsValue,
     headers: Map[String, String] = Map.empty
   ): FakeRequest[AnyContentAsJson] = {
-    val session: Map[String, String] = Map(
-      SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
-      SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
-    )
+    val session: Map[String, String] = Map(SessionKeys.sessionId -> s"session-${UUID.randomUUID()}")
     val tags =
       Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
     FakeRequest("POST", uri)

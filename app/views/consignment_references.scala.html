@@ -28,7 +28,9 @@
     appConfig = appConfig
 ) {
     @helpers.form(ConsignmentReferencesController.saveConsignmentReferences(), 'autoComplete -> "off") {
-        @components.back_link("/customs-declare-exports/choice")
+        @components.back_link("/customs-movements/choice")
+
+        @components.error_summary(form.errors)
 
         @components.page_title(Some("consignmentReferences.title"))
 
@@ -45,11 +47,19 @@
             hint = Some(messages("consignmentReferences.reference.hint")),
             inputs = Seq(
               RadioOption("Ducr", Ducr, "consignmentReferences.reference.ducr"),
-              RadioOption("Mucr", Mucr, "consignmentReferences.reference.mucr"),
-              RadioOption("Mrn", Mrn, "consignmentReferences.reference.mrn")
+              RadioOption("Mucr", Mucr, "consignmentReferences.reference.mucr")
             )
+        )
+
+        @components.input_text(
+            field = form("referenceValue"),
+            label = messages("consignmentReferences.reference.value"),
+            labelClass = Some("bold-small")
         )
 
         @components.submit_button()
     }
+
+
+
 }

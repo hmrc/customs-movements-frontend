@@ -80,61 +80,8 @@ class MovementController @Inject()(
               .cache[GoodsDateForm](movementCacheId, goodsDateId, form)
               .map { _ =>
                 Redirect(
-                  controllers.movement.routes.MovementController
-                    .displayLocation()
-                )
-            }
-        )
-    }
-
-  def displayLocation(): Action[AnyContent] =
-    (authenticate andThen journeyType).async { implicit request =>
-      customsCacheService
-        .fetchAndGetEntry[Choice](eoriCacheId, Choice.choiceId)
-        .flatMap {
-          case Some(choice) if !choice.value.isEmpty =>
-            customsCacheService
-              .fetchAndGetEntry[LocationForm](movementCacheId, locationId)
-              .map {
-                case Some(data) =>
-                  Ok(goods_location(appConfig, locationForm.fill(data), choice.value))
-                case _ =>
-                  Ok(goods_location(appConfig, locationForm, choice.value))
-              }
-          case _ =>
-            Future.successful(
-              BadRequest(
-                errorHandler.standardErrorTemplate(
-                  pageTitle = messagesApi("global.error.title"),
-                  heading = messagesApi("global.error.heading"),
-                  message = messagesApi("global.error.message")
-                )
-              )
-            )
-        }
-    }
-
-  def saveLocation(): Action[AnyContent] =
-    (authenticate andThen journeyType).async { implicit request =>
-      locationForm
-        .bindFromRequest()
-        .fold(
-          (formWithErrors: Form[LocationForm]) =>
-            customsCacheService
-              .fetchAndGetEntry[Choice](eoriCacheId, Choice.choiceId)
-              .map {
-                case Some(choice) =>
-                  BadRequest(goods_location(appConfig, formWithErrors, choice.value))
-                case _ =>
-                  BadRequest(goods_location(appConfig, formWithErrors, "error"))
-            },
-          form =>
-            customsCacheService
-              .cache[LocationForm](movementCacheId, locationId, form)
-              .map { _ =>
-                Redirect(
-                  controllers.movement.routes.MovementController
-                    .displayTransport()
+                  controllers.routes.LocationController
+                    .displayPage()
                 )
             }
         )

@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package utils
+import org.scalatest.{MustMatchers, WordSpec}
 
-import base.CustomExportsBaseSpec
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.InsufficientEnrolments
+class RadioOptionSpec extends WordSpec with MustMatchers {
 
-class AuthActionSpec extends CustomExportsBaseSpec {
+  "Radio Option apply" should {
+    "create a correct RadioOption object" in {
+      val keyPrefix = "KeyPrefix"
+      val option = "Option"
 
-  val uri = uriWithContextPath("/choice")
+      val expectedResult = RadioOption(s"$keyPrefix.$option", option, s"$keyPrefix.$option")
 
-  // should we check other missing fields ?
-  "Auth Action" should {
-
-    "return InsufficientEnrolments when EORI number is missing" in {
-      userWithoutEori()
-
-      val result = route(app, FakeRequest("GET", uri)).get
-
-      intercept[InsufficientEnrolments](status(result))
+      RadioOption.apply(keyPrefix, option) must be(expectedResult)
     }
   }
 }

@@ -204,9 +204,15 @@ consignmentReferences.eori.question = What is your EORI number?
 consignmentReferences.eori.hint = The number starts with a country code, for example, FR for France, and is then followed by up to 15 digits
 consignmentReferences.eori.empty = EORI number cannot be empty
 consignmentReferences.reference.question = Which reference are you entering to arrive the goods?
-consignmentReferences.reference.hint = This can be a DUCR, MUCR or MRN
+consignmentReferences.reference.hint = This can be a DUCR or MUCR
 consignmentReferences.reference.ducr = DUCR
 consignmentReferences.reference.mucr = MUCR
-consignmentReferences.reference.mrn = MRN
 consignmentReferences.reference.empty = Please choose reference
 consignmentReferences.reference.error = Incorrect reference
+consignmentReferences.reference.value = Enter reference
+consignmentReferences.reference.value.empty = Please enter reference
+
+location.title = Location
+location.question = Where are the goods located?
+location.hint = The 7 digit code of where the goods are located
+location.error = Code must have exactly 7 digits

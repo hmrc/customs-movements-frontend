@@ -17,7 +17,8 @@
 package views
 
 import forms.Choice
-import helpers.views.declaration.{ChoiceMessages, CommonMessages}
+import helpers.views.{ChoiceMessages, CommonMessages}
+import helpers.views.ChoiceMessages
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec

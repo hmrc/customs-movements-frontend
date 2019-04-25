@@ -15,30 +15,37 @@
  *@
 
 @import config.AppConfig
-@import controllers.movement.routes._
+@import controllers.routes._
 @import uk.gov.hmrc.play.views.html._
+@import forms.ArrivalDetails
 
-@(appConfig: AppConfig, form: Form[_], movementType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[ArrivalDetails])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages(s"movement.${movementType}"),
+    title = messages("arrivalDetails.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(MovementController.saveGoodsDate, 'autoComplete -> "off") {
+    @helpers.form(MovementDetailsController.saveMovementDetails(), 'autoComplete -> "off") {
         @components.back_link("/customs-movements/consignment-references")
 
         @components.error_summary(form.errors)
 
-        @components.heading("", s"${messages("movement.choice." + movementType + ".heading")} goods")
+        @components.page_title(Some("arrivalDetails.header"))
 
-        Cali-Soul Crafts - 8GB123456123456 163278
+        @components.input_date(
+            field = form("dateOfArrival"),
+            form = form,
+            label = messages("arrivalDetails.date.question"),
+            hint = Some(messages("arrivalDetails.date.hint"))
+        )
 
-        @components.date_and_time(
-            name = movementType,
-            form = form
+        @components.input_time(
+            field = form("timeOfArrival"),
+            form = form,
+            label = messages("arrivalDetails.time.question"),
+            hint = Some(messages("arrivalDetails.time.hint"))
         )
 
         @components.submit_button()
     }
-
 }

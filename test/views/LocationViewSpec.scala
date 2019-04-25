@@ -64,7 +64,7 @@ class LocationViewSpec extends ViewSpec with LocationMessages with CommonMessage
       val backButton = getElementById(createArrivalView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-movements/goods-date")
+      backButton.attr("href") must be("/customs-movements/movement-details")
     }
 
     "display \"Back\" button that links to Consignment References for departure" in {
@@ -77,9 +77,8 @@ class LocationViewSpec extends ViewSpec with LocationMessages with CommonMessage
 
     "display \"Save and continue\" button on page" in {
 
-      val view = createArrivalView()
+      val saveButton = getElementById(createArrivalView(), "submit")
 
-      val saveButton = getElementById(view, "submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
     }
   }

@@ -21,11 +21,11 @@ GET         /consignment-references        controllers.ConsignmentReferencesCont
 
 POST        /consignment-references        controllers.ConsignmentReferencesController.saveConsignmentReferences()
 
-# Goods date page
+# Movement details page
 
-GET         /goods-date                    controllers.movement.MovementController.displayGoodsDate()
+GET         /movement-details              controllers.MovementDetailsController.displayPage()
 
-POST        /goods-date                    controllers.movement.MovementController.saveGoodsDate()
+POST        /movement-details              controllers.MovementDetailsController.saveMovementDetails()
 
 # Goods location page
 

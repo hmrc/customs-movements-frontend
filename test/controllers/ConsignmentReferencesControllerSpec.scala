@@ -44,7 +44,6 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
 
       "cache is empty" in new ArrivalSetUp {
 
-        authorizedUser()
         withCaching(ConsignmentReferences.formId, None)
 
         val result = route(app, getRequest(uri)).get
@@ -54,7 +53,6 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
 
       "cache contains data" in new ArrivalSetUp {
 
-        authorizedUser()
         withCaching(ConsignmentReferences.formId, Some(ConsignmentReferences("eori", "Ducr", "123456")))
 
         val result = route(app, getRequest(uri)).get
@@ -64,8 +62,6 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
     }
 
     "return BadRequest for incorrect form" in new ArrivalSetUp {
-
-      authorizedUser()
 
       val incorrectForm: JsValue = JsObject(
         Map("eori" -> JsString("eori"), "reference" -> JsString("reference"), "referenceValue" -> JsString(""))
@@ -78,7 +74,6 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
 
     "redirect to goods date for correct form in arrival journey" in new ArrivalSetUp {
 
-      authorizedUser()
       withCaching(ConsignmentReferences.formId)
 
       val correctForm: JsValue = JsObject(
@@ -89,12 +84,11 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
       val headers = result.futureValue.header.headers
 
       status(result) must be(SEE_OTHER)
-      headers.get("Location") must be(Some("/customs-movements/goods-date"))
+      headers.get("Location") must be(Some("/customs-movements/movement-details"))
     }
 
     "redirect to location for correct form in departure journey" in new DepartureSetUp {
 
-      authorizedUser()
       withCaching(ConsignmentReferences.formId)
 
       val correctForm: JsValue = JsObject(

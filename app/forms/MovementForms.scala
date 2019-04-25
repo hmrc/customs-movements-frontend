@@ -16,8 +16,6 @@
 
 package forms
 
-import java.time.LocalDateTime
-
 import forms.Choice.AllowedChoiceValues
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, text}
@@ -25,33 +23,6 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
-
-case class GoodsDateForm(day: String, month: String, year: String, hour: Option[String], minute: Option[String])
-
-object GoodsDateForm {
-  implicit val format = Json.format[GoodsDateForm]
-
-  val days = (1 to 31).toList.map(_.toString)
-  val months = (1 to 12).toList.map(_.toString)
-  val hours = (0 to 23).toList.map(_.toString)
-  val minutes = (0 to 59).toList.map(_.toString)
-
-  //scalastyle:off magic.number
-  val goodsDateMapping = mapping(
-    "day" -> text().verifying("Day is incorrect", days.contains(_)),
-    "month" -> text().verifying("Month is incorrect", months.contains(_)),
-    "year" -> text()
-      .verifying(
-        "Year is incorrect",
-        year =>
-          if (year.isEmpty) false
-          else year.toInt >= LocalDateTime.now().getYear
-      ),
-    "hour" -> optional(text().verifying("Hour is incorrect", hours.contains(_))),
-    "minute" -> optional(text().verifying("Minutes are incorrect", minutes.contains(_)))
-  )(GoodsDateForm.apply)(GoodsDateForm.unapply)
-  //scalastyle:on magic.number
-}
 
 case class TransportForm(
   transportId: Option[String],
@@ -71,8 +42,6 @@ object TransportForm {
 }
 
 object MovementFormsAndIds {
-  val goodsDateForm = Form(GoodsDateForm.goodsDateMapping)
-  val goodsDateId = "GoodsDate"
 
   val locationForm = Location.form()
   val locationId = "Location"
@@ -88,8 +57,8 @@ object Movement {
       cacheMap
         .getEntry[ConsignmentReferences](ConsignmentReferences.formId)
         .getOrElse(ConsignmentReferences("", "", ""))
-    val goodsDate =
-      cacheMap.getEntry[GoodsDateForm](MovementFormsAndIds.goodsDateId)
+    val departureDetails =
+      cacheMap.getEntry[DepartureDetails](MovementDetails.formId)
     val location =
       cacheMap
         .getEntry[Location](MovementFormsAndIds.locationId)
@@ -110,12 +79,12 @@ object Movement {
       ucrBlock = UcrBlock(ucr = referencesForm.reference, ucrType = "D"),
       goodsLocation = location.goodsLocation.getOrElse(""),
       goodsArrivalDateTime =
-        if (choice.value.equals("EAL") && goodsDate.isDefined)
-          Some(extractDateTime(goodsDate.getOrElse(GoodsDateForm("", "", "", None, None))))
+        if (choice.value.equals("EAL") && departureDetails.isDefined)
+          Some(departureDetails.toString)
         else None,
       goodsDepartureDateTime =
-        if (choice.value.equals("EDL") && goodsDate.isDefined)
-          Some(extractDateTime(goodsDate.getOrElse(GoodsDateForm("", "", "", None, None))))
+        if (choice.value.equals("EDL") && departureDetails.isDefined)
+          Some(departureDetails.toString)
         else None,
       masterUCR = None,
       masterOpt = None,
@@ -129,16 +98,4 @@ object Movement {
       )
     )
   }
-
-  private def extractDateTime(form: GoodsDateForm): String =
-    LocalDateTime
-      .of(
-        form.year.toInt,
-        form.month.toInt,
-        form.day.toInt,
-        form.hour.getOrElse("00").toInt,
-        form.minute.getOrElse("00").toInt
-      )
-      .toString + ":00"
-
 }

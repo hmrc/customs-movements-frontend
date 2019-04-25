@@ -42,51 +42,6 @@ class MovementController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  def displayGoodsDate(): Action[AnyContent] =
-    (authenticate andThen journeyType).async { implicit request =>
-      customsCacheService
-        .fetchAndGetEntry[Choice](eoriCacheId, Choice.choiceId)
-        .flatMap {
-          case Some(choice) if !choice.value.isEmpty =>
-            customsCacheService
-              .fetchAndGetEntry[GoodsDateForm](movementCacheId, goodsDateId)
-              .map {
-                case Some(data) =>
-                  Ok(goods_date(appConfig, goodsDateForm.fill(data), choice.value))
-                case _ => Ok(goods_date(appConfig, goodsDateForm, choice.value))
-              }
-          case _ =>
-            Future.successful(
-              BadRequest(
-                errorHandler.standardErrorTemplate(
-                  pageTitle = messagesApi("global.error.title"),
-                  heading = messagesApi("global.error.heading"),
-                  message = messagesApi("global.error.message")
-                )
-              )
-            )
-        }
-    }
-
-  def saveGoodsDate(): Action[AnyContent] =
-    (authenticate andThen journeyType).async { implicit request =>
-      goodsDateForm
-        .bindFromRequest()
-        .fold(
-          (formWithErrors: Form[GoodsDateForm]) =>
-            Future.successful(BadRequest(goods_date(appConfig, formWithErrors, "error"))),
-          form =>
-            customsCacheService
-              .cache[GoodsDateForm](movementCacheId, goodsDateId, form)
-              .map { _ =>
-                Redirect(
-                  controllers.routes.LocationController
-                    .displayPage()
-                )
-            }
-        )
-    }
-
   def displayTransport(): Action[AnyContent] =
     (authenticate andThen journeyType).async { implicit request =>
       customsCacheService

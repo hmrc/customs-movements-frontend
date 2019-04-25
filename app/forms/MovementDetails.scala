@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.util
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+package forms
 
-object CacheIdGenerator {
+import play.api.data.Form
 
-  def eoriCacheId()(implicit request: JourneyRequest[_]): String =
-    request.authenticatedRequest.user.eori
+object MovementDetails {
 
-  def cacheId()(implicit request: AuthenticatedRequest[_]): String =
-    request.user.eori
+  val formId = "MovementDetails"
 
-  def movementCacheId()(implicit request: JourneyRequest[_]): String =
-    s"${request.choice.value}-${request.authenticatedRequest.user.eori}"
+  def arrivalForm(): Form[ArrivalDetails] = Form(ArrivalDetails.mapping)
+
+  def departureForm(): Form[DepartureDetails] = Form(DepartureDetails.mapping)
 }

@@ -25,7 +25,6 @@ import play.api.test.Helpers._
 
 class MovementControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
-  val goodsDateUri = uriWithContextPath("/goods-date")
   val locationUri = uriWithContextPath("/location")
   val transportUri = uriWithContextPath("/transport")
 
@@ -34,72 +33,6 @@ class MovementControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
   }
 
   "Movement Controller" when {
-
-    "goods date" should {
-
-      "return http code 200 with success" in {
-
-        withCaching(Some(Choice("EAL")), Choice.choiceId)
-        withCaching(None, MovementFormsAndIds.goodsDateId)
-
-        val result = route(app, getRequest(goodsDateUri)).get
-
-        status(result) must be(OK)
-      }
-
-      "display form" in {
-
-        withCaching(Some(Choice("EAL")), Choice.choiceId)
-        withCaching(None, MovementFormsAndIds.goodsDateId)
-
-        val result = route(app, getRequest(goodsDateUri)).get
-        val stringResult = contentAsString(result)
-
-        stringResult must include(messages("movement.date.day"))
-        stringResult must include(messages("movement.date.month"))
-        stringResult must include(messages("movement.date.year"))
-        stringResult must include(messages("movement.date.hour"))
-        stringResult must include(messages("movement.date.minute"))
-      }
-
-      "validate form with minimum values - incorrect values" in {
-        withCaching(None, MovementFormsAndIds.goodsDateId)
-
-        val result =
-          route(app, postRequest(goodsDateUri, wrongMinimumGoodsDate)).get
-        val stringResult = contentAsString(result)
-
-        stringResult must include(messages("movement.date.incorrectDay"))
-        stringResult must include(messages("movement.date.incorrectMonth"))
-        stringResult must include(messages("movement.date.incorrectYear"))
-        stringResult must include(messages("movement.date.incorrectHour"))
-        stringResult must include(messages("movement.date.incorrectMinutes"))
-      }
-
-      "validate form with maximum values - incorrect values" in {
-        withCaching(None, MovementFormsAndIds.goodsDateId)
-
-        val result =
-          route(app, postRequest(goodsDateUri, wrongMaximumGoodsDate)).get
-        val stringResult = contentAsString(result)
-
-        stringResult must include(messages("movement.date.incorrectDay"))
-        stringResult must include(messages("movement.date.incorrectMonth"))
-        stringResult must include(messages("movement.date.incorrectHour"))
-        stringResult must include(messages("movement.date.incorrectMinutes"))
-      }
-
-      "redirect to the next page" in {
-
-        withCaching(None, MovementFormsAndIds.goodsDateId)
-
-        val result = route(app, postRequest(goodsDateUri, goodsDate)).get
-        val header = result.futureValue.header
-
-        status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-movements/location"))
-      }
-    }
 
     "transport" should {
 

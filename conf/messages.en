@@ -59,6 +59,19 @@ general.inquiries.help.link = General enquires help
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
+dateTime.date.error.format = Date format is incorrect
+dateTime.date.error.outOfRange = Date is out of allowed range (2000-01-01 to 2099-12-31)
+dateTime.date.day.empty = Day cannot be empty
+dateTime.date.day.error = Day is incorrect
+dateTime.date.month.empty = Month cannot be empty
+dateTime.date.month.error = Month is incorrect
+dateTime.date.year.empty = Year cannot be empty
+dateTime.date.year.error = Year is incorrect
+dateTime.time.hour.empty = Hour cannot be empty
+dateTime.time.hour.error = Hour is incorrect
+dateTime.time.minute.empty = Minute cannot be empty
+dateTime.time.minute.error = Minute is incorrect
+
 address.fullName = Full name
 address.buildingAndStreet = Building and street
 address.city = Town or city
@@ -211,6 +224,18 @@ consignmentReferences.reference.empty = Please choose reference
 consignmentReferences.reference.error = Incorrect reference
 consignmentReferences.reference.value = Enter reference
 consignmentReferences.reference.value.empty = Please enter reference
+
+arrivalDetails.title = Arrival time and date
+arrivalDetails.header = Enter date and time of arrival
+arrivalDetails.date.question = Date of Arrival
+arrivalDetails.date.hint = For example, 01 08 2007
+arrivalDetails.time.question = Time of arrival
+arrivalDetails.time.hint = Enter the time in 24 hour format. For example, 13 30
+
+departureDetails.title = Departure time and date
+departureDetails.header = Enter departure details
+departureDetails.question = Date of departure
+departureDetails.hint = For example, 01 08 2007
 
 location.title = Location
 location.question = Where are the goods located?

@@ -17,31 +17,26 @@
 @import config.AppConfig
 @import controllers.routes._
 @import uk.gov.hmrc.play.views.html._
-@import forms.Location
+@import forms.DepartureDetails
 
-@(form: Form[Location], choice: String)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+@(form: Form[DepartureDetails])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("location.title"),
+    title = messages("departureDetails.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(LocationController.saveLocation(), 'autoComplete -> "off") {
-
-        @if(choice == "EAL") {
-            @components.back_link("/customs-movements/movement-details")
-        } else {
-            @components.back_link("/customs-movements/consignment-references")
-        }
+    @helpers.form(MovementDetailsController.saveMovementDetails(), 'autoComplete -> "off") {
+        @components.back_link("/customs-movements/goods-departed")
 
         @components.error_summary(form.errors)
 
-        @components.page_title(Some("location.title"))
+        @components.page_title(Some("departureDetails.header"))
 
-        @components.input_text(
-            field = form("goodsLocation"),
-            label = messages("location.question"),
-            hint = Some(messages("location.hint")),
-            labelClass = Some("heading-24")
+        @components.input_date(
+            field = form("dateOfDeparture"),
+            form = form,
+            label = messages("departureDetails.question"),
+            hint = Some(messages("departureDetails.hint"))
         )
 
         @components.submit_button()

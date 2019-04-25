@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package controllers.util
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+package forms
 
-object CacheIdGenerator {
+import base.FormBaseSpec
 
-  def eoriCacheId()(implicit request: JourneyRequest[_]): String =
-    request.authenticatedRequest.user.eori
+class MovementDetailsSpec extends FormBaseSpec {
 
-  def cacheId()(implicit request: AuthenticatedRequest[_]): String =
-    request.user.eori
+  "Movement Details object" should {
 
-  def movementCacheId()(implicit request: JourneyRequest[_]): String =
-    s"${request.choice.value}-${request.authenticatedRequest.user.eori}"
+    "contain correct formId" in {
+
+      MovementDetails.formId must be("MovementDetails")
+    }
+  }
 }

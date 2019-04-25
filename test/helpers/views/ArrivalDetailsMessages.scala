@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package controllers.util
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+package helpers.views
 
-object CacheIdGenerator {
+trait ArrivalDetailsMessages {
 
-  def eoriCacheId()(implicit request: JourneyRequest[_]): String =
-    request.authenticatedRequest.user.eori
-
-  def cacheId()(implicit request: AuthenticatedRequest[_]): String =
-    request.user.eori
-
-  def movementCacheId()(implicit request: JourneyRequest[_]): String =
-    s"${request.choice.value}-${request.authenticatedRequest.user.eori}"
+  val arrivalDetails = "arrivalDetails"
+  val arrivalTitle = arrivalDetails + ".title"
+  val arrivalHeader = arrivalDetails + ".header"
+  val arrivalDateQuestion = arrivalDetails + ".date.question"
+  val arrivalDateHint = arrivalDetails + ".date.hint"
+  val arrivalTimeQuestion = arrivalDetails + ".time.question"
+  val arrivalTimeHint = arrivalDetails + ".time.hint"
 }

@@ -22,48 +22,61 @@ import play.api.data.FormError
 class LocationSpec extends FormBaseSpec {
 
   "Location model" should {
+
     "has correct formId value" in {
+
       Location.formId must be("Location")
     }
   }
 
   "Location mapping" should {
-    "return error when location is too short" in {
-      val inputData = Location(Some("1234"))
-      val errors = Location.form().fillAndValidate(inputData).errors
 
-      errors.length must be(1)
-      errors.head must be(FormError("goodsLocation", "location.error"))
+    "return error" when {
+
+      "location is too short" in {
+
+        val inputData = Location(Some("1234"))
+        val errors = Location.form().fillAndValidate(inputData).errors
+
+        errors.length must be(1)
+        errors.head must be(FormError("goodsLocation", "location.error"))
+      }
+
+      "location is too long" in {
+
+        val inputData = Location(Some("1234"))
+        val errors = Location.form().fillAndValidate(inputData).errors
+
+        errors.length must be(1)
+        errors.head must be(FormError("goodsLocation", "location.error"))
+      }
+
+      "location contains special characters" in {
+
+        val inputData = Location(Some("1234"))
+        val errors = Location.form().fillAndValidate(inputData).errors
+
+        errors.length must be(1)
+        errors.head must be(FormError("goodsLocation", "location.error"))
+      }
     }
 
-    "return error when location is too long" in {
-      val inputData = Location(Some("1234"))
-      val errors = Location.form().fillAndValidate(inputData).errors
+    "return no errors" when {
+      "field is empty" in {
 
-      errors.length must be(1)
-      errors.head must be(FormError("goodsLocation", "location.error"))
-    }
+        val inputData = Location(None)
+        val errors = Location.form().fillAndValidate(inputData).errors
 
-    "return error when location contains special characters" in {
-      val inputData = Location(Some("1234"))
-      val errors = Location.form().fillAndValidate(inputData).errors
+        errors.length must be(0)
+      }
 
-      errors.length must be(1)
-      errors.head must be(FormError("goodsLocation", "location.error"))
-    }
+      "value is correct" in {
 
-    "return no errors when field is empty" in {
-      val inputData = Location(None)
-      val errors = Location.form().fillAndValidate(inputData).errors
+        val inputData = Location(Some("1234abc"))
+        val errors = Location.form().fillAndValidate(inputData).errors
 
-      errors.length must be(0)
-    }
-
-    "return no errors when value is correct" in {
-      val inputData = Location(Some("1234abc"))
-      val errors = Location.form().fillAndValidate(inputData).errors
-
-      errors.length must be(0)
+        errors.length must be(0)
+      }
     }
   }
 }

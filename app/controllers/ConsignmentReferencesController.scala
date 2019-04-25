@@ -19,8 +19,8 @@ package controllers
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.movementCacheId
-import forms.{Choice, ConsignmentReferences}
 import forms.ConsignmentReferences._
+import forms.{Choice, ConsignmentReferences}
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
@@ -60,7 +60,7 @@ class ConsignmentReferencesController @Inject()(
             .map { _ =>
               request.choice match {
                 case Choice(Choice.AllowedChoiceValues.Arrival) =>
-                  Redirect(controllers.movement.routes.MovementController.displayGoodsDate())
+                  Redirect(controllers.routes.MovementDetailsController.displayPage())
                 case Choice(Choice.AllowedChoiceValues.Departure) =>
                   Redirect(controllers.routes.LocationController.displayPage())
               }

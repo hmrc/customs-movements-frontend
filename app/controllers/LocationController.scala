@@ -19,7 +19,7 @@ package controllers
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.movementCacheId
-import forms.Location
+import forms.{Choice, Location}
 import forms.Location._
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
@@ -57,7 +57,14 @@ class LocationController @Inject()(
         validForm =>
           customsCacheService
             .cache[Location](movementCacheId(), formId, validForm)
-            .map(_ => Redirect(controllers.movement.routes.MovementController.displayTransport()))
+            .map { _ =>
+              request.choice match {
+                case Choice(Choice.AllowedChoiceValues.Arrival) =>
+                  Redirect(controllers.movement.routes.MovementController.displayTransport())
+                case Choice(Choice.AllowedChoiceValues.Departure) =>
+                  Redirect(controllers.routes.GoodsDepartedController.displayPage())
+              }
+            }
       )
   }
 }

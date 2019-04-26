@@ -19,8 +19,8 @@ package controllers
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.movementCacheId
-import forms.{Choice, Location}
-import forms.Location._
+import forms.{Choice, GoodsDeparted}
+import forms.GoodsDeparted._
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
@@ -28,12 +28,12 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.location
+import views.html.goods_departed
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class LocationController @Inject()(
+class GoodsDepartedController @Inject()(
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -43,28 +43,24 @@ class LocationController @Inject()(
     extends FrontendController with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[Location](movementCacheId, formId)
-      .map(data => Ok(location(data.fold(form)(form.fill(_)), request.choice.value)))
+    request.choice.value match {
+      case Choice.AllowedChoiceValues.Departure =>
+        customsCacheService
+          .fetchAndGetEntry[GoodsDeparted](movementCacheId, formId)
+          .map(data => Ok(goods_departed(data.fold(form)(form.fill(_)))))
+      case _ => errorHandler.displayErrorPage()
+    }
   }
 
-  def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveGoodsDeparted(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Location]) =>
-          Future.successful(BadRequest(location(formWithErrors, request.choice.value))),
+        (formWithErrors: Form[GoodsDeparted]) => Future.successful(BadRequest(goods_departed(formWithErrors))),
         validForm =>
-          customsCacheService
-            .cache[Location](movementCacheId(), formId, validForm)
-            .map { _ =>
-              request.choice match {
-                case Choice(Choice.AllowedChoiceValues.Arrival) =>
-                  Redirect(controllers.routes.TransportController.displayPage())
-                case Choice(Choice.AllowedChoiceValues.Departure) =>
-                  Redirect(controllers.routes.GoodsDepartedController.displayPage())
-              }
-            }
+          customsCacheService.cache[GoodsDeparted](movementCacheId, formId, validForm).map { _ =>
+            Redirect(controllers.routes.MovementDetailsController.displayPage())
+        }
       )
   }
 }

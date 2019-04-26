@@ -17,53 +17,49 @@
 package controllers
 
 import config.AppConfig
-import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.cacheId
-import forms.Choice
-import forms.Choice._
-import forms.Choice.AllowedChoiceValues._
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.movementCacheId
+import forms.Transport
+import forms.Transport._
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import play.filters.csrf.CSRF.ErrorHandler
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.choice_page
+import views.html.transport
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ChoiceController @Inject()(
+class TransportController @Inject()(
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
-  customsCacheService: CustomsCacheService
+  journeyType: JourneyAction,
+  customsCacheService: CustomsCacheService,
+  errorHandler: ErrorHandler
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[Choice](cacheId, choiceId)
-      .map(data => Ok(choice_page(data.fold(form)(form.fill(_)))))
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsCacheService.fetchAndGetEntry[Transport](movementCacheId, formId)
+      .map { data =>
+        val formForView = data.fold(form)(form.fill(_))
+
+        Ok(transport(formForView, request.choice.value))
+      }
   }
 
-  def submitChoice(): Action[AnyContent] = authenticate.async { implicit request =>
-    form()
+  def saveTransport(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choice_page(formWithErrors))),
-        validChoice =>
-          customsCacheService
-            .cache[Choice](cacheId, choiceId, validChoice)
-            .map { _ =>
-              validChoice.value match {
-                case Arrival | Departure =>
-                  Redirect(
-                    controllers.routes.ConsignmentReferencesController
-                      .displayPage()
-                  )
-                case _ =>
-                  Redirect(controllers.routes.ChoiceController.displayChoiceForm())
-              }
+        (formWithErrors: Form[Transport]) =>
+          Future.successful(BadRequest(transport(formWithErrors, request.choice.value))),
+        validForm =>
+          customsCacheService.cache[Transport](movementCacheId, formId, validForm).map { _ =>
+            Redirect(controllers.movement.routes.MovementSummaryController.displaySummary())
           }
       )
   }

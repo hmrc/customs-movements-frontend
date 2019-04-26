@@ -45,7 +45,3 @@ case class JourneyAction @Inject()(customsCacheService: CustomsCacheService)(imp
       }
   }
 }
-
-object JourneyAction {
-  val declarationType = "declarationType"
-}

@@ -17,27 +17,28 @@
 package controllers
 
 import base.MovementBaseSpec
-import forms.{Choice, Location}
+import forms.{Choice, Transport}
+import forms.Transport.ModesOfTransport.Sea
 import forms.Choice.AllowedChoiceValues
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
-class LocationControllerSpec extends MovementBaseSpec {
+class TransportControllerSpec extends MovementBaseSpec {
 
-  val uri = uriWithContextPath("/location")
+  val uri = uriWithContextPath("/transport")
 
   trait SetUp {
     authorizedUser()
     withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Arrival)))
   }
 
-  "Location Controller" should {
+  "Transport Controller" should {
 
     "return 200 for get request" when {
 
       "cache is empty" in new SetUp {
 
-        withCaching(Location.formId, None)
+        withCaching(Transport.formId, None)
 
         val result = route(app, getRequest(uri)).get
 
@@ -46,7 +47,7 @@ class LocationControllerSpec extends MovementBaseSpec {
 
       "cache contains data" in new SetUp {
 
-        withCaching(Location.formId, Some(Location(Some("1234567"))))
+        withCaching(Transport.formId, Some(Transport(Sea, "PL")))
 
         val result = route(app, getRequest(uri)).get
 
@@ -54,28 +55,32 @@ class LocationControllerSpec extends MovementBaseSpec {
       }
     }
 
-    "return BadRequest for incorrect form" in new SetUp {
+    "return BadRequest for incorrect form" in {
 
-      withCaching(Location.formId)
+      withCaching(Transport.formId)
 
-      val incorrectForm: JsValue = JsObject(Map("goodsLocation" -> JsString("1234")))
+      val incorrectForm: JsValue = JsObject(
+        Map("modeOfTransport" -> JsString("transport"), "nationality" -> JsString("Country"))
+      )
 
       val result = route(app, postRequest(uri, incorrectForm)).get
 
       status(result) must be(BAD_REQUEST)
     }
 
-    "redirect to transport page for correct form" in new SetUp {
+    "redirect to summary page for correct form" in {
 
-      withCaching(Location.formId)
+      withCaching(Transport.formId)
 
-      val correctForm: JsValue = JsObject(Map("goodsLocation" -> JsString("1234567")))
+      val incorrectForm: JsValue = JsObject(
+        Map("modeOfTransport" -> JsString(Sea), "nationality" -> JsString("PL"))
+      )
 
-      val result = route(app, postRequest(uri, correctForm)).get
+      val result = route(app, postRequest(uri, incorrectForm)).get
       val headers = result.futureValue.header.headers
 
       status(result) must be(SEE_OTHER)
-      headers.get("Location") must be(Some("/customs-movements/transport"))
+      headers.get("Location") must be(Some("/customs-movements/summary"))
     }
   }
 }

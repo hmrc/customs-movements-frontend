@@ -90,7 +90,7 @@ class MovementDetailsController @Inject()(
         (formWithErrors: Form[DepartureDetails]) => Future.successful(Left(departure_details(formWithErrors))),
         validForm =>
           customsCacheService.cache[DepartureDetails](movementCacheId, formId, validForm).map { _ =>
-            Right(controllers.movement.routes.MovementController.displayTransport())
+            Right(controllers.routes.TransportController.displayPage())
         }
       )
 }

@@ -42,9 +42,9 @@ POST        /location                      controllers.LocationController.saveLo
 
 # Transport page
 
-GET         /transport                     controllers.movement.MovementController.displayTransport()
+GET         /transport                     controllers.TransportController.displayPage()
 
-POST        /transport                     controllers.movement.MovementController.saveTransport()
+POST        /transport                     controllers.TransportController.saveTransport()
 
 # Movements Summary
 

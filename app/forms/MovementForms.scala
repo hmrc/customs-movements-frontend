@@ -24,29 +24,12 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
-case class TransportForm(
-  transportId: Option[String],
-  transportMode: Option[String],
-  transportNationality: Option[String]
-)
-
-object TransportForm {
-  implicit val format = Json.format[TransportForm]
-
-  val transportMapping =
-    mapping(
-      "transportId" -> optional(text(maxLength = 35)),
-      "transportMode" -> optional(text(maxLength = 1)),
-      "transportNationality" -> optional(text(maxLength = 2))
-    )(TransportForm.apply)(TransportForm.unapply)
-}
-
 object MovementFormsAndIds {
 
   val locationForm = Location.form()
   val locationId = "Location"
 
-  val transportForm = Form(TransportForm.transportMapping)
+  val transportForm = Form(Transport.mapping)
   val transportId = "Transport"
 }
 
@@ -65,8 +48,8 @@ object Movement {
         .getOrElse(Location(None))
     val transport =
       cacheMap
-        .getEntry[TransportForm](MovementFormsAndIds.transportId)
-        .getOrElse(TransportForm(None, None, None))
+        .getEntry[Transport](MovementFormsAndIds.transportId)
+        .getOrElse(Transport(""))
 
     // TODO: ucrType is hardcoded need to UPDATE after we allow user input for mucr
     InventoryLinkingMovementRequest(
@@ -89,13 +72,7 @@ object Movement {
       masterUCR = None,
       masterOpt = None,
       movementReference = None,
-      transportDetails = Some(
-        TransportDetails(
-          transportID = transport.transportId,
-          transportMode = transport.transportMode,
-          transportNationality = transport.transportNationality
-        )
-      )
+      transportDetails = None
     )
   }
 }

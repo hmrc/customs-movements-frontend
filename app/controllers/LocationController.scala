@@ -60,7 +60,7 @@ class LocationController @Inject()(
             .map { _ =>
               request.choice match {
                 case Choice(Choice.AllowedChoiceValues.Arrival) =>
-                  Redirect(controllers.movement.routes.MovementController.displayTransport())
+                  Redirect(controllers.routes.TransportController.displayPage())
                 case Choice(Choice.AllowedChoiceValues.Departure) =>
                   Redirect(controllers.routes.GoodsDepartedController.displayPage())
               }

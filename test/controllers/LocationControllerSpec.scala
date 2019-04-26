@@ -37,7 +37,6 @@ class LocationControllerSpec extends MovementBaseSpec {
 
       "cache is empty" in new SetUp {
 
-        authorizedUser()
         withCaching(Location.formId, None)
 
         val result = route(app, getRequest(uri)).get
@@ -47,7 +46,6 @@ class LocationControllerSpec extends MovementBaseSpec {
 
       "cache contains data" in new SetUp {
 
-        authorizedUser()
         withCaching(Location.formId, Some(Location(Some("1234567"))))
 
         val result = route(app, getRequest(uri)).get
@@ -58,7 +56,6 @@ class LocationControllerSpec extends MovementBaseSpec {
 
     "return BadRequest for incorrect form" in new SetUp {
 
-      authorizedUser()
       withCaching(Location.formId)
 
       val incorrectForm: JsValue = JsObject(Map("goodsLocation" -> JsString("1234")))
@@ -70,7 +67,6 @@ class LocationControllerSpec extends MovementBaseSpec {
 
     "redirect to transport page for correct form" in new SetUp {
 
-      authorizedUser()
       withCaching(Location.formId)
 
       val correctForm: JsValue = JsObject(Map("goodsLocation" -> JsString("1234567")))

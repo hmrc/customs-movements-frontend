@@ -22,7 +22,7 @@ import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice
 import forms.Choice._
 import forms.Choice.AllowedChoiceValues._
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -32,6 +32,7 @@ import views.html.choice_page
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class ChoiceController @Inject()(
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,

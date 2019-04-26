@@ -241,3 +241,11 @@ location.title = Location
 location.question = Where are the goods located?
 location.hint = The 7 digit code of where the goods are located
 location.error = Code must have exactly 7 digits
+
+goodsDeparted.title = Goods departed
+goodsDeparted.departedPlace.question = Where are your goods being departed to?
+goodsDeparted.departedPlace.hint = Goods can be departed out of the UK or back into the UK
+goodsDeparted.departedPlace.outOfTheUk = Out of the UK
+goodsDeparted.departedPlace.backIntoTheUk = Back into the UK
+goodsDeparted.departedPlace.empty = Please answer on the question
+goodsDeparted.departedPlace.error = Your choice is incorrect

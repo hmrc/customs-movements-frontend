@@ -50,4 +50,14 @@ class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi)
       case _ => super.resolveError(rh, ex)
     }
 
+  def displayErrorPage()(implicit request: Request[_]): Future[Result] =
+    Future.successful(
+      BadRequest(
+        standardErrorTemplate(
+          pageTitle = messagesApi("global.error.title"),
+          heading = messagesApi("global.error.heading"),
+          message = messagesApi("global.error.message")
+        )
+      )
+    )
 }

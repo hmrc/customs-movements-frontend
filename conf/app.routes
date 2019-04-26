@@ -5,11 +5,11 @@ GET         /assets/*file                  controllers.Assets.versioned(path="/p
 GET         /unauthorised                  controllers.UnauthorisedController.onPageLoad
 
 
-# Start Page
+# Start page
 
 GET         /start                         controllers.StartController.displayStartPage()
 
-# Declaration Choice Page
+# Declaration choice page
 
 GET         /choice                        controllers.ChoiceController.displayChoiceForm()
 
@@ -20,6 +20,13 @@ POST        /choice                        controllers.ChoiceController.submitCh
 GET         /consignment-references        controllers.ConsignmentReferencesController.displayPage()
 
 POST        /consignment-references        controllers.ConsignmentReferencesController.saveConsignmentReferences()
+
+
+# Goods departed dage
+
+GET         /goods-departed                controllers.GoodsDepartedController.displayPage()
+
+POST        /goods-departed                controllers.GoodsDepartedController.saveGoodsDeparted()
 
 # Movement details page
 

@@ -16,9 +16,10 @@
 
 package forms
 
-import play.api.data.Forms
+import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
 import play.api.libs.json.Json
+import utils.validators.forms.FieldValidator._
 
 case class Transport(modeOfTransport: String, nationality: String)
 
@@ -27,6 +28,29 @@ object Transport {
 
   val formId = "Transport"
 
-  val mapping =
-    Forms.mapping("modeOfTransport" -> text(), "nationality" -> text())(Transport.apply)(Transport.unapply)
+  object ModesOfTransport {
+    val Sea = "1"
+    val Rail = "2"
+    val Road = "3"
+    val Air = "4"
+    val PostalOrMail = "5"
+    val FixedInstallations = "6"
+    val InlandWaterway = "7"
+    val Other = "8"
+  }
+
+  import ModesOfTransport._
+
+  val allowedModeOfTransport = Seq(Sea, Rail, Road, Air, PostalOrMail, FixedInstallations, InlandWaterway, Other)
+
+  val mapping = Forms.mapping(
+    "modeOfTransport" -> text()
+      .verifying("transport.modeOfTransport.empty", nonEmpty)
+      .verifying("transport.modeOfTransport.error", isEmpty or isContainedIn(allowedModeOfTransport)),
+    "nationality" -> text()
+      .verifying("transport.nationality.empty", nonEmpty)
+      .verifying("transport.nationality.error", isEmpty or hasSpecificLength(2))
+  )(Transport.apply)(Transport.unapply)
+
+  def form(): Form[Transport] = Form(mapping)
 }

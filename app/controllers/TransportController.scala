@@ -18,14 +18,19 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.movementCacheId
+import forms.Transport
+import forms.Transport._
 import javax.inject.{Inject, Singleton}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import play.filters.csrf.CSRF.ErrorHandler
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import views.html.transport
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TransportController @Inject()(
@@ -37,7 +42,25 @@ class TransportController @Inject()(
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = ???
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsCacheService.fetchAndGetEntry[Transport](movementCacheId, formId)
+      .map { data =>
+        val formForView = data.fold(form)(form.fill(_))
 
-  def saveTransport(): Action[AnyContent] = ???
+        Ok(transport(formForView, request.choice.value))
+      }
+  }
+
+  def saveTransport(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[Transport]) =>
+          Future.successful(BadRequest(transport(formWithErrors, request.choice.value))),
+        validForm =>
+          customsCacheService.cache[Transport](movementCacheId, formId, validForm).map { _ =>
+            Redirect(controllers.movement.routes.MovementSummaryController.displaySummary())
+          }
+      )
+  }
 }

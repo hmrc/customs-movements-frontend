@@ -49,7 +49,7 @@ object Movement {
     val transport =
       cacheMap
         .getEntry[Transport](MovementFormsAndIds.transportId)
-        .getOrElse(Transport(""))
+        .getOrElse(Transport("", ""))
 
     // TODO: ucrType is hardcoded need to UPDATE after we allow user input for mucr
     InventoryLinkingMovementRequest(

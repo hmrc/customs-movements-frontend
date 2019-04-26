@@ -1,0 +1,66 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.routes._
+@import uk.gov.hmrc.play.views.html._
+@import forms.Transport
+@import forms.Transport.ModesOfTransport._
+@import utils.RadioOption
+
+@(form: Form[Transport], choice: String)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("transport.title"),
+    appConfig = appConfig
+) {
+    @helpers.form(TransportController.saveTransport(), 'autoComplete -> "off") {
+
+        @if(choice == "EAL") {
+            @components.back_link("/customs-movements/location")
+        } else {
+            @components.back_link("/customs-movements/movements-details")
+        }
+
+        @components.error_summary(form.errors)
+
+        @components.page_title(Some("transport.title"))
+
+        @components.input_radio(
+            field = form("modeOfTransport"),
+            legend = messages("transport.modeOfTransport.question"),
+            hint = Some(messages("transport.modeOfTransport.hint")),
+            inputs = Seq(
+                RadioOption(Sea, Sea, "transport.modeOfTransport.sea"),
+                RadioOption(Rail, Rail, "transport.modeOfTransport.rail"),
+                RadioOption(Road, Road, "transport.modeOfTransport.road"),
+                RadioOption(Air, Air, "transport.modeOfTransport.air"),
+                RadioOption(PostalOrMail, PostalOrMail, "transport.modeOfTransport.postalOrMail"),
+                RadioOption(FixedInstallations, FixedInstallations, "transport.modeOfTransport.fixed"),
+                RadioOption(InlandWaterway, InlandWaterway, "transport.modeOfTransport.inlandWaterway"),
+                RadioOption(Other, Other, "transport.modeOfTransport.other")
+            )
+        )
+
+        @components.input_text(
+            field = form("nationality"),
+            label = messages("transport.nationality.question"),
+            hint = Some(messages("transport.nationality.hint"))
+        )
+
+        @components.submit_button()
+    }
+}

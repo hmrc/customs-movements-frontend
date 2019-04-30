@@ -16,10 +16,10 @@
 
 package services
 
-import base.CustomExportsBaseSpec
+import base.BaseSpec
 import services.Countries.allCountries
 
-class CountriesSpec extends CustomExportsBaseSpec {
+class CountriesSpec extends BaseSpec {
 
   "Countries" should {
     "give all countries with codes in alphabetical order of country name with filtering according to permitted MDG values" in {

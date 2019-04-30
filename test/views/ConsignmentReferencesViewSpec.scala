@@ -47,7 +47,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
     "have a proper labels for error messages" in {
 
-      assertMessage(eoriEmpty, "EORI number cannot be empty")
+      assertMessage(eoriError, "EORI number is incorrect")
       assertMessage(referenceEmpty, "Please choose reference")
       assertMessage(referenceError, "Incorrect reference")
       assertMessage(referenceValueEmpty, "Please enter reference")

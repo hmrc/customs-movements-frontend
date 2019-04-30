@@ -16,11 +16,11 @@
 
 package forms
 
-import base.FormBaseSpec
+import base.BaseSpec
 import forms.GoodsDeparted.AllowedPlaces
 import play.api.data.FormError
 
-class GoodsDepartedSpec extends FormBaseSpec {
+class GoodsDepartedSpec extends BaseSpec {
 
   "Goods Departed model" should {
 

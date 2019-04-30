@@ -16,31 +16,36 @@
 
 @import config.AppConfig
 @import controllers.movement.routes._
+@import forms.GoodsDeparted
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
-@(appConfig: AppConfig, form: Form[InventoryLinkingMovementRequest])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[InventoryLinkingMovementRequest], backOrOutTheUK: GoodsDeparted)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = messages("movement.summaryPage.title"),
-  appConfig = appConfig) {
+    title = messages("movement.summaryPage.title"),
+    appConfig = appConfig) {
 
 
-  @components.back_link("transport")
+    @if(backOrOutTheUK.departedPlace == GoodsDeparted.AllowedPlaces.backIntoTheUk) {
+        @components.back_link("/customs-movements/goods-departed")
+    } else {
+        @components.back_link("/customs-movements/transport")
+    }
 
-  <h1 class="heading-large">@messages("movement.summaryPage.heading")</h1>
+    <h1 class="heading-large">@messages("movement.summaryPage.heading")</h1>
 
-  @components.warning_message("movement.summaryPage.warningMessage")
+    @components.warning_message("movement.summaryPage.warningMessage")
 
-  <br/>
+    <br/>
 
-  @components.form_summary_table(form)
+    @components.form_summary_table(form)
 
-  <h2 class="heading-medium">@messages("movement.summaryPage.heading.secondary")</h2>
+    <h2 class="heading-medium">@messages("movement.summaryPage.heading.secondary")</h2>
 
-  <p class="text">@messages("movement.summaryPage.confirmationNotice")</p>
+    <p class="text">@messages("movement.summaryPage.confirmationNotice")</p>
 
-  @helpers.form(action = MovementSummaryController.submitMovementRequest()) {
-    @components.submit_button("site.submit")
-  }
+    @helpers.form(action = MovementSummaryController.submitMovementRequest()) {
+        @components.submit_button("site.submit")
+    }
 }

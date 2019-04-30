@@ -18,4 +18,4 @@ package base
 
 import org.scalatest.{MustMatchers, WordSpec}
 
-trait FormBaseSpec extends WordSpec with MustMatchers
+trait BaseSpec extends WordSpec with MustMatchers

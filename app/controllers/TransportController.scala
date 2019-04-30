@@ -43,12 +43,11 @@ class TransportController @Inject()(
     extends FrontendController with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[Transport](movementCacheId, formId)
-      .map { data =>
-        val formForView = data.fold(form)(form.fill(_))
+    customsCacheService.fetchAndGetEntry[Transport](movementCacheId, formId).map { data =>
+      val formForView = data.fold(form)(form.fill(_))
 
-        Ok(transport(formForView, request.choice.value))
-      }
+      Ok(transport(formForView, request.choice.value))
+    }
   }
 
   def saveTransport(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -60,7 +59,7 @@ class TransportController @Inject()(
         validForm =>
           customsCacheService.cache[Transport](movementCacheId, formId, validForm).map { _ =>
             Redirect(controllers.movement.routes.MovementSummaryController.displaySummary())
-          }
+        }
       )
   }
 }

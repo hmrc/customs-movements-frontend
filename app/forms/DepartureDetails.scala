@@ -17,7 +17,7 @@
 package forms
 
 import forms.common.Date
-import play.api.data.{Form, Forms}
+import play.api.data.Forms
 import play.api.libs.json.Json
 
 case class DepartureDetails(dateOfDeparture: Date) {

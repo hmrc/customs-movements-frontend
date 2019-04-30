@@ -16,16 +16,15 @@
 
 package controllers.actions
 
-import base.CustomExportsBaseSpec
+import base.MovementBaseSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
-class AuthActionSpec extends CustomExportsBaseSpec {
+class AuthActionSpec extends MovementBaseSpec {
 
   val uri = uriWithContextPath("/choice")
 
-  // should we check other missing fields ?
   "Auth Action" should {
 
     "return InsufficientEnrolments when EORI number is missing" in {

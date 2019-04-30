@@ -17,15 +17,18 @@
 package connectors
 
 import base.TestHelper._
-import base.{CustomExportsBaseSpec, MockHttpClient, TestHelper}
+import base.{MockHttpClient, MovementBaseSpec, TestHelper}
+import config.AppConfig
 import models._
 import play.api.test.Helpers.OK
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.wco.dec.MetaData
 
-class CustomsDeclareExportsMovementsConnectorSpec extends CustomExportsBaseSpec {
+class CustomsDeclareExportsMovementsConnectorSpec extends MovementBaseSpec {
   import CustomsDeclareExportsMovementsConnectorSpec._
+
+  val appConfig = mock[AppConfig]
 
   "Customs Exports Movements Connector" should {
 

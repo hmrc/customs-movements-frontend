@@ -16,12 +16,12 @@
 
 package config
 
-import base.CustomExportsBaseSpec
+import base.MovementBaseSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import features.{Feature, FeatureStatus}
 import play.api.{Configuration, Environment}
 
-class AppConfigSpec extends CustomExportsBaseSpec {
+class AppConfigSpec extends MovementBaseSpec {
 
   val config = app.injector.instanceOf[AppConfig]
   val environment = Environment.simple()

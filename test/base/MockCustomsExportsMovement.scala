@@ -17,9 +17,28 @@
 package base
 
 import connectors.CustomsDeclareExportsMovementsConnector
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.mockito.MockitoSugar
+import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST}
+import uk.gov.hmrc.http.HttpResponse
+
+import scala.concurrent.Future
 
 trait MockCustomsExportsMovement extends MockitoSugar {
   val mockCustomsExportsMovementConnector: CustomsDeclareExportsMovementsConnector =
     mock[CustomsDeclareExportsMovementsConnector]
+
+  def sendMovementRequest202Response(): OngoingStubbing[Future[HttpResponse]] =
+    when(
+      mockCustomsExportsMovementConnector
+        .submitMovementDeclaration(any(), any(), any(), any())(any(), any())
+    ).thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+
+  def sendMovementRequest400Response(): OngoingStubbing[Future[HttpResponse]] =
+    when(
+      mockCustomsExportsMovementConnector
+        .submitMovementDeclaration(any(), any(), any(), any())(any(), any())
+    ).thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 }

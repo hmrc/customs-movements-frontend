@@ -16,10 +16,10 @@
 
 package controllers
 
-import base.CustomExportsBaseSpec
+import base.MovementBaseSpec
 import play.api.test.Helpers._
 
-class StartControllerSpec extends CustomExportsBaseSpec {
+class StartControllerSpec extends MovementBaseSpec {
 
   private val uri = uriWithContextPath("/start")
 

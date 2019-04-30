@@ -16,11 +16,11 @@
 
 package forms
 
-import base.FormBaseSpec
+import base.BaseSpec
 import forms.Transport.ModesOfTransport._
 import play.api.data.FormError
 
-class TransportSpec extends FormBaseSpec {
+class TransportSpec extends BaseSpec {
 
   "Transport model" should {
 

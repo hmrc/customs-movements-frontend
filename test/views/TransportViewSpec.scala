@@ -105,7 +105,7 @@ class TransportViewSpec extends ViewSpec with TransportMessages with CommonMessa
       val backButton = getElementById(createDepartureView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-movements/movements-details")
+      backButton.attr("href") must be("/customs-movements/movement-details")
     }
 
     "display \"Save and continue\" button on page" in {

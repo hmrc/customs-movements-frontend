@@ -16,22 +16,23 @@
 
 package controllers
 
-import base.CustomExportsBaseSpec
+import base.MovementBaseSpec
 import forms.Choice
 import forms.Choice._
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
+import org.scalatest.BeforeAndAfter
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 
-class ChoiceControllerSpec extends CustomExportsBaseSpec {
+class ChoiceControllerSpec extends MovementBaseSpec with BeforeAndAfter {
 
   private val choiceUri = uriWithContextPath("/choice")
 
   before {
     authorizedUser()
-    withCaching[Choice](None, Choice.choiceId)
+    withCaching[Choice](Choice.choiceId, None)
   }
 
   after {
@@ -41,6 +42,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec {
   "Choice Controller on GET" should {
 
     "return 200 status code" in {
+
       val result = route(app, getRequest(choiceUri)).get
 
       status(result) must be(OK)
@@ -49,7 +51,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec {
     "read item from cache and display it" in {
 
       val cachedData = Choice("EAL")
-      withCaching[Choice](Some(cachedData), Choice.choiceId)
+      withCaching[Choice](Choice.choiceId, Some(cachedData))
 
       val result = route(app, getRequest(choiceUri)).get
       val stringResult = contentAsString(result)
@@ -84,6 +86,8 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec {
 
     "save the choice data to the cache" in {
 
+      withCaching(Choice.choiceId)
+
       val validChoiceForm = JsObject(Map("choice" -> JsString("EDL")))
       route(app, postRequest(choiceUri, validChoiceForm)).get.futureValue
 
@@ -92,6 +96,8 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec {
     }
 
     "redirect to arrival page when \"Arrival\" is selected" in {
+
+      withCaching(Choice.choiceId)
 
       val correctForm =
         JsObject(Map("choice" -> JsString(AllowedChoiceValues.Arrival)))
@@ -103,6 +109,8 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec {
     }
 
     "redirect to departure page when \"Departure\" is selected" in {
+
+      withCaching(Choice.choiceId)
 
       val correctForm =
         JsObject(Map("choice" -> JsString(AllowedChoiceValues.Departure)))

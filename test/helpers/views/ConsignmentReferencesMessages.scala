@@ -22,7 +22,7 @@ trait ConsignmentReferencesMessages {
   val title = consignmentReferences + ".title"
   val eoriQuestion = consignmentReferences + ".eori.question"
   val eoriHint = consignmentReferences + ".eori.hint"
-  val eoriEmpty = consignmentReferences + ".eori.empty"
+  val eoriError = consignmentReferences + ".eori.error"
   val referenceQuestion = consignmentReferences + ".reference.question"
   val referenceHint = consignmentReferences + ".reference.hint"
   val referenceDucr = consignmentReferences + ".reference.ducr"

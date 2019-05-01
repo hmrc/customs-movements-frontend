@@ -16,11 +16,11 @@
 
 package forms
 
-import base.FormBaseSpec
+import base.BaseSpec
 import forms.ConsignmentReferences.AllowedReferences
 import play.api.data.FormError
 
-class ConsignmentReferencesSpec extends FormBaseSpec {
+class ConsignmentReferencesSpec extends BaseSpec {
 
   "Consignment References model" should {
     "contains all allowed values" in {
@@ -42,25 +42,25 @@ class ConsignmentReferencesSpec extends FormBaseSpec {
 
   "Consignment References mapping" should {
     "return errors for empty fields" in {
-      val inputData = ConsignmentReferences("", "", "")
+      val inputData = ConsignmentReferences(None, "", "")
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
-      errors.length must be(3)
-      errors must contain(FormError("eori", "consignmentReferences.eori.empty"))
+      errors.length must be(2)
       errors must contain(FormError("reference", "consignmentReferences.reference.empty"))
       errors must contain(FormError("referenceValue", "consignmentReferences.reference.value.empty"))
     }
 
     "return error for incorrect reference" in {
-      val inputData = ConsignmentReferences("eori", "Incorrect reference", "12345")
+      val inputData = ConsignmentReferences(Some("eori1234567890988212"), "Incorrect reference", "12345")
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
-      errors.length must be(1)
-      errors.head must be(FormError("reference", "consignmentReferences.reference.error"))
+      errors.length must be(2)
+      errors(0) must be(FormError("eori", "consignmentReferences.eori.error"))
+      errors(1) must be(FormError("reference", "consignmentReferences.reference.error"))
     }
 
     "no errors when data is correct" in {
-      val inputData = ConsignmentReferences("eori", "Ducr", "123456")
+      val inputData = ConsignmentReferences(Some("eori"), "Ducr", "123456")
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
       errors.length must be(0)

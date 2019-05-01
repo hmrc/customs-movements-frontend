@@ -16,10 +16,10 @@
 
 package forms.common
 
-import base.FormBaseSpec
+import base.BaseSpec
 import play.api.data.{Form, FormError}
 
-class DateSpec extends FormBaseSpec {
+class DateSpec extends BaseSpec {
 
   val form: Form[Date] = Form(Date.mapping)
 

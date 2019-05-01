@@ -16,10 +16,10 @@
 
 package forms
 
-import base.FormBaseSpec
+import base.BaseSpec
 import forms.common.{Date, Time}
 
-class ArrivalDetailsSpec extends FormBaseSpec {
+class ArrivalDetailsSpec extends BaseSpec {
 
   "Arrival mapping" should {
 

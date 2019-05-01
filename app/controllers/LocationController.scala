@@ -64,7 +64,7 @@ class LocationController @Inject()(
                 case Choice(Choice.AllowedChoiceValues.Departure) =>
                   Redirect(controllers.routes.GoodsDepartedController.displayPage())
               }
-            }
+          }
       )
   }
 }

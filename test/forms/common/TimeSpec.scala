@@ -16,10 +16,10 @@
 
 package forms.common
 
-import base.FormBaseSpec
+import base.BaseSpec
 import play.api.data.{Form, FormError}
 
-class TimeSpec extends FormBaseSpec {
+class TimeSpec extends BaseSpec {
 
   val form: Form[Time] = Form(Time.mapping)
 

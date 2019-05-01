@@ -20,6 +20,7 @@ import config.AppConfig
 import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.movementCacheId
+import forms.GoodsDeparted
 import forms.inventorylinking.MovementRequestSummaryMappingProvider
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -56,13 +57,17 @@ class MovementSummaryController @Inject()(
           .provideMappingForMovementSummaryPage()
       )
 
-      customsCacheService
+      val movementRequestOpt = customsCacheService
         .fetchMovementRequest(movementCacheId, request.authenticatedRequest.user.eori)
-        .map {
-          case Some(data) =>
-            Ok(movement_summary_page(appConfig, form.fill(data)))
-          case _ => handleError(s"Could not obtain data from DB")
-        }
+
+      val backOrOutTheUKOpt = customsCacheService.fetchAndGetEntry[GoodsDeparted](movementCacheId, GoodsDeparted.formId)
+
+      movementRequestOpt.zip(backOrOutTheUKOpt).map {
+        case (Some(movementRequest), Some(backOrOutTheUK)) =>
+          Ok(movement_summary_page(appConfig, form.fill(movementRequest), backOrOutTheUK))
+        case _ => handleError(s"Could not obtain data from DB")
+
+      }
     }
 
   private def parseDUCR(ucrBlock: UcrBlock): Option[String] =
@@ -87,18 +92,17 @@ class MovementSummaryController @Inject()(
 
             customsDeclareExportsMovementsConnector
               .submitMovementDeclaration(ducrVal, mucrVal, movementType, data.toXml)
-              .map(
-                submitResponse =>
-                  submitResponse.status match {
-                    case ACCEPTED =>
-                      exportsMetrics.incrementCounter(metricIdentifier)
-                      Redirect(
-                        controllers.movement.routes.MovementSummaryController
-                          .displayConfirmation()
-                      )
-                    case _ => handleError(s"Unable to save data")
+              .map { submitResponse =>
+                submitResponse.status match {
+                  case ACCEPTED =>
+                    exportsMetrics.incrementCounter(metricIdentifier)
+                    Redirect(
+                      controllers.movement.routes.MovementSummaryController
+                        .displayConfirmation()
+                    )
+                  case _ => handleError(s"Unable to save data")
                 }
-              )
+              }
           }
           case _ =>
             Future.successful(handleError(s"Could not obtain data from DB"))

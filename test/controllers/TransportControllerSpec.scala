@@ -59,9 +59,8 @@ class TransportControllerSpec extends MovementBaseSpec {
 
       withCaching(Transport.formId)
 
-      val incorrectForm: JsValue = JsObject(
-        Map("modeOfTransport" -> JsString("transport"), "nationality" -> JsString("Country"))
-      )
+      val incorrectForm: JsValue =
+        JsObject(Map("modeOfTransport" -> JsString("transport"), "nationality" -> JsString("Country")))
 
       val result = route(app, postRequest(uri, incorrectForm)).get
 
@@ -72,9 +71,7 @@ class TransportControllerSpec extends MovementBaseSpec {
 
       withCaching(Transport.formId)
 
-      val incorrectForm: JsValue = JsObject(
-        Map("modeOfTransport" -> JsString(Sea), "nationality" -> JsString("PL"))
-      )
+      val incorrectForm: JsValue = JsObject(Map("modeOfTransport" -> JsString(Sea), "nationality" -> JsString("PL")))
 
       val result = route(app, postRequest(uri, incorrectForm)).get
       val headers = result.futureValue.header.headers

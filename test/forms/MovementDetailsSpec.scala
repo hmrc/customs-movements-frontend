@@ -16,9 +16,9 @@
 
 package forms
 
-import base.FormBaseSpec
+import base.BaseSpec
 
-class MovementDetailsSpec extends FormBaseSpec {
+class MovementDetailsSpec extends BaseSpec {
 
   "Movement Details object" should {
 

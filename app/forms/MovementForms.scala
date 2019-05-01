@@ -39,7 +39,7 @@ object Movement {
     val referencesForm =
       cacheMap
         .getEntry[ConsignmentReferences](ConsignmentReferences.formId)
-        .getOrElse(ConsignmentReferences("", "", ""))
+        .getOrElse(ConsignmentReferences(None, "", ""))
     val departureDetails =
       cacheMap.getEntry[DepartureDetails](MovementDetails.formId)
     val location =

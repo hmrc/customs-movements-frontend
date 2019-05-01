@@ -16,12 +16,13 @@
 
 package controllers
 
-import base.CustomExportsBaseSpec
 import base.ExportsTestData._
-import forms.Choice
+import base.MovementBaseSpec
+import forms.Choice.AllowedChoiceValues
+import forms.{Choice, GoodsDeparted}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.BeforeAndAfterEach
+import org.mockito.Mockito.when
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
@@ -29,67 +30,51 @@ import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMov
 
 import scala.concurrent.Future
 
-class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAndAfterEach {
+class MovementSummaryControllerSpec extends MovementBaseSpec {
 
   private val uriSummary = uriWithContextPath("/summary")
   private val uriConfirmation = uriWithContextPath("/confirmation")
 
   private val emptyForm = JsObject(Map("" -> JsString("")))
 
-  override def beforeEach() {
+  trait SetUp {
     authorizedUser()
-    reset(mockCustomsCacheService)
-    reset(mockCustomsDeclareExportsMovementsConnector)
-    withCaching(Some(Choice("EAL")), Choice.choiceId)
+    withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Arrival)))
   }
 
   "MovementSummaryController.displaySummary()" when {
 
     "cannot read data from DB" should {
 
-      "return 500 code" in {
-        mockCustomsCacheServiceFetchMovementRequestResultWith(None)
+      "return 500 code and display error page" in new SetUp {
+
+        mockBackOrOutTheUKFailed()
+        when(mockCustomsCacheService.fetchMovementRequest(any(), any())(any(), any()))
+          .thenReturn(Future.successful(None))
 
         val result = route(app, getRequest(uriSummary)).get
 
         status(result) must be(INTERNAL_SERVER_ERROR)
-      }
-
-      "display error page" in {
-        mockCustomsCacheServiceFetchMovementRequestResultWith(None)
-
-        val result = route(app, getRequest(uriSummary)).get
-
         contentAsString(result) must include(messagesApi("global.error.heading"))
       }
     }
 
     "can read data from DB" should {
 
-      "return 200 code" in {
-        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
+      "return 200 code" in new SetUp {
 
-        val result = route(app, getRequest(uriSummary)).get
-
-        status(result) must be(OK)
-      }
-
-      "display summary page with warning" in {
+        mockBackOrOutTheUKSuccessful()
         mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
 
         val result = route(app, getRequest(uriSummary)).get
         val stringResult = contentAsString(result)
 
         val warningIconTag = "<i class=\"icon icon-important\">"
+
+        status(result) must be(OK)
+
         stringResult must include(warningIconTag)
         stringResult must include(messages("movement.summaryPage.warningMessage"))
-      }
-
-      "display summary page with the data table" in {
-        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
-
-        val result = route(app, getRequest(uriSummary)).get
-        val stringResult = contentAsString(result)
 
         stringResult must include("table")
         stringResult must include("tbody")
@@ -100,12 +85,6 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
         stringResult must include(messages("movement.ucr"))
         stringResult must include(messages("movement.ucrType"))
         stringResult must include(messages("movement.goodsLocation"))
-      }
-
-      "display summary page with submission confirmation notice" in {
-        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
-
-        val result = route(app, getRequest(uriSummary)).get
 
         contentAsString(result) must include(messages("movement.summaryPage.confirmationNotice"))
       }
@@ -116,7 +95,7 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
     "cannot read data from DB" should {
 
-      "return 500 code" in {
+      "return 500 code" in new SetUp {
         mockCustomsCacheServiceFetchMovementRequestResultWith(None)
 
         val result = route(app, postRequest(uriSummary, emptyForm)).get
@@ -124,7 +103,7 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
         status(result) must be(INTERNAL_SERVER_ERROR)
       }
 
-      "display error page for DB problem" in {
+      "display error page for DB problem" in new SetUp {
         mockCustomsCacheServiceFetchMovementRequestResultWith(None)
 
         val result = route(app, postRequest(uriSummary, emptyForm)).get
@@ -135,41 +114,22 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
     "can read data from DB but submission failed" should {
 
-      "return 500 code" in {
+      "return 500 code" in new SetUp {
         mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
         sendMovementRequest400Response()
 
         val result = route(app, postRequest(uriSummary, emptyForm)).get
 
         status(result) must be(INTERNAL_SERVER_ERROR)
-      }
-
-      "display error page" in {
-        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
-        sendMovementRequest400Response()
-
-        val result = route(app, postRequest(uriSummary, emptyForm)).get
-
         contentAsString(result) must include(messagesApi("global.error.heading"))
       }
     }
 
     "can read data from DB and submission succeeded" should {
 
-      "fetch data from CustomsCacheService" in {
+      "redirect to the new page" in new SetUp {
         mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
-        sendMovementRequest()
-
-        route(app, postRequest(uriSummary, emptyForm)).get.futureValue
-
-        verify(mockCustomsCacheService)
-          .fetchMovementRequest(any(), any())(any(), any())
-      }
-
-      "redirect to confirmation page" in {
-        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
-        successfulMovementsResponse()
-        sendMovementRequest()
+        sendMovementRequest202Response
 
         val result = route(app, postRequest(uriSummary, emptyForm)).get
         val header = result.futureValue.header
@@ -181,26 +141,7 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
     "MovementSummaryController.displayConfirmation" should {
 
-      "fetch data from CustomsCacheService" in {
-        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
-        mockCustomsCacheServiceClearedSuccessfully()
-
-        route(app, getRequest(uriConfirmation)).get.futureValue
-
-        verify(mockCustomsCacheService)
-          .fetchMovementRequest(any(), any())(any(), any())
-      }
-
-      "clean the cache" in {
-        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
-        mockCustomsCacheServiceClearedSuccessfully()
-
-        route(app, getRequest(uriConfirmation)).get.futureValue
-
-        verify(mockCustomsCacheService).remove(any())(any(), any())
-      }
-
-      "display confirmation page for Arrival" in {
+      "display confirmation page for Arrival" in new SetUp {
         mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
         mockCustomsCacheServiceClearedSuccessfully()
 
@@ -209,7 +150,7 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
         contentAsString(result) must include(messagesApi("movement.choice.EAL") + " has been submitted")
       }
 
-      "display confirmation page for Departure" in {
+      "display confirmation page for Departure" in new SetUp {
         mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EDL")))
         mockCustomsCacheServiceClearedSuccessfully()
 
@@ -229,5 +170,17 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
   private def mockCustomsCacheServiceClearedSuccessfully() =
     when(mockCustomsCacheService.remove(any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+
+  private def mockBackOrOutTheUKSuccessful() =
+    when(
+      mockCustomsCacheService
+        .fetchAndGetEntry[GoodsDeparted](any(), ArgumentMatchers.eq(GoodsDeparted.formId))(any(), any(), any())
+    ).thenReturn(Future.successful(Some(GoodsDeparted(GoodsDeparted.AllowedPlaces.backIntoTheUk))))
+
+  private def mockBackOrOutTheUKFailed() =
+    when(
+      mockCustomsCacheService
+        .fetchAndGetEntry[GoodsDeparted](any(), ArgumentMatchers.eq(GoodsDeparted.formId))(any(), any(), any())
+    ).thenReturn(Future.successful(None))
 
 }

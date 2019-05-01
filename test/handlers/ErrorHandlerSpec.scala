@@ -16,12 +16,15 @@
 
 package handlers
 
-import base.CustomExportsBaseSpec
+import base.MovementBaseSpec
+import config.AppConfig
 import play.api.http.{HeaderNames, Status}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
 
-class ErrorHandlerSpec extends CustomExportsBaseSpec {
+class ErrorHandlerSpec extends MovementBaseSpec {
+
+  val appConfig = app.injector.instanceOf[AppConfig]
 
   val errorHandler = new ErrorHandler(appConfig, messagesApi)
   val req = FakeRequest("GET", "/foo")

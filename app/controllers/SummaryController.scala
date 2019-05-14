@@ -32,8 +32,7 @@ import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.inventorylinking.common.UcrBlock
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
-import views.html.movement.movement_confirmation_page
-import views.html.summary.{arrival_summary_page, departure_summary_page}
+import views.html.summary.{arrival_summary_page,confirmation_page, departure_summary_page}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -62,12 +61,6 @@ class SummaryController @Inject()(
     }
   }
 
-  private def parseDUCR(ucrBlock: UcrBlock): Option[String] =
-    ucrBlock.ucrType match {
-      case "D" => Some(ucrBlock.ucr)
-      case _   => None
-    }
-
   def submitMovementRequest(): Action[AnyContent] =
     (authenticate andThen journeyType).async { implicit request =>
       customsCacheService
@@ -88,10 +81,7 @@ class SummaryController @Inject()(
                 submitResponse.status match {
                   case ACCEPTED =>
                     exportsMetrics.incrementCounter(metricIdentifier)
-                    Redirect(
-                      controllers.routes.SummaryController
-                        .displayConfirmation()
-                    )
+                    Redirect(controllers.routes.SummaryController.displayConfirmation())
                   case _ => handleError(s"Unable to save data")
                 }
               }
@@ -101,19 +91,9 @@ class SummaryController @Inject()(
         }
     }
 
-  def displayConfirmation(): Action[AnyContent] =
-    (authenticate andThen journeyType).async { implicit request =>
-      customsCacheService
-        .fetchMovementRequest(movementCacheId, request.authenticatedRequest.user.eori)
-        .flatMap {
-          case Some(data) =>
-            customsCacheService.remove(movementCacheId).map { _ =>
-              Ok(movement_confirmation_page(appConfig, data.messageCode, data.ucrBlock.ucr))
-            }
-          case _ =>
-            Future.successful(handleError(s"Could not obtain data from DB"))
-        }
-    }
+  def displayConfirmation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    Future.successful(Ok(confirmation_page(request.choice.value)))
+  }
 
   private def handleError(logMessage: String)(implicit request: JourneyRequest[_]): Result = {
     logger.error(logMessage)
@@ -126,10 +106,15 @@ class SummaryController @Inject()(
     )
   }
 
+  private def parseDUCR(ucrBlock: UcrBlock): Option[String] =
+    ucrBlock.ucrType match {
+      case "D" => Some(ucrBlock.ucr)
+      case _   => None
+    }
+
   private def getMetricIdentifierFrom(movementData: InventoryLinkingMovementRequest): String =
     movementData.messageCode match {
       case "EAL" => MetricIdentifiers.arrivalMetric
       case "EDL" => MetricIdentifiers.departureMetric
     }
-
 }

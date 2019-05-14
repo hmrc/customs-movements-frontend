@@ -40,14 +40,21 @@ class SummaryControllerSpec extends MovementBaseSpec {
 
   trait SetUp {
     authorizedUser()
+  }
+
+  trait ArrivalSetUp extends SetUp {
     withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Arrival)))
+  }
+
+  trait DepartureSetUp extends SetUp {
+    withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Departure)))
   }
 
   "MovementSummaryController.displaySummary()" when {
 
     "cannot read data from DB" should {
 
-      "return 500 code and display error page" in new SetUp {
+      "return 500 code and display error page" in new ArrivalSetUp {
 
         when(mockCustomsCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
 
@@ -60,7 +67,7 @@ class SummaryControllerSpec extends MovementBaseSpec {
 
     "can read data from DB" should {
 
-      "return 200 code" in new SetUp {
+      "return 200 code" in new ArrivalSetUp {
         when(mockCustomsCacheService.fetch(any())(any(), any()))
           .thenReturn(Future.successful(Some(CacheMap("id", Map.empty[String, JsValue]))))
 
@@ -75,7 +82,7 @@ class SummaryControllerSpec extends MovementBaseSpec {
 
     "cannot read data from DB" should {
 
-      "return 500 code" in new SetUp {
+      "return 500 code" in new ArrivalSetUp {
         mockCustomsCacheServiceFetchMovementRequestResultWith(None)
 
         val result = route(app, postRequest(uriSummary, emptyForm)).get
@@ -83,7 +90,7 @@ class SummaryControllerSpec extends MovementBaseSpec {
         status(result) must be(INTERNAL_SERVER_ERROR)
       }
 
-      "display error page for DB problem" in new SetUp {
+      "display error page for DB problem" in new ArrivalSetUp {
         mockCustomsCacheServiceFetchMovementRequestResultWith(None)
 
         val result = route(app, postRequest(uriSummary, emptyForm)).get
@@ -94,7 +101,7 @@ class SummaryControllerSpec extends MovementBaseSpec {
 
     "can read data from DB but submission failed" should {
 
-      "return 500 code" in new SetUp {
+      "return 500 code" in new ArrivalSetUp {
         mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
         sendMovementRequest400Response()
 
@@ -107,7 +114,7 @@ class SummaryControllerSpec extends MovementBaseSpec {
 
     "can read data from DB and submission succeeded" should {
 
-      "redirect to the new page" in new SetUp {
+      "redirect to the new page" in new ArrivalSetUp {
         mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
         sendMovementRequest202Response
 
@@ -121,18 +128,14 @@ class SummaryControllerSpec extends MovementBaseSpec {
 
     "MovementSummaryController.displayConfirmation" should {
 
-      "display confirmation page for Arrival" in new SetUp {
-        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
-        mockCustomsCacheServiceClearedSuccessfully()
+      "display confirmation page for Arrival" in new ArrivalSetUp {
 
         val result = route(app, getRequest(uriConfirmation)).get
 
         contentAsString(result) must include(messagesApi("movement.choice.EAL") + " has been submitted")
       }
 
-      "display confirmation page for Departure" in new SetUp {
-        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EDL")))
-        mockCustomsCacheServiceClearedSuccessfully()
+      "display confirmation page for Departure" in new DepartureSetUp {
 
         val result = route(app, getRequest(uriConfirmation)).get
 

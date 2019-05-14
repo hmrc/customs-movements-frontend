@@ -44,7 +44,7 @@ site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
 site.save_and_continue = Save and continue
-site.acceptAndSubmitDeclaration = Accept and submit declaration
+site.acceptAndSend = Accept and send
 site.save_and_come_back_later = Save and come back later
 site.service_name = Declare an Export
 site.textarea.char_limit = (Limit is {0} characters)
@@ -229,7 +229,7 @@ arrivalDetails.title = Arrival time and date
 arrivalDetails.header = Enter date and time of arrival
 arrivalDetails.date.question = Date of Arrival
 arrivalDetails.date.hint = For example, 01 08 2007
-arrivalDetails.time.question = Time of arrival
+arrivalDetails.time.question = Time of Arrival
 arrivalDetails.time.hint = Enter the time in 24 hour format. For example, 13 30
 
 departureDetails.title = Departure time and date
@@ -267,3 +267,15 @@ transport.nationality.question = Nationality of transport crossing the border
 transport.nationality.hint = A 2 digit code
 transport.nationality.empty = Please provide nationality of transport
 transport.nationality.error = Nationality of transport is incorrect
+
+summary.title = Check your answers
+summary.eori = Eori
+summary.referenceType = Reference Type
+summary.referenceValue = Reference Value
+summary.goodsLocation = Goods Location
+summary.modeOfTransport = Mode of transport
+summary.nationality = Nationality
+
+summary.arrival.title = Check your answers before arriving these goods
+summary.arrival.date = Date of Arrival
+summary.arrival.time = Time of Arrival

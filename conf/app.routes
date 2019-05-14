@@ -48,10 +48,10 @@ POST        /transport                     controllers.TransportController.saveT
 
 # Movements Summary
 
-GET         /summary                       controllers.movement.MovementSummaryController.displaySummary()
+GET         /summary                       controllers.SummaryController.displayPage()
 
-POST        /summary                       controllers.movement.MovementSummaryController.submitMovementRequest()
+POST        /summary                       controllers.SummaryController.submitMovementRequest()
 
 # Movement Confirmation
 
-GET         /confirmation                  controllers.movement.MovementSummaryController.displayConfirmation()
+GET         /confirmation                  controllers.SummaryController.displayConfirmation()

@@ -23,14 +23,15 @@ import forms.{Choice, GoodsDeparted}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import play.api.libs.json.{JsObject, JsString}
+import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 import scala.concurrent.Future
 
-class MovementSummaryControllerSpec extends MovementBaseSpec {
+class SummaryControllerSpec extends MovementBaseSpec {
 
   private val uriSummary = uriWithContextPath("/summary")
   private val uriConfirmation = uriWithContextPath("/confirmation")
@@ -48,9 +49,7 @@ class MovementSummaryControllerSpec extends MovementBaseSpec {
 
       "return 500 code and display error page" in new SetUp {
 
-        mockBackOrOutTheUKFailed()
-        when(mockCustomsCacheService.fetchMovementRequest(any(), any())(any(), any()))
-          .thenReturn(Future.successful(None))
+        when(mockCustomsCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
 
         val result = route(app, getRequest(uriSummary)).get
 
@@ -62,31 +61,12 @@ class MovementSummaryControllerSpec extends MovementBaseSpec {
     "can read data from DB" should {
 
       "return 200 code" in new SetUp {
-
-        mockBackOrOutTheUKSuccessful()
-        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
+        when(mockCustomsCacheService.fetch(any())(any(), any()))
+          .thenReturn(Future.successful(Some(CacheMap("id", Map.empty[String, JsValue]))))
 
         val result = route(app, getRequest(uriSummary)).get
-        val stringResult = contentAsString(result)
-
-        val warningIconTag = "<i class=\"icon icon-important\">"
 
         status(result) must be(OK)
-
-        stringResult must include(warningIconTag)
-        stringResult must include(messages("movement.summaryPage.warningMessage"))
-
-        stringResult must include("table")
-        stringResult must include("tbody")
-        stringResult must include("td class=\"previous-question-title bold\"")
-        stringResult must include("td class=\"previous-question-body\"")
-
-        stringResult must include(messages("movement.eori"))
-        stringResult must include(messages("movement.ucr"))
-        stringResult must include(messages("movement.ucrType"))
-        stringResult must include(messages("movement.goodsLocation"))
-
-        contentAsString(result) must include(messages("movement.summaryPage.confirmationNotice"))
       }
     }
   }

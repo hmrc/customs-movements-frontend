@@ -58,7 +58,7 @@ class TransportController @Inject()(
           Future.successful(BadRequest(transport(formWithErrors, request.choice.value))),
         validForm =>
           customsCacheService.cache[Transport](movementCacheId, formId, validForm).map { _ =>
-            Redirect(controllers.movement.routes.MovementSummaryController.displaySummary())
+            Redirect(controllers.routes.SummaryController.displayPage())
         }
       )
   }

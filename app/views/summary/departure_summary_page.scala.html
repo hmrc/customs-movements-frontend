@@ -15,8 +15,76 @@
  *@
 
 @import config.AppConfig
+@import controllers.routes._
 @import uk.gov.hmrc.http.cache.client.CacheMap
+@import models.viewmodels.HtmlTableRow
+@import forms._
+@import uk.gov.hmrc.play.views.html._
 
 @(data: CacheMap)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-<div>DEPARTURE</div>
+    @main_template(
+        title = messages("summary.title"),
+        appConfig = appConfig
+    ) {
+
+        @if(data.getEntry[GoodsDeparted](GoodsDeparted.formId).map(_.departedPlace) == Some(GoodsDeparted.AllowedPlaces.outOfTheUk)){
+            @components.back_link("/customs-movements/transport")
+        } else {
+            @components.back_link("/customs-movements/goods-departed")
+        }
+
+        @components.page_title(Some("summary.departure.title"))
+
+        @components.summary_list(Some(messages("consignmentReferences.title"))) {
+            @components.table_row_no_change_link(HtmlTableRow(
+                label = messages("summary.eori"),
+                value = data.getEntry[ConsignmentReferences](ConsignmentReferences.formId).flatMap(_.eori)
+            ))
+            @components.table_row_no_change_link(HtmlTableRow(
+                label = messages("summary.referenceType"),
+                value = data.getEntry[ConsignmentReferences](ConsignmentReferences.formId).map(_.reference)
+            ))
+            @components.table_row_no_change_link(HtmlTableRow(
+                label = messages("summary.referenceValue"),
+                value = data.getEntry[ConsignmentReferences](ConsignmentReferences.formId).map(_.referenceValue)
+            ))
+        }
+
+        @components.summary_list(Some(messages("location.title"))) {
+            @components.table_row_no_change_link(HtmlTableRow(
+                label = messages("summary.goodsLocation"),
+                value = data.getEntry[Location](Location.formId).flatMap(_.goodsLocation)
+            ))
+        }
+
+        @components.summary_list(Some(messages("goodsDeparted.title"))) {
+            @components.table_row_no_change_link(HtmlTableRow(
+                label = messages("summary.departure.goodsDeparted"),
+                value = data.getEntry[GoodsDeparted](GoodsDeparted.formId).map(_.departedPlace)
+            ))
+        }
+
+        @if(data.getEntry[GoodsDeparted](GoodsDeparted.formId).map(_.departedPlace) == Some(GoodsDeparted.AllowedPlaces.outOfTheUk)) {
+            @components.summary_list(Some(messages("departureDetails.title"))) {
+                @components.table_row_no_change_link(HtmlTableRow(
+                    label = messages("summary.departure.date"),
+                    value = data.getEntry[DepartureDetails](MovementDetails.formId).map(_.dateOfDeparture.toString)
+                ))
+            }
+            @components.summary_list(Some(messages("transport.title"))) {
+                @components.table_row_no_change_link(HtmlTableRow(
+                    label = messages("summary.modeOfTransport"),
+                    value = data.getEntry[Transport](Transport.formId).map(_.modeOfTransport)
+                ))
+                @components.table_row_no_change_link(HtmlTableRow(
+                    label = messages("summary.nationality"),
+                    value = data.getEntry[Transport](Transport.formId).map(_.nationality)
+                ))
+            }
+        }
+
+        @helpers.form(action = SummaryController.submitMovementRequest()) {
+            @components.submit_button(messages("site.acceptAndSend"))
+        }
+    }

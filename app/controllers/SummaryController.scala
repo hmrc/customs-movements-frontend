@@ -14,32 +14,30 @@
  * limitations under the License.
  */
 
-package controllers.movement
+package controllers
 
 import config.AppConfig
 import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.movementCacheId
-import forms.GoodsDeparted
-import forms.inventorylinking.MovementRequestSummaryMappingProvider
+import forms.Choice.AllowedChoiceValues._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import metrics.{MetricIdentifiers, MovementsMetrics}
 import models.requests.JourneyRequest
 import play.api.Logger
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.inventorylinking.common.UcrBlock
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
-import views.html.movement.{movement_confirmation_page, movement_summary_page}
+import views.html.movement.movement_confirmation_page
+import views.html.summary.{arrival_summary_page, departure_summary_page}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MovementSummaryController @Inject()(
-  appConfig: AppConfig,
+class SummaryController @Inject()(
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -47,28 +45,22 @@ class MovementSummaryController @Inject()(
   customsCacheService: CustomsCacheService,
   customsDeclareExportsMovementsConnector: CustomsDeclareExportsMovementsConnector,
   exportsMetrics: MovementsMetrics
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController with I18nSupport {
 
-  def displaySummary(): Action[AnyContent] =
-    (authenticate andThen journeyType).async { implicit request =>
-      val form = Form(
-        MovementRequestSummaryMappingProvider
-          .provideMappingForMovementSummaryPage()
-      )
+  private val logger = Logger(this.getClass())
 
-      val movementRequestOpt = customsCacheService
-        .fetchMovementRequest(movementCacheId, request.authenticatedRequest.user.eori)
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    val cacheMapOpt = customsCacheService.fetch(movementCacheId)
 
-      val backOrOutTheUKOpt = customsCacheService.fetchAndGetEntry[GoodsDeparted](movementCacheId, GoodsDeparted.formId)
+    val typeOfJourney = request.choice.value
 
-      movementRequestOpt.zip(backOrOutTheUKOpt).map {
-        case (Some(movementRequest), Some(backOrOutTheUK)) =>
-          Ok(movement_summary_page(appConfig, form.fill(movementRequest), backOrOutTheUK))
-        case _ => handleError(s"Could not obtain data from DB")
-
-      }
+    cacheMapOpt.map {
+      case Some(data) if typeOfJourney == Arrival => Ok(arrival_summary_page(data))
+      case Some(data) if typeOfJourney == Departure => Ok(departure_summary_page(data))
+      case _ => handleError("Could not obtain data from DB")
     }
+  }
 
   private def parseDUCR(ucrBlock: UcrBlock): Option[String] =
     ucrBlock.ucrType match {
@@ -97,7 +89,7 @@ class MovementSummaryController @Inject()(
                   case ACCEPTED =>
                     exportsMetrics.incrementCounter(metricIdentifier)
                     Redirect(
-                      controllers.movement.routes.MovementSummaryController
+                      controllers.routes.SummaryController
                         .displayConfirmation()
                     )
                   case _ => handleError(s"Unable to save data")
@@ -124,7 +116,7 @@ class MovementSummaryController @Inject()(
     }
 
   private def handleError(logMessage: String)(implicit request: JourneyRequest[_]): Result = {
-    Logger.error(logMessage)
+    logger.error(logMessage)
     InternalServerError(
       errorHandler.standardErrorTemplate(
         pageTitle = messagesApi("global.error.title"),

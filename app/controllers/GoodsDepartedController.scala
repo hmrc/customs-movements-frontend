@@ -62,7 +62,7 @@ class GoodsDepartedController @Inject()(
             validForm.departedPlace match {
               case AllowedPlaces.outOfTheUk => Redirect(controllers.routes.MovementDetailsController.displayPage())
               case AllowedPlaces.backIntoTheUk =>
-                Redirect(controllers.movement.routes.MovementSummaryController.displaySummary())
+                Redirect(controllers.routes.SummaryController.displayPage())
             }
         }
       )

@@ -279,3 +279,7 @@ summary.nationality = Nationality
 summary.arrival.title = Check your answers before arriving these goods
 summary.arrival.date = Date of Arrival
 summary.arrival.time = Time of Arrival
+
+summary.departure.title = Check your answers before departing these goods
+summary.departure.goodsDeparted = Goods Departed
+summary.departure.date = Date of Departure

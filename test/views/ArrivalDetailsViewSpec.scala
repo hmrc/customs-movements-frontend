@@ -37,7 +37,7 @@ class ArrivalDetailsViewSpec extends ViewSpec with ArrivalDetailsMessages with C
       assertMessage(arrivalHeader, "Enter date and time of arrival")
       assertMessage(arrivalDateQuestion, "Date of Arrival")
       assertMessage(arrivalDateHint, "For example, 01 08 2007")
-      assertMessage(arrivalTimeQuestion, "Time of arrival")
+      assertMessage(arrivalTimeQuestion, "Time of Arrival")
       assertMessage(arrivalTimeHint, "Enter the time in 24 hour format. For example, 13 30")
     }
   }

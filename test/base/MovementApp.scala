@@ -20,7 +20,6 @@ import java.util.UUID
 
 import akka.stream.Materializer
 import connectors.CustomsDeclareExportsMovementsConnector
-import controllers.actions.FakeAuthAction
 import metrics.MovementsMetrics
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
@@ -36,7 +35,7 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson}
 import play.api.test.FakeRequest
 import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
-import services.CustomsCacheService
+import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.http.SessionKeys
 
@@ -44,14 +43,14 @@ import scala.concurrent.ExecutionContext
 
 trait MovementApp
     extends PlaySpec with GuiceOneAppPerSuite with MockAuthAction with MockCustomsCacheService
-    with MockCustomsExportsMovement with MockMovementsMetrics with ScalaFutures {
+    with MockSubmissionService with MockCustomsExportsMovement with MockMovementsMetrics with ScalaFutures {
 
   override lazy val app: Application = GuiceApplicationBuilder()
     .overrides(
       bind[AuthConnector].to(mockAuthConnector),
       bind[CustomsCacheService].to(mockCustomsCacheService),
       bind[CustomsDeclareExportsMovementsConnector].to(mockCustomsExportsMovementConnector),
-      bind[MovementsMetrics].to(mockMovementsMetrics)
+      bind[SubmissionService].to(mockSubmissionService)
     )
     .build()
 
@@ -68,6 +67,8 @@ trait MovementApp
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
 
   implicit val mat: Materializer = app.materializer
+
+  val metrics = app.injector.instanceOf[MovementsMetrics]
 
   implicit val ec: ExecutionContext = Implicits.defaultContext
 

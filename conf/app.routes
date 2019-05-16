@@ -51,7 +51,3 @@ POST        /transport                     controllers.TransportController.saveT
 GET         /summary                       controllers.SummaryController.displayPage()
 
 POST        /summary                       controllers.SummaryController.submitMovementRequest()
-
-# Movement Confirmation
-
-GET         /confirmation                  controllers.SummaryController.displayConfirmation()

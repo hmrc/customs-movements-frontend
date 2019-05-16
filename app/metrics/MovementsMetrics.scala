@@ -20,24 +20,20 @@ import com.codahale.metrics.Timer.Context
 import com.kenshoo.play.metrics.Metrics
 import javax.inject.{Inject, Singleton}
 import metrics.MetricIdentifiers._
-
+import forms.Choice.AllowedChoiceValues._
 @Singleton
 class MovementsMetrics @Inject()(metrics: Metrics) {
 
-  private val timers = Map(
-    submissionMetric -> metrics.defaultRegistry.timer(s"$submissionMetric.timer"),
+  val timers = Map(
     arrivalMetric -> metrics.defaultRegistry.timer(s"$arrivalMetric.timer"),
     departureMetric -> metrics.defaultRegistry.timer(s"$departureMetric.timer"),
-    consolidationMetric -> metrics.defaultRegistry.timer(s"$consolidationMetric.timer"),
-    cancelMetric -> metrics.defaultRegistry.timer(s"$cancelMetric.timer")
+    consolidationMetric -> metrics.defaultRegistry.timer(s"$consolidationMetric.timer")
   )
 
-  private val counters = Map(
-    submissionMetric -> metrics.defaultRegistry.counter(s"$submissionMetric.counter"),
+  val counters = Map(
     arrivalMetric -> metrics.defaultRegistry.counter(s"$arrivalMetric.counter"),
     departureMetric -> metrics.defaultRegistry.counter(s"$departureMetric.counter"),
-    consolidationMetric -> metrics.defaultRegistry.counter(s"$consolidationMetric.counter"),
-    cancelMetric -> metrics.defaultRegistry.counter(s"$cancelMetric.counter")
+    consolidationMetric -> metrics.defaultRegistry.counter(s"$consolidationMetric.counter")
   )
 
   def startTimer(feature: String): Context = timers(feature).time()
@@ -46,10 +42,7 @@ class MovementsMetrics @Inject()(metrics: Metrics) {
 }
 
 object MetricIdentifiers {
-  val submissionMetric = "submission"
-  val arrivalMetric = "movement.arrival"
-  val departureMetric = "movement.departure"
+  val arrivalMetric = Arrival
+  val departureMetric = Departure
   val consolidationMetric = "consolidation"
-  val cancelMetric = "cancellation"
-
 }

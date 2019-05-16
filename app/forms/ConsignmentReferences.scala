@@ -29,8 +29,8 @@ object ConsignmentReferences {
   val formId = "ConsignmentReferences"
 
   object AllowedReferences {
-    val Ducr = "Ducr"
-    val Mucr = "Mucr"
+    val Ducr = "D"
+    val Mucr = "M"
   }
 
   import AllowedReferences._

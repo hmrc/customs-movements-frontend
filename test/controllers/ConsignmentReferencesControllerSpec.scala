@@ -53,7 +53,7 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
 
       "cache contains data" in new ArrivalSetUp {
 
-        withCaching(ConsignmentReferences.formId, Some(ConsignmentReferences(Some("eori"), "Ducr", "123456")))
+        withCaching(ConsignmentReferences.formId, Some(ConsignmentReferences(Some("eori"), "D", "123456")))
 
         val result = route(app, getRequest(uri)).get
 
@@ -76,9 +76,8 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
 
       withCaching(ConsignmentReferences.formId)
 
-      val correctForm: JsValue = JsObject(
-        Map("eori" -> JsString("eori"), "reference" -> JsString("Ducr"), "referenceValue" -> JsString("123456"))
-      )
+      val correctForm: JsValue =
+        JsObject(Map("eori" -> JsString("eori"), "reference" -> JsString("D"), "referenceValue" -> JsString("123456")))
 
       val result = route(app, postRequest(uri, correctForm)).get
       val headers = result.futureValue.header.headers
@@ -91,9 +90,8 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
 
       withCaching(ConsignmentReferences.formId)
 
-      val correctForm: JsValue = JsObject(
-        Map("eori" -> JsString("eori"), "reference" -> JsString("Ducr"), "referenceValue" -> JsString("123456"))
-      )
+      val correctForm: JsValue =
+        JsObject(Map("eori" -> JsString("eori"), "reference" -> JsString("D"), "referenceValue" -> JsString("123456")))
 
       val result = route(app, postRequest(uri, correctForm)).get
       val headers = result.futureValue.header.headers

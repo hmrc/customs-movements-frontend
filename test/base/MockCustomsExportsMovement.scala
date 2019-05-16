@@ -33,12 +33,12 @@ trait MockCustomsExportsMovement extends MockitoSugar {
   def sendMovementRequest202Response(): OngoingStubbing[Future[HttpResponse]] =
     when(
       mockCustomsExportsMovementConnector
-        .submitMovementDeclaration(any(), any(), any(), any())(any(), any())
+        .submitMovementDeclaration(any(), any(), any())(any(), any())
     ).thenReturn(Future.successful(HttpResponse(ACCEPTED)))
 
   def sendMovementRequest400Response(): OngoingStubbing[Future[HttpResponse]] =
     when(
       mockCustomsExportsMovementConnector
-        .submitMovementDeclaration(any(), any(), any(), any())(any(), any())
+        .submitMovementDeclaration(any(), any(), any())(any(), any())
     ).thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 }

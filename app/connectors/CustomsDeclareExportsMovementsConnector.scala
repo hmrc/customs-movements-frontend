@@ -51,18 +51,4 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
         response
       }
 
-  def saveMovementSubmission(
-    body: MovementSubmission
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsMovementsResponse] =
-    httpClient
-      .POST[MovementSubmission, CustomsDeclareExportsMovementsResponse](
-        s"${appConfig.customsDeclareExportsMovements}${appConfig.saveMovementSubmission}",
-        body,
-        Seq()
-      )
-      .map { response =>
-        Logger.debug(s"CUSTOMS_DECLARE_EXPORTS save movement response is --> ${response.toString}")
-        response
-      }
-
 }

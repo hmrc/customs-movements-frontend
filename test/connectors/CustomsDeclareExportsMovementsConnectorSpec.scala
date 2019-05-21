@@ -16,12 +16,21 @@
 
 package connectors
 
+import base.ExportsTestData.cacheMapData
 import base.TestHelper._
 import base.{MockHttpClient, MovementBaseSpec, TestHelper}
 import config.AppConfig
+import forms.Choice.AllowedChoiceValues
+import forms.Choice.AllowedChoiceValues.Arrival
+import forms.{Choice, Movement}
+import metrics.MovementsMetrics
 import models._
+import play.api.http.{ContentTypes, HeaderNames}
+import play.api.libs.json.Json
+import play.api.mvc.Codec
 import play.api.test.Helpers.OK
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.wco.dec.MetaData
 
@@ -32,16 +41,16 @@ class CustomsDeclareExportsMovementsConnectorSpec extends MovementBaseSpec {
 
   "Customs Exports Movements Connector" should {
 
-    "POST to Customs Declare Exports endpoint to save movement submission" in {
+    "submit Movement Declaration to backend" in {
       val http = new MockHttpClient(
         expectedMovementsUrl(appConfig.saveMovementSubmission),
-        movementSubmission,
+        data.toXml,
         expectedHeaders,
-        falseServerError,
-        CustomsDeclareExportsMovementsResponse(OK, "success")
+        false,
+        HttpResponse(OK, Some(Json.toJson("success")))
       )
       val client = new CustomsDeclareExportsMovementsConnector(appConfig, http)
-      val response = client.saveMovementSubmission(movementSubmission)(hc, ec)
+      val response = client.submitMovementDeclaration(data.ucrBlock.ucr,data.messageCode,data.toXml)(hc, ec)
 
       response.futureValue.status must be(OK)
     }
@@ -54,16 +63,18 @@ class CustomsDeclareExportsMovementsConnectorSpec extends MovementBaseSpec {
 
 object CustomsDeclareExportsMovementsConnectorSpec {
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomAlphanumericString(255))))
-  val mrn: String = TestHelper.createRandomAlphanumericString(10)
   val metadata = MetaData()
 
   val conversationId: String = TestHelper.createRandomAlphanumericString(10)
   val eori: String = TestHelper.createRandomAlphanumericString(15)
 
-  val expectedHeaders: Seq[(String, String)] = Seq.empty
 
-  val falseServerError: Boolean = false
-  val movementSubmission =
-    MovementSubmission("eori1", "convid1", "ducr1", None, "EAL")
 
+  val data = Movement.createMovementRequest(CacheMap(Arrival, cacheMapData(Arrival)), "eori1",Choice(Arrival))
+  val expectedHeaders: Seq[(String, String)] = Seq(
+    (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
+    (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
+    ("X-UCR", data.ucrBlock.ucr),
+    ("X-MOVEMENT-TYPE", data.messageCode)
+  )
 }

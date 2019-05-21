@@ -35,7 +35,6 @@ class SubmissionServiceSpec extends MovementBaseSpec {
       authorization = Some(Authorization(TestHelper.createRandomString(255))),
       nsStamp = DateTime.now().getMillis
     )
-  val metricsArrival = mock[MovementsMetrics]
   val submissionService = new SubmissionService(mockCustomsCacheService, mockCustomsExportsMovementConnector, metrics)
 
   "SubmissionService" should {

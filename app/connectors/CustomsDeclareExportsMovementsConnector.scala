@@ -31,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
 
-  def submitMovementDeclaration(ducr: String, mucr: Option[String], movementType: String, xmlBody: String)(
+  def submitMovementDeclaration(ucr: String, movementType: String, xmlBody: String)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[HttpResponse] =
@@ -42,8 +42,7 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
         Seq(
           (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
           (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
-          ("X-DUCR", ducr),
-          ("X-MUCR", mucr.getOrElse("")),
+          ("X-UCR", ucr),
           ("X-MOVEMENT-TYPE", movementType.toString)
         )
       )

@@ -21,7 +21,9 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.mockito.MockitoSugar
-import services.CustomsCacheService
+import play.api.test.Helpers.ACCEPTED
+import services.{CustomsCacheService, SubmissionService}
+import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
@@ -34,9 +36,26 @@ trait MockCustomsCacheService extends MockitoSugar {
     when(mockCustomsCacheService.fetchAndGetEntry[T](any(), ArgumentMatchers.eq(formId))(any(), any(), any()))
       .thenReturn(Future.successful(dateToReturn))
 
+  def withCacheMap(dateToReturn: Option[CacheMap]): OngoingStubbing[Future[Option[CacheMap]]] =
+    when(mockCustomsCacheService.fetch(any())(any(), any()))
+      .thenReturn(Future.successful(dateToReturn))
+
   def withCaching(formId: String): OngoingStubbing[Future[CacheMap]] =
     when(
       mockCustomsCacheService
         .cache(any(), ArgumentMatchers.eq(formId), any())(any(), any(), any())
     ).thenReturn(Future.successful(CacheMap("", Map.empty)))
+
+  def mockCustomsCacheServiceClearedSuccessfully(): OngoingStubbing[Future[HttpResponse]] =
+    when(mockCustomsCacheService.remove(any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+}
+
+trait MockSubmissionService extends MockitoSugar {
+
+  val mockSubmissionService: SubmissionService = mock[SubmissionService]
+
+  def mockSubmission(status: Int = ACCEPTED): OngoingStubbing[Future[Int]] =
+    when(mockSubmissionService.submitMovementRequest(any(), any(), any())(any(), any()))
+      .thenReturn(Future.successful(status))
 }

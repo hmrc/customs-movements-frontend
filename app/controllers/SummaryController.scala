@@ -17,21 +17,17 @@
 package controllers
 
 import config.AppConfig
-import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.movementCacheId
 import forms.Choice.AllowedChoiceValues._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import metrics.{MetricIdentifiers, MovementsMetrics}
 import models.requests.JourneyRequest
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
-import services.CustomsCacheService
+import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import uk.gov.hmrc.wco.dec.inventorylinking.common.UcrBlock
-import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 import views.html.movement.movement_confirmation_page
 import views.html.summary.{arrival_summary_page, departure_summary_page}
 
@@ -43,8 +39,7 @@ class SummaryController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
-  customsDeclareExportsMovementsConnector: CustomsDeclareExportsMovementsConnector,
-  exportsMetrics: MovementsMetrics
+  submissionService: SubmissionService
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController with I18nSupport {
 
@@ -56,62 +51,22 @@ class SummaryController @Inject()(
     val typeOfJourney = request.choice.value
 
     cacheMapOpt.map {
-      case Some(data) if typeOfJourney == Arrival => Ok(arrival_summary_page(data))
+      case Some(data) if typeOfJourney == Arrival   => Ok(arrival_summary_page(data))
       case Some(data) if typeOfJourney == Departure => Ok(departure_summary_page(data))
-      case _ => handleError("Could not obtain data from DB")
+      case _                                        => handleError("Could not obtain data from DB")
     }
   }
 
-  private def parseDUCR(ucrBlock: UcrBlock): Option[String] =
-    ucrBlock.ucrType match {
-      case "D" => Some(ucrBlock.ucr)
-      case _   => None
-    }
-
   def submitMovementRequest(): Action[AnyContent] =
     (authenticate andThen journeyType).async { implicit request =>
-      customsCacheService
-        .fetchMovementRequest(movementCacheId, request.authenticatedRequest.user.eori)
+      submissionService
+        .submitMovementRequest(movementCacheId, request.authenticatedRequest.user.eori, request.choice)
         .flatMap {
-          case Some(data) => {
-            val ducrVal = parseDUCR(data.ucrBlock).getOrElse("")
-            val eoriVal = request.authenticatedRequest.user.eori
-            val mucrVal = data.masterUCR
-            val movementType = "EAL" // EDL for departure
-
-            val metricIdentifier = getMetricIdentifierFrom(data)
-            exportsMetrics.startTimer(metricIdentifier)
-
-            customsDeclareExportsMovementsConnector
-              .submitMovementDeclaration(ducrVal, mucrVal, movementType, data.toXml)
-              .map { submitResponse =>
-                submitResponse.status match {
-                  case ACCEPTED =>
-                    exportsMetrics.incrementCounter(metricIdentifier)
-                    Redirect(
-                      controllers.routes.SummaryController
-                        .displayConfirmation()
-                    )
-                  case _ => handleError(s"Unable to save data")
-                }
-              }
-          }
-          case _ =>
-            Future.successful(handleError(s"Could not obtain data from DB"))
-        }
-    }
-
-  def displayConfirmation(): Action[AnyContent] =
-    (authenticate andThen journeyType).async { implicit request =>
-      customsCacheService
-        .fetchMovementRequest(movementCacheId, request.authenticatedRequest.user.eori)
-        .flatMap {
-          case Some(data) =>
+          case ACCEPTED =>
             customsCacheService.remove(movementCacheId).map { _ =>
-              Ok(movement_confirmation_page(appConfig, data.messageCode, data.ucrBlock.ucr))
+              Ok(movement_confirmation_page(request.choice.value))
             }
-          case _ =>
-            Future.successful(handleError(s"Could not obtain data from DB"))
+          case _ => Future.successful(handleError(s"Unable to submit movement data"))
         }
     }
 
@@ -125,11 +80,5 @@ class SummaryController @Inject()(
       )
     )
   }
-
-  private def getMetricIdentifierFrom(movementData: InventoryLinkingMovementRequest): String =
-    movementData.messageCode match {
-      case "EAL" => MetricIdentifiers.arrivalMetric
-      case "EDL" => MetricIdentifiers.departureMetric
-    }
 
 }

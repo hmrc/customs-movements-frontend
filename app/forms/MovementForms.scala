@@ -16,22 +16,10 @@
 
 package forms
 
-import forms.Choice.AllowedChoiceValues
-import play.api.data.Form
-import play.api.data.Forms.{mapping, optional, text}
-import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
-
-object MovementFormsAndIds {
-
-  val locationForm = Location.form()
-  val locationId = "Location"
-
-  val transportForm = Form(Transport.mapping)
-  val transportId = "Transport"
-}
+import forms.Choice.AllowedChoiceValues._
 
 object Movement {
 
@@ -40,39 +28,39 @@ object Movement {
       cacheMap
         .getEntry[ConsignmentReferences](ConsignmentReferences.formId)
         .getOrElse(ConsignmentReferences(None, "", ""))
-    val departureDetails =
-      cacheMap.getEntry[DepartureDetails](MovementDetails.formId)
+
+    val departureDetails = choice.value match {
+      case Departure => cacheMap.getEntry[DepartureDetails](MovementDetails.formId)
+      case _         => None
+    }
+    val arrivalDetails = choice.value match {
+      case Arrival =>
+        cacheMap
+          .getEntry[ArrivalDetails](MovementDetails.formId)
+          .map(res => s"${res.dateOfArrival.toString}T${res.timeOfArrival.fold("")(_.toString)}:00")
+      case _ => None
+    }
     val location =
-      cacheMap
-        .getEntry[Location](MovementFormsAndIds.locationId)
-        .getOrElse(Location(None))
+      cacheMap.getEntry[Location](Location.formId).flatMap(_.goodsLocation)
     val transport =
       cacheMap
-        .getEntry[Transport](MovementFormsAndIds.transportId)
-        .getOrElse(Transport("", ""))
+        .getEntry[Transport](Transport.formId)
 
-    // TODO: ucrType is hardcoded need to UPDATE after we allow user input for mucr
     InventoryLinkingMovementRequest(
-      messageCode =
-        if (choice.value.equals(AllowedChoiceValues.Arrival) || choice.value
-              .equals(AllowedChoiceValues.Departure))
-          choice.value
-        else "",
-      agentDetails = Some(AgentDetails(eori = Some(eori), agentLocation = location.goodsLocation)),
-      ucrBlock = UcrBlock(ucr = referencesForm.reference, ucrType = "D"),
-      goodsLocation = location.goodsLocation.getOrElse(""),
-      goodsArrivalDateTime =
-        if (choice.value.equals("EAL") && departureDetails.isDefined)
-          Some(departureDetails.toString)
-        else None,
-      goodsDepartureDateTime =
-        if (choice.value.equals("EDL") && departureDetails.isDefined)
-          Some(departureDetails.toString)
-        else None,
-      masterUCR = None,
-      masterOpt = None,
-      movementReference = None,
-      transportDetails = None
+      messageCode = choice.value,
+      agentDetails = Some(AgentDetails(eori = Some(eori), agentLocation = location)),
+      ucrBlock = UcrBlock(ucr = referencesForm.referenceValue, ucrType = referencesForm.reference),
+      goodsLocation = location.getOrElse(""),
+      goodsArrivalDateTime = arrivalDetails,
+      goodsDepartureDateTime = departureDetails.map(_.toString),
+      transportDetails = mapTransportDetails(transport)
     )
   }
+
+  private def mapTransportDetails(transport: Option[Transport]) =
+    transport.map(
+      data =>
+        TransportDetails(transportMode = Some(data.modeOfTransport), transportNationality = Some(data.nationality))
+    )
+
 }

@@ -19,6 +19,8 @@
 @import uk.gov.hmrc.http.cache.client.CacheMap
 @import models.viewmodels.HtmlTableRow
 @import forms._
+@import forms.ConsignmentReferences.AllowedReferences
+
 @import uk.gov.hmrc.play.views.html._
 
 @(data: CacheMap)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -43,7 +45,11 @@
             ))
             @components.table_row_no_change_link(HtmlTableRow(
                 label = messages("summary.referenceType"),
-                value = data.getEntry[ConsignmentReferences](ConsignmentReferences.formId).map(_.reference)
+                value = data.getEntry[ConsignmentReferences](ConsignmentReferences.formId).map(ref =>
+                    ref.reference.equals(AllowedReferences.Ducr) match {
+                    case true => messages("consignmentReferences.reference.ducr")
+                    case _ => messages("consignmentReferences.reference.mucr")
+                })
             ))
             @components.table_row_no_change_link(HtmlTableRow(
                 label = messages("summary.referenceValue"),

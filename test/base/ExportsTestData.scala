@@ -16,8 +16,19 @@
 
 package base
 
-import forms.Choice
+import forms.{
+  ArrivalDetails,
+  Choice,
+  ConsignmentReferences,
+  DepartureDetails,
+  GoodsDeparted,
+  Location,
+  MovementDetails,
+  Transport
+}
 import forms.Choice._
+import forms.GoodsDeparted.AllowedPlaces
+import forms.common.{Date, Time}
 import models.SignedInUser
 import org.joda.time.DateTimeZone.UTC
 import org.joda.time.{DateTime, LocalDate}
@@ -113,13 +124,28 @@ object ExportsTestData {
     )
   )
 
-  val correctTransport: JsValue = JsObject(
+  val correctTransport: JsValue = JsObject(Map("modeOfTransport" -> JsString("M"), "nationality" -> JsString("PL")))
+
+  def consignmentReferences(refType: String) = ConsignmentReferences(Some("eori1"), refType, s"${refType}-12344546")
+  val date = Date(Some(10), Some(8), Some(2018))
+  val departureDetails = DepartureDetails(date)
+
+  def arrivalDepartureTimes(movementType: String) =
+    if (movementType == "EAL") Json.toJson(ArrivalDetails(date, Some(Time(Some("13"), Some("34")))))
+    else
+      Json.toJson(DepartureDetails(date))
+
+  val goodsDeparted = GoodsDeparted(AllowedPlaces.outOfTheUk)
+
+  def cacheMapData(movementType: String, refType: String = "DUCR") =
     Map(
-      "transportId" -> JsString("Transport Id"),
-      "transportMode" -> JsString("M"),
-      "transportNationality" -> JsString("PL")
+      Choice.choiceId -> Json.toJson(Choice(movementType)),
+      ConsignmentReferences.formId -> Json.toJson(consignmentReferences(refType)),
+      MovementDetails.formId -> arrivalDepartureTimes(movementType),
+      GoodsDeparted.formId -> Json.toJson(goodsDeparted),
+      Location.formId -> location,
+      Transport.formId -> correctTransport
     )
-  )
 
   def validMovementRequest(movementType: String) =
     InventoryLinkingMovementRequest(

@@ -31,8 +31,8 @@ class ConsignmentReferencesSpec extends BaseSpec {
     }
 
     "has correct allowed references" in {
-      ConsignmentReferences.AllowedReferences.Ducr must be("Ducr")
-      ConsignmentReferences.AllowedReferences.Mucr must be("Mucr")
+      ConsignmentReferences.AllowedReferences.Ducr must be("D")
+      ConsignmentReferences.AllowedReferences.Mucr must be("M")
     }
 
     "contains formId" in {
@@ -60,7 +60,7 @@ class ConsignmentReferencesSpec extends BaseSpec {
     }
 
     "no errors when data is correct" in {
-      val inputData = ConsignmentReferences(Some("eori"), "Ducr", "123456")
+      val inputData = ConsignmentReferences(Some("eori"), "D", "123456")
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
       errors.length must be(0)

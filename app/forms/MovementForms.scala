@@ -33,7 +33,6 @@ object Movement {
       case Departure => cacheMap.getEntry[DepartureDetails](MovementDetails.formId)
       case _         => None
     }
-    //TODO:Seconds to be mapped with user input
     val arrivalDetails = choice.value match {
       case Arrival =>
         cacheMap

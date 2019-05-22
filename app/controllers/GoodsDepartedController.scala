@@ -19,13 +19,13 @@ package controllers
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.movementCacheId
-import forms.{Choice, GoodsDeparted}
 import forms.GoodsDeparted._
+import forms.{Choice, GoodsDeparted}
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.goods_departed
@@ -34,13 +34,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GoodsDepartedController @Inject()(
-  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
-  errorHandler: ErrorHandler
+  errorHandler: ErrorHandler,
+  mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
-    extends FrontendController with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.choice.value match {

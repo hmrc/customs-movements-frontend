@@ -17,7 +17,7 @@
 @import config.AppConfig
 @import controllers.routes._
 @import forms.Choice
-@import forms.Choice.AllowedChoiceValues._
+@import forms.Choice.AllowedChoiceValues
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
@@ -37,8 +37,8 @@
             field = form("choice"),
             legend = "",
             inputs = Seq(
-                RadioOption("Arrival", Arrival, messages("movement.choice.EAL")),
-                RadioOption("Departure", Departure, messages("movement.choice.EDL"))
+                RadioOption("Arrival", AllowedChoiceValues.Arrival, messages("movement.choice.EAL")),
+                RadioOption("Departure", AllowedChoiceValues.Departure, messages("movement.choice.EDL"))
             )
         )
 

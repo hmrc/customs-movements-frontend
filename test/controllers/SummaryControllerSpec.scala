@@ -22,6 +22,7 @@ import forms.{Choice, GoodsDeparted}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfter
+import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -54,7 +55,7 @@ class SummaryControllerSpec extends MovementBaseSpec with BeforeAndAfter {
         val result = route(app, getRequest(uriSummary)).get
 
         status(result) must be(INTERNAL_SERVER_ERROR)
-        contentAsString(result) must include(messagesApi("global.error.heading"))
+        contentAsString(result) must include(Messages("global.error.heading"))
       }
     }
 
@@ -94,7 +95,7 @@ class SummaryControllerSpec extends MovementBaseSpec with BeforeAndAfter {
         val header = result.futureValue.header
 
         status(result) must be(OK)
-        contentAsString(result) must include(messagesApi("movement.choice.EAL") + " has been submitted")
+        contentAsString(result) must include(Messages("movement.choice.EAL") + " has been submitted")
       }
     }
   }

@@ -20,13 +20,13 @@ import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.movementCacheId
 import forms.Choice.AllowedChoiceValues
-import forms.{ArrivalDetails, DepartureDetails}
 import forms.MovementDetails._
+import forms.{ArrivalDetails, DepartureDetails}
 import javax.inject.{Inject, Singleton}
 import models.requests.JourneyRequest
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import play.filters.csrf.CSRF.ErrorHandler
 import play.twirl.api.Html
 import services.CustomsCacheService
@@ -37,13 +37,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class MovementDetailsController @Inject()(
-  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
-  errorHandler: ErrorHandler
+  errorHandler: ErrorHandler,
+  mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
-    extends FrontendController with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.choice.value match {

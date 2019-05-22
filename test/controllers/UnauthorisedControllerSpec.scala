@@ -18,6 +18,7 @@ package controllers
 
 import base.MovementBaseSpec
 import config.AppConfig
+import play.api.mvc.MessagesControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.unauthorised
@@ -25,20 +26,19 @@ import views.html.unauthorised
 class UnauthorisedControllerSpec extends MovementBaseSpec {
 
   val appConfig = app.injector.instanceOf[AppConfig]
+  val mcc = app.injector.instanceOf[MessagesControllerComponents]
   val fakeRequest = FakeRequest()
 
   "Unauthorised Controller" must {
 
     "return 200 for a GET" in {
-      val result = new UnauthorisedController(appConfig, messagesApi)
-        .onPageLoad()(fakeRequest)
+      val result = new UnauthorisedController(appConfig, mcc).onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
     }
 
     "return the correct view for a GET" in {
-      val result = new UnauthorisedController(appConfig, messagesApi)
-        .onPageLoad()(fakeRequest)
+      val result = new UnauthorisedController(appConfig, mcc).onPageLoad()(fakeRequest)
 
       contentAsString(result) mustBe unauthorised(appConfig)(fakeRequest, messages).toString
     }

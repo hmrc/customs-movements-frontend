@@ -24,8 +24,8 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.Logger
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.i18n.{I18nSupport, Messages}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.movement.movement_confirmation_page
@@ -34,14 +34,14 @@ import views.html.summary.{arrival_summary_page, departure_summary_page}
 import scala.concurrent.{ExecutionContext, Future}
 
 class SummaryController @Inject()(
-  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
-  submissionService: SubmissionService
+  submissionService: SubmissionService,
+  mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   private val logger = Logger(this.getClass())
 
@@ -74,9 +74,9 @@ class SummaryController @Inject()(
     logger.error(logMessage)
     InternalServerError(
       errorHandler.standardErrorTemplate(
-        pageTitle = messagesApi("global.error.title"),
-        heading = messagesApi("global.error.heading"),
-        message = messagesApi("global.error.message")
+        pageTitle = Messages("global.error.title"),
+        heading = Messages("global.error.heading"),
+        message = Messages("global.error.message")
       )
     )
   }

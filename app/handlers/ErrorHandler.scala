@@ -19,7 +19,7 @@ package handlers
 import config.AppConfig
 import controllers.routes
 import javax.inject.{Inject, Singleton}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Request, RequestHeader, Result, Results}
 import play.api.mvc.Results.BadRequest
 import play.api.{Configuration, Environment}
@@ -54,9 +54,9 @@ class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi)
     Future.successful(
       BadRequest(
         standardErrorTemplate(
-          pageTitle = messagesApi("global.error.title"),
-          heading = messagesApi("global.error.heading"),
-          message = messagesApi("global.error.message")
+          pageTitle = Messages("global.error.title"),
+          heading = Messages("global.error.heading"),
+          message = Messages("global.error.message")
         )
       )
     )

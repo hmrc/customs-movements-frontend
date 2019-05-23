@@ -19,7 +19,9 @@ package config
 import base.MovementBaseSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import features.{Feature, FeatureStatus}
+import play.api.Mode.Test
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 class AppConfigSpec extends MovementBaseSpec {
 
@@ -50,14 +52,15 @@ class AppConfigSpec extends MovementBaseSpec {
         |microservice.services.customs-declare-exports-movements.host=localhostm
         |microservice.services.customs-declare-exports-movements.port=9876
         |microservice.services.customs-declare-exports-movements.save-movement-uri=/save-movement-submission
-
       """.stripMargin
     )
   private val emptyAppConfig: Config = ConfigFactory.parseString("")
   val validServicesConfiguration = Configuration(validAppConfig)
   private val emptyServicesConfiguration = Configuration(emptyAppConfig)
 
-  private def appConfig(conf: Configuration) = new AppConfig(conf, environment)
+  private def runMode(conf: Configuration): RunMode = new RunMode(conf, Test)
+  private def servicesConfig(conf: Configuration) = new ServicesConfig(conf, runMode(conf))
+  private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
 
   val validConfigService: AppConfig = appConfig(validServicesConfiguration)
   val emptyConfigService: AppConfig = appConfig(emptyServicesConfiguration)

@@ -22,15 +22,17 @@ import forms.Choice
 import forms.Choice.choiceId
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.mvc.Results.Conflict
-import play.api.mvc.{ActionRefiner, Result}
+import play.api.mvc.{ActionRefiner, MessagesControllerComponents, Result}
 import services.CustomsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class JourneyAction @Inject()(customsCacheService: CustomsCacheService)(implicit ec: ExecutionContext)
+case class JourneyAction @Inject()(customsCacheService: CustomsCacheService, mcc: MessagesControllerComponents)
     extends ActionRefiner[AuthenticatedRequest, JourneyRequest] {
+
+  implicit override val executionContext: ExecutionContext = mcc.executionContext
 
   override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
     implicit val hc: HeaderCarrier =

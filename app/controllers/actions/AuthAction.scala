@@ -19,7 +19,7 @@ package controllers.actions
 import com.google.inject.{ImplementedBy, Inject}
 import models.SignedInUser
 import models.requests.AuthenticatedRequest
-import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
+import play.api.mvc._
 import uk.gov.hmrc.auth.core.retrieve.Retrievals._
 import uk.gov.hmrc.auth.core.{NoActiveSession, _}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,8 +27,11 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector)(implicit ec: ExecutionContext)
+class AuthActionImpl @Inject()(override val authConnector: AuthConnector, mcc: MessagesControllerComponents)
     extends AuthAction with AuthorisedFunctions {
+
+  implicit override val executionContext: ExecutionContext = mcc.executionContext
+  override val parser: BodyParser[AnyContent] = mcc.parsers.defaultBodyParser
 
   override def invokeBlock[A](
     request: Request[A],
@@ -56,6 +59,6 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)(implic
 }
 
 @ImplementedBy(classOf[AuthActionImpl])
-trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]
+trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
 case class NoExternalId() extends NoActiveSession("No externalId was found")

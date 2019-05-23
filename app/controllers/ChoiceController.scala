@@ -20,12 +20,12 @@ import config.AppConfig
 import controllers.actions.AuthAction
 import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice
-import forms.Choice._
 import forms.Choice.AllowedChoiceValues._
+import forms.Choice._
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.choice_page
@@ -34,11 +34,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ChoiceController @Inject()(
-  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
-  customsCacheService: CustomsCacheService
+  customsCacheService: CustomsCacheService,
+  mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
-    extends FrontendController with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService

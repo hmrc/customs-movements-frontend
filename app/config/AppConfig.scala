@@ -20,28 +20,27 @@ import com.google.inject.{Inject, Singleton}
 import features.Feature.Feature
 import features.FeatureStatus.FeatureStatus
 import features.{Feature, FeatureStatus}
-import play.api.Mode.Mode
+import javax.inject.Named
 import play.api.i18n.Lang
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class AppConfig @Inject()(override val runModeConfiguration: Configuration, val environment: Environment)
-    extends ServicesConfig with AppName {
-
-  override protected def mode: Mode = environment.mode
-
-  override protected def appNameConfiguration: Configuration =
-    runModeConfiguration
+class AppConfig @Inject()(
+  val runModeConfiguration: Configuration,
+  val environment: Environment,
+  servicesConfig: ServicesConfig,
+  @Named("appName") appName: String
+) {
 
   private def loadConfig(key: String): String =
     runModeConfiguration
-      .getString(key)
+      .getOptional[String](key)
       .getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   lazy val keyStoreSource: String = appName
-  lazy val keyStoreUrl: String = baseUrl("keystore")
-  lazy val sessionCacheDomain: String = getConfString(
+  lazy val keyStoreUrl: String = servicesConfig.baseUrl("keystore")
+  lazy val sessionCacheDomain: String = servicesConfig.getConfString(
     "cachable.session-cache.domain",
     throw new Exception(s"Could not find config 'cachable.session-cache.domain'")
   )
@@ -49,35 +48,35 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
   lazy val analyticsToken = loadConfig(s"google-analytics.token")
   lazy val analyticsHost = loadConfig(s"google-analytics.host")
 
-  lazy val authUrl = baseUrl("auth")
+  lazy val authUrl = servicesConfig.baseUrl("auth")
   lazy val loginUrl = loadConfig("urls.login")
   lazy val loginContinueUrl = loadConfig("urls.loginContinue")
 
-  lazy val customsDeclareExportsMovements = baseUrl("customs-declare-exports-movements")
+  lazy val customsDeclareExportsMovements = servicesConfig.baseUrl("customs-declare-exports-movements")
 
-  lazy val saveMovementSubmission = getConfString(
+  lazy val saveMovementSubmission = servicesConfig.getConfString(
     "customs-declare-exports-movements.save-movement-uri",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports Movement submission URI")
   )
 
-  lazy val fetchNotifications = getConfString(
+  lazy val fetchNotifications = servicesConfig.getConfString(
     "customs-declare-exports.fetch-notifications",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports fetch notification URI")
   )
 
   lazy val languageTranslationEnabled =
     runModeConfiguration
-      .getBoolean("microservice.services.features.welsh-translation")
+      .getOptional[Boolean]("microservice.services.features.welsh-translation")
       .getOrElse(true)
 
   lazy val countriesCsvFilename: String = loadConfig("countryCodesCsvFilename")
 
   lazy val countryCodesJsonFilename: String = loadConfig("countryCodesJsonFilename")
 
-  lazy val nrsServiceUrl: String = baseUrl("nrs")
+  lazy val nrsServiceUrl: String = servicesConfig.baseUrl("nrs")
 
   lazy val nrsApiKey =
-    getConfString("nrs.apikey", throw new IllegalStateException("Missing configuration for nrs apikey"))
+    servicesConfig.getConfString("nrs.apikey", throw new IllegalStateException("Missing configuration for nrs apikey"))
 
   def languageMap: Map[String, Lang] =
     Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
@@ -91,7 +90,7 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
       .map(str2FeatureStatus)
       .getOrElse(
         runModeConfiguration
-          .getString(feature2Key(feature))
+          .getOptional[String](feature2Key(feature))
           .map(str2FeatureStatus)
           .getOrElse(defaultFeatureStatus)
       )

@@ -77,12 +77,10 @@ trait MovementApp
     headers: Map[String, String] = Map.empty
   ): FakeRequest[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(SessionKeys.sessionId -> s"session-${UUID.randomUUID()}")
-    val tags =
-      Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
+
     FakeRequest("GET", uri)
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
       .withSession(session.toSeq: _*)
-      .copyFakeRequest(tags = tags)
   }
 
   protected def postRequest(
@@ -91,12 +89,10 @@ trait MovementApp
     headers: Map[String, String] = Map.empty
   ): FakeRequest[AnyContentAsJson] = {
     val session: Map[String, String] = Map(SessionKeys.sessionId -> s"session-${UUID.randomUUID()}")
-    val tags =
-      Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
+
     FakeRequest("POST", uri)
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
       .withSession(session.toSeq: _*)
       .withJsonBody(body)
-      .copyFakeRequest(tags = tags)
   }
 }

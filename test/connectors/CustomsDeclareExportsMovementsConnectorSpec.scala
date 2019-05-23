@@ -27,6 +27,7 @@ import metrics.MovementsMetrics
 import models._
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.libs.json.Json
+import play.api.libs.ws.WSClient
 import play.api.mvc.Codec
 import play.api.test.Helpers.OK
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -38,11 +39,13 @@ class CustomsDeclareExportsMovementsConnectorSpec extends MovementBaseSpec {
   import CustomsDeclareExportsMovementsConnectorSpec._
 
   val appConfig = mock[AppConfig]
+  val wsClient = mock[WSClient]
 
   "Customs Exports Movements Connector" should {
 
     "submit Movement Declaration to backend" in {
       val http = new MockHttpClient(
+        wsClient,
         expectedMovementsUrl(appConfig.saveMovementSubmission),
         data.toXml,
         expectedHeaders,

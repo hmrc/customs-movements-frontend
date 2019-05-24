@@ -26,9 +26,9 @@ class DepartureDetailsSpec extends BaseSpec {
 
     "format the date correctly" when{
 
-      "date is" in {
+      "date is in ISO 8601 format " in {
         val inputData = DepartureDetails(Date(Some(1), Some(1), Some(2019)))
-        inputData.toString must be("2019-01-01T00:00Z")
+        inputData.toString must be("2019-01-01T00:00")
       }
     }
 

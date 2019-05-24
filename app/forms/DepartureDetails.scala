@@ -22,7 +22,7 @@ import play.api.libs.json.Json
 
 case class DepartureDetails(dateOfDeparture: Date) {
 
-  override def toString: String = dateOfDeparture.toString
+  override def toString: String = dateOfDeparture.to304Format
 }
 
 object DepartureDetails {

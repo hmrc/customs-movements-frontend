@@ -38,7 +38,7 @@ case class Date(day: Option[Int], month: Option[Int], year: Option[Int]) {
     import java.time.LocalDate
     val dateTime = LocalDate.parse(this.toString, inputFormat)
 
-    dateTime.atStartOfDay(ZoneOffset.UTC).toString
+    dateTime.atStartOfDay(ZoneOffset.UTC).toString.dropRight(1)
   }
 
   override def toString: String = LocalDate.of(year.getOrElse(0), month.getOrElse(0), day.getOrElse(0)).toString

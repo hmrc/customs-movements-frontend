@@ -35,10 +35,11 @@ case class Date(day: Option[Int], month: Option[Int], year: Option[Int]) {
   def to102Format: String = LocalDate.parse(this.toString).format(format102)
 
   def to304Format: String = {
-    import java.time.LocalDate
+    import java.time.{LocalDate, LocalTime}
     val dateTime = LocalDate.parse(this.toString, inputFormat)
 
-    dateTime.atStartOfDay(ZoneOffset.UTC).toString.dropRight(1)
+    dateTime.atTime(LocalTime.of(0,0,0)).format(DateTimeFormatter.ISO_DATE_TIME)
+
   }
 
   override def toString: String = LocalDate.of(year.getOrElse(0), month.getOrElse(0), day.getOrElse(0)).toString

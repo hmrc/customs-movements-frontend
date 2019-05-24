@@ -16,9 +16,10 @@
 
 package forms.common
 
-import java.time.LocalDate
+import java.time.{LocalDate, ZoneId, ZoneOffset, ZonedDateTime}
 import java.time.format.DateTimeFormatter
 
+import org.joda.time.LocalDateTime
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.{number, optional}
 import play.api.libs.json.Json
@@ -29,7 +30,16 @@ case class Date(day: Option[Int], month: Option[Int], year: Option[Int]) {
 
   private val format102 = DateTimeFormatter.ofPattern("yyyyMMdd")
 
+  private val inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
   def to102Format: String = LocalDate.parse(this.toString).format(format102)
+
+  def to304Format: String = {
+    import java.time.LocalDate
+    val dateTime = LocalDate.parse(this.toString, inputFormat)
+
+    dateTime.atStartOfDay(ZoneOffset.UTC).toString
+  }
 
   override def toString: String = LocalDate.of(year.getOrElse(0), month.getOrElse(0), day.getOrElse(0)).toString
 }

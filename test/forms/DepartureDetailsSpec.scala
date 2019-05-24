@@ -19,9 +19,18 @@ package forms
 import base.BaseSpec
 import forms.common.Date
 
+
 class DepartureDetailsSpec extends BaseSpec {
 
   "Departure mapping" should {
+
+    "format the date correctly" when{
+
+      "date is" in {
+        val inputData = DepartureDetails(Date(Some(1), Some(1), Some(2019)))
+        inputData.toString must be("2019-01-01T00:00Z")
+      }
+    }
 
     "return errors" when {
 

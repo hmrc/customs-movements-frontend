@@ -51,7 +51,7 @@ class ConsignmentReferencesSpec extends BaseSpec {
     }
 
     "return error for incorrect reference" in {
-      val inputData = ConsignmentReferences(Some("eori1234567890988212"), "Incorrect reference", "12345")
+      val inputData = ConsignmentReferences(Some("GB71757250450281160"), "Incorrect reference", "12345")
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
       errors.length must be(2)
@@ -60,7 +60,7 @@ class ConsignmentReferencesSpec extends BaseSpec {
     }
 
     "no errors when data is correct" in {
-      val inputData = ConsignmentReferences(Some("eori"), "D", "123456")
+      val inputData = ConsignmentReferences(Some("GB717572504502811"), "D", "123456")
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
       errors.length must be(0)

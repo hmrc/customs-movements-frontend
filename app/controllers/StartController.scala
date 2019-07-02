@@ -25,10 +25,7 @@ import views.html.start_page
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class StartController @Inject()(
-  appConfig: AppConfig,
-  mcc: MessagesControllerComponents
-)(implicit ec: ExecutionContext)
+class StartController @Inject()(appConfig: AppConfig, mcc: MessagesControllerComponents)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayStartPage(): Action[AnyContent] = Action.async { implicit request =>

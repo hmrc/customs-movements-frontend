@@ -38,7 +38,7 @@ case class Date(day: Option[Int], month: Option[Int], year: Option[Int]) {
     import java.time.{LocalDate, LocalTime}
     val dateTime = LocalDate.parse(this.toString, inputFormat)
 
-    dateTime.atTime(LocalTime.of(0,0,0)).format(DateTimeFormatter.ISO_DATE_TIME)
+    dateTime.atTime(LocalTime.of(0, 0, 0)).format(DateTimeFormatter.ISO_DATE_TIME)
 
   }
 

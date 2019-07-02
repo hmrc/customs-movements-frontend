@@ -17,8 +17,8 @@
 package controllers
 
 import base.MovementBaseSpec
-import forms.{Choice, Location}
 import forms.Choice.AllowedChoiceValues
+import forms.{Choice, Location}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
@@ -51,6 +51,19 @@ class LocationControllerSpec extends MovementBaseSpec {
         val result = route(app, getRequest(uri)).get
 
         status(result) must be(OK)
+      }
+
+      "return Error" when {
+
+        "no JourneyType found" in new SetUp {
+          withCaching(Choice.choiceId, None)
+          withCaching(Location.formId, None)
+
+          val result = route(app, getRequest(uri)).get
+
+          status(result) must be(CONFLICT)
+        }
+
       }
     }
 

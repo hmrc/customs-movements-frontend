@@ -19,12 +19,11 @@ package forms
 import base.BaseSpec
 import forms.common.Date
 
-
 class DepartureDetailsSpec extends BaseSpec {
 
   "Departure mapping" should {
 
-    "format the date correctly" when{
+    "format the date correctly" when {
 
       "date is in ISO 8601 format " in {
         val inputData = DepartureDetails(Date(Some(1), Some(1), Some(2019)))

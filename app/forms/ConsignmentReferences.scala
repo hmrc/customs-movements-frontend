@@ -38,7 +38,7 @@ object ConsignmentReferences {
   val allowedReferenceAnswers: Seq[String] = Seq(Ducr, Mucr)
 
   val mapping = Forms.mapping(
-    "eori" -> optional(text().verifying("consignmentReferences.eori.error", noLongerThan(15))),
+    "eori" -> optional(text().verifying("consignmentReferences.eori.error", noLongerThan(17))),
     "reference" -> text()
       .verifying("consignmentReferences.reference.empty", nonEmpty)
       .verifying("consignmentReferences.reference.error", isEmpty or isContainedIn(allowedReferenceAnswers)),

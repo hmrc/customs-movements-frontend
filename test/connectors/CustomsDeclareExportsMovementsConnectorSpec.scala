@@ -53,7 +53,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends MovementBaseSpec {
         HttpResponse(OK, Some(Json.toJson("success")))
       )
       val client = new CustomsDeclareExportsMovementsConnector(appConfig, http)
-      val response = client.submitMovementDeclaration(data.ucrBlock.ucr,data.messageCode,data.toXml)(hc, ec)
+      val response = client.submitMovementDeclaration(data.ucrBlock.ucr, data.messageCode, data.toXml)(hc, ec)
 
       response.futureValue.status must be(OK)
     }
@@ -71,9 +71,7 @@ object CustomsDeclareExportsMovementsConnectorSpec {
   val conversationId: String = TestHelper.createRandomAlphanumericString(10)
   val eori: String = TestHelper.createRandomAlphanumericString(15)
 
-
-
-  val data = Movement.createMovementRequest(CacheMap(Arrival, cacheMapData(Arrival)), "eori1",Choice(Arrival))
+  val data = Movement.createMovementRequest(CacheMap(Arrival, cacheMapData(Arrival)), "eori1", Choice(Arrival))
   val expectedHeaders: Seq[(String, String)] = Seq(
     (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
     (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),

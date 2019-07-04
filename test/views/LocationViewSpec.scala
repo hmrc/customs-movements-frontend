@@ -25,12 +25,13 @@ import views.declaration.spec.ViewSpec
 class LocationViewSpec extends ViewSpec with LocationMessages with CommonMessages {
 
   private val form: Form[Location] = Location.form()
+  private val locationPage = injector.instanceOf[views.html.location]
 
   private def createArrivalView(form: Form[Location] = form): Html =
-    views.html.location(form, Choice.AllowedChoiceValues.Arrival)
+    locationPage(form, Choice.AllowedChoiceValues.Arrival)
 
   private def createDepartureView(form: Form[Location] = form): Html =
-    views.html.location(form, Choice.AllowedChoiceValues.Departure)
+    locationPage(form, Choice.AllowedChoiceValues.Departure)
 
   "Location View" should {
 

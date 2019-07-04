@@ -38,7 +38,8 @@ class GoodsDepartedController @Inject()(
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  goodsDepartedPage: goods_departed
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -47,7 +48,7 @@ class GoodsDepartedController @Inject()(
       case Choice.AllowedChoiceValues.Departure =>
         customsCacheService
           .fetchAndGetEntry[GoodsDeparted](movementCacheId, formId)
-          .map(data => Ok(goods_departed(data.fold(form)(form.fill(_)))))
+          .map(data => Ok(goodsDepartedPage(data.fold(form)(form.fill(_)))))
       case _ => errorHandler.displayErrorPage()
     }
   }
@@ -56,7 +57,7 @@ class GoodsDepartedController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[GoodsDeparted]) => Future.successful(BadRequest(goods_departed(formWithErrors))),
+        (formWithErrors: Form[GoodsDeparted]) => Future.successful(BadRequest(goodsDepartedPage(formWithErrors))),
         validForm =>
           customsCacheService.cache[GoodsDeparted](movementCacheId, formId, validForm).map { _ =>
             validForm.departedPlace match {

@@ -29,17 +29,17 @@ import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.concurrent.Execution.Implicits
 import play.api.libs.json.JsValue
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson, Request}
 import play.api.test.FakeRequest
-import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.http.SessionKeys
+import utils.FakeRequestCSRFSupport._
 
 import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait MovementApp
     extends PlaySpec with GuiceOneAppPerSuite with MockAuthAction with MockCustomsCacheService
@@ -70,29 +70,28 @@ trait MovementApp
 
   val metrics = app.injector.instanceOf[MovementsMetrics]
 
-  implicit val ec: ExecutionContext = Implicits.defaultContext
+  implicit val ec: ExecutionContext = global
 
-  protected def getRequest(
-    uri: String,
-    headers: Map[String, String] = Map.empty
-  ): FakeRequest[AnyContentAsEmpty.type] = {
+  protected def getRequest(uri: String, headers: Map[String, String] = Map.empty): Request[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(SessionKeys.sessionId -> s"session-${UUID.randomUUID()}")
 
     FakeRequest("GET", uri)
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
       .withSession(session.toSeq: _*)
+      .withCSRFToken
   }
 
   protected def postRequest(
     uri: String,
     body: JsValue,
     headers: Map[String, String] = Map.empty
-  ): FakeRequest[AnyContentAsJson] = {
+  ): Request[AnyContentAsJson] = {
     val session: Map[String, String] = Map(SessionKeys.sessionId -> s"session-${UUID.randomUUID()}")
 
     FakeRequest("POST", uri)
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
       .withSession(session.toSeq: _*)
       .withJsonBody(body)
+      .withCSRFToken
   }
 }

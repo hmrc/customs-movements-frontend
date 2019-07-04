@@ -25,9 +25,9 @@ import views.declaration.spec.ViewSpec
 class GoodsDepartedViewSpec extends ViewSpec with GoodsDepartedMessages with CommonMessages {
 
   val form: Form[GoodsDeparted] = GoodsDeparted.form()
+  val goodsDepartedPage = injector.instanceOf[views.html.goods_departed]
 
-  private def createView(form: Form[GoodsDeparted] = form): Html =
-    views.html.goods_departed(form)
+  private def createView(form: Form[GoodsDeparted] = form): Html = goodsDepartedPage(form)
 
   "Goods Departed View" should {
 

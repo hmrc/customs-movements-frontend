@@ -25,8 +25,9 @@ import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
 class ErrorHandlerSpec extends MovementBaseSpec {
 
   val appConfig = app.injector.instanceOf[AppConfig]
+  val errorPage = app.injector.instanceOf[views.html.error_template]
 
-  val errorHandler = new ErrorHandler(appConfig, messagesApi)
+  val errorHandler = new ErrorHandler(appConfig, messagesApi, errorPage)
   val req = FakeRequest("GET", "/foo")
 
   "ErrorHandlerSpec" should {

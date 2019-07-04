@@ -20,7 +20,7 @@ import com.google.inject.{ImplementedBy, Inject}
 import models.SignedInUser
 import models.requests.AuthenticatedRequest
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.retrieve.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.{NoActiveSession, _}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter

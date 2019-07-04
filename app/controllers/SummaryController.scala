@@ -39,7 +39,10 @@ class SummaryController @Inject()(
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   submissionService: SubmissionService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  arrivalSummaryPage: arrival_summary_page,
+  departureSummaryPage: departure_summary_page,
+  movementConfirmationPage: movement_confirmation_page
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -51,8 +54,8 @@ class SummaryController @Inject()(
     val typeOfJourney = request.choice.value
 
     cacheMapOpt.map {
-      case Some(data) if typeOfJourney == Arrival   => Ok(arrival_summary_page(data))
-      case Some(data) if typeOfJourney == Departure => Ok(departure_summary_page(data))
+      case Some(data) if typeOfJourney == Arrival   => Ok(arrivalSummaryPage(data))
+      case Some(data) if typeOfJourney == Departure => Ok(departureSummaryPage(data))
       case _                                        => handleError("Could not obtain data from DB")
     }
   }
@@ -64,7 +67,7 @@ class SummaryController @Inject()(
         .flatMap {
           case ACCEPTED =>
             customsCacheService.remove(movementCacheId).map { _ =>
-              Ok(movement_confirmation_page(request.choice.value))
+              Ok(movementConfirmationPage(request.choice.value))
             }
           case _ => Future.successful(handleError(s"Unable to submit movement data"))
         }

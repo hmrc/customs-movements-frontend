@@ -25,9 +25,9 @@ import views.declaration.spec.ViewSpec
 class DepartureDetailsViewSpec extends ViewSpec with DepartureDetailsMessages with CommonMessages {
 
   val form: Form[DepartureDetails] = MovementDetails.departureForm()
+  val departureDetailsPage = injector.instanceOf[views.html.departure_details]
 
-  private def createView(form: Form[DepartureDetails] = form): Html =
-    views.html.departure_details(form)
+  private def createView(form: Form[DepartureDetails] = form): Html = departureDetailsPage(form)
 
   "Arrival Details View" should {
 

@@ -38,7 +38,8 @@ class TransportController @Inject()(
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  transportPage: transport
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -46,7 +47,7 @@ class TransportController @Inject()(
     customsCacheService.fetchAndGetEntry[Transport](movementCacheId, formId).map { data =>
       val formForView = data.fold(form)(form.fill(_))
 
-      Ok(transport(formForView, request.choice.value))
+      Ok(transportPage(formForView, request.choice.value))
     }
   }
 
@@ -55,7 +56,7 @@ class TransportController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Transport]) =>
-          Future.successful(BadRequest(transport(formWithErrors, request.choice.value))),
+          Future.successful(BadRequest(transportPage(formWithErrors, request.choice.value))),
         validForm =>
           customsCacheService.cache[Transport](movementCacheId, formId, validForm).map { _ =>
             Redirect(controllers.routes.SummaryController.displayPage())

@@ -19,13 +19,16 @@
 @import uk.gov.hmrc.play.views.html._
 @import forms.Location
 
+@this(main_template: views.html.main_template)
+
 @(form: Form[Location], choice: String)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("location.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(LocationController.saveLocation(), 'autoComplete -> "off") {
+    @helper.form(LocationController.saveLocation(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
 
         @if(choice == "EAL") {
             @components.back_link("/customs-movements/movement-details")

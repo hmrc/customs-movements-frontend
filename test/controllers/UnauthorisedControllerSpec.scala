@@ -27,20 +27,21 @@ class UnauthorisedControllerSpec extends MovementBaseSpec {
 
   val appConfig = app.injector.instanceOf[AppConfig]
   val mcc = app.injector.instanceOf[MessagesControllerComponents]
+  val unauthorisedPage = app.injector.instanceOf[views.html.unauthorised]
   val fakeRequest = FakeRequest()
 
   "Unauthorised Controller" must {
 
     "return 200 for a GET" in {
-      val result = new UnauthorisedController(appConfig, mcc).onPageLoad()(fakeRequest)
+      val result = new UnauthorisedController(appConfig, mcc, unauthorisedPage).onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
     }
 
     "return the correct view for a GET" in {
-      val result = new UnauthorisedController(appConfig, mcc).onPageLoad()(fakeRequest)
+      val result = new UnauthorisedController(appConfig, mcc, unauthorisedPage).onPageLoad()(fakeRequest)
 
-      contentAsString(result) mustBe unauthorised(appConfig)(fakeRequest, messages).toString
+      contentAsString(result) mustBe unauthorisedPage(appConfig)(fakeRequest, messages).toString
     }
   }
 }

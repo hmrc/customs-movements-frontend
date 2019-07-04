@@ -25,8 +25,9 @@ import views.declaration.spec.ViewSpec
 class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesMessages with CommonMessages {
 
   private val form: Form[ConsignmentReferences] = ConsignmentReferences.form()
+  private val consignmentReferencesPage = injector.instanceOf[views.html.consignment_references]
 
-  private def createView(form: Form[ConsignmentReferences] = form): Html = views.html.consignment_references(form)
+  private def createView(form: Form[ConsignmentReferences] = form): Html = consignmentReferencesPage(form)
 
   "Consignment References View" should {
 

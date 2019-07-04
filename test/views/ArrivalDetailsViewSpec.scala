@@ -21,13 +21,14 @@ import helpers.views.{ArrivalDetailsMessages, CommonMessages}
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
+import views.html.arrival_details
 
 class ArrivalDetailsViewSpec extends ViewSpec with ArrivalDetailsMessages with CommonMessages {
 
   val form: Form[ArrivalDetails] = MovementDetails.arrivalForm()
+  val arrivalDetailsPage = injector.instanceOf[arrival_details]
 
-  private def createView(form: Form[ArrivalDetails] = form): Html =
-    views.html.arrival_details(form)
+  private def createView(form: Form[ArrivalDetails] = form): Html = arrivalDetailsPage(form)
 
   "Arrival Details View" should {
 

@@ -38,14 +38,15 @@ class ConsignmentReferencesController @Inject()(
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  consignmentReferencesPage: consignment_references
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
       .fetchAndGetEntry[ConsignmentReferences](movementCacheId, formId)
-      .map(data => Ok(consignment_references(data.fold(form)(form.fill(_)))))
+      .map(data => Ok(consignmentReferencesPage(data.fold(form)(form.fill(_)))))
   }
 
   def saveConsignmentReferences(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -53,7 +54,7 @@ class ConsignmentReferencesController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ConsignmentReferences]) =>
-          Future.successful(BadRequest(consignment_references(formWithErrors))),
+          Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
         validForm =>
           customsCacheService
             .cache[ConsignmentReferences](movementCacheId(), formId, validForm)

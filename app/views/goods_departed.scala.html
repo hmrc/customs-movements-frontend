@@ -21,13 +21,17 @@
 @import forms.GoodsDeparted
 @import utils.RadioOption
 
+@this(main_template: views.html.main_template)
+
 @(form: Form[GoodsDeparted])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("goodsDeparted.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(GoodsDepartedController.saveGoodsDeparted(), 'autoComplete -> "off") {
+    @helper.form(GoodsDepartedController.saveGoodsDeparted(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
         @components.back_link("/customs-movements/location")
 
         @components.error_summary(form.errors)

@@ -41,7 +41,9 @@ class MovementDetailsController @Inject()(
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  arrivalDetailsPage: arrival_details,
+  departureDetailsPage: departure_details
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -55,12 +57,12 @@ class MovementDetailsController @Inject()(
   private def arrivalPage()(implicit request: JourneyRequest[AnyContent]): Future[Html] =
     customsCacheService
       .fetchAndGetEntry[ArrivalDetails](movementCacheId, formId)
-      .map(data => arrival_details(data.fold(arrivalForm)(arrivalForm.fill(_))))
+      .map(data => arrivalDetailsPage(data.fold(arrivalForm)(arrivalForm.fill(_))))
 
   private def departurePage()(implicit request: JourneyRequest[AnyContent]): Future[Html] =
     customsCacheService
       .fetchAndGetEntry[DepartureDetails](movementCacheId, formId)
-      .map(data => departure_details(data.fold(departureForm)(departureForm.fill(_))))
+      .map(data => departureDetailsPage(data.fold(departureForm)(departureForm.fill(_))))
 
   def saveMovementDetails(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     (request.choice.value match {
@@ -76,7 +78,7 @@ class MovementDetailsController @Inject()(
     arrivalForm
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ArrivalDetails]) => Future.successful(Left(arrival_details(formWithErrors))),
+        (formWithErrors: Form[ArrivalDetails]) => Future.successful(Left(arrivalDetailsPage(formWithErrors))),
         validForm =>
           customsCacheService.cache[ArrivalDetails](movementCacheId, formId, validForm.formatTime()).map { _ =>
             Right(controllers.routes.LocationController.displayPage())
@@ -87,7 +89,7 @@ class MovementDetailsController @Inject()(
     departureForm
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DepartureDetails]) => Future.successful(Left(departure_details(formWithErrors))),
+        (formWithErrors: Form[DepartureDetails]) => Future.successful(Left(departureDetailsPage(formWithErrors))),
         validForm =>
           customsCacheService.cache[DepartureDetails](movementCacheId, formId, validForm).map { _ =>
             Right(controllers.routes.TransportController.displayPage())

@@ -25,12 +25,13 @@ import views.declaration.spec.ViewSpec
 class TransportViewSpec extends ViewSpec with TransportMessages with CommonMessages {
 
   private val form: Form[Transport] = Transport.form()
+  private val transportPage = injector.instanceOf[views.html.transport]
 
   private def createArrivalView(form: Form[Transport] = form): Html =
-    views.html.transport(form, Choice.AllowedChoiceValues.Arrival)
+    transportPage(form, Choice.AllowedChoiceValues.Arrival)
 
   private def createDepartureView(form: Form[Transport] = form): Html =
-    views.html.transport(form, Choice.AllowedChoiceValues.Departure)
+    transportPage(form, Choice.AllowedChoiceValues.Departure)
 
   "Transport View" should {
 

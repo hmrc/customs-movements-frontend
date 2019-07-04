@@ -38,14 +38,15 @@ class LocationController @Inject()(
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  locationPage: location
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
       .fetchAndGetEntry[Location](movementCacheId, formId)
-      .map(data => Ok(location(data.fold(form)(form.fill(_)), request.choice.value)))
+      .map(data => Ok(locationPage(data.fold(form)(form.fill(_)), request.choice.value)))
   }
 
   def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -53,7 +54,7 @@ class LocationController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Location]) =>
-          Future.successful(BadRequest(location(formWithErrors, request.choice.value))),
+          Future.successful(BadRequest(locationPage(formWithErrors, request.choice.value))),
         validForm =>
           customsCacheService
             .cache[Location](movementCacheId(), formId, validForm)

@@ -21,6 +21,8 @@
 @import forms.ConsignmentReferences.AllowedReferences._
 @import utils.RadioOption
 
+@this(main_template: views.html.main_template)
+
 @(form: Form[ConsignmentReferences])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(

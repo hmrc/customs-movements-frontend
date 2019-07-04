@@ -15,6 +15,9 @@
  *@
 
 @import config.AppConfig
+@import uk.gov.hmrc.play.views.html.layouts.{Article, Sidebar}
+
+@this(govuk_wrapper: views.html.govuk_wrapper, sidebar_di: Sidebar, article_di: Article)
 
 @(title: String,
   appConfig: AppConfig,
@@ -30,7 +33,7 @@
 
 @sidebar = {
     @if(sidebarLinks.isDefined) {
-        @layouts.sidebar(sidebarLinks.get, Some("sidebar"))
+        @sidebar_di(sidebarLinks.get, Some("sidebar"))
     }
 }
 
@@ -40,7 +43,7 @@
                bodyClasses = bodyClasses,
                sidebar = sidebar,
                contentHeader = contentHeader,
-               mainContent = layouts.article(mainContent),
+               mainContent = article_di(mainContent),
                serviceInfoContent = serviceInfoContent,
                scriptElem = scriptElem
 )

@@ -29,7 +29,8 @@ import views.tags.ViewTest
 class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
   private val form: Form[Choice] = Choice.form()
-  private def createView(form: Form[Choice] = form): Html = choice_page(form)
+  private val choicePage = injector.instanceOf[choice_page]
+  private def createView(form: Form[Choice] = form): Html = choicePage(form)
 
   "Choice View" should {
 

@@ -31,16 +31,18 @@ import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 import scala.concurrent.Future
 
 @Singleton
-class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi)
-    extends FrontendErrorHandler with I18nSupport with AuthRedirects {
+class ErrorHandler @Inject()(
+  appConfig: AppConfig,
+  val messagesApi: MessagesApi,
+  errorTemplate: views.html.error_template
+) extends FrontendErrorHandler with I18nSupport with AuthRedirects {
   override def config: Configuration = appConfig.runModeConfiguration
 
   override def env: Environment = appConfig.environment
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(
     implicit request: Request[_]
-  ): Html =
-    views.html.error_template(pageTitle, heading, message, appConfig)
+  ): Html = errorTemplate(pageTitle, heading, message, appConfig)
 
   override def resolveError(rh: RequestHeader, ex: Throwable): Result =
     ex match {

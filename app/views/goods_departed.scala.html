@@ -21,6 +21,8 @@
 @import forms.GoodsDeparted
 @import utils.RadioOption
 
+@this(main_template: views.html.main_template)
+
 @(form: Form[GoodsDeparted])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(

@@ -36,21 +36,22 @@ import scala.concurrent.{ExecutionContext, Future}
 class ChoiceController @Inject()(
   authenticate: AuthAction,
   customsCacheService: CustomsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  choicePage: choice_page
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService
       .fetchAndGetEntry[Choice](cacheId, choiceId)
-      .map(data => Ok(choice_page(data.fold(form)(form.fill(_)))))
+      .map(data => Ok(choicePage(data.fold(form)(form.fill(_)))))
   }
 
   def submitChoice(): Action[AnyContent] = authenticate.async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choice_page(formWithErrors))),
+        (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choicePage(formWithErrors))),
         validChoice =>
           customsCacheService
             .cache[Choice](cacheId, choiceId, validChoice)

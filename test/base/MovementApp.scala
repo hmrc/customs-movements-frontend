@@ -72,10 +72,7 @@ trait MovementApp
 
   implicit val ec: ExecutionContext = global
 
-  protected def getRequest(
-    uri: String,
-    headers: Map[String, String] = Map.empty
-  ): Request[AnyContentAsEmpty.type] = {
+  protected def getRequest(uri: String, headers: Map[String, String] = Map.empty): Request[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(SessionKeys.sessionId -> s"session-${UUID.randomUUID()}")
 
     FakeRequest("GET", uri)

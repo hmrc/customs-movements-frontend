@@ -27,15 +27,13 @@ import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
+import views.html.error_template
 
 import scala.concurrent.Future
 
 @Singleton
-class ErrorHandler @Inject()(
-  appConfig: AppConfig,
-  val messagesApi: MessagesApi,
-  errorTemplate: views.html.error_template
-) extends FrontendErrorHandler with I18nSupport with AuthRedirects {
+class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi, errorTemplate: error_template)
+    extends FrontendErrorHandler with I18nSupport with AuthRedirects {
   override def config: Configuration = appConfig.runModeConfiguration
 
   override def env: Environment = appConfig.environment

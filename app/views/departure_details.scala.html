@@ -25,7 +25,9 @@
     title = messages("departureDetails.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(MovementDetailsController.saveMovementDetails(), 'autoComplete -> "off") {
+    @helper.form(MovementDetailsController.saveMovementDetails(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
         @components.back_link("/customs-movements/goods-departed")
 
         @components.error_summary(form.errors)

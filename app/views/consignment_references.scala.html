@@ -27,7 +27,9 @@
     title = messages("consignmentReferences.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(ConsignmentReferencesController.saveConsignmentReferences(), 'autoComplete -> "off") {
+    @helper.form(ConsignmentReferencesController.saveConsignmentReferences(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
         @components.back_link("/customs-movements/choice")
 
         @components.error_summary(form.errors)

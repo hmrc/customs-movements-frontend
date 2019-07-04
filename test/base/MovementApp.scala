@@ -29,17 +29,16 @@ import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.concurrent.Execution.Implicits
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson}
 import play.api.test.FakeRequest
-import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait MovementApp
     extends PlaySpec with GuiceOneAppPerSuite with MockAuthAction with MockCustomsCacheService
@@ -70,7 +69,7 @@ trait MovementApp
 
   val metrics = app.injector.instanceOf[MovementsMetrics]
 
-  implicit val ec: ExecutionContext = Implicits.defaultContext
+  implicit val ec: ExecutionContext = global
 
   protected def getRequest(
     uri: String,

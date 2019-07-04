@@ -25,7 +25,8 @@
     title = messages("location.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(LocationController.saveLocation(), 'autoComplete -> "off") {
+    @helper.form(LocationController.saveLocation(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
 
         @if(choice == "EAL") {
             @components.back_link("/customs-movements/movement-details")

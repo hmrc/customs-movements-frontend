@@ -90,7 +90,9 @@
             }
         }
 
-        @helpers.form(action = SummaryController.submitMovementRequest()) {
+        @helper.form(action = SummaryController.submitMovementRequest()) {
+            @helper.CSRF.formField
+
             @components.submit_button(messages("site.acceptAndSend"))
         }
     }

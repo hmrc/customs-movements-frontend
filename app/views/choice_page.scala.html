@@ -28,7 +28,9 @@
     appConfig = appConfig
 ) {
 
-    @helpers.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
+    @helper.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
         @components.back_link("start")
 
         @components.heading("", "movement.choice.description")

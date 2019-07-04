@@ -16,6 +16,8 @@
 
 package utils.validators.forms
 
+import services.Countries.allCountries
+
 import scala.util.{Success, Try}
 
 object FieldValidator {
@@ -94,6 +96,8 @@ object FieldValidator {
       case Success(value) => isNumeric(value)
       case _              => false
   }
+
+  val isValidCountryCode: String => Boolean = (input: String) => allCountries.exists(_.countryCode == input)
 
   val isDecimalWithNoMoreDecimalPlacesThan: Int => String => Boolean =
     (decimalPlaces: Int) => (input: String) => input.matches(noMoreDecimalPlacesThanRegexValue(decimalPlaces))

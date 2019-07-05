@@ -19,6 +19,7 @@ package forms
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
 import play.api.libs.json.Json
+import services.Countries.allCountries
 import utils.validators.forms.FieldValidator._
 
 case class Transport(modeOfTransport: String, nationality: String)
@@ -49,7 +50,7 @@ object Transport {
       .verifying("transport.modeOfTransport.error", isEmpty or isContainedIn(allowedModeOfTransport)),
     "nationality" -> text()
       .verifying("transport.nationality.empty", nonEmpty)
-      .verifying("transport.nationality.error", isEmpty or hasSpecificLength(2))
+      .verifying("transport.nationality.error", isEmpty or isValidCountryCode)
   )(Transport.apply)(Transport.unapply)
 
   def form(): Form[Transport] = Form(mapping)

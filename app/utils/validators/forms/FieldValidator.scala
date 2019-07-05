@@ -16,6 +16,8 @@
 
 package utils.validators.forms
 
+import services.Countries.allCountries
+
 import scala.util.{Success, Try}
 
 object FieldValidator {
@@ -44,6 +46,12 @@ object FieldValidator {
     def or(second: Boolean): Boolean = first || second
   }
 
+  val validEori: String => Boolean = (input: String) => input.matches("^GB[0-9]{1,15}$")
+  val validDucrOrMucr: String => Boolean = (input: String) => input.matches("""^[0-9][A-Z][A-Z][0-9A-Z\(\)\-/]{6,32}|
+                                                                         |GB/[0-9A-Z]{3,4}-[0-9A-Z]{5,28}|
+                                                                         |GB/[0-9A-Z]{9,12}-[0-9A-Z]{1,23}|
+                                                                         |A:[0-9A-Z]{3}[0-9]{8}|
+                                                                         |C:[A-Z]{3}[0-9A-Z]{3,30}""")
   private val zerosOnlyRegexValue = "[0]+"
   private val noMoreDecimalPlacesThanRegexValue: Int => String =
     (decimalPlaces: Int) => s"^([0-9]*)([\\.]{0,1}[0-9]{0,$decimalPlaces})$$"
@@ -88,6 +96,8 @@ object FieldValidator {
       case Success(value) => isNumeric(value)
       case _              => false
   }
+
+  val isValidCountryCode: String => Boolean = (input: String) => allCountries.exists(_.countryCode == input)
 
   val isDecimalWithNoMoreDecimalPlacesThan: Int => String => Boolean =
     (decimalPlaces: Int) => (input: String) => input.matches(noMoreDecimalPlacesThanRegexValue(decimalPlaces))

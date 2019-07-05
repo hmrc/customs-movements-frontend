@@ -85,7 +85,7 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
           Map(
             "eori" -> JsString("GB717572504502811"),
             "reference" -> JsString("D"),
-            "referenceValue" -> JsString("123456")
+            "referenceValue" -> JsString("5GB123456789000-123ABC456DEFIIIII")
           )
         )
 
@@ -105,7 +105,7 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
           Map(
             "eori" -> JsString("GB717572504502811"),
             "reference" -> JsString("D"),
-            "referenceValue" -> JsString("123456")
+            "referenceValue" -> JsString("5GB123456789000-123ABC456DEFIIIII")
           )
         )
 

@@ -112,6 +112,8 @@ movement.EAL.title = Arrival
 movement.EAL.heading = Arrival
 movement.EDL.title = Departure
 movement.EDL.heading = Departure
+movement.EAC.title = Disassociate
+movement.EAC.heading = Disassociate
 movement.eori = EORI
 movement.ucr = Ucr
 movement.ucrType = Ucr type
@@ -131,6 +133,7 @@ movement.choice.description = What do you want to do?
 movement.choice.EAL = Arrival
 movement.choice.EAL.heading = Arrive
 movement.choice.EDL = Departure
+movement.choice.EAC = Disassociate
 declaration.choice.SMP = Supplementary declaration
 declaration.choice.STD = Standard declaration
 declaration.choice.CAN = Cancel declaration
@@ -211,6 +214,15 @@ submissions.mrn = Mrn
 submissions.submittedTimestamp = Timestamp
 submissions.status = Status
 submissions.noOfNotifications = Number of notifications
+
+disassociateDucr.title = Which DUCR do you want to disassociate?
+disassociateDucr.ducr.empty = Please enter DUCR
+disassociateDucr.ducr.error = Incorrect DUCR
+
+disassociateDucrConfirmation.title = Disassociation complete
+disassociateDucrConfirmation.header = The reference of the DUCR disassociated:
+disassociateDucrConfirmation.note = You might want to take a screenshot of this for your records.
+disassociateDucrConfirmation.continue = Back to start page
 
 consignmentReferences.title = Consignment references
 consignmentReferences.eori.question = What is your EORI number?

@@ -19,8 +19,8 @@ package controllers
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.movementCacheId
+import forms.DisassociateDucr
 import forms.DisassociateDucr._
-import forms.{Choice, DisassociateDucr}
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
@@ -28,43 +28,36 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.consignment_references
+import views.html.disassociate_ducr
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DisassociateDUCRController @Inject()(
+class DisassociateDucrController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
-  consignmentReferencesPage: consignment_references
-)(implicit appConfig: AppConfig, ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+  disassociateDucrPage: disassociate_ducr
+)(implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
       .fetchAndGetEntry[DisassociateDucr](movementCacheId, formId)
-      .map(data => Ok(consignmentReferencesPage(data.fold(form)(form.fill(_)))))
+      .map(data => Ok(disassociateDucrPage(data.fold(form)(form.fill))))
   }
 
-  def submitDUCR(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DisassociateDucr]) =>
-          Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
+        (formWithErrors: Form[DisassociateDucr]) => Future.successful(BadRequest(disassociateDucrPage(formWithErrors))),
         validForm =>
           customsCacheService
             .cache[DisassociateDucr](movementCacheId(), formId, validForm)
             .map { _ =>
-              request.choice match {
-                case Choice(Choice.AllowedChoiceValues.Arrival) =>
-                  Redirect(controllers.routes.MovementDetailsController.displayPage())
-                case Choice(Choice.AllowedChoiceValues.Departure) =>
-                  Redirect(controllers.routes.LocationController.displayPage())
-              }
+              Redirect(controllers.routes.DisassociateDucrConfirmationController.displayPage())
           }
       )
   }

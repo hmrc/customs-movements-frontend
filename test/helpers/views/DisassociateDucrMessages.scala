@@ -14,27 +14,12 @@
  * limitations under the License.
  */
 
-package forms
+package helpers.views
 
-import play.api.data.{Form, Forms}
-import Forms._
-import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator._
+trait DisassociateDucrMessages {
 
-case class DisassociateDucr(ducr: String)
-
-object DisassociateDucr {
-  implicit val format = Json.format[DisassociateDucr]
-
-  val formId = "DisassociateDUCR"
-
-  val mapping = Forms.mapping(
-    "ducr" -> text()
-      .verifying("disassociateDucr.ducr.empty", nonEmpty)
-      .verifying("disassociateDucr.ducr.error", isEmpty or validDucrOrMucr)
-  )(DisassociateDucr.apply)(DisassociateDucr.unapply)
-
-  def form: Form[DisassociateDucr] = Form(mapping)
-
+  val disassociateDucr = "disassociateDucr"
+  val title = disassociateDucr + ".title"
+  val ducrValueEmpty = disassociateDucr + ".ducr.empty"
+  val ducrValueError = disassociateDucr + ".ducr.error"
 }
-

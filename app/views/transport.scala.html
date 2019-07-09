@@ -15,11 +15,11 @@
  *@
 
 @import config.AppConfig
-@import controllers.routes._
+@import controllers.routes
 @import uk.gov.hmrc.play.views.html._
 @import forms.Transport
 @import forms.Transport.ModesOfTransport._
-@import utils.RadioOption
+@import views.components.RadioOption
 
 @this(main_template: views.html.main_template)
 
@@ -29,7 +29,7 @@
     title = messages("transport.title"),
     appConfig = appConfig
 ) {
-    @helper.form(TransportController.saveTransport(), 'autoComplete -> "off") {
+    @helper.form(routes.TransportController.saveTransport(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @if(choice == "EAL") {

@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import controllers.routes._
+@import controllers.routes
 @import uk.gov.hmrc.http.cache.client.CacheMap
 @import models.viewmodels.HtmlTableRow
 @import forms._
@@ -42,10 +42,12 @@
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("summary.referenceType"),
             value = data.getEntry[ConsignmentReferences](ConsignmentReferences.formId).map(ref =>
-                ref.reference.equals(AllowedReferences.Ducr) match {
-                    case true => messages("consignmentReferences.reference.ducr")
-                    case _ => messages("consignmentReferences.reference.mucr")
-            })
+                if(ref.reference.equals(AllowedReferences.Ducr)) {
+                    messages("consignmentReferences.reference.ducr")
+                } else {
+                    messages("consignmentReferences.reference.mucr")
+                }
+            )
         ))
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("summary.referenceValue"),
@@ -82,7 +84,7 @@
         ))
     }
 
-    @helper.form(action = SummaryController.submitMovementRequest()) {
+    @helper.form(action = routes.SummaryController.submitMovementRequest()) {
         @helper.CSRF.formField
 
         @components.submit_button(messages("site.acceptAndSend"))

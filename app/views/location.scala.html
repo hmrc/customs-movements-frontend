@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import controllers.routes._
+@import controllers.routes
 @import uk.gov.hmrc.play.views.html._
 @import forms.Location
 
@@ -27,7 +27,7 @@
     title = messages("location.title"),
     appConfig = appConfig
 ) {
-    @helper.form(LocationController.saveLocation(), 'autoComplete -> "off") {
+    @helper.form(routes.LocationController.saveLocation(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @if(choice == "EAL") {

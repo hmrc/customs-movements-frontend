@@ -30,7 +30,7 @@
     title = messages("summary.title"),
     appConfig = appConfig
 ) {
-    @components.back_link("/customs-movements/transport")
+    @components.back_link(routes.TransportController.displayPage())
 
     @components.page_title(Some("summary.arrival.title"))
 

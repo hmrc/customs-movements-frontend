@@ -33,9 +33,9 @@
         @helper.CSRF.formField
 
         @if(choice == "EAL") {
-            @components.back_link("/customs-movements/location")
+            @components.back_link(routes.LocationController.displayPage())
         } else {
-            @components.back_link("/customs-movements/movement-details")
+            @components.back_link(routes.MovementDetailsController.displayPage())
         }
 
         @components.error_summary(form.errors)

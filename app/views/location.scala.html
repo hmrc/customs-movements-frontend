@@ -31,9 +31,9 @@
         @helper.CSRF.formField
 
         @if(choice == "EAL") {
-            @components.back_link("/customs-movements/movement-details")
+            @components.back_link(routes.MovementDetailsController.displayPage())
         } else {
-            @components.back_link("/customs-movements/consignment-references")
+            @components.back_link(routes.ConsignmentReferencesController.displayPage())
         }
 
         @components.error_summary(form.errors)

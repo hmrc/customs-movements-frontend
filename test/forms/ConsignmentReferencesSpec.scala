@@ -59,29 +59,25 @@ class ConsignmentReferencesSpec extends BaseSpec {
       errors mustBe List(
         FormError("eori", "consignmentReferences.eori.error"),
         FormError("reference", "consignmentReferences.reference.error"),
-        FormError("referenceValue", "consignmentReferences.reference.value.error"))
+        FormError("referenceValue", "consignmentReferences.reference.value.error")
+      )
     }
 
-    "no errors when data is correct with different valid MUCR/DUCRs" in {
-      val inputData1 = ConsignmentReferences(Some("GB717572504502811"), "D", "5GB123456789000-123ABC456DEFIIIII")
-      val errors1 = ConsignmentReferences.form().fillAndValidate(inputData1).errors
-      errors1 mustBe empty
+    "no errors for valid MUCR/DUCRs " in {
+      val mucrFormat1 = ConsignmentReferences(Some("GB717572504502811"), "D", "5GB123456789000-123ABC456DEFIIIII")
+      ConsignmentReferences.form().fillAndValidate(mucrFormat1).errors mustBe empty
 
-      val inputData2 = ConsignmentReferences(Some("GB717572504502811"), "D", "GB/ABC4-ASIUDYFAHSDJF")
-      val errors2 = ConsignmentReferences.form().fillAndValidate(inputData2).errors
-      errors2 mustBe empty
+      val mucrFormat2 = ConsignmentReferences(Some("GB717572504502811"), "D", "GB/ABC4-ASIUDYFAHSDJF")
+      ConsignmentReferences.form().fillAndValidate(mucrFormat2).errors mustBe empty
 
-      val inputData3 = ConsignmentReferences(Some("GB717572504502811"), "D", "GB/1234SG789-1PWER")
-      val errors3 = ConsignmentReferences.form().fillAndValidate(inputData3).errors
-      errors3 mustBe empty
+      val mucrFormat3 = ConsignmentReferences(Some("GB717572504502811"), "D", "GB/1234SG789-1PWER")
+      ConsignmentReferences.form().fillAndValidate(mucrFormat3).errors mustBe empty
 
-      val inputData4 = ConsignmentReferences(Some("GB717572504502811"), "D", "A:A8C12345678")
-      val errors4 = ConsignmentReferences.form().fillAndValidate(inputData4).errors
-      errors4 mustBe empty
+      val mucrFormat4 = ConsignmentReferences(Some("BL717572504502811"), "D", "A:A8C12345678")
+      ConsignmentReferences.form().fillAndValidate(mucrFormat4).errors mustBe empty
 
-      val inputData5 = ConsignmentReferences(Some("GB717572504502811"), "D", "C:XYZ123")
-      val errors5 = ConsignmentReferences.form().fillAndValidate(inputData5).errors
-      errors5 mustBe empty
+      val mucrFormat6 = ConsignmentReferences(Some("FR717572504502811"), "D", "C:XYZ123")
+      ConsignmentReferences.form().fillAndValidate(mucrFormat6).errors mustBe empty
     }
   }
 }

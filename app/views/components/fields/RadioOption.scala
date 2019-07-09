@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.components
+package views.components.fields
 
 case class RadioOption(id: String, value: String, messageKey: String, hint: Option[String] = None)
 

@@ -16,7 +16,7 @@
 
 package utils
 import org.scalatest.{MustMatchers, WordSpec}
-import views.components.RadioOption
+import views.components.fields.RadioOption
 
 class RadioOptionSpec extends WordSpec with MustMatchers {
 

@@ -82,12 +82,12 @@ class TransportSpec extends BaseSpec {
 
     "return no error" when {
 
-      "values are correct" in {
+      "values are correct for different country codes" in {
+        val transportPoland = Transport(Sea, "PL")
+        Transport.form().fillAndValidate(transportPoland).errors mustBe empty
 
-        val inputData = Transport(Sea, "PL")
-        val errors = Transport.form().fillAndValidate(inputData).errors
-
-        errors.length must be(0)
+        val transportKosovo = Transport(Sea, "XK")
+        Transport.form().fillAndValidate(transportKosovo).errors mustBe empty
       }
     }
   }

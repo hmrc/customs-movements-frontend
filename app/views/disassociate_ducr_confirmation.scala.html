@@ -28,14 +28,14 @@
     appConfig = appConfig
 ) {
 
-    @components.back_link(routes.ChoiceController.displayChoiceForm())
+    @components.back_link(routes.DisassociateDucrController.displayPage())
 
     <div class="govuk-box-highlight">
         <h1 class="heading-xlarge">
             @messages("disassociateDucrConfirmation.title")
         </h1>
         <p class="font-large">@messages("disassociateDucrConfirmation.header")</p>
-        <p class="font-large bold">@reference</p>
+        <p id="reference" class="font-large bold">@reference</p>
     </div>
 
   <p>@messages("disassociateDucrConfirmation.note")</p>

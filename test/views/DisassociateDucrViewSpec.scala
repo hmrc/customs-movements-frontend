@@ -50,7 +50,7 @@ class DisassociateDucrViewSpec extends ViewSpec with DisassociateDucrMessages wi
       getElementById(createView(), "title").text() must be(messages(title))
     }
 
-    "display \"Back\" buttion that links to start page" in {
+    "display \"Back\" button that links to start page" in {
 
       val backButton = getElementById(createView(), "link-back")
 

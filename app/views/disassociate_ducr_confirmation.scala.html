@@ -21,7 +21,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(reference: String)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+@()(implicit appConfig: AppConfig, request: Request[_], flash: Flash, messages: Messages)
 
 @main_template(
     title = messages("disassociateDucrConfirmation.title"),
@@ -35,7 +35,7 @@
             @messages("disassociateDucrConfirmation.title")
         </h1>
         <p class="font-large">@messages("disassociateDucrConfirmation.header")</p>
-        <p id="reference" class="font-large bold">@reference</p>
+        <p id="reference" class="font-large bold">@flash.get(FlashKeys.DUCR).getOrElse("-")</p>
     </div>
 
   <p>@messages("disassociateDucrConfirmation.note")</p>

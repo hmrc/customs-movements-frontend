@@ -37,7 +37,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class DisassociateDucrController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   submissionService: SubmissionService,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
@@ -45,10 +44,8 @@ class DisassociateDucrController @Inject()(
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[DisassociateDucr](movementCacheId, formId)
-      .map(data => Ok(disassociateDucrPage(data.fold(form)(form.fill))))
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok(disassociateDucrPage(form))
   }
 
   def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -56,16 +53,16 @@ class DisassociateDucrController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(disassociateDucrPage(formWithErrors))),
-        validForm =>
-          updateCacheAndSubmit(validForm).map { _ =>
+        formData =>
+          submit(formData).map { _ =>
             Redirect(controllers.routes.DisassociateDucrConfirmationController.displayPage())
+              .flashing(FlashKeys.DUCR -> formData.ducr)
         }
       )
   }
 
-  private def updateCacheAndSubmit(formData: DisassociateDucr)(implicit r: JourneyRequest[_]): Future[Unit] =
+  private def submit(formData: DisassociateDucr)(implicit r: JourneyRequest[_]): Future[Unit] =
     for {
       _ <- submissionService.submitDucrDisassociation(movementCacheId(), formData.ducr)
-      _ <- customsCacheService.cache[DisassociateDucr](movementCacheId(), formId, formData)
     } yield Unit
 }

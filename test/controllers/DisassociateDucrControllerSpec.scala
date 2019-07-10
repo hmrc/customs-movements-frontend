@@ -46,25 +46,11 @@ class DisassociateDucrControllerSpec extends MovementBaseSpec with BeforeAndAfte
 
   "Disassociate Ducr Controller" should {
 
-    "return 200 for get request" when {
+    "return 200 for get request" in new SetUp {
 
-      "cache is empty" in new SetUp {
+      val result = route(app, getRequest(uri)).get
 
-        withCaching(DisassociateDucr.formId, None)
-
-        val result = route(app, getRequest(uri)).get
-
-        status(result) must be(OK)
-      }
-
-      "cache contains data" in new SetUp {
-
-        withCaching(DisassociateDucr.formId, Some(DisassociateDucr("8GB12345612345612345")))
-
-        val result = route(app, getRequest(uri)).get
-
-        status(result) must be(OK)
-      }
+      status(result) must be(OK)
     }
 
     "return BadRequest for incorrect form" in new SetUp {

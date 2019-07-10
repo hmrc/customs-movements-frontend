@@ -16,7 +16,9 @@
 
 package views
 
+import controllers.FlashKeys
 import helpers.views.{CommonMessages, DisassociateDucrConfirmationMessages}
+import play.api.mvc.Flash
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
 
@@ -24,7 +26,7 @@ class DisassociateDucrConfirmationViewSpec extends ViewSpec with DisassociateDuc
 
   private val page = injector.instanceOf[views.html.disassociate_ducr_confirmation]
 
-  private def createView(reference: String): Html = page(reference)
+  private def createView(ducr: String): Html = page()(appConfig, fakeRequest, new Flash(Map(FlashKeys.DUCR -> ducr)), messages)
 
   "Disassociate Ducr Confirmation View" should {
 
@@ -40,7 +42,7 @@ class DisassociateDucrConfirmationViewSpec extends ViewSpec with DisassociateDuc
 
     "display 'Back' button that links to start page" in {
 
-      val backButton = getElementById(createView("GB123"), "link-back")
+      val backButton = getElementById(createView("DUCR"), "link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be(controllers.routes.DisassociateDucrController.displayPage().url)
@@ -48,7 +50,7 @@ class DisassociateDucrConfirmationViewSpec extends ViewSpec with DisassociateDuc
 
     "display 'Back to start' button on page" in {
 
-      val view = createView("GB123")
+      val view = createView("DUCR")
 
       val saveButton = getElementByCss(view, ".button")
       saveButton.text() must be(messages(continue))

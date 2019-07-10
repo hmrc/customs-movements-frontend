@@ -18,14 +18,9 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.movementCacheId
-import forms.DisassociateDucr
-import forms.DisassociateDucr._
-import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.disassociate_ducr_confirmation
 
@@ -35,19 +30,12 @@ import scala.concurrent.ExecutionContext
 class DisassociateDucrConfirmationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
-  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   disassociateDucrConfirmationPage: disassociate_ducr_confirmation
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[DisassociateDucr](movementCacheId, formId)
-      .map {
-        case Some(data) => Ok(disassociateDucrConfirmationPage(data.ducr))
-        case _          => Redirect(routes.StartController.displayStartPage())
-      }
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok(disassociateDucrConfirmationPage())
   }
 }

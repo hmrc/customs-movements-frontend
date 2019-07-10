@@ -33,24 +33,9 @@ class DisassociateDucrConfirmationControllerSpec extends MovementBaseSpec {
 
   "Disassociate Ducr Confirmation Controller" should {
 
-    "redirect for get request" when {
-
-      "cache is empty" in new SetUp {
-
-        withCaching(DisassociateDucr.formId, None)
-
-        val result = route(app, getRequest(uri)).get
-
-        redirectLocation(result) must be(Some(routes.StartController.displayStartPage().url))
-      }
-    }
-
     "return 200 for get request" when {
 
       "cache contains data" in new SetUp {
-
-        withCaching(DisassociateDucr.formId, Some(DisassociateDucr("8GB12345612345612345")))
-
         val result = route(app, getRequest(uri)).get
 
         status(result) must be(OK)

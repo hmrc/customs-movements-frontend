@@ -47,7 +47,7 @@ class DisassociateDucrConfirmationController @Inject()(
       .fetchAndGetEntry[DisassociateDucr](movementCacheId, formId)
       .map {
         case Some(data) => Ok(disassociateDucrConfirmationPage(data.ducr))
-        case _ => Redirect(routes.StartController.displayStartPage())
+        case _          => Redirect(routes.StartController.displayStartPage())
       }
   }
 }

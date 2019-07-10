@@ -53,7 +53,7 @@ class SubmissionService @Inject()(
   def submitDucrDisassociation(
     cacheId: String,
     ducr: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
     // TODO Implement once the backend approach is defined
 
     //    val request = InventoryLinkingConsolidationRequest(
@@ -63,5 +63,4 @@ class SubmissionService @Inject()(
     //      ucrBlock = Some(UcrBlock(ucr = ducr, ucrType = "D"))
     //    )
     Future.successful((): Unit)
-  }
 }

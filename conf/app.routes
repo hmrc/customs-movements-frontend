@@ -14,13 +14,13 @@ GET         /choice                         controllers.ChoiceController.display
 
 POST        /choice                         controllers.ChoiceController.submitChoice()
 
-# Disassociate DURC page
+# Disassociate DUCR page
 
 GET         /disassociate-ducr              controllers.DisassociateDucrController.displayPage()
 
 POST        /disassociate-ducr              controllers.DisassociateDucrController.submit()
 
-# Disassociate DURC Confirmation page
+# Disassociate DUCR Confirmation page
 
 GET         /disassociate-ducr-confirmation controllers.DisassociateDucrConfirmationController.displayPage()
 

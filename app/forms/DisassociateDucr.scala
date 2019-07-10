@@ -34,7 +34,6 @@ object DisassociateDucr {
       .verifying("disassociateDucr.ducr.error", isEmpty or validDucrOrMucr)
   )(DisassociateDucr.apply)(DisassociateDucr.unapply)
 
-  def form: Form[DisassociateDucr] = Form(mapping)
+  val form: Form[DisassociateDucr] = Form(mapping)
 
 }
-

@@ -95,7 +95,7 @@ class ChoiceControllerSpec extends MovementBaseSpec with BeforeAndAfter {
         .cache[Choice](any(), ArgumentMatchers.eq(Choice.choiceId), any())(any(), any(), any())
     }
 
-    "redirect to arrival page when \"Arrival\" is selected" in {
+    "redirect to arrival page when 'Arrival' is selected" in {
 
       withCaching(Choice.choiceId)
 
@@ -107,7 +107,7 @@ class ChoiceControllerSpec extends MovementBaseSpec with BeforeAndAfter {
       redirectLocation(result) must be(Some(routes.ConsignmentReferencesController.displayPage().url))
     }
 
-    "redirect to departure page when \"Departure\" is selected" in {
+    "redirect to departure page when 'Departure' is selected" in {
 
       withCaching(Choice.choiceId)
 
@@ -119,7 +119,7 @@ class ChoiceControllerSpec extends MovementBaseSpec with BeforeAndAfter {
       redirectLocation(result) must be(Some(routes.ConsignmentReferencesController.displayPage().url))
     }
 
-    "redirect to disassociate page when \"Disassociate\" is selected" in {
+    "redirect to disassociate page when 'Disassociate' is selected" in {
 
       withCaching(Choice.choiceId)
 

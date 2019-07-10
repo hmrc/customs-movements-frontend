@@ -50,7 +50,7 @@ class DisassociateDucrViewSpec extends ViewSpec with DisassociateDucrMessages wi
       getElementById(createView(), "title").text() must be(messages(title))
     }
 
-    "display \"Back\" button that links to start page" in {
+    "display 'Back' button that links to start page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -58,7 +58,7 @@ class DisassociateDucrViewSpec extends ViewSpec with DisassociateDucrMessages wi
       backButton.attr("href") must be(controllers.routes.ChoiceController.displayChoiceForm().url)
     }
 
-    "display \"Save and continue\" button on page" in {
+    "display 'Save and continue' button on page" in {
 
       val view = createView()
 

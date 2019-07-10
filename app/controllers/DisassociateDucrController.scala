@@ -63,10 +63,9 @@ class DisassociateDucrController @Inject()(
       )
   }
 
-  private def updateCacheAndSubmit(formData: DisassociateDucr)(implicit r: JourneyRequest[_]): Future[Unit] = {
+  private def updateCacheAndSubmit(formData: DisassociateDucr)(implicit r: JourneyRequest[_]): Future[Unit] =
     for {
       _ <- submissionService.submitDucrDisassociation(movementCacheId(), formData.ducr)
       _ <- customsCacheService.cache[DisassociateDucr](movementCacheId(), formId, formData)
     } yield Unit
-  }
 }

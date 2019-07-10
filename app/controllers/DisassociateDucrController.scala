@@ -23,10 +23,11 @@ import forms.DisassociateDucr
 import forms.DisassociateDucr._
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
+import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.disassociate_ducr
 
@@ -37,10 +38,12 @@ class DisassociateDucrController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
+  submissionService: SubmissionService,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   disassociateDucrPage: disassociate_ducr
-)(implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
+)(implicit appConfig: AppConfig, ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
@@ -54,11 +57,16 @@ class DisassociateDucrController @Inject()(
       .fold(
         (formWithErrors: Form[DisassociateDucr]) => Future.successful(BadRequest(disassociateDucrPage(formWithErrors))),
         validForm =>
-          customsCacheService
-            .cache[DisassociateDucr](movementCacheId(), formId, validForm)
-            .map { _ =>
-              Redirect(controllers.routes.DisassociateDucrConfirmationController.displayPage())
-          }
+          updateCacheAndSubmit(validForm).map { _ =>
+            Redirect(controllers.routes.DisassociateDucrConfirmationController.displayPage())
+        }
       )
+  }
+
+  private def updateCacheAndSubmit(formData: DisassociateDucr)(implicit r: JourneyRequest[_]): Future[Unit] = {
+    for {
+      _ <- submissionService.submitDucrDisassociation(movementCacheId(), formData.ducr)
+      _ <- customsCacheService.cache[DisassociateDucr](movementCacheId(), formId, formData)
+    } yield Unit
   }
 }

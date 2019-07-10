@@ -17,19 +17,17 @@
 package helpers.views
 
 trait ChoiceMessages {
-
-  val movementChoice: String = "movement.choice"
-
+  def movementChoice = "movement.choice"
   // TODO: description is used as title
-  val title: String = movementChoice + ".description"
-
-  val supplementaryDec: String = "declaration.choice.SMP"
-  val standardDec: String = "declaration.choice.STD"
-  val arrivalDec: String = movementChoice + ".EAL"
-  val departureDec: String = movementChoice + ".EDL"
-  val disassociateDec: String = movementChoice + ".EAC"
-  val cancelDec: String = "declaration.choice.CAN"
-  val recentDec: String = "declaration.choice.SUB"
-  val choiceEmpty: String = "choicePage.input.error.empty"
-  val choiceError: String = "choicePage.input.error.incorrectValue"
+  def title = movementChoice + ".description"
+  def supplementaryDec = "declaration.choice.SMP"
+  def standardDec = "declaration.choice.STD"
+  def arrival = movementChoice + ".EAL"
+  def departure = movementChoice + ".EDL"
+  def associate = movementChoice + ".ASS"
+  def disassociate = movementChoice + ".EAC"
+  def cancelDec = "declaration.choice.CAN"
+  def recentDec = "declaration.choice.SUB"
+  def choiceEmpty = "choicePage.input.error.empty"
+  def choiceError = "choicePage.input.error.incorrectValue"
 }

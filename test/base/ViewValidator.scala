@@ -18,7 +18,7 @@ package base
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
-import org.scalatest.MustMatchers
+import org.scalatest.{Assertion, MustMatchers}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 
@@ -102,4 +102,8 @@ trait ViewValidator extends MustMatchers {
     errorLink.text() must be(messages(error))
     errorLink.attr("href") must be(href)
   }
+
+  def verifyUnchecked(view: Html, id: String): Assertion = getElementById(view, id).attr("checked") must be("")
+
+  def verifyChecked(view: Html, id: String): Assertion = getElementById(view, id).attr("checked") must be("checked")
 }

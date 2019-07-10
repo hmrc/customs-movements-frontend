@@ -17,6 +17,7 @@ POST        /choice                         controllers.ChoiceController.submitC
 # Associate DUCR page
 
 GET         /associate-ducr                 controllers.AssociateDucrController.displayPage()
+POST        /associate-ducr                 controllers.AssociateDucrController.save()
 
 # Disassociate DUCR page
 

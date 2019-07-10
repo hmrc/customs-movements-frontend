@@ -38,9 +38,14 @@ class AssociateDucrController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents
-)(implicit appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
+)(implicit appConfig: AppConfig)
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok("TODO")
+  }
+
+  def save(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     Ok("TODO")
   }
 }

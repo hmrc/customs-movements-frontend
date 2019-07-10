@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.AppConfig
+package helpers.views
 
-@this(main_template: views.html.main_template)
+trait DisassociateDucrConfirmationMessages {
 
-@(movementType: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
-@main_template(
-  title = messages(s"movement.${movementType}.confirmation"),
-  appConfig = appConfig) {
-
-<div class="govuk-box-highlight">
-    <h1 class="heading-xlarge">
-        @messages(s"movement.choice.${movementType}") has been submitted
-    </h1>
-</div>
-
-@components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
+  val disassociateDucr = "disassociateDucrConfirmation"
+  val title = disassociateDucr + ".title"
+  val heading = disassociateDucr + ".header"
+  val footNote = disassociateDucr + ".note"
+  val continue = disassociateDucr + ".continue"
 }

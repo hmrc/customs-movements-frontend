@@ -95,30 +95,40 @@ class ChoiceControllerSpec extends MovementBaseSpec with BeforeAndAfter {
         .cache[Choice](any(), ArgumentMatchers.eq(Choice.choiceId), any())(any(), any(), any())
     }
 
-    "redirect to arrival page when \"Arrival\" is selected" in {
+    "redirect to arrival page when 'Arrival' is selected" in {
 
       withCaching(Choice.choiceId)
 
       val correctForm =
         JsObject(Map("choice" -> JsString(AllowedChoiceValues.Arrival)))
       val result = route(app, postRequest(choiceUri, correctForm)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-movements/consignment-references"))
+      redirectLocation(result) must be(Some(routes.ConsignmentReferencesController.displayPage().url))
     }
 
-    "redirect to departure page when \"Departure\" is selected" in {
+    "redirect to departure page when 'Departure' is selected" in {
 
       withCaching(Choice.choiceId)
 
       val correctForm =
         JsObject(Map("choice" -> JsString(AllowedChoiceValues.Departure)))
       val result = route(app, postRequest(choiceUri, correctForm)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-movements/consignment-references"))
+      redirectLocation(result) must be(Some(routes.ConsignmentReferencesController.displayPage().url))
+    }
+
+    "redirect to disassociate page when 'Disassociate' is selected" in {
+
+      withCaching(Choice.choiceId)
+
+      val correctForm =
+        JsObject(Map("choice" -> JsString(AllowedChoiceValues.DisassociateDUCR)))
+      val result = route(app, postRequest(choiceUri, correctForm)).get
+
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result) must be(Some(routes.DisassociateDucrController.displayPage().url))
     }
 
   }

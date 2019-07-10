@@ -111,35 +111,47 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
   "Choice View when filled" should {
 
+    def verifyUnchecked(view: Html, id: String): Unit = {
+      val optionFour = getElementById(view, id)
+      optionFour.attr("checked") must be("")
+    }
+
+    def verifyChecked(view: Html, id: String): Unit = {
+      val optionFour = getElementById(view, id)
+      optionFour.attr("checked") must be("checked")
+    }
+
     "display selected 1st radio button - Arrival (EAL)" in {
 
       val view = createView(Choice.form().fill(Choice("EAL")))
 
-      val optionThree = getElementById(view, "Arrival")
-      optionThree.attr("checked") must be("checked")
-
       getElementByCss(view, "#choice>div:nth-child(2)>label").text() must be(messages(arrivalDec))
 
-      val optionFour = getElementById(view, "Departure")
-      optionFour.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(departureDec))
-
+      verifyChecked(view, "Arrival")
+      verifyUnchecked(view, "Departure")
+      verifyUnchecked(view, "Disassociate")
     }
 
     "display selected 2nd radio button - Departure (EDL)" in {
 
       val view = createView(Choice.form().fill(Choice("EDL")))
 
-      val optionThree = getElementById(view, "Arrival")
-      optionThree.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(2)>label").text() must be(messages(arrivalDec))
-
-      val optionFour = getElementById(view, "Departure")
-      optionFour.attr("checked") must be("checked")
-
       getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(departureDec))
+
+      verifyUnchecked(view, "Arrival")
+      verifyChecked(view, "Departure")
+      verifyUnchecked(view, "Disassociate")
+    }
+
+    "display selected 3rd radio button - Disassociate (EAC)" in {
+
+      val view = createView(Choice.form().fill(Choice("EAC")))
+
+      getElementByCss(view, "#choice>div:nth-child(4)>label").text() must be(messages(disassociateDec))
+
+      verifyUnchecked(view, "Arrival")
+      verifyUnchecked(view, "Departure")
+      verifyChecked(view, "Disassociate")
 
     }
   }

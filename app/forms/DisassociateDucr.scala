@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,28 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.AppConfig
+package forms
 
-@this(main_template: views.html.main_template)
+import play.api.data.{Form, Forms}
+import Forms._
+import play.api.libs.json.Json
+import utils.validators.forms.FieldValidator._
 
-@(movementType: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+case class DisassociateDucr(ducr: String)
 
-@main_template(
-  title = messages(s"movement.${movementType}.confirmation"),
-  appConfig = appConfig) {
+object DisassociateDucr {
+  implicit val format = Json.format[DisassociateDucr]
 
-<div class="govuk-box-highlight">
-    <h1 class="heading-xlarge">
-        @messages(s"movement.choice.${movementType}") has been submitted
-    </h1>
-</div>
+  val formId = "DisassociateDUCR"
 
-@components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
+  val mapping = Forms.mapping(
+    "ducr" -> text()
+      .verifying("disassociateDucr.ducr.empty", nonEmpty)
+      .verifying("disassociateDucr.ducr.error", isEmpty or validDucrOrMucr)
+  )(DisassociateDucr.apply)(DisassociateDucr.unapply)
+
+  val form: Form[DisassociateDucr] = Form(mapping)
+
 }

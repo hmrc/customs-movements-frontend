@@ -49,4 +49,18 @@ class SubmissionService @Inject()(
       case _ =>
         Future.successful(INTERNAL_SERVER_ERROR)
     }
+
+  def submitDucrDisassociation(
+    cacheId: String,
+    ducr: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
+    // TODO Implement once the backend approach is defined
+
+    //    val request = InventoryLinkingConsolidationRequest(
+    //      messageCode = "EAC",
+    //      transactionType = "",
+    //      masterUCR = None,
+    //      ucrBlock = Some(UcrBlock(ucr = ducr, ucrType = "D"))
+    //    )
+    Future.successful((): Unit)
 }

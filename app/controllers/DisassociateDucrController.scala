@@ -24,10 +24,9 @@ import forms.DisassociateDucr._
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import models.requests.JourneyRequest
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{CustomsCacheService, SubmissionService}
+import services.SubmissionService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.disassociate_ducr
 

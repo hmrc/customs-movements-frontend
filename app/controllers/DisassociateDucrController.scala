@@ -55,7 +55,7 @@ class DisassociateDucrController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DisassociateDucr]) => Future.successful(BadRequest(disassociateDucrPage(formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(disassociateDucrPage(formWithErrors))),
         validForm =>
           updateCacheAndSubmit(validForm).map { _ =>
             Redirect(controllers.routes.DisassociateDucrConfirmationController.displayPage())

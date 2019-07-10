@@ -18,31 +18,26 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.movementCacheId
-import forms.DisassociateDucr
-import forms.DisassociateDucr._
+import forms.MucrOptions
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
-import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SubmissionService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.disassociate_ducr
-
-import scala.concurrent.{ExecutionContext, Future}
+import views.html.associate_ducr
 
 @Singleton
 class AssociateDucrController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  associateDucrPage: associate_ducr
 )(implicit appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok("TODO")
+    Ok(associateDucrPage(MucrOptions.form))
   }
 
   def save(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>

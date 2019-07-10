@@ -16,10 +16,11 @@
 
 package forms
 
-import forms.MucrOptions.CreateOrAdd
+import play.api.data.Forms.text
+import play.api.data.{Form, Forms}
 
 
-case class MucrOptions(createOrAdd: CreateOrAdd)
+case class MucrOptions(createOrAdd: String)
 
 object MucrOptions {
   sealed trait CreateOrAdd
@@ -30,4 +31,11 @@ object MucrOptions {
   case object Add extends CreateOrAdd {
     override def toString: String = "Add"
   }
+  
+  val mapping = Forms.mapping(
+     "createOrAdd" -> text()
+   )(MucrOptions.apply)(MucrOptions.unapply)
+  
+  val form: Form[MucrOptions] = Form(mapping)
+  
 }

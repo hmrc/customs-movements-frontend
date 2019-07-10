@@ -18,7 +18,6 @@ package views
 
 import forms.Choice
 import helpers.views.{ChoiceMessages, CommonMessages}
-import helpers.views.ChoiceMessages
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -52,12 +51,12 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title))
+      getElementByCss(createView(), "title").text() must be("What do you want to do?")
     }
 
     "display header with hint" in {
 
-      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
+      getElementByCss(createView(), "legend>h1").text() must be("What do you want to do?")
     }
 
     "display 2 radio buttons with description (not selected)" in {
@@ -67,15 +66,15 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       val optionThree = getElementById(view, "Arrival")
       optionThree.attr("checked") must be("")
 
-      getElementByCss(view, "#choice>div:nth-child(2)>label").text() must be(messages(arrivalDec))
+      getElementByCss(view, "#choice>div:nth-child(2)>label").text() must be("Arrival")
 
       val optionFour = getElementById(view, "Departure")
       optionFour.attr("checked") must be("")
 
-      getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(departureDec))
+      getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be("Departure")
     }
 
-    "display \"Back\" button that links to \"Make an export declaration\" page" in {
+    "display 'Back' button that links to 'Make an export declaration' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -83,7 +82,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       backButton.attr("href") must be(controllers.routes.StartController.displayStartPage().url)
     }
 
-    "display \"Save and continue\" button on page" in {
+    "display 'Save and continue' button on page" in {
 
       val view = createView()
 

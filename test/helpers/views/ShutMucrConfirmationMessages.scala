@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package helpers.views
 
-object FlashKeys {
-  val DUCR = "DUCR"
+trait ShutMucrConfirmationMessages {
+
+  val title = "shutMucrConfirmation.title"
+  val confirmationInfo = "shutMucrConfirmation.info"
+  val additionalNote = "shutMucrConfirmation.note"
 }

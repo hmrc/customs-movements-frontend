@@ -23,18 +23,18 @@
 @()(implicit appConfig: AppConfig, request: Request[_], flash: Flash, messages: Messages)
 
 @main_template(
-    title = messages("disassociateDucrConfirmation.title"),
-    appConfig = appConfig
+  title = messages("shutMucrConfirmation.title"),
+  appConfig = appConfig
 ) {
 
-    <div class="govuk-box-highlight">
-        <h1 class="heading-xlarge">@messages("disassociateDucrConfirmation.title")</h1>
-        <p class="font-large">@messages("disassociateDucrConfirmation.header")</p>
-        <p id="reference" class="font-large bold">@flash.get(FlashKeys.DUCR).getOrElse("-")</p>
-    </div>
+  <div class="govuk-box-highlight">
+    <h1 id="title" class="heading-xlarge">@messages("shutMucrConfirmation.title")</h1>
+    <p id="confirmation-info" class="font-large">@messages("shutMucrConfirmation.info")</p>
+    <p id="confirmation-reference" class="font-large bold">@flash.get(FlashKeys.MUCR).getOrElse("-")</p>
+  </div>
 
-  <p>@messages("disassociateDucrConfirmation.note")</p>
+  <p id="additional-note">@messages("shutMucrConfirmation.note")</p>
 
-  @components.button_link("disassociateDucrConfirmation.continue", routes.StartController.displayStartPage())
+  @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
 
 }

@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package forms
+package helpers.views
 
-trait MetadataPropertiesConvertable {
-  def toMetadataProperties(): Map[String, String]
+trait ShutMucrMessages {
+
+  val tabTitle: String = "shutMucr.tabTitle"
+  val title: String = "shutMucr.title"
 }

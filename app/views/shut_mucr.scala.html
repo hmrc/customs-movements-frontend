@@ -15,20 +15,32 @@
  *@
 
 @import config.AppConfig
+@import forms.ShutMucr
 
 @this(main_template: views.html.main_template)
 
-@(movementType: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[ShutMucr])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(
-  title = messages(s"movement.${movementType}.confirmation"),
-  appConfig = appConfig) {
+  title = messages("shutMucr.tabTitle"),
+  appConfig = appConfig
+) {
 
-<div class="govuk-box-highlight">
-    <h1 class="heading-xlarge">
-        @messages(s"movement.choice.${movementType}.label") has been submitted
-    </h1>
-</div>
+  @helper.form(routes.ShutMucrController.submitForm(), 'autoComplete -> "off") {
+    @helper.CSRF.formField
 
-@components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
+    @components.back_link(routes.ChoiceController.displayChoiceForm())
+
+    @components.error_summary(form.errors)
+
+    @components.input_text(
+      field = form("mucr"),
+      label = messages("shutMucr.title"),
+      labelClass = Some("heading-xlarge")
+    )
+
+    @components.submit_button(messageKey = "site.continue")
+
+
+  }
 }

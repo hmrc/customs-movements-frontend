@@ -42,12 +42,12 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait MovementApp
-    extends PlaySpec with GuiceOneAppPerSuite with MockAuthAction with MockCustomsCacheService
+    extends PlaySpec with GuiceOneAppPerSuite with MockAuthConnector with MockCustomsCacheService
     with MockSubmissionService with MockCustomsExportsMovement with MockMovementsMetrics with ScalaFutures {
 
   override lazy val app: Application = GuiceApplicationBuilder()
     .overrides(
-      bind[AuthConnector].to(mockAuthConnector),
+      bind[AuthConnector].to(authConnectorMock),
       bind[CustomsCacheService].to(mockCustomsCacheService),
       bind[CustomsDeclareExportsMovementsConnector].to(mockCustomsExportsMovementConnector),
       bind[SubmissionService].to(mockSubmissionService)

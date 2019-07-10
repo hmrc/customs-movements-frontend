@@ -15,13 +15,14 @@
  */
 
 package views
-
-import controllers.FlashKeys
+import controllers.util.FlashKeys
 import helpers.views.{CommonMessages, DisassociateDucrConfirmationMessages}
 import play.api.mvc.Flash
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
+import views.tags.ViewTest
 
+@ViewTest
 class DisassociateDucrConfirmationViewSpec extends ViewSpec with DisassociateDucrConfirmationMessages with CommonMessages {
 
   private val page = injector.instanceOf[views.html.disassociate_ducr_confirmation]
@@ -40,7 +41,7 @@ class DisassociateDucrConfirmationViewSpec extends ViewSpec with DisassociateDuc
       getElementById(createView("GB123"), "reference").text() must be("GB123")
     }
 
-    "display 'Back to start' button on page" in {
+    "display 'Back to start page' button on page" in {
 
       val view = createView("DUCR")
 

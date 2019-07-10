@@ -17,11 +17,11 @@
 package services
 
 import connectors.CustomsDeclareExportsMovementsConnector
-import forms.{Choice, Movement}
+import forms.{Choice, Movement, ShutMucr}
 import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
-import uk.gov.hmrc.http.HeaderCarrier
 import play.api.http.Status.INTERNAL_SERVER_ERROR
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -63,4 +63,6 @@ class SubmissionService @Inject()(
     //      ucrBlock = Some(UcrBlock(ucr = ducr, ucrType = "D"))
     //    )
     Future.successful((): Unit)
+
+  def submitShutMucrRequest(formData: ShutMucr): Future[Unit] = Future.successful((): Unit)
 }

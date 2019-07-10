@@ -58,7 +58,7 @@ class CommonLabelsSpec extends ViewSpec with CommonMessages {
   "DUCR error labels" should {
 
     "have proper message for incorrect DUCR" in {
-      assertMessage(ucrError, "Incorrect DUCR")
+      assertMessage(ducrError, "Incorrect DUCR")
     }
   }
 }

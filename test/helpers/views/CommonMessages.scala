@@ -19,13 +19,16 @@ package helpers.views
 trait CommonMessages {
 
   val errorPrefix: String = "error"
-  val ucrError: String = errorPrefix + ".ducr"
+  val ducrError: String = errorPrefix + ".ducr"
+  val mucrErrorEmpty: String = "error.mucr.empty"
+  val mucrErrorFormat: String = "error.mucr.format"
   val errorSummaryTitle: String = errorPrefix + ".summary.title"
   val errorSummaryText: String = errorPrefix + ".summary.text"
 
-  val site: String = "site"
-  val backCaption: String = site + ".back"
-  val saveAndContinueCaption: String = site + ".save_and_continue"
+  val backCaption: String = "site.back"
+  val saveAndContinueCaption: String = "site.save_and_continue"
+  val continueCaption: String = "site.continue"
+  val backToStartPageCaption: String = "site.backToStartPage"
 
   val globalError: String = "global.error"
   val globalErrorTitle: String = globalError + ".title"

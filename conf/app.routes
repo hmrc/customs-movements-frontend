@@ -14,6 +14,10 @@ GET         /choice                         controllers.ChoiceController.display
 
 POST        /choice                         controllers.ChoiceController.submitChoice()
 
+# Associate DUCR page
+
+GET         /associate-ducr                 controllers.AssociateDucrController.displayPage()
+
 # Disassociate DUCR page
 
 GET         /disassociate-ducr              controllers.DisassociateDucrController.displayPage()

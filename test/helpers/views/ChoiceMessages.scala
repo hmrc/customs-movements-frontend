@@ -27,6 +27,7 @@ trait ChoiceMessages {
   val standardDec: String = "declaration.choice.STD"
   val arrivalDec: String = movementChoice + ".EAL"
   val departureDec: String = movementChoice + ".EDL"
+  val disassociateDec: String = movementChoice + ".EAC"
   val cancelDec: String = "declaration.choice.CAN"
   val recentDec: String = "declaration.choice.SUB"
   val choiceEmpty: String = "choicePage.input.error.empty"

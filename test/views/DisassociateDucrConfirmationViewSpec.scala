@@ -40,14 +40,6 @@ class DisassociateDucrConfirmationViewSpec extends ViewSpec with DisassociateDuc
       getElementById(createView("GB123"), "reference").text() must be("GB123")
     }
 
-    "display 'Back' button that links to start page" in {
-
-      val backButton = getElementById(createView("DUCR"), "link-back")
-
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be(controllers.routes.DisassociateDucrController.displayPage().url)
-    }
-
     "display 'Back to start' button on page" in {
 
       val view = createView("DUCR")

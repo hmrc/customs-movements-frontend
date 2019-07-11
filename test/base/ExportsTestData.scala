@@ -126,7 +126,7 @@ object ExportsTestData {
 
   val correctTransport: JsValue = JsObject(Map("modeOfTransport" -> JsString("M"), "nationality" -> JsString("PL")))
 
-  def consignmentReferences(refType: String) = ConsignmentReferences(Some("eori1"), refType, s"${refType}-12344546")
+  def consignmentReferences(refType: String) = ConsignmentReferences(refType, s"${refType}-12344546")
   val date = Date(Some(10), Some(8), Some(2018))
   val departureDetails = DepartureDetails(date)
 

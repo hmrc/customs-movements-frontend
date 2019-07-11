@@ -27,7 +27,7 @@ object Movement {
     val referencesForm =
       cacheMap
         .getEntry[ConsignmentReferences](ConsignmentReferences.formId)
-        .getOrElse(ConsignmentReferences(None, "", ""))
+        .getOrElse(ConsignmentReferences("", ""))
 
     val departureDetails = choice.value match {
       case Departure => cacheMap.getEntry[DepartureDetails](MovementDetails.formId)

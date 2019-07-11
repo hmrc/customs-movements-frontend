@@ -16,12 +16,12 @@
 
 package forms
 
+import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
-import play.api.data.Forms.{optional, text}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class ConsignmentReferences(eori: Option[String], reference: String, referenceValue: String)
+case class ConsignmentReferences(reference: String, referenceValue: String)
 
 object ConsignmentReferences {
   implicit val format = Json.format[ConsignmentReferences]
@@ -38,7 +38,6 @@ object ConsignmentReferences {
   val allowedReferenceAnswers: Seq[String] = Seq(Ducr, Mucr)
 
   val mapping = Forms.mapping(
-    "eori" -> optional(text().verifying("consignmentReferences.eori.error", validEori)),
     "reference" -> text()
       .verifying("consignmentReferences.reference.empty", nonEmpty)
       .verifying("consignmentReferences.reference.error", isEmpty or isContainedIn(allowedReferenceAnswers)),

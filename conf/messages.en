@@ -212,6 +212,10 @@ submissions.submittedTimestamp = Timestamp
 submissions.status = Status
 submissions.noOfNotifications = Number of notifications
 
+mucrOptions.title = MUCR options
+mucrOptions.create = Create a new MUCR
+mucrOptions.add = Add to an existing MUCR
+
 disassociateDucr.title = Which DUCR do you want to disassociate?
 disassociateDucr.ducr.empty = Please enter DUCR
 disassociateDucr.ducr.error = Incorrect DUCR

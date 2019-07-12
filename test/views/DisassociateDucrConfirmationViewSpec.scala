@@ -15,6 +15,7 @@
  */
 
 package views
+
 import controllers.storage.FlashKeys
 import helpers.views.{CommonMessages, DisassociateDucrConfirmationMessages}
 import play.api.mvc.Flash
@@ -38,7 +39,7 @@ class DisassociateDucrConfirmationViewSpec extends ViewSpec with DisassociateDuc
     }
 
     "display page reference" in {
-      getElementById(createView("GB123"), "reference").text() must be("GB123")
+      getElementById(createView("GB123"), "highlight-box-reference").text() must be("GB123")
     }
 
     "display 'Back to start page' button on page" in {

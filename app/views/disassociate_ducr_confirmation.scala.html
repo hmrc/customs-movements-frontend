@@ -23,15 +23,15 @@
 @()(implicit appConfig: AppConfig, request: Request[_], flash: Flash, messages: Messages)
 
 @main_template(
-    title = messages("disassociateDucrConfirmation.title"),
-    appConfig = appConfig
+  title = messages("disassociateDucrConfirmation.title"),
+  appConfig = appConfig
 ) {
 
-    <div class="govuk-box-highlight">
-        <h1 class="heading-xlarge">@messages("disassociateDucrConfirmation.title")</h1>
-        <p class="font-large">@messages("disassociateDucrConfirmation.header")</p>
-        <p id="reference" class="font-large bold">@flash.get(FlashKeys.DUCR).getOrElse("-")</p>
-    </div>
+  @components.highlight_box_with_reference(
+    headingText = messages("disassociateDucrConfirmation.title"),
+    informationText = Some(messages("disassociateDucrConfirmation.header")),
+    reference = Some(flash.get(FlashKeys.DUCR).getOrElse("-"))
+  )
 
   <p>@messages("disassociateDucrConfirmation.note")</p>
 

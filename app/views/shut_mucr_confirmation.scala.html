@@ -27,11 +27,11 @@
   appConfig = appConfig
 ) {
 
-  <div class="govuk-box-highlight">
-    <h1 id="title" class="heading-xlarge">@messages("shutMucrConfirmation.title")</h1>
-    <p id="confirmation-info" class="font-large">@messages("shutMucrConfirmation.info")</p>
-    <p id="confirmation-reference" class="font-large bold">@flash.get(FlashKeys.MUCR).getOrElse("-")</p>
-  </div>
+  @components.highlight_box_with_reference(
+    headingText = messages("shutMucrConfirmation.title"),
+    informationText = Some(messages("shutMucrConfirmation.info")),
+    reference = Some(flash.get(FlashKeys.MUCR).getOrElse("-"))
+  )
 
   <p id="additional-note">@messages("shutMucrConfirmation.note")</p>
 

@@ -15,6 +15,7 @@
  */
 
 package views
+
 import controllers.storage.FlashKeys
 import helpers.views.{CommonMessages, ShutMucrConfirmationMessages}
 import play.api.mvc.Flash
@@ -49,11 +50,11 @@ class ShutMucrConfirmationViewSpec extends ViewSpec with ShutMucrConfirmationMes
       getElementByCss(createView(), "head>title").text() must equal(messages(title))
     }
 
-    "display page title inside highlight box" in {
+    "display page heading inside highlight box" in {
 
       val view = createView()
 
-      getElementById(view, "title").text() must equal(messages(title))
+      getElementById(view, "highlight-box-heading").text() must equal(messages(title))
       getElementByCss(view, ".govuk-box-highlight").text() must include(messages(title))
     }
 
@@ -61,7 +62,7 @@ class ShutMucrConfirmationViewSpec extends ViewSpec with ShutMucrConfirmationMes
 
       val view = createView()
 
-      getElementById(view, "confirmation-info").text() must equal(messages(confirmationInfo))
+      getElementById(view, "highlight-box-info").text() must equal(messages(confirmationInfo))
       getElementByCss(view, ".govuk-box-highlight").text() must include(messages(confirmationInfo))
     }
 
@@ -70,13 +71,13 @@ class ShutMucrConfirmationViewSpec extends ViewSpec with ShutMucrConfirmationMes
       val mucr = "MUCR1234567890"
       val view = createView(Some(mucr))
 
-      getElementById(view, "confirmation-reference").text() must equal(mucr)
+      getElementById(view, "highlight-box-reference").text() must equal(mucr)
       getElementByCss(view, ".govuk-box-highlight").text() must include(mucr)
     }
 
     "display '-' as reference MUCR when no value provided in flash" in {
 
-      getElementById(createView(), "confirmation-reference").text() must equal("-")
+      getElementById(createView(), "highlight-box-reference").text() must equal("-")
     }
 
     "display additional note" in {

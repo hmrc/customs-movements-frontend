@@ -19,23 +19,19 @@ package forms
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 
-
-case class MucrOptions(createOrAdd: String)
+case class MucrOptions(createOrAdd: String, mucrReference: String)
 
 object MucrOptions {
-  sealed trait CreateOrAdd
-  
-  case object Create extends CreateOrAdd {
-    override def toString: String = "Create"
-  }
-  case object Add extends CreateOrAdd {
-    override def toString: String = "Add"
-  }
-  
-  val mapping = Forms.mapping(
-     "createOrAdd" -> text()
-   )(MucrOptions.apply)(MucrOptions.unapply)
-  
+
+  val Create = "create"
+  val Add = "add"
+
+  val mapping =
+    Forms.mapping(
+      "createOrAdd" -> text(),
+      "mucrReference" -> text()
+    )(MucrOptions.apply)(MucrOptions.unapply)
+
   val form: Form[MucrOptions] = Form(mapping)
-  
+
 }

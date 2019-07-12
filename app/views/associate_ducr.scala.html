@@ -43,11 +43,12 @@
             legend = "",
             hint = None,
             inputs = Seq(
-                RadioOption("create-new-mucr", Create.toString, "mucrOptions.create"),
-                RadioOption("add-to-existing-mucr", Add.toString, "mucrOptions.add")
+                RadioOption("mucrOptions", Create, components.input_text(form("mucrReference"), messages("mucrOptions.create.reference"))),
+                RadioOption("mucrOptions", Add, components.input_text(form("mucrReference"), messages("mucrOptions.add.reference")))
             )
         )
 
         @components.submit_button()
     }
 }
+    

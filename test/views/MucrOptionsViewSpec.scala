@@ -36,16 +36,16 @@ class MucrOptionsViewSpec extends ViewSpec with CommonMessages {
     }
 
     "have the correct label for create new" in {
-      getElementById(createView(), "create-new-mucr-label").text() must be("Create a new MUCR")
-    }
-    
-    "have no options selected on initial display" in {
-      verifyUnchecked(createView(), "create-new-mucr")
-      verifyUnchecked(createView(), "add-to-existing-mucr")
+      getElementById(createView(), "mucrOptions.create-label").text() must be("Create a new MUCR")
     }
 
     "have the correct label for add to existing" in {
-      getElementById(createView(), "add-to-existing-mucr-label").text() must be("Add to an existing MUCR")
+      getElementById(createView(), "mucrOptions.add-label").text() must be("Add to an existing MUCR")
+    }
+    
+    "have no options selected on initial display" in {
+      verifyUnchecked(createView(), "mucrOptions.create")
+      verifyUnchecked(createView(), "mucrOptions.add")
     }
 
     "display 'Back' button that links to start page" in {

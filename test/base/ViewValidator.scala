@@ -104,6 +104,8 @@ trait ViewValidator extends MustMatchers {
   }
 
   def verifyUnchecked(view: Html, id: String): Assertion = getElementById(view, id).attr("checked") must be("")
+  def verifyUnchecked(page: String, id: String): Assertion = getElementById(page, id).attr("checked") must be("")
 
   def verifyChecked(view: Html, id: String): Assertion = getElementById(view, id).attr("checked") must be("checked")
+  def verifyChecked(page: String, id: String): Assertion = getElementById(page, id).attr("checked") must be("checked")
 }

@@ -16,7 +16,7 @@
 
 package controllers
 
-import base.MovementBaseSpec
+import base.{MovementBaseSpec, ViewValidator}
 import forms.Choice
 import forms.Choice._
 import org.mockito.ArgumentMatchers
@@ -26,7 +26,7 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 
-class ChoiceControllerSpec extends MovementBaseSpec with BeforeAndAfterEach {
+class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with BeforeAndAfterEach {
 
   private val choiceUri = uriWithContextPath("/choice")
 
@@ -54,8 +54,7 @@ class ChoiceControllerSpec extends MovementBaseSpec with BeforeAndAfterEach {
       val Some(result) = route(app, getRequest(choiceUri))
       status(result) must be(OK)
 
-      val stringResult = contentAsString(result)
-      stringResult must include("""value="EAL" checked="checked"""")
+      verifyChecked(contentAsString(result), "arrival")
     }
   }
 
@@ -135,6 +134,5 @@ class ChoiceControllerSpec extends MovementBaseSpec with BeforeAndAfterEach {
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some(routes.DisassociateDucrController.displayPage().url))
     }
-
   }
 }

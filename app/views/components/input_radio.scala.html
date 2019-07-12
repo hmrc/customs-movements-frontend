@@ -36,15 +36,20 @@
             }
         </legend>
         @for(input <- inputs) {
-        <div class="multiple-choice">
-            <input id="@{input.id}" type="radio" name="@{field.id}" value="@{input.value}" @if(field.value==
-                   Some(input.value)){checked="checked" }
+        <div class="multiple-choice" data-target="@{input.id}-hidden">
+            <input id="@{input.id}"  type="radio" name="@{field.id}" value="@{input.value}"
+                @if(field.value.contains(input.value)){checked="checked" }
                    @if(trackGa){data-journey-click="customs-decex-frontend:click:@{input.id}" }/>
 
             <label id="@{input.id}-label" class="block-label selection-button-radio" for="@{input.id}">
                 @messages(input.messageKey)
             </label>
         </div>
+        @input.revealComponent.map{ hiddenHtml =>
+            <div id="@{input.id}-hidden" class="panel panel-border-narrow">
+            @hiddenHtml
+            </div>
+          }
         }
     </fieldset>
 </div>

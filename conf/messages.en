@@ -215,6 +215,8 @@ submissions.noOfNotifications = Number of notifications
 mucrOptions.title = MUCR options
 mucrOptions.create = Create a new MUCR
 mucrOptions.add = Add to an existing MUCR
+mucrOptions.create.reference = Enter the alpha numeric refererence
+mucrOptions.add.reference = Which MUCR do you want to add to?
 
 disassociateDucr.title = Which DUCR do you want to disassociate?
 disassociateDucr.ducr.empty = Please enter DUCR

@@ -43,8 +43,16 @@
                 legend = "",
                 hint = None,
                 inputs = Seq(
-                    RadioOption("mucrOptions", Create, components.input_text(form("mucrReference"), messages("mucrOptions.create.reference"))),
-                    RadioOption("mucrOptions", Add, components.input_text(form("mucrReference"), messages("mucrOptions.add.reference")))
+                    RadioOption(
+                        keyPrefix = "mucrOptions",
+                        option = Create,
+                        revealComponent = components.input_text(form("newMucr"), messages("mucrOptions.create.reference"))
+                    ),
+                    RadioOption(
+                        keyPrefix = "mucrOptions",
+                        option = Add,
+                        revealComponent = components.input_text(form("existingMucr"), messages("mucrOptions.add.reference"))
+                    )
                 )
             )
 

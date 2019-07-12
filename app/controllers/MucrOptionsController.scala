@@ -18,7 +18,7 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import forms.MucrOptions
+import forms.MucrOptions.form
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
@@ -37,11 +37,11 @@ class MucrOptionsController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(associateDucrPage(MucrOptions.form))
+    Ok(associateDucrPage(form))
   }
 
   def save(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    MucrOptions.form
+    form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(associateDucrPage(formWithErrors)),

@@ -21,7 +21,7 @@ import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import play.api.libs.json.{JsObject, JsString}
+import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers._
 
 class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with BeforeAndAfterEach {
@@ -45,29 +45,40 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
       status(result) must be(OK)
     }
 
-    "display an error for an empty MUCR" in {
-      val invalidMUCR = JsObject(Map("createOrAdd" -> JsString("Create"), "mucrReference" -> JsString("")))
+    "display an error for a missing MUCR" in {
+      val invalidMUCR = Json.obj()
       val Some(result) = route(app, postRequest(uri, invalidMUCR))
 
       status(result) must be(BAD_REQUEST)
       val page = contentAsString(result)
       checkErrorsSummary(page)
-      verifyFieldError(page, "mucrReference", "Please enter a reference")
+      verifyFieldError(page, "newMucr", "Please enter a value")
+      verifyFieldError(page, "existingMucr", "Please enter a value")
+    }
+
+    "display an error for an empty MUCR" in {
+      val invalidMUCR = JsObject(Map("newMucr" -> JsString("")))
+      val Some(result) = route(app, postRequest(uri, invalidMUCR))
+
+      status(result) must be(BAD_REQUEST)
+      val page = contentAsString(result)
+      checkErrorsSummary(page)
+      verifyFieldError(page, "newMucr", "Please enter a value")
     }
 
     "display an error for invalid MUCR" in {
-      val invalidMUCR = JsObject(Map("createOrAdd" -> JsString("Add"), "mucrReference" -> JsString("INVALID-MUCR")))
+      val invalidMUCR = JsObject(Map("mucrReference" -> JsString("INVALID-MUCR")))
       val Some(result) = route(app, postRequest(uri, invalidMUCR))
       
       status(result) must be(BAD_REQUEST)
       val page = contentAsString(result)
       checkErrorsSummary(page)
-      verifyFieldError(page, "mucrReference", "Please enter a valid reference")
+      verifyFieldError(page, "existingMucr", "Please enter a valid reference")
     }
 
     "Redirect to next page for a valid Add to MUCR" in {
       val validMUCR =
-        JsObject(Map("createOrAdd" -> JsString("Add"), "mucrReference" -> JsString("8GB12345612345612345")))
+        JsObject(Map("existingMucr" -> JsString("8GB12345612345612345")))
       val Some(result) = route(app, postRequest(uri, validMUCR))
       status(result) must be(SEE_OTHER)
       redirectLocation(result) mustBe Some(routes.AssociateDucrController.displayPage().url)
@@ -75,7 +86,7 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
 
     "Redirect to next page for a valid Create new MUCR" in {
       val validMUCR =
-        JsObject(Map("createOrAdd" -> JsString("Create"), "mucrReference" -> JsString("8GB12345612345612345")))
+        JsObject(Map("newMucr" -> JsString("8GB12345612345612345")))
       val Some(result) = route(app, postRequest(uri, validMUCR))
       status(result) must be(SEE_OTHER)
       redirectLocation(result) mustBe Some(routes.AssociateDucrController.displayPage().url)

@@ -18,6 +18,7 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.Transport
 import forms.Transport._
 import javax.inject.{Inject, Singleton}

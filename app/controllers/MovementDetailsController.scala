@@ -18,6 +18,7 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.Choice.AllowedChoiceValues
 import forms.MovementDetails._
 import forms.{ArrivalDetails, DepartureDetails}

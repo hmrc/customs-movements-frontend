@@ -17,6 +17,7 @@
 package controllers.actions
 
 import com.google.inject.Inject
+import controllers.storage.CacheIdGenerator.cacheId
 import forms.Choice
 import forms.Choice.choiceId
 import models.requests.{AuthenticatedRequest, JourneyRequest}

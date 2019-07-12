@@ -15,7 +15,7 @@
  */
 
 package views
-import controllers.util.FlashKeys
+import controllers.storage.FlashKeys
 import helpers.views.{CommonMessages, DisassociateDucrConfirmationMessages}
 import play.api.mvc.Flash
 import play.twirl.api.Html

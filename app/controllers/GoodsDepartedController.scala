@@ -18,7 +18,6 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.movementCacheId
 import forms.GoodsDeparted._
 import forms.{Choice, GoodsDeparted}
 import handlers.ErrorHandler

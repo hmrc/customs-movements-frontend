@@ -18,7 +18,7 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import controllers.util.FlashKeys
+import controllers.storage.FlashKeys
 import forms.ShutMucr.form
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport

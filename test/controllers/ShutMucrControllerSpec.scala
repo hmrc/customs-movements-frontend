@@ -19,7 +19,7 @@ package controllers
 import java.util.UUID
 
 import base.MockAuthConnector
-import controllers.util.FlashKeys
+import controllers.storage.FlashKeys
 import forms.ShutMucrSpec._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._

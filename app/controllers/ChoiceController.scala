@@ -18,7 +18,6 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._

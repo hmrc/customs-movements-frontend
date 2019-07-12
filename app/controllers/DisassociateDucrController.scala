@@ -18,8 +18,8 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.movementCacheId
-import controllers.util.FlashKeys
+import controllers.storage.CacheIdGenerator.movementCacheId
+import controllers.storage.FlashKeys
 import forms.DisassociateDucr
 import forms.DisassociateDucr._
 import handlers.ErrorHandler

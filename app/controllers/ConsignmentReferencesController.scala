@@ -18,7 +18,6 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.movementCacheId
 import forms.ConsignmentReferences._
 import forms.{Choice, ConsignmentReferences}
 import handlers.ErrorHandler

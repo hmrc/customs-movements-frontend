@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.util
+package controllers.storage
 
 object FlashKeys {
   val DUCR = "DUCR"

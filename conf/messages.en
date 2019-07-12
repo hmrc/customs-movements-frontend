@@ -288,7 +288,6 @@ disassociateDucr.ducr.error = Incorrect DUCR
 disassociateDucrConfirmation.title = Disassociation complete
 disassociateDucrConfirmation.header = The reference of the DUCR disassociated:
 disassociateDucrConfirmation.note = You might want to take a screenshot of this for your records.
-disassociateDucrConfirmation.continue = Back to start page
 
 shutMucr.tabTitle = Shut a MUCR
 shutMucr.title = What MUCR do you want to shut?

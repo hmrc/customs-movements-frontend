@@ -22,5 +22,5 @@ trait DisassociateDucrConfirmationMessages {
   val title = disassociateDucr + ".title"
   val heading = disassociateDucr + ".header"
   val footNote = disassociateDucr + ".note"
-  val continue = disassociateDucr + ".continue"
+  val continue = "site.backToStartPage"
 }

@@ -38,13 +38,6 @@
 
         @components.page_title(Some("consignmentReferences.title"))
 
-        @components.input_text(
-            field = form("eori"),
-            label = messages("consignmentReferences.eori.question"),
-            hint = Some(messages("consignmentReferences.eori.hint")),
-            labelClass = Some("heading-24")
-        )
-
         @components.input_radio(
           field = form("reference"),
             legend = messages("consignmentReferences.reference.question"),

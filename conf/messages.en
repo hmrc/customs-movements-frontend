@@ -18,8 +18,9 @@ error.summary.title = There’s been a problem
 error.summary.text = Check the following
 error.consignment = Please answer on the question
 error.ducr = Incorrect DUCR
-error.ducr.empty = DUCR number can not be empty
+error.ducr.empty = DUCR number cannot be empty
 error.ducr.format = DUCR number is in incorrect format
+error.mucr.empty = MUCR number cannot be empty
 error.mucr.format = MUCR number is in incorrect format
 
 index.title =Export Declarations
@@ -44,6 +45,7 @@ site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
 site.save_and_continue = Save and continue
+site.continue = Continue
 site.acceptAndSend = Accept and send
 site.save_and_come_back_later = Save and come back later
 site.service_name = Declare an Export
@@ -125,18 +127,11 @@ movement.transportID = Transport Id
 movement.transportMode = Transport Mode
 movement.transportNationality = Transport Nationality
 
-movement.choice.title = Movement
-movement.choice.heading = Movement
-movement.choice.description = What do you want to do?
-movement.choice.EAL = Arrival
-movement.choice.EAL.heading = Arrive
-movement.choice.EDL = Departure
-movement.choice.EAC = Disassociate
-declaration.choice.SMP = Supplementary declaration
-declaration.choice.STD = Standard declaration
-declaration.choice.CAN = Cancel declaration
-declaration.choice.SUB = View recent declarations
-movement.choice.EDL.heading = Depart
+movement.choice.title = What do you want to do?
+movement.choice.EAL.label = Arrival
+movement.choice.EDL.label = Departure
+movement.choice.EAC.label = Disassociate
+movement.choice.shutMucr.label = Shut a MUCR
 movement.role.dec = I am declaring for the company I work for or own
 movement.EAL = Arrive goods
 movement.EDL = Depart goods
@@ -213,15 +208,6 @@ submissions.submittedTimestamp = Timestamp
 submissions.status = Status
 submissions.noOfNotifications = Number of notifications
 
-disassociateDucr.title = Which DUCR do you want to disassociate?
-disassociateDucr.ducr.empty = Please enter DUCR
-disassociateDucr.ducr.error = Incorrect DUCR
-
-disassociateDucrConfirmation.title = Disassociation complete
-disassociateDucrConfirmation.header = The reference of the DUCR disassociated:
-disassociateDucrConfirmation.note = You might want to take a screenshot of this for your records.
-disassociateDucrConfirmation.continue = Back to start page
-
 consignmentReferences.title = Consignment references
 consignmentReferences.eori.question = What is your EORI number?
 consignmentReferences.eori.hint = The number starts with a country code, for example, FR for France, and is then followed by up to 15 digits
@@ -294,3 +280,19 @@ summary.arrival.time = Time of Arrival
 summary.departure.title = Check your answers before departing these goods
 summary.departure.goodsDeparted = Goods Departed
 summary.departure.date = Date of Departure
+
+disassociateDucr.title = Which DUCR do you want to disassociate?
+disassociateDucr.ducr.empty = Please enter DUCR
+disassociateDucr.ducr.error = Incorrect DUCR
+
+disassociateDucrConfirmation.title = Disassociation complete
+disassociateDucrConfirmation.header = The reference of the DUCR disassociated:
+disassociateDucrConfirmation.note = You might want to take a screenshot of this for your records.
+
+shutMucr.tabTitle = Shut a MUCR
+shutMucr.title = What MUCR do you want to shut?
+
+shutMucrConfirmation.title = MUCR shut
+shutMucrConfirmation.info = The reference of the MUCR shut:
+shutMucrConfirmation.note = You might want to take a screenshot of this for your records.
+

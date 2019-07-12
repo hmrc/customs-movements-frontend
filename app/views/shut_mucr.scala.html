@@ -15,26 +15,32 @@
  *@
 
 @import config.AppConfig
-@import controllers.routes
-@import controllers.storage.FlashKeys
+@import forms.ShutMucr
 
 @this(main_template: views.html.main_template)
 
-@()(implicit appConfig: AppConfig, request: Request[_], flash: Flash, messages: Messages)
+@(form: Form[ShutMucr])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(
-  title = messages("disassociateDucrConfirmation.title"),
+  title = messages("shutMucr.tabTitle"),
   appConfig = appConfig
 ) {
 
-  @components.highlight_box_with_reference(
-    headingText = messages("disassociateDucrConfirmation.title"),
-    informationText = Some(messages("disassociateDucrConfirmation.header")),
-    reference = Some(flash.get(FlashKeys.DUCR).getOrElse("-"))
-  )
+  @helper.form(routes.ShutMucrController.submitForm(), 'autoComplete -> "off") {
+    @helper.CSRF.formField
 
-  <p>@messages("disassociateDucrConfirmation.note")</p>
+    @components.back_link(routes.ChoiceController.displayChoiceForm())
 
-  @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
+    @components.error_summary(form.errors)
 
+    @components.input_text(
+      field = form("mucr"),
+      label = messages("shutMucr.title"),
+      labelClass = Some("heading-xlarge")
+    )
+
+    @components.submit_button(messageKey = "site.continue")
+
+
+  }
 }

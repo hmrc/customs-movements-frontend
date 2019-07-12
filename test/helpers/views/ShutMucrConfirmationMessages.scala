@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.util
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+package helpers.views
 
-object CacheIdGenerator {
+trait ShutMucrConfirmationMessages {
 
-  def eoriCacheId()(implicit request: JourneyRequest[_]): String =
-    request.authenticatedRequest.user.eori
-
-  def cacheId()(implicit request: AuthenticatedRequest[_]): String =
-    request.user.eori
-
-  def movementCacheId()(implicit request: JourneyRequest[_]): String =
-    s"${request.choice.value}-${request.authenticatedRequest.user.eori}"
+  val title = "shutMucrConfirmation.title"
+  val confirmationInfo = "shutMucrConfirmation.info"
+  val additionalNote = "shutMucrConfirmation.note"
 }

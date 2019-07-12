@@ -17,6 +17,7 @@
 package controllers.util
 
 import base.BaseSpec
+import controllers.storage.CacheIdGenerator
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.Arrival
 import models.SignedInUser

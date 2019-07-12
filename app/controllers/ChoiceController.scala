@@ -18,7 +18,7 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.cacheId
+import controllers.storage.CacheIdGenerator.cacheId
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
@@ -61,6 +61,8 @@ class ChoiceController @Inject()(
                   Redirect(controllers.routes.ConsignmentReferencesController.displayPage())
                 case DisassociateDUCR =>
                   Redirect(controllers.routes.DisassociateDucrController.displayPage())
+                case ShutMucr =>
+                  Redirect(controllers.routes.ShutMucrController.displayPage())
                 case _ =>
                   Redirect(controllers.routes.ChoiceController.displayChoiceForm())
               }

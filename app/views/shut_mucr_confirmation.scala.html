@@ -23,17 +23,17 @@
 @()(implicit appConfig: AppConfig, request: Request[_], flash: Flash, messages: Messages)
 
 @main_template(
-  title = messages("disassociateDucrConfirmation.title"),
+  title = messages("shutMucrConfirmation.title"),
   appConfig = appConfig
 ) {
 
   @components.highlight_box_with_reference(
-    headingText = messages("disassociateDucrConfirmation.title"),
-    informationText = Some(messages("disassociateDucrConfirmation.header")),
-    reference = Some(flash.get(FlashKeys.DUCR).getOrElse("-"))
+    headingText = messages("shutMucrConfirmation.title"),
+    informationText = Some(messages("shutMucrConfirmation.info")),
+    reference = Some(flash.get(FlashKeys.MUCR).getOrElse("-"))
   )
 
-  <p>@messages("disassociateDucrConfirmation.note")</p>
+  <p id="additional-note">@messages("shutMucrConfirmation.note")</p>
 
   @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
 

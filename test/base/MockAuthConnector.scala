@@ -27,14 +27,14 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 
 import scala.concurrent.Future
 
-trait MockAuthAction extends MockitoSugar {
-  lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
+trait MockAuthConnector extends MockitoSugar {
+  lazy val authConnectorMock: AuthConnector = mock[AuthConnector]
 
   def authorizedUser(user: SignedInUser = newUser("12345")): Unit =
-    when(mockAuthConnector.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any()))
+    when(authConnectorMock.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any()))
       .thenReturn(Future.successful(user.enrolments))
 
   def userWithoutEori(user: SignedInUser = newUser("")): Unit =
-    when(mockAuthConnector.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any()))
+    when(authConnectorMock.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any()))
       .thenThrow(InsufficientEnrolments())
 }

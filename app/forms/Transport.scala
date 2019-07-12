@@ -16,8 +16,8 @@
 
 package forms
 
-import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
+import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 

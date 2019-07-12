@@ -17,8 +17,8 @@
 package controllers
 
 import base.MovementBaseSpec
+import forms.Choice
 import forms.Choice.AllowedChoiceValues
-import forms.{Choice, GoodsDeparted}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfter
@@ -42,7 +42,6 @@ class SummaryControllerSpec extends MovementBaseSpec with BeforeAndAfter {
   trait SetUp {
     authorizedUser()
     withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Arrival)))
-
   }
 
   "MovementSummaryController.displaySummary()" when {
@@ -95,7 +94,7 @@ class SummaryControllerSpec extends MovementBaseSpec with BeforeAndAfter {
         val header = result.futureValue.header
 
         status(result) must be(OK)
-        contentAsString(result) must include(Messages("movement.choice.EAL") + " has been submitted")
+        contentAsString(result) must include(Messages("movement.choice.EAL.label") + " has been submitted")
       }
     }
   }

@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,18 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package helpers.views
+@import config.AppConfig
 
-trait ChoiceMessages {
+@this(main_template: views.html.main_template)
 
-  val title: String = "movement.choice.title"
+@(movementType: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-  val arrivalDecLabel: String = "movement.choice.EAL.label"
-  val departureDecLabel: String = "movement.choice.EDL.label"
-  val disassociateDecLabel: String = "movement.choice.EAC.label"
-  val shutMucrLabel: String = "movement.choice.shutMucr.label"
-  val choiceEmpty: String = "choicePage.input.error.empty"
-  val choiceError: String = "choicePage.input.error.incorrectValue"
+@main_template(
+  title = messages(s"movement.${movementType}.confirmation"),
+  appConfig = appConfig) {
+
+  @components.highlight_box_with_reference(
+    headingText = messages(s"movement.choice.${movementType}.label") + " has been submitted"
+  )
+
+  @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
 }

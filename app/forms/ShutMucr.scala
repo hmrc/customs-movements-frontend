@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-package helpers.views
+package forms
 
-trait ChoiceMessages {
+import play.api.data.Forms.text
+import play.api.data.{Form, Forms}
+import play.api.libs.json.Json
+import utils.validators.forms.FieldValidator.{PredicateOpsForFunctions, isEmpty, nonEmpty, validDucrOrMucr}
 
-  val title: String = "movement.choice.title"
+case class ShutMucr(mucr: String)
 
-  val arrivalDecLabel: String = "movement.choice.EAL.label"
-  val departureDecLabel: String = "movement.choice.EDL.label"
-  val disassociateDecLabel: String = "movement.choice.EAC.label"
-  val shutMucrLabel: String = "movement.choice.shutMucr.label"
-  val choiceEmpty: String = "choicePage.input.error.empty"
-  val choiceError: String = "choicePage.input.error.incorrectValue"
+object ShutMucr {
+  implicit val format = Json.format[ShutMucr]
+
+  val formId = "ShutMucr"
+
+  val mapping = Forms.mapping(
+    "mucr" -> text()
+      .verifying("error.mucr.empty", nonEmpty)
+      .verifying("error.mucr.format", isEmpty or validDucrOrMucr)
+  )(ShutMucr.apply)(ShutMucr.unapply)
+
+  def form(): Form[ShutMucr] = Form(mapping)
 }

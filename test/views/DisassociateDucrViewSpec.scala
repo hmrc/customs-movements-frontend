@@ -47,7 +47,7 @@ class DisassociateDucrViewSpec extends ViewSpec with DisassociateDucrMessages wi
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(title))
+      getElementById(createView(), "ducr-label").text() must be(messages(title))
     }
 
     "display 'Back' button that links to start page" in {

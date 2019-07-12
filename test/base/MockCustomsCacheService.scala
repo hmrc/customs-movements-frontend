@@ -22,7 +22,7 @@ import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.mockito.MockitoSugar
 import play.api.test.Helpers.ACCEPTED
-import services.{CustomsCacheService, SubmissionService}
+import services.CustomsCacheService
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -49,13 +49,4 @@ trait MockCustomsCacheService extends MockitoSugar {
   def mockCustomsCacheServiceClearedSuccessfully(): OngoingStubbing[Future[HttpResponse]] =
     when(mockCustomsCacheService.remove(any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
-}
-
-trait MockSubmissionService extends MockitoSugar {
-
-  val mockSubmissionService: SubmissionService = mock[SubmissionService]
-
-  def mockSubmission(status: Int = ACCEPTED): OngoingStubbing[Future[Int]] =
-    when(mockSubmissionService.submitMovementRequest(any(), any(), any())(any(), any()))
-      .thenReturn(Future.successful(status))
 }

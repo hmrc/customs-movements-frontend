@@ -18,34 +18,25 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import forms.MucrOptions
+import forms.AssociateDucr
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.mucr_options
+import views.html.associate_ducr
 
 @Singleton
-class MucrOptionsController @Inject()(
+class AssociateDucrController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
-  associateDucrPage: mucr_options
+  associateDucrPage: associate_ducr
 )(implicit appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(associateDucrPage(MucrOptions.form))
-  }
-
-  def save(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    MucrOptions.form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => BadRequest(associateDucrPage(formWithErrors)),
-        mucrOptions => Redirect(routes.AssociateDucrController.displayPage())
-      )
+    Ok(associateDucrPage(AssociateDucr.form))
   }
 }

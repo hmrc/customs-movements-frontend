@@ -1,67 +1,70 @@
 # microservice specific routes
 
-GET         /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                          controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /unauthorised                   controllers.UnauthorisedController.onPageLoad
+GET         /unauthorised                          controllers.UnauthorisedController.onPageLoad
 
 # Start page
 
-GET         /start                          controllers.StartController.displayStartPage()
+GET         /start                                 controllers.StartController.displayStartPage()
 
 # Declaration choice page
 
-GET         /choice                         controllers.ChoiceController.displayChoiceForm()
+GET         /choice                                controllers.ChoiceController.displayChoiceForm()
 
-POST        /choice                         controllers.ChoiceController.submitChoice()
+POST        /choice                                controllers.ChoiceController.submitChoice()
 
 # MUCR Options
-GET         /mucr-options                 controllers.MucrOptionsController.displayPage()
-POST        /mucr-options                 controllers.MucrOptionsController.save()
+GET         /mucr-options                          controllers.MucrOptionsController.displayPage()
+POST        /mucr-options                          controllers.MucrOptionsController.save()
+
+#Associate DUCR
+GET         /associate-ducr                        controllers.AssociateDucrController.displayPage()
 
 
 # Disassociate DUCR page
 
-GET         /disassociate-ducr              controllers.DisassociateDucrController.displayPage()
+GET         /disassociate-ducr                     controllers.DisassociateDucrController.displayPage()
 
-POST        /disassociate-ducr              controllers.DisassociateDucrController.submit()
+POST        /disassociate-ducr                     controllers.DisassociateDucrController.submit()
 
 # Disassociate DUCR Confirmation page
 
-GET         /disassociate-ducr-confirmation controllers.DisassociateDucrConfirmationController.displayPage()
+GET         /disassociate-ducr-confirmation        controllers.DisassociateDucrConfirmationController.displayPage()
 
 # Enter DUCR page
 
-GET         /consignment-references         controllers.ConsignmentReferencesController.displayPage()
+GET         /consignment-references                controllers.ConsignmentReferencesController.displayPage()
 
-POST        /consignment-references         controllers.ConsignmentReferencesController.saveConsignmentReferences()
+POST        /consignment-references                controllers.ConsignmentReferencesController.saveConsignmentReferences()
 
 
 # Goods departed page
 
-GET         /goods-departed                 controllers.GoodsDepartedController.displayPage()
+GET         /goods-departed                        controllers.GoodsDepartedController.displayPage()
 
-POST        /goods-departed                 controllers.GoodsDepartedController.saveGoodsDeparted()
+POST        /goods-departed                        controllers.GoodsDepartedController.saveGoodsDeparted()
 
 # Movement details page
 
-GET         /movement-details               controllers.MovementDetailsController.displayPage()
+GET         /movement-details                      controllers.MovementDetailsController.displayPage()
 
-POST        /movement-details               controllers.MovementDetailsController.saveMovementDetails()
+POST        /movement-details                      controllers.MovementDetailsController.saveMovementDetails()
 
 # Goods location page
 
-GET         /location                       controllers.LocationController.displayPage()
+GET         /location                              controllers.LocationController.displayPage()
 
-POST        /location                       controllers.LocationController.saveLocation()
+POST        /location                              controllers.LocationController.saveLocation()
 
 # Transport page
 
-GET         /transport                      controllers.TransportController.displayPage()
+GET         /transport                             controllers.TransportController.displayPage()
 
-POST        /transport                      controllers.TransportController.saveTransport()
+POST        /transport                             controllers.TransportController.saveTransport()
 
 # Movements Summary
 
-GET         /summary                        controllers.SummaryController.displayPage()
+GET         /summary                               controllers.SummaryController.displayPage()
 
-POST        /summary                        controllers.SummaryController.submitMovementRequest()
+POST        /summary                               controllers.SummaryController.submitMovementRequest()

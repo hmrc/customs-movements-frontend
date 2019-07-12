@@ -18,6 +18,7 @@ package forms
 
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
+import utils.validators.forms.FieldValidator._
 
 case class MucrOptions(createOrAdd: String, mucrReference: String)
 
@@ -30,6 +31,8 @@ object MucrOptions {
     Forms.mapping(
       "createOrAdd" -> text(),
       "mucrReference" -> text()
+        .verifying("mucrOptions.reference.value.empty", nonEmpty)
+        .verifying("mucrOptions.reference.value.error", isEmpty or validDucrOrMucr)
     )(MucrOptions.apply)(MucrOptions.unapply)
 
   val form: Form[MucrOptions] = Form(mapping)

@@ -69,7 +69,6 @@ class DisassociateDucrControllerSpec extends MovementBaseSpec with BeforeAndAfte
 
     "redirect to confirmation for correct form" in new SetUp {
       given(mockSubmissionService.submitDucrDisassociation(anyString(), anyString())(any[HeaderCarrier], any[ExecutionContext])).willReturn(successful(():  Unit))
-      withCaching(DisassociateDucr.formId)
 
       val correctForm: JsValue =
         JsObject(

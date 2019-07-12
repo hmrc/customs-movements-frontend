@@ -121,7 +121,7 @@ class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with Befo
       val Some(result) = route(app, postRequest(choiceUri, associateChoice))
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be(Some(routes.AssociateDucrController.displayPage().url))
+      redirectLocation(result) must be(Some(routes.MucrOptionsController.displayPage().url))
     }
 
     "redirect to disassociate page when 'Disassociate' is selected" in {

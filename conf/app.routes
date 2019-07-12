@@ -14,10 +14,10 @@ GET         /choice                         controllers.ChoiceController.display
 
 POST        /choice                         controllers.ChoiceController.submitChoice()
 
-# Associate DUCR page
+# MUCR Options
+GET         /mucr-options                 controllers.MucrOptionsController.displayPage()
+POST        /mucr-options                 controllers.MucrOptionsController.save()
 
-GET         /associate-ducr                 controllers.AssociateDucrController.displayPage()
-POST        /associate-ducr                 controllers.AssociateDucrController.save()
 
 # Disassociate DUCR page
 

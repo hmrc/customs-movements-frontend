@@ -17,22 +17,16 @@
 package controllers
 
 import base.MovementBaseSpec
+import forms.Choice
 import forms.Choice.AllowedChoiceValues
-import forms.{Choice, DisassociateDucr}
-import org.mockito.ArgumentMatchers._
-import org.mockito.BDDMockito._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future.successful
+class MucrOptionsControllerSpec extends MovementBaseSpec with BeforeAndAfterEach {
 
-class AssociateDucrControllerSpec extends MovementBaseSpec with BeforeAndAfterEach {
-
-  private val uri = uriWithContextPath("/associate-ducr")
+  private val uri = uriWithContextPath("/mucr-options")
 
   override def beforeEach() {
     authorizedUser()
@@ -41,16 +35,33 @@ class AssociateDucrControllerSpec extends MovementBaseSpec with BeforeAndAfterEa
 
   override def afterEach(): Unit = {
     super.afterEach()
-    reset(mockCustomsCacheService)
+    reset(mockSubmissionService, mockCustomsCacheService)
   }
 
-  "Associate Ducr Controller" should {
+  "Associate DUCR" should {
 
     "return Ok for GET request" in {
-
       val result = route(app, getRequest(uri)).get
-
       status(result) must be(OK)
+    }
+
+    
+    "return BadRequest for empty MUCR" in {
+      val invalidMUCR = JsObject(Map("mucrOptions.mucrReference" -> JsString("")))
+      val Some(result) = route(app, postRequest(uri, invalidMUCR))
+      status(result) must be(BAD_REQUEST)
+    }
+    
+    "return BadRequest for invalid MUCR" in {
+      val invalidMUCR = JsObject(Map("mucrOptions.mucrReference" -> JsString("INVALID-MUCR")))
+      val Some(result) = route(app, postRequest(uri, invalidMUCR))
+      status(result) must be(BAD_REQUEST)
+    }
+
+    "Redirect to next page for a valid MUCR" in {
+      val validMUCR = JsObject(Map("mucrOptions.mucrReference" -> JsString("8GB12345612345612345")))
+      val Some(result) = route(app, postRequest(uri, validMUCR))
+      status(result) must be(SEE_OTHER)
     }
   }
 }

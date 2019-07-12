@@ -24,15 +24,15 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.associate_ducr
+import views.html.mucr_options
 
 @Singleton
-class AssociateDucrController @Inject()(
+class MucrOptionsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
-  associateDucrPage: associate_ducr
+  associateDucrPage: mucr_options
 )(implicit appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -41,6 +41,11 @@ class AssociateDucrController @Inject()(
   }
 
   def save(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok("TODO")
+    MucrOptions.form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => BadRequest(associateDucrPage(formWithErrors)),
+        mucrOptions => Redirect(routes.MucrOptionsController.displayPage())
+      )
   }
 }

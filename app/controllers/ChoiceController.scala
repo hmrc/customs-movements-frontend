@@ -57,7 +57,7 @@ class ChoiceController @Inject()(
             .map { _ =>
               validChoice.value match {
                 case Arrival | Departure => Redirect(controllers.routes.ConsignmentReferencesController.displayPage())
-                case AssociateDUCR       => Redirect(controllers.routes.AssociateDucrController.displayPage())
+                case AssociateDUCR       => Redirect(controllers.routes.MucrOptionsController.displayPage())
                 case DisassociateDUCR    => Redirect(controllers.routes.DisassociateDucrController.displayPage())
                 case _                   => Redirect(controllers.routes.ChoiceController.displayChoiceForm())
               }

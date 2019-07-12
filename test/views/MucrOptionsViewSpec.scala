@@ -25,7 +25,7 @@ import views.declaration.spec.ViewSpec
 class MucrOptionsViewSpec extends ViewSpec with CommonMessages {
 
   private val form: Form[MucrOptions] = MucrOptions.form
-  private val page = injector.instanceOf[views.html.associate_ducr]
+  private val page = injector.instanceOf[views.html.mucr_options]
 
   private def createView(form: Form[MucrOptions] = form): Html = page(form)
 

@@ -26,8 +26,6 @@ case class DisassociateDucr(ducr: String)
 object DisassociateDucr {
   implicit val format = Json.format[DisassociateDucr]
 
-  val formId = "DisassociateDUCR"
-
   val mapping = Forms.mapping(
     "ducr" -> text()
       .verifying("disassociateDucr.ducr.empty", nonEmpty)

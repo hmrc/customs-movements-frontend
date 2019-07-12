@@ -43,8 +43,8 @@ object ConsignmentReferences {
       .verifying("consignmentReferences.reference.empty", nonEmpty)
       .verifying("consignmentReferences.reference.error", isEmpty or isContainedIn(allowedReferenceAnswers)),
     "referenceValue" -> text()
-      .verifying("consignmentReferences.reference.value.empty", nonEmpty)
-      .verifying("consignmentReferences.reference.value.error", isEmpty or validDucrOrMucr)
+      .verifying("mucr.ducr.reference.value.empty", nonEmpty)
+      .verifying("mucr.ducr.reference.value.error", isEmpty or validDucrOrMucr)
   )(ConsignmentReferences.apply)(ConsignmentReferences.unapply)
 
   def form(): Form[ConsignmentReferences] = Form(mapping)

@@ -18,9 +18,8 @@ error.summary.title = There’s been a problem
 error.summary.text = Check the following
 error.consignment = Please answer on the question
 error.ducr = Incorrect DUCR
-error.ducr.empty = DUCR number can not be empty
-error.ducr.format = DUCR number is in incorrect format
-error.mucr.format = MUCR number is in incorrect format
+mucr.ducr.reference.value.empty = Please enter reference
+mucr.ducr.reference.value.error = Incorrect reference
 
 index.title =Export Declarations
 index.heading=Customs Export Declarations
@@ -217,6 +216,8 @@ mucrOptions.create = Create a new MUCR
 mucrOptions.add = Add to an existing MUCR
 mucrOptions.create.reference = Enter the alpha numeric refererence
 mucrOptions.add.reference = Which MUCR do you want to add to?
+mucrOptions.reference.value.empty = Please enter reference
+mucrOptions.reference.value.error = Incorrect reference
 
 disassociateDucr.title = Which DUCR do you want to disassociate?
 disassociateDucr.ducr.empty = Please enter DUCR

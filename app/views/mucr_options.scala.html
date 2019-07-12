@@ -25,30 +25,30 @@
 
 @(form: Form[MucrOptions])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("mucrOptions.title"),
-    appConfig = appConfig
-) {
-    @helper.form(routes.AssociateDucrController.save(), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+    @main_template(
+        title = messages("mucrOptions.title"),
+        appConfig = appConfig
+    ) {
+        @helper.form(routes.MucrOptionsController.save(), 'autoComplete -> "off") {
+            @helper.CSRF.formField
 
-        @components.back_link(routes.ChoiceController.displayChoiceForm())
+            @components.back_link(routes.ChoiceController.displayChoiceForm())
 
-        @components.error_summary(form.errors)
+            @components.error_summary(form.errors)
 
-        @components.page_title(Some("mucrOptions.title"))
+            @components.page_title(Some("mucrOptions.title"))
 
-        @components.input_radio(
-            field = form("createOrAdd"),
-            legend = "",
-            hint = None,
-            inputs = Seq(
-                RadioOption("mucrOptions", Create, components.input_text(form("mucrReference"), messages("mucrOptions.create.reference"))),
-                RadioOption("mucrOptions", Add, components.input_text(form("mucrReference"), messages("mucrOptions.add.reference")))
+            @components.input_radio(
+                field = form("createOrAdd"),
+                legend = "",
+                hint = None,
+                inputs = Seq(
+                    RadioOption("mucrOptions", Create, components.input_text(form("mucrReference"), messages("mucrOptions.create.reference"))),
+                    RadioOption("mucrOptions", Add, components.input_text(form("mucrReference"), messages("mucrOptions.add.reference")))
+                )
             )
-        )
 
-        @components.submit_button()
+            @components.submit_button()
+        }
     }
-}
     

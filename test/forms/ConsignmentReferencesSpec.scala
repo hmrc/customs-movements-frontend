@@ -48,7 +48,7 @@ class ConsignmentReferencesSpec extends BaseSpec {
       errors.length must be(3)
       errors must contain(FormError("eori", "consignmentReferences.eori.error"))
       errors must contain(FormError("reference", "consignmentReferences.reference.empty"))
-      errors must contain(FormError("referenceValue", "consignmentReferences.reference.value.empty"))
+      errors must contain(FormError("referenceValue", "mucr.ducr.reference.value.empty"))
     }
 
     "return error for incorrect reference" in {
@@ -59,7 +59,7 @@ class ConsignmentReferencesSpec extends BaseSpec {
       errors mustBe List(
         FormError("eori", "consignmentReferences.eori.error"),
         FormError("reference", "consignmentReferences.reference.error"),
-        FormError("referenceValue", "consignmentReferences.reference.value.error")
+        FormError("referenceValue", "mucr.ducr.reference.value.error")
       )
     }
 

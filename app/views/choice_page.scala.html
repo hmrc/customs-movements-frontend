@@ -40,11 +40,11 @@
         field = form("choice"),
         legend = "",
         inputs = Seq(
-            RadioOption("Arrival", AllowedChoiceValues.Arrival, messages(s"movement.choice.${AllowedChoiceValues.Arrival}.label")),
-            RadioOption("Departure", AllowedChoiceValues.Departure, messages(s"movement.choice.${AllowedChoiceValues.Departure}.label")),
+            RadioOption("arrival", AllowedChoiceValues.Arrival, messages(s"movement.choice.${AllowedChoiceValues.Arrival}.label")),
+            RadioOption("departure", AllowedChoiceValues.Departure, messages(s"movement.choice.${AllowedChoiceValues.Departure}.label")),
             RadioOption("associate", AllowedChoiceValues.AssociateDUCR, messages(s"movement.choice.${AllowedChoiceValues.AssociateDUCR}.label")),
-            RadioOption("Disassociate", AllowedChoiceValues.DisassociateDUCR, messages(s"movement.choice.${AllowedChoiceValues.DisassociateDUCR}.label")),
-            RadioOption("ShutMucr", AllowedChoiceValues.ShutMucr, messages("movement.choice.shutMucr.label"))
+            RadioOption("disassociate", AllowedChoiceValues.DisassociateDUCR, messages(s"movement.choice.${AllowedChoiceValues.DisassociateDUCR}.label")),
+            RadioOption("shut_mucr", AllowedChoiceValues.ShutMucr, messages("movement.choice.shutMucr.label"))
         )
       )
 

@@ -62,16 +62,6 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       getElementById(createView(), "title").text() must be(messages(title))
     }
 
-    "display eori question" in {
-
-      getElementById(createView(), "eori-label").text() must be(messages(eoriQuestion))
-    }
-
-    "display eori hint" in {
-
-      getElementById(createView(), "eori-hint").text() must be(messages(eoriHint))
-    }
-
     "display reference question" in {
 
       getElementById(createView(), "reference-label").text() must be(messages(referenceQuestion))

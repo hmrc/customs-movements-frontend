@@ -16,29 +16,25 @@
 
 @import config.AppConfig
 @import controllers.routes
-@import uk.gov.hmrc.play.views.html._
-@import forms.AssociateDucr
 @import controllers.storage.FlashKeys
 
 @this(main_template: views.html.main_template)
 
-@(associateDucr: AssociateDucr, mucr: String)(implicit appConfig: AppConfig, request: Request[_], flash: Flash, messages: Messages)
-
+@()(implicit appConfig: AppConfig, request: Request[_], flash: Flash, messages: Messages)
 
 @main_template(
- title = messages("associateDucrConfirmation.title", mucr),
- appConfig = appConfig
+  title = messages("shutMucrConfirmation.title"),
+  appConfig = appConfig
 ) {
 
- <div class="govuk-box-highlight">
-  <h1 class="heading-xlarge">
-   @messages("associateDucrConfirmation.title")
-  </h1>
-  <p class="font-large">@messages("associateDucrConfirmation.header")</p>
-  <p id="reference" class="font-large bold">@flash.get(FlashKeys.MUCR).getOrElse("-")</p>
- </div>
+  @components.highlight_box_with_reference(
+    headingText = messages("shutMucrConfirmation.title"),
+    informationText = Some(messages("shutMucrConfirmation.info")),
+    reference = Some(flash.get(FlashKeys.MUCR).getOrElse("-"))
+  )
 
- <p>@messages("associateDucrConfirmation.note")</p>
+  <p id="additional-note">@messages("shutMucrConfirmation.note")</p>
 
- @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
+  @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
+
 }

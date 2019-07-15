@@ -17,17 +17,14 @@
 package helpers.views
 
 trait ChoiceMessages {
-  def movementChoice = "movement.choice"
-  // TODO: description is used as title
-  def title = movementChoice + ".description"
-  def supplementaryDec = "declaration.choice.SMP"
-  def standardDec = "declaration.choice.STD"
-  def arrival = movementChoice + ".EAL"
-  def departure = movementChoice + ".EDL"
-  def associate = movementChoice + ".ASS"
-  def disassociate = movementChoice + ".EAC"
-  def cancelDec = "declaration.choice.CAN"
-  def recentDec = "declaration.choice.SUB"
-  def choiceEmpty = "choicePage.input.error.empty"
-  def choiceError = "choicePage.input.error.incorrectValue"
+
+  val title: String = "movement.choice.title"
+
+  val arrivalDecLabel: String = "movement.choice.EAL.label"
+  val departureDecLabel: String = "movement.choice.EDL.label"
+  val associateDecLabel: String = "movement.choice.ASS.label"
+  val disassociateDecLabel: String = "movement.choice.EAC.label"
+  val shutMucrLabel: String = "movement.choice.shutMucr.label"
+  val choiceEmpty: String = "choicePage.input.error.empty"
+  val choiceError: String = "choicePage.input.error.incorrectValue"
 }

@@ -14,13 +14,25 @@
  * limitations under the License.
  */
 
-package helpers.views
+package forms
 
-trait DisassociateDucrConfirmationMessages {
+import play.api.data.Forms.text
+import play.api.data.{Form, Forms}
+import play.api.libs.json.Json
+import utils.validators.forms.FieldValidator.{PredicateOpsForFunctions, isEmpty, nonEmpty, validDucrOrMucr}
 
-  val disassociateDucr = "disassociateDucrConfirmation"
-  val title = disassociateDucr + ".title"
-  val heading = disassociateDucr + ".header"
-  val footNote = disassociateDucr + ".note"
-  val continue = "site.backToStartPage"
+case class ShutMucr(mucr: String)
+
+object ShutMucr {
+  implicit val format = Json.format[ShutMucr]
+
+  val formId = "ShutMucr"
+
+  val mapping = Forms.mapping(
+    "mucr" -> text()
+      .verifying("error.mucr.empty", nonEmpty)
+      .verifying("error.mucr.format", isEmpty or validDucrOrMucr)
+  )(ShutMucr.apply)(ShutMucr.unapply)
+
+  def form(): Form[ShutMucr] = Form(mapping)
 }

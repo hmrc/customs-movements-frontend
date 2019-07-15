@@ -37,30 +37,12 @@
 
    @components.page_title(Some(messages("associateDucr.title", mucr)))
 
-   @if(form.bindFromRequest.hasErrors){
-    @components.input_text(
-     field = form("ducrReference"),
-     label = "",
-     hint = Some(messages("associateDucr.reference.hint"))
-    )
+   @components.input_text(
+    field = form("ducrReference"),
+    label = "",
+    hint = Some(messages("associateDucr.reference.hint"))
+   )
 
-    @components.submit_button(messages("site.add"))
-   } else {
-     @defining(form.bindFromRequest.get){ associateDucr =>
-      <table>
-       <tbody>
-        <tr>
-         <td>@associateDucr.ducr</td>
-         <td class="text-right">
-          <a href="@routes.AssociateDucrController.displayPage()">@messages("site.remove")</a>
-         </td>
-        </tr>
-       </tbody>
-      </table>
-     }
-
-     @components.submit_button()
-   }
-
+   @components.submit_button(messages("site.add"))
   }
  }

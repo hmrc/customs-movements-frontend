@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.AppConfig
+package controllers.storage
 
-@this(main_template: views.html.main_template)
+import models.requests.{AuthenticatedRequest, JourneyRequest}
 
-@(movementType: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+object CacheIdGenerator {
 
-@main_template(
-  title = messages(s"movement.${movementType}.confirmation"),
-  appConfig = appConfig) {
+  def eoriCacheId()(implicit request: JourneyRequest[_]): String =
+    request.authenticatedRequest.user.eori
 
-<div class="govuk-box-highlight">
-    <h1 class="heading-xlarge">
-        @messages(s"movement.choice.${movementType}") has been submitted
-    </h1>
-</div>
+  def cacheId()(implicit request: AuthenticatedRequest[_]): String =
+    request.user.eori
 
-@components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
+  def movementCacheId()(implicit request: JourneyRequest[_]): String =
+    s"${request.choice.value}-${request.authenticatedRequest.user.eori}"
 }

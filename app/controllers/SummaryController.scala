@@ -18,7 +18,7 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.movementCacheId
+import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.Choice.AllowedChoiceValues._
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -28,7 +28,7 @@ import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.movement.movement_confirmation_page
+import views.html.movement_confirmation_page
 import views.html.summary.{arrival_summary_page, departure_summary_page}
 
 import scala.concurrent.{ExecutionContext, Future}

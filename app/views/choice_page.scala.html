@@ -18,36 +18,36 @@
 @import controllers.routes
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues
-@import uk.gov.hmrc.play.views.html._
 @import views.components.fields.RadioOption
 
 @this(main_template: views.html.main_template)
 
 @(form: Form[Choice])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
-@main_template(
-    title = messages("movement.choice.description"),
+  @main_template(
+    title = messages("movement.choice.title"),
     appConfig = appConfig
-) {
+  ) {
 
     @helper.form(routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+      @helper.CSRF.formField
 
-        @components.back_link(routes.StartController.displayStartPage())
+      @components.back_link(routes.StartController.displayStartPage())
 
-        @components.heading("", "movement.choice.description")
+      @components.heading("", "movement.choice.title")
 
-        @components.input_radio(
-            field = form("choice"),
-            legend = "",
-            inputs = Seq(
-                RadioOption("arrival", AllowedChoiceValues.Arrival, messages("movement.choice.EAL")),
-                RadioOption("departure", AllowedChoiceValues.Departure, messages("movement.choice.EDL")),
-                RadioOption("associate", AllowedChoiceValues.AssociateDUCR, messages("movement.choice.ASS")),
-                RadioOption("disassociate", AllowedChoiceValues.DisassociateDUCR, messages(s"movement.choice.${AllowedChoiceValues.DisassociateDUCR}"))
-            )
+      @components.input_radio(
+        field = form("choice"),
+        legend = "",
+        inputs = Seq(
+            RadioOption("Arrival", AllowedChoiceValues.Arrival, messages(s"movement.choice.${AllowedChoiceValues.Arrival}.label")),
+            RadioOption("Departure", AllowedChoiceValues.Departure, messages(s"movement.choice.${AllowedChoiceValues.Departure}.label")),
+            RadioOption("associate", AllowedChoiceValues.AssociateDUCR, messages(s"movement.choice.${AllowedChoiceValues.AssociateDUCR}.label")),
+            RadioOption("Disassociate", AllowedChoiceValues.DisassociateDUCR, messages(s"movement.choice.${AllowedChoiceValues.DisassociateDUCR}.label")),
+            RadioOption("ShutMucr", AllowedChoiceValues.ShutMucr, messages("movement.choice.shutMucr.label"))
         )
+      )
 
-        @components.submit_button()
+      @components.submit_button()
     }
-}
+  }

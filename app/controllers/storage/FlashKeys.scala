@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package helpers.views
+package controllers.storage
 
-trait DisassociateDucrConfirmationMessages {
-
-  val disassociateDucr = "disassociateDucrConfirmation"
-  val title = disassociateDucr + ".title"
-  val heading = disassociateDucr + ".header"
-  val footNote = disassociateDucr + ".note"
-  val continue = "site.backToStartPage"
+object FlashKeys {
+  val DUCR = "DUCR"
+  val MUCR = "MUCR"
 }

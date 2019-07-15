@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package controllers
+@(
+  headingText: String,
+  informationText: Option[String] = None,
+  reference: Option[String] = None,
+  informationTextClass: Option[String] = None,
+  referenceClass: Option[String] = Some("bold")
+)
 
-object FlashKeys {
-  val DUCR = "DUCR"
-  val MUCR = "MUCR"
-}
+<div id="highlight-box" class="govuk-box-highlight">
+  <h1 id="highlight-box-heading" class="heading-xlarge">@headingText</h1>
+  @informationText.map { info => <p id="highlight-box-info" class="font-large @informationTextClass">@info</p> }
+  @reference.map { ref => <p id="highlight-box-reference" class="font-large @referenceClass">@ref</p> }
+</div>
+

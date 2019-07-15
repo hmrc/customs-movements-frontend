@@ -53,7 +53,7 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
 
       "cache contains data" in new ArrivalSetUp {
 
-        withCaching(ConsignmentReferences.formId, Some(ConsignmentReferences(Some("GB717572504502811"), "D", "123456")))
+        withCaching(ConsignmentReferences.formId, Some(ConsignmentReferences("D", "123456")))
 
         val result = route(app, getRequest(uri)).get
 

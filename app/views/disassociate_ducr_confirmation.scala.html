@@ -32,14 +32,14 @@
 
     <div class="govuk-box-highlight">
         <h1 class="heading-xlarge">
-            @messages("disassociateDucrConfirmation.title")
+        @messages("disassociateDucrConfirmation.title")
         </h1>
         <p class="font-large">@messages("disassociateDucrConfirmation.header")</p>
         <p id="reference" class="font-large bold">@flash.get(FlashKeys.DUCR).getOrElse("-")</p>
     </div>
 
-  <p>@messages("disassociateDucrConfirmation.note")</p>
+    <p>@messages("disassociateDucrConfirmation.note")</p>
 
-  @components.button_link("disassociateDucrConfirmation.continue", routes.StartController.displayStartPage())
+    @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
 
 }

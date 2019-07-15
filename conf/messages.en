@@ -219,6 +219,15 @@ mucrOptions.add.reference = Which MUCR do you want to add to?
 mucrOptions.reference.value.empty = Please enter a reference
 mucrOptions.reference.value.error = Please enter a valid reference
 
+associateDucr.title = Add a DUCR to {0}
+associateDucr.reference.hint = Make sure you have entered  the right MUCR details before adding a DUCR.
+
+associateDucrSummary.title = Add a DUCR to {0}
+
+associateDucrConfirmation.title = Consolidation complete
+associateDucrConfirmation.header = Your MUCR
+associateDucrConfirmation.note = You might want to take a screenshot of this for your records.
+
 disassociateDucr.title = Which DUCR do you want to disassociate?
 disassociateDucr.ducr.empty = Please enter DUCR
 disassociateDucr.ducr.error = Incorrect DUCR
@@ -226,7 +235,6 @@ disassociateDucr.ducr.error = Incorrect DUCR
 disassociateDucrConfirmation.title = Disassociation complete
 disassociateDucrConfirmation.header = The reference of the DUCR disassociated:
 disassociateDucrConfirmation.note = You might want to take a screenshot of this for your records.
-disassociateDucrConfirmation.continue = Back to start page
 
 consignmentReferences.title = Consignment references
 consignmentReferences.eori.question = What is your EORI number?

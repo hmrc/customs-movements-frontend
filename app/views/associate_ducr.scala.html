@@ -21,6 +21,46 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[AssociateDucr])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+@(form: Form[AssociateDucr], mucr: String)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
-  TODO
+
+ @main_template(
+  title = messages("associateDucr.title", mucr),
+  appConfig = appConfig
+ ) {
+  @helper.form(routes.AssociateDucrController.submit(), 'autoComplete -> "off") {
+   @helper.CSRF.formField
+
+   @components.back_link(routes.MucrOptionsController.displayPage())
+
+   @components.error_summary(form.errors)
+
+   @components.page_title(Some(messages("associateDucr.title", mucr)))
+
+   @if(form.bindFromRequest.hasErrors){
+    @components.input_text(
+     field = form("ducrReference"),
+     label = "",
+     hint = Some(messages("associateDucr.reference.hint"))
+    )
+
+    @components.submit_button(messages("site.add"))
+   } else {
+     @defining(form.bindFromRequest.get){ associateDucr =>
+      <table>
+       <tbody>
+        <tr>
+         <td>@associateDucr.ducr</td>
+         <td class="text-right">
+          <a href="@routes.AssociateDucrController.displayPage()">@messages("site.remove")</a>
+         </td>
+        </tr>
+       </tbody>
+      </table>
+     }
+
+     @components.submit_button()
+   }
+
+  }
+ }

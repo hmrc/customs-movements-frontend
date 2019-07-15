@@ -20,7 +20,7 @@ import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
 import utils.validators.forms.FieldValidator._
 
-case class AssociateDucr(ducrReference: String)
+case class AssociateDucr(ducr: String)
 
 object AssociateDucr {
 

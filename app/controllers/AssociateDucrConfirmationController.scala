@@ -18,34 +18,25 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import forms.AssociateDucr.form
+import forms.AssociateDucr
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.associate_ducr
+import views.html.associate_ducr_confirmation
 
 @Singleton
-class AssociateDucrController @Inject()(
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
-  mcc: MessagesControllerComponents,
-  associateDucrPage: associate_ducr
+class AssociateDucrConfirmationController @Inject()(
+                                                authenticate: AuthAction,
+                                                journeyType: JourneyAction,
+                                                errorHandler: ErrorHandler,
+                                                mcc: MessagesControllerComponents,
+                                                associateDucrConfirmPage: associate_ducr_confirmation
 )(implicit appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(associateDucrPage(form, "9GB123456789"))
-  }
-
-  def submit(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Ok(associateDucrPage(form, "9GB123456789")),
-        formData => Redirect(routes.AssociateDucrSummaryController.displayPage())
-    )
+    Ok(associateDucrConfirmPage(AssociateDucr("9GB123456789"), "9GB123456789"))
   }
 }

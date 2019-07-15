@@ -18,4 +18,5 @@ package controllers
 
 object FlashKeys {
   val DUCR = "DUCR"
+  val MUCR = "MUCR"
 }

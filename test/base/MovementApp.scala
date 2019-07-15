@@ -21,6 +21,9 @@ import java.util.UUID
 import akka.stream.Materializer
 import connectors.CustomsDeclareExportsMovementsConnector
 import metrics.MovementsMetrics
+import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito._
+import org.mockito.{ArgumentCaptor, ArgumentMatchers, Mockito}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.play.PlaySpec
@@ -29,13 +32,13 @@ import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsValue, Writes}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson, Request}
 import play.api.test.FakeRequest
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import utils.FakeRequestCSRFSupport._
 
 import scala.concurrent.ExecutionContext
@@ -71,6 +74,19 @@ trait MovementApp
   val metrics = app.injector.instanceOf[MovementsMetrics]
 
   implicit val ec: ExecutionContext = global
+
+  protected def theDataCached: Object = {
+    val captor = ArgumentCaptor.forClass(classOf[Object])
+    verify(mockCustomsCacheService).cache(anyString, anyString, captor.capture())(any[HeaderCarrier], any(), any[ExecutionContext])
+    captor.getValue
+  }
+
+  protected def theFormIDCached: String = {
+    val captor = ArgumentCaptor.forClass(classOf[String])
+    verify(mockCustomsCacheService).cache(anyString, captor.capture(), any())(any[HeaderCarrier], any(), any[ExecutionContext])
+    captor.getValue
+  }
+
 
   protected def getRequest(uri: String, headers: Map[String, String] = Map.empty): Request[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(SessionKeys.sessionId -> s"session-${UUID.randomUUID()}")

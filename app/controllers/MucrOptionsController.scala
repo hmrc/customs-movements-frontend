@@ -18,13 +18,19 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import forms.MucrOptions.form
+import controllers.storage.CacheIdGenerator.movementCacheId
+import forms.MucrOptions
+import forms.MucrOptions.{form, formId}
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.mucr_options
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 @Singleton
 class MucrOptionsController @Inject()(
@@ -32,6 +38,7 @@ class MucrOptionsController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
+  cacheService: CustomsCacheService,
   associateDucrPage: mucr_options
 )(implicit appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
@@ -40,12 +47,16 @@ class MucrOptionsController @Inject()(
     Ok(associateDucrPage(form))
   }
 
-  def save(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def save(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(associateDucrPage(formWithErrors)),
-        mucrOptions => Redirect(routes.AssociateDucrController.displayPage())
+        formWithErrors =>
+          Future.successful(BadRequest(associateDucrPage(formWithErrors))),
+        formData =>
+          cacheService.cache[MucrOptions](movementCacheId(), formId, formData).map { _ =>
+            Redirect(routes.AssociateDucrController.displayPage())
+        }
       )
   }
 }

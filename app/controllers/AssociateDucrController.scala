@@ -18,13 +18,19 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.exception.IncompleteApplication
+import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.AssociateDucr.form
+import forms.{AssociateDucr, MucrOptions}
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.associate_ducr
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
 class AssociateDucrController @Inject()(
@@ -32,20 +38,31 @@ class AssociateDucrController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
+  cacheService: CustomsCacheService,
   associateDucrPage: associate_ducr
 )(implicit appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(associateDucrPage(form, "9GB123456789"))
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    cacheService.fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId).map {
+      case Some(options) => Ok(associateDucrPage(form, options.mucr))
+      case None          => throw IncompleteApplication
+    }
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Ok(associateDucrPage(form, "9GB123456789")),
-        formData => Redirect(routes.AssociateDucrSummaryController.displayPage())
-    )
+        formWithErrors =>
+          cacheService.fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId).map {
+            case Some(options) => BadRequest(associateDucrPage(formWithErrors, options.mucr))
+            case None          => throw IncompleteApplication
+        },
+        formData =>
+          cacheService.cache(movementCacheId(), AssociateDucr.formId, formData).map { _ =>
+            Redirect(routes.AssociateDucrSummaryController.displayPage())
+        }
+      )
   }
 }

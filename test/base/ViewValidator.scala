@@ -20,12 +20,17 @@ import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.scalatest.{Assertion, MustMatchers}
 import play.api.i18n.Messages
+import play.api.mvc.Result
+import play.api.test.Helpers._
 import play.twirl.api.Html
 
-trait ViewValidator extends MustMatchers {
+import scala.concurrent.Future
+
+trait ViewValidator extends MustMatchers with ViewMatchers {
 
   private def asDocument(html: Html): Document = Jsoup.parse(html.toString())
   private def asDocument(page: String): Document = Jsoup.parse(page)
+  protected def htmlBodyOf(result: Future[Result]): Document = asDocument(contentAsString(result))
 
   def getElementByCss(html: Html, selector: String): Element = {
 
@@ -74,7 +79,6 @@ trait ViewValidator extends MustMatchers {
   }
 
   def checkErrorsSummary(html: Html)(implicit messages: Messages): Unit = {
-
     getElementByCss(html, "#error-summary-heading").text() must be(messages("error.summary.title"))
     getElementByCss(html, "div.error-summary.error-summary--show>p")
       .text() must be(messages("error.summary.text"))
@@ -108,11 +112,4 @@ trait ViewValidator extends MustMatchers {
 
   def verifyChecked(view: Html, id: String): Assertion = getElementById(view, id).attr("checked") must be("checked")
   def verifyChecked(page: String, id: String): Assertion = getElementById(page, id).attr("checked") must be("checked")
-  
-  def verifyFieldError(view: Html, fieldName: String, errorText: String) =
-    getElementByCss(view, s"[id^='error-message-$fieldName']").text() must be(errorText)
-
-  def verifyFieldError(page: String, fieldName: String, errorText: String) =
-    getElementByCss(page, s"[id^='error-message-$fieldName']").text() must be(errorText)
-
 }

@@ -18,15 +18,20 @@ package forms
 
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
+import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
 case class AssociateDucr(ducr: String)
 
 object AssociateDucr {
+  val formId: String = "AssociateDucr"
+
+  implicit val format = Json.format[AssociateDucr]
+
 
   val mapping =
     Forms.mapping(
-      "ducrReference" -> text()
+      "ducr" -> text()
         .verifying("mucrOptions.reference.value.empty", nonEmpty)
         .verifying("mucrOptions.reference.value.error", isEmpty or validDucrOrMucr)
     )(AssociateDucr.apply)(AssociateDucr.unapply)

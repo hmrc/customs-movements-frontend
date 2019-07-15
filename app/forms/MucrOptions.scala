@@ -18,11 +18,16 @@ package forms
 
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
+import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
 case class MucrOptions(mucr: String)
 
 object MucrOptions {
+
+  val formId = "MucrOptions"
+
+  implicit val format = Json.format[MucrOptions]
 
   val Create = "create"
   val Add = "add"
@@ -39,6 +44,7 @@ object MucrOptions {
       "existingMucr" -> text().verifying("mucrOptions.reference.value.error", isEmpty or validDucrOrMucr)
     )(form2Model)(model2Form)
       .verifying("mucrOptions.reference.value.empty", _.mucr.nonEmpty)
+      .verifying("mucrOptions.reference.value.error", options => validDucrOrMucr(options.mucr))
 
   val form: Form[MucrOptions] = Form(mapping)
 

@@ -17,7 +17,7 @@
 package services
 
 import connectors.CustomsDeclareExportsMovementsConnector
-import forms.{Choice, Movement, ShutMucr}
+import forms.{AssociateDucr, Choice, Movement, MucrOptions, ShutMucr}
 import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
 import play.api.http.Status.INTERNAL_SERVER_ERROR
@@ -49,6 +49,8 @@ class SubmissionService @Inject()(
       case _ =>
         Future.successful(INTERNAL_SERVER_ERROR)
     }
+
+  def submitDucrAssociation(mucrOptions: MucrOptions, associateDucr: AssociateDucr): Future[Unit] = Future.successful((): Unit)
 
   def submitDucrDisassociation(
     cacheId: String,

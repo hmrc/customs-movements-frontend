@@ -17,11 +17,12 @@
 package handlers
 
 import config.AppConfig
+import controllers.exception.IncompleteApplication
 import controllers.routes
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.{Request, RequestHeader, Result, Results}
 import play.api.mvc.Results.BadRequest
+import play.api.mvc.{Request, RequestHeader, Result, Results}
 import play.api.{Configuration, Environment}
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
@@ -47,6 +48,8 @@ class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi,
       case _: NoActiveSession => toGGLogin(rh.uri)
       case _: InsufficientEnrolments =>
         Results.SeeOther(routes.UnauthorisedController.onPageLoad().url)
+      case _: IncompleteApplication =>
+        Results.Redirect(routes.StartController.displayStartPage())
       case _ => super.resolveError(rh, ex)
     }
 

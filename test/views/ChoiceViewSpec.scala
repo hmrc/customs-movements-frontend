@@ -32,16 +32,6 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
   private val choicePage = injector.instanceOf[choice_page]
   private def createView(form: Form[Choice] = form): Html = choicePage(form)
 
-  private def verifyUnchecked(view: Html, id: String): Unit = {
-    val optionFour = getElementById(view, id)
-    optionFour.attr("checked") must be("")
-  }
-
-  private def verifyChecked(view: Html, id: String): Unit = {
-    val optionFour = getElementById(view, id)
-    optionFour.attr("checked") must be("checked")
-  }
-
   "Choice View" should {
 
     "have proper labels for messages" in {

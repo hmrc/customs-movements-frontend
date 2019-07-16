@@ -18,7 +18,6 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import forms.AssociateDucr
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
@@ -37,6 +36,6 @@ class AssociateDucrConfirmationController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(associateDucrConfirmPage(AssociateDucr("9GB123456789"), "9GB123456789"))
+    Ok(associateDucrConfirmPage())
   }
 }

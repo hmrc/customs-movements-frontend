@@ -306,7 +306,7 @@ mucrOptions.reference.value.empty = Please enter a reference
 mucrOptions.reference.value.error = Please enter a valid reference
 
 associateDucr.title = Add a DUCR to {0}
-associateDucr.reference.hint = Make sure you have entered  the right MUCR details before adding a DUCR.
+associateDucr.reference.hint = Make sure you have entered the right MUCR details before adding a DUCR.
 
 associateDucrSummary.title = Add a DUCR to {0}
 

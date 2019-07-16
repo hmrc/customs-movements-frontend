@@ -50,7 +50,8 @@ class SubmissionService @Inject()(
         Future.successful(INTERNAL_SERVER_ERROR)
     }
 
-  def submitDucrAssociation(mucrOptions: MucrOptions, associateDucr: AssociateDucr): Future[Unit] = Future.successful((): Unit)
+  def submitDucrAssociation(mucrOptions: MucrOptions, associateDucr: AssociateDucr): Future[Unit] =
+    Future.successful((): Unit)
 
   def submitDucrDisassociation(
     cacheId: String,

@@ -28,7 +28,6 @@ object AssociateDucr {
 
   implicit val format = Json.format[AssociateDucr]
 
-
   val mapping =
     Forms.mapping(
       "ducr" -> text()
@@ -38,5 +37,3 @@ object AssociateDucr {
 
   val form: Form[AssociateDucr] = Form(mapping)
 }
-
-

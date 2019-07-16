@@ -39,10 +39,11 @@ object MucrOptions {
   def model2Form: MucrOptions => Option[(String, String)] = m => Some((m.mucr, m.mucr))
 
   val mapping =
-    Forms.mapping(
-      "newMucr" -> text().verifying("mucrOptions.reference.value.error", isEmpty or validDucrOrMucr),
-      "existingMucr" -> text().verifying("mucrOptions.reference.value.error", isEmpty or validDucrOrMucr)
-    )(form2Model)(model2Form)
+    Forms
+      .mapping(
+        "newMucr" -> text().verifying("mucrOptions.reference.value.error", isEmpty or validDucrOrMucr),
+        "existingMucr" -> text().verifying("mucrOptions.reference.value.error", isEmpty or validDucrOrMucr)
+      )(form2Model)(model2Form)
       .verifying("mucrOptions.reference.value.empty", _.mucr.nonEmpty)
       .verifying("mucrOptions.reference.value.error", options => validDucrOrMucr(options.mucr))
 

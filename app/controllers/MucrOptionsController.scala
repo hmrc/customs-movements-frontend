@@ -51,8 +51,7 @@ class MucrOptionsController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        formWithErrors =>
-          Future.successful(BadRequest(associateDucrPage(formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(associateDucrPage(formWithErrors))),
         formData =>
           cacheService.cache[MucrOptions](movementCacheId(), formId, formData).map { _ =>
             Redirect(routes.AssociateDucrController.displayPage())

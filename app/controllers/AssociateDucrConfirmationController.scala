@@ -27,11 +27,11 @@ import views.html.associate_ducr_confirmation
 
 @Singleton
 class AssociateDucrConfirmationController @Inject()(
-                                                authenticate: AuthAction,
-                                                journeyType: JourneyAction,
-                                                errorHandler: ErrorHandler,
-                                                mcc: MessagesControllerComponents,
-                                                associateDucrConfirmPage: associate_ducr_confirmation
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
+  errorHandler: ErrorHandler,
+  mcc: MessagesControllerComponents,
+  associateDucrConfirmPage: associate_ducr_confirmation
 )(implicit appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 

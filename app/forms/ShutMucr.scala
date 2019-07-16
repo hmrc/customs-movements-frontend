@@ -19,7 +19,7 @@ package forms
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.{PredicateOpsForFunctions, isEmpty, nonEmpty, validDucrOrMucr}
+import utils.validators.forms.FieldValidator.{isEmpty, nonEmpty, validDucrOrMucr, PredicateOpsForFunctions}
 
 case class ShutMucr(mucr: String)
 

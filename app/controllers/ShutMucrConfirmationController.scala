@@ -32,7 +32,7 @@ class ShutMucrConfirmationController @Inject()(
   mcc: MessagesControllerComponents,
   shutMucrConfirmationPage: shut_mucr_confirmation
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = authenticate { implicit request =>
     Ok(shutMucrConfirmationPage())

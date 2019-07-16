@@ -63,7 +63,7 @@ class AssociateDucrSummaryController @Inject()(
       associateDucr = a.getOrElse(throw IncompleteApplication)
 
       _ <- submissionService.submitDucrAssociation(mucrOptions, associateDucr)
-      _<- cacheService.remove(movementCacheId())
+      _ <- cacheService.remove(movementCacheId())
     } yield
       Redirect(routes.AssociateDucrConfirmationController.displayPage())
         .flashing(FlashKeys.MUCR -> mucrOptions.mucr)

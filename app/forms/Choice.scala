@@ -29,7 +29,7 @@ object Choice {
   val choiceId = "Choice"
 
   import AllowedChoiceValues._
-  private val correctChoices = Set(Arrival, Departure, DisassociateDUCR, ShutMucr)
+  private val correctChoices = Set(Arrival, Departure, AssociateDUCR, DisassociateDUCR, ShutMucr)
 
   val choiceMapping: Mapping[Choice] = Forms.single(
     "choice" -> optional(
@@ -44,6 +44,7 @@ object Choice {
   object AllowedChoiceValues {
     val Arrival = "EAL"
     val Departure = "EDL"
+    val AssociateDUCR = "ASS"
     val DisassociateDUCR = "EAC"
     val ShutMucr = "CST"
   }

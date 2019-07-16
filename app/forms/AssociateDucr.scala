@@ -16,23 +16,24 @@
 
 package forms
 
-import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
+import play.api.data.Forms.text
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.{isEmpty, nonEmpty, validDucrOrMucr, PredicateOpsForFunctions}
+import utils.validators.forms.FieldValidator._
 
-case class ShutMucr(mucr: String)
+case class AssociateDucr(ducr: String)
 
-object ShutMucr {
-  implicit val format = Json.format[ShutMucr]
+object AssociateDucr {
+  val formId: String = "AssociateDucr"
 
-  val formId = "ShutMucr"
+  implicit val format = Json.format[AssociateDucr]
 
-  val mapping = Forms.mapping(
-    "mucr" -> text()
-      .verifying("error.mucr.empty", nonEmpty)
-      .verifying("error.mucr.format", isEmpty or validDucrOrMucr)
-  )(ShutMucr.apply)(ShutMucr.unapply)
+  val mapping =
+    Forms.mapping(
+      "ducr" -> text()
+        .verifying("mucrOptions.reference.value.empty", nonEmpty)
+        .verifying("mucrOptions.reference.value.error", isEmpty or validDucrOrMucr)
+    )(AssociateDucr.apply)(AssociateDucr.unapply)
 
-  def form(): Form[ShutMucr] = Form(mapping)
+  val form: Form[AssociateDucr] = Form(mapping)
 }

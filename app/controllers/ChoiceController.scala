@@ -23,7 +23,6 @@ import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
 import javax.inject.{Inject, Singleton}
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
@@ -44,27 +43,24 @@ class ChoiceController @Inject()(
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService
       .fetchAndGetEntry[Choice](cacheId, choiceId)
-      .map(data => Ok(choicePage(data.fold(form)(form.fill(_)))))
+      .map(data => Ok(choicePage(data.fold(form())(form().fill(_)))))
   }
 
   def submitChoice(): Action[AnyContent] = authenticate.async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choicePage(formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(choicePage(formWithErrors))),
         validChoice =>
           customsCacheService
             .cache[Choice](cacheId, choiceId, validChoice)
             .map { _ =>
               validChoice.value match {
-                case Arrival | Departure =>
-                  Redirect(controllers.routes.ConsignmentReferencesController.displayPage())
-                case DisassociateDUCR =>
-                  Redirect(controllers.routes.DisassociateDucrController.displayPage())
-                case ShutMucr =>
-                  Redirect(controllers.routes.ShutMucrController.displayPage())
-                case _ =>
-                  Redirect(controllers.routes.ChoiceController.displayChoiceForm())
+                case Arrival | Departure => Redirect(controllers.routes.ConsignmentReferencesController.displayPage())
+                case AssociateDUCR       => Redirect(controllers.routes.MucrOptionsController.displayPage())
+                case DisassociateDUCR    => Redirect(controllers.routes.DisassociateDucrController.displayPage())
+                case ShutMucr            => Redirect(controllers.routes.ShutMucrController.displayPage())
+                case _                   => Redirect(controllers.routes.ChoiceController.displayChoiceForm())
               }
           }
       )

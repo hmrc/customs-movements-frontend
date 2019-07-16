@@ -14,25 +14,8 @@
  * limitations under the License.
  */
 
-package forms
+package controllers.exception
 
-import play.api.data.Forms.text
-import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.{isEmpty, nonEmpty, validDucrOrMucr, PredicateOpsForFunctions}
+trait IncompleteApplication extends RuntimeException
 
-case class ShutMucr(mucr: String)
-
-object ShutMucr {
-  implicit val format = Json.format[ShutMucr]
-
-  val formId = "ShutMucr"
-
-  val mapping = Forms.mapping(
-    "mucr" -> text()
-      .verifying("error.mucr.empty", nonEmpty)
-      .verifying("error.mucr.format", isEmpty or validDucrOrMucr)
-  )(ShutMucr.apply)(ShutMucr.unapply)
-
-  def form(): Form[ShutMucr] = Form(mapping)
-}
+case object IncompleteApplication extends IncompleteApplication

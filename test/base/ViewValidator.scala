@@ -18,18 +18,23 @@ package base
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
-import org.scalatest.MustMatchers
+import org.scalatest.{Assertion, MustMatchers}
 import play.api.i18n.Messages
+import play.api.mvc.Result
+import play.api.test.Helpers._
 import play.twirl.api.Html
 
-trait ViewValidator extends MustMatchers {
+import scala.concurrent.Future
+import scala.language.implicitConversions
 
-  private def asDocument(html: Html): Document = Jsoup.parse(html.toString())
-  private def asDocument(page: String): Document = Jsoup.parse(page)
+trait ViewValidator extends MustMatchers with ViewMatchers {
+
+  implicit protected def htmlBodyOf(html: Html): Document = Jsoup.parse(html.toString())
+  implicit protected def htmlBodyOf(page: String): Document = Jsoup.parse(page)
+  implicit protected def htmlBodyOf(result: Future[Result]): Document = htmlBodyOf(contentAsString(result))
 
   def getElementByCss(html: Html, selector: String): Element = {
-
-    val elements = asDocument(html).select(selector)
+    val elements = html.select(selector)
 
     if (elements.isEmpty)
       throw new Exception(s"Can't find element $selector on page using CSS")
@@ -38,8 +43,7 @@ trait ViewValidator extends MustMatchers {
   }
 
   def getElementByCss(page: String, selector: String): Element = {
-
-    val elements = asDocument(page).select(selector)
+    val elements = page.select(selector)
 
     if (elements.isEmpty)
       throw new Exception(s"Can't find element $selector on page using CSS")
@@ -48,14 +52,13 @@ trait ViewValidator extends MustMatchers {
   }
 
   def getElementsByCss(html: Html, selector: String): Elements =
-    asDocument(html).select(selector)
+    html.select(selector)
 
   def getElementsByCss(page: String, selector: String): Elements =
-    asDocument(page).select(selector)
+    page.select(selector)
 
   def getElementById(html: Html, id: String): Element = {
-
-    val element = asDocument(html).getElementById(id)
+    val element = html.getElementById(id)
 
     if (element == null)
       throw new Exception(s"Can't find element $id on page by id")
@@ -64,27 +67,12 @@ trait ViewValidator extends MustMatchers {
   }
 
   def getElementById(page: String, id: String): Element = {
-
-    val element = asDocument(page).getElementById(id)
+    val element = page.getElementById(id)
 
     if (element == null)
       throw new Exception(s"Can't find element $id on page by id")
 
     element
-  }
-
-  def checkErrorsSummary(html: Html)(implicit messages: Messages): Unit = {
-
-    getElementByCss(html, "#error-summary-heading").text() must be(messages("error.summary.title"))
-    getElementByCss(html, "div.error-summary.error-summary--show>p")
-      .text() must be(messages("error.summary.text"))
-  }
-
-  def checkErrorsSummary(page: String)(implicit messages: Messages): Unit = {
-
-    getElementByCss(page, "#error-summary-heading").text() must be(messages("error.summary.title"))
-    getElementByCss(page, "div.error-summary.error-summary--show>p")
-      .text() must be(messages("error.summary.text"))
   }
 
   def checkErrorLink(page: String, child: Int, error: String, href: String)(implicit messages: Messages): Unit = {
@@ -102,4 +90,10 @@ trait ViewValidator extends MustMatchers {
     errorLink.text() must be(messages(error))
     errorLink.attr("href") must be(href)
   }
+
+  def verifyUnchecked(view: Html, id: String): Assertion = getElementById(view, id).attr("checked") must be("")
+  def verifyUnchecked(page: String, id: String): Assertion = getElementById(page, id).attr("checked") must be("")
+
+  def verifyChecked(view: Html, id: String): Assertion = getElementById(view, id).attr("checked") must be("checked")
+  def verifyChecked(page: String, id: String): Assertion = getElementById(page, id).attr("checked") must be("checked")
 }

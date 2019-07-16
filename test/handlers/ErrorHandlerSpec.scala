@@ -18,6 +18,7 @@ package handlers
 
 import base.MovementBaseSpec
 import config.AppConfig
+import controllers.exception.IncompleteApplication
 import play.api.http.{HeaderNames, Status}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
@@ -43,6 +44,14 @@ class ErrorHandlerSpec extends MovementBaseSpec {
   }
   "resolve error" should {
 
+    "handle incomplete application exception" in {
+      val res = errorHandler.resolveError(req, IncompleteApplication)
+      res.header.status must be(Status.SEE_OTHER)
+      res.header.headers.get(HeaderNames.LOCATION) must be(
+        Some(controllers.routes.StartController.displayStartPage().url)
+      )
+    }
+
     "handle no active session authorisation exception" in {
       val res = errorHandler.resolveError(req, new NoActiveSession("A user is not logged in") {})
       res.header.status must be(Status.SEE_OTHER)
@@ -53,9 +62,9 @@ class ErrorHandlerSpec extends MovementBaseSpec {
 
     "handle insufficient enrolments authorisation exception" in {
       val res =
-        errorHandler.resolveError(req, new InsufficientEnrolments("HMRC-CUS-ORG"))
+        errorHandler.resolveError(req, InsufficientEnrolments("HMRC-CUS-ORG"))
       res.header.status must be(Status.SEE_OTHER)
-      res.header.headers.get(HeaderNames.LOCATION) must be(Some("/customs-movements/unauthorised"))
+      res.header.headers.get(HeaderNames.LOCATION) must be(Some(controllers.routes.UnauthorisedController.onPageLoad().url))
     }
 
   }

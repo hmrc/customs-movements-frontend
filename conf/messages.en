@@ -130,6 +130,7 @@ movement.transportNationality = Transport Nationality
 movement.choice.title = What do you want to do?
 movement.choice.EAL.label = Arrival
 movement.choice.EDL.label = Departure
+movement.choice.ASS.label = Associate
 movement.choice.EAC.label = Disassociate
 movement.choice.shutMucr.label = Shut a MUCR
 movement.role.dec = I am declaring for the company I work for or own
@@ -296,3 +297,19 @@ shutMucrConfirmation.title = MUCR shut
 shutMucrConfirmation.info = The reference of the MUCR shut:
 shutMucrConfirmation.note = You might want to take a screenshot of this for your records.
 
+mucrOptions.title = MUCR options
+mucrOptions.create = Create a new MUCR
+mucrOptions.add = Add to an existing MUCR
+mucrOptions.create.reference = Enter the alpha numeric refererence
+mucrOptions.add.reference = Which MUCR do you want to add to?
+mucrOptions.reference.value.empty = Please enter a reference
+mucrOptions.reference.value.error = Please enter a valid reference
+
+associateDucr.title = Add a DUCR to {0}
+associateDucr.reference.hint = Make sure you have entered the right MUCR details before adding a DUCR.
+
+associateDucrSummary.title = Add a DUCR to {0}
+
+associateDucrConfirmation.title = Consolidation complete
+associateDucrConfirmation.header = Your MUCR
+associateDucrConfirmation.note = You might want to take a screenshot of this for your records.

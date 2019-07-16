@@ -13,8 +13,8 @@
     // Radio and Checkbox selectors
     var selectors = {
       namespace: 'ShowHideContent',
-      radio: '.block-label[data-target] input[type="radio"]',
-      checkbox: '.block-label[data-target] input[type="checkbox"]'
+      radio: '.multiple-choice[data-target] input[type="radio"]',
+      checkbox: '.multiple-choice[data-target] input[type="checkbox"]'
     }
 
     // Escape name attribute for use in DOM selector

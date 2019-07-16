@@ -32,16 +32,6 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
   private val choicePage = injector.instanceOf[choice_page]
   private def createView(form: Form[Choice] = form): Html = choicePage(form)
 
-  private def verifyUnchecked(view: Html, id: String): Unit = {
-    val optionFour = getElementById(view, id)
-    optionFour.attr("checked") must be("")
-  }
-
-  private def verifyChecked(view: Html, id: String): Unit = {
-    val optionFour = getElementById(view, id)
-    optionFour.attr("checked") must be("checked")
-  }
-
   "Choice View" should {
 
     "have proper labels for messages" in {
@@ -85,18 +75,19 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
       getElementByCss(view, "#choice>div:nth-child(2)>label").text() must be(messages(arrivalDecLabel))
       getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(departureDecLabel))
-      getElementByCss(view, "#choice>div:nth-child(4)>label").text() must be(messages(disassociateDecLabel))
-      getElementByCss(view, "#choice>div:nth-child(5)>label").text() must be(messages(shutMucrLabel))
+      getElementByCss(view, "#choice>div:nth-child(4)>label").text() must be(messages(associateDecLabel))
+      getElementByCss(view, "#choice>div:nth-child(5)>label").text() must be(messages(disassociateDecLabel))
+      getElementByCss(view, "#choice>div:nth-child(6)>label").text() must be(messages(shutMucrLabel))
     }
 
     "display 4 unchecked radio buttons" in {
 
       val view = createView(Choice.form().fill(Choice("")))
 
-      verifyUnchecked(view, "Arrival")
-      verifyUnchecked(view, "Departure")
-      verifyUnchecked(view, "Disassociate")
-      verifyUnchecked(view, "ShutMucr")
+      verifyUnchecked(view, "arrival")
+      verifyUnchecked(view, "departure")
+      verifyUnchecked(view, "disassociate")
+      verifyUnchecked(view, "shut_mucr")
     }
 
     "display 'Save and continue' button on page" in {
@@ -131,40 +122,40 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
       val view = createView(Choice.form().fill(Choice(Arrival)))
 
-      verifyChecked(view, "Arrival")
-      verifyUnchecked(view, "Departure")
-      verifyUnchecked(view, "Disassociate")
-      verifyUnchecked(view, "ShutMucr")
+      verifyChecked(view, "arrival")
+      verifyUnchecked(view, "departure")
+      verifyUnchecked(view, "disassociate")
+      verifyUnchecked(view, "shut_mucr")
     }
 
     "display selected 2nd radio button - Departure (EDL)" in {
 
       val view = createView(Choice.form().fill(Choice(Departure)))
 
-      verifyUnchecked(view, "Arrival")
-      verifyChecked(view, "Departure")
-      verifyUnchecked(view, "Disassociate")
-      verifyUnchecked(view, "ShutMucr")
+      verifyUnchecked(view, "arrival")
+      verifyChecked(view, "departure")
+      verifyUnchecked(view, "disassociate")
+      verifyUnchecked(view, "shut_mucr")
     }
 
     "display selected 3rd radio button - Disassociate (EAC)" in {
 
       val view = createView(Choice.form().fill(Choice(DisassociateDUCR)))
 
-      verifyUnchecked(view, "Arrival")
-      verifyUnchecked(view, "Departure")
-      verifyChecked(view, "Disassociate")
-      verifyUnchecked(view, "ShutMucr")
+      verifyUnchecked(view, "arrival")
+      verifyUnchecked(view, "departure")
+      verifyChecked(view, "disassociate")
+      verifyUnchecked(view, "shut_mucr")
     }
 
     "display selected 4th radio button - Shut a MUCR (CST)" in {
 
       val view = createView(Choice.form().fill(Choice(ShutMucr)))
 
-      verifyUnchecked(view, "Arrival")
-      verifyUnchecked(view, "Departure")
-      verifyUnchecked(view, "Disassociate")
-      verifyChecked(view, "ShutMucr")
+      verifyUnchecked(view, "arrival")
+      verifyUnchecked(view, "departure")
+      verifyUnchecked(view, "disassociate")
+      verifyChecked(view, "shut_mucr")
     }
   }
 }

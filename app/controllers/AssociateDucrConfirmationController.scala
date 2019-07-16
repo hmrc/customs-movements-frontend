@@ -17,25 +17,25 @@
 package controllers
 
 import config.AppConfig
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, JourneyAction}
+import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.shut_mucr_confirmation
-
-import scala.concurrent.ExecutionContext
+import views.html.associate_ducr_confirmation
 
 @Singleton
-class ShutMucrConfirmationController @Inject()(
+class AssociateDucrConfirmationController @Inject()(
   authenticate: AuthAction,
+  journeyType: JourneyAction,
+  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
-  shutMucrConfirmationPage: shut_mucr_confirmation
-)(implicit appConfig: AppConfig, ec: ExecutionContext)
+  associateDucrConfirmPage: associate_ducr_confirmation
+)(implicit appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = authenticate { implicit request =>
-    Ok(shutMucrConfirmationPage())
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok(associateDucrConfirmPage())
   }
-
 }

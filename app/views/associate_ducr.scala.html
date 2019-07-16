@@ -16,25 +16,33 @@
 
 @import config.AppConfig
 @import controllers.routes
-@import controllers.storage.FlashKeys
+@import uk.gov.hmrc.play.views.html._
+@import forms.AssociateDucr
 
 @this(main_template: views.html.main_template)
 
-@()(implicit appConfig: AppConfig, request: Request[_], flash: Flash, messages: Messages)
+@(form: Form[AssociateDucr], mucr: String)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
-@main_template(
-  title = messages("disassociateDucrConfirmation.title"),
+
+ @main_template(
+  title = messages("associateDucr.title", mucr),
   appConfig = appConfig
-) {
+ ) {
+  @helper.form(routes.AssociateDucrController.submit(), 'autoComplete -> "off") {
+   @helper.CSRF.formField
 
-  @components.highlight_box_with_reference(
-    headingText = messages("disassociateDucrConfirmation.title"),
-    informationText = Some(messages("disassociateDucrConfirmation.header")),
-    reference = Some(flash.get(FlashKeys.DUCR).getOrElse("-"))
-  )
+   @components.back_link(routes.MucrOptionsController.displayPage())
 
-    <p>@messages("disassociateDucrConfirmation.note")</p>
+   @components.error_summary(form.errors)
 
-  @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
+   @components.page_title(Some(messages("associateDucr.title", mucr)))
 
-}
+   @components.input_text(
+    field = form("ducr"),
+    label = "",
+    hint = Some(messages("associateDucr.reference.hint"))
+   )
+
+   @components.submit_button(messages("site.add"))
+  }
+ }

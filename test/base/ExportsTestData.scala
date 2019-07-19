@@ -16,19 +16,11 @@
 
 package base
 
-import forms.{
-  ArrivalDetails,
-  Choice,
-  ConsignmentReferences,
-  DepartureDetails,
-  GoodsDeparted,
-  Location,
-  MovementDetails,
-  Transport
-}
+import base.testdata.CommonTestData
 import forms.Choice._
 import forms.GoodsDeparted.AllowedPlaces
 import forms.common.{Date, Time}
+import forms._
 import models.SignedInUser
 import org.joda.time.DateTimeZone.UTC
 import org.joda.time.{DateTime, LocalDate}
@@ -126,7 +118,7 @@ object ExportsTestData {
 
   val correctTransport: JsValue = JsObject(Map("modeOfTransport" -> JsString("M"), "nationality" -> JsString("PL")))
 
-  def consignmentReferences(refType: String) = ConsignmentReferences(refType, s"${refType}-12344546")
+  def consignmentReferences(refType: String) = ConsignmentReferences(refType, CommonTestData.ucr)
   val date = Date(Some(10), Some(8), Some(2018))
   val departureDetails = DepartureDetails(date)
 

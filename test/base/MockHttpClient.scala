@@ -15,6 +15,7 @@
  */
 
 package base
+
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import play.api.libs.json.Writes

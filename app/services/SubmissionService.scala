@@ -17,11 +17,13 @@
 package services
 
 import connectors.CustomsDeclareExportsMovementsConnector
-import forms.{AssociateDucr, Choice, Movement, MucrOptions, ShutMucr}
+import forms._
 import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.wco.dec.inventorylinking.common.UcrBlock
+import uk.gov.hmrc.wco.dec.inventorylinking.consolidation.request.InventoryLinkingConsolidationRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -56,16 +58,16 @@ class SubmissionService @Inject()(
   def submitDucrDisassociation(
     cacheId: String,
     ducr: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
-    // TODO Implement once the backend approach is defined
-
-    //    val request = InventoryLinkingConsolidationRequest(
-    //      messageCode = "EAC",
-    //      transactionType = "",
-    //      masterUCR = None,
-    //      ucrBlock = Some(UcrBlock(ucr = ducr, ucrType = "D"))
-    //    )
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+    val request = InventoryLinkingConsolidationRequest(
+      messageCode = "EAC",
+      transactionType = "",
+      masterUCR = None,
+      ucrBlock = Some(UcrBlock(ucr = ducr, ucrType = "D"))
+    )
     Future.successful((): Unit)
+
+  }
 
   def submitShutMucrRequest(formData: ShutMucr): Future[Unit] = Future.successful((): Unit)
 }

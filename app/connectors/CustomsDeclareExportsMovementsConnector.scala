@@ -18,37 +18,50 @@ package connectors
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import models._
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.wco.dec.MetaData
+import utils.CustomsHeaderNames
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
 
+  private val logger = Logger(this.getClass)
+
+  private val MovementSubmissionUrl = s"${appConfig.customsDeclareExportsMovements}${appConfig.saveMovementSubmission}"
+  private val MovementConsolidationUrl =
+    s"${appConfig.customsDeclareExportsMovements}${appConfig.submitMovementConsolidation}"
+
+  private val CommonMovementsHeaders =
+    Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8), HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8))
+
   def submitMovementDeclaration(ucr: String, movementType: String, xmlBody: String)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[HttpResponse] =
     httpClient
-      .POSTString[HttpResponse](
-        s"${appConfig.customsDeclareExportsMovements}${appConfig.saveMovementSubmission}",
-        xmlBody,
-        Seq(
-          (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
-          (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
-          ("X-UCR", ucr),
-          ("X-MOVEMENT-TYPE", movementType.toString)
-        )
-      )
+      .POSTString[HttpResponse](MovementSubmissionUrl, xmlBody, movementSubmissionHeaders(ucr, movementType))
       .map { response =>
-        Logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response is --> ${response.toString}")
+        logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response is --> ${response.toString}")
         response
       }
+
+  private def movementSubmissionHeaders(ucr: String, movementType: String): Seq[(String, String)] =
+    CommonMovementsHeaders ++ Seq(
+      CustomsHeaderNames.XUcr -> ucr,
+      CustomsHeaderNames.XMovementType -> movementType.toString
+    )
+
+  def sendConsolidationRequest(
+    requestXml: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    httpClient.POSTString[HttpResponse](MovementConsolidationUrl, requestXml, CommonMovementsHeaders).map { response =>
+      logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response is --> ${response.toString}")
+      response
+    }
 
 }

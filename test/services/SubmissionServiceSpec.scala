@@ -16,23 +16,21 @@
 
 package services
 
-import base.{MovementBaseSpec, TestHelper}
 import base.ExportsTestData._
+import base.{MovementBaseSpec, TestDataHelper}
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
-import metrics.MovementsMetrics
 import org.joda.time.DateTime
+import play.api.http.Status.{ACCEPTED, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.logging.Authorization
-import play.api.http.Status.INTERNAL_SERVER_ERROR
-import play.api.http.Status.ACCEPTED
 
 class SubmissionServiceSpec extends MovementBaseSpec {
 
   implicit val hc: HeaderCarrier =
     HeaderCarrier(
-      authorization = Some(Authorization(TestHelper.createRandomString(255))),
+      authorization = Some(Authorization(TestDataHelper.createRandomString(255))),
       nsStamp = DateTime.now().getMillis
     )
   val submissionService = new SubmissionService(mockCustomsCacheService, mockCustomsExportsMovementConnector, metrics)

@@ -45,10 +45,7 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
   ): Future[HttpResponse] =
     httpClient
       .POSTString[HttpResponse](MovementSubmissionUrl, xmlBody, movementSubmissionHeaders(ucr, movementType))
-      .map { response =>
-        logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response is --> ${response.toString}")
-        response
-      }
+      .map(logResponse)
 
   private def movementSubmissionHeaders(ucr: String, movementType: String): Seq[(String, String)] =
     CommonMovementsHeaders ++ Seq(
@@ -59,9 +56,13 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
   def sendConsolidationRequest(
     requestXml: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    httpClient.POSTString[HttpResponse](MovementConsolidationUrl, requestXml, CommonMovementsHeaders).map { response =>
-      logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response is --> ${response.toString}")
-      response
-    }
+    httpClient
+      .POSTString[HttpResponse](MovementConsolidationUrl, requestXml, CommonMovementsHeaders)
+      .map(logResponse)
+
+  private def logResponse(response: HttpResponse): HttpResponse = {
+    logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response is --> ${response.toString}")
+    response
+  }
 
 }

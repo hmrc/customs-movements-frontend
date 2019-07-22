@@ -16,7 +16,7 @@
 
 package services
 
-import base.ExportsTestData._
+import base.testdata.MovementsTestData._
 import base.{MovementBaseSpec, TestDataHelper}
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._

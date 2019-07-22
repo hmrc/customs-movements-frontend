@@ -16,7 +16,8 @@
 
 package views.declaration.spec
 
-import base.{ExportsTestData, ViewValidator}
+import base.ViewValidator
+import base.testdata.MovementsTestData
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import forms.Choice
@@ -49,7 +50,7 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator {
     messages(key) must be(expected)
 
   def fakeJourneyRequest(choice: String): JourneyRequest[AnyContentAsEmpty.type] =
-    JourneyRequest(AuthenticatedRequest(fakeRequest, ExportsTestData.newUser("")), new Choice(choice))
+    JourneyRequest(AuthenticatedRequest(fakeRequest, MovementsTestData.newUser("")), new Choice(choice))
 
   SharedMetricRegistries.clear()
 }

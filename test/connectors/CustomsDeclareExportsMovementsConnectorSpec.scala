@@ -16,12 +16,11 @@
 
 package connectors
 
-import base.ExportsTestData.cacheMapData
 import base.testdata.CommonTestData.ucr
 import base.testdata.ConsolidationTestData._
+import base.testdata.MovementsTestData
 import config.AppConfig
 import forms.Choice.AllowedChoiceValues.Arrival
-import forms.{Choice, Movement}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures
@@ -31,9 +30,9 @@ import play.api.http.{ContentTypes, HeaderNames}
 import play.api.libs.json.Json
 import play.api.mvc.Codec
 import play.api.test.Helpers.OK
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 import utils.CustomsHeaderNames
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -134,9 +133,7 @@ class CustomsDeclareExportsMovementsConnectorSpec
 
 object CustomsDeclareExportsMovementsConnectorSpec {
 
-  // TODO: Construct it in a more clear way
-  val movementSubmissionRequest =
-    Movement.createMovementRequest(CacheMap(Arrival, cacheMapData(Arrival)), "eori1", Choice(Arrival))
+  val movementSubmissionRequest: InventoryLinkingMovementRequest = MovementsTestData.validMovementRequest(Arrival)
   val movementSubmissionRequestXmlString: String = movementSubmissionRequest.toXml
 
   val expectedMovementSubmissionRequestHeaders: Seq[(String, String)] = Seq(

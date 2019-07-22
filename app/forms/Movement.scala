@@ -16,10 +16,10 @@
 
 package forms
 
+import forms.Choice.AllowedChoiceValues._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
-import forms.Choice.AllowedChoiceValues._
 
 object Movement {
 

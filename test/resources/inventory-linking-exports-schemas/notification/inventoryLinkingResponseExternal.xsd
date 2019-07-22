@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://gov.uk/customs/inventoryLinking/v1"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://gov.uk/customs/inventoryLinking/v1"
+	elementFormDefault="qualified" version="1.0">
+
+	<xs:include schemaLocation="../common/inventoryLinkingCore.xsd" />
+	<xs:include schemaLocation="../common/inventoryLinkingCommonTypes.xsd" />
+
+	<!-- ================== -->
+	<!-- Movement Responses -->
+	<!-- ================== -->
+    <xs:element name="inventoryLinkingMovementResponse" type="inventoryLinkingMovementResponse">
+        <xs:annotation>
+            <xs:documentation>A response to a movement request (EAL, EAA).</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+	<!-- ======= -->
+	<!-- Control -->
+	<!-- ======= -->
+    <xs:element name="inventoryLinkingControlResponse" type="inventoryLinkingControlResponse">
+        <xs:annotation>
+            <xs:documentation>A control message or acknowledgement in response to a message received.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    
+	<!-- =============== -->
+	<!-- Query Responses -->
+	<!-- =============== -->
+    <xs:element name="inventoryLinkingQueryResponse" type="inventoryLinkingQueryResponse">
+        <xs:annotation>
+            <xs:documentation>
+            A response to an inventory linking query. The response includes the queried MUCR:
+            1/ children (the whole subtree with all MUCRs and DUCRs with declarations); 
+            2/ all movements of the queried MUCR; 
+            3/ all parents with their movements
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <!-- ============================= -->
+    <!-- Declaration Summary Responses -->
+    <!-- ============================= -->
+    <xs:element name="inventoryLinkingMovementTotalsResponse" type="inventoryLinkingMovementTotalsResponse">
+        <xs:annotation>
+            <xs:documentation>An EMR / ERS 
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    
+</xs:schema>

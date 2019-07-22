@@ -96,14 +96,14 @@ class CustomsDeclareExportsMovementsConnectorSpec
 
     "return response from HttpClient" in new Test {
 
-      val result = connector.sendConsolidationRequest(exampleShutMucrConsolidationRequestXml.toString).futureValue
+      val result = connector.sendConsolidationRequest(exampleShutMucrRequestXml.toString).futureValue
 
       result must equal(defaultHttpResponse)
     }
 
     "call HttpClient with URL for movements consolidation endpoint" in new Test {
 
-      connector.sendConsolidationRequest(exampleShutMucrConsolidationRequestXml.toString).futureValue
+      connector.sendConsolidationRequest(exampleShutMucrRequestXml.toString).futureValue
 
       val expectedConsolidationUrl =
         s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.submitMovementConsolidation}"
@@ -112,9 +112,9 @@ class CustomsDeclareExportsMovementsConnectorSpec
 
     "call HttpClient with body provided" in new Test {
 
-      connector.sendConsolidationRequest(exampleShutMucrConsolidationRequestXml.toString).futureValue
+      connector.sendConsolidationRequest(exampleShutMucrRequestXml.toString).futureValue
 
-      verify(httpClientMock).POSTString(any(), meq(exampleShutMucrConsolidationRequestXml.toString), any())(
+      verify(httpClientMock).POSTString(any(), meq(exampleShutMucrRequestXml.toString), any())(
         any(),
         any(),
         any()
@@ -123,7 +123,7 @@ class CustomsDeclareExportsMovementsConnectorSpec
 
     "call HttpClient with correct headers" in new Test {
 
-      connector.sendConsolidationRequest(exampleShutMucrConsolidationRequestXml.toString).futureValue
+      connector.sendConsolidationRequest(exampleShutMucrRequestXml.toString).futureValue
 
       verify(httpClientMock).POSTString(any(), any(), meq(validConsolidationRequestHeaders))(any(), any(), any())
     }

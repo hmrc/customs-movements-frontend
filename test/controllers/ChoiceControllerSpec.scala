@@ -142,10 +142,9 @@ class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with Befo
       val correctForm =
         JsObject(Map("choice" -> JsString(AllowedChoiceValues.ShutMucr)))
       val result = route(app, postRequest(choiceUri, correctForm)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-movements/shut-mucr"))
+      redirectLocation(result) must be(Some(routes.ShutMucrController.displayPage().url))
     }
   }
 }

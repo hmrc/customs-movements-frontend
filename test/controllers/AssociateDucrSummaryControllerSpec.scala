@@ -21,7 +21,7 @@ import controllers.exception.IncompleteApplication
 import controllers.storage.FlashKeys
 import forms.Choice.AllowedChoiceValues
 import forms.{AssociateDucr, Choice, MucrOptions}
-import org.mockito.ArgumentMatchers._
+import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
 import org.mockito.BDDMockito._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -86,7 +86,7 @@ class AssociateDucrSummaryControllerSpec extends MovementBaseSpec with ViewValid
     }
 
     "Redirect to next page" in {
-      given(mockSubmissionService.submitDucrAssociation(any(), any())) willReturn Future.successful((): Unit)
+      given(mockSubmissionService.submitDucrAssociation(any(), any())(any(), any())) willReturn Future.successful(ACCEPTED)
       given(mockCustomsCacheService.remove(anyString())(any(), any())) willReturn Future.successful(mock[HttpResponse])
 
       val Some(result) = route(app, postRequest(uri, Json.obj()))
@@ -94,7 +94,7 @@ class AssociateDucrSummaryControllerSpec extends MovementBaseSpec with ViewValid
       redirectLocation(result) mustBe Some(routes.AssociateDucrConfirmationController.displayPage().url)
       flash(result).get(FlashKeys.MUCR) mustBe Some("MUCR")
 
-      verify(mockSubmissionService).submitDucrAssociation(MucrOptions("MUCR"), AssociateDucr("DUCR"))
+      verify(mockSubmissionService).submitDucrAssociation(meq(MucrOptions("MUCR")), meq(AssociateDucr("DUCR")))(any(), any())
       verify(mockCustomsCacheService).remove(anyString)(any(), any())
     }
   }

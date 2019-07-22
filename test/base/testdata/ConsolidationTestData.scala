@@ -23,14 +23,32 @@ import scala.xml.Elem
 
 object ConsolidationTestData {
 
-  val exampleShutMucrConsolidationRequestXml: Elem =
-    <inventoryLinkingConsolidationRequest>
-      <messageCode>CST</messageCode>
-      <masterUCR>5GB123456789000-123ABC456DEFIIIII</masterUCR>
+  val ValidMucr = "5GB123456789000-123ABC456DEFIIIII"
+  val ValidDucr = "4GB123456789000-123ABC456DEFIIIII"
+
+  val exampleAssociateDucrRequestXml: Elem =
+    <inventoryLinkingConsolidationRequest xmlns="http://gov.uk/customs/inventoryLinking/v1">
+      <messageCode>EAC</messageCode>
+      <masterUCR>{ValidMucr}</masterUCR>
       <ucrBlock>
-        <ucr>4GB123456789000-123ABC456DEFIIIII</ucr>
+        <ucr>{ValidDucr}</ucr>
         <ucrType>D</ucrType>
       </ucrBlock>
+    </inventoryLinkingConsolidationRequest>
+
+  val exampleDisassociateDucrRequestXml: Elem =
+    <inventoryLinkingConsolidationRequest xmlns="http://gov.uk/customs/inventoryLinking/v1">
+      <messageCode>EAC</messageCode>
+      <ucrBlock>
+        <ucr>{ValidDucr}</ucr>
+        <ucrType>D</ucrType>
+      </ucrBlock>
+    </inventoryLinkingConsolidationRequest>
+
+  val exampleShutMucrRequestXml: Elem =
+    <inventoryLinkingConsolidationRequest xmlns="http://gov.uk/customs/inventoryLinking/v1">
+      <messageCode>CST</messageCode>
+      <masterUCR>{ValidMucr}</masterUCR>
     </inventoryLinkingConsolidationRequest>
 
   val validConsolidationRequestHeaders: Seq[(String, String)] = Seq(

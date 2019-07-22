@@ -19,15 +19,12 @@ package controllers
 import base.MovementBaseSpec
 import forms.Choice.AllowedChoiceValues
 import forms.{Choice, DisassociateDucr}
-import org.mockito.ArgumentMatchers._
-import org.mockito.BDDMockito._
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext
 import scala.concurrent.Future.successful
 
 class DisassociateDucrControllerSpec extends MovementBaseSpec with BeforeAndAfterEach {
@@ -68,7 +65,7 @@ class DisassociateDucrControllerSpec extends MovementBaseSpec with BeforeAndAfte
     }
 
     "redirect to confirmation for correct form" in new SetUp {
-      given(mockSubmissionService.submitDucrDisassociation(anyString(), anyString())(any[HeaderCarrier], any[ExecutionContext])).willReturn(successful(():  Unit))
+      when(mockSubmissionService.submitDucrDisassociation(any())(any(), any())).thenReturn(successful(ACCEPTED))
 
       val correctForm: JsValue =
         JsObject(
@@ -81,7 +78,7 @@ class DisassociateDucrControllerSpec extends MovementBaseSpec with BeforeAndAfte
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some(routes.DisassociateDucrConfirmationController.displayPage().url))
-      verify(mockSubmissionService).submitDucrDisassociation(anyString, refEq("8GB12345612345612345"))(any[HeaderCarrier], any[ExecutionContext])
+      verify(mockSubmissionService).submitDucrDisassociation(meq(DisassociateDucr("8GB12345612345612345")))(any(), any())
     }
   }
 }

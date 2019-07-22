@@ -18,7 +18,6 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.storage.CacheIdGenerator.movementCacheId
 import controllers.storage.FlashKeys
 import forms.DisassociateDucr
 import forms.DisassociateDucr._
@@ -63,6 +62,6 @@ class DisassociateDucrController @Inject()(
 
   private def submit(formData: DisassociateDucr)(implicit r: JourneyRequest[_]): Future[Unit] =
     for {
-      _ <- submissionService.submitDucrDisassociation(movementCacheId(), formData.ducr)
+      _ <- submissionService.submitDucrDisassociation(formData)
     } yield Unit
 }

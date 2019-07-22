@@ -61,7 +61,7 @@ class ShutMucrControllerSpec
 
   private trait Test {
     reset(authConnectorMock)
-    when(submissionServiceMock.submitShutMucrRequest(any())).thenReturn(Future.successful(()))
+    when(submissionServiceMock.submitShutMucrRequest(any())(any(), any())).thenReturn(Future.successful(ACCEPTED))
   }
 
   "ShutMucr Controller on GET" should {

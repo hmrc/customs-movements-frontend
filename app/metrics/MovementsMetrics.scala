@@ -18,9 +18,10 @@ package metrics
 
 import com.codahale.metrics.Timer.Context
 import com.kenshoo.play.metrics.Metrics
+import forms.Choice.AllowedChoiceValues._
 import javax.inject.{Inject, Singleton}
 import metrics.MetricIdentifiers._
-import forms.Choice.AllowedChoiceValues._
+
 @Singleton
 class MovementsMetrics @Inject()(metrics: Metrics) {
 
@@ -44,5 +45,5 @@ class MovementsMetrics @Inject()(metrics: Metrics) {
 object MetricIdentifiers {
   val arrivalMetric = Arrival
   val departureMetric = Departure
-  val consolidationMetric = "consolidation"
+  val consolidationMetric = "Consolidation"
 }

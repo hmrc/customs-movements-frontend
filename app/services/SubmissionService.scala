@@ -20,10 +20,9 @@ import connectors.CustomsDeclareExportsMovementsConnector
 import forms._
 import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
+import models.external.requests.InventoryLinkingConsolidationRequestFactory._
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.wco.dec.inventorylinking.common.UcrBlock
-import uk.gov.hmrc.wco.dec.inventorylinking.consolidation.request.InventoryLinkingConsolidationRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -52,22 +51,19 @@ class SubmissionService @Inject()(
         Future.successful(INTERNAL_SERVER_ERROR)
     }
 
-  def submitDucrAssociation(mucrOptions: MucrOptions, associateDucr: AssociateDucr): Future[Unit] =
-    Future.successful((): Unit)
+  def submitDucrAssociation(
+    mucrOptions: MucrOptions,
+    associateDucr: AssociateDucr
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] =
+    connector
+      .sendConsolidationRequest(buildAssociationRequest(mucr = mucrOptions.mucr, ducr = associateDucr.ducr).toString)
+      .map(_.status)
 
   def submitDucrDisassociation(
-    cacheId: String,
-    ducr: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
-    val request = InventoryLinkingConsolidationRequest(
-      messageCode = "EAC",
-      transactionType = "",
-      masterUCR = None,
-      ucrBlock = Some(UcrBlock(ucr = ducr, ucrType = "D"))
-    )
-    Future.successful((): Unit)
+    disassociateDucr: DisassociateDucr
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] =
+    connector.sendConsolidationRequest(buildDisassociationRequest(disassociateDucr.ducr).toString).map(_.status)
 
-  }
-
-  def submitShutMucrRequest(formData: ShutMucr): Future[Unit] = Future.successful((): Unit)
+  def submitShutMucrRequest(shutMucr: ShutMucr)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] =
+    connector.sendConsolidationRequest(buildShutMucrRequest(shutMucr.mucr).toString).map(_.status)
 }

@@ -16,7 +16,7 @@
 
 package connectors
 
-import base.testdata.CommonTestData.ucr
+import base.testdata.CommonTestData.correctUcr
 import base.testdata.ConsolidationTestData._
 import base.testdata.MovementsTestData
 import config.AppConfig
@@ -59,14 +59,14 @@ class CustomsDeclareExportsMovementsConnectorSpec
 
     "return response from HttpClient" in new Test {
 
-      val result = connector.submitMovementDeclaration(ucr, Arrival, movementSubmissionRequestXmlString).futureValue
+      val result = connector.submitMovementDeclaration(correctUcr, Arrival, movementSubmissionRequestXmlString).futureValue
 
       result must equal(defaultHttpResponse)
     }
 
     "call HttpClient with URL for movements submission endpoint" in new Test {
 
-      connector.submitMovementDeclaration(ucr, Arrival, movementSubmissionRequestXmlString).futureValue
+      connector.submitMovementDeclaration(correctUcr, Arrival, movementSubmissionRequestXmlString).futureValue
 
       val expectedMovementSubmissionUrl =
         s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.saveMovementSubmission}"
@@ -75,14 +75,14 @@ class CustomsDeclareExportsMovementsConnectorSpec
 
     "call HttpClient with body provided" in new Test {
 
-      connector.submitMovementDeclaration(ucr, Arrival, movementSubmissionRequestXmlString).futureValue
+      connector.submitMovementDeclaration(correctUcr, Arrival, movementSubmissionRequestXmlString).futureValue
 
       verify(httpClientMock).POSTString(any(), meq(movementSubmissionRequestXmlString), any())(any(), any(), any())
     }
 
     "call HttpClient with correct headers" in new Test {
 
-      connector.submitMovementDeclaration(ucr, Arrival, movementSubmissionRequestXmlString).futureValue
+      connector.submitMovementDeclaration(correctUcr, Arrival, movementSubmissionRequestXmlString).futureValue
 
       verify(httpClientMock).POSTString(any(), any(), meq(expectedMovementSubmissionRequestHeaders))(
         any(),

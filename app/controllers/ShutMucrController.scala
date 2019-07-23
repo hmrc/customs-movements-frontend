@@ -20,9 +20,11 @@ import config.AppConfig
 import controllers.actions.AuthAction
 import controllers.storage.FlashKeys
 import forms.ShutMucr.form
+import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Flash, MessagesControllerComponents}
+import play.api.mvc._
 import services.SubmissionService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.shut_mucr
@@ -34,9 +36,12 @@ class ShutMucrController @Inject()(
   authenticate: AuthAction,
   submissionService: SubmissionService,
   mcc: MessagesControllerComponents,
+  errorHandler: ErrorHandler,
   shutMucrPage: shut_mucr
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
+
+  private val logger = Logger(this.getClass)
 
   def displayPage(): Action[AnyContent] = authenticate { implicit request =>
     Ok(shutMucrPage(form()))
@@ -48,10 +53,18 @@ class ShutMucrController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(shutMucrPage(formWithErrors))),
         shutMucr =>
-          submissionService.submitShutMucrRequest(shutMucr).map { _ =>
-            Redirect(controllers.routes.ShutMucrConfirmationController.displayPage())
-              .flashing(Flash(Map(FlashKeys.MUCR -> shutMucr.mucr)))
+          submissionService.submitShutMucrRequest(shutMucr).map {
+            case ACCEPTED =>
+              Redirect(controllers.routes.ShutMucrConfirmationController.displayPage())
+                .flashing(Flash(Map(FlashKeys.MUCR -> shutMucr.mucr)))
+            case _ => handleError("Unable to submit Shut a Mucr Consolidation request")
         }
       )
   }
+
+  private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
+    logger.error(logMessage)
+    errorHandler.getInternalServerErrorPage()
+  }
+
 }

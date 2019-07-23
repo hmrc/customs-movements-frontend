@@ -24,8 +24,9 @@ import controllers.storage.FlashKeys
 import forms.{AssociateDucr, MucrOptions}
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.associate_ducr_summary
@@ -43,6 +44,8 @@ class AssociateDucrSummaryController @Inject()(
   associateDucrSummaryPage: associate_ducr_summary
 )(implicit appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
+
+  private val logger = Logger(this.getClass)
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     for {
@@ -62,10 +65,20 @@ class AssociateDucrSummaryController @Inject()(
       a: Option[AssociateDucr] <- cacheService.fetchAndGetEntry[AssociateDucr](movementCacheId(), AssociateDucr.formId)
       associateDucr = a.getOrElse(throw IncompleteApplication)
 
-      _ <- submissionService.submitDucrAssociation(mucrOptions, associateDucr)
+      submissionResult <- submissionService.submitDucrAssociation(mucrOptions, associateDucr)
       _ <- cacheService.remove(movementCacheId())
-    } yield
-      Redirect(routes.AssociateDucrConfirmationController.displayPage())
-        .flashing(FlashKeys.MUCR -> mucrOptions.mucr)
+
+      result = submissionResult match {
+        case ACCEPTED =>
+          Redirect(routes.AssociateDucrConfirmationController.displayPage())
+            .flashing(FlashKeys.MUCR -> mucrOptions.mucr)
+        case _ => handleError("Unable to submit Association Consolidation request")
+      }
+    } yield result
+  }
+
+  private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
+    logger.error(logMessage)
+    errorHandler.getInternalServerErrorPage()
   }
 }

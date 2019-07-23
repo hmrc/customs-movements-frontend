@@ -21,7 +21,7 @@ import controllers.exception.IncompleteApplication
 import controllers.routes
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.Results.BadRequest
+import play.api.mvc.Results.{BadRequest, InternalServerError}
 import play.api.mvc.{Request, RequestHeader, Result, Results}
 import play.api.{Configuration, Environment}
 import play.twirl.api.Html
@@ -29,8 +29,6 @@ import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 import views.html.error_template
-
-import scala.concurrent.Future
 
 @Singleton
 class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi, errorTemplate: error_template)
@@ -53,14 +51,21 @@ class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi,
       case _ => super.resolveError(rh, ex)
     }
 
-  def displayErrorPage()(implicit request: Request[_]): Future[Result] =
-    Future.successful(
-      BadRequest(
-        standardErrorTemplate(
-          pageTitle = Messages("global.error.title"),
-          heading = Messages("global.error.heading"),
-          message = Messages("global.error.message")
-        )
+  def getBadRequestPage()(implicit request: Request[_]): Result =
+    BadRequest(
+      standardErrorTemplate(
+        pageTitle = Messages("global.error.title"),
+        heading = Messages("global.error.heading"),
+        message = Messages("global.error.message")
+      )
+    )
+
+  def getInternalServerErrorPage()(implicit request: Request[_]): Result =
+    InternalServerError(
+      standardErrorTemplate(
+        pageTitle = Messages("global.error.title"),
+        heading = Messages("global.error.heading"),
+        message = Messages("global.error.message")
       )
     )
 }

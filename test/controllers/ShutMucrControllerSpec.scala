@@ -18,10 +18,12 @@ package controllers
 
 import java.util.UUID
 
-import base.MockAuthConnector
+import base.MockFactory.buildSubmissionServiceMock
+import base.{MockAuthConnector, URIHelper}
 import controllers.storage.FlashKeys
+import forms.ShutMucr
 import forms.ShutMucrSpec._
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{MustMatchers, WordSpec}
@@ -43,11 +45,12 @@ import utils.FakeRequestCSRFSupport._
 import scala.concurrent.Future
 
 class ShutMucrControllerSpec
-    extends WordSpec with GuiceOneAppPerSuite with MockAuthConnector with ScalaFutures with MustMatchers {
+    extends WordSpec with GuiceOneAppPerSuite with MockAuthConnector with ScalaFutures with MustMatchers
+    with URIHelper {
 
-  private val shutMucrUri = "/customs-movements/shut-mucr"
+  private val shutMucrUri = uriWithContextPath("/shut-mucr")
 
-  private val submissionServiceMock = mock[SubmissionService]
+  private val submissionServiceMock = buildSubmissionServiceMock
   override lazy val app: Application =
     GuiceApplicationBuilder()
       .overrides(bind[AuthConnector].to(authConnectorMock), bind[SubmissionService].to(submissionServiceMock))
@@ -60,15 +63,15 @@ class ShutMucrControllerSpec
   private implicit val messages: Messages = messagesApi.preferred(FakeRequest())
 
   private trait Test {
-    reset(authConnectorMock)
+    reset(authConnectorMock, submissionServiceMock)
     when(submissionServiceMock.submitShutMucrRequest(any())(any(), any())).thenReturn(Future.successful(ACCEPTED))
+    authorizedUser()
   }
 
   "ShutMucr Controller on GET" should {
 
     "return Ok code" in new Test {
 
-      authorizedUser()
       status(routeGet()) must be(OK)
     }
 
@@ -82,19 +85,24 @@ class ShutMucrControllerSpec
 
       "return SeeOther code" in new Test {
 
-        authorizedUser()
         status(routePost()) must be(SEE_OTHER)
+      }
+
+      "call SubmissionService passing ShutMucr object" in new Test {
+
+        routePost().futureValue
+
+        val expectedShutMucr = ShutMucr(correctMucr)
+        verify(submissionServiceMock).submitShutMucrRequest(meq(expectedShutMucr))(any(), any())
       }
 
       "redirect to ShutMucrConfirmation page" in new Test {
 
-        authorizedUser()
         redirectLocation(routePost()) must be(Some(routes.ShutMucrConfirmationController.displayPage().url))
       }
 
       "add MUCR to Flash" in new Test {
 
-        authorizedUser()
         val flashValue = flash(routePost())
         flashValue.get(FlashKeys.MUCR) must be(defined)
         flashValue.get(FlashKeys.MUCR).get must equal(correctMucr)
@@ -105,16 +113,30 @@ class ShutMucrControllerSpec
 
       "return BadRequest code" in new Test {
 
-        authorizedUser()
         status(routePost(body = incorrectShutMucrJSON)) must be(BAD_REQUEST)
       }
 
       "return Shut a MUCR page" in new Test {
 
-        authorizedUser()
         val result = routePost(body = incorrectShutMucrJSON)
 
         contentAsString(result) must include(messages("shutMucr.title"))
+      }
+
+      "not call SubmissionService" in new Test {
+
+        routePost(body = incorrectShutMucrJSON)
+
+        verifyZeroInteractions(submissionServiceMock)
+      }
+    }
+
+    "SubmissionService returns status other than Accepted" should {
+      "return InternalServerError code" in new Test {
+        when(submissionServiceMock.submitShutMucrRequest(any())(any(), any()))
+          .thenReturn(Future.successful(BAD_REQUEST))
+
+        status(routePost()) must be(INTERNAL_SERVER_ERROR)
       }
     }
 

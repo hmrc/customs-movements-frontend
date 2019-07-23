@@ -19,13 +19,12 @@ package controllers
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.FlashKeys
-import forms.DisassociateDucr
 import forms.DisassociateDucr._
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
-import models.requests.JourneyRequest
+import play.api.Logger
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import services.SubmissionService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.disassociate_ducr
@@ -43,25 +42,30 @@ class DisassociateDucrController @Inject()(
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  private val logger = Logger(this.getClass)
+
+  def displayPage(): Action[AnyContent] = authenticate { implicit request =>
     Ok(disassociateDucrPage(form))
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(): Action[AnyContent] = authenticate.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(disassociateDucrPage(formWithErrors))),
         formData =>
-          submit(formData).map { _ =>
-            Redirect(controllers.routes.DisassociateDucrConfirmationController.displayPage())
-              .flashing(FlashKeys.DUCR -> formData.ducr)
+          submissionService.submitDucrDisassociation(formData).map {
+            case ACCEPTED =>
+              Redirect(controllers.routes.DisassociateDucrConfirmationController.displayPage())
+                .flashing(FlashKeys.DUCR -> formData.ducr)
+            case _ => handleError("Unable to submit DUCR Disassociation request")
         }
       )
   }
 
-  private def submit(formData: DisassociateDucr)(implicit r: JourneyRequest[_]): Future[Unit] =
-    for {
-      _ <- submissionService.submitDucrDisassociation(formData)
-    } yield Unit
+  private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
+    logger.error(logMessage)
+    errorHandler.getInternalServerErrorPage()
+  }
+
 }

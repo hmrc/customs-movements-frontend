@@ -16,11 +16,8 @@
 
 package base.testdata
 
-import base.TestDataHelper.createRandomAlphanumericString
-
 object CommonTestData {
 
-  val randomUcr: String = createRandomAlphanumericString(16)
-  val ucr: String = "GB/1UZYBD3XE-1J8MEBF9N6X65B"
+  val correctUcr: String = "GB/1UZYBD3XE-1J8MEBF9N6X65B"
 
 }

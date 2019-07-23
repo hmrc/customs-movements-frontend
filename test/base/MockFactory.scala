@@ -22,8 +22,9 @@ import metrics.MovementsMetrics
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
+import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers.NO_CONTENT
-import services.CustomsCacheService
+import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -42,6 +43,15 @@ object MockFactory extends MockitoSugar {
       .thenReturn(Future.successful(emptyCacheMap))
     when(customsCacheServiceMock.remove(any())(any(), any())).thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
     customsCacheServiceMock
+  }
+
+  def buildSubmissionServiceMock: SubmissionService = {
+    val submissionServiceMock = mock[SubmissionService]
+    when(submissionServiceMock.submitMovementRequest(any(), any(), any())(any(), any())).thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
+    when(submissionServiceMock.submitDucrAssociation(any(), any())(any(), any())).thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
+    when(submissionServiceMock.submitDucrDisassociation(any())(any(), any())).thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
+    when(submissionServiceMock.submitShutMucrRequest(any())(any(), any())).thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
+    submissionServiceMock
   }
 
   def buildCustomsDeclareExportsMovementsConnectorMock: CustomsDeclareExportsMovementsConnector = {

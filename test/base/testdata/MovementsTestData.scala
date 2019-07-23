@@ -37,7 +37,7 @@ object MovementsTestData {
     )
   )
 
-  def consignmentReferences(refType: String) = ConsignmentReferences(refType, CommonTestData.ucr)
+  def consignmentReferences(refType: String) = ConsignmentReferences(refType, CommonTestData.correctUcr)
   val date = Date(Some(10), Some(8), Some(2018))
   val departureDetails = DepartureDetails(date)
 

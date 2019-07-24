@@ -59,7 +59,8 @@ class CustomsDeclareExportsMovementsConnectorSpec
 
     "return response from HttpClient" in new Test {
 
-      val result = connector.submitMovementDeclaration(correctUcr, Arrival, movementSubmissionRequestXmlString).futureValue
+      val result =
+        connector.submitMovementDeclaration(correctUcr, Arrival, movementSubmissionRequestXmlString).futureValue
 
       result must equal(defaultHttpResponse)
     }
@@ -114,11 +115,7 @@ class CustomsDeclareExportsMovementsConnectorSpec
 
       connector.sendConsolidationRequest(exampleShutMucrRequestXml.toString).futureValue
 
-      verify(httpClientMock).POSTString(any(), meq(exampleShutMucrRequestXml.toString), any())(
-        any(),
-        any(),
-        any()
-      )
+      verify(httpClientMock).POSTString(any(), meq(exampleShutMucrRequestXml.toString), any())(any(), any(), any())
     }
 
     "call HttpClient with correct headers" in new Test {

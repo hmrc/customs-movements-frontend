@@ -17,7 +17,7 @@
 package views
 
 import forms.AssociateDucr
-import helpers.views.{CommonMessages, AssociateDucrSummaryMessages}
+import helpers.views.{AssociateDucrSummaryMessages, CommonMessages}
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
 import views.tags.ViewTest
@@ -27,7 +27,8 @@ class AssociateDucrSummaryViewSpec extends ViewSpec with AssociateDucrSummaryMes
 
   private val page = injector.instanceOf[views.html.associate_ducr_summary]
 
-  private def createView(mucr: String, ducr: String): Html = page(AssociateDucr(ducr), mucr)(appConfig, fakeRequest, messages)
+  private def createView(mucr: String, ducr: String): Html =
+    page(AssociateDucr(ducr), mucr)(appConfig, fakeRequest, messages)
 
   "Disassociate Ducr Confirmation View" should {
 
@@ -45,7 +46,10 @@ class AssociateDucrSummaryViewSpec extends ViewSpec with AssociateDucrSummaryMes
       val view = createView("MUCR", "DUCR")
 
       view.getElementById("associate_ducr-remove") must containText(messages(remove))
-      view.getElementById("associate_ducr-remove") must haveAttribute("href", controllers.routes.AssociateDucrController.displayPage().url)
+      view.getElementById("associate_ducr-remove") must haveAttribute(
+        "href",
+        controllers.routes.AssociateDucrController.displayPage().url
+      )
     }
 
     "display 'Reference' link on page" in {

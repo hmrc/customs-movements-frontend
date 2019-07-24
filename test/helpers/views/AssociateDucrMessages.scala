@@ -20,7 +20,7 @@ trait AssociateDucrMessages {
 
   val prefix = "associateDucr"
   val title = prefix + ".title"
-  val hint =  prefix + ".reference.hint"
-  val remove =  "site.remove"
+  val hint = prefix + ".reference.hint"
+  val remove = "site.remove"
   val add = "site.add"
 }

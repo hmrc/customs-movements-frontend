@@ -32,8 +32,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import utils.FakeRequestCSRFSupport._
 
 class ShutMucrConfirmationControllerSpec
-    extends WordSpec with GuiceOneAppPerSuite with MockAuthConnector with ScalaFutures
-    with MustMatchers {
+    extends WordSpec with GuiceOneAppPerSuite with MockAuthConnector with ScalaFutures with MustMatchers {
 
   private val shutMucrConfirmationUri = "/customs-movements/shut-mucr-confirmation"
 

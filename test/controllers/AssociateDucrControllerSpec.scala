@@ -60,7 +60,7 @@ class AssociateDucrControllerSpec extends MovementBaseSpec with ViewValidator wi
 
     "throw incomplete application when cache empty" in {
       withCaching(MucrOptions.formId, None)
-      assertThrows[IncompleteApplication]{
+      assertThrows[IncompleteApplication] {
         await(route(app, postRequest(uri, Json.obj())).get)
       }
     }

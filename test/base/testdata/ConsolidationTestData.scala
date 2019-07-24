@@ -51,9 +51,7 @@ object ConsolidationTestData {
       <masterUCR>{ValidMucr}</masterUCR>
     </inventoryLinkingConsolidationRequest>
 
-  val validConsolidationRequestHeaders: Seq[(String, String)] = Seq(
-    HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8),
-    HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)
-  )
+  val validConsolidationRequestHeaders: Seq[(String, String)] =
+    Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8), HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8))
 
 }

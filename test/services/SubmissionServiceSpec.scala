@@ -84,7 +84,9 @@ class SubmissionServiceSpec extends WordSpec with MustMatchers with MockitoSugar
       when(customsExportsMovementConnectorMock.sendConsolidationRequest(any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
-      submissionService.submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr)).futureValue must equal(CustomHttpResponseCode)
+      submissionService.submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr)).futureValue must equal(
+        CustomHttpResponseCode
+      )
     }
 
     "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in new RequestAcceptedTest {
@@ -106,7 +108,9 @@ class SubmissionServiceSpec extends WordSpec with MustMatchers with MockitoSugar
       when(customsExportsMovementConnectorMock.sendConsolidationRequest(any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
-      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue must equal(CustomHttpResponseCode)
+      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue must equal(
+        CustomHttpResponseCode
+      )
     }
 
     "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in new RequestAcceptedTest {

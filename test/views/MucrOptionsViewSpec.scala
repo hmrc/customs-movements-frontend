@@ -42,7 +42,7 @@ class MucrOptionsViewSpec extends ViewSpec with CommonMessages {
     "have the correct label for add to existing" in {
       getElementById(createView(), "mucrOptions.add-label").text() must be("Add to an existing MUCR")
     }
-    
+
     "have no options selected on initial display" in {
       verifyUnchecked(createView(), "mucrOptions.create")
       verifyUnchecked(createView(), "mucrOptions.add")

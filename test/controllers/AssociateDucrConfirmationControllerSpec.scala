@@ -45,5 +45,4 @@ class AssociateDucrConfirmationControllerSpec extends MovementBaseSpec with View
     }
   }
 
-
 }

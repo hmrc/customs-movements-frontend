@@ -18,6 +18,7 @@ package connectors
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
+import models.{Notification, Submission}
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
@@ -52,6 +53,16 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
       CustomsHeaderNames.XUcr -> ucr,
       CustomsHeaderNames.XMovementType -> movementType.toString
     )
+
+  def fetchNotifications()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
+    httpClient.GET[Seq[Notification]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}")
+
+  def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
+    httpClient.GET[Seq[Submission]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchSubmissions}").map {
+      response =>
+        logger.debug(s"CUSTOMS_MOVEMENTS_FRONTEND fetch submission response is --> ${response.toString}")
+        response
+    }
 
   def sendConsolidationRequest(
     requestXml: String

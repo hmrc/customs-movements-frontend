@@ -146,5 +146,17 @@ class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with Befo
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some(consolidations.routes.ShutMucrController.displayPage().url))
     }
+
+    "redirect to Movements submissions summary page when 'Inspect my movements' is selected" in {
+
+      withCaching(Choice.choiceId)
+
+      val correctForm =
+        JsObject(Map("choice" -> JsString(AllowedChoiceValues.Submissions)))
+      val result = route(app, postRequest(choiceUri, correctForm)).get
+
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result) must be(Some(controllers.routes.SubmissionsController.displayPage().url))
+    }
   }
 }

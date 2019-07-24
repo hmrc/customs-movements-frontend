@@ -61,8 +61,9 @@ class ChoiceController @Inject()(
                   Redirect(consolidations.routes.MucrOptionsController.displayPage())
                 case DisassociateDUCR =>
                   Redirect(consolidations.routes.DisassociateDucrController.displayPage())
-                case ShutMucr => Redirect(consolidations.routes.ShutMucrController.displayPage())
-                case _        => Redirect(routes.ChoiceController.displayChoiceForm())
+                case ShutMucr    => Redirect(consolidations.routes.ShutMucrController.displayPage())
+                case Submissions => Redirect(controllers.routes.SubmissionsController.displayPage())
+                case _           => Redirect(routes.ChoiceController.displayChoiceForm())
               }
           }
       )

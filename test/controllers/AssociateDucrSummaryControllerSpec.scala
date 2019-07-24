@@ -16,12 +16,11 @@
 
 package controllers
 
-import java.util.UUID
-
 import base.MockFactory._
 import base.{MockAuthConnector, URIHelper}
 import controllers.exception.IncompleteApplication
 import controllers.storage.FlashKeys
+import controllers.util.RoutingHelper
 import forms.Choice.AllowedChoiceValues
 import forms.{AssociateDucr, Choice, MucrOptions}
 import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
@@ -34,15 +33,12 @@ import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Result
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionKeys}
-import utils.FakeRequestCSRFSupport._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
 
@@ -63,11 +59,10 @@ class AssociateDucrSummaryControllerSpec
       )
       .build()
 
-  private val cfg: CSRFConfig = app.injector.instanceOf[CSRFConfigProvider].get
-  private val token: String = app.injector.instanceOf[CSRFFilter].tokenProvider.generateToken
-
   private val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   private implicit val messages: Messages = messagesApi.preferred(FakeRequest())
+
+  private val routingHelper = RoutingHelper(app, uri)
 
   private trait Test {
     implicit val headerCarrierMock = mock[HeaderCarrier]
@@ -88,7 +83,7 @@ class AssociateDucrSummaryControllerSpec
       when(customsCacheServiceMock.fetchAndGetEntry[MucrOptions](any(), meq(MucrOptions.formId))(any(), any(), any()))
         .thenReturn(Future.successful(None))
 
-      assertThrows[IncompleteApplication] { await(routeGet()) }
+      assertThrows[IncompleteApplication] { await(routingHelper.routeGet()) }
     }
 
     "throw incomplete application when AssociateDUCR cache empty" in new Test {
@@ -96,16 +91,13 @@ class AssociateDucrSummaryControllerSpec
       when(customsCacheServiceMock.fetchAndGetEntry[MucrOptions](any(), meq(AssociateDucr.formId))(any(), any(), any()))
         .thenReturn(Future.successful(None))
 
-      assertThrows[IncompleteApplication] { await(routeGet()) }
+      assertThrows[IncompleteApplication] { await(routingHelper.routeGet()) }
     }
 
     "return Ok for GET request" in new Test {
 
-      status(routeGet()) must be(OK)
+      status(routingHelper.routeGet()) must be(OK)
     }
-
-    def routeGet(headers: Map[String, String] = Map.empty): Future[Result] =
-      route(app, FakeRequest(GET, uri).withHeaders(headers.toSeq: _*).withCSRFToken).get
   }
 
   "Associate DUCR Summary on POST" when {
@@ -116,7 +108,7 @@ class AssociateDucrSummaryControllerSpec
         when(customsCacheServiceMock.fetchAndGetEntry[MucrOptions](any(), meq(MucrOptions.formId))(any(), any(), any()))
           .thenReturn(Future.successful(None))
 
-        assertThrows[IncompleteApplication] { await(routePost()) }
+        assertThrows[IncompleteApplication] { await(routingHelper.routePost(body = Json.obj())) }
       }
     }
 
@@ -127,7 +119,7 @@ class AssociateDucrSummaryControllerSpec
           customsCacheServiceMock.fetchAndGetEntry[MucrOptions](any(), meq(AssociateDucr.formId))(any(), any(), any())
         ).thenReturn(Future.successful(None))
 
-        assertThrows[IncompleteApplication] { await(routePost()) }
+        assertThrows[IncompleteApplication] { await(routingHelper.routePost(body = Json.obj())) }
       }
     }
 
@@ -135,12 +127,12 @@ class AssociateDucrSummaryControllerSpec
 
       "return SeeOther code" in new HappyPathTest {
 
-        status(routePost()) must be(SEE_OTHER)
+        status(routingHelper.routePost(body = Json.obj())) must be(SEE_OTHER)
       }
 
       "call SubmissionService and CustomsCacheService in correct order" in new HappyPathTest {
 
-        routePost().futureValue
+        routingHelper.routePost(body = Json.obj()).futureValue
 
         val inOrder: InOrder = Mockito.inOrder(submissionServiceMock, customsCacheServiceMock)
         inOrder
@@ -157,12 +149,14 @@ class AssociateDucrSummaryControllerSpec
 
       "Redirect to next page" in new HappyPathTest {
 
-        redirectLocation(routePost()) mustBe Some(routes.AssociateDucrConfirmationController.displayPage().url)
+        redirectLocation(routingHelper.routePost(body = Json.obj())) mustBe Some(
+          routes.AssociateDucrConfirmationController.displayPage().url
+        )
       }
 
       "add MUCR to Flash" in new HappyPathTest {
 
-        flash(routePost()).get(FlashKeys.MUCR) mustBe Some("MUCR")
+        flash(routingHelper.routePost(body = Json.obj())).get(FlashKeys.MUCR) mustBe Some("MUCR")
       }
 
       trait HappyPathTest extends Test {
@@ -180,18 +174,9 @@ class AssociateDucrSummaryControllerSpec
         when(customsCacheServiceMock.remove(anyString())(any(), any()))
           .thenReturn(Future.successful(mock[HttpResponse]))
 
-        status(routePost()) must be(INTERNAL_SERVER_ERROR)
+        status(routingHelper.routePost(body = Json.obj())) must be(INTERNAL_SERVER_ERROR)
       }
     }
-
-    def routePost(headers: Map[String, String] = Map.empty, body: JsValue = Json.obj()): Future[Result] =
-      route(
-        app,
-        FakeRequest(POST, uri)
-          .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
-          .withSession(Map(SessionKeys.sessionId -> s"session-${UUID.randomUUID()}").toSeq: _*)
-          .withJsonBody(body)
-          .withCSRFToken
-      ).get
   }
+
 }

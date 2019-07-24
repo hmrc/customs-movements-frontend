@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.consolidations
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}

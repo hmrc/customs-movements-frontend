@@ -17,9 +17,10 @@
 package services
 
 import connectors.CustomsDeclareExportsMovementsConnector
-import forms.{AssociateDucr, Choice, Movement, MucrOptions, ShutMucr}
+import forms._
 import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
+import models.external.requests.InventoryLinkingConsolidationRequestFactory._
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -50,22 +51,19 @@ class SubmissionService @Inject()(
         Future.successful(INTERNAL_SERVER_ERROR)
     }
 
-  def submitDucrAssociation(mucrOptions: MucrOptions, associateDucr: AssociateDucr): Future[Unit] =
-    Future.successful((): Unit)
+  def submitDucrAssociation(
+    mucrOptions: MucrOptions,
+    associateDucr: AssociateDucr
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] =
+    connector
+      .sendConsolidationRequest(buildAssociationRequest(mucr = mucrOptions.mucr, ducr = associateDucr.ducr).toString)
+      .map(_.status)
 
   def submitDucrDisassociation(
-    cacheId: String,
-    ducr: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
-    // TODO Implement once the backend approach is defined
+    disassociateDucr: DisassociateDucr
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] =
+    connector.sendConsolidationRequest(buildDisassociationRequest(disassociateDucr.ducr).toString).map(_.status)
 
-    //    val request = InventoryLinkingConsolidationRequest(
-    //      messageCode = "EAC",
-    //      transactionType = "",
-    //      masterUCR = None,
-    //      ucrBlock = Some(UcrBlock(ucr = ducr, ucrType = "D"))
-    //    )
-    Future.successful((): Unit)
-
-  def submitShutMucrRequest(formData: ShutMucr): Future[Unit] = Future.successful((): Unit)
+  def submitShutMucrRequest(shutMucr: ShutMucr)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] =
+    connector.sendConsolidationRequest(buildShutMucrRequest(shutMucr.mucr).toString).map(_.status)
 }

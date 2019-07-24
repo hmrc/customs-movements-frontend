@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://gov.uk/customs/inventoryLinking/v1"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://gov.uk/customs/inventoryLinking/v1"
+	elementFormDefault="qualified" version="1.0">
+
+	<xs:include schemaLocation="../common/inventoryLinkingCore.xsd" />
+	<xs:include schemaLocation="../common/inventoryLinkingCommonTypes.xsd" />
+
+	<!-- ================= -->
+	<!-- Movement Requests -->
+	<!-- ================= -->
+    <xs:element name="inventoryLinkingMovementRequest" type="inventoryLinkingMovementRequest">
+        <xs:annotation>
+            <xs:documentation>A request message about a movement (EAL, EAA, EDL)</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    
+	<!-- ====================== -->
+	<!-- Consolidation Requests -->
+	<!-- ====================== -->
+    <xs:element name="inventoryLinkingConsolidationRequest" type="inventoryLinkingConsolidationRequest">
+        <xs:annotation>
+            <xs:documentation>A request message for a consolidation (CST, EAC)</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    
+	<!-- ============== -->
+	<!-- Query Requests -->
+	<!-- ============== -->
+    <xs:element name="inventoryLinkingQueryRequest" type="inventoryLinkingQueryRequest">
+        <xs:annotation>
+            <xs:documentation>A query request to return information about a specific UCR</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    
+</xs:schema>

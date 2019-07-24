@@ -16,66 +16,128 @@
 
 package connectors
 
-import base.ExportsTestData.cacheMapData
-import base.TestHelper._
-import base.{MockHttpClient, MovementBaseSpec, TestHelper}
+import base.testdata.CommonTestData.correctUcr
+import base.testdata.ConsolidationTestData._
+import base.testdata.MovementsTestData
 import config.AppConfig
-import forms.Choice.AllowedChoiceValues
 import forms.Choice.AllowedChoiceValues.Arrival
-import forms.{Choice, Movement}
-import metrics.MovementsMetrics
-import models._
+import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.Mockito.{verify, when}
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.mockito.MockitoSugar
+import org.scalatest.{MustMatchers, WordSpec}
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.libs.json.Json
-import play.api.libs.ws.WSClient
 import play.api.mvc.Codec
 import play.api.test.Helpers.OK
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.logging.Authorization
-import uk.gov.hmrc.wco.dec.MetaData
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
+import utils.CustomsHeaderNames
 
-class CustomsDeclareExportsMovementsConnectorSpec extends MovementBaseSpec {
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+
+class CustomsDeclareExportsMovementsConnectorSpec
+    extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures {
+
   import CustomsDeclareExportsMovementsConnectorSpec._
 
-  val appConfig = mock[AppConfig]
-  val wsClient = mock[WSClient]
+  private trait Test {
+    implicit val headerCarrierMock: HeaderCarrier = mock[HeaderCarrier]
+    val appConfigMock: AppConfig = mock[AppConfig]
+    val httpClientMock: HttpClient = mock[HttpClient]
+    val defaultHttpResponse = HttpResponse(OK, Some(Json.toJson("Success")))
 
-  "Customs Exports Movements Connector" should {
+    when(httpClientMock.POSTString[HttpResponse](any(), any(), any())(any(), any(), any()))
+      .thenReturn(Future.successful(defaultHttpResponse))
 
-    "submit Movement Declaration to backend" in {
-      val http = new MockHttpClient(
-        wsClient,
-        expectedMovementsUrl(appConfig.saveMovementSubmission),
-        data.toXml,
-        expectedHeaders,
-        false,
-        HttpResponse(OK, Some(Json.toJson("success")))
-      )
-      val client = new CustomsDeclareExportsMovementsConnector(appConfig, http)
-      val response = client.submitMovementDeclaration(data.ucrBlock.ucr, data.messageCode, data.toXml)(hc, ec)
-
-      response.futureValue.status must be(OK)
-    }
-
+    val connector = new CustomsDeclareExportsMovementsConnector(appConfigMock, httpClientMock)
   }
 
-  private def expectedMovementsUrl(endpointUrl: String): String =
-    s"${appConfig.customsDeclareExportsMovements}$endpointUrl"
+  "CustomsDeclareExportsMovementsConnector on submitMovementDeclaration" should {
+
+    "return response from HttpClient" in new Test {
+
+      val result =
+        connector.submitMovementDeclaration(correctUcr, Arrival, movementSubmissionRequestXmlString).futureValue
+
+      result must equal(defaultHttpResponse)
+    }
+
+    "call HttpClient with URL for movements submission endpoint" in new Test {
+
+      connector.submitMovementDeclaration(correctUcr, Arrival, movementSubmissionRequestXmlString).futureValue
+
+      val expectedMovementSubmissionUrl =
+        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.saveMovementSubmission}"
+      verify(httpClientMock).POSTString(meq(expectedMovementSubmissionUrl), any(), any())(any(), any(), any())
+    }
+
+    "call HttpClient with body provided" in new Test {
+
+      connector.submitMovementDeclaration(correctUcr, Arrival, movementSubmissionRequestXmlString).futureValue
+
+      verify(httpClientMock).POSTString(any(), meq(movementSubmissionRequestXmlString), any())(any(), any(), any())
+    }
+
+    "call HttpClient with correct headers" in new Test {
+
+      connector.submitMovementDeclaration(correctUcr, Arrival, movementSubmissionRequestXmlString).futureValue
+
+      verify(httpClientMock).POSTString(any(), any(), meq(expectedMovementSubmissionRequestHeaders))(
+        any(),
+        any(),
+        any()
+      )
+    }
+  }
+
+  "CustomsDeclareExportsMovementsConnector on sendConsolidationRequest" should {
+
+    "return response from HttpClient" in new Test {
+
+      val result = connector.sendConsolidationRequest(exampleShutMucrRequestXml.toString).futureValue
+
+      result must equal(defaultHttpResponse)
+    }
+
+    "call HttpClient with URL for movements consolidation endpoint" in new Test {
+
+      connector.sendConsolidationRequest(exampleShutMucrRequestXml.toString).futureValue
+
+      val expectedConsolidationUrl =
+        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.submitMovementConsolidation}"
+      verify(httpClientMock).POSTString(meq(expectedConsolidationUrl), any(), any())(any(), any(), any())
+    }
+
+    "call HttpClient with body provided" in new Test {
+
+      connector.sendConsolidationRequest(exampleShutMucrRequestXml.toString).futureValue
+
+      verify(httpClientMock).POSTString(any(), meq(exampleShutMucrRequestXml.toString), any())(any(), any(), any())
+    }
+
+    "call HttpClient with correct headers" in new Test {
+
+      connector.sendConsolidationRequest(exampleShutMucrRequestXml.toString).futureValue
+
+      verify(httpClientMock).POSTString(any(), any(), meq(validConsolidationRequestHeaders))(any(), any(), any())
+    }
+  }
+
 }
 
 object CustomsDeclareExportsMovementsConnectorSpec {
-  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomAlphanumericString(255))))
-  val metadata = MetaData()
 
-  val conversationId: String = TestHelper.createRandomAlphanumericString(10)
-  val eori: String = TestHelper.createRandomAlphanumericString(15)
+  val movementSubmissionRequest: InventoryLinkingMovementRequest = MovementsTestData.validMovementRequest(Arrival)
+  val movementSubmissionRequestXmlString: String = movementSubmissionRequest.toXml
 
-  val data = Movement.createMovementRequest(CacheMap(Arrival, cacheMapData(Arrival)), "eori1", Choice(Arrival))
-  val expectedHeaders: Seq[(String, String)] = Seq(
-    (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
-    (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
-    ("X-UCR", data.ucrBlock.ucr),
-    ("X-MOVEMENT-TYPE", data.messageCode)
+  val expectedMovementSubmissionRequestHeaders: Seq[(String, String)] = Seq(
+    HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8),
+    HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8),
+    CustomsHeaderNames.XUcr -> movementSubmissionRequest.ucrBlock.ucr,
+    CustomsHeaderNames.XMovementType -> movementSubmissionRequest.messageCode
   )
+
 }

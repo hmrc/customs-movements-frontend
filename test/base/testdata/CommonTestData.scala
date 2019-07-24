@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package helpers.views
+package base.testdata
 
-trait AssociateDucrMessages {
+object CommonTestData {
 
-  val prefix = "associateDucr"
-  val title = prefix + ".title"
-  val hint = prefix + ".reference.hint"
-  val remove = "site.remove"
-  val add = "site.add"
+  val correctUcr: String = "GB/1UZYBD3XE-1J8MEBF9N6X65B"
+
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.consolidations
 
 import base.MockAuthConnector
 import org.mockito.Mockito.reset
@@ -32,8 +32,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import utils.FakeRequestCSRFSupport._
 
 class ShutMucrConfirmationControllerSpec
-    extends WordSpec with GuiceOneAppPerSuite with MockAuthConnector with ScalaFutures
-    with MustMatchers {
+    extends WordSpec with GuiceOneAppPerSuite with MockAuthConnector with ScalaFutures with MustMatchers {
 
   private val shutMucrConfirmationUri = "/customs-movements/shut-mucr-confirmation"
 

@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package helpers.views
+package utils
 
-trait AssociateDucrMessages {
-
-  val prefix = "associateDucr"
-  val title = prefix + ".title"
-  val hint = prefix + ".reference.hint"
-  val remove = "site.remove"
-  val add = "site.add"
+object CustomsHeaderNames {
+  val XUcr = "X-UCR"
+  val XMovementType = "X-MOVEMENT-TYPE"
 }

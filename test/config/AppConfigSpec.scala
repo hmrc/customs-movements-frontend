@@ -52,6 +52,7 @@ class AppConfigSpec extends MovementBaseSpec {
         |microservice.services.customs-declare-exports-movements.host=localhostm
         |microservice.services.customs-declare-exports-movements.port=9876
         |microservice.services.customs-declare-exports-movements.save-movement-uri=/save-movement-submission
+        |microservice.services.customs-declare-exports-movements.submit-consolidation=/consolidations/submit
       """.stripMargin
     )
   private val emptyAppConfig: Config = ConfigFactory.parseString("")
@@ -115,8 +116,13 @@ class AppConfigSpec extends MovementBaseSpec {
     "have movements backend hostname " in {
       validConfigService.customsDeclareExportsMovements must be("http://localhostm:9876")
     }
+
     "have movement submission URL" in {
       validConfigService.saveMovementSubmission must be("/save-movement-submission")
+    }
+
+    "have movement consolidation submission URL" in {
+      validConfigService.submitMovementConsolidation must be("/consolidations/submit")
     }
 
     "have fetch notification URL" in {

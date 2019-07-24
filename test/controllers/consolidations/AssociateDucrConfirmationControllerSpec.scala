@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.consolidations
 
 import base.{MovementBaseSpec, ViewValidator}
 import forms.Choice
@@ -44,6 +44,5 @@ class AssociateDucrConfirmationControllerSpec extends MovementBaseSpec with View
       status(result) must be(OK)
     }
   }
-
 
 }

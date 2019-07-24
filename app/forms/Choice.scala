@@ -44,7 +44,7 @@ object Choice {
   object AllowedChoiceValues {
     val Arrival = "EAL"
     val Departure = "EDL"
-    val AssociateDUCR = "ASS"
+    val AssociateDUCR = "Associate"
     val DisassociateDUCR = "EAC"
     val ShutMucr = "CST"
   }

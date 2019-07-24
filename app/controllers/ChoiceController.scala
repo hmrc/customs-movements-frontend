@@ -56,11 +56,13 @@ class ChoiceController @Inject()(
             .cache[Choice](cacheId, choiceId, validChoice)
             .map { _ =>
               validChoice.value match {
-                case Arrival | Departure => Redirect(controllers.routes.ConsignmentReferencesController.displayPage())
-                case AssociateDUCR       => Redirect(controllers.routes.MucrOptionsController.displayPage())
-                case DisassociateDUCR    => Redirect(controllers.routes.DisassociateDucrController.displayPage())
-                case ShutMucr            => Redirect(controllers.routes.ShutMucrController.displayPage())
-                case _                   => Redirect(controllers.routes.ChoiceController.displayChoiceForm())
+                case Arrival | Departure => Redirect(routes.ConsignmentReferencesController.displayPage())
+                case AssociateDUCR =>
+                  Redirect(consolidations.routes.MucrOptionsController.displayPage())
+                case DisassociateDUCR =>
+                  Redirect(consolidations.routes.DisassociateDucrController.displayPage())
+                case ShutMucr => Redirect(consolidations.routes.ShutMucrController.displayPage())
+                case _        => Redirect(routes.ChoiceController.displayChoiceForm())
               }
           }
       )

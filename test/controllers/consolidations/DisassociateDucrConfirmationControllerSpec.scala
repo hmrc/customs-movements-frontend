@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.consolidations
 
 import base.MovementBaseSpec
+import forms.Choice
 import forms.Choice.AllowedChoiceValues
-import forms.{Choice, DisassociateDucr}
-import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
 class DisassociateDucrConfirmationControllerSpec extends MovementBaseSpec {

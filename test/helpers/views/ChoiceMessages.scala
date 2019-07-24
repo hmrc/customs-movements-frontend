@@ -22,7 +22,7 @@ trait ChoiceMessages {
 
   val arrivalDecLabel: String = "movement.choice.EAL.label"
   val departureDecLabel: String = "movement.choice.EDL.label"
-  val associateDecLabel: String = "movement.choice.ASS.label"
+  val associateDecLabel: String = "movement.choice.associate.label"
   val disassociateDecLabel: String = "movement.choice.EAC.label"
   val shutMucrLabel: String = "movement.choice.shutMucr.label"
   val choiceEmpty: String = "choicePage.input.error.empty"

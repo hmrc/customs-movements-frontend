@@ -49,7 +49,7 @@ class GoodsDepartedController @Inject()(
         customsCacheService
           .fetchAndGetEntry[GoodsDeparted](movementCacheId, formId)
           .map(data => Ok(goodsDepartedPage(data.fold(form)(form.fill(_)))))
-      case _ => errorHandler.displayErrorPage()
+      case _ => Future.successful(errorHandler.getBadRequestPage())
     }
   }
 

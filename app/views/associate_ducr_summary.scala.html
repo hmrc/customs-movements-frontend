@@ -15,8 +15,6 @@
  *@
 
 @import config.AppConfig
-@import controllers.routes
-@import uk.gov.hmrc.play.views.html._
 @import forms.AssociateDucr
 
 @this(main_template: views.html.main_template)
@@ -24,28 +22,28 @@
 @(associateDucr: AssociateDucr, mucr: String)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 
-@main_template(
- title = messages("associateDucrSummary.title", mucr),
- appConfig = appConfig
-) {
- @helper.form(routes.AssociateDucrSummaryController.submit(), 'autoComplete -> "off") {
-  @helper.CSRF.formField
+  @main_template(
+    title = messages("associateDucrSummary.title", mucr),
+    appConfig = appConfig
+  ) {
+    @helper.form(consolidations.routes.AssociateDucrSummaryController.submit(), 'autoComplete -> "off") {
+      @helper.CSRF.formField
 
-  @components.back_link(routes.AssociateDucrController.displayPage())
+      @components.back_link(consolidations.routes.AssociateDucrController.displayPage())
 
-  @components.page_title(Some(messages("associateDucrSummary.title", mucr)))
+      @components.page_title(Some(messages("associateDucrSummary.title", mucr)))
 
-  <table>
-   <tbody>
-    <tr>
-     <td id="associate_ducr-reference">@associateDucr.ducr</td>
-     <td class="text-right">
-      <a id="associate_ducr-remove" href="@routes.AssociateDucrController.displayPage()">@messages("site.remove")</a>
-     </td>
-    </tr>
-   </tbody>
-  </table>
+      <table>
+        <tbody>
+          <tr>
+            <td id="associate_ducr-reference">@associateDucr.ducr</td>
+            <td class="text-right">
+              <a id="associate_ducr-remove" href="@consolidations.routes.AssociateDucrController.displayPage()">@messages("site.remove")</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-  @components.submit_button()
+      @components.submit_button()
+    }
   }
-}

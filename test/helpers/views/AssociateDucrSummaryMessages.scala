@@ -20,6 +20,6 @@ trait AssociateDucrSummaryMessages {
 
   val prefix = "associateDucrSummary"
   val title = prefix + ".title"
-  val remove =  "site.remove"
+  val remove = "site.remove"
   val continue = "site.save_and_continue"
 }

@@ -11,26 +11,26 @@ GET         /choice                                controllers.ChoiceController.
 POST        /choice                                controllers.ChoiceController.submitChoice()
 
 # MUCR Options
-GET         /mucr-options                          controllers.MucrOptionsController.displayPage()
-POST        /mucr-options                          controllers.MucrOptionsController.save()
+GET         /mucr-options                          controllers.consolidations.MucrOptionsController.displayPage()
+POST        /mucr-options                          controllers.consolidations.MucrOptionsController.save()
 
 #Associate DUCR
-GET         /associate-ducr                        controllers.AssociateDucrController.displayPage()
-POST        /associate-ducr                        controllers.AssociateDucrController.submit()
+GET         /associate-ducr                        controllers.consolidations.AssociateDucrController.displayPage()
+POST        /associate-ducr                        controllers.consolidations.AssociateDucrController.submit()
 
 #Associate DUCR Summary
-GET         /associate-ducr-summary                controllers.AssociateDucrSummaryController.displayPage()
-POST        /associate-ducr-summary                controllers.AssociateDucrSummaryController.submit()
+GET         /associate-ducr-summary                controllers.consolidations.AssociateDucrSummaryController.displayPage()
+POST        /associate-ducr-summary                controllers.consolidations.AssociateDucrSummaryController.submit()
 
 # Associate DUCR Confirmation
-GET         /associate-ducr-confirmation           controllers.AssociateDucrConfirmationController.displayPage()
+GET         /associate-ducr-confirmation           controllers.consolidations.AssociateDucrConfirmationController.displayPage()
 
 # Disassociate DUCR page
-GET         /disassociate-ducr                     controllers.DisassociateDucrController.displayPage()
-POST        /disassociate-ducr                     controllers.DisassociateDucrController.submit()
+GET         /disassociate-ducr                     controllers.consolidations.DisassociateDucrController.displayPage()
+POST        /disassociate-ducr                     controllers.consolidations.DisassociateDucrController.submit()
 
 # Disassociate DUCR Confirmation page
-GET         /disassociate-ducr-confirmation        controllers.DisassociateDucrConfirmationController.displayPage()
+GET         /disassociate-ducr-confirmation        controllers.consolidations.DisassociateDucrConfirmationController.displayPage()
 
 # Enter DUCR page
 GET         /consignment-references                controllers.ConsignmentReferencesController.displayPage()
@@ -57,8 +57,8 @@ GET         /summary                        controllers.SummaryController.displa
 POST        /summary                        controllers.SummaryController.submitMovementRequest()
 
 # Shut a MUCR
-GET         /shut-mucr                      controllers.ShutMucrController.displayPage()
-POST        /shut-mucr                      controllers.ShutMucrController.submitForm()
+GET         /shut-mucr                      controllers.consolidations.ShutMucrController.displayPage()
+POST        /shut-mucr                      controllers.consolidations.ShutMucrController.submitForm()
 
 # Shut a MUCR confirmation page
-GET         /shut-mucr-confirmation         controllers.ShutMucrConfirmationController.displayPage()
+GET         /shut-mucr-confirmation         controllers.consolidations.ShutMucrConfirmationController.displayPage()

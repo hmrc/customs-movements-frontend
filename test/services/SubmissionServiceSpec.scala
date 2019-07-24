@@ -16,40 +16,140 @@
 
 package services
 
-import base.{MovementBaseSpec, TestHelper}
-import base.ExportsTestData._
-import forms.Choice
-import forms.Choice.AllowedChoiceValues._
-import metrics.MovementsMetrics
-import org.joda.time.DateTime
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.http.logging.Authorization
+import base.MockFactory
+import base.testdata.ConsolidationTestData._
+import base.testdata.MovementsTestData._
+import forms.Choice.AllowedChoiceValues.Arrival
+import forms._
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{verify, when}
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.mockito.MockitoSugar
+import org.scalatest.time.{Millis, Seconds, Span}
+import org.scalatest.{MustMatchers, WordSpec}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
-import play.api.http.Status.ACCEPTED
+import play.api.test.Helpers.ACCEPTED
+import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
-class SubmissionServiceSpec extends MovementBaseSpec {
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.xml.{Node, Utility, XML}
 
-  implicit val hc: HeaderCarrier =
-    HeaderCarrier(
-      authorization = Some(Authorization(TestHelper.createRandomString(255))),
-      nsStamp = DateTime.now().getMillis
-    )
-  val submissionService = new SubmissionService(mockCustomsCacheService, mockCustomsExportsMovementConnector, metrics)
+class SubmissionServiceSpec extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures {
 
-  "SubmissionService" should {
-    "Submit valid Movement Request" in {
-      withCacheMap(Some(CacheMap(Arrival, cacheMapData(Arrival))))
-      sendMovementRequest202Response
-      val result = submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue
-      result mustBe ACCEPTED
+  implicit val defaultPatience: PatienceConfig =
+    PatienceConfig(timeout = Span(5, Seconds), interval = Span(100, Millis))
+
+  private trait Test {
+    implicit val headerCarrierMock = mock[HeaderCarrier]
+    val customsCacheServiceMock = MockFactory.buildCustomsCacheServiceMock
+    val customsExportsMovementConnectorMock = MockFactory.buildCustomsDeclareExportsMovementsConnectorMock
+    val metricsMock = MockFactory.buildMovementsMetricsMock
+    val submissionService =
+      new SubmissionService(customsCacheServiceMock, customsExportsMovementConnectorMock, metricsMock)
+  }
+
+  private trait RequestAcceptedTest extends Test {
+    when(customsExportsMovementConnectorMock.submitMovementDeclaration(any(), any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+    when(customsExportsMovementConnectorMock.sendConsolidationRequest(any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+  }
+
+  "SubmissionService on submitMovementRequest" should {
+
+    "submit valid Movement Request" in new RequestAcceptedTest {
+
+      when(customsCacheServiceMock.fetch(any())(any(), any()))
+        .thenReturn(Future.successful(Some(CacheMap(Arrival, cacheMapData(Arrival)))))
+
+      submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue must equal(ACCEPTED)
     }
-    "handle failure when No data" in {
-      withCacheMap(None)
-      sendMovementRequest202Response
-      val result = submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue
-      result mustBe INTERNAL_SERVER_ERROR
+
+    "handle failure when no data" in new RequestAcceptedTest {
+
+      submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue must equal(
+        INTERNAL_SERVER_ERROR
+      )
     }
+  }
+
+  "SubmissionService on submitDucrAssociation" should {
+
+    "return response from CustomsDeclareExportsMovementsConnector" in new Test {
+
+      val CustomHttpResponseCode = 123
+      when(customsExportsMovementConnectorMock.sendConsolidationRequest(any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
+
+      submissionService.submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr)).futureValue must equal(
+        CustomHttpResponseCode
+      )
+    }
+
+    "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in new RequestAcceptedTest {
+
+      submissionService.submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr)).futureValue
+
+      val requestCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      verify(customsExportsMovementConnectorMock).sendConsolidationRequest(requestCaptor.capture())(any(), any())
+
+      assertEqual(XML.loadString(requestCaptor.getValue), exampleAssociateDucrRequestXml)
+    }
+  }
+
+  "SubmissionService on submitDucrDisassociation" should {
+
+    "return response from CustomsDeclareExportsMovementsConnector" in new Test {
+
+      val CustomHttpResponseCode = 123
+      when(customsExportsMovementConnectorMock.sendConsolidationRequest(any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
+
+      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue must equal(
+        CustomHttpResponseCode
+      )
+    }
+
+    "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in new RequestAcceptedTest {
+
+      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue
+
+      val requestCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      verify(customsExportsMovementConnectorMock).sendConsolidationRequest(requestCaptor.capture())(any(), any())
+
+      assertEqual(XML.loadString(requestCaptor.getValue), exampleDisassociateDucrRequestXml)
+    }
+  }
+
+  "SubmissionService on submitShutMucrRequest" should {
+
+    "return response from CustomsDeclareExportsMovementsConnector" in new Test {
+
+      val CustomHttpResponseCode = 123
+      when(customsExportsMovementConnectorMock.sendConsolidationRequest(any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
+
+      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue must equal(CustomHttpResponseCode)
+    }
+
+    "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in new RequestAcceptedTest {
+
+      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue
+
+      val requestCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      verify(customsExportsMovementConnectorMock).sendConsolidationRequest(requestCaptor.capture())(any(), any())
+
+      assertEqual(XML.loadString(requestCaptor.getValue), exampleShutMucrRequestXml)
+    }
+  }
+
+  private def assertEqual(actual: Node, expected: Node): Unit = {
+    val actualTrimmed = Utility.trim(actual)
+    val expectedTrimmed = Utility.trim(expected)
+    actualTrimmed must equal(expectedTrimmed)
   }
 
 }

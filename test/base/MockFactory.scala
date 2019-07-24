@@ -36,36 +36,44 @@ object MockFactory extends MockitoSugar {
 
   def buildCustomsCacheServiceMock: CustomsCacheService = {
     val customsCacheServiceMock = mock[CustomsCacheService]
+
     when(customsCacheServiceMock.fetchAndGetEntry(any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(None))
     when(customsCacheServiceMock.fetch(any())(any(), any())).thenReturn(Future.successful(None))
     when(customsCacheServiceMock.cache(any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(emptyCacheMap))
     when(customsCacheServiceMock.remove(any())(any(), any())).thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
+
     customsCacheServiceMock
   }
 
   def buildSubmissionServiceMock: SubmissionService = {
     val submissionServiceMock = mock[SubmissionService]
+
     when(submissionServiceMock.submitMovementRequest(any(), any(), any())(any(), any())).thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
     when(submissionServiceMock.submitDucrAssociation(any(), any())(any(), any())).thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
     when(submissionServiceMock.submitDucrDisassociation(any())(any(), any())).thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
     when(submissionServiceMock.submitShutMucrRequest(any())(any(), any())).thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
+
     submissionServiceMock
   }
 
   def buildCustomsDeclareExportsMovementsConnectorMock: CustomsDeclareExportsMovementsConnector = {
     val customsDeclareExportsMovementsConnector = mock[CustomsDeclareExportsMovementsConnector]
+
     when(customsDeclareExportsMovementsConnector.submitMovementDeclaration(any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
     when(customsDeclareExportsMovementsConnector.sendConsolidationRequest(any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
+
     customsDeclareExportsMovementsConnector
   }
 
   def buildMovementsMetricsMock: MovementsMetrics = {
     val movementsMetricsMock = mock[MovementsMetrics]
+
     when(movementsMetricsMock.startTimer(any())).thenReturn(new Timer().time())
+
     movementsMetricsMock
   }
 

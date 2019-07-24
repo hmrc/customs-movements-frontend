@@ -125,7 +125,7 @@ class ShutMucrControllerSpec
 
       "not call SubmissionService" in new Test {
 
-        routePost(body = incorrectShutMucrJSON)
+        routingHelper.routePost(body = incorrectShutMucrJSON).futureValue
 
         verifyZeroInteractions(submissionServiceMock)
       }

@@ -15,7 +15,6 @@
  *@
 
 @import config.AppConfig
-@import controllers.routes
 @import forms.DisassociateDucr
 
 @this(main_template: views.html.main_template)
@@ -26,7 +25,7 @@
     title = messages("disassociateDucr.title"),
     appConfig = appConfig
 ) {
-    @helper.form(routes.DisassociateDucrController.submit(), 'autoComplete -> "off") {
+    @helper.form(consolidations.routes.DisassociateDucrController.submit(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.back_link(routes.ChoiceController.displayChoiceForm())

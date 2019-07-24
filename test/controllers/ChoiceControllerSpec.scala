@@ -121,7 +121,7 @@ class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with Befo
       val Some(result) = route(app, postRequest(choiceUri, associateChoice))
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be(Some(routes.MucrOptionsController.displayPage().url))
+      redirectLocation(result) must be(Some(consolidations.routes.MucrOptionsController.displayPage().url))
     }
 
     "redirect to disassociate page when 'Disassociate' is selected" in {
@@ -132,7 +132,7 @@ class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with Befo
       val result = route(app, postRequest(choiceUri, correctForm)).get
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be(Some(routes.DisassociateDucrController.displayPage().url))
+      redirectLocation(result) must be(Some(consolidations.routes.DisassociateDucrController.displayPage().url))
     }
 
     "redirect to Shut a MUCR page when 'Shut a MUCR' is selected" in {
@@ -144,7 +144,7 @@ class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with Befo
       val result = route(app, postRequest(choiceUri, correctForm)).get
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be(Some(routes.ShutMucrController.displayPage().url))
+      redirectLocation(result) must be(Some(consolidations.routes.ShutMucrController.displayPage().url))
     }
   }
 }

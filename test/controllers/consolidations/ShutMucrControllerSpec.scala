@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.consolidations
 
 import base.MockFactory.buildSubmissionServiceMock
 import base.{MockAuthConnector, URIHelper}

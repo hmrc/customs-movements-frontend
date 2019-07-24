@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.consolidations
 
 import config.AppConfig
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.AuthAction
 import controllers.storage.FlashKeys
-import forms.DisassociateDucr._
+import forms.ShutMucr.form
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
@@ -27,38 +27,37 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.SubmissionService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.disassociate_ducr
+import views.html.shut_mucr
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DisassociateDucrController @Inject()(
+class ShutMucrController @Inject()(
   authenticate: AuthAction,
-  journeyType: JourneyAction,
   submissionService: SubmissionService,
-  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
-  disassociateDucrPage: disassociate_ducr
+  errorHandler: ErrorHandler,
+  shutMucrPage: shut_mucr
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   private val logger = Logger(this.getClass)
 
   def displayPage(): Action[AnyContent] = authenticate { implicit request =>
-    Ok(disassociateDucrPage(form))
+    Ok(shutMucrPage(form()))
   }
 
-  def submit(): Action[AnyContent] = authenticate.async { implicit request =>
-    form
+  def submitForm(): Action[AnyContent] = authenticate.async { implicit request =>
+    form()
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(disassociateDucrPage(formWithErrors))),
-        formData =>
-          submissionService.submitDucrDisassociation(formData).map {
+        formWithErrors => Future.successful(BadRequest(shutMucrPage(formWithErrors))),
+        shutMucr =>
+          submissionService.submitShutMucrRequest(shutMucr).map {
             case ACCEPTED =>
-              Redirect(controllers.routes.DisassociateDucrConfirmationController.displayPage())
-                .flashing(FlashKeys.DUCR -> formData.ducr)
-            case _ => handleError("Unable to submit DUCR Disassociation request")
+              Redirect(routes.ShutMucrConfirmationController.displayPage())
+                .flashing(Flash(Map(FlashKeys.MUCR -> shutMucr.mucr)))
+            case _ => handleError("Unable to submit Shut a Mucr Consolidation request")
         }
       )
   }

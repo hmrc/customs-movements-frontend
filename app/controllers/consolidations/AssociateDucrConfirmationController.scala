@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.consolidations
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
+import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.disassociate_ducr_confirmation
-
-import scala.concurrent.ExecutionContext
+import views.html.associate_ducr_confirmation
 
 @Singleton
-class DisassociateDucrConfirmationController @Inject()(
+class AssociateDucrConfirmationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
-  disassociateDucrConfirmationPage: disassociate_ducr_confirmation
-)(implicit appConfig: AppConfig, ec: ExecutionContext)
+  associateDucrConfirmPage: associate_ducr_confirmation
+)(implicit appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(disassociateDucrConfirmationPage())
+    Ok(associateDucrConfirmPage())
   }
 }

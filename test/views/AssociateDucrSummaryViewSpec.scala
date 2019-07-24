@@ -48,7 +48,7 @@ class AssociateDucrSummaryViewSpec extends ViewSpec with AssociateDucrSummaryMes
       view.getElementById("associate_ducr-remove") must containText(messages(remove))
       view.getElementById("associate_ducr-remove") must haveAttribute(
         "href",
-        controllers.routes.AssociateDucrController.displayPage().url
+        controllers.consolidations.routes.AssociateDucrController.displayPage().url
       )
     }
 

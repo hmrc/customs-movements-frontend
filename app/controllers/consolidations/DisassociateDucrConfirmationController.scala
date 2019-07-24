@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.consolidations
 
 import config.AppConfig
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, JourneyAction}
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.shut_mucr_confirmation
+import views.html.disassociate_ducr_confirmation
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ShutMucrConfirmationController @Inject()(
+class DisassociateDucrConfirmationController @Inject()(
   authenticate: AuthAction,
+  journeyType: JourneyAction,
   mcc: MessagesControllerComponents,
-  shutMucrConfirmationPage: shut_mucr_confirmation
+  disassociateDucrConfirmationPage: disassociate_ducr_confirmation
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = authenticate { implicit request =>
-    Ok(shutMucrConfirmationPage())
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok(disassociateDucrConfirmationPage())
   }
-
 }

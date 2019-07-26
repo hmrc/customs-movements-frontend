@@ -22,9 +22,7 @@ import play.api.libs.json.Json
 case class Notification(dateTimeReceived: LocalDateTime, conversationId: String) extends Ordered[Notification] {
 
   def compare(that: Notification): Int =
-    if (this.dateTimeReceived == that.dateTimeReceived) 0
-    else if (this.dateTimeReceived.isAfter(that.dateTimeReceived)) 1
-    else -1
+    this.dateTimeReceived.compareTo(that.dateTimeReceived)
 }
 
 object Notification {

@@ -54,8 +54,12 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
       CustomsHeaderNames.XMovementType -> movementType.toString
     )
 
-  def fetchNotifications()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
-    httpClient.GET[Seq[Notification]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}")
+  def fetchNotifications(
+    conversationId: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
+    httpClient.GET[Seq[Notification]](
+      s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}/$conversationId"
+    )
 
   def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
     httpClient.GET[Seq[Submission]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchSubmissions}").map {

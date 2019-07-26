@@ -97,11 +97,12 @@ global.error.message = Please try again later.
 
 confirmationPage.title = Confirmation page
 
-notifications.title = Notifications
-notifications.dateAndTime = Date and time
 notifications.reference = Reference
-notifications.status = Status
-notifications.additionalInformation = Additional information
+notifications.action = Action
+notifications.dateOfRequest = Date of Request
+notifications.dateOfResponse = Date of Response
+notifications.roe = ROE
+notifications.soe = SOE
 
 arrivals.confirmation = Arrival confirmation
 arrivals.title = Arrivals

@@ -26,7 +26,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.submissions
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionsController @Inject()(
   authenticate: AuthAction,
@@ -39,9 +39,7 @@ class SubmissionsController @Inject()(
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     for {
       submissions <- connector.fetchSubmissions()
-      notifications <- Future.sequence(
-        submissions.map(submission => connector.fetchNotifications(submission.conversationId))
-      )
+      notifications <- Future.sequence(submissions.map(submission => connector.fetchNotifications(submission.conversationId)))
       submissionsWithNotifications = submissions.zip(notifications.map(_.sorted.reverse))
 
     } yield Ok(submissionsPage(submissionsWithNotifications))

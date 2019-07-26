@@ -97,6 +97,7 @@ global.error.message = Please try again later.
 
 confirmationPage.title = Confirmation page
 
+notifications.title = Notifications
 notifications.reference = Reference
 notifications.action = Action
 notifications.dateOfRequest = Date of Request

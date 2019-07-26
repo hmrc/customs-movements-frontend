@@ -52,16 +52,19 @@ POST        /location                              controllers.LocationControlle
 GET         /transport                             controllers.TransportController.displayPage()
 POST        /transport                             controllers.TransportController.saveTransport()
 
-# Movements Summary
-GET         /summary                        controllers.SummaryController.displayPage()
-POST        /summary                        controllers.SummaryController.submitMovementRequest()
+# Summary
+GET         /summary                               controllers.SummaryController.displayPage()
+POST        /summary                               controllers.SummaryController.submitMovementRequest()
 
 # Shut a MUCR
-GET         /shut-mucr                      controllers.consolidations.ShutMucrController.displayPage()
-POST        /shut-mucr                      controllers.consolidations.ShutMucrController.submitForm()
+GET         /shut-mucr                             controllers.consolidations.ShutMucrController.displayPage()
+POST        /shut-mucr                             controllers.consolidations.ShutMucrController.submitForm()
 
 # Shut a MUCR confirmation page
-GET         /shut-mucr-confirmation         controllers.consolidations.ShutMucrConfirmationController.displayPage()
+GET         /shut-mucr-confirmation                controllers.consolidations.ShutMucrConfirmationController.displayPage()
 
-# Movement submissions page
-GET         /submissions                            controllers.SubmissionsController.displayPage()
+# Submissions page
+GET         /submissions                           controllers.SubmissionsController.displayPage()
+
+# Notifications page
+GET         /notifications/:conversationId         controllers.NotificationsController.listOfNotifications(conversationId)

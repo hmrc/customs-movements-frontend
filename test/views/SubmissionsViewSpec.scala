@@ -16,8 +16,8 @@
 
 package views
 
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, ZoneId, ZonedDateTime}
 
 import base.ViewValidator
 import models.{Notification, Submission}
@@ -51,7 +51,10 @@ class SubmissionsViewSpec extends WordSpec with MustMatchers with Stubs with Vie
     }
 
     "contains correct submission data" in {
-      val dateTime = LocalDate.parse("2019-10-31", DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay()
+      val dateTime = ZonedDateTime.of(
+        LocalDate.parse("2019-10-31", DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay(),
+        ZoneId.systemDefault()
+      )
       val pageWithData: Html = new submissions(mainTemplate)(
         Seq(
           (

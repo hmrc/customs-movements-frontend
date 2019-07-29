@@ -15,7 +15,7 @@
  */
 
 package models
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 import play.api.libs.json.Json
 
@@ -24,7 +24,7 @@ case class Submission(
   ucr: String,
   submissionType: String,
   submissionAction: String,
-  dateUpdated: LocalDateTime,
+  dateUpdated: ZonedDateTime,
   status: Option[String]
 )
 

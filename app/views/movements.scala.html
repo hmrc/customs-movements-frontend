@@ -43,6 +43,23 @@
                 <th class="table-cell" id="noOfNotifications">@messages("submissions.noOfNotifications")</th>
             </tr>
 
+            <tr class="table-row">
+                <td class="table-cell" id="ucr-123">5555</td>
+                <td class="table-cell" id="submissionType-123">M</td>
+                <td class="table-cell" id="submissionAction-123">Arrival</td>
+                <td class="table-cell" id="dateUpdated-123"> 31-07-19 </td>
+                <td class="table-cell" id="status-123">Cleared</td>
+                <td class="table-cell" id="noOfNotifications-123"> <a href="/customs-movements/notifications">1</a> </td>
+            </tr>
+            <tr class="table-row">
+                <td class="table-cell" id="ucr-124">4444</td>
+                <td class="table-cell" id="submissionType-124">D</td>
+                <td class="table-cell" id="submissionAction-124">Departure</td>
+                <td class="table-cell" id="dateUpdated-124"> 31-07-19 </td>
+                <td class="table-cell" id="status-124">Partial</td>
+                <td class="table-cell" id="noOfNotifications-124"> <a href="/customs-movements/notifications">1</a> </td>
+            </tr>
+
             @for( (submission, notifications) <- submissions ){
                 <tr class="table-row">
                     <td class="table-cell" id="ucr-@submission.conversationId">@submission.ucr</td>

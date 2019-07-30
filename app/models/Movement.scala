@@ -22,8 +22,8 @@ import play.api.libs.json.Json
 case class Movement(
   conversationId: String,
   ucr: String,
-  submissionType: String,
-  submissionAction: String,
+  movementType: String,
+  movementAction: String,
   dateUpdated: ZonedDateTime,
   status: Option[String]
 )

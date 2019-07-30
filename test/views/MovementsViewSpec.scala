@@ -37,20 +37,20 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
 
     "contains title" in {
 
-      page.getElementById("title") must containText(messages("submissions.title"))
+      page.getElementById("title") must containText(messages("movements.title"))
     }
 
     "contains correct table headers" in {
 
-      page.getElementById("ucr") must containText(messages("submissions.ucr"))
-      page.getElementById("submissionType") must containText(messages("submissions.submissionType"))
-      page.getElementById("submissionAction") must containText(messages("submissions.submissionAction"))
-      page.getElementById("dateUpdated") must containText(messages("submissions.dateUpdated"))
-      page.getElementById("status") must containText(messages("submissions.status"))
-      page.getElementById("noOfNotifications") must containText(messages("submissions.noOfNotifications"))
+      page.getElementById("ucr") must containText(messages("movements.ucr"))
+      page.getElementById("movementType") must containText(messages("movements.movementType"))
+      page.getElementById("movementAction") must containText(messages("movements.movementAction"))
+      page.getElementById("dateUpdated") must containText(messages("movements.dateUpdated"))
+      page.getElementById("status") must containText(messages("movements.status"))
+      page.getElementById("noOfNotifications") must containText(messages("movements.noOfNotifications"))
     }
 
-    "contains correct submission data" in {
+    "contains correct movement data" in {
       val dateTime = ZonedDateTime.of(
         LocalDate.parse("2019-10-31", DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay(),
         ZoneId.systemDefault()
@@ -61,8 +61,8 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
             Movement(
               conversationId = "conversationId",
               ucr = "4444",
-              submissionType = "M",
-              submissionAction = "Consolidate",
+              movementType = "M",
+              movementAction = "Consolidate",
               dateUpdated = dateTime,
               status = Some("Cleared")
             ),
@@ -72,8 +72,8 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
       )(FakeRequest(), minimalAppConfig, messages)
 
       getElementById(pageWithData, "ucr-conversationId").text() must be("4444")
-      getElementById(pageWithData, "submissionType-conversationId").text() must be("M")
-      getElementById(pageWithData, "submissionAction-conversationId").text() must be("Consolidate")
+      getElementById(pageWithData, "movementType-conversationId").text() must be("M")
+      getElementById(pageWithData, "movementAction-conversationId").text() must be("Consolidate")
       getElementById(pageWithData, "dateUpdated-conversationId").text() must be("2019-10-31 00:00")
       getElementById(pageWithData, "status-conversationId").text() must be("Cleared")
       getElementById(pageWithData, "noOfNotifications-conversationId").text() must be("1")

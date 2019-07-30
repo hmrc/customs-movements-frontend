@@ -22,55 +22,55 @@
 
 @this(main_template: views.html.main_template)
 
-@(submissions: Seq[(Movement, Seq[Notification])])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+@(movements: Seq[(Movement, Seq[Notification])])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
-    title = messages("submissions.title"),
+    title = messages("movements.title"),
     appConfig = appConfig) {
 
     @components.back_link(routes.ChoiceController.displayChoiceForm())
 
-    @components.page_title(Some("submissions.title"))
+    @components.page_title(Some("movements.title"))
 
     <div>
         <table>
             <tr class="table-row table-head">
-                <th class="table-cell" id="ucr">@messages("submissions.ucr")</th>
-                <th class="table-cell" id="submissionType">@messages("submissions.submissionType")</th>
-                <th class="table-cell" id="submissionAction">@messages("submissions.submissionAction")</th>
-                <th class="table-cell" id="dateUpdated">@messages("submissions.dateUpdated")</th>
-                <th class="table-cell" id="status">@messages("submissions.status")</th>
-                <th class="table-cell" id="noOfNotifications">@messages("submissions.noOfNotifications")</th>
+                <th class="table-cell" id="ucr">@messages("movements.ucr")</th>
+                <th class="table-cell" id="movementType">@messages("movements.movementType")</th>
+                <th class="table-cell" id="movementAction">@messages("movements.movementAction")</th>
+                <th class="table-cell" id="dateUpdated">@messages("movements.dateUpdated")</th>
+                <th class="table-cell" id="status">@messages("movements.status")</th>
+                <th class="table-cell" id="noOfNotifications">@messages("movements.noOfNotifications")</th>
             </tr>
 
             <tr class="table-row">
                 <td class="table-cell" id="ucr-123">5555</td>
-                <td class="table-cell" id="submissionType-123">M</td>
-                <td class="table-cell" id="submissionAction-123">Arrival</td>
+                <td class="table-cell" id="movementType-123">M</td>
+                <td class="table-cell" id="movementAction-123">Arrival</td>
                 <td class="table-cell" id="dateUpdated-123"> 31-07-19 </td>
                 <td class="table-cell" id="status-123">Cleared</td>
                 <td class="table-cell" id="noOfNotifications-123"> <a href="/customs-movements/notifications">1</a> </td>
             </tr>
             <tr class="table-row">
                 <td class="table-cell" id="ucr-124">4444</td>
-                <td class="table-cell" id="submissionType-124">D</td>
-                <td class="table-cell" id="submissionAction-124">Departure</td>
+                <td class="table-cell" id="movementType-124">D</td>
+                <td class="table-cell" id="movementAction-124">Departure</td>
                 <td class="table-cell" id="dateUpdated-124"> 31-07-19 </td>
                 <td class="table-cell" id="status-124">Partial</td>
                 <td class="table-cell" id="noOfNotifications-124"> <a href="/customs-movements/notifications">1</a> </td>
             </tr>
 
-            @for( (submission, notifications) <- submissions ){
+            @for( (movement, notifications) <- movements ){
                 <tr class="table-row">
-                    <td class="table-cell" id="ucr-@submission.conversationId">@submission.ucr</td>
-                    <td class="table-cell" id="submissionType-@submission.conversationId">@submission.submissionType</td>
-                    <td class="table-cell" id="submissionAction-@submission.conversationId">@submission.submissionAction</td>
-                    <td class="table-cell" id="dateUpdated-@submission.conversationId">
+                    <td class="table-cell" id="ucr-@movement.conversationId">@movement.ucr</td>
+                    <td class="table-cell" id="movementType-@movement.conversationId">@movement.movementType</td>
+                    <td class="table-cell" id="movementAction-@movement.conversationId">@movement.movementAction</td>
+                    <td class="table-cell" id="dateUpdated-@movement.conversationId">
                         @{notifications.headOption.map(n => n.dateTimeReceived).map(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault()).format(_))}</td>
-                    <td class="table-cell" id="status-@submission.conversationId">@submission.status</td>
-                    <td class="table-cell" id="noOfNotifications-@submission.conversationId">
+                    <td class="table-cell" id="status-@movement.conversationId">@movement.status</td>
+                    <td class="table-cell" id="noOfNotifications-@movement.conversationId">
                     @if(notifications.nonEmpty) {
-                        <a href="@routes.NotificationsController.listOfNotifications(submission.conversationId)">
+                        <a href="@routes.NotificationsController.listOfNotifications(movement.conversationId)">
                         @{notifications.length}
                         </a>
                     } else {

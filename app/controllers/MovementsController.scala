@@ -23,24 +23,26 @@ import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.submissions
+import views.html.movements
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmissionsController @Inject()(
+class MovementsController @Inject()(
   authenticate: AuthAction,
   connector: CustomsDeclareExportsMovementsConnector,
   mcc: MessagesControllerComponents,
-  submissionsPage: submissions
+  movementsPage: movements
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     for {
       submissions <- connector.fetchSubmissions()
-      notifications <- Future.sequence(submissions.map(submission => connector.fetchNotifications(submission.conversationId)))
+      notifications <- Future.sequence(
+        submissions.map(submission => connector.fetchNotifications(submission.conversationId))
+      )
       submissionsWithNotifications = submissions.zip(notifications.map(_.sorted.reverse))
 
-    } yield Ok(submissionsPage(submissionsWithNotifications))
+    } yield Ok(movementsPage(submissionsWithNotifications))
   }
 }

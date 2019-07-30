@@ -20,20 +20,20 @@ import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, ZoneId, ZonedDateTime}
 
 import base.ViewValidator
-import models.{Notification, Submission}
+import models.{Movement, Notification}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import utils.Stubs
-import views.html.submissions
+import views.html.{movements}
 
-class SubmissionsViewSpec extends WordSpec with MustMatchers with Stubs with ViewValidator {
+class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewValidator {
 
   val messages = stubMessages()
-  val page: Html = new submissions(mainTemplate)(Seq.empty)(FakeRequest(), minimalAppConfig, messages)
+  val page: Html = new movements(mainTemplate)(Seq.empty)(FakeRequest(), minimalAppConfig, messages)
 
-  "Submission page" should {
+  "Movements page" should {
 
     "contains title" in {
 
@@ -55,10 +55,10 @@ class SubmissionsViewSpec extends WordSpec with MustMatchers with Stubs with Vie
         LocalDate.parse("2019-10-31", DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay(),
         ZoneId.systemDefault()
       )
-      val pageWithData: Html = new submissions(mainTemplate)(
+      val pageWithData: Html = new movements(mainTemplate)(
         Seq(
           (
-            Submission(
+            Movement(
               conversationId = "conversationId",
               ucr = "4444",
               submissionType = "M",

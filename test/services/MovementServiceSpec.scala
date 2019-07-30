@@ -37,7 +37,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.xml.{Node, Utility, XML}
 
-class SubmissionServiceSpec extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures {
+class MovementServiceSpec extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures {
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(100, Millis))

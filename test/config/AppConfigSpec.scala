@@ -48,7 +48,8 @@ class AppConfigSpec extends MovementBaseSpec {
         |microservice.services.customs-declare-exports.port=9875
         |microservice.services.customs-declare-exports.submit-declaration=/declaration
         |microservice.services.customs-declare-exports.cancel-declaration=/cancel-declaration
-        |microservice.services.customs-declare-exports.fetch-notifications=/customs-declare-exports/notifications
+        |microservice.services.customs-declare-exports-movements.fetch-notifications=/notifications
+        |microservice.services.customs-declare-exports-movements.fetch-movements=/movements
         |microservice.services.customs-declare-exports-movements.host=localhostm
         |microservice.services.customs-declare-exports-movements.port=9876
         |microservice.services.customs-declare-exports-movements.save-movement-uri=/save-movement-submission
@@ -125,8 +126,12 @@ class AppConfigSpec extends MovementBaseSpec {
       validConfigService.submitMovementConsolidation must be("/consolidations/submit")
     }
 
+    "have fetch movements URL" in {
+      validConfigService.fetchMovements must be("/movements")
+    }
+
     "have fetch notification URL" in {
-      validConfigService.fetchNotifications must be("/customs-declare-exports/notifications")
+      validConfigService.fetchNotifications must be("/notifications")
     }
 
     "have countryCodesJsonFilename" in {

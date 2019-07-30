@@ -240,8 +240,24 @@ departureDetails.hint = For example, 01 08 2007
 
 location.title = Location
 location.question = Where are the goods located?
-location.hint = The 7 digit code of where the goods are located
-location.error = Code must have exactly 7 digits
+locationType = Location Type
+locationType.empty = Location Type cannot be empty
+locationType.error = Location Type is incorrect
+locationType.A = A - Designated location (denotes Frontier or Frontier linked - Airports, ITSFs etc)
+locationType.B = B - Authorised place (identifies inland locations such as customs warehouses)
+locationType.C = C - Approved place (only used for certificate of Agreement AirFields)
+locationType.D = D - Other (such as pipelines, continental shelf, sind farms, etc)
+qualifierCode = Qualifier Code
+qualifierCode.empty = Qualifier Code cannot be empty
+qualifierCode.error = Qualifier Code is incorrect
+qualifierCode.U = U - UN/LOCODE
+qualifierCode.Y = Y - Authorisation number
+locationCode = Location Code and Additional Qualifier
+locationCode.empty = Location Code and Additional Qualifier cannot be empty
+locationCode.error = Location Code and Additional Qualifier is incorrect
+location.country = Country
+location.country.empty = Country cannot be empty
+location.country.error = Country is incorrect
 
 goodsDeparted.title = Goods departed
 goodsDeparted.departedPlace.question = Where are your goods being departed to?

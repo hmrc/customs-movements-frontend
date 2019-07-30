@@ -44,9 +44,11 @@ class MovementServiceSpec extends WordSpec with MustMatchers with MockitoSugar w
 
   private trait Test {
     implicit val headerCarrierMock = mock[HeaderCarrier]
+
     val customsCacheServiceMock = MockFactory.buildCustomsCacheServiceMock
     val customsExportsMovementConnectorMock = MockFactory.buildCustomsDeclareExportsMovementsConnectorMock
     val metricsMock = MockFactory.buildMovementsMetricsMock
+
     val submissionService =
       new SubmissionService(customsCacheServiceMock, customsExportsMovementConnectorMock, metricsMock)
   }
@@ -54,6 +56,7 @@ class MovementServiceSpec extends WordSpec with MustMatchers with MockitoSugar w
   private trait RequestAcceptedTest extends Test {
     when(customsExportsMovementConnectorMock.submitMovementDeclaration(any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+
     when(customsExportsMovementConnectorMock.sendConsolidationRequest(any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
   }

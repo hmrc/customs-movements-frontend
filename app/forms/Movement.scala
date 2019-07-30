@@ -33,6 +33,7 @@ object Movement {
       case Departure => cacheMap.getEntry[DepartureDetails](MovementDetails.formId)
       case _         => None
     }
+
     val arrivalDetails = choice.value match {
       case Arrival =>
         cacheMap
@@ -40,15 +41,14 @@ object Movement {
           .map(res => s"${res.dateOfArrival.toString}T${res.timeOfArrival.fold("")(_.toString)}:00")
       case _ => None
     }
-    val location =
-      cacheMap.getEntry[Location](Location.formId).flatMap(_.goodsLocation)
-    val transport =
-      cacheMap
-        .getEntry[Transport](Transport.formId)
+
+    val location = cacheMap.getEntry[Location](Location.formId).map(_.asString)
+
+    val transport = cacheMap.getEntry[Transport](Transport.formId)
 
     InventoryLinkingMovementRequest(
       messageCode = choice.value,
-      agentDetails = Some(AgentDetails(eori = Some(eori), agentLocation = location)),
+      agentDetails = None,
       ucrBlock = UcrBlock(ucr = referencesForm.referenceValue, ucrType = referencesForm.reference),
       goodsLocation = location.getOrElse(""),
       goodsArrivalDateTime = arrivalDetails,

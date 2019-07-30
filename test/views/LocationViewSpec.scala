@@ -39,12 +39,28 @@ class LocationViewSpec extends ViewSpec with LocationMessages with CommonMessage
 
       assertMessage(title, "Location")
       assertMessage(question, "Where are the goods located?")
-      assertMessage(hint, "The 7 digit code of where the goods are located")
+      assertMessage(locationType, "Location Type")
+      assertMessage(locationTypeA, "A - Designated location (denotes Frontier or Frontier linked - Airports, ITSFs etc)")
+      assertMessage(locationTypeB, "B - Authorised place (identifies inland locations such as customs warehouses)")
+      assertMessage(locationTypeC, "C - Approved place (only used for certificate of Agreement AirFields)")
+      assertMessage(locationTypeD, "D - Other (such as pipelines, continental shelf, sind farms, etc)")
+      assertMessage(qualifierCode, "Qualifier Code")
+      assertMessage(qualifierCodeU, "U - UN/LOCODE")
+      assertMessage(qualifierCodeY, "Y - Authorisation number")
+      assertMessage(locationCode, "Location Code and Additional Qualifier")
+      assertMessage(country, "Country")
     }
 
     "have a proper labels for errors" in {
 
-      assertMessage(error, "Code must have exactly 7 digits")
+      assertMessage(locationTypeEmpty, "Location Type cannot be empty")
+      assertMessage(locationTypeError, "Location Type is incorrect")
+      assertMessage(qualifierCodeEmpty, "Qualifier Code cannot be empty")
+      assertMessage(qualifierCodeError, "Qualifier Code is incorrect")
+      assertMessage(locationCodeEmpty, "Location Code and Additional Qualifier cannot be empty")
+      assertMessage(locationCodeError, "Location Code and Additional Qualifier is incorrect")
+      assertMessage(countryEmpty, "Country cannot be empty")
+      assertMessage(countryError, "Country is incorrect")
     }
   }
 
@@ -52,12 +68,15 @@ class LocationViewSpec extends ViewSpec with LocationMessages with CommonMessage
 
     "display page title" in {
 
-      getElementById(createArrivalView(), "title").text() must be(messages(title))
+      getElementById(createArrivalView(), "title").text() must be(messages(question))
     }
 
-    "display text input for location" in {
+    "display text input for all fields" in {
 
-      getElementById(createArrivalView(), "goodsLocation-label").text() must be(messages(question))
+      getElementById(createArrivalView(), "locationType-label").text() must be(messages(locationType))
+      getElementById(createArrivalView(), "qualifierCode-label").text() must be(messages(qualifierCode))
+      getElementById(createArrivalView(), "locationCode-label").text() must be(messages(locationCode))
+      getElementById(createArrivalView(), "country-label").text() must be(messages(country))
     }
 
     "display \"Back\" button that links to Goods Date for arrival" in {

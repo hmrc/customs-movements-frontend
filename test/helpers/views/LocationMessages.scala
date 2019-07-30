@@ -18,9 +18,25 @@ package helpers.views
 
 trait LocationMessages {
 
-  val location = "location"
-  val title = location + ".title"
-  val question = location + ".question"
-  val hint = location + ".hint"
-  val error = location + ".error"
+  val title = "location.title"
+  val question = "location.question"
+  val locationType = "locationType"
+  val locationTypeEmpty = "locationType.empty"
+  val locationTypeError = "locationType.error"
+  val locationTypeA = "locationType.A"
+  val locationTypeB = "locationType.B"
+  val locationTypeC = "locationType.C"
+  val locationTypeD = "locationType.D"
+  val qualifierCode = "qualifierCode"
+  val qualifierCodeU = "qualifierCode.U"
+  val qualifierCodeY = "qualifierCode.Y"
+  val qualifierCodeEmpty = "qualifierCode.empty"
+  val qualifierCodeError = "qualifierCode.error"
+  val locationCode = "locationCode"
+  val locationCodeEmpty = "locationCode.empty"
+  val locationCodeError = "locationCode.error"
+  val country = "location.country"
+  val countryEmpty = "location.country.empty"
+  val countryError = "location.country.error"
+
 }

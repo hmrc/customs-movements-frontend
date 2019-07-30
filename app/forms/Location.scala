@@ -16,21 +16,53 @@
 
 package forms
 
-import play.api.data.{Form, Forms}
-import play.api.data.Forms.{optional, text}
+import play.api.data.{Form, FormError, Forms}
+import play.api.data.Forms.text
 import play.api.libs.json.Json
+import services.Countries.allCountries
 import utils.validators.forms.FieldValidator._
 
-case class Location(goodsLocation: Option[String])
+case class Location(locationType: String, qualifierCode: String, locationCode: String, country: String) {
+
+  def asString: String = country + locationType + qualifierCode + locationCode
+}
 
 object Location {
   implicit val format = Json.format[Location]
 
   val formId = "Location"
 
+  val correctLocationType: Set[String] = Set("A", "B", "C", "D")
+
+  val correctQualifierCode: Set[String] = Set("U", "Y")
+
   val mapping = Forms.mapping(
-    "goodsLocation" -> optional(text().verifying("location.error", hasSpecificLength(7) and isAlphanumeric))
+    "locationType" -> text()
+      .verifying("locationType.empty", nonEmpty)
+      .verifying("locationType.error", isEmpty or isContainedIn(correctLocationType)),
+    "qualifierCode" -> text()
+      .verifying("qualifierCode.empty", nonEmpty)
+      .verifying("qualifierCode.error", isEmpty or isContainedIn(correctQualifierCode)),
+    "locationCode" -> text()
+      .verifying("locationCode.empty", nonEmpty)
+      .verifying("locationCode.error", isEmpty or isAlphanumeric and noLongerThan(13)),
+    "country" -> text()
+        .verifying("location.country.empty", nonEmpty)
+        .verifying("location.country.error", isEmpty or (input => allCountries.exists(_.countryCode == input)))
   )(Location.apply)(Location.unapply)
 
   def form(): Form[Location] = Form(mapping)
+
+  def adjustErrors(form: Form[Location]): Form[Location] = {
+    val newErrors = form.errors.map {
+      case error if error.key == "locationType" && error.message == "error.required" =>
+        error.copy(messages = Seq("locationType.empty"))
+      case error if error.key == "qualifierCode" && error.message == "error.required" =>
+        error.copy(messages = Seq("qualifierCode.empty"))
+      case error => error
+    }
+
+    form.copy(errors = newErrors)
+  }
+
 }

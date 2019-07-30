@@ -18,6 +18,8 @@
 @import controllers.routes
 @import uk.gov.hmrc.play.views.html._
 @import forms.Location
+@import services.Countries
+@import views.components.fields.{AutoCompleteItem, RadioOption}
 
 @this(main_template: views.html.main_template)
 
@@ -38,13 +40,41 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title(Some("location.title"))
+        @components.page_title(Some("location.question"))
+
+        @components.input_radio(
+          field = form("locationType"),
+            legend = messages("locationType"),
+            inputs = Seq(
+              RadioOption("A", "A", "locationType.A"),
+              RadioOption("B", "B", "locationType.B"),
+              RadioOption("C", "C", "locationType.C"),
+              RadioOption("D", "D", "locationType.D")
+            )
+        )
+
+        @components.input_radio(
+            field = form("qualifierCode"),
+            legend = messages("qualifierCode"),
+            inputs = Seq(
+                RadioOption("U", "U", "qualifierCode.U"),
+                RadioOption("Y", "Y", "locationType.Y")
+            )
+        )
 
         @components.input_text(
-            field = form("goodsLocation"),
-            label = messages("location.question"),
-            hint = Some(messages("location.hint")),
+            field = form("locationCode"),
+            label = messages("locationCode"),
+            hint = None,
             labelClass = Some("heading-24")
+        )
+
+        @components.field_autocomplete(
+            form("country"),
+            "location.country",
+            None,
+            "",
+            items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
         )
 
         @components.submit_button()

@@ -65,7 +65,7 @@ class AppConfig @Inject()(
   )
 
   lazy val fetchSubmissions = servicesConfig.getConfString(
-    "customs-declare-exports.fetch-submissions",
+    "customs-declare-exports.fetch-movements",
     throw new IllegalStateException("Missing configuration for Customs Declaration Exports fetch submission URI")
   )
 

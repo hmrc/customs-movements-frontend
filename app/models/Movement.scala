@@ -19,7 +19,7 @@ import java.time.ZonedDateTime
 
 import play.api.libs.json.Json
 
-case class Submission(
+case class Movement(
   conversationId: String,
   ucr: String,
   submissionType: String,
@@ -28,6 +28,6 @@ case class Submission(
   status: Option[String]
 )
 
-object Submission {
-  implicit val formats = Json.format[Submission]
+object Movement {
+  implicit val formats = Json.format[Movement]
 }

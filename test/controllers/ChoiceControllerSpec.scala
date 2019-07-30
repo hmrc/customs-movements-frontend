@@ -156,7 +156,7 @@ class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with Befo
       val result = route(app, postRequest(choiceUri, correctForm)).get
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be(Some(controllers.routes.SubmissionsController.displayPage().url))
+      redirectLocation(result) must be(Some(controllers.routes.MovementsController.displayPage().url))
     }
   }
 }

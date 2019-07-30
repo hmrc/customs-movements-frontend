@@ -20,20 +20,20 @@ import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.when
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.submissions
+import views.html.movements
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmissionsControllerSpec extends MovementBaseSpec with MockCustomsExportsMovement {
+class MovementsControllerSpec extends MovementBaseSpec with MockCustomsExportsMovement {
 
   trait SetUp {
-    val submissionsPage = new submissions(mainTemplate)
+    val movementsPage = new movements(mainTemplate)
 
-    val controller = new SubmissionsController(
+    val controller = new MovementsController(
       mockAuthAction,
       mockCustomsExportsMovementConnector,
       stubMessagesControllerComponents(),
-      submissionsPage
+      movementsPage
     )(minimalAppConfig, ExecutionContext.global)
 
     authorizedUser()

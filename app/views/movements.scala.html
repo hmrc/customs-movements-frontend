@@ -18,11 +18,11 @@
 @import java.time.format.DateTimeFormatter
 
 @import config.AppConfig
-@import models.{Notification, Submission}
+@import models.{Notification, Movement}
 
 @this(main_template: views.html.main_template)
 
-@(submissions: Seq[(Submission, Seq[Notification])])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+@(submissions: Seq[(Movement, Seq[Notification])])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
     title = messages("submissions.title"),

@@ -19,7 +19,7 @@ package controllers
 import base.MovementBaseSpec
 import forms.Choice.AllowedChoiceValues
 import forms.{Choice, Location}
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 
 class LocationControllerSpec extends MovementBaseSpec {
@@ -46,7 +46,7 @@ class LocationControllerSpec extends MovementBaseSpec {
 
       "cache contains data" in new SetUp {
 
-        withCaching(Location.formId, Some(Location(Some("1234567"))))
+        withCaching(Location.formId, Some(Location("A", "Y", "locationCode", "PL")))
 
         val result = route(app, getRequest(uri)).get
 
@@ -63,7 +63,6 @@ class LocationControllerSpec extends MovementBaseSpec {
 
           status(result) must be(CONFLICT)
         }
-
       }
     }
 
@@ -71,7 +70,7 @@ class LocationControllerSpec extends MovementBaseSpec {
 
       withCaching(Location.formId)
 
-      val incorrectForm: JsValue = JsObject(Map("goodsLocation" -> JsString("1234")))
+      val incorrectForm: JsValue = Json.toJson(Location("incorrectValue", "Y", "locationCode", "PL"))
 
       val result = route(app, postRequest(uri, incorrectForm)).get
 
@@ -82,7 +81,7 @@ class LocationControllerSpec extends MovementBaseSpec {
 
       withCaching(Location.formId)
 
-      val correctForm: JsValue = JsObject(Map("goodsLocation" -> JsString("1234567")))
+      val correctForm: JsValue = Json.toJson(Location("A", "Y", "locationCode", "PL"))
 
       val result = route(app, postRequest(uri, correctForm)).get
       val headers = result.futureValue.header.headers

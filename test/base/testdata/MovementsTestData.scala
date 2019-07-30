@@ -48,14 +48,7 @@ object MovementsTestData {
 
   val goodsDeparted = GoodsDeparted(AllowedPlaces.outOfTheUk)
 
-  val location: JsValue = JsObject(
-    Map(
-      "agentLocation" -> JsString("Agent location"),
-      "agentRole" -> JsString("Agent role"),
-      "goodsLocation" -> JsString("Goods location"),
-      "shed" -> JsString("Shed")
-    )
-  )
+  val location: JsValue = Json.toJson(Location("A", "Y", "correct", "PL"))
 
   val correctTransport: JsValue = JsObject(Map("modeOfTransport" -> JsString("M"), "nationality" -> JsString("PL")))
 

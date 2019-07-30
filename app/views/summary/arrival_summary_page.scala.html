@@ -65,7 +65,7 @@
     @components.summary_list(Some(messages("location.title"))){
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("summary.goodsLocation"),
-            value = data.getEntry[Location](Location.formId).flatMap(_.goodsLocation)
+            value = data.getEntry[Location](Location.formId).map(_.asString)
         ))
     }
 

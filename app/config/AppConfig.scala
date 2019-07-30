@@ -64,13 +64,13 @@ class AppConfig @Inject()(
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports Movement consolidation URI")
   )
 
-  lazy val fetchSubmissions = servicesConfig.getConfString(
-    "customs-declare-exports.fetch-movements",
+  lazy val fetchMovements = servicesConfig.getConfString(
+    "customs-declare-exports-movements.fetch-movements",
     throw new IllegalStateException("Missing configuration for Customs Declaration Exports fetch submission URI")
   )
 
   lazy val fetchNotifications = servicesConfig.getConfString(
-    "customs-declare-exports.fetch-notifications",
+    "customs-declare-exports-movements.fetch-notifications",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports fetch notification URI")
   )
 

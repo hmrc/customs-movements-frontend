@@ -25,6 +25,8 @@
     title = messages("notifications.title"),    
     appConfig = appConfig) {
 
+    @components.back_link(routes.MovementsController.displayPage())
+
     @components.page_title(Some("notifications.title"))
 
     <div>
@@ -41,11 +43,11 @@
             @for(notification <- notifications){
                 <tr class="table-row">
                     <td class="table-cell">@notification.conversationId</td>
-                    <td class="table-cell">Action</td>
-                    <td class="table-cell">Date of Request</td>
-                    <td class="table-cell">Date of Response</td>
-                    <td class="table-cell">ROE</td>
-                    <td class="table-cell">SOE</td>
+                    <td class="table-cell">---</td>
+                    <td class="table-cell">---</td>
+                    <td class="table-cell">---</td>
+                    <td class="table-cell">---</td>
+                    <td class="table-cell">---</td>
                 </tr>
             }
         </table>

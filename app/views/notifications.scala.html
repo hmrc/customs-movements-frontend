@@ -15,11 +15,11 @@
  *@
 
 @import config.AppConfig
-@import models.Notification
+@import models.NotificationPresentation
 
 @this(main_template: views.html.main_template)
 
-@(notifications: Seq[Notification])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+@(notifications: Seq[NotificationPresentation])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
     title = messages("notifications.title"),    

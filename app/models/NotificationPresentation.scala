@@ -16,19 +16,22 @@
 
 package models
 
-import java.time.ZonedDateTime
+import java.time.Instant
 
 import play.api.libs.json.Json
 
-case class Movement(
+final case class NotificationPresentation(
+  timestampReceived: Instant = Instant.now(),
   conversationId: String,
-  ucr: String,
-  submissionType: String,
-  submissionAction: String,
-  dateUpdated: ZonedDateTime,
-  status: Option[String]
-)
+  ucrBlocks: Seq[UcrBlock],
+  roe: Option[String],
+  soe: Option[String]
+) extends Ordered[NotificationPresentation] {
 
-object Movement {
-  implicit val formats = Json.format[Movement]
+  override def compare(other: NotificationPresentation): Int =
+    this.timestampReceived.compareTo(other.timestampReceived)
+}
+
+object NotificationPresentation {
+  implicit val format = Json.format[NotificationPresentation]
 }

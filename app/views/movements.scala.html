@@ -18,11 +18,11 @@
 @import java.time.format.DateTimeFormatter
 
 @import config.AppConfig
-@import models.{Notification, Movement}
+@import models.{Movement, NotificationPresentation}
 
 @this(main_template: views.html.main_template)
 
-@(submissions: Seq[(Movement, Seq[Notification])])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+@(submissions: Seq[(Movement, Seq[NotificationPresentation])])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
     title = messages("submissions.title"),
@@ -49,7 +49,7 @@
                     <td class="table-cell" id="submissionType-@submission.conversationId">@submission.submissionType</td>
                     <td class="table-cell" id="submissionAction-@submission.conversationId">@submission.submissionAction</td>
                     <td class="table-cell" id="dateUpdated-@submission.conversationId">
-                        @{notifications.headOption.map(n => n.dateTimeReceived).map(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault()).format(_))}</td>
+                        @{notifications.headOption.map(_.timestampReceived).map(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault()).format(_))}</td>
                     <td class="table-cell" id="status-@submission.conversationId">@submission.status</td>
                     <td class="table-cell" id="noOfNotifications-@submission.conversationId">
                     @if(notifications.nonEmpty) {

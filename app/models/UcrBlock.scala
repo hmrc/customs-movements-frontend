@@ -15,16 +15,11 @@
  */
 
 package models
-import java.time.ZonedDateTime
 
 import play.api.libs.json.Json
 
-case class Notification(dateTimeReceived: ZonedDateTime, conversationId: String) extends Ordered[Notification] {
+final case class UcrBlock(ucr: String, ucrType: String)
 
-  def compare(that: Notification): Int =
-    this.dateTimeReceived.compareTo(that.dateTimeReceived)
-}
-
-object Notification {
-  implicit val format = Json.format[Notification]
+object UcrBlock {
+  implicit val format = Json.format[UcrBlock]
 }

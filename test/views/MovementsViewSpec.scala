@@ -20,13 +20,14 @@ import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, ZoneId, ZonedDateTime}
 
 import base.ViewValidator
-import models.{Movement, Notification}
+import base.testdata.CommonTestData.conversationId
+import models.{Movement, NotificationPresentation, UcrBlock}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import utils.Stubs
-import views.html.{movements}
+import views.html.movements
 
 class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewValidator {
 
@@ -59,24 +60,32 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
         Seq(
           (
             Movement(
-              conversationId = "conversationId",
+              conversationId = conversationId,
               ucr = "4444",
               submissionType = "M",
               submissionAction = "Consolidate",
               dateUpdated = dateTime,
               status = Some("Cleared")
             ),
-            Seq(Notification(dateTimeReceived = dateTime, conversationId = "conversationId"))
+            Seq(
+              NotificationPresentation(
+                timestampReceived = dateTime.toInstant,
+                conversationId = conversationId,
+                ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M")),
+                roe = None,
+                soe = None
+              )
+            )
           )
         )
       )(FakeRequest(), minimalAppConfig, messages)
 
-      getElementById(pageWithData, "ucr-conversationId").text() must be("4444")
-      getElementById(pageWithData, "submissionType-conversationId").text() must be("M")
-      getElementById(pageWithData, "submissionAction-conversationId").text() must be("Consolidate")
-      getElementById(pageWithData, "dateUpdated-conversationId").text() must be("2019-10-31 00:00")
-      getElementById(pageWithData, "status-conversationId").text() must be("Cleared")
-      getElementById(pageWithData, "noOfNotifications-conversationId").text() must be("1")
+      getElementById(pageWithData, s"ucr-$conversationId").text() must be("4444")
+      getElementById(pageWithData, s"submissionType-$conversationId").text() must be("M")
+      getElementById(pageWithData, s"submissionAction-$conversationId").text() must be("Consolidate")
+      getElementById(pageWithData, s"dateUpdated-$conversationId").text() must be("2019-10-31 00:00")
+      getElementById(pageWithData, s"status-$conversationId").text() must be("Cleared")
+      getElementById(pageWithData, s"noOfNotifications-$conversationId").text() must be("1")
     }
   }
 }

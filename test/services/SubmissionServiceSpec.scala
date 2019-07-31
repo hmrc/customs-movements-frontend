@@ -19,7 +19,7 @@ package services
 import base.MockFactory
 import base.testdata.ConsolidationTestData._
 import base.testdata.MovementsTestData._
-import forms.Choice.AllowedChoiceValues.Arrival
+import forms.Choice.AllowedChoiceValues.{Arrival, Departure}
 import forms._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -37,7 +37,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.xml.{Node, Utility, XML}
 
-class MovementServiceSpec extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures {
+class SubmissionServiceSpec extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures {
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(100, Millis))
@@ -54,28 +54,87 @@ class MovementServiceSpec extends WordSpec with MustMatchers with MockitoSugar w
   }
 
   private trait RequestAcceptedTest extends Test {
-    when(customsExportsMovementConnectorMock.submitMovementDeclaration(any(), any(), any())(any(), any()))
+    when(customsExportsMovementConnectorMock.sendArrivalDeclaration(any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+    when(customsExportsMovementConnectorMock.sendDepartureDeclaration(any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
 
-    when(customsExportsMovementConnectorMock.sendConsolidationRequest(any())(any(), any()))
+    when(customsExportsMovementConnectorMock.sendAssociationRequest(any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+    when(customsExportsMovementConnectorMock.sendDisassociationRequest(any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+    when(customsExportsMovementConnectorMock.sendShutMucrRequest(any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
   }
 
-  "SubmissionService on submitMovementRequest" should {
+  "SubmissionService on submitMovementRequest" when {
 
-    "submit valid Movement Request" in new RequestAcceptedTest {
+    "submitting Arrival" should {
 
-      when(customsCacheServiceMock.fetch(any())(any(), any()))
-        .thenReturn(Future.successful(Some(CacheMap(Arrival, cacheMapData(Arrival)))))
+      "return response from CustomsDeclareExportsMovementsConnector" in new RequestAcceptedTest {
 
-      submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue must equal(ACCEPTED)
+        when(customsCacheServiceMock.fetch(any())(any(), any()))
+          .thenReturn(Future.successful(Some(CacheMap(Arrival, cacheMapData(Arrival)))))
+
+        val CustomHttpResponseCode = 123
+        when(customsExportsMovementConnectorMock.sendArrivalDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
+
+        submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue must equal(
+          CustomHttpResponseCode
+        )
+      }
+
+      "call CustomsDeclareExportsMovementsConnector" in new RequestAcceptedTest {
+
+        when(customsCacheServiceMock.fetch(any())(any(), any()))
+          .thenReturn(Future.successful(Some(CacheMap(Arrival, cacheMapData(Arrival)))))
+
+        submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue
+
+        verify(customsExportsMovementConnectorMock).sendArrivalDeclaration(any())(any(), any())
+      }
+
+      "return Internal Server Error when no data in cache" in new RequestAcceptedTest {
+
+        submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue must equal(
+          INTERNAL_SERVER_ERROR
+        )
+      }
     }
 
-    "handle failure when no data" in new RequestAcceptedTest {
+    "submitting Departure" should {
 
-      submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue must equal(
-        INTERNAL_SERVER_ERROR
-      )
+      "return response from CustomsDeclareExportsMovementsConnector" in new RequestAcceptedTest {
+
+        when(customsCacheServiceMock.fetch(any())(any(), any()))
+          .thenReturn(Future.successful(Some(CacheMap(Departure, cacheMapData(Departure)))))
+
+        val CustomHttpResponseCode = 123
+        when(customsExportsMovementConnectorMock.sendDepartureDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
+
+        submissionService.submitMovementRequest("EDL-eori1", "eori1", Choice(Departure)).futureValue must equal(
+          CustomHttpResponseCode
+        )
+      }
+
+      "call CustomsDeclareExportsMovementsConnector" in new RequestAcceptedTest {
+
+        when(customsCacheServiceMock.fetch(any())(any(), any()))
+          .thenReturn(Future.successful(Some(CacheMap(Departure, cacheMapData(Departure)))))
+
+        submissionService.submitMovementRequest("EDL-eori1", "eori1", Choice(Departure)).futureValue
+
+        verify(customsExportsMovementConnectorMock).sendDepartureDeclaration(any())(any(), any())
+      }
+
+      "return Internal Server Error when no data in cache" in new RequestAcceptedTest {
+
+        submissionService.submitMovementRequest("EDL-eori1", "eori1", Choice(Departure)).futureValue must equal(
+          INTERNAL_SERVER_ERROR
+        )
+      }
     }
   }
 
@@ -84,7 +143,7 @@ class MovementServiceSpec extends WordSpec with MustMatchers with MockitoSugar w
     "return response from CustomsDeclareExportsMovementsConnector" in new Test {
 
       val CustomHttpResponseCode = 123
-      when(customsExportsMovementConnectorMock.sendConsolidationRequest(any())(any(), any()))
+      when(customsExportsMovementConnectorMock.sendAssociationRequest(any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
       submissionService.submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr)).futureValue must equal(
@@ -97,7 +156,7 @@ class MovementServiceSpec extends WordSpec with MustMatchers with MockitoSugar w
       submissionService.submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr)).futureValue
 
       val requestCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      verify(customsExportsMovementConnectorMock).sendConsolidationRequest(requestCaptor.capture())(any(), any())
+      verify(customsExportsMovementConnectorMock).sendAssociationRequest(requestCaptor.capture())(any(), any())
 
       assertEqual(XML.loadString(requestCaptor.getValue), exampleAssociateDucrRequestXml)
     }
@@ -108,7 +167,7 @@ class MovementServiceSpec extends WordSpec with MustMatchers with MockitoSugar w
     "return response from CustomsDeclareExportsMovementsConnector" in new Test {
 
       val CustomHttpResponseCode = 123
-      when(customsExportsMovementConnectorMock.sendConsolidationRequest(any())(any(), any()))
+      when(customsExportsMovementConnectorMock.sendDisassociationRequest(any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
       submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue must equal(
@@ -121,7 +180,7 @@ class MovementServiceSpec extends WordSpec with MustMatchers with MockitoSugar w
       submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue
 
       val requestCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      verify(customsExportsMovementConnectorMock).sendConsolidationRequest(requestCaptor.capture())(any(), any())
+      verify(customsExportsMovementConnectorMock).sendDisassociationRequest(requestCaptor.capture())(any(), any())
 
       assertEqual(XML.loadString(requestCaptor.getValue), exampleDisassociateDucrRequestXml)
     }
@@ -132,7 +191,7 @@ class MovementServiceSpec extends WordSpec with MustMatchers with MockitoSugar w
     "return response from CustomsDeclareExportsMovementsConnector" in new Test {
 
       val CustomHttpResponseCode = 123
-      when(customsExportsMovementConnectorMock.sendConsolidationRequest(any())(any(), any()))
+      when(customsExportsMovementConnectorMock.sendShutMucrRequest(any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
       submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue must equal(CustomHttpResponseCode)
@@ -143,7 +202,7 @@ class MovementServiceSpec extends WordSpec with MustMatchers with MockitoSugar w
       submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue
 
       val requestCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      verify(customsExportsMovementConnectorMock).sendConsolidationRequest(requestCaptor.capture())(any(), any())
+      verify(customsExportsMovementConnectorMock).sendShutMucrRequest(requestCaptor.capture())(any(), any())
 
       assertEqual(XML.loadString(requestCaptor.getValue), exampleShutMucrRequestXml)
     }

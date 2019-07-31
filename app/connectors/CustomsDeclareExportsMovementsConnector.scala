@@ -24,7 +24,6 @@ import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import utils.CustomsHeaderNames
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -33,26 +32,50 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
 
   private val logger = Logger(this.getClass)
 
-  private val MovementSubmissionUrl = s"${appConfig.customsDeclareExportsMovements}${appConfig.saveMovementSubmission}"
-  private val MovementConsolidationUrl =
-    s"${appConfig.customsDeclareExportsMovements}${appConfig.submitMovementConsolidation}"
+  private val ArrivalSubmissionUrl =
+    s"${appConfig.customsDeclareExportsMovements}${appConfig.movementArrivalSubmissionUri}"
+  private val DepartureSubmissionUrl =
+    s"${appConfig.customsDeclareExportsMovements}${appConfig.movementDepartureSubmissionUri}"
+  private val AssociateConsolidationUrl =
+    s"${appConfig.customsDeclareExportsMovements}${appConfig.movementConsolidationAssociateUri}"
+  private val DisassociateConsolidationUrl =
+    s"${appConfig.customsDeclareExportsMovements}${appConfig.movementConsolidationDisassociateUri}"
+  private val ShutMucrConsolidationUrl =
+    s"${appConfig.customsDeclareExportsMovements}${appConfig.movementConsolidationShutMucrUri}"
 
   private val CommonMovementsHeaders =
     Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8), HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8))
 
-  def submitMovementDeclaration(ucr: String, movementType: String, xmlBody: String)(
+  def sendArrivalDeclaration(requestXml: String)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext
-  ): Future[HttpResponse] =
-    httpClient
-      .POSTString[HttpResponse](MovementSubmissionUrl, xmlBody, movementSubmissionHeaders(ucr, movementType))
-      .map(logResponse)
+  ): Future[HttpResponse] = postRequest(ArrivalSubmissionUrl, requestXml)
 
-  private def movementSubmissionHeaders(ucr: String, movementType: String): Seq[(String, String)] =
-    CommonMovementsHeaders ++ Seq(
-      CustomsHeaderNames.XUcr -> ucr,
-      CustomsHeaderNames.XMovementType -> movementType.toString
-    )
+  def sendDepartureDeclaration(requestXml: String)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] = postRequest(DepartureSubmissionUrl, requestXml)
+
+  def sendAssociationRequest(
+    requestXml: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    postRequest(AssociateConsolidationUrl, requestXml)
+
+  def sendDisassociationRequest(
+    requestXml: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    postRequest(DisassociateConsolidationUrl, requestXml)
+
+  def sendShutMucrRequest(requestXml: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    postRequest(ShutMucrConsolidationUrl, requestXml)
+
+  private def postRequest(
+    url: String,
+    requestXml: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    httpClient
+      .POSTString[HttpResponse](url, requestXml, CommonMovementsHeaders)
+      .map(logResponse)
 
   def fetchNotifications(
     conversationId: String
@@ -67,13 +90,6 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
         logger.debug(s"CUSTOMS_MOVEMENTS_FRONTEND fetch submission response is --> ${response.toString}")
         response
     }
-
-  def sendConsolidationRequest(
-    requestXml: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    httpClient
-      .POSTString[HttpResponse](MovementConsolidationUrl, requestXml, CommonMovementsHeaders)
-      .map(logResponse)
 
   private def logResponse(response: HttpResponse): HttpResponse = {
     logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response is --> ${response.toString}")

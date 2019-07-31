@@ -52,6 +52,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       assertMessage(referenceEmpty, "Please choose reference")
       assertMessage(referenceError, "Incorrect reference")
       assertMessage(referenceValueEmpty, "Please enter reference")
+      assertMessage(referenceValueError, "Please enter a valid reference")
     }
   }
 

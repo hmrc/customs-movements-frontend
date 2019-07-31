@@ -18,9 +18,10 @@ package forms
 
 import base.BaseSpec
 import forms.ConsignmentReferences.AllowedReferences
+import helpers.views.ConsignmentReferencesMessages
 import play.api.data.FormError
 
-class ConsignmentReferencesSpec extends BaseSpec {
+class ConsignmentReferencesSpec extends BaseSpec with ConsignmentReferencesMessages {
 
   "Consignment References model" should {
     "contains all allowed values" in {
@@ -46,8 +47,8 @@ class ConsignmentReferencesSpec extends BaseSpec {
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
       errors.length must be(2)
-      errors must contain(FormError("reference", "consignmentReferences.reference.empty"))
-      errors must contain(FormError("referenceValue", "mucr.ducr.reference.value.empty"))
+      errors must contain(FormError("reference", referenceEmpty))
+      errors must contain(FormError("referenceValue", referenceValueEmpty))
     }
 
     "return error for incorrect reference" in {
@@ -56,8 +57,8 @@ class ConsignmentReferencesSpec extends BaseSpec {
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
       errors mustBe List(
-        FormError("reference", "consignmentReferences.reference.error"),
-        FormError("referenceValue", "mucr.ducr.reference.value.error")
+        FormError("reference", referenceError),
+        FormError("referenceValue", referenceValueError)
       )
     }
 

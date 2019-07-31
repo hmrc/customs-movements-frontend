@@ -224,7 +224,7 @@ consignmentReferences.reference.empty = Please choose reference
 consignmentReferences.reference.error = Incorrect reference
 consignmentReferences.reference.value = Enter reference
 consignmentReferences.reference.value.empty = Please enter reference
-consignmentReferences.reference.value.error = Incorrect reference
+consignmentReferences.reference.value.error = Please enter a valid reference
 
 arrivalDetails.title = Arrival time and date
 arrivalDetails.header = Enter date and time of arrival

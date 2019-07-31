@@ -17,7 +17,7 @@
 package views
 
 import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, ZoneId, ZonedDateTime}
+import java.time.{LocalDate, LocalDateTime, ZoneId, ZonedDateTime}
 
 import base.ViewValidator
 import models.{Movement, Notification}
@@ -26,7 +26,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import utils.Stubs
-import views.html.{movements}
+import views.html.movements
 
 class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewValidator {
 
@@ -51,19 +51,16 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
     }
 
     "contains correct submission data" in {
-      val dateTime = ZonedDateTime.of(
-        LocalDate.parse("2019-10-31", DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay(),
-        ZoneId.systemDefault()
-      )
+      val dateTime = LocalDate.parse("2019-10-31", DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay()
       val pageWithData: Html = new movements(mainTemplate)(
         Seq(
           (
             Movement(
               conversationId = "conversationId",
               ucr = "4444",
-              submissionType = "M",
-              submissionAction = "Consolidate",
-              dateUpdated = dateTime,
+//              submissionType = "M",
+//              submissionAction = "Consolidate",
+//              dateUpdated = dateTime,
               status = Some("Cleared")
             ),
             Seq(Notification(dateTimeReceived = dateTime, conversationId = "conversationId"))
@@ -72,9 +69,9 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
       )(FakeRequest(), minimalAppConfig, messages)
 
       getElementById(pageWithData, "ucr-conversationId").text() must be("4444")
-      getElementById(pageWithData, "submissionType-conversationId").text() must be("M")
-      getElementById(pageWithData, "submissionAction-conversationId").text() must be("Consolidate")
-      getElementById(pageWithData, "dateUpdated-conversationId").text() must be("2019-10-31 00:00")
+//      getElementById(pageWithData, "submissionType-conversationId").text() must be("M")
+//      getElementById(pageWithData, "submissionAction-conversationId").text() must be("Consolidate")
+//      getElementById(pageWithData, "dateUpdated-conversationId").text() must be("2019-10-31 00:00")
       getElementById(pageWithData, "status-conversationId").text() must be("Cleared")
       getElementById(pageWithData, "noOfNotifications-conversationId").text() must be("1")
     }

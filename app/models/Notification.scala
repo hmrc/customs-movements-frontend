@@ -15,11 +15,11 @@
  */
 
 package models
-import java.time.{LocalDateTime, ZonedDateTime}
+import java.time.ZonedDateTime
 
 import play.api.libs.json.Json
 
-case class Notification(dateTimeReceived: LocalDateTime, conversationId: String) extends Ordered[Notification] {
+case class Notification(dateTimeReceived: ZonedDateTime, conversationId: String) extends Ordered[Notification] {
 
   def compare(that: Notification): Int =
     this.dateTimeReceived.compareTo(that.dateTimeReceived)

@@ -15,17 +15,17 @@
  */
 
 package models
-import java.time.{LocalDateTime, ZonedDateTime}
+import java.time.ZonedDateTime
 
 import play.api.libs.json.Json
 
 case class Movement(
   conversationId: String,
   ucr: String,
-  //submissionType: Option[String] = None,
-  //submissionAction: Option[String] = None,
-  //dateUpdated: Option[LocalDateTime],
-  status: Option[String] = None
+  submissionType: String,
+  submissionAction: String,
+  dateUpdated: ZonedDateTime,
+  status: Option[String]
 )
 
 object Movement {

@@ -20,10 +20,14 @@ import scala.xml.{Node, NodeSeq}
 
 object InventoryLinkingConsolidationRequestFactory {
 
+  private val AssociationCode = "EAC"
+  private val DisassociationCode = "EAC"
+  private val ShutMucrCode = "CST"
+
   def buildAssociationRequest(mucr: String, ducr: String): Node =
     scala.xml.Utility.trim {
       <inventoryLinkingConsolidationRequest xmlns="http://gov.uk/customs/inventoryLinking/v1">
-        <messageCode>EAC</messageCode>
+        <messageCode>{AssociationCode}</messageCode>
         {buildMasterUcrNode(Some(mucr))}
         {buildUcrBlockNode(Some(ducr))}
       </inventoryLinkingConsolidationRequest>
@@ -32,7 +36,7 @@ object InventoryLinkingConsolidationRequestFactory {
   def buildDisassociationRequest(ducr: String): Node =
     scala.xml.Utility.trim {
       <inventoryLinkingConsolidationRequest xmlns="http://gov.uk/customs/inventoryLinking/v1">
-        <messageCode>EAC</messageCode>
+        <messageCode>{DisassociationCode}</messageCode>
         {buildUcrBlockNode(Some(ducr))}
       </inventoryLinkingConsolidationRequest>
     }
@@ -40,7 +44,7 @@ object InventoryLinkingConsolidationRequestFactory {
   def buildShutMucrRequest(mucr: String): Node =
     scala.xml.Utility.trim {
       <inventoryLinkingConsolidationRequest xmlns="http://gov.uk/customs/inventoryLinking/v1">
-        <messageCode>CST</messageCode>
+        <messageCode>{ShutMucrCode}</messageCode>
         {buildMasterUcrNode(Some(mucr))}
       </inventoryLinkingConsolidationRequest>
     }

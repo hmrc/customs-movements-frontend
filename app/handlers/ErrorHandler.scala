@@ -43,7 +43,7 @@ class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi,
 
   override def resolveError(rh: RequestHeader, ex: Throwable): Result =
     ex match {
-      case _: NoActiveSession => toGGLogin(rh.uri)
+      case _: NoActiveSession => Results.Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.loginContinueUrl)))
       case _: InsufficientEnrolments =>
         Results.SeeOther(routes.UnauthorisedController.onPageLoad().url)
       case _: IncompleteApplication =>

@@ -16,6 +16,8 @@
 
 package handlers
 
+import java.net.URLEncoder
+
 import base.MovementBaseSpec
 import config.AppConfig
 import controllers.exception.IncompleteApplication
@@ -44,6 +46,8 @@ class ErrorHandlerSpec extends MovementBaseSpec {
   }
   "resolve error" should {
 
+    def urlEncode(value: String): String = URLEncoder.encode(value, "UTF-8")
+
     "handle incomplete application exception" in {
       val res = errorHandler.resolveError(req, IncompleteApplication)
       res.header.status must be(Status.SEE_OTHER)
@@ -56,7 +60,7 @@ class ErrorHandlerSpec extends MovementBaseSpec {
       val res = errorHandler.resolveError(req, new NoActiveSession("A user is not logged in") {})
       res.header.status must be(Status.SEE_OTHER)
       res.header.headers.get(HeaderNames.LOCATION) must be(
-        Some("/gg/sign-in?continue=%2Ffoo&origin=customs-movements-frontend")
+        Some(s"http://localhost:9949/auth-login-stub/gg-sign-in?continue=${urlEncode("http://localhost:6796/customs-movements-frontend/start")}")
       )
     }
 

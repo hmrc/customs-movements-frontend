@@ -40,7 +40,7 @@ class NotificationsControllerSpec
       mockCustomsExportsMovementConnector,
       stubMessagesControllerComponents(),
       notificationsPage
-    )(minimalAppConfig, ExecutionContext.global)
+    )(ExecutionContext.global)
 
     authorizedUser()
   }

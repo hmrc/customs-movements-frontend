@@ -39,7 +39,7 @@ class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi,
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(
     implicit request: Request[_]
-  ): Html = errorTemplate(pageTitle, heading, message, appConfig)
+  ): Html = errorTemplate(pageTitle, heading, message)
 
   override def resolveError(rh: RequestHeader, ex: Throwable): Result =
     ex match {

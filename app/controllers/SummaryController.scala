@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.Choice.AllowedChoiceValues._
@@ -43,7 +42,7 @@ class SummaryController @Inject()(
   arrivalSummaryPage: arrival_summary_page,
   departureSummaryPage: departure_summary_page,
   movementConfirmationPage: movement_confirmation_page
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   private val logger = Logger(this.getClass())

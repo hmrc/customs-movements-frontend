@@ -30,7 +30,7 @@ class DisassociateDucrConfirmationViewSpec
   private val page = injector.instanceOf[views.html.disassociate_ducr_confirmation]
 
   private def createView(ducr: String): Html =
-    page()(appConfig, fakeRequest, new Flash(Map(FlashKeys.DUCR -> ducr)), messages)
+    page()(fakeRequest, new Flash(Map(FlashKeys.DUCR -> ducr)), messages)
 
   "Disassociate Ducr Confirmation View" should {
 

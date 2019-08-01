@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.AppConfig
 import controllers.actions.AuthAction
 import controllers.storage.CacheIdGenerator.cacheId
 import forms.Choice
@@ -37,7 +36,7 @@ class ChoiceController @Inject()(
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
   choicePage: choice_page
-)(implicit appConfig: AppConfig, ec: ExecutionContext)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>

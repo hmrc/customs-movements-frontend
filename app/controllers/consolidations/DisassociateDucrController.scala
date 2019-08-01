@@ -16,7 +16,6 @@
 
 package controllers.consolidations
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.FlashKeys
 import forms.DisassociateDucr._
@@ -39,7 +38,7 @@ class DisassociateDucrController @Inject()(
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   disassociateDucrPage: disassociate_ducr
-)(implicit appConfig: AppConfig, ec: ExecutionContext)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   private val logger = Logger(this.getClass)

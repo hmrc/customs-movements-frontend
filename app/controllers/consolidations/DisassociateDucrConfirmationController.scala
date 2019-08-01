@@ -16,7 +16,6 @@
 
 package controllers.consolidations
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
@@ -32,7 +31,7 @@ class DisassociateDucrConfirmationController @Inject()(
   journeyType: JourneyAction,
   mcc: MessagesControllerComponents,
   disassociateDucrConfirmationPage: disassociate_ducr_confirmation
-)(implicit appConfig: AppConfig, ec: ExecutionContext)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>

@@ -16,7 +16,6 @@
 
 package controllers.consolidations
 
-import config.AppConfig
 import controllers.actions.AuthAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
@@ -31,7 +30,7 @@ class ShutMucrConfirmationController @Inject()(
   authenticate: AuthAction,
   mcc: MessagesControllerComponents,
   shutMucrConfirmationPage: shut_mucr_confirmation
-)(implicit appConfig: AppConfig, ec: ExecutionContext)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = authenticate { implicit request =>

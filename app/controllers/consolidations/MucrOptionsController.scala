@@ -16,12 +16,10 @@
 
 package controllers.consolidations
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.MucrOptions
 import forms.MucrOptions.{form, formId}
-import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,12 +34,10 @@ import scala.concurrent.Future
 class MucrOptionsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   cacheService: CustomsCacheService,
   associateDucrPage: mucr_options
-)(implicit appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport {
+) extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     Ok(associateDucrPage(form))

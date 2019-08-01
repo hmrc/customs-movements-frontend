@@ -14,15 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
-
 @this(main_template: views.html.main_template)
 
-@(movementType: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(movementType: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-  title = messages(s"movement.${movementType}.confirmation"),
-  appConfig = appConfig) {
+@main_template(title = messages(s"movement.${movementType}.confirmation")) {
 
   @components.highlight_box_with_reference(
     headingText = messages(s"movement.choice.${movementType}.label") + " has been submitted"

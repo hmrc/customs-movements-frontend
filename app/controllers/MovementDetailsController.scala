@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.Choice.AllowedChoiceValues
@@ -27,7 +26,6 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
-import play.filters.csrf.CSRF.ErrorHandler
 import play.twirl.api.Html
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -40,11 +38,10 @@ class MovementDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
-  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   arrivalDetailsPage: arrival_details,
   departureDetailsPage: departure_details
-)(implicit appConfig: AppConfig, ec: ExecutionContext)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

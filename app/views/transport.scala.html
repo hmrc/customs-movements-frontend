@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.routes
 @import uk.gov.hmrc.play.views.html._
 @import forms.Transport
@@ -23,12 +22,9 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[Transport], choice: String)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+@(form: Form[Transport], choice: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("transport.title"),
-    appConfig = appConfig
-) {
+@main_template(title = messages("transport.title")) {
     @helper.form(routes.TransportController.saveTransport(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 

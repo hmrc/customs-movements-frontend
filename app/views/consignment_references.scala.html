@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.routes
 @import uk.gov.hmrc.play.views.html._
 @import forms.ConsignmentReferences
@@ -23,12 +22,9 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[ConsignmentReferences])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+@(form: Form[ConsignmentReferences])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("consignmentReferences.title"),
-    appConfig = appConfig
-) {
+@main_template(title = messages("consignmentReferences.title")) {
     @helper.form(routes.ConsignmentReferencesController.saveConsignmentReferences(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 

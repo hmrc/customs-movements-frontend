@@ -16,9 +16,7 @@
 
 package controllers.consolidations
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,11 +27,9 @@ import views.html.associate_ducr_confirmation
 class AssociateDucrConfirmationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   associateDucrConfirmPage: associate_ducr_confirmation
-)(implicit appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport {
+) extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     Ok(associateDucrConfirmPage())

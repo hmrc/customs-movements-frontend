@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.GoodsDeparted._
@@ -40,7 +39,7 @@ class GoodsDepartedController @Inject()(
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   goodsDepartedPage: goods_departed
-)(implicit appConfig: AppConfig, ec: ExecutionContext)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

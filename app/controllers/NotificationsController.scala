@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.AppConfig
 import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
@@ -32,7 +31,7 @@ class NotificationsController @Inject()(
   connector: CustomsDeclareExportsMovementsConnector,
   mcc: MessagesControllerComponents,
   notifications: notifications
-)(implicit appConfig: AppConfig, ec: ExecutionContext)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def listOfNotifications(conversationId: String): Action[AnyContent] = authenticate.async { implicit request =>

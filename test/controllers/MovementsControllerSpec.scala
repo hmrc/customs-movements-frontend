@@ -34,7 +34,7 @@ class MovementsControllerSpec extends MovementBaseSpec with MockCustomsExportsMo
       mockCustomsExportsMovementConnector,
       stubMessagesControllerComponents(),
       movementsPage
-    )(minimalAppConfig, ExecutionContext.global)
+    )(ExecutionContext.global)
 
     authorizedUser()
   }

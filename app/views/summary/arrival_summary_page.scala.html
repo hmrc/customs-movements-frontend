@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.routes
 @import uk.gov.hmrc.http.cache.client.CacheMap
 @import models.viewmodels.HtmlTableRow
@@ -24,12 +23,9 @@
 
 @this(main_template: views.html.main_template)
 
-@(data: CacheMap)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(data: CacheMap)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("summary.title"),
-    appConfig = appConfig
-) {
+@main_template(title = messages("summary.title")){
     @components.back_link(routes.TransportController.displayPage())
 
     @components.page_title(Some("summary.arrival.title"))

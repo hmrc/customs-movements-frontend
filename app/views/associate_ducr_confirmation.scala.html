@@ -14,19 +14,15 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.routes
 @import uk.gov.hmrc.play.views.html._
 @import controllers.storage.FlashKeys
 
 @this(main_template: views.html.main_template)
 
-@()(implicit appConfig: AppConfig, request: Request[_], flash: Flash, messages: Messages)
+@()(implicit request: Request[_], flash: Flash, messages: Messages)
 
- @main_template(
-  title = messages("associateDucrConfirmation.title"),
-  appConfig = appConfig
- ) {
+ @main_template(title = messages("associateDucrConfirmation.title")) {
 
   @components.highlight_box_with_reference(
    headingText = messages("associateDucrConfirmation.title"),

@@ -14,12 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import play.twirl.api.HtmlFormat
 
 @this(govuk_wrapper: views.html.govuk_wrapper)
 
-@(pageTitle: String, heading: String, message: String, appConfig: AppConfig)(implicit request: Request[_], messages: Messages)
+@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
 
 @contentHeader = {
   <h1>@heading</h1>
@@ -29,4 +28,4 @@
   <p>@message</p>
 }
 
-@govuk_wrapper(appConfig, pageTitle, None, None, None, HtmlFormat.empty, Some(contentHeader), mainContent, HtmlFormat.empty, None)
+@govuk_wrapper(pageTitle, None, None, None, HtmlFormat.empty, Some(contentHeader), mainContent, HtmlFormat.empty, None)

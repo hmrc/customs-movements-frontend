@@ -14,17 +14,13 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import forms.ShutMucr
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[ShutMucr])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+@(form: Form[ShutMucr])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-  title = messages("shutMucr.tabTitle"),
-  appConfig = appConfig
-) {
+@main_template(title = messages("shutMucr.tabTitle")) {
 
   @helper.form(consolidations.routes.ShutMucrController.submitForm(), 'autoComplete -> "off") {
     @helper.CSRF.formField

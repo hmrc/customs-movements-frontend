@@ -16,7 +16,6 @@
 
 package controllers.consolidations
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.exception.IncompleteApplication
 import controllers.storage.CacheIdGenerator.movementCacheId
@@ -42,8 +41,7 @@ class AssociateDucrSummaryController @Inject()(
   cacheService: CustomsCacheService,
   submissionService: SubmissionService,
   associateDucrSummaryPage: associate_ducr_summary
-)(implicit appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport {
+) extends FrontendController(mcc) with I18nSupport {
 
   private val logger = Logger(this.getClass)
 

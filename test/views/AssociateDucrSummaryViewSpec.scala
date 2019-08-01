@@ -28,7 +28,7 @@ class AssociateDucrSummaryViewSpec extends ViewSpec with AssociateDucrSummaryMes
   private val page = injector.instanceOf[views.html.associate_ducr_summary]
 
   private def createView(mucr: String, ducr: String): Html =
-    page(AssociateDucr(ducr), mucr)(appConfig, fakeRequest, messages)
+    page(AssociateDucr(ducr), mucr)(fakeRequest, messages)
 
   "Disassociate Ducr Confirmation View" should {
 

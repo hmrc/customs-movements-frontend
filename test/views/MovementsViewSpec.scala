@@ -32,7 +32,7 @@ import views.html.movements
 class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewValidator {
 
   val messages = stubMessages()
-  val page: Html = new movements(mainTemplate)(Seq.empty)(FakeRequest(), minimalAppConfig, messages)
+  val page: Html = new movements(mainTemplate)(Seq.empty)(FakeRequest(), messages)
 
   "Movements page" should {
 
@@ -78,7 +78,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
             )
           )
         )
-      )(FakeRequest(), minimalAppConfig, messages)
+      )(FakeRequest(), messages)
 
       getElementById(pageWithData, s"ucr-$conversationId").text() must be("4444")
       getElementById(pageWithData, s"submissionType-$conversationId").text() must be("M")

@@ -27,7 +27,7 @@ import views.html.notifications
 class NotificationsViewSpec extends WordSpec with MustMatchers with Stubs with ViewValidator {
 
   val messages = stubMessages()
-  val page: Html = new notifications(mainTemplate)(Seq.empty)(FakeRequest(), minimalAppConfig, messages)
+  val page: Html = new notifications(mainTemplate)(Seq.empty)(FakeRequest(), messages)
 
   "Notification page" should {
 

@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.routes
 @import forms.GoodsDeparted.AllowedPlaces._
 @import uk.gov.hmrc.play.views.html._
@@ -23,12 +22,9 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[GoodsDeparted])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+@(form: Form[GoodsDeparted])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("goodsDeparted.title"),
-    appConfig = appConfig
-) {
+@main_template(title = messages("goodsDeparted.title")) {
     @helper.form(routes.GoodsDepartedController.saveGoodsDeparted(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 

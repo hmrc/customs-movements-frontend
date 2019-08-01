@@ -14,18 +14,14 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import forms.AssociateDucr
 
 @this(main_template: views.html.main_template)
 
-@(associateDucr: AssociateDucr, mucr: String)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+@(associateDucr: AssociateDucr, mucr: String)(implicit request: Request[_], messages: Messages)
 
 
-  @main_template(
-    title = messages("associateDucrSummary.title", mucr),
-    appConfig = appConfig
-  ) {
+  @main_template(title = messages("associateDucrSummary.title", mucr)) {
     @helper.form(consolidations.routes.AssociateDucrSummaryController.submit(), 'autoComplete -> "off") {
       @helper.CSRF.formField
 

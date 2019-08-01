@@ -16,13 +16,11 @@
 
 package controllers.consolidations
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.exception.IncompleteApplication
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.AssociateDucr.form
 import forms.{AssociateDucr, MucrOptions}
-import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,12 +34,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class AssociateDucrController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   cacheService: CustomsCacheService,
   associateDucrPage: associate_ducr
-)(implicit appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport {
+) extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     cacheService.fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId).map {

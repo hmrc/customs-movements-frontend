@@ -14,19 +14,15 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import forms.MucrOptions
 @import MucrOptions._
 @import views.components.fields.RadioOption
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[MucrOptions])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+@(form: Form[MucrOptions])(implicit request: Request[_], messages: Messages)
 
-    @main_template(
-        title = messages("mucrOptions.title"),
-        appConfig = appConfig
-    ) {
+    @main_template(title = messages("mucrOptions.title")) {
         @helper.form(consolidations.routes.MucrOptionsController.save(), 'autoComplete -> "off") {
             @helper.CSRF.formField
 

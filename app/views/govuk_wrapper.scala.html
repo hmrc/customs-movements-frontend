@@ -26,12 +26,12 @@
     main_content_header_di: MainContentHeader,
     main_content_di: MainContent,
     footer_links_di: FooterLinks,
-    hmrc_gov_uk_template: GovUkTemplate
+    hmrc_gov_uk_template: GovUkTemplate,
+    appConfig: config.AppConfig
 )
 
 
-@(appConfig: config.AppConfig,
-  title: String,
+@(title: String,
   mainClass: Option[String] = None,
   mainDataAttributes: Option[Html] = None,
   bodyClasses: Option[String] = None,

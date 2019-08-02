@@ -16,19 +16,20 @@
 
 package models
 
-import java.time.ZonedDateTime
+import java.time.Instant
+import java.util.UUID
 
-import play.api.libs.json.Json
+import play.api.libs.json._
 
-case class Movement(
+case class SubmissionPresentation(
+  uuid: String = UUID.randomUUID().toString,
+  eori: String,
   conversationId: String,
-  ucr: String,
-  submissionType: String,
-  submissionAction: String,
-  dateUpdated: ZonedDateTime,
-  status: Option[String]
+  ucrBlocks: Seq[UcrBlock],
+  actionType: String,
+  requestTimestamp: Instant = Instant.now()
 )
 
-object Movement {
-  implicit val formats = Json.format[Movement]
+object SubmissionPresentation {
+  implicit val formats = Json.format[SubmissionPresentation]
 }

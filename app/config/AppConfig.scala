@@ -56,27 +56,37 @@ class AppConfig @Inject()(
 
   lazy val movementArrivalSubmissionUri = servicesConfig.getConfString(
     "customs-declare-exports-movements.submit-movement-arrival",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports Movements Arrival submission URI")
+    throw new IllegalStateException(
+      "Missing configuration for Customs Declarations Exports Movements Arrival submission URI"
+    )
   )
 
   lazy val movementDepartureSubmissionUri = servicesConfig.getConfString(
     "customs-declare-exports-movements.submit-movement-departure",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports Movements Departure submission URI")
+    throw new IllegalStateException(
+      "Missing configuration for Customs Declarations Exports Movements Departure submission URI"
+    )
   )
 
   lazy val movementConsolidationShutMucrUri = servicesConfig.getConfString(
     "customs-declare-exports-movements.submit-consolidation-mucr-shut",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports Movements consolidation MUCR shut URI")
+    throw new IllegalStateException(
+      "Missing configuration for Customs Declarations Exports Movements consolidation MUCR shut URI"
+    )
   )
 
   lazy val movementConsolidationAssociateUri = servicesConfig.getConfString(
     "customs-declare-exports-movements.submit-consolidation-association",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports Movements consolidation Associate URI")
+    throw new IllegalStateException(
+      "Missing configuration for Customs Declarations Exports Movements consolidation Associate URI"
+    )
   )
 
   lazy val movementConsolidationDisassociateUri = servicesConfig.getConfString(
     "customs-declare-exports-movements.submit-consolidation-disassociation",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports Movements consolidation Disassociate URI")
+    throw new IllegalStateException(
+      "Missing configuration for Customs Declarations Exports Movements consolidation Disassociate URI"
+    )
   )
 
   lazy val fetchMovements = servicesConfig.getConfString(

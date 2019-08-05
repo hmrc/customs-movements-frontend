@@ -16,8 +16,8 @@
 
 package forms
 
-import play.api.data.{Form, FormError, Forms}
 import play.api.data.Forms.text
+import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import services.Countries.allCountries
 import utils.validators.forms.FieldValidator._
@@ -47,8 +47,8 @@ object Location {
       .verifying("locationCode.empty", nonEmpty)
       .verifying("locationCode.error", isEmpty or isAlphanumeric and noLongerThan(13)),
     "country" -> text()
-        .verifying("location.country.empty", nonEmpty)
-        .verifying("location.country.error", isEmpty or (input => allCountries.exists(_.countryCode == input)))
+      .verifying("location.country.empty", nonEmpty)
+      .verifying("location.country.error", isEmpty or (input => allCountries.exists(_.countryCode == input)))
   )(Location.apply)(Location.unapply)
 
   def form(): Form[Location] = Form(mapping)

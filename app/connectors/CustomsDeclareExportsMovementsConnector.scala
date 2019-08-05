@@ -32,29 +32,30 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
 
   private val logger = Logger(this.getClass)
 
+  private val CustomsDeclareExportsMovementsUrl = s"${appConfig.customsDeclareExportsMovements}"
   private val ArrivalSubmissionUrl =
-    s"${appConfig.customsDeclareExportsMovements}${appConfig.movementArrivalSubmissionUri}"
+    s"$CustomsDeclareExportsMovementsUrl${appConfig.movementArrivalSubmissionUri}"
   private val DepartureSubmissionUrl =
-    s"${appConfig.customsDeclareExportsMovements}${appConfig.movementDepartureSubmissionUri}"
+    s"$CustomsDeclareExportsMovementsUrl${appConfig.movementDepartureSubmissionUri}"
   private val AssociateConsolidationUrl =
-    s"${appConfig.customsDeclareExportsMovements}${appConfig.movementConsolidationAssociateUri}"
+    s"$CustomsDeclareExportsMovementsUrl${appConfig.movementConsolidationAssociateUri}"
   private val DisassociateConsolidationUrl =
-    s"${appConfig.customsDeclareExportsMovements}${appConfig.movementConsolidationDisassociateUri}"
+    s"$CustomsDeclareExportsMovementsUrl${appConfig.movementConsolidationDisassociateUri}"
   private val ShutMucrConsolidationUrl =
-    s"${appConfig.customsDeclareExportsMovements}${appConfig.movementConsolidationShutMucrUri}"
+    s"$CustomsDeclareExportsMovementsUrl${appConfig.movementConsolidationShutMucrUri}"
 
   private val CommonMovementsHeaders =
     Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8), HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8))
 
-  def sendArrivalDeclaration(requestXml: String)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[HttpResponse] = postRequest(ArrivalSubmissionUrl, requestXml)
+  def sendArrivalDeclaration(
+    requestXml: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    postRequest(ArrivalSubmissionUrl, requestXml)
 
-  def sendDepartureDeclaration(requestXml: String)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[HttpResponse] = postRequest(DepartureSubmissionUrl, requestXml)
+  def sendDepartureDeclaration(
+    requestXml: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    postRequest(DepartureSubmissionUrl, requestXml)
 
   def sendAssociationRequest(
     requestXml: String
@@ -85,11 +86,12 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
     )
 
   def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[SubmissionPresentation]] =
-    httpClient.GET[Seq[SubmissionPresentation]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchMovements}").map {
-      response =>
+    httpClient
+      .GET[Seq[SubmissionPresentation]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchMovements}")
+      .map { response =>
         logger.debug(s"CUSTOMS_MOVEMENTS_FRONTEND fetch submission response is --> ${response.toString}")
         response
-    }
+      }
 
   private def logResponse(response: HttpResponse): HttpResponse = {
     logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response is --> ${response.toString}")

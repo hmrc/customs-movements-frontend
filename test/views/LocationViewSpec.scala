@@ -40,7 +40,10 @@ class LocationViewSpec extends ViewSpec with LocationMessages with CommonMessage
       assertMessage(title, "Location")
       assertMessage(question, "Where are the goods located?")
       assertMessage(locationType, "Location Type")
-      assertMessage(locationTypeA, "A - Designated location (denotes Frontier or Frontier linked - Airports, ITSFs etc)")
+      assertMessage(
+        locationTypeA,
+        "A - Designated location (denotes Frontier or Frontier linked - Airports, ITSFs etc)"
+      )
       assertMessage(locationTypeB, "B - Authorised place (identifies inland locations such as customs warehouses)")
       assertMessage(locationTypeC, "C - Approved place (only used for certificate of Agreement AirFields)")
       assertMessage(locationTypeD, "D - Other (such as pipelines, continental shelf, sind farms, etc)")

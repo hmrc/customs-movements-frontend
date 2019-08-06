@@ -23,7 +23,8 @@ import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
 import models.external.requests.InventoryLinkingConsolidationRequestFactory._
 import play.api.http.Status.INTERNAL_SERVER_ERROR
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -43,23 +44,23 @@ class SubmissionService @Inject()(
         val data = Movement.createMovementRequest(cacheMap, eori, choice)
         val timer = metrics.startTimer(data.messageCode)
 
-        choice.value match {
-          case Arrival =>
-            connector.sendArrivalDeclaration(data.toXml).map { submitResponse =>
-              metrics.incrementCounter(data.messageCode)
-              timer.stop()
-              submitResponse.status
-            }
-          case Departure =>
-            connector.sendDepartureDeclaration(data.toXml).map { submitResponse =>
-              metrics.incrementCounter(data.messageCode)
-              timer.stop()
-              submitResponse.status
-            }
+        sendMovementRequest(choice, data).map { submitResponse =>
+          metrics.incrementCounter(data.messageCode)
+          timer.stop()
+          submitResponse.status
         }
       }
       case _ =>
         Future.successful(INTERNAL_SERVER_ERROR)
+    }
+
+  private def sendMovementRequest(
+    choice: Choice,
+    data: InventoryLinkingMovementRequest
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    choice.value match {
+      case Arrival   => connector.sendArrivalDeclaration(data.toXml)
+      case Departure => connector.sendDepartureDeclaration(data.toXml)
     }
 
   def submitDucrAssociation(

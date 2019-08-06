@@ -43,7 +43,9 @@ trait MockCustomsExportsMovement extends MockitoSugar {
         .sendArrivalDeclaration(any())(any(), any())
     ).thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
-  def listOfSubmissions(submissions: Seq[SubmissionPresentation]): OngoingStubbing[Future[Seq[SubmissionPresentation]]] =
+  def listOfSubmissions(
+    submissions: Seq[SubmissionPresentation]
+  ): OngoingStubbing[Future[Seq[SubmissionPresentation]]] =
     when(mockCustomsExportsMovementConnector.fetchSubmissions()(any(), any()))
       .thenReturn(Future.successful(submissions))
 }

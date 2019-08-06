@@ -56,10 +56,7 @@ class ConsignmentReferencesSpec extends BaseSpec with ConsignmentReferencesMessa
         ConsignmentReferences("Incorrect reference", "5123456789-000-123ABC45$%^FIIIII")
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
-      errors mustBe List(
-        FormError("reference", referenceError),
-        FormError("referenceValue", referenceValueError)
-      )
+      errors mustBe List(FormError("reference", referenceError), FormError("referenceValue", referenceValueError))
     }
 
     "no errors for valid MUCR/DUCRs " in {

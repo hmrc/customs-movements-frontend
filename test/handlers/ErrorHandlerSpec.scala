@@ -60,7 +60,9 @@ class ErrorHandlerSpec extends MovementBaseSpec {
       val res = errorHandler.resolveError(req, new NoActiveSession("A user is not logged in") {})
       res.header.status must be(Status.SEE_OTHER)
       res.header.headers.get(HeaderNames.LOCATION) must be(
-        Some(s"http://localhost:9949/auth-login-stub/gg-sign-in?continue=${urlEncode("http://localhost:6796/customs-movements-frontend/start")}")
+        Some(
+          s"http://localhost:9949/auth-login-stub/gg-sign-in?continue=${urlEncode("http://localhost:6796/customs-movements-frontend/start")}"
+        )
       )
     }
 

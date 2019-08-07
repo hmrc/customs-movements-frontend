@@ -17,12 +17,14 @@
 package services
 
 import connectors.CustomsDeclareExportsMovementsConnector
+import forms.Choice.AllowedChoiceValues.{Arrival, Departure}
 import forms._
 import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
 import models.external.requests.InventoryLinkingConsolidationRequestFactory._
 import play.api.http.Status.INTERNAL_SERVER_ERROR
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,7 +43,8 @@ class SubmissionService @Inject()(
       case Some(cacheMap) => {
         val data = Movement.createMovementRequest(cacheMap, eori, choice)
         val timer = metrics.startTimer(data.messageCode)
-        connector.submitMovementDeclaration(data.ucrBlock.ucr, data.messageCode, data.toXml).map { submitResponse =>
+
+        sendMovementRequest(choice, data).map { submitResponse =>
           metrics.incrementCounter(data.messageCode)
           timer.stop()
           submitResponse.status
@@ -51,19 +54,28 @@ class SubmissionService @Inject()(
         Future.successful(INTERNAL_SERVER_ERROR)
     }
 
+  private def sendMovementRequest(
+    choice: Choice,
+    data: InventoryLinkingMovementRequest
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    choice.value match {
+      case Arrival   => connector.sendArrivalDeclaration(data.toXml)
+      case Departure => connector.sendDepartureDeclaration(data.toXml)
+    }
+
   def submitDucrAssociation(
     mucrOptions: MucrOptions,
     associateDucr: AssociateDucr
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] =
     connector
-      .sendConsolidationRequest(buildAssociationRequest(mucr = mucrOptions.mucr, ducr = associateDucr.ducr).toString)
+      .sendAssociationRequest(buildAssociationRequest(mucr = mucrOptions.mucr, ducr = associateDucr.ducr).toString)
       .map(_.status)
 
   def submitDucrDisassociation(
     disassociateDucr: DisassociateDucr
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] =
-    connector.sendConsolidationRequest(buildDisassociationRequest(disassociateDucr.ducr).toString).map(_.status)
+    connector.sendDisassociationRequest(buildDisassociationRequest(disassociateDucr.ducr).toString).map(_.status)
 
   def submitShutMucrRequest(shutMucr: ShutMucr)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] =
-    connector.sendConsolidationRequest(buildShutMucrRequest(shutMucr.mucr).toString).map(_.status)
+    connector.sendShutMucrRequest(buildShutMucrRequest(shutMucr.mucr).toString).map(_.status)
 }

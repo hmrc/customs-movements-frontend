@@ -65,9 +65,15 @@ object MockFactory extends MockitoSugar {
   def buildCustomsDeclareExportsMovementsConnectorMock: CustomsDeclareExportsMovementsConnector = {
     val customsDeclareExportsMovementsConnector = mock[CustomsDeclareExportsMovementsConnector]
 
-    when(customsDeclareExportsMovementsConnector.submitMovementDeclaration(any(), any(), any())(any(), any()))
+    when(customsDeclareExportsMovementsConnector.sendArrivalDeclaration(any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
-    when(customsDeclareExportsMovementsConnector.sendConsolidationRequest(any())(any(), any()))
+    when(customsDeclareExportsMovementsConnector.sendDepartureDeclaration(any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
+    when(customsDeclareExportsMovementsConnector.sendAssociationRequest(any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
+    when(customsDeclareExportsMovementsConnector.sendDisassociationRequest(any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
+    when(customsDeclareExportsMovementsConnector.sendShutMucrRequest(any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
 
     customsDeclareExportsMovementsConnector

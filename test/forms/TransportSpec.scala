@@ -86,8 +86,8 @@ class TransportSpec extends BaseSpec {
         val transportPoland = Transport(Sea, "PL")
         Transport.form().fillAndValidate(transportPoland).errors mustBe empty
 
-        val transportKosovo = Transport(Sea, "XK")
-        Transport.form().fillAndValidate(transportKosovo).errors mustBe empty
+        val transportFinland = Transport(Sea, "FI")
+        Transport.form().fillAndValidate(transportFinland).errors mustBe empty
       }
     }
   }

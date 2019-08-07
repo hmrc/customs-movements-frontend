@@ -97,14 +97,6 @@ global.error.message = Please try again later.
 
 confirmationPage.title = Confirmation page
 
-notifications.title = Notifications
-notifications.reference = Reference
-notifications.action = Action
-notifications.dateOfRequest = Date of Request
-notifications.dateOfResponse = Date of Response
-notifications.roe = ROE
-notifications.soe = SOE
-
 arrivals.confirmation = Arrival confirmation
 arrivals.title = Arrivals
 arrivals.heading = Arrivals
@@ -201,16 +193,6 @@ notEligible.descriptionUrl = CHIEF
 notEligible.descriptionPostUrl = to make your declaration.
 notEligible.referenceTitle = Help and support
 notEligible.reference.text = If you are having problems with making a declaration, phone: 0300 333 3333. Open 8am to 6pm, Monday to Friday (closed bank holidays).
-
-submissions.title = Submissions
-submissions.submissionType = Type
-submissions.submissionAction = Action
-submissions.eori = Eori
-submissions.conversationId = ConversationId
-submissions.ucr = UCR
-submissions.dateUpdated = Date Updated
-submissions.status = Status
-submissions.noOfNotifications = Number of notifications
 
 consignmentReferences.title = Consignment references
 consignmentReferences.eori.question = What is your EORI number?
@@ -332,3 +314,21 @@ associateDucrSummary.title = Add a DUCR to {0}
 associateDucrConfirmation.title = Consolidation complete
 associateDucrConfirmation.header = Your MUCR
 associateDucrConfirmation.note = You might want to take a screenshot of this for your records.
+
+submissions.title = Submissions
+submissions.submissionType = Type
+submissions.submissionAction = Action
+submissions.eori = Eori
+submissions.conversationId = ConversationId
+submissions.ucr = UCR
+submissions.dateOfRequest = Date of Request
+submissions.dateOfUpdate = Date of Update
+submissions.status = Status
+submissions.noOfNotifications = Number of notifications
+
+notifications.title = Notifications
+notifications.reference = Reference
+notifications.action = Action
+notifications.dateOfResponse = Date of Response
+notifications.roe = ROE
+notifications.soe = SOE

@@ -39,8 +39,6 @@ class NotificationsViewSpec extends WordSpec with MustMatchers with Stubs with V
     "contains correct table headers" in {
 
       page.getElementById("reference") must containText(messages("notifications.reference"))
-      page.getElementById("action") must containText(messages("notifications.action"))
-      page.getElementById("dateOfRequest") must containText(messages("notifications.dateOfRequest"))
       page.getElementById("dateOfResponse") must containText(messages("notifications.dateOfResponse"))
       page.getElementById("roe") must containText(messages("notifications.roe"))
       page.getElementById("soe") must containText(messages("notifications.soe"))

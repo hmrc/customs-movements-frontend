@@ -15,6 +15,7 @@
  *@
 
 @import models.NotificationPresentation
+@import views.components.fields.FieldContentFormatter
 
 @this(main_template: views.html.main_template)
 
@@ -28,8 +29,6 @@
         <table>
             <tr class="table-row table-head">
                 <th class="table-cell" id="reference">@messages("notifications.reference")</th>
-                <th class="table-cell" id="action">@messages("notifications.action")</th>
-                <th class="table-cell" id="dateOfRequest">@messages("notifications.dateOfRequest")</th>
                 <th class="table-cell" id="dateOfResponse">@messages("notifications.dateOfResponse")</th>
                 <th class="table-cell" id="roe">@messages("notifications.roe")</th>
                 <th class="table-cell" id="soe">@messages("notifications.soe")</th>
@@ -37,12 +36,12 @@
 
             @for(notification <- notifications){
                 <tr class="table-row">
-                    <td class="table-cell">@notification.conversationId</td>
-                    <td class="table-cell">Action</td>
-                    <td class="table-cell">Date of Request</td>
-                    <td class="table-cell">Date of Response</td>
-                    <td class="table-cell">ROE</td>
-                    <td class="table-cell">SOE</td>
+                    <td class="table-cell">@components.elements_in_separate_lines(notification.ucrBlocks.map(_.ucr))</td>
+                    <td class="table-cell">
+                      @{FieldContentFormatter.dateTime(notification.timestampReceived)}
+                    </td>
+                    <td class="table-cell">@{notification.roe}</td>
+                    <td class="table-cell">@{notification.soe}</td>
                 </tr>
             }
         </table>

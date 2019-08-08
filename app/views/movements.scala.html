@@ -14,10 +14,8 @@
  * limitations under the License.
  *@
 
-@import java.time.ZoneId
-@import java.time.format.DateTimeFormatter
-
 @import models.{NotificationPresentation, SubmissionPresentation}
+@import views.components.fields.FieldContentFormatter
 
 @this(main_template: views.html.main_template)
 
@@ -33,27 +31,32 @@
         <table>
             <tr class="table-row table-head">
                 <th class="table-cell" id="ucr">@messages("submissions.ucr")</th>
-                <th class="table-cell" id="submissionType">@messages("submissions.submissionType")</th>
+                <th class="table-cell" id="ucrType">@messages("submissions.submissionType")</th>
                 <th class="table-cell" id="submissionAction">@messages("submissions.submissionAction")</th>
-                <th class="table-cell" id="dateUpdated">@messages("submissions.dateUpdated")</th>
+                <th class="table-cell" id="dateOfRequest">@messages("submissions.dateOfRequest")</th>
+                <th class="table-cell" id="dateOfUpdate">@messages("submissions.dateOfUpdate")</th>
                 <th class="table-cell" id="noOfNotifications">@messages("submissions.noOfNotifications")</th>
             </tr>
 
             @for( (submission, notifications) <- submissions ){
                 <tr class="table-row">
-                    <td class="table-cell" id="ucr-@submission.conversationId">@Html(submission.ucrBlocks.map(_.ucr).mkString("<br>"))</td>
-                    <td class="table-cell" id="submissionType-@submission.conversationId">@Html(submission.ucrBlocks.map(_.ucrType).mkString("<br>"))</td>
+                    <td class="table-cell" id="ucr-@submission.conversationId">@components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucr))</td>
+                    <td class="table-cell" id="ucrType-@submission.conversationId">@components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucrType))</td>
                     <td class="table-cell" id="submissionAction-@submission.conversationId">@submission.actionType</td>
-                    <td class="table-cell" id="dateUpdated-@submission.conversationId">
-                        @{notifications.headOption.map(_.timestampReceived).map(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault()).format(_))}</td>
+                    <td class="table-cell" id="dateOfRequest-@submission.conversationId">
+                      @FieldContentFormatter.dateTime(submission.requestTimestamp)
+                    </td>
+                    <td class="table-cell" id="dateOfUpdate-@submission.conversationId">
+                      @{notifications.headOption.map(_.timestampReceived).map(FieldContentFormatter.dateTime)}
+                    </td>
                     <td class="table-cell" id="noOfNotifications-@submission.conversationId">
-                    @if(notifications.nonEmpty) {
-                        <a href="@routes.NotificationsController.listOfNotifications(submission.conversationId)">
-                        @{notifications.length}
-                        </a>
-                    } else {
-                        <span>@{notifications.length}</span>
-                    }
+                      @if(notifications.nonEmpty) {
+                          <a href="@routes.NotificationsController.listOfNotifications(submission.conversationId)">
+                            @{notifications.length}
+                          </a>
+                      } else {
+                          <span>@{notifications.length}</span>
+                      }
                     </td>
                 </tr>
             }

@@ -17,6 +17,7 @@
 package views
 
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit.MINUTES
 import java.time.{Instant, LocalDate, ZoneId, ZonedDateTime}
 
 import base.ViewValidator
@@ -44,9 +45,10 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
     "contains correct table headers" in {
 
       page.getElementById("ucr") must containText(messages("submissions.ucr"))
-      page.getElementById("submissionType") must containText(messages("submissions.submissionType"))
+      page.getElementById("ucrType") must containText(messages("submissions.submissionType"))
       page.getElementById("submissionAction") must containText(messages("submissions.submissionAction"))
-      page.getElementById("dateUpdated") must containText(messages("submissions.dateUpdated"))
+      page.getElementById("dateOfRequest") must containText(messages("submissions.dateOfRequest"))
+      page.getElementById("dateOfUpdate") must containText(messages("submissions.dateOfUpdate"))
       page.getElementById("noOfNotifications") must containText(messages("submissions.noOfNotifications"))
     }
 
@@ -61,6 +63,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
         Seq(
           (
             SubmissionPresentation(
+              requestTimestamp = dateTime,
               eori = "",
               conversationId = conversationId,
               ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M")),
@@ -68,7 +71,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
             ),
             Seq(
               NotificationPresentation(
-                timestampReceived = dateTime,
+                timestampReceived = dateTime.plus(10, MINUTES),
                 conversationId = conversationId,
                 ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M")),
                 roe = None,
@@ -80,9 +83,10 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
       )(FakeRequest(), messages)
 
       getElementById(pageWithData, s"ucr-$conversationId").text() must be("4444")
-      getElementById(pageWithData, s"submissionType-$conversationId").text() must be("M")
+      getElementById(pageWithData, s"ucrType-$conversationId").text() must be("M")
       getElementById(pageWithData, s"submissionAction-$conversationId").text() must be("Consolidate")
-      getElementById(pageWithData, s"dateUpdated-$conversationId").text() must be("2019-10-31 00:00")
+      getElementById(pageWithData, s"dateOfRequest-$conversationId").text() must be("2019-10-31 00:00")
+      getElementById(pageWithData, s"dateOfUpdate-$conversationId").text() must be("2019-10-31 00:10")
       getElementById(pageWithData, s"noOfNotifications-$conversationId").text() must be("1")
     }
   }

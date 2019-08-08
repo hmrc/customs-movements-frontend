@@ -83,7 +83,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
       )(FakeRequest(), messages)
 
       getElementById(pageWithData, s"ucr-$conversationId").text() must be("4444")
-      getElementById(pageWithData, s"ucrType-$conversationId").text() must be("M")
+      getElementById(pageWithData, s"ucrType-$conversationId").text() must be("MUCR")
       getElementById(pageWithData, s"submissionAction-$conversationId").text() must be("Consolidate")
       getElementById(pageWithData, s"dateOfRequest-$conversationId").text() must be("2019-10-31 00:00")
       getElementById(pageWithData, s"dateOfUpdate-$conversationId").text() must be("2019-10-31 00:10")

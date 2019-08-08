@@ -23,6 +23,8 @@
 
 @main_template(title = messages("notifications.title")) {
 
+    @components.back_link(routes.MovementsController.displayPage())
+
     @components.page_title(Some("notifications.title"))
 
     <div>

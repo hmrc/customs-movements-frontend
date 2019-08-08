@@ -14,10 +14,8 @@
  * limitations under the License.
  *@
 
-@import java.time.ZoneId
-@import java.time.format.DateTimeFormatter
-
 @import models.NotificationPresentation
+@import views.components.fields.FieldContentFormatter
 
 @this(main_template: views.html.main_template)
 
@@ -38,11 +36,9 @@
 
             @for(notification <- notifications){
                 <tr class="table-row">
-                    <td class="table-cell">@Html(notification.ucrBlocks.map(_.ucr).mkString("<br>"))</td>
+                    <td class="table-cell">@components.elements_in_separate_lines(notification.ucrBlocks.map(_.ucr))</td>
                     <td class="table-cell">
-                      @{
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault()).format(notification.timestampReceived)
-                      }
+                      @{FieldContentFormatter.dateTime(notification.timestampReceived)}
                     </td>
                     <td class="table-cell">@{notification.roe}</td>
                     <td class="table-cell">@{notification.soe}</td>

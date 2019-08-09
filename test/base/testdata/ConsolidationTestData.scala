@@ -17,8 +17,8 @@
 package base.testdata
 
 import base.testdata.CommonTestData._
-import models.SubmissionPresentation.ActionTypes
-import models.{SubmissionPresentation, UcrBlock}
+import models.UcrBlock
+import models.submissions.{ActionType, SubmissionPresentation}
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
 
@@ -42,7 +42,7 @@ object ConsolidationTestData {
   val exampleAssociateDucrRequestSubmission: SubmissionPresentation = SubmissionPresentation(
     eori = validEori,
     conversationId = conversationId,
-    actionType = ActionTypes.DucrAssociation,
+    actionType = ActionType.DucrAssociation,
     ucrBlocks = Seq(UcrBlock(ucr = ValidMucr, ucrType = "M"), UcrBlock(ucr = ValidDucr, ucrType = "D"))
   )
 

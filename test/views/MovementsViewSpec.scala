@@ -24,7 +24,8 @@ import base.ViewValidator
 import base.testdata.CommonTestData.conversationId
 import base.testdata.ConsolidationTestData
 import base.testdata.ConsolidationTestData.{ValidDucr, ValidMucr, exampleAssociateDucrRequestSubmission}
-import models.{NotificationPresentation, SubmissionPresentation, UcrBlock}
+import models.submissions.{ActionType, SubmissionPresentation}
+import models.{NotificationPresentation, UcrBlock}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -66,7 +67,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
         eori = "",
         conversationId = conversationId,
         ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M")),
-        actionType = "Consolidate"
+        actionType = ActionType.ShutMucr
       )
       val notifications = Seq(
         NotificationPresentation(
@@ -82,7 +83,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
 
       getElementById(pageWithData, s"ucr-$conversationId").text() must be("4444")
       getElementById(pageWithData, s"ucrType-$conversationId").text() must be("MUCR")
-      getElementById(pageWithData, s"submissionAction-$conversationId").text() must be("Consolidate")
+      getElementById(pageWithData, s"submissionAction-$conversationId").text() must be("ShutMucr")
       getElementById(pageWithData, s"dateOfRequest-$conversationId").text() must be("2019-10-31 00:00")
       getElementById(pageWithData, s"dateOfUpdate-$conversationId").text() must be("2019-10-31 00:10")
       getElementById(pageWithData, s"noOfNotifications-$conversationId").text() must be("1")

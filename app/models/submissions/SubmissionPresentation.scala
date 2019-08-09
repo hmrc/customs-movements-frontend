@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package models
+package models.submissions
 
 import java.time.Instant
 import java.util.UUID
 
+import models.UcrBlock
 import play.api.libs.json._
 
 case class SubmissionPresentation(
@@ -26,7 +27,7 @@ case class SubmissionPresentation(
   eori: String,
   conversationId: String,
   ucrBlocks: Seq[UcrBlock],
-  actionType: String,
+  actionType: ActionType,
   requestTimestamp: Instant = Instant.now()
 )
 

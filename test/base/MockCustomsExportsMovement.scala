@@ -17,7 +17,7 @@
 package base
 
 import connectors.CustomsDeclareExportsMovementsConnector
-import models.SubmissionPresentation
+import models.submissions.SubmissionPresentation
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing

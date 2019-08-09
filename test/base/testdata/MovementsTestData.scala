@@ -15,6 +15,7 @@
  */
 
 package base.testdata
+
 import forms.GoodsDeparted.AllowedPlaces
 import forms._
 import forms.common.{Date, Time}

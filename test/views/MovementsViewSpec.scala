@@ -22,7 +22,10 @@ import java.time.{Instant, LocalDate, ZoneId, ZonedDateTime}
 
 import base.ViewValidator
 import base.testdata.CommonTestData.conversationId
-import models.{NotificationPresentation, SubmissionPresentation, UcrBlock}
+import base.testdata.ConsolidationTestData
+import base.testdata.ConsolidationTestData.{ValidDucr, ValidMucr, exampleAssociateDucrRequestSubmission}
+import models.submissions.{ActionType, SubmissionPresentation}
+import models.{NotificationPresentation, UcrBlock}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -37,12 +40,12 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
 
   "Movements page" should {
 
-    "contains title" in {
+    "contain title" in {
 
       page.getElementById("title") must containText(messages("submissions.title"))
     }
 
-    "contains correct table headers" in {
+    "contain correct table headers" in {
 
       page.getElementById("ucr") must containText(messages("submissions.ucr"))
       page.getElementById("ucrType") must containText(messages("submissions.submissionType"))
@@ -52,42 +55,61 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
       page.getElementById("noOfNotifications") must containText(messages("submissions.noOfNotifications"))
     }
 
-    "contains correct submission data" in {
+    "contain correct submission data" in {
       val dateTime: Instant = ZonedDateTime
         .of(
           LocalDate.parse("2019-10-31", DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay(),
           ZoneId.systemDefault()
         )
         .toInstant
-      val pageWithData: Html = new movements(mainTemplate)(
-        Seq(
-          (
-            SubmissionPresentation(
-              requestTimestamp = dateTime,
-              eori = "",
-              conversationId = conversationId,
-              ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M")),
-              actionType = "Consolidate"
-            ),
-            Seq(
-              NotificationPresentation(
-                timestampReceived = dateTime.plus(10, MINUTES),
-                conversationId = conversationId,
-                ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M")),
-                roe = None,
-                soe = None
-              )
-            )
-          )
+      val submission = SubmissionPresentation(
+        requestTimestamp = dateTime,
+        eori = "",
+        conversationId = conversationId,
+        ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M")),
+        actionType = ActionType.ShutMucr
+      )
+      val notifications = Seq(
+        NotificationPresentation(
+          timestampReceived = dateTime.plus(10, MINUTES),
+          conversationId = conversationId,
+          ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M")),
+          roe = None,
+          soe = None
         )
-      )(FakeRequest(), messages)
+      )
+
+      val pageWithData: Html = new movements(mainTemplate)(Seq(submission -> notifications))(FakeRequest(), messages)
 
       getElementById(pageWithData, s"ucr-$conversationId").text() must be("4444")
       getElementById(pageWithData, s"ucrType-$conversationId").text() must be("MUCR")
-      getElementById(pageWithData, s"submissionAction-$conversationId").text() must be("Consolidate")
+      getElementById(pageWithData, s"submissionAction-$conversationId").text() must be("ShutMucr")
       getElementById(pageWithData, s"dateOfRequest-$conversationId").text() must be("2019-10-31 00:00")
       getElementById(pageWithData, s"dateOfUpdate-$conversationId").text() must be("2019-10-31 00:10")
       getElementById(pageWithData, s"noOfNotifications-$conversationId").text() must be("1")
+    }
+
+    "contain MUCR and DUCR if Submission contains both" in {
+      val notifications = Seq(
+        NotificationPresentation(
+          conversationId = conversationId,
+          ucrBlocks = Seq(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M")),
+          roe = None,
+          soe = None
+        )
+      )
+
+      val pageWithData: Html = new movements(mainTemplate)(Seq(exampleAssociateDucrRequestSubmission -> notifications))(
+        FakeRequest(),
+        messages
+      )
+
+      val actualUcrs = getElementById(pageWithData, s"ucr-$conversationId").text()
+      actualUcrs must include(ValidMucr)
+      actualUcrs must include(ValidDucr)
+      val actualUcrTypes = getElementById(pageWithData, s"ucrType-$conversationId").text()
+      actualUcrTypes must include("MUCR")
+      actualUcrTypes must include("DUCR")
     }
   }
 }

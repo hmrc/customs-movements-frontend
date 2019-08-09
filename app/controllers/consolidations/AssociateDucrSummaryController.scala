@@ -30,7 +30,7 @@ import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.associate_ducr_summary
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class AssociateDucrSummaryController @Inject()(
@@ -41,7 +41,7 @@ class AssociateDucrSummaryController @Inject()(
   cacheService: CustomsCacheService,
   submissionService: SubmissionService,
   associateDucrSummaryPage: associate_ducr_summary
-) extends FrontendController(mcc) with I18nSupport {
+)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
   private val logger = Logger(this.getClass)
 

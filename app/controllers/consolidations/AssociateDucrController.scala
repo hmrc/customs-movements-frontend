@@ -28,7 +28,7 @@ import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.associate_ducr
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class AssociateDucrController @Inject()(
@@ -37,7 +37,7 @@ class AssociateDucrController @Inject()(
   mcc: MessagesControllerComponents,
   cacheService: CustomsCacheService,
   associateDucrPage: associate_ducr
-) extends FrontendController(mcc) with I18nSupport {
+)(implicit executionConetxt: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     cacheService.fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId).map {

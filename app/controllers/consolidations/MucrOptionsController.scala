@@ -27,8 +27,7 @@ import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.mucr_options
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class MucrOptionsController @Inject()(
@@ -37,7 +36,7 @@ class MucrOptionsController @Inject()(
   mcc: MessagesControllerComponents,
   cacheService: CustomsCacheService,
   associateDucrPage: mucr_options
-) extends FrontendController(mcc) with I18nSupport {
+)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     Ok(associateDucrPage(form))

@@ -22,6 +22,8 @@ import java.time.{Instant, LocalDate, ZoneId, ZonedDateTime}
 
 import base.ViewValidator
 import base.testdata.CommonTestData.conversationId
+import base.testdata.ConsolidationTestData
+import base.testdata.ConsolidationTestData.{ValidDucr, ValidMucr, exampleAssociateDucrRequestSubmission}
 import models.{NotificationPresentation, SubmissionPresentation, UcrBlock}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
@@ -37,12 +39,12 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
 
   "Movements page" should {
 
-    "contains title" in {
+    "contain title" in {
 
       page.getElementById("title") must containText(messages("submissions.title"))
     }
 
-    "contains correct table headers" in {
+    "contain correct table headers" in {
 
       page.getElementById("ucr") must containText(messages("submissions.ucr"))
       page.getElementById("ucrType") must containText(messages("submissions.submissionType"))
@@ -52,7 +54,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
       page.getElementById("noOfNotifications") must containText(messages("submissions.noOfNotifications"))
     }
 
-    "contains correct submission data" in {
+    "contain correct submission data" in {
       val dateTime: Instant = ZonedDateTime
         .of(
           LocalDate.parse("2019-10-31", DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay(),
@@ -88,6 +90,31 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
       getElementById(pageWithData, s"dateOfRequest-$conversationId").text() must be("2019-10-31 00:00")
       getElementById(pageWithData, s"dateOfUpdate-$conversationId").text() must be("2019-10-31 00:10")
       getElementById(pageWithData, s"noOfNotifications-$conversationId").text() must be("1")
+    }
+
+    "contain MUCR and DUCR if Submission contains both" in {
+      val pageWithData: Html = new movements(mainTemplate)(
+        Seq(
+          (
+            exampleAssociateDucrRequestSubmission,
+            Seq(
+              NotificationPresentation(
+                conversationId = conversationId,
+                ucrBlocks = Seq(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M")),
+                roe = None,
+                soe = None
+              )
+            )
+          )
+        )
+      )(FakeRequest(), messages)
+
+      val actualUcrs = getElementById(pageWithData, s"ucr-$conversationId").text()
+      actualUcrs must include(ValidMucr)
+      actualUcrs must include(ValidDucr)
+      val actualUcrTypes = getElementById(pageWithData, s"ucrType-$conversationId").text()
+      actualUcrTypes must include("MUCR")
+      actualUcrTypes must include("DUCR")
     }
   }
 }

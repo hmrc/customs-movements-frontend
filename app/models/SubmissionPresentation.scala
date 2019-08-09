@@ -32,4 +32,12 @@ case class SubmissionPresentation(
 
 object SubmissionPresentation {
   implicit val formats = Json.format[SubmissionPresentation]
+
+  object ActionTypes {
+    val Arrival = "Arrival"
+    val Departure = "Departure"
+    val DucrAssociation = "Association"
+    val DucrDisassociation = "Disassociation"
+    val ShutMucr = "ShutMucr"
+  }
 }

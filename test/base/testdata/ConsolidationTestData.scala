@@ -16,6 +16,9 @@
 
 package base.testdata
 
+import base.testdata.CommonTestData._
+import models.SubmissionPresentation.ActionTypes
+import models.{SubmissionPresentation, UcrBlock}
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
 
@@ -35,6 +38,13 @@ object ConsolidationTestData {
         <ucrType>D</ucrType>
       </ucrBlock>
     </inventoryLinkingConsolidationRequest>
+
+  val exampleAssociateDucrRequestSubmission: SubmissionPresentation = SubmissionPresentation(
+    eori = validEori,
+    conversationId = conversationId,
+    actionType = ActionTypes.DucrAssociation,
+    ucrBlocks = Seq(UcrBlock(ucr = ValidMucr, ucrType = "M"), UcrBlock(ucr = ValidDucr, ucrType = "D"))
+  )
 
   val exampleDisassociateDucrRequestXml: Elem =
     <inventoryLinkingConsolidationRequest xmlns="http://gov.uk/customs/inventoryLinking/v1">

@@ -18,6 +18,7 @@ package base.testdata
 
 object CommonTestData {
 
+  val validEori: String = "GB12345678"
   val correctUcr: String = "GB/1UZYBD3XE-1J8MEBF9N6X65B"
   val conversationId: String = "93feaae9-5043-4569-9fc5-ff04bfea0d97"
 

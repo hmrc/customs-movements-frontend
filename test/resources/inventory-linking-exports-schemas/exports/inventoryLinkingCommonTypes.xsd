@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://gov.uk/customs/inventoryLinking/v1" 
-           xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-           xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" 
-           targetNamespace="http://gov.uk/customs/inventoryLinking/v1" 
-           elementFormDefault="qualified"
-           attributeFormDefault="unqualified" 
-           vc:minVersion="1.1" version="0.5">
+<xs:schema xmlns="http://gov.uk/customs/inventoryLinking/v1"
+		   xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		   xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
+		   targetNamespace="http://gov.uk/customs/inventoryLinking/v1"
+		   elementFormDefault="qualified"
+		   attributeFormDefault="unqualified"
+		   vc:minVersion="1.1" version="1.0">
 
 	<xs:simpleType name="uuid">
 		<xs:annotation>
@@ -24,7 +24,16 @@
 		<xs:restriction base="xs:string">
 			<xs:maxLength value="35" />
 			<xs:pattern
-				value="[0-9][A-Z][A-Z][0-9A-Z\(\)\-/]{6,32}|GB/[0-9A-Z]{3,4}-[0-9A-Z]{5,28}|GB/[0-9A-Z]{9,12}-[0-9A-Z]{1,23}|A:[0-9A-Z]{3}[0-9]{8}|C:[AZ]{3}[0-9A-Z]{3,30}" />
+					value="[0-9][A-Z][A-Z][0-9A-Z\(\)\-/]{6,32}|GB/[0-9A-Z]{3,4}-[0-9A-Z]{5,28}|GB/[0-9A-Z]{9,12}-[0-9A-Z]{1,23}|A:[0-9A-Z]{3}[0-9]{8}|C:[A-Z]{3}[0-9A-Z]{3,30}" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="mrn">
+		<xs:annotation>
+			<xs:documentation>Must be a valid mrn</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="35" />
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -38,16 +47,16 @@
 	<xs:complexType name="ucrBlock">
 		<xs:sequence>
 			<xs:element name="ucr" type="ucr" minOccurs="1" />
-<!-- UCR Part number in Policy query, may not be required, commented for now
-			<xs:element name="ucrPartNo" minOccurs="0" nillable="true">
-				<xs:simpleType>
-					<xs:restriction base="xs:string">
-						<xs:maxLength value="4" />
-						<xs:pattern value="[0-9]{1,3}[A-Z]{0,1}" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:element>
--->
+			<!-- UCR Part number in Policy query, may not be required, commented for now
+                        <xs:element name="ucrPartNo" minOccurs="0" nillable="true">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:maxLength value="4" />
+                                    <xs:pattern value="[0-9]{1,3}[A-Z]{0,1}" />
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+            -->
 			<xs:element name="ucrType" type="ucrType" minOccurs="1" />
 		</xs:sequence>
 	</xs:complexType>
@@ -111,15 +120,15 @@
 
 	<xs:complexType name="errorBlock">
 		<xs:sequence>
-		<!-- TODO -->
+			<!-- TODO -->
 			<xs:element name="errorCode" minOccurs="1">
-			<xs:simpleType>
+				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="2" />
+						<xs:maxLength value="1024" />
 						<xs:minLength value="1" />
 					</xs:restriction>
 				</xs:simpleType>
-			</xs:element>	
+			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
 
@@ -133,15 +142,15 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-<!-- 
-    <xs:simpleType name="messageCodeMovement">
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="EAA" />
-			<xs:enumeration value="EAL" />
-			<xs:enumeration value="EDL" />
-		</xs:restriction>
-	</xs:simpleType>
--->
+	<!--
+        <xs:simpleType name="messageCodeMovement">
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="EAA" />
+                <xs:enumeration value="EAL" />
+                <xs:enumeration value="EDL" />
+            </xs:restriction>
+        </xs:simpleType>
+    -->
 
 	<xs:simpleType name="masterOpt">
 		<xs:restriction base="xs:string">
@@ -181,7 +190,7 @@
 			<xs:length value="3" />
 		</xs:restriction>
 	</xs:simpleType>
-	
+
 	<xs:simpleType name="actionCode">
 		<xs:restriction base="xs:string">
 			<xs:length value="1" />
@@ -239,7 +248,7 @@
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
-	
+
 	<xs:simpleType name="declarationID">
 		<xs:restriction base="xs:string">
 			<xs:maxLength value="35" />

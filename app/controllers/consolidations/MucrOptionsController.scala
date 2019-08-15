@@ -36,7 +36,8 @@ class MucrOptionsController @Inject()(
   mcc: MessagesControllerComponents,
   cacheService: CustomsCacheService,
   associateDucrPage: mucr_options
-)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
+)(implicit executionContext: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     Ok(associateDucrPage(form))
@@ -47,9 +48,15 @@ class MucrOptionsController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(associateDucrPage(formWithErrors))),
-        formData =>
-          cacheService.cache[MucrOptions](movementCacheId(), formId, formData).map { _ =>
-            Redirect(routes.AssociateDucrController.displayPage())
+        formData => {
+          val validatedForm = MucrOptions.validateForm(form.fill(formData))
+          if (validatedForm.hasErrors) {
+            Future.successful(BadRequest(associateDucrPage(validatedForm)))
+          } else {
+            cacheService.cache[MucrOptions](movementCacheId(), formId, formData).map { _ =>
+              Redirect(routes.AssociateDucrController.displayPage())
+            }
+          }
         }
       )
   }

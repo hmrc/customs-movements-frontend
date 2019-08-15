@@ -303,6 +303,7 @@ mucrOptions.create = Create a new MUCR
 mucrOptions.add = Add to an existing MUCR
 mucrOptions.create.reference = Enter the alpha numeric refererence
 mucrOptions.add.reference = Which MUCR do you want to add to?
+mucrOptions.createAdd.value.empty = Please select an option
 mucrOptions.reference.value.empty = Please enter a reference
 mucrOptions.reference.value.error = Please enter a valid reference
 

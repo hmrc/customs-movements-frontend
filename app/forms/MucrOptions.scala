@@ -21,7 +21,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class MucrOptions(mucr: String)
+case class MucrOptions(mucr: String, createOrAdd: String = MucrOptions.Create)
 
 object MucrOptions {
 
@@ -32,21 +32,35 @@ object MucrOptions {
   val Create = "create"
   val Add = "add"
 
-  def form2Model: (String, String) => MucrOptions = {
-    case (newMucr, existingMucr) => MucrOptions(newMucr + existingMucr)
+  def form2Model: (String, String, String) => MucrOptions = {
+    case (createOrAdd, newMucr, existingMucr) =>
+      createOrAdd match {
+        case Create => MucrOptions(newMucr, Create)
+        case Add => MucrOptions(existingMucr, Add)
+      }
   }
 
-  def model2Form: MucrOptions => Option[(String, String)] = m => Some((m.mucr, m.mucr))
+  def model2Form: MucrOptions => Option[(String, String, String)] = m => Some((m.createOrAdd, m.mucr, m.mucr))
 
   val mapping =
     Forms
       .mapping(
-        "newMucr" -> text().verifying("mucrOptions.reference.value.error", isEmpty or validDucrOrMucr),
-        "existingMucr" -> text().verifying("mucrOptions.reference.value.error", isEmpty or validDucrOrMucr)
+        "createOrAdd" -> text().verifying("mucrOptions.createAdd.value.empty", nonEmpty),
+        "newMucr" -> text(),
+        "existingMucr" -> text()
       )(form2Model)(model2Form)
-      .verifying("mucrOptions.reference.value.empty", _.mucr.nonEmpty)
-      .verifying("mucrOptions.reference.value.error", options => validDucrOrMucr(options.mucr))
 
   val form: Form[MucrOptions] = Form(mapping)
 
+  def validateForm(form:Form[MucrOptions]): Form[MucrOptions] = {
+    if(form.value.exists(op => validDucrOrMucr(op.mucr))) {
+      form
+    } else {
+      val errorField = form.value.map(_.createOrAdd) match {
+        case Some(Create) => "newMucr"
+        case _ => "existingMucr"
+      }
+      form.withError(errorField, "mucrOptions.reference.value.error")
+    }
+  }
 }

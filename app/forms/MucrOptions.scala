@@ -56,13 +56,11 @@ object MucrOptions {
     if(form.value.exists(op => validDucrOrMucr(op.mucr))) {
       form
     } else {
-      val fieldName = form.value.map(_.createOrAdd) match {
+      val errorField = form.value.map(_.createOrAdd) match {
         case Some(Create) => "newMucr"
         case _ => "existingMucr"
       }
-      form
-        .withError(fieldName, "mucrOptions.reference.value.error")
+      form.withError(errorField, "mucrOptions.reference.value.error")
     }
   }
-
 }

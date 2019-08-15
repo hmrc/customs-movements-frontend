@@ -18,6 +18,7 @@ package controllers.consolidations
 
 import base.{MovementBaseSpec, ViewValidator}
 import forms.Choice.AllowedChoiceValues
+import forms.MucrOptions.{Add, Create}
 import forms.{Choice, MucrOptions}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -53,18 +54,31 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
       val page = htmlBodyOf(result)
 
       page must haveGlobalErrorSummary
+      page must haveFieldError("createOrAdd", "Please enter a value")
       page must haveFieldError("newMucr", "Please enter a value")
       page must haveFieldError("existingMucr", "Please enter a value")
     }
 
-    "display an error for an empty MUCRs" in {
-      val invalidMUCR = JsObject(Map("newMucr" -> JsString(""), "existingMucr" -> JsString("")))
+    "display an error for an empty new MUCRs" in {
+      val invalidMUCR = JsObject(Map("createOrAdd" -> JsString(Create), "newMucr" -> JsString(""), "existingMucr" -> JsString("")))
       val Some(result) = route(app, postRequest(uri, invalidMUCR))
 
       status(result) must be(BAD_REQUEST)
       val page = htmlBodyOf(result)
 
       page must haveGlobalErrorSummary
+      page must haveFieldError("newMucr", "Please enter a valid reference")
+    }
+
+    "display an error for an empty existing MUCRs" in {
+      val invalidMUCR = JsObject(Map("createOrAdd" -> JsString(Add), "newMucr" -> JsString(""), "existingMucr" -> JsString("")))
+      val Some(result) = route(app, postRequest(uri, invalidMUCR))
+
+      status(result) must be(BAD_REQUEST)
+      val page = htmlBodyOf(result)
+
+      page must haveGlobalErrorSummary
+      page must haveFieldError("existingMucr", "Please enter a valid reference")
     }
 
     "display an error for two populated MUCRs" in {
@@ -79,7 +93,7 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
     }
 
     "display an error for an invalid new MUCR" in {
-      val invalidMUCR = JsObject(Map("newMucr" -> JsString("invalid"), "existingMucr" -> JsString("")))
+      val invalidMUCR = JsObject(Map("createOrAdd" -> JsString(Create), "newMucr" -> JsString("invalid"), "existingMucr" -> JsString("")))
       val Some(result) = route(app, postRequest(uri, invalidMUCR))
 
       status(result) must be(BAD_REQUEST)
@@ -90,7 +104,7 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
     }
 
     "display an error for an invalid existing MUCR" in {
-      val invalidMUCR = JsObject(Map("newMucr" -> JsString(""), "existingMucr" -> JsString("invalid")))
+      val invalidMUCR = JsObject(Map("createOrAdd" -> JsString(Add), "newMucr" -> JsString(""), "existingMucr" -> JsString("invalid")))
       val Some(result) = route(app, postRequest(uri, invalidMUCR))
 
       status(result) must be(BAD_REQUEST)
@@ -102,24 +116,24 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
 
     "Redirect to next page for a valid new MUCR" in {
       val validMUCR =
-        JsObject(Map("newMucr" -> JsString("8GB12345612345612345"), "existingMucr" -> JsString("")))
+        JsObject(Map("createOrAdd" -> JsString("create"), "newMucr" -> JsString("8GB12345612345612345"), "existingMucr" -> JsString("")))
       val Some(result) = route(app, postRequest(uri, validMUCR))
       status(result) must be(SEE_OTHER)
       redirectLocation(result) mustBe Some(routes.AssociateDucrController.displayPage().url)
 
       theFormIDCached mustBe MucrOptions.formId
-      theDataCached mustBe MucrOptions("8GB12345612345612345")
+      theDataCached mustBe MucrOptions("8GB12345612345612345", Create)
     }
 
     "Redirect to next page for a valid existing MUCR" in {
       val validMUCR =
-        JsObject(Map("newMucr" -> JsString(""), "existingMucr" -> JsString("8GB12345612345612345")))
+        JsObject(Map("createOrAdd" -> JsString("add"), "newMucr" -> JsString(""), "existingMucr" -> JsString("8GB12345612345612345")))
       val Some(result) = route(app, postRequest(uri, validMUCR))
       status(result) must be(SEE_OTHER)
       redirectLocation(result) mustBe Some(routes.AssociateDucrController.displayPage().url)
 
       theFormIDCached mustBe MucrOptions.formId
-      theDataCached mustBe MucrOptions("8GB12345612345612345")
+      theDataCached mustBe MucrOptions("8GB12345612345612345", Add)
     }
 
   }

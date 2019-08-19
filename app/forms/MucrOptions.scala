@@ -21,7 +21,12 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class MucrOptions(mucr: String, createOrAdd: String = MucrOptions.Create)
+case class MucrOptions(newMucr: String = "", existingMucr: String = "", createOrAdd: String = MucrOptions.Create) {
+  def mucr: String = createOrAdd match {
+    case MucrOptions.Create => newMucr
+    case MucrOptions.Add => existingMucr
+  }
+}
 
 object MucrOptions {
 
@@ -35,12 +40,12 @@ object MucrOptions {
   def form2Model: (String, String, String) => MucrOptions = {
     case (createOrAdd, newMucr, existingMucr) =>
       createOrAdd match {
-        case Create => MucrOptions(newMucr, Create)
-        case Add => MucrOptions(existingMucr, Add)
+        case Create => MucrOptions(newMucr, "",  Create)
+        case Add => MucrOptions("", existingMucr, Add)
       }
   }
 
-  def model2Form: MucrOptions => Option[(String, String, String)] = m => Some((m.createOrAdd, m.mucr, m.mucr))
+  def model2Form: MucrOptions => Option[(String, String, String)] = m => Some((m.createOrAdd, m.newMucr, m.existingMucr))
 
   val mapping =
     Forms

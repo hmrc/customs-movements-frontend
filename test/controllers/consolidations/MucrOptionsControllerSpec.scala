@@ -103,6 +103,30 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
       page must haveFieldError("newMucr", "Please enter a valid reference")
     }
 
+    "clear value of exisiting MUCR after validation failure" in {
+      val invalidMUCR =
+        JsObject(Map("createOrAdd" -> JsString(Create), "newMucr" -> JsString("invalidNew"), "existingMucr" -> JsString("invalidExisting")))
+      val Some(result) = route(app, postRequest(uri, invalidMUCR))
+
+      status(result) must be(BAD_REQUEST)
+      val page = htmlBodyOf(result)
+
+      page.getElementById("newMucr") must haveAttribute("value", "invalidNew")
+      page.getElementById("existingMucr") must haveAttribute("value", "")
+    }
+
+    "clear value of new MUCR after validation failure" in {
+      val invalidMUCR =
+        JsObject(Map("createOrAdd" -> JsString(Add), "newMucr" -> JsString("invalidNew"), "existingMucr" -> JsString("invalidExisting")))
+      val Some(result) = route(app, postRequest(uri, invalidMUCR))
+
+      status(result) must be(BAD_REQUEST)
+      val page = htmlBodyOf(result)
+
+      page.getElementById("newMucr") must haveAttribute("value", "")
+      page.getElementById("existingMucr") must haveAttribute("value", "invalidExisting")
+    }
+
     "display an error for an invalid existing MUCR" in {
       val invalidMUCR = JsObject(Map("createOrAdd" -> JsString(Add), "newMucr" -> JsString(""), "existingMucr" -> JsString("invalid")))
       val Some(result) = route(app, postRequest(uri, invalidMUCR))
@@ -122,7 +146,7 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
       redirectLocation(result) mustBe Some(routes.AssociateDucrController.displayPage().url)
 
       theFormIDCached mustBe MucrOptions.formId
-      theDataCached mustBe MucrOptions("8GB12345612345612345", Create)
+      theDataCached mustBe MucrOptions(newMucr = "8GB12345612345612345", createOrAdd = Create)
     }
 
     "Redirect to next page for a valid existing MUCR" in {
@@ -133,7 +157,7 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
       redirectLocation(result) mustBe Some(routes.AssociateDucrController.displayPage().url)
 
       theFormIDCached mustBe MucrOptions.formId
-      theDataCached mustBe MucrOptions("8GB12345612345612345", Add)
+      theDataCached mustBe MucrOptions(existingMucr = "8GB12345612345612345", createOrAdd = Add)
     }
 
   }

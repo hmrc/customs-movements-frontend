@@ -1,0 +1,215 @@
+// Based on https://github.com/alphagov/govuk_publishing_components/blob/v9.3.6/app/assets/stylesheets/govuk_publishing_components/components/_step-by-step-nav.scss
+
+.app-step-nav__steps {
+  padding: 0;
+  margin: 0;
+}
+
+.app-step-nav__step {
+  position: relative;
+  padding-left: 45px;
+  list-style: none;
+}
+
+.app-step-nav__step:after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  width: 0;
+  height: 100%;
+  border-left: solid 2px $govuk-border-colour;
+  background: #fff;
+  left: 0;
+  margin-left: 12px;
+  top: 15px;
+}
+
+.app-step-nav__step:last-child:before {
+  content: "";
+  position: absolute;
+  z-index: 6;
+  bottom: 0;
+  left: 0;
+  margin-left: 6.5px;
+  width: 13px;
+  height: 0;
+  border-bottom: solid 2px $govuk-border-colour;
+}
+
+.app-step-nav__step:last-child:after {
+  height: -webkit-calc(100% - 15px);
+  height: calc(100% - 15px);
+}
+
+.app-step-nav__step:last-child .app-step-nav__help:after {
+  height: 100%;
+}
+
+.app-step-nav--large .app-step-nav__step {
+  padding-left: 60px;
+}
+
+.app-step-nav--large .app-step-nav__step:after {
+  left: 0;
+  margin-left: 16px;
+  border-width: 3px;
+  top: 30px;
+}
+
+.app-step-nav--large .app-step-nav__step:last-child:before {
+  margin-left: 8.75px;
+  width: 17.5px;
+  border-width: 3px;
+}
+
+.app-step-nav--large .app-step-nav__step:last-child:after {
+  height: calc(100% - 30px);
+}
+
+.app-step-nav__step--active .app-step-nav__circle--number,
+.app-step-nav__step--active .app-step-nav__help:after,
+.app-step-nav__step--active .app-step-nav__substep:after,
+.app-step-nav__step--active:after,
+.app-step-nav__step--active:last-child:before {
+  border-color: govuk-colour("black");
+}
+
+
+.app-step-nav__header {
+  padding: 15px 0;
+  //border-top: solid 2px govuk-colour("grey-3");
+}
+
+.app-step-nav--active .app-step-nav__header {
+  cursor: pointer;
+}
+
+.app-step-nav__header:hover .app-step-nav__button,
+.app-step-nav__header:hover .app-step-nav__circle {
+  color: $govuk-link-colour;
+}
+
+.app-step-nav__header:hover .app-step-nav__toggle-link {
+  text-decoration: underline;
+}
+
+.app-step-nav--large .app-step-nav__header {
+  padding: 30px 0;
+}
+
+
+.app-step-nav__title {
+  font-size: 23px;
+  font-weight: bold;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.app-step-nav--large .app-step-nav__title {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1.4;
+}
+
+.app-step-nav--large .app-step-nav__title {
+  font-size: 24px;
+  line-height: 1.4;
+}
+
+
+.app-step-nav__circle {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  position: absolute;
+  z-index: 5;
+  top: 15px;
+  left: 0;
+  width: 26px;
+  height: 26px;
+  color: govuk-colour("black");
+  background: #fff;
+  border-radius: 100px;
+  text-align: center;
+}
+
+.app-step-nav__circle--number {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 23px;
+  border: solid 2px $govuk-border-colour;
+}
+
+.app-step-nav--large .app-step-nav__circle {
+  top: 30px;
+  width: 35px;
+  height: 35px;
+}
+
+.app-step-nav--large .app-step-nav__circle--number {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 23px;
+}
+
+.app-step-nav--large .app-step-nav__circle--number {
+  font-size: 19px;
+  line-height: 30px;
+}
+
+.app-step-nav--large .app-step-nav__circle--number {
+  border-width: 3px;
+}
+
+// REMOVE
+.app-step-nav__circle--logic {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 28px;
+}
+
+.app-step-nav--large .app-step-nav__circle--logic {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 28px;
+}
+
+.app-step-nav--large .app-step-nav__circle--logic {
+  font-size: 19px;
+  line-height: 34px;
+}
+
+
+.app-step-nav__circle-inner {
+  float: right;
+  min-width: 100%;
+}
+
+.app-step-nav__circle-background {
+  text-shadow: 0 -0.1em 0 #fff, 0.1em 0 0 #fff, 0 0.1em 0 #fff, -0.1em 0 0 #fff;
+}
+
+.app-step-nav__panel {
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1.25;
+  border-bottom: solid 2px govuk-colour("grey-3");
+  .js-enabled &.js-hidden {
+    display: none;
+  }
+}
+
+.app-step-nav__panel {
+  font-size: 18px;
+}
+
+.app-step-nav--large .app-step-nav__panel {
+  font-size: 19px;
+  font-weight: bold;
+}
+
+.app-step-nav__panel .govuk-form-group{
+  margin-bottom: 0;
+  padding-bottom: 20px;
+  padding-top: 5px;
+}

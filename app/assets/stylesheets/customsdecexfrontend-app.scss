@@ -10,6 +10,13 @@
 
 @import 'partials/_shame';
 
+@import 'colours/_colours-palette';
+@import 'colours/_colours-organisations';
+@import 'colours/_colour';
+@import 'colours/_colours-applied';
+
+@import 'partials/_step-by-step-navigation';
+
 .text-right {
   text-align: right;
 }

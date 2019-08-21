@@ -45,7 +45,7 @@ class MovementsControllerSpec extends MovementBaseSpec with MockCustomsExportsMo
 
       "cache is empty" in new SetUp {
 
-        when(mockCustomsExportsMovementConnector.fetchSubmissions()(any(), any()))
+        when(mockCustomsExportsMovementConnector.fetchAllSubmissions()(any(), any()))
           .thenReturn(Future.successful(Seq.empty))
         when(mockCustomsExportsMovementConnector.fetchNotifications(anyString())(any(), any()))
           .thenReturn(Future.successful(Seq.empty))

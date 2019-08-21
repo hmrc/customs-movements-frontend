@@ -46,6 +46,6 @@ trait MockCustomsExportsMovement extends MockitoSugar {
   def listOfSubmissions(
     submissions: Seq[SubmissionContract]
   ): OngoingStubbing[Future[Seq[SubmissionContract]]] =
-    when(mockCustomsExportsMovementConnector.fetchSubmissions()(any(), any()))
+    when(mockCustomsExportsMovementConnector.fetchAllSubmissions()(any(), any()))
       .thenReturn(Future.successful(submissions))
 }

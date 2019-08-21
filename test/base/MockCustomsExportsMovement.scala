@@ -17,7 +17,7 @@
 package base
 
 import connectors.CustomsDeclareExportsMovementsConnector
-import models.submissions.SubmissionPresentation
+import models.submissions.SubmissionContract
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
@@ -44,8 +44,8 @@ trait MockCustomsExportsMovement extends MockitoSugar {
     ).thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
   def listOfSubmissions(
-    submissions: Seq[SubmissionPresentation]
-  ): OngoingStubbing[Future[Seq[SubmissionPresentation]]] =
+    submissions: Seq[SubmissionContract]
+  ): OngoingStubbing[Future[Seq[SubmissionContract]]] =
     when(mockCustomsExportsMovementConnector.fetchSubmissions()(any(), any()))
       .thenReturn(Future.successful(submissions))
 }

@@ -22,7 +22,7 @@ import java.util.UUID
 import models.UcrBlock
 import play.api.libs.json._
 
-case class SubmissionPresentation(
+case class SubmissionContract(
   uuid: String = UUID.randomUUID().toString,
   eori: String,
   conversationId: String,
@@ -31,6 +31,6 @@ case class SubmissionPresentation(
   requestTimestamp: Instant = Instant.now()
 )
 
-object SubmissionPresentation {
-  implicit val formats = Json.format[SubmissionPresentation]
+object SubmissionContract {
+  implicit val formats = Json.format[SubmissionContract]
 }

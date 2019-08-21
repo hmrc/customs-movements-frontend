@@ -15,12 +15,12 @@
  *@
 
 @import models.NotificationContract
-@import models.submissions.SubmissionPresentation
+@import models.submissions.SubmissionContract
 @import views.components.fields.FieldContentFormatter
 
 @this(main_template: views.html.main_template)
 
-@(submissions: Seq[(SubmissionPresentation, Seq[NotificationContract])])(implicit request: Request[_], messages: Messages)
+@(submissions: Seq[(SubmissionContract, Seq[NotificationContract])])(implicit request: Request[_], messages: Messages)
 
 @main_template(title = messages("submissions.title"),
     fullWidth = true) {

@@ -24,7 +24,7 @@ import base.ViewValidator
 import base.testdata.CommonTestData.conversationId
 import base.testdata.ConsolidationTestData
 import base.testdata.ConsolidationTestData.{ValidDucr, ValidMucr, exampleAssociateDucrRequestSubmission}
-import models.submissions.{ActionType, SubmissionPresentation}
+import models.submissions.{ActionType, SubmissionContract}
 import models.{NotificationContract, UcrBlock}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
@@ -61,7 +61,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
           ZoneId.systemDefault()
         )
         .toInstant
-      val submission = SubmissionPresentation(
+      val submission = SubmissionContract(
         requestTimestamp = dateTime,
         eori = "",
         conversationId = conversationId,

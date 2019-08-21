@@ -19,7 +19,7 @@ package connectors
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.NotificationContract
-import models.submissions.SubmissionPresentation
+import models.submissions.SubmissionContract
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
@@ -86,9 +86,9 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
       s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}/$conversationId"
     )
 
-  def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[SubmissionPresentation]] =
+  def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[SubmissionContract]] =
     httpClient
-      .GET[Seq[SubmissionPresentation]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchMovements}")
+      .GET[Seq[SubmissionContract]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchMovements}")
       .map { response =>
         logger.debug(s"CUSTOMS_MOVEMENTS_FRONTEND fetch submission response is --> ${response.toString}")
         response

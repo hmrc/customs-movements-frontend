@@ -14,13 +14,13 @@
  * limitations under the License.
  *@
 
-@import models.NotificationPresentation
+@import models.NotificationContract
 @import models.submissions.SubmissionPresentation
 @import views.components.fields.FieldContentFormatter
 
 @this(main_template: views.html.main_template)
 
-@(submissions: Seq[(SubmissionPresentation, Seq[NotificationPresentation])])(implicit request: Request[_], messages: Messages)
+@(submissions: Seq[(SubmissionPresentation, Seq[NotificationContract])])(implicit request: Request[_], messages: Messages)
 
 @main_template(title = messages("submissions.title"),
     fullWidth = true) {

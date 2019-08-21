@@ -20,18 +20,18 @@ import java.time.Instant
 
 import play.api.libs.json.Json
 
-final case class NotificationPresentation(
+final case class NotificationContract(
   timestampReceived: Instant = Instant.now(),
   conversationId: String,
   ucrBlocks: Seq[UcrBlock],
   roe: Option[String],
   soe: Option[String]
-) extends Ordered[NotificationPresentation] {
+) extends Ordered[NotificationContract] {
 
-  override def compare(other: NotificationPresentation): Int =
+  override def compare(other: NotificationContract): Int =
     this.timestampReceived.compareTo(other.timestampReceived)
 }
 
-object NotificationPresentation {
-  implicit val format = Json.format[NotificationPresentation]
+object NotificationContract {
+  implicit val format = Json.format[NotificationContract]
 }

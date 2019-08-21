@@ -25,7 +25,7 @@ import base.testdata.CommonTestData.conversationId
 import base.testdata.ConsolidationTestData
 import base.testdata.ConsolidationTestData.{ValidDucr, ValidMucr, exampleAssociateDucrRequestSubmission}
 import models.submissions.{ActionType, SubmissionPresentation}
-import models.{NotificationPresentation, UcrBlock}
+import models.{NotificationContract, UcrBlock}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -69,7 +69,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
         actionType = ActionType.ShutMucr
       )
       val notifications = Seq(
-        NotificationPresentation(
+        NotificationContract(
           timestampReceived = dateTime.plus(10, MINUTES),
           conversationId = conversationId,
           ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M")),
@@ -89,7 +89,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
 
     "contain MUCR and DUCR if Submission contains both" in {
       val notifications = Seq(
-        NotificationPresentation(
+        NotificationContract(
           conversationId = conversationId,
           ucrBlocks = Seq(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M")),
           roe = None,

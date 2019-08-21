@@ -18,7 +18,7 @@ package connectors
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import models.NotificationPresentation
+import models.NotificationContract
 import models.submissions.SubmissionPresentation
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
@@ -81,8 +81,8 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
 
   def fetchNotifications(
     conversationId: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[NotificationPresentation]] =
-    httpClient.GET[Seq[NotificationPresentation]](
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[NotificationContract]] =
+    httpClient.GET[Seq[NotificationContract]](
       s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}/$conversationId"
     )
 

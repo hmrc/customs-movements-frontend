@@ -88,7 +88,7 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
 
   def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[SubmissionContract]] =
     httpClient
-      .GET[Seq[SubmissionContract]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchMovements}")
+      .GET[Seq[SubmissionContract]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchAllSubmissions}")
       .map { response =>
         logger.debug(s"CUSTOMS_MOVEMENTS_FRONTEND fetch submission response is --> ${response.toString}")
         response

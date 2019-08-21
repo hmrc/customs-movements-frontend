@@ -89,14 +89,19 @@ class AppConfig @Inject()(
     )
   )
 
-  lazy val fetchMovements = servicesConfig.getConfString(
-    "customs-declare-exports-movements.fetch-movements",
-    throw new IllegalStateException("Missing configuration for Customs Declaration Exports fetch submission URI")
+  lazy val fetchAllSubmissions = servicesConfig.getConfString(
+    "customs-declare-exports-movements.fetch-all-submissions",
+    throw new IllegalStateException("Missing configuration for Customs Declaration Exports fetch all submission URI")
+  )
+
+  lazy val fetchSingleSubmission = servicesConfig.getConfString(
+    "customs-declare-exports-movements.fetch-single-submission",
+    throw new IllegalStateException("Missing configuration for Customs Declaration Exports fetch single submission URI")
   )
 
   lazy val fetchNotifications = servicesConfig.getConfString(
     "customs-declare-exports-movements.fetch-notifications",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports fetch notification URI")
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports fetch notifications URI")
   )
 
   lazy val languageTranslationEnabled =

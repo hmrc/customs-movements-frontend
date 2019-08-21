@@ -45,10 +45,11 @@ class AppConfigSpec extends MovementBaseSpec {
         |microservice.services.features.welsh-translation=false
         |microservice.services.auth.port=9988
         |
-        |microservice.services.customs-declare-exports-movements.fetch-notifications=/notifications
-        |microservice.services.customs-declare-exports-movements.fetch-movements=/movements
         |microservice.services.customs-declare-exports-movements.host=localhost
         |microservice.services.customs-declare-exports-movements.port=9876
+        |microservice.services.customs-declare-exports-movements.fetch-notifications=/notifications
+        |microservice.services.customs-declare-exports-movements.fetch-all-submissions=/movements
+        |microservice.services.customs-declare-exports-movements.fetch-single-submission=/movements
         |
         |microservice.services.customs-declare-exports-movements.submit-movement-arrival=/movements/arrival
         |microservice.services.customs-declare-exports-movements.submit-movement-departure=/movements/departure
@@ -139,8 +140,12 @@ class AppConfigSpec extends MovementBaseSpec {
       validConfigService.movementConsolidationDisassociateUri must be("/consolidations/disassociate")
     }
 
-    "have fetch movements URL" in {
-      validConfigService.fetchMovements must be("/movements")
+    "have fetch all submissions URL" in {
+      validConfigService.fetchAllSubmissions must be("/movements")
+    }
+
+    "have fetch single submission" in {
+      validConfigService.fetchSingleSubmission must be("/movements")
     }
 
     "have fetch notification URL" in {
@@ -233,9 +238,21 @@ class AppConfigSpec extends MovementBaseSpec {
     )
   }
 
+  "throw an exception when fetch all submissions uri is missing" in {
+    intercept[Exception](emptyConfigService.fetchAllSubmissions).getMessage must be(
+      "Missing configuration for Customs Declaration Exports fetch all submission URI"
+    )
+  }
+
+  "throw an exception when fetch single submission uri is missing" in {
+    intercept[Exception](emptyConfigService.fetchSingleSubmission).getMessage must be(
+      "Missing configuration for Customs Declaration Exports fetch single submission URI"
+    )
+  }
+
   "throw an exception when fetch notifications uri is missing" in {
     intercept[Exception](emptyConfigService.fetchNotifications).getMessage must be(
-      "Missing configuration for Customs Declarations Exports fetch notification URI"
+      "Missing configuration for Customs Declarations Exports fetch notifications URI"
     )
   }
 

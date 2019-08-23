@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package models
+package models.notifications
 
 import java.time.Instant
 
+import models.UcrBlock
 import play.api.libs.json.Json
 
 final case class NotificationFrontendModel(
   timestampReceived: Instant = Instant.now(),
   conversationId: String,
+  responseType: ResponseType,
   ucrBlocks: Seq[UcrBlock],
   roe: Option[String],
   soe: Option[String]

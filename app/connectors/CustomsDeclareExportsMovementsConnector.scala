@@ -18,7 +18,7 @@ package connectors
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import models.NotificationFrontendModel
+import models.notifications.NotificationFrontendModel
 import models.submissions.SubmissionFrontendModel
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}

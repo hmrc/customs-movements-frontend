@@ -17,17 +17,20 @@
 package base.testdata
 
 import base.testdata.CommonTestData._
-import models.{NotificationFrontendModel, UcrBlock}
+import models.UcrBlock
+import models.notifications.{NotificationFrontendModel, ResponseType}
 
 object NotificationTestData {
 
-  def exampleNotificationContract(
+  def exampleNotificationFrontendModel(
     conversationId: String = conversationId,
+    responseType: ResponseType = ResponseType.ControlResponse,
     ucrBlocks: Seq[UcrBlock] = Seq(UcrBlock(ucr = correctUcr, ucrType = "D")),
     roe: Option[String] = Some("ROE"),
     soe: Option[String] = Some("SOE")
   ): NotificationFrontendModel = NotificationFrontendModel(
     conversationId = conversationId,
+    responseType = responseType,
     ucrBlocks = ucrBlocks,
     roe = roe,
     soe = soe

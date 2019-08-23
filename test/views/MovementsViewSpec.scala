@@ -24,8 +24,9 @@ import base.ViewValidator
 import base.testdata.CommonTestData.conversationId
 import base.testdata.ConsolidationTestData
 import base.testdata.ConsolidationTestData.{ValidDucr, ValidMucr, exampleAssociateDucrRequestSubmission}
+import models.UcrBlock
+import models.notifications.{NotificationFrontendModel, ResponseType}
 import models.submissions.{ActionType, SubmissionFrontendModel}
-import models.{NotificationFrontendModel, UcrBlock}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -72,6 +73,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
         NotificationFrontendModel(
           timestampReceived = dateTime.plus(10, MINUTES),
           conversationId = conversationId,
+          responseType = ResponseType.ControlResponse,
           ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M")),
           roe = None,
           soe = None
@@ -91,6 +93,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
       val notifications = Seq(
         NotificationFrontendModel(
           conversationId = conversationId,
+          responseType = ResponseType.ControlResponse,
           ucrBlocks = Seq(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M")),
           roe = None,
           soe = None

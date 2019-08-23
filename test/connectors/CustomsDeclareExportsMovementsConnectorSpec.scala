@@ -20,10 +20,10 @@ import base.testdata.CommonTestData._
 import base.testdata.ConsolidationTestData._
 import base.testdata.MovementsTestData
 import base.testdata.MovementsTestData.exampleSubmissionContract
-import base.testdata.NotificationTestData.exampleNotificationContract
+import base.testdata.NotificationTestData.exampleNotificationFrontendModel
 import config.AppConfig
 import forms.Choice.AllowedChoiceValues.{Arrival, Departure}
-import models.NotificationFrontendModel
+import models.notifications.NotificationFrontendModel
 import models.submissions.SubmissionFrontendModel
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
@@ -270,9 +270,9 @@ class CustomsDeclareExportsMovementsConnectorSpec
     "return response from HttpClient" in new Test {
 
       val expectedResponseContent = Seq(
-        exampleNotificationContract(conversationId = conversationId),
-        exampleNotificationContract(conversationId = conversationId, roe = None),
-        exampleNotificationContract(conversationId = conversationId, soe = None)
+        exampleNotificationFrontendModel(conversationId = conversationId),
+        exampleNotificationFrontendModel(conversationId = conversationId, roe = None),
+        exampleNotificationFrontendModel(conversationId = conversationId, soe = None)
       )
       when(httpClientMock.GET[Seq[NotificationFrontendModel]](any())(any(), any(), any()))
         .thenReturn(Future.successful(expectedResponseContent))

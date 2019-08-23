@@ -51,7 +51,6 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
       page.getElementById("ucrType") must containText(messages("submissions.submissionType"))
       page.getElementById("submissionAction") must containText(messages("submissions.submissionAction"))
       page.getElementById("dateOfRequest") must containText(messages("submissions.dateOfRequest"))
-      page.getElementById("dateOfUpdate") must containText(messages("submissions.dateOfUpdate"))
       page.getElementById("noOfNotifications") must containText(messages("submissions.noOfNotifications"))
     }
 
@@ -83,9 +82,8 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
 
       getElementById(pageWithData, s"ucr-$conversationId").text() must be("4444")
       getElementById(pageWithData, s"ucrType-$conversationId").text() must be("MUCR")
-      getElementById(pageWithData, s"submissionAction-$conversationId").text() must be("ShutMucr")
-      getElementById(pageWithData, s"dateOfRequest-$conversationId").text() must be("2019-10-31 00:00")
-      getElementById(pageWithData, s"dateOfUpdate-$conversationId").text() must be("2019-10-31 00:10")
+      getElementById(pageWithData, s"submissionAction-$conversationId").text() must be("submissions.shutmucr")
+      getElementById(pageWithData, s"dateOfRequest-$conversationId").text() must be("31 Oct 2019 at 00:00")
       getElementById(pageWithData, s"noOfNotifications-$conversationId").text() must be("1")
     }
 

@@ -23,8 +23,8 @@ import base.testdata.MovementsTestData.exampleSubmissionContract
 import base.testdata.NotificationTestData.exampleNotificationContract
 import config.AppConfig
 import forms.Choice.AllowedChoiceValues.{Arrival, Departure}
-import models.NotificationContract
-import models.submissions.SubmissionContract
+import models.NotificationFrontendModel
+import models.submissions.SubmissionFrontendModel
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures
@@ -257,7 +257,7 @@ class CustomsDeclareExportsMovementsConnectorSpec
 
     "call HttpClient, passing URL for fetch Notifications endpoint" in new Test {
 
-      when(httpClientMock.GET[Seq[NotificationContract]](any())(any(), any(), any()))
+      when(httpClientMock.GET[Seq[NotificationFrontendModel]](any())(any(), any(), any()))
         .thenReturn(Future.successful(Seq.empty))
 
       connector.fetchNotifications(conversationId).futureValue
@@ -274,10 +274,10 @@ class CustomsDeclareExportsMovementsConnectorSpec
         exampleNotificationContract(conversationId = conversationId, roe = None),
         exampleNotificationContract(conversationId = conversationId, soe = None)
       )
-      when(httpClientMock.GET[Seq[NotificationContract]](any())(any(), any(), any()))
+      when(httpClientMock.GET[Seq[NotificationFrontendModel]](any())(any(), any(), any()))
         .thenReturn(Future.successful(expectedResponseContent))
 
-      val result: Seq[NotificationContract] = connector.fetchNotifications(conversationId).futureValue
+      val result: Seq[NotificationFrontendModel] = connector.fetchNotifications(conversationId).futureValue
 
       result.length must equal(expectedResponseContent.length)
       result must equal(expectedResponseContent)
@@ -288,7 +288,7 @@ class CustomsDeclareExportsMovementsConnectorSpec
 
     "call HttpClient, passing URL for fetch all Submissions endpoint" in new Test {
 
-      when(httpClientMock.GET[Seq[SubmissionContract]](any())(any(), any(), any()))
+      when(httpClientMock.GET[Seq[SubmissionFrontendModel]](any())(any(), any(), any()))
         .thenReturn(Future.successful(Seq.empty))
 
       connector.fetchAllSubmissions().futureValue
@@ -304,10 +304,10 @@ class CustomsDeclareExportsMovementsConnectorSpec
         exampleSubmissionContract(conversationId = conversationId_2),
         exampleSubmissionContract(conversationId = conversationId_3)
       )
-      when(httpClientMock.GET[Seq[SubmissionContract]](any())(any(), any(), any()))
+      when(httpClientMock.GET[Seq[SubmissionFrontendModel]](any())(any(), any(), any()))
         .thenReturn(Future.successful(expectedResponseContent))
 
-      val result: Seq[SubmissionContract] = connector.fetchAllSubmissions().futureValue
+      val result: Seq[SubmissionFrontendModel] = connector.fetchAllSubmissions().futureValue
 
       result.length must equal(expectedResponseContent.length)
       result must equal(expectedResponseContent)
@@ -318,7 +318,7 @@ class CustomsDeclareExportsMovementsConnectorSpec
 
     "call HttpClient, passing URL for fetch single Submission endpoint" in new Test {
 
-      when(httpClientMock.GET[Option[SubmissionContract]](any())(any(), any(), any()))
+      when(httpClientMock.GET[Option[SubmissionFrontendModel]](any())(any(), any(), any()))
         .thenReturn(Future.successful(None))
 
       connector.fetchSingleSubmission(conversationId).futureValue
@@ -331,10 +331,10 @@ class CustomsDeclareExportsMovementsConnectorSpec
     "return response from HttpClient" in new Test {
 
       val expectedResponseContent = Some(exampleSubmissionContract(conversationId = conversationId))
-      when(httpClientMock.GET[Option[SubmissionContract]](any())(any(), any(), any()))
+      when(httpClientMock.GET[Option[SubmissionFrontendModel]](any())(any(), any(), any()))
         .thenReturn(Future.successful(expectedResponseContent))
 
-      val result: Option[SubmissionContract] = connector.fetchSingleSubmission(conversationId).futureValue
+      val result: Option[SubmissionFrontendModel] = connector.fetchSingleSubmission(conversationId).futureValue
 
       result must equal(expectedResponseContent)
     }

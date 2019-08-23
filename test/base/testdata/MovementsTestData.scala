@@ -20,7 +20,7 @@ import base.testdata.CommonTestData._
 import forms.GoodsDeparted.AllowedPlaces
 import forms._
 import forms.common.{Date, Time}
-import models.submissions.{ActionType, SubmissionContract}
+import models.submissions.{ActionType, SubmissionFrontendModel}
 import models.{SignedInUser, UcrBlock}
 import play.api.libs.json._
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
@@ -74,8 +74,8 @@ object MovementsTestData {
     ucr: String = correctUcr,
     ucrType: String = "D",
     actionType: ActionType = ActionType.Arrival
-  ): SubmissionContract =
-    SubmissionContract(
+  ): SubmissionFrontendModel =
+    SubmissionFrontendModel(
       eori = eori,
       conversationId = conversationId,
       ucrBlocks = Seq(UcrBlock(ucr = ucr, ucrType = ucrType)),

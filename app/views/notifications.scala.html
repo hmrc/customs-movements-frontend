@@ -14,12 +14,12 @@
  * limitations under the License.
  *@
 
-@import models.NotificationContract
+@import models.NotificationFrontendModel
 @import views.components.fields.FieldContentFormatter
 
 @this(main_template: views.html.main_template)
 
-@(notifications: Seq[NotificationContract])(implicit request: Request[_], messages: Messages)
+@(notifications: Seq[NotificationFrontendModel])(implicit request: Request[_], messages: Messages)
 
 @main_template(title = messages("notifications.title")) {
 

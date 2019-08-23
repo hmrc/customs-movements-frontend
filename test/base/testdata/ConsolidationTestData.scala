@@ -18,7 +18,7 @@ package base.testdata
 
 import base.testdata.CommonTestData._
 import models.UcrBlock
-import models.submissions.{ActionType, SubmissionContract}
+import models.submissions.{ActionType, SubmissionFrontendModel}
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
 
@@ -39,7 +39,7 @@ object ConsolidationTestData {
       </ucrBlock>
     </inventoryLinkingConsolidationRequest>
 
-  val exampleAssociateDucrRequestSubmission: SubmissionContract = SubmissionContract(
+  val exampleAssociateDucrRequestSubmission: SubmissionFrontendModel = SubmissionFrontendModel(
     eori = validEori,
     conversationId = conversationId,
     actionType = ActionType.DucrAssociation,

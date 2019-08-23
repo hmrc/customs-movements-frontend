@@ -17,7 +17,7 @@
 package base.testdata
 
 import base.testdata.CommonTestData._
-import models.{NotificationContract, UcrBlock}
+import models.{NotificationFrontendModel, UcrBlock}
 
 object NotificationTestData {
 
@@ -26,7 +26,7 @@ object NotificationTestData {
     ucrBlocks: Seq[UcrBlock] = Seq(UcrBlock(ucr = correctUcr, ucrType = "D")),
     roe: Option[String] = Some("ROE"),
     soe: Option[String] = Some("SOE")
-  ): NotificationContract = NotificationContract(
+  ): NotificationFrontendModel = NotificationFrontendModel(
     conversationId = conversationId,
     ucrBlocks = ucrBlocks,
     roe = roe,

@@ -18,8 +18,8 @@ package connectors
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import models.NotificationContract
-import models.submissions.SubmissionContract
+import models.NotificationFrontendModel
+import models.submissions.SubmissionFrontendModel
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
@@ -81,14 +81,14 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
 
   def fetchNotifications(
     conversationId: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[NotificationContract]] =
-    httpClient.GET[Seq[NotificationContract]](
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[NotificationFrontendModel]] =
+    httpClient.GET[Seq[NotificationFrontendModel]](
       s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}/$conversationId"
     )
 
-  def fetchAllSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[SubmissionContract]] =
+  def fetchAllSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[SubmissionFrontendModel]] =
     httpClient
-      .GET[Seq[SubmissionContract]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchAllSubmissions}")
+      .GET[Seq[SubmissionFrontendModel]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchAllSubmissions}")
       .map { response =>
         logger.debug(s"CUSTOMS_MOVEMENTS_FRONTEND fetch submission response is --> ${response.toString}")
         response
@@ -96,8 +96,8 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
 
   def fetchSingleSubmission(
     conversationId: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SubmissionContract]] =
-    httpClient.GET[Option[SubmissionContract]](
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SubmissionFrontendModel]] =
+    httpClient.GET[Option[SubmissionFrontendModel]](
       s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchSingleSubmission}/$conversationId"
     )
 

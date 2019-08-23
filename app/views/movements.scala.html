@@ -22,45 +22,50 @@
 
 @(submissions: Seq[(SubmissionPresentation, Seq[NotificationPresentation])])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = messages("submissions.title")) {
+@main_template(title = messages("submissions.title"),
+    fullWidth = true) {
 
     @components.back_link(routes.ChoiceController.displayChoiceForm())
 
     @components.page_title(Some("submissions.title"))
 
-    <div>
+    <div class="govuk-grid-column-two-thirds">
+        <p>@messages("submissions.summary") </p>
         <table>
-            <tr class="table-row table-head">
-                <th class="table-cell" id="ucr">@messages("submissions.ucr")</th>
-                <th class="table-cell" id="ucrType">@messages("submissions.submissionType")</th>
-                <th class="table-cell" id="submissionAction">@messages("submissions.submissionAction")</th>
-                <th class="table-cell" id="dateOfRequest">@messages("submissions.dateOfRequest")</th>
-                <th class="table-cell" id="dateOfUpdate">@messages("submissions.dateOfUpdate")</th>
-                <th class="table-cell" id="noOfNotifications">@messages("submissions.noOfNotifications")</th>
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header"id="ucr">@messages("submissions.ucr")</th>
+                <th scope="col" class="govuk-table__header"id="ucrType">@messages("submissions.submissionType")</th>
+                <th scope="col" class="govuk-table__header"id="dateOfRequest">@messages("submissions.dateOfRequest")</th>
+                <th scope="col" class="govuk-table__header"id="submissionAction">@messages("submissions.submissionAction")</th>
+                <th scope="col" class="govuk-table__header"id="noOfNotifications">@messages("submissions.noOfNotifications")</th>
             </tr>
-
+            </thead>
+            <tbody class="govuk-table__body">
             @for( (submission, notifications) <- submissions ){
-                <tr class="table-row">
-                    <td class="table-cell" id="ucr-@submission.conversationId">@components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucr))</td>
-                    <td class="table-cell" id="ucrType-@submission.conversationId">@{components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucrType + "UCR"))}</td>
-                    <td class="table-cell" id="submissionAction-@submission.conversationId">@submission.actionType</td>
-                    <td class="table-cell" id="dateOfRequest-@submission.conversationId">
-                      @FieldContentFormatter.dateTime(submission.requestTimestamp)
-                    </td>
-                    <td class="table-cell" id="dateOfUpdate-@submission.conversationId">
-                      @{notifications.headOption.map(_.timestampReceived).map(FieldContentFormatter.dateTime)}
-                    </td>
-                    <td class="table-cell" id="noOfNotifications-@submission.conversationId">
-                      @if(notifications.nonEmpty) {
-                          <a href="@routes.NotificationsController.listOfNotifications(submission.conversationId)">
-                            @{notifications.length}
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell" id="ucr-@submission.conversationId">
+                        @if(notifications.isEmpty){
+                            @components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucr))
+                        }else {
+                        <a href="@routes.NotificationsController.listOfNotifications(submission.conversationId)">
+                           @components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucr))
                           </a>
-                      } else {
-                          <span>@{notifications.length}</span>
-                      }
+                        }
+
+                    </td>
+                    <td class="govuk-table__cell" id="ucrType-@submission.conversationId">@{components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucrType + "UCR"))}</td>
+                    <td class="govuk-table__cell" id="dateOfRequest-@submission.conversationId">
+                    @FieldContentFormatter.dateTime(submission.requestTimestamp)
+                    </td>
+                    <td class="govuk-table__cell" id="submissionAction-@submission.conversationId">@messages(s"submissions.${submission.actionType.toString.toLowerCase}")</td>
+
+                    <td class="govuk-table__cell" id="noOfNotifications-@submission.conversationId">
+                        @{notifications.length}
                     </td>
                 </tr>
             }
+            </tbody>
         </table>
     </div>
 }

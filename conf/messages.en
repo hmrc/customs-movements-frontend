@@ -316,20 +316,28 @@ associateDucrConfirmation.title = Consolidation complete
 associateDucrConfirmation.header = Your MUCR
 associateDucrConfirmation.note = You might want to take a screenshot of this for your records.
 
-submissions.title = Submissions
+submissions.title = Requests
+submissions.summary = This page shows your submitted requests and allows you to view any notifications relating to them.
 submissions.submissionType = Type
-submissions.submissionAction = Action
+submissions.submissionAction = Type of request
 submissions.eori = Eori
 submissions.conversationId = ConversationId
 submissions.ucr = UCR
-submissions.dateOfRequest = Date of Request
-submissions.dateOfUpdate = Date of Update
+submissions.dateOfRequest = Date of request
+submissions.dateOfUpdate = Date of update
 submissions.status = Status
-submissions.noOfNotifications = Number of notifications
+submissions.noOfNotifications = Notifications
+
+submissions.shutmucr = Shut
+submissions.arrival = Arrive
+submissions.departure = Depart
+submissions.ducrAssociation = Associate
+submissions.ducrDisassociation = Disassociate
+
 
 notifications.title = Notifications
 notifications.reference = Reference
 notifications.action = Action
-notifications.dateOfResponse = Date of Response
+notifications.dateOfResponse = Date of response
 notifications.roe = ROE
 notifications.soe = SOE

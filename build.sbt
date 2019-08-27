@@ -44,11 +44,10 @@ lazy val microservice = Project(appName, file("."))
     // concatenate js
     Concat.groups :=
       Seq(
-        "javascripts/google.tag.manager.min.js" -> group(Seq("javascripts/google-tag-manager.js")),
         "stylesheets/vendor/jquery-ui.min.css" -> group(Seq("stylesheets/vendor/jquery-ui.css")),
-      "javascripts/customsdecexfrontend-app.js" -> group(
-        Seq("javascripts/show-hide-content.js", "javascripts/customsdecexfrontend.js")
-      )
+        "javascripts/customsdecexfrontend-app.js" -> group(
+          Seq("javascripts/show-hide-content.js", "javascripts/customsdecexfrontend.js")
+        )
     ),
     // prevent removal of unused code which generates warning errors due to use of third-party libs
     uglifyCompressOptions := Seq("unused=false", "dead_code=false"),

@@ -331,8 +331,8 @@ submissions.noOfNotifications = Notifications
 submissions.shutmucr = Shut
 submissions.arrival = Arrive
 submissions.departure = Depart
-submissions.ducrAssociation = Associate
-submissions.ducrDisassociation = Disassociate
+submissions.ducrassociation = Associate
+submissions.ducrdisassociation = Disassociate
 
 
 notifications.title = Notifications

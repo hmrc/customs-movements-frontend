@@ -19,6 +19,7 @@ package controllers
 import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
+import models.viewmodels.NotificationPageSingleElementFactory
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -29,14 +30,20 @@ import scala.concurrent.ExecutionContext
 class NotificationsController @Inject()(
   authenticate: AuthAction,
   connector: CustomsDeclareExportsMovementsConnector,
+  factory: NotificationPageSingleElementFactory,
   mcc: MessagesControllerComponents,
   notifications: notifications
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def listOfNotifications(conversationId: String): Action[AnyContent] = authenticate.async { implicit request =>
-    connector.fetchNotifications(conversationId).map { result =>
-      Ok(notifications(result))
-    }
+    for {
+      submissionElem <- connector.fetchSingleSubmission(conversationId).map(subm => subm.map(factory.build).toSeq)
+      notificationsElems <- connector
+        .fetchNotifications(conversationId)
+        .map(notifications => notifications.sorted.reverse.map(factory.build))
+      result = (notificationsElems ++ submissionElem)
+    } yield Ok(notifications(result))
+
   }
 }

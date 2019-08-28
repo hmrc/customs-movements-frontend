@@ -28,20 +28,23 @@ import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 
 @Singleton
-class NotificationPageSingleElementFactory @Inject()(decoder: Decoder)(implicit messages: Messages) {
+class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
 
   private val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy").withZone(ZoneId.systemDefault())
   private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault())
 
-  def build(submission: SubmissionFrontendModel): NotificationsPageSingleElement = submission.actionType match {
-    case Arrival            => buildForRequest(submission)
-    case Departure          => buildForRequest(submission)
-    case DucrAssociation    => buildForDucrAssociation(submission)
-    case DucrDisassociation => buildForRequest(submission)
-    case ShutMucr           => buildForRequest(submission)
-  }
+  def build(submission: SubmissionFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
+    submission.actionType match {
+      case Arrival            => buildForRequest(submission)
+      case Departure          => buildForRequest(submission)
+      case DucrAssociation    => buildForDucrAssociation(submission)
+      case DucrDisassociation => buildForRequest(submission)
+      case ShutMucr           => buildForRequest(submission)
+    }
 
-  private def buildForRequest(submission: SubmissionFrontendModel): NotificationsPageSingleElement =
+  private def buildForRequest(
+    submission: SubmissionFrontendModel
+  )(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
       title = messages(s"notifications.elem.title.${submission.actionType.value}"),
       timestampInfo = messages(
@@ -55,7 +58,9 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder)(implicit 
       )
     )
 
-  private def buildForDucrAssociation(submission: SubmissionFrontendModel): NotificationsPageSingleElement = {
+  private def buildForDucrAssociation(
+    submission: SubmissionFrontendModel
+  )(implicit messages: Messages): NotificationsPageSingleElement = {
     val ducrs = submission.ucrBlocks.filter(_.ucrType == "D")
 
     buildForRequest(submission).copy(
@@ -67,14 +72,17 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder)(implicit 
     )
   }
 
-  def build(notification: NotificationFrontendModel): NotificationsPageSingleElement = notification.responseType match {
-    case ControlResponse        => buildForControlResponse(notification)
-    case MovementTotalsResponse => buildForMovementTotalsResponse(notification)
-    case MovementResponse       => buildForMovementResponse(notification)
-    case _                      => buildForUnspecified(notification.timestampReceived)
-  }
+  def build(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
+    notification.responseType match {
+      case ControlResponse        => buildForControlResponse(notification)
+      case MovementTotalsResponse => buildForMovementTotalsResponse(notification)
+      case MovementResponse       => buildForMovementResponse(notification)
+      case _                      => buildForUnspecified(notification.timestampReceived)
+    }
 
-  private def buildForControlResponse(notification: NotificationFrontendModel): NotificationsPageSingleElement =
+  private def buildForControlResponse(
+    notification: NotificationFrontendModel
+  )(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
       title = messages(s"notifications.elem.title.inventoryLinkingControlResponse"),
       timestampInfo = messages(
@@ -87,7 +95,9 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder)(implicit 
       }.getOrElse(""))
     )
 
-  private def buildForMovementTotalsResponse(notification: NotificationFrontendModel): NotificationsPageSingleElement =
+  private def buildForMovementTotalsResponse(
+    notification: NotificationFrontendModel
+  )(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
       title = messages(s"notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
       timestampInfo = messages(
@@ -110,7 +120,9 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder)(implicit 
       }
     )
 
-  private def buildForMovementResponse(notification: NotificationFrontendModel): NotificationsPageSingleElement =
+  private def buildForMovementResponse(
+    notification: NotificationFrontendModel
+  )(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
       title = messages(s"notifications.elem.title.inventoryLinkingMovementResponse"),
       timestampInfo = messages(
@@ -123,7 +135,9 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder)(implicit 
       }.getOrElse(""))
     )
 
-  private def buildForUnspecified(responseTimestamp: Instant): NotificationsPageSingleElement =
+  private def buildForUnspecified(
+    responseTimestamp: Instant
+  )(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
       title = messages("notifications.elem.title.unspecified"),
       timestampInfo = messages(

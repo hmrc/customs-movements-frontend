@@ -14,38 +14,124 @@
  * limitations under the License.
  *@
 
-@import models.notifications.NotificationFrontendModel
-@import views.components.fields.FieldContentFormatter
+@import models.viewmodels.NotificationsPageSingleElement
 
 @this(main_template: views.html.main_template)
 
-@(notifications: Seq[NotificationFrontendModel])(implicit request: Request[_], messages: Messages)
+@(elementsToDisplay: Seq[NotificationsPageSingleElement])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = messages("notifications.title")) {
+  @main_template(title = messages("notifications.title")) {
 
     @components.back_link(routes.MovementsController.displayPage())
 
     @components.page_title(Some("notifications.title"))
 
-    <div>
-        <table>
-            <tr class="table-row table-head">
-                <th class="table-cell" id="reference">@messages("notifications.reference")</th>
-                <th class="table-cell" id="dateOfResponse">@messages("notifications.dateOfResponse")</th>
-                <th class="table-cell" id="roe">@messages("notifications.roe")</th>
-                <th class="table-cell" id="soe">@messages("notifications.soe")</th>
-            </tr>
+    @for(element <- elementsToDisplay){
 
-            @for(notification <- notifications){
-                <tr class="table-row">
-                    <td class="table-cell">@components.elements_in_separate_lines(notification.ucrBlocks.map(_.ucr))</td>
-                    <td class="table-cell">
-                      @{FieldContentFormatter.dateTime(notification.timestampReceived)}
-                    </td>
-                    <td class="table-cell">@{notification.masterRoe}</td>
-                    <td class="table-cell">@{notification.masterSoe}</td>
-                </tr>
-            }
-        </table>
+      <li class="app-step-nav__step">
+        <div class="app-step-nav__header" style="padding-left: 16px;" data-position="1">
+          <h2 class="app-step-nav__title">
+            <span class="app-step-nav__circle app-step-nav__circle--number">
+              <span class="app-step-nav__circle-inner">
+                <span class="app-step-nav__circle-background">3</span>
+              </span>
+            </span>
+            <span id="">@{element.title}</span>
+          </h2>
+        </div>
+        <div class="app-step-nav__panel" style="border-bottom: none">
+          <div style="padding-left: 16px;" class="govuk-form-group">
+            <p>@{element.timestampInfo}</p>
+              element.content
+          </div>
+        </div>
+      </li>
+
+    }
+
+    @* <div>*@
+    @* <table>*@
+    @* <tr class="table-row table-head">*@
+    @* <th class="table-cell" id="reference">@messages("notifications.reference")</th>*@
+    @* <th class="table-cell" id="dateOfResponse">@messages("notifications.dateOfResponse")</th>*@
+    @* <th class="table-cell" id="roe">@messages("notifications.roe")</th>*@
+    @* <th class="table-cell" id="soe">@messages("notifications.soe")</th>*@
+    @* </tr>*@
+
+    @* @for(notification <- notifications){*@
+    @* <tr class="table-row">*@
+    @* <td class="table-cell">@components.elements_in_separate_lines(notification.ucrBlocks.map(_.ucr))</td>*@
+    @* <td class="table-cell">*@
+    @* @{FieldContentFormatter.dateTime(notification.timestampReceived)}*@
+    @* </td>*@
+    @* <td class="table-cell">@{notification.roe}</td>*@
+    @* <td class="table-cell">@{notification.soe}</td>*@
+    @* </tr>*@
+    @* }*@
+    @* </table>*@
+    @* </div>*@
+
+    <div class="govuk-grid-column-two-thirds">
+
+      <li class="app-step-nav__step">
+        <div class="app-step-nav__header" style="padding-left: 16px;" data-position="1">
+          <h2 class="app-step-nav__title">
+            <span class="app-step-nav__circle app-step-nav__circle--number">
+              <span class="app-step-nav__circle-inner">
+                <span class="app-step-nav__circle-background">3</span>
+              </span>
+            </span>
+            <span>Update message</span>
+          </h2>
+        </div>
+        <div class="app-step-nav__panel" style="border-bottom: none">
+          <div style="padding-left: 16px;" class="govuk-form-group">
+            <p>13 August 2019 at 10:43</p>
+            <p>Some more details on your request</p>
+          </div>
+        </div>
+      </li>
+
+      <li class="app-step-nav__step">
+        <div class="app-step-nav__header" style="background-color: #f3f2f1; padding-left: 16px;" data-position="1">
+          <h2 class="app-step-nav__title">
+            <span class="app-step-nav__circle app-step-nav__circle--number">
+              <span class="app-step-nav__circle-inner">
+                <span class="app-step-nav__circle-background">2</span>
+              </span>
+            </span>
+            <span>Goods arrived</span>
+          </h2>
+        </div>
+        <div class="app-step-nav__panel">
+          <div style="background-color: #f3f2f1;
+            padding-left: 16px;" class="govuk-form-group">
+            <p>13 August 2019 at 10:41</p>
+            <p>Your request to arrive this DUCR has been successful.</p>
+          </div>
+        </div>
+      </li>
+
+
+      <li class="app-step-nav__step">
+        <div class="app-step-nav__header" style="padding-left: 15px;" data-position="1">
+          <h2 class="app-step-nav__title">
+            <span class="app-step-nav__circle app-step-nav__circle--number">
+              <span class="app-step-nav__circle-inner">
+                <span class="app-step-nav__circle-background">1</span>
+              </span>
+            </span>
+            <span>Arrive request</span>
+          </h2>
+        </div>
+        <div class="app-step-nav__panel" style="border-bottom: none">
+          <div style="padding-left: 15px;" class="govuk-form-group">
+            <p>13 August 2019 at 10:31</p>
+            <p>Your request to arrive this DUCR has been received. We will notify you when it has been successful.</p>
+          </div>
+        </div>
+      </li>
+
     </div>
-}
+
+  }

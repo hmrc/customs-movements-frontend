@@ -31,12 +31,12 @@ class NotificationsViewSpec extends WordSpec with MustMatchers with Stubs with V
 
   "Notification page" should {
 
-    "contains title" in {
+    "contain title" in {
 
       page.getElementById("title") must containText(messages("notifications.title"))
     }
 
-    "contains correct table headers" in {
+    "contain correct table headers" in {
 
       page.getElementById("reference") must containText(messages("notifications.reference"))
       page.getElementById("dateOfResponse") must containText(messages("notifications.dateOfResponse"))

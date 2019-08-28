@@ -46,7 +46,6 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
     val decoderMock: Decoder = mock[Decoder]
     implicit val messages: Messages = Mockito.spy(stubMessages())
     val factory = new NotificationPageSingleElementFactory(decoderMock)
-
   }
 
   "NotificationPageSingleElementFactory" should {

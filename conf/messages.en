@@ -341,3 +341,36 @@ notifications.action = Action
 notifications.dateOfResponse = Date of response
 notifications.roe = ROE
 notifications.soe = SOE
+
+# This part uses ActionType instances' values to differentiate between messages
+
+notifications.elem.title.Arrival = Arrive request
+notifications.elem.title.Departure = Depart request
+notifications.elem.title.DucrAssociation = Consolidation request
+notifications.elem.title.DucrDisassociation = Disassociate request
+notifications.elem.title.ShutMucr = Shut MUCR request
+
+notifications.elem.title.inventoryLinkingControlResponse = Request received
+notifications.elem.title.inventoryLinkingMovementResponse = Update message
+notifications.elem.title.inventoryLinkingMovementTotalsResponse = Update message
+notifications.elem.title.unspecified = Update message
+
+notifications.elem.timestampInfo.request = Request submitted {0} at {1}
+notifications.elem.timestampInfo.response = Notification generated {0} at {1}
+
+notifications.elem.content.Arrival = Your request to arrive this DUCR has been received.
+notifications.elem.content.Departure = Your request to depart this MUCR has been received.
+notifications.elem.content.DucrAssociation = Your request to consolidate these DUCRs into this MUCR has been received:
+notifications.elem.content.DucrDisassociation = Your request to disassociate this DUCR has been received.
+notifications.elem.content.ShutMucr = Your request to shut this MUCR has been received.
+notifications.elem.content.footer = We will notify you when it has been successful.
+
+notifications.elem.content.inventoryLinkingControlResponse.1 = Your request has been acknowledged and processed.
+notifications.elem.content.inventoryLinkingControlResponse.2 = Your request has been partially acknowledged and processed.
+notifications.elem.content.inventoryLinkingControlResponse.3 = Your request has been rejected.
+
+notifications.elem.content.inventoryLinkingMovementResponse.crc = CRC: {0}
+
+notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc = CRC: {0}
+notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Route of entry is: {0}
+notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Status of entry is: {0}

@@ -24,8 +24,9 @@ import base.ViewValidator
 import base.testdata.CommonTestData.conversationId
 import base.testdata.ConsolidationTestData
 import base.testdata.ConsolidationTestData.{ValidDucr, ValidMucr, exampleAssociateDucrRequestSubmission}
+import base.testdata.NotificationTestData.exampleNotificationFrontendModel
 import models.UcrBlock
-import models.notifications.{NotificationFrontendModel, ResponseType}
+import models.notifications.ResponseType
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
@@ -70,13 +71,11 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
         actionType = ActionType.ShutMucr
       )
       val notifications = Seq(
-        NotificationFrontendModel(
+        exampleNotificationFrontendModel(
           timestampReceived = dateTime.plus(10, MINUTES),
           conversationId = conversationId,
           responseType = ResponseType.ControlResponse,
-          ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M")),
-          roe = None,
-          soe = None
+          ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M"))
         )
       )
 
@@ -91,13 +90,9 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
 
     "contain MUCR and DUCR if Submission contains both" in {
       val notifications = Seq(
-        NotificationFrontendModel(
-          conversationId = conversationId,
+        exampleNotificationFrontendModel(conversationId = conversationId,
           responseType = ResponseType.ControlResponse,
-          ucrBlocks = Seq(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M")),
-          roe = None,
-          soe = None
-        )
+          ucrBlocks = Seq(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M")))
       )
 
       val pageWithData: Html = new movements(mainTemplate)(Seq(exampleAssociateDucrRequestSubmission -> notifications))(

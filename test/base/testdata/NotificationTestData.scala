@@ -16,6 +16,8 @@
 
 package base.testdata
 
+import java.time.Instant
+
 import base.testdata.CommonTestData._
 import models.UcrBlock
 import models.notifications.{NotificationFrontendModel, ResponseType}
@@ -26,13 +28,20 @@ object NotificationTestData {
     conversationId: String = conversationId,
     responseType: ResponseType = ResponseType.ControlResponse,
     ucrBlocks: Seq[UcrBlock] = Seq(UcrBlock(ucr = correctUcr, ucrType = "D")),
-    roe: Option[String] = Some("ROE"),
-    soe: Option[String] = Some("SOE")
-  ): NotificationFrontendModel = NotificationFrontendModel(
-    conversationId = conversationId,
-    responseType = responseType,
-    ucrBlocks = ucrBlocks,
-    roe = roe,
-    soe = soe
-  )
+    masterRoe: Option[String] = None,
+    masterSoe: Option[String] = None,
+    actionCode: Option[String] = None,
+    crcCode: Option[String] = None,
+    timestampReceived: Instant = Instant.now()
+  ): NotificationFrontendModel =
+    NotificationFrontendModel(
+      timestampReceived = timestampReceived,
+      conversationId = conversationId,
+      responseType = responseType,
+      ucrBlocks = ucrBlocks,
+      masterRoe = masterRoe,
+      masterSoe = masterSoe,
+      actionCode = actionCode,
+      crcCode = crcCode
+    )
 }

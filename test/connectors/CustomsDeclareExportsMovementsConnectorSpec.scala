@@ -19,7 +19,7 @@ package connectors
 import base.testdata.CommonTestData._
 import base.testdata.ConsolidationTestData._
 import base.testdata.MovementsTestData
-import base.testdata.MovementsTestData.exampleSubmissionContract
+import base.testdata.MovementsTestData.exampleSubmissionFrontendModel
 import base.testdata.NotificationTestData.exampleNotificationFrontendModel
 import config.AppConfig
 import forms.Choice.AllowedChoiceValues.{Arrival, Departure}
@@ -271,8 +271,8 @@ class CustomsDeclareExportsMovementsConnectorSpec
 
       val expectedResponseContent = Seq(
         exampleNotificationFrontendModel(conversationId = conversationId),
-        exampleNotificationFrontendModel(conversationId = conversationId, roe = None),
-        exampleNotificationFrontendModel(conversationId = conversationId, soe = None)
+        exampleNotificationFrontendModel(conversationId = conversationId, masterRoe = None),
+        exampleNotificationFrontendModel(conversationId = conversationId, masterSoe = None)
       )
       when(httpClientMock.GET[Seq[NotificationFrontendModel]](any())(any(), any(), any()))
         .thenReturn(Future.successful(expectedResponseContent))
@@ -300,9 +300,9 @@ class CustomsDeclareExportsMovementsConnectorSpec
     "return response from HttpClient" in new Test {
 
       val expectedResponseContent = Seq(
-        exampleSubmissionContract(conversationId = conversationId),
-        exampleSubmissionContract(conversationId = conversationId_2),
-        exampleSubmissionContract(conversationId = conversationId_3)
+        exampleSubmissionFrontendModel(conversationId = conversationId),
+        exampleSubmissionFrontendModel(conversationId = conversationId_2),
+        exampleSubmissionFrontendModel(conversationId = conversationId_3)
       )
       when(httpClientMock.GET[Seq[SubmissionFrontendModel]](any())(any(), any(), any()))
         .thenReturn(Future.successful(expectedResponseContent))
@@ -330,7 +330,7 @@ class CustomsDeclareExportsMovementsConnectorSpec
 
     "return response from HttpClient" in new Test {
 
-      val expectedResponseContent = Some(exampleSubmissionContract(conversationId = conversationId))
+      val expectedResponseContent = Some(exampleSubmissionFrontendModel(conversationId = conversationId))
       when(httpClientMock.GET[Option[SubmissionFrontendModel]](any())(any(), any(), any()))
         .thenReturn(Future.successful(expectedResponseContent))
 

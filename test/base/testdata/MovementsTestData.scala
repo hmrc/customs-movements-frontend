@@ -16,6 +16,8 @@
 
 package base.testdata
 
+import java.time.Instant
+
 import base.testdata.CommonTestData._
 import forms.GoodsDeparted.AllowedPlaces
 import forms._
@@ -68,17 +70,19 @@ object MovementsTestData {
   def validMovementRequest(movementType: String): InventoryLinkingMovementRequest =
     Movement.createMovementRequest(CacheMap(movementType, cacheMapData(movementType)), "eori1", Choice(movementType))
 
-  def exampleSubmissionContract(
+  def exampleSubmissionFrontendModel(
     eori: String = validEori,
     conversationId: String = conversationId,
     ucr: String = correctUcr,
     ucrType: String = "D",
-    actionType: ActionType = ActionType.Arrival
+    actionType: ActionType = ActionType.Arrival,
+    requestTimestamp: Instant = Instant.now()
   ): SubmissionFrontendModel =
     SubmissionFrontendModel(
       eori = eori,
       conversationId = conversationId,
       ucrBlocks = Seq(UcrBlock(ucr = ucr, ucrType = ucrType)),
-      actionType = actionType
+      actionType = actionType,
+      requestTimestamp = requestTimestamp
     )
 }

@@ -45,7 +45,7 @@ class SummaryController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  private val logger = Logger(this.getClass())
+  private val logger = Logger(this.getClass)
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val cacheMapOpt = customsCacheService.fetch(movementCacheId)

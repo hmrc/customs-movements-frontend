@@ -31,12 +31,12 @@ object ActionType {
     override def writes(actionType: ActionType): JsValue = JsString(actionType.value)
 
     override def reads(json: JsValue): JsResult[ActionType] = json match {
-      case JsString("Arrival") => JsSuccess(Arrival)
-      case JsString("Departure") => JsSuccess(Departure)
-      case JsString("DucrAssociation") => JsSuccess(DucrAssociation)
+      case JsString("Arrival")            => JsSuccess(Arrival)
+      case JsString("Departure")          => JsSuccess(Departure)
+      case JsString("DucrAssociation")    => JsSuccess(DucrAssociation)
       case JsString("DucrDisassociation") => JsSuccess(DucrDisassociation)
-      case JsString("ShutMucr") => JsSuccess(ShutMucr)
-      case _ => JsError("Unknown ActionType")
+      case JsString("ShutMucr")           => JsSuccess(ShutMucr)
+      case _                              => JsError("Unknown ActionType")
     }
   }
 }

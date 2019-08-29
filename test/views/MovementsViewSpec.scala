@@ -23,7 +23,7 @@ import java.time.{Instant, LocalDate, ZoneId, ZonedDateTime}
 import base.ViewValidator
 import base.testdata.CommonTestData.conversationId
 import base.testdata.ConsolidationTestData
-import base.testdata.ConsolidationTestData.{ValidDucr, ValidMucr, exampleAssociateDucrRequestSubmission}
+import base.testdata.ConsolidationTestData.{exampleAssociateDucrRequestSubmission, ValidDucr, ValidMucr}
 import base.testdata.NotificationTestData.exampleNotificationFrontendModel
 import models.UcrBlock
 import models.notifications.ResponseType
@@ -90,9 +90,11 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
 
     "contain MUCR and DUCR if Submission contains both" in {
       val notifications = Seq(
-        exampleNotificationFrontendModel(conversationId = conversationId,
+        exampleNotificationFrontendModel(
+          conversationId = conversationId,
           responseType = ResponseType.ControlResponse,
-          ucrBlocks = Seq(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M")))
+          ucrBlocks = Seq(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M"))
+        )
       )
 
       val pageWithData: Html = new movements(mainTemplate)(Seq(exampleAssociateDucrRequestSubmission -> notifications))(

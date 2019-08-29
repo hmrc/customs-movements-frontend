@@ -16,6 +16,9 @@
 
 package base.testdata
 
+import models.viewmodels.NotificationsPageSingleElement
+import play.twirl.api.Html
+
 object CommonTestData {
 
   val validEori: String = "GB12345678"
@@ -25,5 +28,12 @@ object CommonTestData {
   val conversationId: String = "93feaae9-5043-4569-9fc5-ff04bfea0d11"
   val conversationId_2: String = "93feaae9-5043-4569-9fc5-ff04bfea0d22"
   val conversationId_3: String = "93feaae9-5043-4569-9fc5-ff04bfea0d33"
+
+  def exampleNotificationPageSingleElement(
+    title: String = "TITLE",
+    timestampInfo: String = "TIMESTAMP",
+    content: Html = Html("<p>CONTENT</p>")
+  ): NotificationsPageSingleElement =
+    NotificationsPageSingleElement(title = title, timestampInfo = timestampInfo, content = content)
 
 }

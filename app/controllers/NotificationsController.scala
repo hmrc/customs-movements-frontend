@@ -19,6 +19,7 @@ package controllers
 import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
+import models.submissions.SubmissionFrontendModel
 import models.viewmodels.NotificationPageSingleElementFactory
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,12 +39,23 @@ class NotificationsController @Inject()(
 
   def listOfNotifications(conversationId: String): Action[AnyContent] = authenticate.async { implicit request =>
     for {
-      submissionElem <- connector.fetchSingleSubmission(conversationId).map(subm => subm.map(factory.build).toSeq)
+      submission <- connector.fetchSingleSubmission(conversationId)
+      submissionElem = submission.map(factory.build)
+
       notificationsElems <- connector
         .fetchNotifications(conversationId)
-        .map(notifications => notifications.sorted.reverse.map(factory.build))
-      result = (notificationsElems ++ submissionElem)
-    } yield Ok(notifications(result))
+        .map(notifications => notifications.sorted.map(factory.build))
 
+      submissionUcr = submission.flatMap(extractUcr).getOrElse("")
+      elementsToDisplay = (submissionElem.toSeq ++ notificationsElems)
+
+    } yield Ok(notifications(submissionUcr, elementsToDisplay))
   }
+
+  private def extractUcr(submission: SubmissionFrontendModel): Option[String] =
+    if (hasMucr(submission)) submission.ucrBlocks.find(_.ucrType == "M").map(_.ucr)
+    else submission.ucrBlocks.headOption.map(_.ucr)
+
+  private def hasMucr(submission: SubmissionFrontendModel): Boolean = submission.ucrBlocks.exists(_.ucrType == "M")
+
 }

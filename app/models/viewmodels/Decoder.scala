@@ -21,44 +21,50 @@ import javax.inject.Singleton
 @Singleton
 class Decoder {
 
-  def crc(code: String): String = crcMappings(code)
+  def crc(code: String): String = code match {
+    case "000" => "decoder.crc.Success"
+    case "101" => "decoder.crc.PrelodgedDeclarationNotArrived"
+    case "102" => "decoder.crc.DeclarationNotArrived"
+    case _     => ""
+  }
 
-  def roe(code: String): String = roeMappings(code)
+  def roe(code: String): String = code match {
+    case "1" => "decoder.roe.DocumentaryControl"
+    case "2" => "decoder.roe.PhysicalExternalPartyControl"
+    case "3" => "decoder.roe.NonBlockingDocumentaryControl"
+    case "6" => "decoder.roe.NoControlRequired"
+    case "0" => "decoder.roe.RiskingNotPerformed"
+    case "H" => "decoder.roe.PrelodgePrefix"
+    case _   => ""
+  }
 
-  def soe(code: String): String = soeMappings(code)
+  def soe(code: String): String = code match {
+    case "1"  => "decoder.soe.DeclarationValidation"
+    case "2"  => "decoder.soe.DeclarationGoodsRelease"
+    case "3"  => "decoder.soe.DeclarationClearance"
+    case "4"  => "decoder.soe.DeclarationInvalidated"
+    case "5"  => "decoder.soe.DeclarationRejected"
+    case "6"  => "decoder.soe.DeclarationHandledExternally"
+    case "7"  => "decoder.soe.DeclarationCorrectionValidation"
+    case "8"  => "decoder.soe.AdvanceDeclarationRegistration"
+    case "9"  => "decoder.soe.DeclarationAcceptance"
+    case "10" => "decoder.soe.DeclarationAcceptanceAtGoodsArrival"
+    case "11" => "decoder.soe.DeclarationRejectionAtGoodsArrival"
+    case "12" => "decoder.soe.DeclarationCorrected"
+    case "13" => "decoder.soe.DeclarationSupplemented"
+    case "14" => "decoder.soe.DeclarationRisked"
+    case "15" => "decoder.soe.CustomsPositionDetermined"
+    case "16" => "decoder.soe.DeclarationClearanceAfterGoodsRelease"
+    case "17" => "decoder.soe.InsufficientGuarantees"
+    case "D"  => "decoder.soe.Departed"
+    case "F"  => "decoder.soe.Frustrated"
+    case _    => ""
+  }
 
-  private val crcMappings: Map[String, String] =
-    Map("000" -> "Success", "101" -> "Pre-lodged Declaration has not arrived ", "102" -> "Declaration has not arrived")
-      .withDefaultValue("")
-
-  private val roeMappings: Map[String, String] = Map(
-    "1" -> "Documentary Control",
-    "2" -> "Physical / External Party Control",
-    "3" -> "Non-Blocking Documentary Control",
-    "6" -> "No control required",
-    "0" -> "Risking not yet performed",
-    "H" -> "Pre-lodge pre-fix"
-  ).withDefaultValue("")
-
-  private val soeMappings: Map[String, String] = Map(
-    "1" -> "Declaration Validation",
-    "2" -> "Declaration Goods Release",
-    "3" -> "Declaration Clearance",
-    "4" -> "Declaration Invalidated",
-    "5" -> "Declaration Rejected",
-    "6" -> "Declaration Handled Externally",
-    "7" -> "Declaration Correction Validation",
-    "8" -> "Advance Declaration Registration",
-    "9" -> "Declaration Acceptance",
-    "10" -> "Declaration Acceptance at Goods Arrival",
-    "11" -> "Declaration Rejection at Goods Arrival",
-    "12" -> "Declaration Corrected",
-    "13" -> "Declaration Supplemented",
-    "14" -> "Declaration Risked",
-    "15" -> "Customs Position Determined",
-    "16" -> "Declaration Clearance after Goods Release",
-    "17" -> "Insufficient Guarantees",
-    "D" -> "Departed",
-    "F" -> "Frustrated"
-  ).withDefaultValue("")
+  def actionCode(code: String): String = code match {
+    case "1" => "notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed"
+    case "2" => "notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed"
+    case "3" => "notifications.elem.content.inventoryLinkingControlResponse.Rejected"
+    case _ => ""
+  }
 }

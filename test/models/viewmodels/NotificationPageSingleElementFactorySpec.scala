@@ -28,13 +28,11 @@ import models.submissions.{ActionType, SubmissionFrontendModel}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito
 import org.mockito.Mockito.{verify, when}
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
-
-import scala.collection.mutable
 
 class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatchers with MockitoSugar {
 
@@ -46,6 +44,15 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
     val decoderMock: Decoder = mock[Decoder]
     implicit val messages: Messages = Mockito.spy(stubMessages())
     val factory = new NotificationPageSingleElementFactory(decoderMock)
+
+    val crcCodeKeyFromDecoder = "CRC code mapping"
+    val roeKeyFromDecoder = "ROE code mapping"
+    val soeKeyFromDecoder = "SOE code mapping"
+    val actionCodeKeyFromDecoder = "Action code mapping"
+    when(decoderMock.crc(any())).thenReturn(crcCodeKeyFromDecoder)
+    when(decoderMock.roe(any())).thenReturn(roeKeyFromDecoder)
+    when(decoderMock.soe(any())).thenReturn(soeKeyFromDecoder)
+    when(decoderMock.actionCode(any())).thenReturn(actionCodeKeyFromDecoder)
   }
 
   "NotificationPageSingleElementFactory" should {
@@ -67,9 +74,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
         val result = factory.build(input)
 
-        result.title must equal(expectedResult.title)
-        result.timestampInfo must equal(expectedResult.timestampInfo)
-        result.content must equal(expectedResult.content)
+        assertEquality(result, expectedResult)
       }
 
       "provided with Departure SubmissionFrontendModel" in new Test {
@@ -87,9 +92,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
         val result = factory.build(input)
 
-        result.title must equal(expectedResult.title)
-        result.timestampInfo must equal(expectedResult.timestampInfo)
-        result.content must equal(expectedResult.content)
+        assertEquality(result, expectedResult)
       }
 
       "provided with DucrAssociation SubmissionFrontendModel" in new Test {
@@ -118,9 +121,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
         val result = factory.build(input)
 
-        result.title must equal(expectedResult.title)
-        result.timestampInfo must equal(expectedResult.timestampInfo)
-        result.content must equal(expectedResult.content)
+        assertEquality(result, expectedResult)
       }
 
       "provided with DucrDisassociation SubmissionFrontendModel" in new Test {
@@ -142,9 +143,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
         val result = factory.build(input)
 
-        result.title must equal(expectedResult.title)
-        result.timestampInfo must equal(expectedResult.timestampInfo)
-        result.content must equal(expectedResult.content)
+        assertEquality(result, expectedResult)
       }
 
       "provided with ShutMucr SubmissionFrontendModel" in new Test {
@@ -166,9 +165,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
         val result = factory.build(input)
 
-        result.title must equal(expectedResult.title)
-        result.timestampInfo must equal(expectedResult.timestampInfo)
-        result.content must equal(expectedResult.content)
+        assertEquality(result, expectedResult)
       }
 
       "provided with ControlResponse NotificationFrontendModel" which {
@@ -183,7 +180,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           val expectedResult = NotificationsPageSingleElement(
             title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
             timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019", "12:34"),
-            content = Html(s"<p>${messages("notifications.elem.content.inventoryLinkingControlResponse.1")}</p>")
+            content = Html(s"<p>${messages(actionCodeKeyFromDecoder)}</p>")
           )
 
           val result: NotificationsPageSingleElement = factory.build(input)
@@ -201,7 +198,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           val expectedResult = NotificationsPageSingleElement(
             title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
             timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019", "12:34"),
-            content = Html(s"<p>${messages("notifications.elem.content.inventoryLinkingControlResponse.2")}</p>")
+            content = Html(s"<p>${messages(actionCodeKeyFromDecoder)}</p>")
           )
 
           val result: NotificationsPageSingleElement = factory.build(input)
@@ -219,7 +216,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           val expectedResult = NotificationsPageSingleElement(
             title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
             timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019", "12:34"),
-            content = Html(s"<p>${messages("notifications.elem.content.inventoryLinkingControlResponse.3")}</p>")
+            content = Html(s"<p>${messages(actionCodeKeyFromDecoder)}</p>")
           )
 
           val result: NotificationsPageSingleElement = factory.build(input)
@@ -251,7 +248,6 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
       "call Messages passing correct keys and arguments" in new Test {
 
-        when(decoderMock.crc(any())).thenReturn("CRC code mapping")
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.MovementResponse,
           timestampReceived = testTimestamp,
@@ -260,35 +256,30 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
         factory.build(input)
 
-        verify(messages)
-          .apply(meq("notifications.elem.title.inventoryLinkingMovementResponse"), meq(mutable.WrappedArray.empty))
-        verify(messages).apply(
-          meq("notifications.elem.timestampInfo.response"),
-          meq(mutable.WrappedArray.make(Array("23 Oct 2019", "12:34")))
-        )
-        verify(messages).apply(
-          meq("notifications.elem.content.inventoryLinkingMovementResponse.crc"),
-          meq(mutable.WrappedArray.make(Array("CRC code mapping")))
-        )
+        verifyMessages("notifications.elem.title.inventoryLinkingMovementResponse")
+        verifyMessages("notifications.elem.timestampInfo.response", "23 Oct 2019", "12:34")
+        verifyMessages(crcCodeKeyFromDecoder)
+        verifyMessages("notifications.elem.content.inventoryLinkingMovementResponse.crc")
       }
 
       "return NotificationsPageSingleElement with values returned by Messages" in new Test {
-
-        val expectedTitle = "notifications.elem.title.inventoryLinkingMovementResponse"
-        val expectedTimestamp = "notifications.elem.timestampInfo.response"
-        val expectedContent = Html("<p>notifications.elem.content.inventoryLinkingMovementResponse.crc</p>")
 
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.MovementResponse,
           timestampReceived = testTimestamp,
           crcCode = Some("000")
         )
+        val expectedResult = NotificationsPageSingleElement(
+          title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
+          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019", "12:34"),
+          content = Html(
+            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} $crcCodeKeyFromDecoder</p>"
+          )
+        )
 
         val result: NotificationsPageSingleElement = factory.build(input)
 
-        result.title must equal(expectedTitle)
-        result.timestampInfo must equal(expectedTimestamp)
-        result.content must equal(expectedContent)
+        assertEquality(result, expectedResult)
       }
     }
 
@@ -316,9 +307,6 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
       "call Messages passing correct keys and arguments" in new Test {
 
-        when(decoderMock.crc(any())).thenReturn("CRC code mapping")
-        when(decoderMock.roe(any())).thenReturn("ROE mapping")
-        when(decoderMock.soe(any())).thenReturn("SOE mapping")
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.MovementTotalsResponse,
           timestampReceived = testTimestamp,
@@ -329,38 +317,19 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
         factory.build(input)
 
-        verify(messages)
-          .apply(
-            meq("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-            meq(mutable.WrappedArray.empty)
-          )
-        verify(messages).apply(
-          meq("notifications.elem.timestampInfo.response"),
-          meq(mutable.WrappedArray.make(Array("23 Oct 2019", "12:34")))
-        )
-        verify(messages).apply(
-          meq("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc"),
-          meq(mutable.WrappedArray.make(Array("CRC code mapping")))
-        )
-        verify(messages).apply(
-          meq("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe"),
-          meq(mutable.WrappedArray.make(Array("ROE mapping")))
-        )
-        verify(messages).apply(
-          meq("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe"),
-          meq(mutable.WrappedArray.make(Array("SOE mapping")))
-        )
+        verifyMessages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
+        verifyMessages("notifications.elem.timestampInfo.response", "23 Oct 2019", "12:34")
+
+        verifyMessages(crcCodeKeyFromDecoder)
+        verifyMessages(roeKeyFromDecoder)
+        verifyMessages(soeKeyFromDecoder)
+
+        verifyMessages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")
+        verifyMessages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")
+        verifyMessages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")
       }
 
       "return NotificationsPageSingleElement with values returned by Messages" in new Test {
-
-        val expectedTitle = "notifications.elem.title.inventoryLinkingMovementTotalsResponse"
-        val expectedTimestamp = "notifications.elem.timestampInfo.response"
-        val expectedContent = Html(
-          "<p>notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc</p>" +
-            "<p>notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe</p>" +
-            "<p>notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe</p>"
-        )
 
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.MovementTotalsResponse,
@@ -369,22 +338,22 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           masterRoe = Some("6"),
           masterSoe = Some("1")
         )
+        val expectedResult = NotificationsPageSingleElement(
+          title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
+          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019", "12:34"),
+          content = Html(
+            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")} $crcCodeKeyFromDecoder</p>" +
+              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} $roeKeyFromDecoder</p>" +
+              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} $soeKeyFromDecoder</p>"
+          )
+        )
 
         val result: NotificationsPageSingleElement = factory.build(input)
 
-        result.title must equal(expectedTitle)
-        result.timestampInfo must equal(expectedTimestamp)
-        result.content must equal(expectedContent)
+        assertEquality(result, expectedResult)
       }
 
       "return NotificationsPageSingleElement with values returned by Messages for incomplete input" in new Test {
-
-        val expectedTitle = "notifications.elem.title.inventoryLinkingMovementTotalsResponse"
-        val expectedTimestamp = "notifications.elem.timestampInfo.response"
-        val expectedContent = Html(
-          "<p>notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc</p>" +
-            "<p>notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe</p>"
-        )
 
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.MovementTotalsResponse,
@@ -392,12 +361,18 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           crcCode = Some("000"),
           masterSoe = Some("1")
         )
+        val expectedResult = NotificationsPageSingleElement(
+          title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
+          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019", "12:34"),
+          content = Html(
+            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")} $crcCodeKeyFromDecoder</p>" +
+              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} $soeKeyFromDecoder</p>"
+          )
+        )
 
         val result: NotificationsPageSingleElement = factory.build(input)
 
-        result.title must equal(expectedTitle)
-        result.timestampInfo must equal(expectedTimestamp)
-        result.content must equal(expectedContent)
+        assertEquality(result, expectedResult)
       }
     }
   }
@@ -407,5 +382,8 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
     actual.timestampInfo must equal(expected.timestampInfo)
     actual.content must equal(expected.content)
   }
+
+  private def verifyMessages(key: String, args: String*)(implicit messages: Messages): Unit =
+    verify(messages).apply(meq(key), meq(args))
 
 }

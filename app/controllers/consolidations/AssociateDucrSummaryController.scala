@@ -41,7 +41,8 @@ class AssociateDucrSummaryController @Inject()(
   cacheService: CustomsCacheService,
   submissionService: SubmissionService,
   associateDucrSummaryPage: associate_ducr_summary
-)(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
+)(implicit executionContext: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport {
 
   private val logger = Logger(this.getClass)
 

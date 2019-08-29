@@ -27,11 +27,9 @@ class Decoder {
 
   def soe(code: String): String = soeMappings(code)
 
-  private val crcMappings: Map[String, String] = Map(
-    "000" -> "Success",
-    "101" -> "Pre-lodged Declaration has not arrived ",
-    "102" -> "Declaration has not arrived"
-  ).withDefaultValue("")
+  private val crcMappings: Map[String, String] =
+    Map("000" -> "Success", "101" -> "Pre-lodged Declaration has not arrived ", "102" -> "Declaration has not arrived")
+      .withDefaultValue("")
 
   private val roeMappings: Map[String, String] = Map(
     "1" -> "Documentary Control",

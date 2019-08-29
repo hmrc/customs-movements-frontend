@@ -24,7 +24,7 @@ import utils.validators.forms.FieldValidator._
 case class MucrOptions(newMucr: String = "", existingMucr: String = "", createOrAdd: String = MucrOptions.Create) {
   def mucr: String = createOrAdd match {
     case MucrOptions.Create => newMucr
-    case MucrOptions.Add => existingMucr
+    case MucrOptions.Add    => existingMucr
   }
 }
 
@@ -40,12 +40,13 @@ object MucrOptions {
   def form2Model: (String, String, String) => MucrOptions = {
     case (createOrAdd, newMucr, existingMucr) =>
       createOrAdd match {
-        case Create => MucrOptions(newMucr, "",  Create)
-        case Add => MucrOptions("", existingMucr, Add)
+        case Create => MucrOptions(newMucr, "", Create)
+        case Add    => MucrOptions("", existingMucr, Add)
       }
   }
 
-  def model2Form: MucrOptions => Option[(String, String, String)] = m => Some((m.createOrAdd, m.newMucr, m.existingMucr))
+  def model2Form: MucrOptions => Option[(String, String, String)] =
+    m => Some((m.createOrAdd, m.newMucr, m.existingMucr))
 
   val mapping =
     Forms
@@ -57,15 +58,14 @@ object MucrOptions {
 
   val form: Form[MucrOptions] = Form(mapping)
 
-  def validateForm(form:Form[MucrOptions]): Form[MucrOptions] = {
-    if(form.value.exists(op => validDucrOrMucr(op.mucr))) {
+  def validateForm(form: Form[MucrOptions]): Form[MucrOptions] =
+    if (form.value.exists(op => validDucrOrMucr(op.mucr))) {
       form
     } else {
       val errorField = form.value.map(_.createOrAdd) match {
         case Some(Create) => "newMucr"
-        case _ => "existingMucr"
+        case _            => "existingMucr"
       }
       form.withError(errorField, "mucrOptions.reference.value.error")
     }
-  }
 }

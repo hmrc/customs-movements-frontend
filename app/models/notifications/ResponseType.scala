@@ -29,10 +29,10 @@ object ResponseType {
     override def writes(responseType: ResponseType): JsValue = JsString(responseType.value)
 
     override def reads(json: JsValue): JsResult[ResponseType] = json match {
-      case JsString("inventoryLinkingControlResponse") => JsSuccess(ControlResponse)
-      case JsString("inventoryLinkingMovementResponse") => JsSuccess(MovementResponse)
+      case JsString("inventoryLinkingControlResponse")        => JsSuccess(ControlResponse)
+      case JsString("inventoryLinkingMovementResponse")       => JsSuccess(MovementResponse)
       case JsString("inventoryLinkingMovementTotalsResponse") => JsSuccess(MovementTotalsResponse)
-      case _ => JsError("Unknown ResponseType")
+      case _                                                  => JsError("Unknown ResponseType")
     }
   }
 }

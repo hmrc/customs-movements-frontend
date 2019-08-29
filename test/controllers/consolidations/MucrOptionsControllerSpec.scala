@@ -60,7 +60,8 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
     }
 
     "display an error for an empty new MUCRs" in {
-      val invalidMUCR = JsObject(Map("createOrAdd" -> JsString(Create), "newMucr" -> JsString(""), "existingMucr" -> JsString("")))
+      val invalidMUCR =
+        JsObject(Map("createOrAdd" -> JsString(Create), "newMucr" -> JsString(""), "existingMucr" -> JsString("")))
       val Some(result) = route(app, postRequest(uri, invalidMUCR))
 
       status(result) must be(BAD_REQUEST)
@@ -71,7 +72,8 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
     }
 
     "display an error for an empty existing MUCRs" in {
-      val invalidMUCR = JsObject(Map("createOrAdd" -> JsString(Add), "newMucr" -> JsString(""), "existingMucr" -> JsString("")))
+      val invalidMUCR =
+        JsObject(Map("createOrAdd" -> JsString(Add), "newMucr" -> JsString(""), "existingMucr" -> JsString("")))
       val Some(result) = route(app, postRequest(uri, invalidMUCR))
 
       status(result) must be(BAD_REQUEST)
@@ -93,7 +95,9 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
     }
 
     "display an error for an invalid new MUCR" in {
-      val invalidMUCR = JsObject(Map("createOrAdd" -> JsString(Create), "newMucr" -> JsString("invalid"), "existingMucr" -> JsString("")))
+      val invalidMUCR = JsObject(
+        Map("createOrAdd" -> JsString(Create), "newMucr" -> JsString("invalid"), "existingMucr" -> JsString(""))
+      )
       val Some(result) = route(app, postRequest(uri, invalidMUCR))
 
       status(result) must be(BAD_REQUEST)
@@ -105,7 +109,13 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
 
     "clear value of exisiting MUCR after validation failure" in {
       val invalidMUCR =
-        JsObject(Map("createOrAdd" -> JsString(Create), "newMucr" -> JsString("invalidNew"), "existingMucr" -> JsString("invalidExisting")))
+        JsObject(
+          Map(
+            "createOrAdd" -> JsString(Create),
+            "newMucr" -> JsString("invalidNew"),
+            "existingMucr" -> JsString("invalidExisting")
+          )
+        )
       val Some(result) = route(app, postRequest(uri, invalidMUCR))
 
       status(result) must be(BAD_REQUEST)
@@ -117,7 +127,13 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
 
     "clear value of new MUCR after validation failure" in {
       val invalidMUCR =
-        JsObject(Map("createOrAdd" -> JsString(Add), "newMucr" -> JsString("invalidNew"), "existingMucr" -> JsString("invalidExisting")))
+        JsObject(
+          Map(
+            "createOrAdd" -> JsString(Add),
+            "newMucr" -> JsString("invalidNew"),
+            "existingMucr" -> JsString("invalidExisting")
+          )
+        )
       val Some(result) = route(app, postRequest(uri, invalidMUCR))
 
       status(result) must be(BAD_REQUEST)
@@ -128,7 +144,8 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
     }
 
     "display an error for an invalid existing MUCR" in {
-      val invalidMUCR = JsObject(Map("createOrAdd" -> JsString(Add), "newMucr" -> JsString(""), "existingMucr" -> JsString("invalid")))
+      val invalidMUCR =
+        JsObject(Map("createOrAdd" -> JsString(Add), "newMucr" -> JsString(""), "existingMucr" -> JsString("invalid")))
       val Some(result) = route(app, postRequest(uri, invalidMUCR))
 
       status(result) must be(BAD_REQUEST)
@@ -140,7 +157,13 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
 
     "Redirect to next page for a valid new MUCR" in {
       val validMUCR =
-        JsObject(Map("createOrAdd" -> JsString("create"), "newMucr" -> JsString("8GB12345612345612345"), "existingMucr" -> JsString("")))
+        JsObject(
+          Map(
+            "createOrAdd" -> JsString("create"),
+            "newMucr" -> JsString("8GB12345612345612345"),
+            "existingMucr" -> JsString("")
+          )
+        )
       val Some(result) = route(app, postRequest(uri, validMUCR))
       status(result) must be(SEE_OTHER)
       redirectLocation(result) mustBe Some(routes.AssociateDucrController.displayPage().url)
@@ -151,7 +174,13 @@ class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with
 
     "Redirect to next page for a valid existing MUCR" in {
       val validMUCR =
-        JsObject(Map("createOrAdd" -> JsString("add"), "newMucr" -> JsString(""), "existingMucr" -> JsString("8GB12345612345612345")))
+        JsObject(
+          Map(
+            "createOrAdd" -> JsString("add"),
+            "newMucr" -> JsString(""),
+            "existingMucr" -> JsString("8GB12345612345612345")
+          )
+        )
       val Some(result) = route(app, postRequest(uri, validMUCR))
       status(result) must be(SEE_OTHER)
       redirectLocation(result) mustBe Some(routes.AssociateDucrController.displayPage().url)

@@ -51,7 +51,8 @@ class ActionTypeSpec extends WordSpec with MustMatchers {
         val json = ActionType.format.writes(DucrDisassociation)
         val expectedJson = JsString("DucrDisassociation")
 
-        json must equal(expectedJson)}
+        json must equal(expectedJson)
+      }
 
       "it is Shut MUCR" in {
         val json = ActionType.format.writes(ShutMucr)

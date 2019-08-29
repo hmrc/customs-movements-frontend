@@ -16,7 +16,6 @@
 
 package controllers.consolidations
 
-import config.AppConfig
 import controllers.actions.AuthAction
 import controllers.storage.FlashKeys
 import forms.ShutMucr.form

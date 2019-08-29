@@ -76,6 +76,13 @@ object MockFactory extends MockitoSugar {
     when(customsDeclareExportsMovementsConnector.sendShutMucrRequest(any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
 
+    when(customsDeclareExportsMovementsConnector.fetchNotifications(any())(any(), any()))
+      .thenReturn(Future.successful(Seq.empty))
+    when(customsDeclareExportsMovementsConnector.fetchAllSubmissions()(any(), any()))
+      .thenReturn(Future.successful(Seq.empty))
+    when(customsDeclareExportsMovementsConnector.fetchSingleSubmission(any())(any(), any()))
+      .thenReturn(Future.successful(None))
+
     customsDeclareExportsMovementsConnector
   }
 

@@ -16,10 +16,14 @@
 
 package base.testdata
 
+import java.time.Instant
+
+import base.testdata.CommonTestData._
 import forms.GoodsDeparted.AllowedPlaces
 import forms._
 import forms.common.{Date, Time}
-import models.SignedInUser
+import models.submissions.{ActionType, SubmissionFrontendModel}
+import models.{SignedInUser, UcrBlock}
 import play.api.libs.json._
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -66,4 +70,19 @@ object MovementsTestData {
   def validMovementRequest(movementType: String): InventoryLinkingMovementRequest =
     Movement.createMovementRequest(CacheMap(movementType, cacheMapData(movementType)), "eori1", Choice(movementType))
 
+  def exampleSubmissionFrontendModel(
+    eori: String = validEori,
+    conversationId: String = conversationId,
+    ucr: String = correctUcr,
+    ucrType: String = "D",
+    actionType: ActionType = ActionType.Arrival,
+    requestTimestamp: Instant = Instant.now()
+  ): SubmissionFrontendModel =
+    SubmissionFrontendModel(
+      eori = eori,
+      conversationId = conversationId,
+      ucrBlocks = Seq(UcrBlock(ucr = ucr, ucrType = ucrType)),
+      actionType = actionType,
+      requestTimestamp = requestTimestamp
+    )
 }

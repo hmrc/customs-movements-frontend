@@ -14,23 +14,8 @@
  * limitations under the License.
  */
 
-package models.submissions
+package models.viewmodels
 
-import java.time.Instant
-import java.util.UUID
+import play.twirl.api.Html
 
-import models.UcrBlock
-import play.api.libs.json._
-
-case class SubmissionPresentation(
-  uuid: String = UUID.randomUUID().toString,
-  eori: String,
-  conversationId: String,
-  ucrBlocks: Seq[UcrBlock],
-  actionType: ActionType,
-  requestTimestamp: Instant = Instant.now()
-)
-
-object SubmissionPresentation {
-  implicit val formats = Json.format[SubmissionPresentation]
-}
+case class NotificationsPageSingleElement(title: String, timestampInfo: String, content: Html)

@@ -16,10 +16,15 @@
 
 package connectors
 
+import base.testdata.CommonTestData._
 import base.testdata.ConsolidationTestData._
 import base.testdata.MovementsTestData
+import base.testdata.MovementsTestData.exampleSubmissionFrontendModel
+import base.testdata.NotificationTestData.exampleNotificationFrontendModel
 import config.AppConfig
 import forms.Choice.AllowedChoiceValues.{Arrival, Departure}
+import models.notifications.NotificationFrontendModel
+import models.submissions.SubmissionFrontendModel
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures
@@ -49,19 +54,12 @@ class CustomsDeclareExportsMovementsConnectorSpec
 
     when(httpClientMock.POSTString[HttpResponse](any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(defaultHttpResponse))
+    when(httpClientMock.GET(any())(any(), any(), any())).thenReturn(Future.failed(new NotImplementedError()))
 
     val connector = new CustomsDeclareExportsMovementsConnector(appConfigMock, httpClientMock)
   }
 
   "CustomsDeclareExportsMovementsConnector on sendArrivalDeclaration" should {
-
-    "return response from HttpClient" in new Test {
-
-      val result =
-        connector.sendArrivalDeclaration(movementSubmissionRequestXmlString(Arrival)).futureValue
-
-      result must equal(defaultHttpResponse)
-    }
 
     "call HttpClient, passing URL for Arrival submission endpoint" in new Test {
 
@@ -72,7 +70,7 @@ class CustomsDeclareExportsMovementsConnectorSpec
       verify(httpClientMock).POSTString(meq(expectedSubmissionUrl), any(), any())(any(), any(), any())
     }
 
-    "call HttpClient with body provided" in new Test {
+    "call HttpClient, passing body provided" in new Test {
 
       connector.sendArrivalDeclaration(movementSubmissionRequestXmlString(Arrival)).futureValue
 
@@ -83,7 +81,7 @@ class CustomsDeclareExportsMovementsConnectorSpec
       )
     }
 
-    "call HttpClient with correct headers" in new Test {
+    "call HttpClient, passing correct headers" in new Test {
 
       connector.sendArrivalDeclaration(movementSubmissionRequestXmlString(Arrival)).futureValue
 
@@ -93,18 +91,17 @@ class CustomsDeclareExportsMovementsConnectorSpec
         any()
       )
     }
-  }
-
-  "CustomsDeclareExportsMovementsConnector on sendDepartureDeclaration" should {
 
     "return response from HttpClient" in new Test {
 
-      val result = connector
-        .sendDepartureDeclaration(movementSubmissionRequestXmlString(Departure))
-        .futureValue
+      val result =
+        connector.sendArrivalDeclaration(movementSubmissionRequestXmlString(Arrival)).futureValue
 
       result must equal(defaultHttpResponse)
     }
+  }
+
+  "CustomsDeclareExportsMovementsConnector on sendDepartureDeclaration" should {
 
     "call HttpClient, passing URL for Departure submission endpoint" in new Test {
 
@@ -117,7 +114,7 @@ class CustomsDeclareExportsMovementsConnectorSpec
       verify(httpClientMock).POSTString(meq(expectedSubmissionUrl), any(), any())(any(), any(), any())
     }
 
-    "call HttpClient with body provided" in new Test {
+    "call HttpClient, passing body provided" in new Test {
 
       connector
         .sendDepartureDeclaration(movementSubmissionRequestXmlString(Departure))
@@ -130,7 +127,7 @@ class CustomsDeclareExportsMovementsConnectorSpec
       )
     }
 
-    "call HttpClient with correct headers" in new Test {
+    "call HttpClient, passing correct headers" in new Test {
 
       connector
         .sendDepartureDeclaration(movementSubmissionRequestXmlString(Departure))
@@ -142,16 +139,18 @@ class CustomsDeclareExportsMovementsConnectorSpec
         any()
       )
     }
-  }
-
-  "CustomsDeclareExportsMovementsConnector on sendAssociateRequest" should {
 
     "return response from HttpClient" in new Test {
 
-      val result = connector.sendAssociationRequest(exampleAssociateDucrRequestXml.toString).futureValue
+      val result = connector
+        .sendDepartureDeclaration(movementSubmissionRequestXmlString(Departure))
+        .futureValue
 
       result must equal(defaultHttpResponse)
     }
+  }
+
+  "CustomsDeclareExportsMovementsConnector on sendAssociationRequest" should {
 
     "call HttpClient, passing URL for Association endpoint" in new Test {
 
@@ -162,29 +161,29 @@ class CustomsDeclareExportsMovementsConnectorSpec
       verify(httpClientMock).POSTString(meq(expectedUrl), any(), any())(any(), any(), any())
     }
 
-    "call HttpClient with body provided" in new Test {
+    "call HttpClient, passing body provided" in new Test {
 
       connector.sendAssociationRequest(exampleAssociateDucrRequestXml.toString).futureValue
 
       verify(httpClientMock).POSTString(any(), meq(exampleAssociateDucrRequestXml.toString), any())(any(), any(), any())
     }
 
-    "call HttpClient with correct headers" in new Test {
+    "call HttpClient, passing correct headers" in new Test {
 
       connector.sendAssociationRequest(exampleAssociateDucrRequestXml.toString).futureValue
 
       verify(httpClientMock).POSTString(any(), any(), meq(validConsolidationRequestHeaders))(any(), any(), any())
     }
-  }
-
-  "CustomsDeclareExportsMovementsConnector on sendDisassociationRequest" should {
 
     "return response from HttpClient" in new Test {
 
-      val result = connector.sendDisassociationRequest(exampleDisassociateDucrRequestXml.toString).futureValue
+      val result = connector.sendAssociationRequest(exampleAssociateDucrRequestXml.toString).futureValue
 
       result must equal(defaultHttpResponse)
     }
+  }
+
+  "CustomsDeclareExportsMovementsConnector on sendDisassociationRequest" should {
 
     "call HttpClient, passing URL for Disassociation endpoint" in new Test {
 
@@ -195,7 +194,7 @@ class CustomsDeclareExportsMovementsConnectorSpec
       verify(httpClientMock).POSTString(meq(expectedUrl), any(), any())(any(), any(), any())
     }
 
-    "call HttpClient with body provided" in new Test {
+    "call HttpClient, passing body provided" in new Test {
 
       connector.sendDisassociationRequest(exampleDisassociateDucrRequestXml.toString).futureValue
 
@@ -206,22 +205,22 @@ class CustomsDeclareExportsMovementsConnectorSpec
       )
     }
 
-    "call HttpClient with correct headers" in new Test {
+    "call HttpClient, passing correct headers" in new Test {
 
       connector.sendDisassociationRequest(exampleDisassociateDucrRequestXml.toString).futureValue
 
       verify(httpClientMock).POSTString(any(), any(), meq(validConsolidationRequestHeaders))(any(), any(), any())
     }
-  }
-
-  "CustomsDeclareExportsMovementsConnector on sendShutMucrRequest" should {
 
     "return response from HttpClient" in new Test {
 
-      val result = connector.sendShutMucrRequest(exampleShutMucrRequestXml.toString).futureValue
+      val result = connector.sendDisassociationRequest(exampleDisassociateDucrRequestXml.toString).futureValue
 
       result must equal(defaultHttpResponse)
     }
+  }
+
+  "CustomsDeclareExportsMovementsConnector on sendShutMucrRequest" should {
 
     "call HttpClient, passing URL for Shut Mucr endpoint" in new Test {
 
@@ -232,18 +231,112 @@ class CustomsDeclareExportsMovementsConnectorSpec
       verify(httpClientMock).POSTString(meq(expectedUrl), any(), any())(any(), any(), any())
     }
 
-    "call HttpClient with body provided" in new Test {
+    "call HttpClient, passing body provided" in new Test {
 
       connector.sendShutMucrRequest(exampleShutMucrRequestXml.toString).futureValue
 
       verify(httpClientMock).POSTString(any(), meq(exampleShutMucrRequestXml.toString), any())(any(), any(), any())
     }
 
-    "call HttpClient with correct headers" in new Test {
+    "call HttpClient, passing correct headers" in new Test {
 
       connector.sendShutMucrRequest(exampleShutMucrRequestXml.toString).futureValue
 
       verify(httpClientMock).POSTString(any(), any(), meq(validConsolidationRequestHeaders))(any(), any(), any())
+    }
+
+    "return response from HttpClient" in new Test {
+
+      val result = connector.sendShutMucrRequest(exampleShutMucrRequestXml.toString).futureValue
+
+      result must equal(defaultHttpResponse)
+    }
+  }
+
+  "CustomsDeclareExportsMovementsConnector on fetchNotifications" should {
+
+    "call HttpClient, passing URL for fetch Notifications endpoint" in new Test {
+
+      when(httpClientMock.GET[Seq[NotificationFrontendModel]](any())(any(), any(), any()))
+        .thenReturn(Future.successful(Seq.empty))
+
+      connector.fetchNotifications(conversationId).futureValue
+
+      val expectedUrl =
+        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.fetchNotifications}/$conversationId"
+      verify(httpClientMock).GET(meq(expectedUrl))(any(), any(), any())
+    }
+
+    "return response from HttpClient" in new Test {
+
+      val expectedResponseContent = Seq(
+        exampleNotificationFrontendModel(conversationId = conversationId),
+        exampleNotificationFrontendModel(conversationId = conversationId, masterRoe = None),
+        exampleNotificationFrontendModel(conversationId = conversationId, masterSoe = None)
+      )
+      when(httpClientMock.GET[Seq[NotificationFrontendModel]](any())(any(), any(), any()))
+        .thenReturn(Future.successful(expectedResponseContent))
+
+      val result: Seq[NotificationFrontendModel] = connector.fetchNotifications(conversationId).futureValue
+
+      result.length must equal(expectedResponseContent.length)
+      result must equal(expectedResponseContent)
+    }
+  }
+
+  "CustomsDeclareExportsMovementsConnector on fetchAllSubmissions" should {
+
+    "call HttpClient, passing URL for fetch all Submissions endpoint" in new Test {
+
+      when(httpClientMock.GET[Seq[SubmissionFrontendModel]](any())(any(), any(), any()))
+        .thenReturn(Future.successful(Seq.empty))
+
+      connector.fetchAllSubmissions().futureValue
+
+      val expectedUrl = s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.fetchAllSubmissions}"
+      verify(httpClientMock).GET(meq(expectedUrl))(any(), any(), any())
+    }
+
+    "return response from HttpClient" in new Test {
+
+      val expectedResponseContent = Seq(
+        exampleSubmissionFrontendModel(conversationId = conversationId),
+        exampleSubmissionFrontendModel(conversationId = conversationId_2),
+        exampleSubmissionFrontendModel(conversationId = conversationId_3)
+      )
+      when(httpClientMock.GET[Seq[SubmissionFrontendModel]](any())(any(), any(), any()))
+        .thenReturn(Future.successful(expectedResponseContent))
+
+      val result: Seq[SubmissionFrontendModel] = connector.fetchAllSubmissions().futureValue
+
+      result.length must equal(expectedResponseContent.length)
+      result must equal(expectedResponseContent)
+    }
+  }
+
+  "CustomsDeclareExportsMovementsConnector on fetchSingleSubmission" should {
+
+    "call HttpClient, passing URL for fetch single Submission endpoint" in new Test {
+
+      when(httpClientMock.GET[Option[SubmissionFrontendModel]](any())(any(), any(), any()))
+        .thenReturn(Future.successful(None))
+
+      connector.fetchSingleSubmission(conversationId).futureValue
+
+      val expectedUrl =
+        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.fetchSingleSubmission}/$conversationId"
+      verify(httpClientMock).GET(meq(expectedUrl))(any(), any(), any())
+    }
+
+    "return response from HttpClient" in new Test {
+
+      val expectedResponseContent = Some(exampleSubmissionFrontendModel(conversationId = conversationId))
+      when(httpClientMock.GET[Option[SubmissionFrontendModel]](any())(any(), any(), any()))
+        .thenReturn(Future.successful(expectedResponseContent))
+
+      val result: Option[SubmissionFrontendModel] = connector.fetchSingleSubmission(conversationId).futureValue
+
+      result must equal(expectedResponseContent)
     }
   }
 

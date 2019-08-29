@@ -24,8 +24,10 @@ import base.ViewValidator
 import base.testdata.CommonTestData.conversationId
 import base.testdata.ConsolidationTestData
 import base.testdata.ConsolidationTestData.{ValidDucr, ValidMucr, exampleAssociateDucrRequestSubmission}
-import models.submissions.{ActionType, SubmissionPresentation}
-import models.{NotificationPresentation, UcrBlock}
+import base.testdata.NotificationTestData.exampleNotificationFrontendModel
+import models.UcrBlock
+import models.notifications.ResponseType
+import models.submissions.{ActionType, SubmissionFrontendModel}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -61,7 +63,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
           ZoneId.systemDefault()
         )
         .toInstant
-      val submission = SubmissionPresentation(
+      val submission = SubmissionFrontendModel(
         requestTimestamp = dateTime,
         eori = "",
         conversationId = conversationId,
@@ -69,12 +71,11 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
         actionType = ActionType.ShutMucr
       )
       val notifications = Seq(
-        NotificationPresentation(
+        exampleNotificationFrontendModel(
           timestampReceived = dateTime.plus(10, MINUTES),
           conversationId = conversationId,
-          ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M")),
-          roe = None,
-          soe = None
+          responseType = ResponseType.ControlResponse,
+          ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M"))
         )
       )
 
@@ -89,12 +90,9 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
 
     "contain MUCR and DUCR if Submission contains both" in {
       val notifications = Seq(
-        NotificationPresentation(
-          conversationId = conversationId,
-          ucrBlocks = Seq(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M")),
-          roe = None,
-          soe = None
-        )
+        exampleNotificationFrontendModel(conversationId = conversationId,
+          responseType = ResponseType.ControlResponse,
+          ucrBlocks = Seq(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M")))
       )
 
       val pageWithData: Html = new movements(mainTemplate)(Seq(exampleAssociateDucrRequestSubmission -> notifications))(

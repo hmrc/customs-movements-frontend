@@ -14,12 +14,12 @@
  * limitations under the License.
  *@
 
-@import models.NotificationPresentation
+@import models.notifications.NotificationFrontendModel
 @import views.components.fields.FieldContentFormatter
 
 @this(main_template: views.html.main_template)
 
-@(notifications: Seq[NotificationPresentation])(implicit request: Request[_], messages: Messages)
+@(notifications: Seq[NotificationFrontendModel])(implicit request: Request[_], messages: Messages)
 
 @main_template(title = messages("notifications.title")) {
 
@@ -42,8 +42,8 @@
                     <td class="table-cell">
                       @{FieldContentFormatter.dateTime(notification.timestampReceived)}
                     </td>
-                    <td class="table-cell">@{notification.roe}</td>
-                    <td class="table-cell">@{notification.soe}</td>
+                    <td class="table-cell">@{notification.masterRoe}</td>
+                    <td class="table-cell">@{notification.masterSoe}</td>
                 </tr>
             }
         </table>

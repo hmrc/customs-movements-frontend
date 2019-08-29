@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package models
+package models.submissions
 
 import java.time.Instant
+import java.util.UUID
 
-import play.api.libs.json.Json
+import models.UcrBlock
+import play.api.libs.json._
 
-final case class NotificationPresentation(
-  timestampReceived: Instant = Instant.now(),
+case class SubmissionFrontendModel(
+  uuid: String = UUID.randomUUID().toString,
+  eori: String,
   conversationId: String,
   ucrBlocks: Seq[UcrBlock],
-  roe: Option[String],
-  soe: Option[String]
-) extends Ordered[NotificationPresentation] {
+  actionType: ActionType,
+  requestTimestamp: Instant = Instant.now()
+)
 
-  override def compare(other: NotificationPresentation): Int =
-    this.timestampReceived.compareTo(other.timestampReceived)
-}
-
-object NotificationPresentation {
-  implicit val format = Json.format[NotificationPresentation]
+object SubmissionFrontendModel {
+  implicit val formats = Json.format[SubmissionFrontendModel]
 }

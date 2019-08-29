@@ -18,8 +18,8 @@ package connectors
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import models.NotificationPresentation
-import models.submissions.SubmissionPresentation
+import models.notifications.NotificationFrontendModel
+import models.submissions.SubmissionFrontendModel
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
@@ -81,18 +81,25 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
 
   def fetchNotifications(
     conversationId: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[NotificationPresentation]] =
-    httpClient.GET[Seq[NotificationPresentation]](
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[NotificationFrontendModel]] =
+    httpClient.GET[Seq[NotificationFrontendModel]](
       s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}/$conversationId"
     )
 
-  def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[SubmissionPresentation]] =
+  def fetchAllSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[SubmissionFrontendModel]] =
     httpClient
-      .GET[Seq[SubmissionPresentation]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchMovements}")
+      .GET[Seq[SubmissionFrontendModel]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchAllSubmissions}")
       .map { response =>
         logger.debug(s"CUSTOMS_MOVEMENTS_FRONTEND fetch submission response is --> ${response.toString}")
         response
       }
+
+  def fetchSingleSubmission(
+    conversationId: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SubmissionFrontendModel]] =
+    httpClient.GET[Option[SubmissionFrontendModel]](
+      s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchSingleSubmission}/$conversationId"
+    )
 
   private def logResponse(response: HttpResponse): HttpResponse = {
     logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response is --> ${response.toString}")

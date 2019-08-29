@@ -36,7 +36,7 @@ class MovementsController @Inject()(
 
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     for {
-      submissions <- connector.fetchSubmissions()
+      submissions <- connector.fetchAllSubmissions()
       notifications <- Future.sequence(
         submissions.map(submission => connector.fetchNotifications(submission.conversationId))
       )

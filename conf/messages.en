@@ -334,15 +334,9 @@ submissions.departure = Depart
 submissions.ducrassociation = Associate
 submissions.ducrdisassociation = Disassociate
 
-
-notifications.title = Notifications
-notifications.reference = Reference
-notifications.action = Action
-notifications.dateOfResponse = Date of response
-notifications.roe = ROE
-notifications.soe = SOE
-
 # This part uses ActionType instances' values to differentiate between messages
+
+notifications.title = Notifications relating to {0}
 
 notifications.elem.title.Arrival = Arrive request
 notifications.elem.title.Departure = Depart request

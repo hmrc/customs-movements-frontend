@@ -19,6 +19,8 @@ package controllers
 import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
+import models.submissions.SubmissionFrontendModel
+import models.viewmodels.NotificationPageSingleElementFactory
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -29,14 +31,28 @@ import scala.concurrent.ExecutionContext
 class NotificationsController @Inject()(
   authenticate: AuthAction,
   connector: CustomsDeclareExportsMovementsConnector,
+  factory: NotificationPageSingleElementFactory,
   mcc: MessagesControllerComponents,
   notifications: notifications
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def listOfNotifications(conversationId: String): Action[AnyContent] = authenticate.async { implicit request =>
-    connector.fetchNotifications(conversationId).map { result =>
-      Ok(notifications(result))
-    }
+    for {
+      submission <- connector.fetchSingleSubmission(conversationId)
+      submissionElem = submission.map(factory.build)
+
+      notificationsElems <- connector
+        .fetchNotifications(conversationId)
+        .map(notifications => notifications.sorted.map(factory.build))
+
+      submissionUcr = submission.flatMap(extractUcr).getOrElse("")
+      elementsToDisplay = (submissionElem.toSeq ++ notificationsElems)
+
+    } yield Ok(notifications(submissionUcr, elementsToDisplay))
   }
+
+  private def extractUcr(submission: SubmissionFrontendModel): Option[String] =
+    if (submission.hasMucr) submission.extractMucr else submission.extractFirstUcr
+
 }

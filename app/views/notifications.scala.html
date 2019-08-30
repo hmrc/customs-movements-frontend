@@ -14,38 +14,25 @@
  * limitations under the License.
  *@
 
-@import models.notifications.NotificationFrontendModel
-@import views.components.fields.FieldContentFormatter
+@import models.viewmodels.NotificationsPageSingleElement
 
 @this(main_template: views.html.main_template)
 
-@(notifications: Seq[NotificationFrontendModel])(implicit request: Request[_], messages: Messages)
+@(submissionUcr: String, elementsToDisplay: Seq[NotificationsPageSingleElement])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = messages("notifications.title")) {
+@notificationsList(elementsToDisplay: Seq[NotificationsPageSingleElement]) = {
+  <div class="govuk-grid-column-two-thirds">
+    @for((element, index) <- elementsToDisplay.zip(Stream.from(1)).reverse) {
+      @components.notifications_single_element(index, element)
+    }
+  </div>
+}
 
-    @components.back_link(routes.MovementsController.displayPage())
+@main_template(title = messages("notifications.title", submissionUcr)) {
 
-    @components.page_title(Some("notifications.title"))
+  @components.back_link(routes.MovementsController.displayPage())
 
-    <div>
-        <table>
-            <tr class="table-row table-head">
-                <th class="table-cell" id="reference">@messages("notifications.reference")</th>
-                <th class="table-cell" id="dateOfResponse">@messages("notifications.dateOfResponse")</th>
-                <th class="table-cell" id="roe">@messages("notifications.roe")</th>
-                <th class="table-cell" id="soe">@messages("notifications.soe")</th>
-            </tr>
+  @components.page_title(Some(messages("notifications.title", submissionUcr)))
 
-            @for(notification <- notifications){
-                <tr class="table-row">
-                    <td class="table-cell">@components.elements_in_separate_lines(notification.ucrBlocks.map(_.ucr))</td>
-                    <td class="table-cell">
-                      @{FieldContentFormatter.dateTime(notification.timestampReceived)}
-                    </td>
-                    <td class="table-cell">@{notification.masterRoe}</td>
-                    <td class="table-cell">@{notification.masterSoe}</td>
-                </tr>
-            }
-        </table>
-    </div>
+  @notificationsList(elementsToDisplay)
 }

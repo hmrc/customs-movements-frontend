@@ -19,11 +19,15 @@ package base
 import com.codahale.metrics.Timer
 import connectors.CustomsDeclareExportsMovementsConnector
 import metrics.MovementsMetrics
+import models.notifications.NotificationFrontendModel
+import models.submissions.SubmissionFrontendModel
+import models.viewmodels.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers.NO_CONTENT
+import play.twirl.api.HtmlFormat
 import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -84,6 +88,17 @@ object MockFactory extends MockitoSugar {
       .thenReturn(Future.successful(None))
 
     customsDeclareExportsMovementsConnector
+  }
+
+  def buildNotificationPageSingleElementFactoryMock = {
+    val notificationPageSingleElementFactoryMock = mock[NotificationPageSingleElementFactory]
+
+    when(notificationPageSingleElementFactoryMock.build(any[SubmissionFrontendModel])(any()))
+      .thenReturn(NotificationsPageSingleElement("", "", HtmlFormat.empty))
+    when(notificationPageSingleElementFactoryMock.build(any[NotificationFrontendModel])(any()))
+      .thenReturn(NotificationsPageSingleElement("", "", HtmlFormat.empty))
+
+    notificationPageSingleElementFactoryMock
   }
 
   def buildMovementsMetricsMock: MovementsMetrics = {

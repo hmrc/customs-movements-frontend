@@ -28,7 +28,7 @@ import models.submissions.{ActionType, SubmissionFrontendModel}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito
 import org.mockito.Mockito.{verify, when}
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages

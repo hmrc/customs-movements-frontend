@@ -21,12 +21,18 @@
 <li class="exports-notifications__step">
   <div class="exports-notifications__header" data-position="1">
     <h2 class="exports-notifications__title">
-      <span id="index-@index" class="exports-notifications__title-index">@index</span>
+     <span class="exports-notifications__circle exports-notifications__circle--number">
+      <span class="exports-notifications__circle-inner">
+       <span id="index-@index" class="exports-notifications__circle-background">@index</span>
+      </span>
+     </span>
       <span id="title-@index">@{element.title}</span>
     </h2>
   </div>
-  <div class="exports-notifications__panel govuk-form-group">
-    <p id="timestampInfo-@index">@{element.timestampInfo}</p>
-    <div id="content-@index">@{element.content}</div>
+  <div class="exports-notifications__panel">
+    <div class="govuk-form-group">
+      <p id="timestampInfo-@index">@{element.timestampInfo}</p>
+      <div id="content-@index">@{element.content}</div>
+    </div>
   </div>
 </li>

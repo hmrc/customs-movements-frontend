@@ -130,8 +130,7 @@
 }
 
 
-.exports-notifications__circle,
-.exports-notifications__title-index {
+.exports-notifications__circle {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -147,8 +146,7 @@
   text-align: center;
 }
 
-.exports-notifications__circle--number,
-.exports-notifications__title-index {
+.exports-notifications__circle--number {
   font-size: 16px;
   font-weight: bold;
   line-height: 23px;
@@ -176,14 +174,12 @@
   border-width: 3px;
 }
 
-.exports-notifications__circle-inner,
-.exports-notifications__title-index {
+.exports-notifications__circle-inner {
   float: right;
   min-width: 100%;
 }
 
-.exports-notifications__circle-background,
-.exports-notifications__title-index {
+.exports-notifications__circle-background {
   text-shadow: 0 -0.1em 0 #fff, 0.1em 0 0 #fff, 0 0.1em 0 #fff, -0.1em 0 0 #fff;
 }
 

@@ -28,7 +28,7 @@ import models.submissions.SubmissionFrontendModel
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.libs.json.Json

@@ -21,7 +21,7 @@ import connectors.CustomsDeclareExportsMovementsConnector
 import metrics.MovementsMetrics
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers.NO_CONTENT
 import services.{CustomsCacheService, SubmissionService}

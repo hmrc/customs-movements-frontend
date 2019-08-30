@@ -35,11 +35,8 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
 
   def build(submission: SubmissionFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
     submission.actionType match {
-      case Arrival            => buildForRequest(submission)
-      case Departure          => buildForRequest(submission)
-      case DucrAssociation    => buildForDucrAssociation(submission)
-      case DucrDisassociation => buildForRequest(submission)
-      case ShutMucr           => buildForRequest(submission)
+      case Arrival | Departure | DucrDisassociation | ShutMucr => buildForRequest(submission)
+      case DucrAssociation                                     => buildForDucrAssociation(submission)
     }
 
   private def buildForRequest(

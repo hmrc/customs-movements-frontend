@@ -53,9 +53,6 @@ class NotificationsController @Inject()(
   }
 
   private def extractUcr(submission: SubmissionFrontendModel): Option[String] =
-    if (hasMucr(submission)) submission.ucrBlocks.find(_.ucrType == "M").map(_.ucr)
-    else submission.ucrBlocks.headOption.map(_.ucr)
-
-  private def hasMucr(submission: SubmissionFrontendModel): Boolean = submission.ucrBlocks.exists(_.ucrType == "M")
+    if (submission.hasMucr) submission.extractMucr else submission.extractFirstUcr
 
 }

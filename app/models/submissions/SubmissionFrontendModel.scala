@@ -29,7 +29,14 @@ case class SubmissionFrontendModel(
   ucrBlocks: Seq[UcrBlock],
   actionType: ActionType,
   requestTimestamp: Instant = Instant.now()
-)
+) {
+
+  def hasMucr: Boolean = ucrBlocks.exists(_.ucrType == "M")
+
+  def extractMucr: Option[String] = ucrBlocks.find(_.ucrType == "M").map(_.ucr)
+
+  def extractFirstUcr: Option[String] = ucrBlocks.headOption.map(_.ucr)
+}
 
 object SubmissionFrontendModel {
   implicit val formats = Json.format[SubmissionFrontendModel]

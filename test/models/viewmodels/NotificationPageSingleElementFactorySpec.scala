@@ -25,6 +25,7 @@ import base.testdata.NotificationTestData.exampleNotificationFrontendModel
 import models.UcrBlock
 import models.notifications.ResponseType
 import models.submissions.{ActionType, SubmissionFrontendModel}
+import models.viewmodels.decoder.Decoder
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito
 import org.mockito.Mockito.{verify, when}

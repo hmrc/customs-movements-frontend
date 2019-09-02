@@ -349,8 +349,8 @@ notifications.elem.title.inventoryLinkingMovementResponse = Update message
 notifications.elem.title.inventoryLinkingMovementTotalsResponse = Update message
 notifications.elem.title.unspecified = Update message
 
-notifications.elem.timestampInfo.request = Request submitted {0} at {1}
-notifications.elem.timestampInfo.response = Notification generated {0} at {1}
+notifications.elem.timestampInfo.request = Request submitted {0}
+notifications.elem.timestampInfo.response = Notification generated {0}
 
 notifications.elem.content.Arrival = Your request to arrive this DUCR has been received.
 notifications.elem.content.Departure = Your request to depart this MUCR has been received.
@@ -359,12 +359,43 @@ notifications.elem.content.DucrDisassociation = Your request to disassociate thi
 notifications.elem.content.ShutMucr = Your request to shut this MUCR has been received.
 notifications.elem.content.footer = We will notify you when it has been successful.
 
-notifications.elem.content.inventoryLinkingControlResponse.1 = Your request has been acknowledged and processed.
-notifications.elem.content.inventoryLinkingControlResponse.2 = Your request has been partially acknowledged and processed.
-notifications.elem.content.inventoryLinkingControlResponse.3 = Your request has been rejected.
+notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Your request has been acknowledged and processed.
+notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed = Your request has been partially acknowledged and processed.
+notifications.elem.content.inventoryLinkingControlResponse.Rejected = Your request has been rejected.
 
-notifications.elem.content.inventoryLinkingMovementResponse.crc = CRC: {0}
+notifications.elem.content.inventoryLinkingMovementResponse.crc = CRC:
 
-notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc = CRC: {0}
-notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Route of entry is: {0}
-notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Status of entry is: {0}
+notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc = CRC:
+notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Route of entry is:
+notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Status of entry is:
+
+decoder.crc.Success = Success
+decoder.crc.PrelodgedDeclarationNotArrived = Pre-lodged Declaration has not arrived
+decoder.crc.DeclarationNotArrived = Declaration has not arrived
+
+decoder.roe.DocumentaryControl = Documentary Control
+decoder.roe.PhysicalExternalPartyControl = Physical / External Party Control
+decoder.roe.NonBlockingDocumentaryControl = Non-Blocking Documentary Control
+decoder.roe.NoControlRequired = No control required
+decoder.roe.RiskingNotPerformed = Risking not yet performed
+decoder.roe.PrelodgePrefix = Pre-lodge pre-fix
+
+decoder.soe.DeclarationValidation = Declaration Validation
+decoder.soe.DeclarationGoodsRelease = Declaration Goods Release
+decoder.soe.DeclarationClearance = Declaration Clearance
+decoder.soe.DeclarationInvalidated = Declaration Invalidated
+decoder.soe.DeclarationRejected = Declaration Rejected
+decoder.soe.DeclarationHandledExternally = Declaration Handled Externally
+decoder.soe.DeclarationCorrectionValidation = Declaration Correction Validation
+decoder.soe.AdvanceDeclarationRegistration = Advance Declaration Registration
+decoder.soe.DeclarationAcceptance = Declaration Acceptance
+decoder.soe.DeclarationAcceptanceAtGoodsArrival = Declaration Acceptance at Goods Arrival
+decoder.soe.DeclarationRejectionAtGoodsArrival = Declaration Rejection at Goods Arrival
+decoder.soe.DeclarationCorrected = Declaration Corrected
+decoder.soe.DeclarationSupplemented = Declaration Supplemented
+decoder.soe.DeclarationRisked = Declaration Risked
+decoder.soe.CustomsPositionDetermined = Customs Position Determined
+decoder.soe.DeclarationClearanceAfterGoodsRelease = Declaration Clearance after Goods Release
+decoder.soe.InsufficientGuarantees = Insufficient Guarantees
+decoder.soe.Departed = Departed
+decoder.soe.Frustrated = Frustrated

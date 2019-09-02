@@ -24,14 +24,14 @@ import models.notifications.NotificationFrontendModel
 import models.notifications.ResponseType._
 import models.submissions.ActionType._
 import models.submissions.SubmissionFrontendModel
+import models.viewmodels.decoder.Decoder
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 
 @Singleton
 class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
 
-  private val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy").withZone(ZoneId.systemDefault())
-  private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault())
+  private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
 
   def build(submission: SubmissionFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
     submission.actionType match {
@@ -41,32 +41,35 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
 
   private def buildForRequest(
     submission: SubmissionFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement =
+  )(implicit messages: Messages): NotificationsPageSingleElement = {
+
+    val content = Html(
+      s"<p>${messages(s"notifications.elem.content.${submission.actionType.value}")}</p>" +
+        s"<p>${messages("notifications.elem.content.footer")}</p>"
+    )
+
     NotificationsPageSingleElement(
       title = messages(s"notifications.elem.title.${submission.actionType.value}"),
-      timestampInfo = messages(
-        "notifications.elem.timestampInfo.request",
-        dateFormatter.format(submission.requestTimestamp),
-        timeFormatter.format(submission.requestTimestamp)
-      ),
-      content = Html(
-        s"<p>${messages(s"notifications.elem.content.${submission.actionType.value}")}</p>" +
-          s"<p>${messages("notifications.elem.content.footer")}</p>"
-      )
+      timestampInfo = timestampInfoRequest(submission.requestTimestamp),
+      content = content
     )
+  }
+
+  private def timestampInfoRequest(responseTimestamp: Instant)(implicit messages: Messages): String =
+    messages("notifications.elem.timestampInfo.request", dateTimeFormatter.format(responseTimestamp))
 
   private def buildForDucrAssociation(
     submission: SubmissionFrontendModel
   )(implicit messages: Messages): NotificationsPageSingleElement = {
-    val ducrs = submission.ucrBlocks.filter(_.ucrType == "D")
 
-    buildForRequest(submission).copy(
-      content = Html(
-        s"<p>${messages(s"notifications.elem.content.${submission.actionType.value}")}</p>" +
-          ducrs.map(block => s"<p>${block.ucr}</p>").mkString +
-          s"<p>${messages("notifications.elem.content.footer")}</p>"
-      )
+    val ducrs = submission.ucrBlocks.filter(_.ucrType == "D")
+    val content = Html(
+      s"<p>${messages(s"notifications.elem.content.${submission.actionType.value}")}</p>" +
+        ducrs.map(block => s"<p>${block.ucr}</p>").mkString +
+        s"<p>${messages("notifications.elem.content.footer")}</p>"
     )
+
+    buildForRequest(submission).copy(content = content)
   }
 
   def build(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
@@ -79,70 +82,81 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
 
   private def buildForControlResponse(
     notification: NotificationFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement =
+  )(implicit messages: Messages): NotificationsPageSingleElement = {
+
+    val content = notification.actionCode.map { code =>
+      s"<p>${messages(decoder.actionCode(code).map(_.contentKey).getOrElse(""))}</p>"
+    }
+
     NotificationsPageSingleElement(
-      title = messages(s"notifications.elem.title.inventoryLinkingControlResponse"),
-      timestampInfo = messages(
-        "notifications.elem.timestampInfo.response",
-        dateFormatter.format(notification.timestampReceived),
-        timeFormatter.format(notification.timestampReceived)
-      ),
-      content = Html(notification.actionCode.map { code =>
-        s"<p>${messages(s"notifications.elem.content.inventoryLinkingControlResponse.$code")}</p>"
-      }.getOrElse(""))
+      title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
+      timestampInfo = timestampInfoResponse(notification.timestampReceived),
+      content = Html(content.getOrElse(""))
     )
+  }
 
   private def buildForMovementTotalsResponse(
     notification: NotificationFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement =
-    NotificationsPageSingleElement(
-      title = messages(s"notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-      timestampInfo = messages(
-        "notifications.elem.timestampInfo.response",
-        dateFormatter.format(notification.timestampReceived),
-        timeFormatter.format(notification.timestampReceived)
-      ),
-      content = {
-        val firstLine = notification.crcCode.map { crcCode =>
-          s"<p>${messages(s"notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc", decoder.crc(crcCode))}</p>"
-        }
-        val secondLine = notification.masterRoe.map { roe =>
-          s"<p>${messages(s"notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe", decoder.roe(roe))}</p>"
-        }
-        val thirdLine = notification.masterSoe.map { soe =>
-          s"<p>${messages(s"notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe", decoder.soe(soe))}</p>"
-        }
+  )(implicit messages: Messages): NotificationsPageSingleElement = {
 
-        Html(firstLine.getOrElse("") + secondLine.getOrElse("") + thirdLine.getOrElse(""))
-      }
+    val crcCodeContent = getContentForCrcCode(notification)
+    val roeContent =
+      notification.masterRoe.flatMap(roe => decoder.roe(roe).map(decodedRoe => messages(decodedRoe.contentKey)))
+    val soeContent =
+      notification.masterSoe.flatMap(soe => decoder.soe(soe).map(decodedSoe => messages(decodedSoe.contentKey)))
+
+    val firstLine = crcCodeContent.map { content =>
+      s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")} $content</p>"
+    }
+    val secondLine = roeContent.map { content =>
+      s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} $content</p>"
+    }
+    val thirdLine = soeContent.map { content =>
+      s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} $content</p>"
+    }
+
+    NotificationsPageSingleElement(
+      title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
+      timestampInfo = timestampInfoResponse(notification.timestampReceived),
+      content = Html(firstLine.getOrElse("") + secondLine.getOrElse("") + thirdLine.getOrElse(""))
     )
+  }
 
   private def buildForMovementResponse(
     notification: NotificationFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement =
+  )(implicit messages: Messages): NotificationsPageSingleElement = {
+
+    val crcCodeContent = getContentForCrcCode(notification)
+    val content = crcCodeContent.map { content =>
+      s"<p>${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} $content</p>"
+    }
+
     NotificationsPageSingleElement(
-      title = messages(s"notifications.elem.title.inventoryLinkingMovementResponse"),
-      timestampInfo = messages(
-        "notifications.elem.timestampInfo.response",
-        dateFormatter.format(notification.timestampReceived),
-        timeFormatter.format(notification.timestampReceived)
-      ),
-      content = Html(notification.crcCode.map { crcCode =>
-        s"<p>${messages(s"notifications.elem.content.inventoryLinkingMovementResponse.crc", decoder.crc(crcCode))}</p>"
-      }.getOrElse(""))
+      title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
+      timestampInfo = timestampInfoResponse(notification.timestampReceived),
+      content = Html(content.getOrElse(""))
     )
+  }
 
   private def buildForUnspecified(
     responseTimestamp: Instant
   )(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
       title = messages("notifications.elem.title.unspecified"),
-      timestampInfo = messages(
-        "notifications.elem.timestampInfo.request",
-        dateFormatter.format(responseTimestamp),
-        timeFormatter.format(responseTimestamp)
-      ),
+      timestampInfo = timestampInfoResponse(responseTimestamp),
       content = HtmlFormat.empty
     )
+
+  private def getContentForCrcCode(
+    notification: NotificationFrontendModel
+  )(implicit messages: Messages): Option[String] =
+    for {
+      code <- notification.crcCode
+      decodedCrcCode <- decoder.crc(code)
+      content = messages(decodedCrcCode.contentKey)
+    } yield content
+
+  private def timestampInfoResponse(responseTimestamp: Instant)(implicit messages: Messages): String =
+    messages("notifications.elem.timestampInfo.response", dateTimeFormatter.format(responseTimestamp))
 
 }

@@ -349,8 +349,8 @@ notifications.elem.title.inventoryLinkingMovementResponse = Update message
 notifications.elem.title.inventoryLinkingMovementTotalsResponse = Update message
 notifications.elem.title.unspecified = Update message
 
-notifications.elem.timestampInfo.request = Request submitted {0} at {1}
-notifications.elem.timestampInfo.response = Notification generated {0} at {1}
+notifications.elem.timestampInfo.request = Request submitted {0}
+notifications.elem.timestampInfo.response = Notification generated {0}
 
 notifications.elem.content.Arrival = Your request to arrive this DUCR has been received.
 notifications.elem.content.Departure = Your request to depart this MUCR has been received.

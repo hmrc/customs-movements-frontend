@@ -66,7 +66,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           exampleSubmissionFrontendModel(actionType = ActionType.Arrival, requestTimestamp = testTimestamp)
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.Arrival"),
-          timestampInfo = messages("notifications.elem.timestampInfo.request", "23 Oct 2019", "12:34"),
+          timestampInfo = messages("notifications.elem.timestampInfo.request", "23 Oct 2019 at 12:34"),
           content = Html(
             s"<p>${messages("notifications.elem.content.Arrival")}</p>" +
               s"<p>${messages("notifications.elem.content.footer")}</p>"
@@ -84,7 +84,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           exampleSubmissionFrontendModel(actionType = ActionType.Departure, requestTimestamp = testTimestamp)
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.Departure"),
-          timestampInfo = messages("notifications.elem.timestampInfo.request", "23 Oct 2019", "12:34"),
+          timestampInfo = messages("notifications.elem.timestampInfo.request", "23 Oct 2019 at 12:34"),
           content = Html(
             s"<p>${messages("notifications.elem.content.Departure")}</p>" +
               s"<p>${messages("notifications.elem.content.footer")}</p>"
@@ -111,7 +111,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.DucrAssociation"),
-          timestampInfo = messages("notifications.elem.timestampInfo.request", "23 Oct 2019", "12:34"),
+          timestampInfo = messages("notifications.elem.timestampInfo.request", "23 Oct 2019 at 12:34"),
           content = Html(
             s"<p>${messages("notifications.elem.content.DucrAssociation")}</p>" +
               s"<p>$correctUcr_2</p>" +
@@ -135,7 +135,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.DucrDisassociation"),
-          timestampInfo = messages("notifications.elem.timestampInfo.request", "23 Oct 2019", "12:34"),
+          timestampInfo = messages("notifications.elem.timestampInfo.request", "23 Oct 2019 at 12:34"),
           content = Html(
             s"<p>${messages("notifications.elem.content.DucrDisassociation")}</p>" +
               s"<p>${messages("notifications.elem.content.footer")}</p>"
@@ -157,7 +157,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.ShutMucr"),
-          timestampInfo = messages("notifications.elem.timestampInfo.request", "23 Oct 2019", "12:34"),
+          timestampInfo = messages("notifications.elem.timestampInfo.request", "23 Oct 2019 at 12:34"),
           content = Html(
             s"<p>${messages("notifications.elem.content.ShutMucr")}</p>" +
               s"<p>${messages("notifications.elem.content.footer")}</p>"
@@ -180,7 +180,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           )
           val expectedResult = NotificationsPageSingleElement(
             title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
-            timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019", "12:34"),
+            timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
             content = Html(s"<p>${messages(actionCodeKeyFromDecoder)}</p>")
           )
 
@@ -198,7 +198,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           )
           val expectedResult = NotificationsPageSingleElement(
             title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
-            timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019", "12:34"),
+            timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
             content = Html(s"<p>${messages(actionCodeKeyFromDecoder)}</p>")
           )
 
@@ -216,7 +216,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           )
           val expectedResult = NotificationsPageSingleElement(
             title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
-            timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019", "12:34"),
+            timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
             content = Html(s"<p>${messages(actionCodeKeyFromDecoder)}</p>")
           )
 
@@ -258,7 +258,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         factory.build(input)
 
         verifyMessages("notifications.elem.title.inventoryLinkingMovementResponse")
-        verifyMessages("notifications.elem.timestampInfo.response", "23 Oct 2019", "12:34")
+        verifyMessages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34")
         verifyMessages(crcCodeKeyFromDecoder)
         verifyMessages("notifications.elem.content.inventoryLinkingMovementResponse.crc")
       }
@@ -272,7 +272,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
-          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019", "12:34"),
+          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
           content = Html(
             s"<p>${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} $crcCodeKeyFromDecoder</p>"
           )
@@ -319,7 +319,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         factory.build(input)
 
         verifyMessages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
-        verifyMessages("notifications.elem.timestampInfo.response", "23 Oct 2019", "12:34")
+        verifyMessages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34")
 
         verifyMessages(crcCodeKeyFromDecoder)
         verifyMessages(roeKeyFromDecoder)
@@ -341,7 +341,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019", "12:34"),
+          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
           content = Html(
             s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")} $crcCodeKeyFromDecoder</p>" +
               s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} $roeKeyFromDecoder</p>" +
@@ -364,7 +364,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019", "12:34"),
+          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
           content = Html(
             s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")} $crcCodeKeyFromDecoder</p>" +
               s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} $soeKeyFromDecoder</p>"

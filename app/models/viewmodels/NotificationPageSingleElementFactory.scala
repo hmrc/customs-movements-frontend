@@ -31,8 +31,7 @@ import play.twirl.api.{Html, HtmlFormat}
 @Singleton
 class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
 
-  private val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy").withZone(ZoneId.systemDefault())
-  private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault())
+  private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
 
   def build(submission: SubmissionFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
     submission.actionType match {
@@ -42,32 +41,35 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
 
   private def buildForRequest(
     submission: SubmissionFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement =
+  )(implicit messages: Messages): NotificationsPageSingleElement = {
+
+    val content = Html(
+      s"<p>${messages(s"notifications.elem.content.${submission.actionType.value}")}</p>" +
+        s"<p>${messages("notifications.elem.content.footer")}</p>"
+    )
+
     NotificationsPageSingleElement(
       title = messages(s"notifications.elem.title.${submission.actionType.value}"),
-      timestampInfo = messages(
-        "notifications.elem.timestampInfo.request",
-        dateFormatter.format(submission.requestTimestamp),
-        timeFormatter.format(submission.requestTimestamp)
-      ),
-      content = Html(
-        s"<p>${messages(s"notifications.elem.content.${submission.actionType.value}")}</p>" +
-          s"<p>${messages("notifications.elem.content.footer")}</p>"
-      )
+      timestampInfo = timestampInfoRequest(submission.requestTimestamp),
+      content = content
     )
+  }
+
+  private def timestampInfoRequest(responseTimestamp: Instant)(implicit messages: Messages): String =
+    messages("notifications.elem.timestampInfo.request", dateTimeFormatter.format(responseTimestamp))
 
   private def buildForDucrAssociation(
     submission: SubmissionFrontendModel
   )(implicit messages: Messages): NotificationsPageSingleElement = {
-    val ducrs = submission.ucrBlocks.filter(_.ucrType == "D")
 
-    buildForRequest(submission).copy(
-      content = Html(
-        s"<p>${messages(s"notifications.elem.content.${submission.actionType.value}")}</p>" +
-          ducrs.map(block => s"<p>${block.ucr}</p>").mkString +
-          s"<p>${messages("notifications.elem.content.footer")}</p>"
-      )
+    val ducrs = submission.ucrBlocks.filter(_.ucrType == "D")
+    val content = Html(
+      s"<p>${messages(s"notifications.elem.content.${submission.actionType.value}")}</p>" +
+        ducrs.map(block => s"<p>${block.ucr}</p>").mkString +
+        s"<p>${messages("notifications.elem.content.footer")}</p>"
     )
+
+    buildForRequest(submission).copy(content = content)
   }
 
   def build(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
@@ -143,10 +145,7 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
       content = HtmlFormat.empty
     )
 
-  private def timestampInfoResponse(responseTimestamp: Instant)(implicit messages: Messages): String = messages(
-    "notifications.elem.timestampInfo.response",
-    dateFormatter.format(responseTimestamp),
-    timeFormatter.format(responseTimestamp)
-  )
+  private def timestampInfoResponse(responseTimestamp: Instant)(implicit messages: Messages): String =
+    messages("notifications.elem.timestampInfo.response", dateTimeFormatter.format(responseTimestamp))
 
 }

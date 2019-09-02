@@ -85,7 +85,7 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
   )(implicit messages: Messages): NotificationsPageSingleElement = {
 
     val content = notification.actionCode.map { code =>
-      s"<p>${messages(decoder.actionCode(code))}</p>"
+      s"<p>${messages(decoder.actionCode(code).map(_.contentKey).getOrElse(""))}</p>"
     }
 
     NotificationsPageSingleElement(
@@ -99,9 +99,11 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
     notification: NotificationFrontendModel
   )(implicit messages: Messages): NotificationsPageSingleElement = {
 
-    val crcCodeContent = notification.crcCode.map(crcCode => messages(decoder.crc(crcCode)))
-    val roeContent = notification.masterRoe.map(roe => messages(decoder.roe(roe)))
-    val soeContent = notification.masterSoe.map(soe => messages(decoder.soe(soe)))
+    val crcCodeContent = getContentForCrcCode(notification)
+    val roeContent =
+      notification.masterRoe.flatMap(roe => decoder.roe(roe).map(decodedRoe => messages(decodedRoe.contentKey)))
+    val soeContent =
+      notification.masterSoe.flatMap(soe => decoder.soe(soe).map(decodedSoe => messages(decodedSoe.contentKey)))
 
     val firstLine = crcCodeContent.map { content =>
       s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")} $content</p>"
@@ -124,7 +126,7 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
     notification: NotificationFrontendModel
   )(implicit messages: Messages): NotificationsPageSingleElement = {
 
-    val crcCodeContent = notification.crcCode.map(crcCode => messages(decoder.crc(crcCode)))
+    val crcCodeContent = getContentForCrcCode(notification)
     val content = crcCodeContent.map { content =>
       s"<p>${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} $content</p>"
     }
@@ -144,6 +146,15 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
       timestampInfo = timestampInfoResponse(responseTimestamp),
       content = HtmlFormat.empty
     )
+
+  private def getContentForCrcCode(
+    notification: NotificationFrontendModel
+  )(implicit messages: Messages): Option[String] =
+    for {
+      code <- notification.crcCode
+      decodedCrcCode <- decoder.crc(code)
+      content = messages(decodedCrcCode.contentKey)
+    } yield content
 
   private def timestampInfoResponse(responseTimestamp: Instant)(implicit messages: Messages): String =
     messages("notifications.elem.timestampInfo.response", dateTimeFormatter.format(responseTimestamp))

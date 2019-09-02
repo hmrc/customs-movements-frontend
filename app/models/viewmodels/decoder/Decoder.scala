@@ -21,14 +21,11 @@ import javax.inject.Singleton
 @Singleton
 class Decoder {
 
-  def crc(code: String): String = extractContentKey(code, CrcCode.codes.toSeq)
+  def crc(code: String): Option[CrcCode] = CrcCode.codes.find(_.code == code)
 
-  def roe(code: String): String = extractContentKey(code, RoeCode.codes.toSeq)
+  def roe(code: String): Option[RoeCode] = RoeCode.codes.find(_.code == code)
 
-  def soe(code: String): String = extractContentKey(code, SoeCode.codes.toSeq)
+  def soe(code: String): Option[SoeCode] = SoeCode.codes.find(_.code == code)
 
-  def actionCode(code: String): String = extractContentKey(code, ActionCode.codes.toSeq)
-
-  private def extractContentKey(code: String, codes: Iterable[CodeWithContentKey]): String =
-    codes.find(_.code == code).map(_.contentKey).getOrElse("")
+  def actionCode(code: String): Option[ActionCode] = ActionCode.codes.find(_.code == code)
 }

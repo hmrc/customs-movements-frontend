@@ -25,7 +25,7 @@ import base.testdata.NotificationTestData.exampleNotificationFrontendModel
 import models.UcrBlock
 import models.notifications.ResponseType
 import models.submissions.{ActionType, SubmissionFrontendModel}
-import models.viewmodels.decoder.Decoder
+import models.viewmodels.decoder._
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito
 import org.mockito.Mockito.{verify, when}
@@ -46,14 +46,14 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
     implicit val messages: Messages = Mockito.spy(stubMessages())
     val factory = new NotificationPageSingleElementFactory(decoderMock)
 
-    val crcCodeKeyFromDecoder = "CRC code mapping"
-    val roeKeyFromDecoder = "ROE code mapping"
-    val soeKeyFromDecoder = "SOE code mapping"
-    val actionCodeKeyFromDecoder = "Action code mapping"
-    when(decoderMock.crc(any())).thenReturn(crcCodeKeyFromDecoder)
-    when(decoderMock.roe(any())).thenReturn(roeKeyFromDecoder)
-    when(decoderMock.soe(any())).thenReturn(soeKeyFromDecoder)
-    when(decoderMock.actionCode(any())).thenReturn(actionCodeKeyFromDecoder)
+    val crcCodeKeyFromDecoder = CrcCode.Success
+    val roeKeyFromDecoder = RoeCode.DocumentaryControl
+    val soeKeyFromDecoder = SoeCode.DeclarationAcceptance
+    val actionCodeKeyFromDecoder = ActionCode.AcknowledgedAndProcessed
+    when(decoderMock.crc(any())).thenReturn(Some(crcCodeKeyFromDecoder))
+    when(decoderMock.roe(any())).thenReturn(Some(roeKeyFromDecoder))
+    when(decoderMock.soe(any())).thenReturn(Some(soeKeyFromDecoder))
+    when(decoderMock.actionCode(any())).thenReturn(Some(actionCodeKeyFromDecoder))
   }
 
   "NotificationPageSingleElementFactory" should {
@@ -181,7 +181,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           val expectedResult = NotificationsPageSingleElement(
             title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
             timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
-            content = Html(s"<p>${messages(actionCodeKeyFromDecoder)}</p>")
+            content = Html(s"<p>${messages(actionCodeKeyFromDecoder.contentKey)}</p>")
           )
 
           val result: NotificationsPageSingleElement = factory.build(input)
@@ -199,7 +199,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           val expectedResult = NotificationsPageSingleElement(
             title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
             timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
-            content = Html(s"<p>${messages(actionCodeKeyFromDecoder)}</p>")
+            content = Html(s"<p>${messages(actionCodeKeyFromDecoder.contentKey)}</p>")
           )
 
           val result: NotificationsPageSingleElement = factory.build(input)
@@ -217,7 +217,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           val expectedResult = NotificationsPageSingleElement(
             title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
             timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
-            content = Html(s"<p>${messages(actionCodeKeyFromDecoder)}</p>")
+            content = Html(s"<p>${messages(actionCodeKeyFromDecoder.contentKey)}</p>")
           )
 
           val result: NotificationsPageSingleElement = factory.build(input)
@@ -259,7 +259,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
         verifyMessages("notifications.elem.title.inventoryLinkingMovementResponse")
         verifyMessages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34")
-        verifyMessages(crcCodeKeyFromDecoder)
+        verifyMessages(crcCodeKeyFromDecoder.contentKey)
         verifyMessages("notifications.elem.content.inventoryLinkingMovementResponse.crc")
       }
 
@@ -274,7 +274,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
           timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
           content = Html(
-            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} $crcCodeKeyFromDecoder</p>"
+            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} ${crcCodeKeyFromDecoder.contentKey}</p>"
           )
         )
 
@@ -321,9 +321,9 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         verifyMessages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
         verifyMessages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34")
 
-        verifyMessages(crcCodeKeyFromDecoder)
-        verifyMessages(roeKeyFromDecoder)
-        verifyMessages(soeKeyFromDecoder)
+        verifyMessages(crcCodeKeyFromDecoder.contentKey)
+        verifyMessages(roeKeyFromDecoder.contentKey)
+        verifyMessages(soeKeyFromDecoder.contentKey)
 
         verifyMessages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")
         verifyMessages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")
@@ -343,9 +343,9 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
           timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
           content = Html(
-            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")} $crcCodeKeyFromDecoder</p>" +
-              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} $roeKeyFromDecoder</p>" +
-              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} $soeKeyFromDecoder</p>"
+            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")} ${crcCodeKeyFromDecoder.contentKey}</p>" +
+              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} ${roeKeyFromDecoder.contentKey}</p>" +
+              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} ${soeKeyFromDecoder.contentKey}</p>"
           )
         )
 
@@ -366,8 +366,8 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
           timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
           content = Html(
-            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")} $crcCodeKeyFromDecoder</p>" +
-              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} $soeKeyFromDecoder</p>"
+            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")} ${crcCodeKeyFromDecoder.contentKey}</p>" +
+              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} ${soeKeyFromDecoder.contentKey}</p>"
           )
         )
 

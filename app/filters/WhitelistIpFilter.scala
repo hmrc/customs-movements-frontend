@@ -26,7 +26,7 @@ import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 import scala.concurrent.Future
 
 @ProvidedBy(classOf[WhitelistIpFilterProvider])
-class WhitelistIpFilter (
+class WhitelistIpFilter(
   val enabled: Boolean,
   val excludeList: Seq[String],
   override val whitelist: Seq[String],
@@ -35,19 +35,18 @@ class WhitelistIpFilter (
 
   override val destination: Call = Call("GET", "https://www.gov.uk")
 
-
   override val excludedPaths: Seq[Call] = excludeList.map(Call("GET", _))
 
-  override def apply(f: RequestHeader => Future[Result])(rh: RequestHeader): Future[Result] = {
-    if(enabled) {
+  override def apply(f: RequestHeader => Future[Result])(rh: RequestHeader): Future[Result] =
+    if (enabled) {
       super.apply(f)(rh)
     } else {
       f(rh)
     }
-  }
 }
 
-class WhitelistIpFilterProvider @Inject()(configuration: Configuration, materializer: Materializer) extends Provider[WhitelistIpFilter] {
+class WhitelistIpFilterProvider @Inject()(configuration: Configuration, materializer: Materializer)
+    extends Provider[WhitelistIpFilter] {
   override def get(): WhitelistIpFilter = {
     val whitelistConfig = configuration.get[Configuration]("ip-whitelist")
     val enabled = whitelistConfig.get[Boolean]("enabled")

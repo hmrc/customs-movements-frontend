@@ -16,6 +16,7 @@ object AppDependencies {
     "uk.gov.hmrc" %% "bootstrap-play-26" % "0.45.0",
     "uk.gov.hmrc" %% "wco-dec" % "0.31.0",
     "uk.gov.hmrc" %% "play-language" % "4.1.0",
+    "uk.gov.hmrc" %% "play-whitelist-filter" % "3.1.0-play-26",
     "ai.x"         %% "play-json-extensions" % "0.40.2"
   )
 

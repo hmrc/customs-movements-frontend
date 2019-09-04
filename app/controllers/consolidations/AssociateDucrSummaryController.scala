@@ -23,6 +23,7 @@ import controllers.storage.FlashKeys
 import forms.{AssociateDucr, MucrOptions}
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
+import org.slf4j.MDC
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -31,6 +32,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.associate_ducr_summary
 
 import scala.concurrent.ExecutionContext
+import scala.util.Failure
 
 @Singleton
 class AssociateDucrSummaryController @Inject()(
@@ -71,13 +73,14 @@ class AssociateDucrSummaryController @Inject()(
         case ACCEPTED =>
           Redirect(routes.AssociateDucrConfirmationController.displayPage())
             .flashing(FlashKeys.MUCR -> mucrOptions.mucr)
-        case _ => handleError("Unable to submit Association Consolidation request")
+        case _ =>
+          MDC.put("MUCR", mucrOptions.mucr)
+          MDC.put("DUCR", associateDucr.ducr)
+          logger.warn(s"Unable to submit Association Consolidation request: MUCR ${mucrOptions.mucr} and DUCR $associateDucr")
+          MDC.remove("MUCR")
+          MDC.remove("DUCR")
+          errorHandler.getInternalServerErrorPage()
       }
     } yield result
-  }
-
-  private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
-    logger.error(logMessage)
-    errorHandler.getInternalServerErrorPage()
   }
 }

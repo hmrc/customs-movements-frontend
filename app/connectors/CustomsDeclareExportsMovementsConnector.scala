@@ -27,6 +27,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 @Singleton
 class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
@@ -51,47 +52,56 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
   def sendArrivalDeclaration(
     requestXml: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    postRequest(ArrivalSubmissionUrl, requestXml)
+    postRequest(ArrivalSubmissionUrl, requestXml, "arrival")
 
   def sendDepartureDeclaration(
     requestXml: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    postRequest(DepartureSubmissionUrl, requestXml)
+    postRequest(DepartureSubmissionUrl, requestXml, "departure")
 
   def sendAssociationRequest(
     requestXml: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    postRequest(AssociateConsolidationUrl, requestXml)
+    postRequest(AssociateConsolidationUrl, requestXml, "association")
 
   def sendDisassociationRequest(
     requestXml: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    postRequest(DisassociateConsolidationUrl, requestXml)
+    postRequest(DisassociateConsolidationUrl, requestXml, "disassociation")
 
   def sendShutMucrRequest(requestXml: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    postRequest(ShutMucrConsolidationUrl, requestXml)
+    postRequest(ShutMucrConsolidationUrl, requestXml, "shut mucr")
 
   private def postRequest(
     url: String,
-    requestXml: String
+    requestXml: String,
+    declarationType: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
     httpClient
       .POSTString[HttpResponse](url, requestXml, CommonMovementsHeaders)
-      .map(logResponse)
+      .andThen {
+        case Success(response) =>
+          logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response on $declarationType. $response")
+        case Failure(exception) =>
+          logger.warn(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS failure on $declarationType. $exception ")
+      }
 
   def fetchNotifications(
     conversationId: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[NotificationFrontendModel]] =
     httpClient.GET[Seq[NotificationFrontendModel]](
       s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}/$conversationId"
-    )
+    ).andThen {
+      case Success(response) => logger.debug(s"Notifications fetch response. $response")
+      case Failure(exception) => logger.warn(s"Notifications fetch failure. $exception")
+    }
 
   def fetchAllSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[SubmissionFrontendModel]] =
     httpClient
       .GET[Seq[SubmissionFrontendModel]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchAllSubmissions}")
-      .map { response =>
-        logger.debug(s"CUSTOMS_MOVEMENTS_FRONTEND fetch submission response is --> ${response.toString}")
-        response
+      .andThen {
+        case Success(response) => logger.debug(s"Submissions fetch response. $response")
+        case Failure(exception) => logger.warn(s"Submissions fetch failure. $exception")
       }
 
   def fetchSingleSubmission(
@@ -99,11 +109,9 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SubmissionFrontendModel]] =
     httpClient.GET[Option[SubmissionFrontendModel]](
       s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchSingleSubmission}/$conversationId"
-    )
-
-  private def logResponse(response: HttpResponse): HttpResponse = {
-    logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response is --> ${response.toString}")
-    response
-  }
+    ).andThen {
+      case Success(response) => logger.debug(s"Single submission fetch response. $response")
+      case Failure(exception) => logger.warn(s"Single submission fetch failure. $exception")
+    }
 
 }

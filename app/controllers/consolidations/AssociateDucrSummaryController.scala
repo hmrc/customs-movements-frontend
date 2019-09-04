@@ -76,7 +76,9 @@ class AssociateDucrSummaryController @Inject()(
         case _ =>
           MDC.put("MUCR", mucrOptions.mucr)
           MDC.put("DUCR", associateDucr.ducr)
-          logger.warn(s"Unable to submit Association Consolidation request: MUCR ${mucrOptions.mucr} and DUCR $associateDucr")
+          logger.warn(
+            s"Unable to submit Association Consolidation request: MUCR ${mucrOptions.mucr} and DUCR $associateDucr"
+          )
           MDC.remove("MUCR")
           MDC.remove("DUCR")
           errorHandler.getInternalServerErrorPage()

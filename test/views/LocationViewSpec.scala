@@ -60,8 +60,7 @@ class LocationViewSpec extends ViewSpec with LocationMessages with CommonMessage
       assertMessage(locationTypeError, "Location Type is incorrect")
       assertMessage(qualifierCodeEmpty, "Qualifier Code cannot be empty")
       assertMessage(qualifierCodeError, "Qualifier Code is incorrect")
-      assertMessage(locationCodeEmpty, "Location Code and Additional Qualifier cannot be empty")
-      assertMessage(locationCodeError, "Location Code and Additional Qualifier is incorrect")
+      assertMessage(locationCodeError, "Location Code and Additional Qualifier must be between 6 and 13 characters")
       assertMessage(countryEmpty, "Country cannot be empty")
       assertMessage(countryError, "Country is incorrect")
     }

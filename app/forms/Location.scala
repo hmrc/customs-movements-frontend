@@ -44,8 +44,7 @@ object Location {
       .verifying("qualifierCode.empty", nonEmpty)
       .verifying("qualifierCode.error", isEmpty or isContainedIn(correctQualifierCode)),
     "locationCode" -> text()
-      .verifying("locationCode.empty", nonEmpty)
-      .verifying("locationCode.error", isEmpty or isAlphanumeric and noLongerThan(13)),
+      .verifying("locationCode.error", isEmpty or isAlphanumeric and noShorterThan(6) and noLongerThan(13)),
     "country" -> text()
       .verifying("location.country.empty", nonEmpty)
       .verifying("location.country.error", isEmpty or (input => allCountries.exists(_.countryCode == input)))

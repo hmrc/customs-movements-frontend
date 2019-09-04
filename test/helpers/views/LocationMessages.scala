@@ -33,7 +33,6 @@ trait LocationMessages {
   val qualifierCodeEmpty = "qualifierCode.empty"
   val qualifierCodeError = "qualifierCode.error"
   val locationCode = "locationCode"
-  val locationCodeEmpty = "locationCode.empty"
   val locationCodeError = "locationCode.error"
   val country = "location.country"
   val countryEmpty = "location.country.empty"

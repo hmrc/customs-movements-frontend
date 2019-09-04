@@ -21,6 +21,7 @@ import controllers.storage.FlashKeys
 import forms.ShutMucr.form
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
+import org.slf4j.MDC
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -56,14 +57,13 @@ class ShutMucrController @Inject()(
             case ACCEPTED =>
               Redirect(routes.ShutMucrConfirmationController.displayPage())
                 .flashing(Flash(Map(FlashKeys.MUCR -> shutMucr.mucr)))
-            case _ => handleError("Unable to submit Shut a Mucr Consolidation request")
+            case _ =>
+              val mucr = shutMucr.mucr
+              MDC.put("MUCR", mucr)
+              logger.warn(s"Unable to submit Shut a Mucr Consolidation request. MUCR $mucr")
+              MDC.remove("MUCR")
+              errorHandler.getInternalServerErrorPage()
         }
       )
   }
-
-  private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
-    logger.error(logMessage)
-    errorHandler.getInternalServerErrorPage()
-  }
-
 }

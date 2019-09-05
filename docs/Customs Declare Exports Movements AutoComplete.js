@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         Customs Declare Exports Movements
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Customs Declare Exports Movements
 // @author       You
 // @match        http*://*/customs-movements*
 // @grant        none
+// @updateURL    https://github.com/hmrc/customs-movements-frontend/blob/master/docs/Customs%20Declare%20Exports%20Movements%20AutoComplete.js
 // ==/UserScript==
 
 (function() {

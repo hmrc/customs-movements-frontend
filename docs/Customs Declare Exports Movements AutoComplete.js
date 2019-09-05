@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports Movements AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Customs Declare Exports Movements
 // @author       You
 // @match        http*://*/customs-movements*
@@ -71,11 +71,19 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-movements/movement-details")){
-        document.getElementById('dateOfArrival_day').value = '05';
-        document.getElementById('dateOfArrival_month').value = '09';
-        document.getElementById('dateOfArrival_year').value = '2019';
-        document.getElementById('timeOfArrival_hour').value = '10';
-        document.getElementById('timeOfArrival_minute').value = '00';
+        let title = document.title.toLowerCase();
+        if(title.indexOf('departure') != -1) {
+            document.getElementById('dateOfDeparture_day').value = '31';
+            document.getElementById('dateOfDeparture_month').value = '10';
+            document.getElementById('dateOfDeparture_year').value = '2019';
+        }
+        if(title.indexOf('arrival') != -1) {
+            document.getElementById('dateOfArrival_day').value = '05';
+            document.getElementById('dateOfArrival_month').value = '09';
+            document.getElementById('dateOfArrival_year').value = '2019';
+            document.getElementById('timeOfArrival_hour').value = '10';
+            document.getElementById('timeOfArrival_minute').value = '00';
+        }
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-movements/location")){

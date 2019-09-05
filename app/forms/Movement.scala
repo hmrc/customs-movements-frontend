@@ -18,7 +18,7 @@ package forms
 
 import forms.Choice.AllowedChoiceValues._
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
+import uk.gov.hmrc.wco.dec.inventorylinking.common.{TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 object Movement {
@@ -38,7 +38,7 @@ object Movement {
       case Arrival =>
         cacheMap
           .getEntry[ArrivalDetails](MovementDetails.formId)
-          .map(res => s"${res.dateOfArrival.toString}T${res.timeOfArrival.fold("")(_.toString)}:00")
+          .map(res => s"${res.dateOfArrival.toString}T${res.timeOfArrival.toString}:00")
       case _ => None
     }
 

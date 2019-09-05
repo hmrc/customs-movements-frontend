@@ -54,7 +54,7 @@
         ))
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("summary.arrival.time"),
-            value = data.getEntry[ArrivalDetails](MovementDetails.formId).flatMap(_.timeOfArrival.map(_.toString))
+            value = data.getEntry[ArrivalDetails](MovementDetails.formId).map(_.timeOfArrival.toString)
         ))
     }
 

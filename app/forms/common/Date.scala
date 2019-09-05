@@ -16,13 +16,12 @@
 
 package forms.common
 
-import java.time.{LocalDate, ZoneId, ZoneOffset, ZonedDateTime}
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-import org.joda.time.LocalDateTime
-import play.api.data.{Form, Forms}
+import play.api.data.{Forms, Mapping}
 import play.api.data.Forms.{number, optional}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 import scala.util.Try
 
@@ -46,7 +45,7 @@ case class Date(day: Option[Int], month: Option[Int], year: Option[Int]) {
 }
 
 object Date {
-  implicit val format = Json.format[Date]
+  implicit val format: OFormat[Date] = Json.format[Date]
 
   val yearKey = "year"
   val monthKey = "month"
@@ -58,7 +57,7 @@ object Date {
 
   private val isDateFormatValid: Date => Boolean = date => Try(LocalDate.parse(date.toString)).isSuccess
 
-  val mapping = Forms
+  val mapping: Mapping[Date] = Forms
     .mapping(
       dayKey -> optional(number().verifying("dateTime.date.day.error", correctDay))
         .verifying("dateTime.date.day.empty", _.nonEmpty),

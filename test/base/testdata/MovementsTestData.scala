@@ -47,7 +47,7 @@ object MovementsTestData {
   val departureDetails = DepartureDetails(date)
 
   def arrivalDepartureTimes(movementType: String): JsValue = movementType match {
-    case "EAL" => Json.toJson(ArrivalDetails(date, Some(Time(Some("13"), Some("34")))))
+    case "EAL" => Json.toJson(ArrivalDetails(date, Time(Some("13"), Some("34"))))
     case _     => Json.toJson(DepartureDetails(date))
   }
 

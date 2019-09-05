@@ -56,7 +56,7 @@ class MovementDetailsControllerSpec extends MovementBaseSpec {
 
         withCaching(
           MovementDetails.formId,
-          Some(ArrivalDetails(Date(Some(10), Some(2), Some(2019)), Some(Time(Some("10"), Some("10")))))
+          Some(ArrivalDetails(Date(Some(10), Some(2), Some(2019)), Time(Some("10"), Some("10"))))
         )
 
         val result = route(app, getRequest(uri)).get

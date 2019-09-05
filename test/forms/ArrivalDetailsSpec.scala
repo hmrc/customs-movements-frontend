@@ -27,26 +27,26 @@ class ArrivalDetailsSpec extends BaseSpec {
 
       "date is missing" in {
 
-        val inputData = ArrivalDetails(Date(None, None, None), None)
+        val inputData = ArrivalDetails(Date(None, None, None), Time(Some("1"), Some("1")))
         val errors = MovementDetails.arrivalForm().fillAndValidate(inputData).errors
 
         errors.length must be(3)
+      }
+
+      "time is missing" in {
+
+        val inputData = ArrivalDetails(Date(Some(1), Some(1), Some(2019)), Time(None, None))
+        val errors = MovementDetails.arrivalForm().fillAndValidate(inputData).errors
+
+        errors.length must be(2)
       }
     }
 
     "return no errors" when {
 
-      "only mandatory field is filled" in {
-
-        val inputData = ArrivalDetails(Date(Some(1), Some(1), Some(2019)), None)
-        val errors = MovementDetails.arrivalForm().fillAndValidate(inputData).errors
-
-        errors.length must be(0)
-      }
-
       "date and time are provided" in {
 
-        val inputData = ArrivalDetails(Date(Some(1), Some(1), Some(2019)), Some(Time(Some("1"), Some("1"))))
+        val inputData = ArrivalDetails(Date(Some(1), Some(1), Some(2019)), Time(Some("1"), Some("1")))
         val errors = MovementDetails.arrivalForm().fillAndValidate(inputData).errors
 
         errors.length must be(0)

@@ -17,19 +17,19 @@
 package forms
 
 import forms.common.{Date, Time}
-import play.api.data.{Form, Forms}
-import play.api.data.Forms.optional
-import play.api.libs.json.Json
+import play.api.data.{Forms, Mapping}
+import play.api.libs.json.{Json, OFormat}
 
-case class ArrivalDetails(dateOfArrival: Date, timeOfArrival: Option[Time]) {
+case class ArrivalDetails(dateOfArrival: Date, timeOfArrival: Time) {
 
-  def formatTime(): ArrivalDetails = ArrivalDetails(dateOfArrival, timeOfArrival.map(_.formatTime()))
+  def formatTime(): ArrivalDetails = ArrivalDetails(dateOfArrival, timeOfArrival.formatTime())
 }
 
 object ArrivalDetails {
-  implicit val format = Json.format[ArrivalDetails]
+  implicit val format: OFormat[ArrivalDetails] = Json.format[ArrivalDetails]
 
-  val mapping = Forms.mapping("dateOfArrival" -> Date.mapping, "timeOfArrival" -> optional(Time.mapping))(
-    ArrivalDetails.apply
-  )(ArrivalDetails.unapply)
+  val mapping: Mapping[ArrivalDetails] =
+    Forms.mapping("dateOfArrival" -> Date.mapping, "timeOfArrival" -> Time.mapping)(ArrivalDetails.apply)(
+      ArrivalDetails.unapply
+    )
 }

@@ -18,9 +18,9 @@ package forms.common
 
 import java.time.LocalTime
 
-import play.api.data.Forms
+import play.api.data.{Forms, Mapping}
 import play.api.data.Forms.{optional, text}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 import scala.util.Try
 
@@ -42,18 +42,18 @@ case class Time(hour: Option[String], minute: Option[String]) {
 }
 
 object Time {
-  implicit val format = Json.format[Time]
+  implicit val format: OFormat[Time] = Json.format[Time]
 
   val hourKey = "hour"
   val minuteKey = "minute"
 
   private val correctHour: String => Boolean = (hour: String) =>
-    (Try(hour.toInt).map(value => value >= 0 && value <= 23)).getOrElse(false)
+    Try(hour.toInt).map(value => value >= 0 && value <= 23).getOrElse(false)
 
   private val correctMinute: String => Boolean = (minute: String) =>
-    (Try(minute.toInt).map(value => value >= 0 && value <= 59)).getOrElse(false)
+    Try(minute.toInt).map(value => value >= 0 && value <= 59).getOrElse(false)
 
-  val mapping = Forms
+  val mapping: Mapping[Time] = Forms
     .mapping(
       hourKey -> optional(text().verifying("dateTime.time.hour.error", correctHour))
         .verifying("dateTime.time.hour.empty", _.nonEmpty),

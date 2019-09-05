@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Customs Declare Exports Movements
+// @name         Customs Declare Exports Movements AutoComplete
 // @namespace    http://tampermonkey.net/
 // @version      0.2
 // @description  Customs Declare Exports Movements

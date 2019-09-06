@@ -17,7 +17,6 @@
 package views.base
 
 import akka.util.Timeout
-import base.ViewMatchers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages

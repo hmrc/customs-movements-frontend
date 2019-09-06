@@ -17,7 +17,7 @@
 package unit.base
 
 import base.{MockAuthConnector, MockCustomsCacheService}
-import base.testdata.MovementsTestData.newUser
+import testdata.MovementsTestData.newUser
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.Arrival
 import models.requests.{AuthenticatedRequest, JourneyRequest}

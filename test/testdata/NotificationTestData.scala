@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package base.testdata
+package testdata
 
 import java.time.Instant
 
-import base.testdata.CommonTestData._
+import testdata.CommonTestData._
 import models.UcrBlock
 import models.notifications.{NotificationFrontendModel, ResponseType}
 

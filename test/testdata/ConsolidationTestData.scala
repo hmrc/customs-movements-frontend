@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package base.testdata
+package testdata
 
-import base.testdata.CommonTestData._
+import testdata.CommonTestData._
 import models.UcrBlock
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import play.api.http.{ContentTypes, HeaderNames}

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package base.testdata
+package testdata
 
 import java.time.Instant
 
-import base.testdata.CommonTestData._
+import testdata.CommonTestData._
 import forms.GoodsDeparted.AllowedPlaces
 import forms._
 import forms.common.{Date, Time}

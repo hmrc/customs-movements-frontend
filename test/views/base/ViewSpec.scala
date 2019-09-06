@@ -16,8 +16,7 @@
 
 package views.base
 
-import base.ViewValidator
-import base.testdata.MovementsTestData
+import testdata.MovementsTestData
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import forms.Choice

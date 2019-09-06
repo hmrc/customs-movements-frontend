@@ -16,7 +16,7 @@
 
 package controllers.consolidations
 
-import base.{MovementBaseSpec, ViewValidator}
+import base.MovementBaseSpec
 import forms.Choice.AllowedChoiceValues
 import forms.MucrOptions.{Add, Create}
 import forms.{Choice, MucrOptions}
@@ -24,6 +24,7 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers._
+import views.base.ViewValidator
 
 class MucrOptionsControllerSpec extends MovementBaseSpec with ViewValidator with BeforeAndAfterEach {
 

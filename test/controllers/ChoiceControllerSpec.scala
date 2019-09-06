@@ -16,7 +16,7 @@
 
 package controllers
 
-import base.{MovementBaseSpec, ViewValidator}
+import base.MovementBaseSpec
 import forms.Choice
 import forms.Choice._
 import org.mockito.ArgumentMatchers
@@ -25,6 +25,7 @@ import org.mockito.Mockito.{reset, verify}
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
+import views.base.ViewValidator
 
 class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with BeforeAndAfterEach {
 

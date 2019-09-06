@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package base
+package views.base
 
+import akka.util.Timeout
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.scalatest.{Assertion, MustMatchers}
 import play.api.i18n.Messages
 import play.api.mvc.Result
-import play.api.test.Helpers._
+import play.api.test.Helpers.contentAsString
 import play.twirl.api.Html
 
 import scala.concurrent.Future
-import scala.language.implicitConversions
 
 trait ViewValidator extends MustMatchers with ViewMatchers {
 
   implicit protected def htmlBodyOf(html: Html): Document = Jsoup.parse(html.toString())
   implicit protected def htmlBodyOf(page: String): Document = Jsoup.parse(page)
-  implicit protected def htmlBodyOf(result: Future[Result]): Document = htmlBodyOf(contentAsString(result))
+  implicit protected def htmlBodyOf(result: Future[Result])(implicit timeout: Timeout): Document =
+    htmlBodyOf(contentAsString(result))
 
   def getElementByCss(html: Html, selector: String): Element = {
     val elements = html.select(selector)

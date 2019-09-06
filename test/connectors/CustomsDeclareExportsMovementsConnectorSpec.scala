@@ -16,11 +16,11 @@
 
 package connectors
 
-import base.testdata.CommonTestData._
-import base.testdata.ConsolidationTestData._
-import base.testdata.MovementsTestData
-import base.testdata.MovementsTestData.exampleSubmissionFrontendModel
-import base.testdata.NotificationTestData.exampleNotificationFrontendModel
+import testdata.CommonTestData._
+import testdata.ConsolidationTestData._
+import testdata.MovementsTestData
+import testdata.MovementsTestData.exampleSubmissionFrontendModel
+import testdata.NotificationTestData.exampleNotificationFrontendModel
 import config.AppConfig
 import forms.Choice.AllowedChoiceValues.{Arrival, Departure}
 import models.notifications.NotificationFrontendModel

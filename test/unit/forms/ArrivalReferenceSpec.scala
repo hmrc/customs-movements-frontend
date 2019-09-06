@@ -16,11 +16,11 @@
 
 package unit.forms
 
-import base.TestDataHelper
 import forms.ArrivalReference
 import forms.ArrivalReference.form
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
+import utils.TestDataHelper
 
 class ArrivalReferenceSpec extends WordSpec with MustMatchers {
 

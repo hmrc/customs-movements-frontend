@@ -21,10 +21,10 @@ import java.time.temporal.ChronoUnit.MINUTES
 import java.time.{Instant, LocalDate, ZoneId, ZonedDateTime}
 
 import base.ViewValidator
-import base.testdata.CommonTestData.conversationId
-import base.testdata.ConsolidationTestData
-import base.testdata.ConsolidationTestData.{exampleAssociateDucrRequestSubmission, ValidDucr, ValidMucr}
-import base.testdata.NotificationTestData.exampleNotificationFrontendModel
+import testdata.CommonTestData.conversationId
+import testdata.ConsolidationTestData
+import testdata.ConsolidationTestData.{exampleAssociateDucrRequestSubmission, ValidDucr, ValidMucr}
+import testdata.NotificationTestData.exampleNotificationFrontendModel
 import models.UcrBlock
 import models.notifications.ResponseType
 import models.submissions.{ActionType, SubmissionFrontendModel}

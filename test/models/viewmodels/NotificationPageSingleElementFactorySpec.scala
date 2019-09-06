@@ -19,9 +19,9 @@ package models.viewmodels
 import java.time.format.DateTimeFormatter
 import java.time.{ZoneId, ZonedDateTime}
 
-import base.testdata.CommonTestData._
-import base.testdata.MovementsTestData.exampleSubmissionFrontendModel
-import base.testdata.NotificationTestData.exampleNotificationFrontendModel
+import testdata.CommonTestData._
+import testdata.MovementsTestData.exampleSubmissionFrontendModel
+import testdata.NotificationTestData.exampleNotificationFrontendModel
 import models.UcrBlock
 import models.notifications.ResponseType
 import models.submissions.{ActionType, SubmissionFrontendModel}

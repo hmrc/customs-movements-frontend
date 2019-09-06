@@ -16,7 +16,7 @@
 
 package base
 
-import base.testdata.MovementsTestData._
+import testdata.MovementsTestData._
 import controllers.actions.AuthActionImpl
 import models.SignedInUser
 import org.mockito.ArgumentMatchers

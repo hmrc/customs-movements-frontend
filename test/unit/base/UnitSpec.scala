@@ -14,21 +14,9 @@
  * limitations under the License.
  */
 
-package filters
+package unit.base
 
-import com.codahale.metrics.SharedMetricRegistries
 import org.scalatest.{MustMatchers, WordSpec}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.http.HttpFilters
+import org.scalatestplus.mockito.MockitoSugar
 
-class ApplicationFiltersIntegrationTest extends WordSpec with GuiceOneAppPerSuite with MustMatchers {
-
-  SharedMetricRegistries.clear()
-
-  "Application filter" should {
-    "contains whitespace filter" in {
-      atLeast(1, app.injector.instanceOf[HttpFilters].filters) mustBe a[WhitelistIpFilter]
-    }
-  }
-
-}
+trait UnitSpec extends WordSpec with MustMatchers with MockitoSugar

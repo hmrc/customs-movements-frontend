@@ -16,15 +16,15 @@
 
 package views
 
-import base.ViewValidator
-import base.testdata.CommonTestData
-import base.testdata.CommonTestData.exampleNotificationPageSingleElement
 import models.viewmodels.NotificationsPageSingleElement
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import testdata.CommonTestData
+import testdata.CommonTestData.exampleNotificationPageSingleElement
 import utils.Stubs
+import views.base.ViewValidator
 import views.html.notifications
 
 class NotificationsViewSpec extends WordSpec with MustMatchers with Stubs with ViewValidator {

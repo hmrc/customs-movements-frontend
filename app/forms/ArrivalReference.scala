@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package filters
+package forms
 
-import com.codahale.metrics.SharedMetricRegistries
-import org.scalatest.{MustMatchers, WordSpec}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.http.HttpFilters
+import play.api.data.{Form, Forms}
+import play.api.data.Forms.{optional, text}
+import play.api.libs.json.Json
+import utils.validators.forms.FieldValidator._
 
-class ApplicationFiltersIntegrationTest extends WordSpec with GuiceOneAppPerSuite with MustMatchers {
+case class ArrivalReference(reference: Option[String])
 
-  SharedMetricRegistries.clear()
+object ArrivalReference {
+  val formId: String = "ArrivalReference"
 
-  "Application filter" should {
-    "contains whitespace filter" in {
-      atLeast(1, app.injector.instanceOf[HttpFilters].filters) mustBe a[WhitelistIpFilter]
-    }
-  }
+  implicit val format = Json.format[ArrivalReference]
 
+  val mapping = Forms.mapping(
+    "reference" -> optional(text().verifying("arrivalReference.error", isAlphanumeric and noLongerThan(25)))
+  )(ArrivalReference.apply)(ArrivalReference.unapply)
+
+  val form: Form[ArrivalReference] = Form(mapping)
 }

@@ -19,10 +19,11 @@ package controllers
 import base.MovementBaseSpec
 import forms.Choice.AllowedChoiceValues
 import forms.{Choice, ConsignmentReferences}
+import org.scalatest.OptionValues
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
-class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
+class ConsignmentReferencesControllerSpec extends MovementBaseSpec with OptionValues {
 
   val uri = uriWithContextPath("/consignment-references")
 
@@ -93,7 +94,7 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
       val headers = result.futureValue.header.headers
 
       status(result) must be(SEE_OTHER)
-      headers.get("Location") must be(Some("/customs-movements/movement-details"))
+      redirectLocation(result).value mustBe "/customs-movements/arrival-reference"
     }
 
     "redirect to location for correct form in departure journey" in new DepartureSetUp {
@@ -113,7 +114,7 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
       val headers = result.futureValue.header.headers
 
       status(result) must be(SEE_OTHER)
-      headers.get("Location") must be(Some("/customs-movements/location"))
+      redirectLocation(result).value mustBe "/customs-movements/location"
     }
   }
 }

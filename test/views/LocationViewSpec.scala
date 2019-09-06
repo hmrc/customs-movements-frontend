@@ -20,7 +20,7 @@ import forms.{Choice, Location}
 import helpers.views.{CommonMessages, LocationMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.base.ViewSpec
 
 class LocationViewSpec extends ViewSpec with LocationMessages with CommonMessages {
 

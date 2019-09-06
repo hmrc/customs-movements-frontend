@@ -17,7 +17,7 @@
 package controllers.consolidations
 
 import base.MockFactory.buildSubmissionServiceMock
-import base.testdata.CommonTestData.correctUcr
+import testdata.CommonTestData.correctUcr
 import base.{MockAuthConnector, URIHelper}
 import controllers.util.RoutingHelper
 import forms.DisassociateDucr

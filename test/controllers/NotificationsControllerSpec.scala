@@ -18,9 +18,9 @@ package controllers
 
 import base.MockAuthConnector
 import base.MockFactory._
-import base.testdata.CommonTestData.{conversationId, validEori}
-import base.testdata.MovementsTestData.exampleSubmissionFrontendModel
-import base.testdata.NotificationTestData.exampleNotificationFrontendModel
+import testdata.CommonTestData.{conversationId, validEori}
+import testdata.MovementsTestData.exampleSubmissionFrontendModel
+import testdata.NotificationTestData.exampleNotificationFrontendModel
 import connectors.CustomsDeclareExportsMovementsConnector
 import models.notifications.{NotificationFrontendModel, ResponseType}
 import models.submissions.{ActionType, SubmissionFrontendModel}

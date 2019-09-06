@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package base.testdata
+package testdata
 
 import models.viewmodels.NotificationsPageSingleElement
 import play.twirl.api.Html

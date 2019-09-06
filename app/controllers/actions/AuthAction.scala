@@ -33,10 +33,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, mcc: M
   implicit override val executionContext: ExecutionContext = mcc.executionContext
   override val parser: BodyParser[AnyContent] = mcc.parsers.defaultBodyParser
 
-  override def invokeBlock[A](
-    request: Request[A],
-    block: (AuthenticatedRequest[A]) => Future[Result]
-  ): Future[Result] = {
+  override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
@@ -48,7 +45,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, mcc: M
             .flatMap(_.getIdentifier("EORINumber"))
 
           if (eori.isEmpty) {
-            throw new InsufficientEnrolments()
+            throw InsufficientEnrolments()
           }
 
           val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments)

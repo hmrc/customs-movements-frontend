@@ -17,8 +17,8 @@
 package services
 
 import base.MockFactory
-import base.testdata.ConsolidationTestData._
-import base.testdata.MovementsTestData._
+import testdata.ConsolidationTestData._
+import testdata.MovementsTestData._
 import forms.Choice.AllowedChoiceValues.{Arrival, Departure}
 import forms._
 import org.mockito.ArgumentCaptor

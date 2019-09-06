@@ -16,12 +16,13 @@
 
 package controllers.consolidations
 
-import base.{MovementBaseSpec, ViewValidator}
+import base.MovementBaseSpec
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
+import views.base.ViewValidator
 
 class AssociateDucrConfirmationControllerSpec extends MovementBaseSpec with ViewValidator with BeforeAndAfterEach {
 

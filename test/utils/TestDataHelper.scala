@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package base
+package utils
 
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap

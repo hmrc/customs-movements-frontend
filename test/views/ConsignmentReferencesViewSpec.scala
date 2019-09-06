@@ -20,7 +20,7 @@ import forms.ConsignmentReferences
 import helpers.views.{CommonMessages, ConsignmentReferencesMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.base.ViewSpec
 
 class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesMessages with CommonMessages {
 

@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package views.declaration.spec
+package views.base
 
-import base.ViewValidator
-import base.testdata.MovementsTestData
+import testdata.MovementsTestData
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import forms.Choice
@@ -31,6 +30,7 @@ import play.api.test.FakeRequest
 import services.{Countries, Country}
 import utils.FakeRequestCSRFSupport._
 
+@deprecated("Please use UnitViewSpec instead", since = "2019-09-06")
 trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator {
 
   lazy val basePrefix = "supplementary."

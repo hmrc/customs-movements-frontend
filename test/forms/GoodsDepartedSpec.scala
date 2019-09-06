@@ -53,7 +53,7 @@ class GoodsDepartedSpec extends BaseSpec {
         val errors = GoodsDeparted.form().fillAndValidate(inputData).errors
 
         errors.length must be(1)
-        errors.head must be(FormError("departedPlace", "goodsDeparted.departedPlace.empty"))
+        errors.head must be(FormError("departedPlace", "goodsDeparted.departedPlace.error"))
       }
 
       "departed place is incorrect" in {

@@ -51,7 +51,7 @@ class LocationController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Location]) =>
-          Future.successful(BadRequest(locationPage(adjustErrors(formWithErrors), request.choice.value))),
+          Future.successful(BadRequest(locationPage(formWithErrors, request.choice.value))),
         validForm =>
           customsCacheService
             .cache[Location](movementCacheId(), formId, validForm)

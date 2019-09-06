@@ -42,8 +42,8 @@ class GoodsDepartedViewSpec extends ViewSpec with GoodsDepartedMessages with Com
 
     "have a proper labels for errors" in {
 
-      assertMessage(goodsDepartedEmpty, "Please answer on the question")
-      assertMessage(goodsDepartedError, "Your choice is incorrect")
+      assertMessage(goodsDepartedEmpty, "Please select where your goods being departed to")
+      assertMessage(goodsDepartedError, "Please select a valid option")
     }
   }
 

@@ -65,7 +65,7 @@ class TransportSpec extends BaseSpec {
         val errors = Transport.form().fillAndValidate(inputData).errors
 
         errors.length must be(2)
-        errors(0) must be(FormError("modeOfTransport", "transport.modeOfTransport.empty"))
+        errors(0) must be(FormError("modeOfTransport", "transport.modeOfTransport.error"))
         errors(1) must be(FormError("nationality", "transport.nationality.empty"))
       }
 

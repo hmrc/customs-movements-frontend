@@ -16,6 +16,7 @@
 
 package forms
 
+import forms.Mapping.requiredRadio
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -38,9 +39,8 @@ object ConsignmentReferences {
   val allowedReferenceAnswers: Seq[String] = Seq(Ducr, Mucr)
 
   val mapping = Forms.mapping(
-    "reference" -> text()
-      .verifying("consignmentReferences.reference.empty", nonEmpty)
-      .verifying("consignmentReferences.reference.error", isEmpty or isContainedIn(allowedReferenceAnswers)),
+    "reference" -> requiredRadio("consignmentReferences.reference.empty")
+      .verifying("consignmentReferences.reference.error", isContainedIn(allowedReferenceAnswers)),
     "referenceValue" -> text()
       .verifying("consignmentReferences.reference.value.empty", nonEmpty)
       .verifying("consignmentReferences.reference.value.error", isEmpty or validDucrOrMucr)

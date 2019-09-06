@@ -16,6 +16,7 @@
 
 package forms
 
+import forms.Mapping.requiredRadio
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -44,9 +45,8 @@ object Transport {
   val allowedModeOfTransport = Seq(Sea, Rail, Road, Air, PostalOrMail, FixedInstallations, InlandWaterway, Other)
 
   val mapping = Forms.mapping(
-    "modeOfTransport" -> text()
-      .verifying("transport.modeOfTransport.empty", nonEmpty)
-      .verifying("transport.modeOfTransport.error", isEmpty or isContainedIn(allowedModeOfTransport)),
+    "modeOfTransport" -> requiredRadio("transport.modeOfTransport.empty")
+      .verifying("transport.modeOfTransport.error", isContainedIn(allowedModeOfTransport)),
     "nationality" -> text()
       .verifying("transport.nationality.empty", nonEmpty)
       .verifying("transport.nationality.error", isEmpty or isValidCountryCode)

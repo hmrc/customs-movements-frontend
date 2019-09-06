@@ -16,8 +16,8 @@
 
 package forms
 
+import forms.Mapping.requiredRadio
 import play.api.data.{Form, Forms}
-import play.api.data.Forms._
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
@@ -38,9 +38,8 @@ object GoodsDeparted {
   val allowedPlaces: Seq[String] = Seq(outOfTheUk, backIntoTheUk)
 
   val mapping = Forms.mapping(
-    "departedPlace" -> text()
-      .verifying("goodsDeparted.departedPlace.empty", nonEmpty)
-      .verifying("goodsDeparted.departedPlace.error", isEmpty or isContainedIn(allowedPlaces))
+    "departedPlace" -> requiredRadio("goodsDeparted.departedPlace.empty")
+      .verifying("goodsDeparted.departedPlace.error", isContainedIn(allowedPlaces))
   )(GoodsDeparted.apply)(GoodsDeparted.unapply)
 
   def form(): Form[GoodsDeparted] = Form(mapping)

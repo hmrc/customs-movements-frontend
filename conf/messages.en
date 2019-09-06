@@ -245,8 +245,8 @@ goodsDeparted.departedPlace.question = Where are your goods being departed to?
 goodsDeparted.departedPlace.hint = Goods can be departed out of the UK or back into the UK
 goodsDeparted.departedPlace.outOfTheUk = Out of the UK
 goodsDeparted.departedPlace.backIntoTheUk = Back into the UK
-goodsDeparted.departedPlace.empty = Please answer on the question
-goodsDeparted.departedPlace.error = Your choice is incorrect
+goodsDeparted.departedPlace.empty = Please select where your goods being departed to
+goodsDeparted.departedPlace.error = Please select a valid option
 
 transport.title = Transport
 transport.modeOfTransport.question = What is the mode of transport at the border?

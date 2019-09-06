@@ -16,7 +16,7 @@
 
 package forms
 
-import play.api.data.Forms.{optional, text}
+import forms.Mapping.requiredRadio
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.isContainedIn
@@ -31,13 +31,10 @@ object Choice {
   import AllowedChoiceValues._
   private val correctChoices = Set(Arrival, Departure, AssociateDUCR, DisassociateDUCR, ShutMucr, Submissions)
 
-  val choiceMapping: Mapping[Choice] = Forms.single(
-    "choice" -> optional(
-      text()
-        .verifying("choicePage.input.error.incorrectValue", isContainedIn(correctChoices))
-    ).verifying("choicePage.input.error.empty", _.isDefined)
-      .transform[Choice](value => Choice(value.getOrElse("")), choice => Some(choice.value))
-  )
+  val choiceMapping: Mapping[Choice] = Forms.mapping(
+    "choice" -> requiredRadio("choicePage.input.error.empty")
+      .verifying("choicePage.input.error.incorrectValue", isContainedIn(correctChoices))
+  )(Choice.apply)(Choice.unapply)
 
   def form(): Form[Choice] = Form(choiceMapping)
 

@@ -16,6 +16,7 @@
 
 package forms
 
+import forms.Mapping.requiredRadio
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -37,12 +38,10 @@ object Location {
   val correctQualifierCode: Set[String] = Set("U", "Y")
 
   val mapping = Forms.mapping(
-    "locationType" -> text()
-      .verifying("locationType.empty", nonEmpty)
-      .verifying("locationType.error", isEmpty or isContainedIn(correctLocationType)),
-    "qualifierCode" -> text()
-      .verifying("qualifierCode.empty", nonEmpty)
-      .verifying("qualifierCode.error", isEmpty or isContainedIn(correctQualifierCode)),
+    "locationType" -> requiredRadio("locationType.empty")
+      .verifying("locationType.error", isContainedIn(correctLocationType)),
+    "qualifierCode" -> requiredRadio("qualifierCode.empty")
+      .verifying("qualifierCode.error", isContainedIn(correctQualifierCode)),
     "locationCode" -> text()
       .verifying("locationCode.error", isEmpty or isAlphanumeric and noShorterThan(6) and noLongerThan(13)),
     "country" -> text()
@@ -51,17 +50,5 @@ object Location {
   )(Location.apply)(Location.unapply)
 
   def form(): Form[Location] = Form(mapping)
-
-  def adjustErrors(form: Form[Location]): Form[Location] = {
-    val newErrors = form.errors.map {
-      case error if error.key == "locationType" && error.message == "error.required" =>
-        error.copy(messages = Seq("locationType.empty"))
-      case error if error.key == "qualifierCode" && error.message == "error.required" =>
-        error.copy(messages = Seq("qualifierCode.empty"))
-      case error => error
-    }
-
-    form.copy(errors = newErrors)
-  }
 
 }

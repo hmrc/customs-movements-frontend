@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package unit.controllers
 
 import base.MovementBaseSpec
 import play.api.test.Helpers._

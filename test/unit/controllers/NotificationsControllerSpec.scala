@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package controllers
+package unit.controllers
 
 import base.MockAuthConnector
 import base.MockFactory._
-import testdata.CommonTestData.{conversationId, validEori}
-import testdata.MovementsTestData.exampleSubmissionFrontendModel
-import testdata.NotificationTestData.exampleNotificationFrontendModel
 import connectors.CustomsDeclareExportsMovementsConnector
+import controllers.NotificationsController
 import models.notifications.{NotificationFrontendModel, ResponseType}
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import models.viewmodels.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import testdata.CommonTestData.{conversationId, validEori}
+import testdata.MovementsTestData.exampleSubmissionFrontendModel
+import testdata.NotificationTestData.exampleNotificationFrontendModel
 import utils.Stubs
 import views.html.notifications
 

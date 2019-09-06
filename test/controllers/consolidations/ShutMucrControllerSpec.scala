@@ -16,48 +16,29 @@
 
 package controllers.consolidations
 
-import base.MockFactory.buildSubmissionServiceMock
-import base.{MockAuthConnector, URIHelper}
+import base.{MockAuthConnector, MovementBaseSpec, URIHelper}
 import controllers.storage.FlashKeys
 import controllers.util.RoutingHelper
 import forms.ShutMucr
 import forms.ShutMucrSpec._
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
+import org.scalatest.MustMatchers
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{MustMatchers, WordSpec}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.SubmissionService
-import uk.gov.hmrc.auth.core.AuthConnector
 
 import scala.concurrent.Future
 
 class ShutMucrControllerSpec
-    extends WordSpec with GuiceOneAppPerSuite with MockAuthConnector with ScalaFutures with MustMatchers
-    with URIHelper {
+    extends MovementBaseSpec with MockAuthConnector with ScalaFutures with MustMatchers with URIHelper {
 
   private val shutMucrUri = uriWithContextPath("/shut-mucr")
-
-  private val submissionServiceMock = buildSubmissionServiceMock
-  override lazy val app: Application =
-    GuiceApplicationBuilder()
-      .overrides(bind[AuthConnector].to(authConnectorMock), bind[SubmissionService].to(submissionServiceMock))
-      .build()
-
-  private val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  private implicit val messages: Messages = messagesApi.preferred(FakeRequest())
 
   private val routingHelper = RoutingHelper(app, shutMucrUri)
 
   private trait Test {
-    reset(authConnectorMock, submissionServiceMock)
-    when(submissionServiceMock.submitShutMucrRequest(any())(any(), any())).thenReturn(Future.successful(ACCEPTED))
+    reset(authConnectorMock, mockSubmissionService)
+    when(mockSubmissionService.submitShutMucrRequest(any())(any(), any())).thenReturn(Future.successful(ACCEPTED))
     authorizedUser()
   }
 
@@ -83,7 +64,7 @@ class ShutMucrControllerSpec
         routingHelper.routePost(body = correctShutMucrJSON).futureValue
 
         val expectedShutMucr = ShutMucr(correctMucr)
-        verify(submissionServiceMock).submitShutMucrRequest(meq(expectedShutMucr))(any(), any())
+        verify(mockSubmissionService).submitShutMucrRequest(meq(expectedShutMucr))(any(), any())
       }
 
       "redirect to ShutMucrConfirmation page" in new Test {
@@ -120,13 +101,13 @@ class ShutMucrControllerSpec
 
         routingHelper.routePost(body = incorrectShutMucrJSON).futureValue
 
-        verifyZeroInteractions(submissionServiceMock)
+        verifyZeroInteractions(mockSubmissionService)
       }
     }
 
     "SubmissionService returns status other than Accepted" should {
       "return InternalServerError code" in new Test {
-        when(submissionServiceMock.submitShutMucrRequest(any())(any(), any()))
+        when(mockSubmissionService.submitShutMucrRequest(any())(any(), any()))
           .thenReturn(Future.successful(BAD_REQUEST))
 
         status(routingHelper.routePost(body = correctShutMucrJSON)) must be(INTERNAL_SERVER_ERROR)

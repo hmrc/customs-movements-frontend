@@ -49,16 +49,17 @@ trait MovementApp
     extends PlaySpec with GuiceOneAppPerSuite with MockAuthConnector with MockCustomsCacheService
     with MockSubmissionService with MockCustomsExportsMovement with MockMovementsMetrics with ScalaFutures {
 
-  SharedMetricRegistries.clear()
-
-  override lazy val app: Application = GuiceApplicationBuilder()
-    .overrides(
-      bind[AuthConnector].to(authConnectorMock),
-      bind[CustomsCacheService].to(mockCustomsCacheService),
-      bind[CustomsDeclareExportsMovementsConnector].to(mockCustomsExportsMovementConnector),
-      bind[SubmissionService].to(mockSubmissionService)
-    )
-    .build()
+  override def fakeApplication(): Application = {
+    SharedMetricRegistries.clear()
+    GuiceApplicationBuilder()
+      .overrides(
+        bind[AuthConnector].to(authConnectorMock),
+        bind[CustomsCacheService].to(mockCustomsCacheService),
+        bind[CustomsDeclareExportsMovementsConnector].to(mockCustomsExportsMovementConnector),
+        bind[SubmissionService].to(mockSubmissionService)
+      )
+      .build()
+  }
 
   val cfg: CSRFConfig = app.injector.instanceOf[CSRFConfigProvider].get
 

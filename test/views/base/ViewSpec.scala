@@ -23,6 +23,7 @@ import forms.Choice
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.mvc.{AnyContentAsEmpty, Flash, Request}
@@ -35,6 +36,11 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator {
 
   lazy val basePrefix = "supplementary."
   lazy val addressPrefix = "supplementary.address."
+
+  override def fakeApplication(): Application = {
+    SharedMetricRegistries.clear()
+    super.fakeApplication()
+  }
 
   lazy val injector: Injector = app.injector
   implicit lazy val appConfig: AppConfig = injector.instanceOf[AppConfig]
@@ -52,5 +58,4 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator {
   def fakeJourneyRequest(choice: String): JourneyRequest[AnyContentAsEmpty.type] =
     JourneyRequest(AuthenticatedRequest(fakeRequest, MovementsTestData.newUser("")), new Choice(choice))
 
-  SharedMetricRegistries.clear()
 }

@@ -56,12 +56,11 @@ class ArrivalReferenceController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ArrivalReference]) =>
-          Future.successful(BadRequest(arrivalReferencePage(formWithErrors))),
+        (formWithErrors: Form[ArrivalReference]) => Future.successful(BadRequest(arrivalReferencePage(formWithErrors))),
         validForm =>
           customsCacheService.cache[ArrivalReference](movementCacheId, formId, validForm).map { _ =>
             Redirect(controllers.routes.MovementDetailsController.displayPage())
-          }
+        }
       )
   }
 }

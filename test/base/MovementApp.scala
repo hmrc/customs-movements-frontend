@@ -19,6 +19,7 @@ package base
 import java.util.UUID
 
 import akka.stream.Materializer
+import com.codahale.metrics.SharedMetricRegistries
 import connectors.CustomsDeclareExportsMovementsConnector
 import metrics.MovementsMetrics
 import org.mockito.ArgumentCaptor
@@ -47,6 +48,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 trait MovementApp
     extends PlaySpec with GuiceOneAppPerSuite with MockAuthConnector with MockCustomsCacheService
     with MockSubmissionService with MockCustomsExportsMovement with MockMovementsMetrics with ScalaFutures {
+
+  SharedMetricRegistries.clear()
 
   override lazy val app: Application = GuiceApplicationBuilder()
     .overrides(

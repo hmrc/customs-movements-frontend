@@ -29,9 +29,7 @@ object ArrivalReference {
   implicit val format = Json.format[ArrivalReference]
 
   val mapping = Forms.mapping(
-    "reference" -> optional(
-      text().verifying("arrivalReference.error", isAlphanumeric and noLongerThan(25))
-    )
+    "reference" -> optional(text().verifying("arrivalReference.error", isAlphanumeric and noLongerThan(25)))
   )(ArrivalReference.apply)(ArrivalReference.unapply)
 
   val form: Form[ArrivalReference] = Form(mapping)

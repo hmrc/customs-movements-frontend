@@ -16,36 +16,18 @@
 
 package controllers.consolidations
 
-import base.MockAuthConnector
+import base.{MockAuthConnector, MovementBaseSpec}
 import org.mockito.Mockito.reset
+import org.scalatest.MustMatchers
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{MustMatchers, WordSpec}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
-import uk.gov.hmrc.auth.core.AuthConnector
 import utils.FakeRequestCSRFSupport._
 
 class ShutMucrConfirmationControllerSpec
-    extends WordSpec with GuiceOneAppPerSuite with MockAuthConnector with ScalaFutures with MustMatchers {
+    extends MovementBaseSpec with MockAuthConnector with ScalaFutures with MustMatchers {
 
   private val shutMucrConfirmationUri = "/customs-movements/shut-mucr-confirmation"
-
-  override lazy val app: Application =
-    GuiceApplicationBuilder()
-      .overrides(bind[AuthConnector].to(authConnectorMock))
-      .build()
-
-  private val cfg: CSRFConfig = app.injector.instanceOf[CSRFConfigProvider].get
-  private val token: String = app.injector.instanceOf[CSRFFilter].tokenProvider.generateToken
-
-  private val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  private implicit val messages: Messages = messagesApi.preferred(FakeRequest())
 
   private trait Test {
     reset(authConnectorMock)

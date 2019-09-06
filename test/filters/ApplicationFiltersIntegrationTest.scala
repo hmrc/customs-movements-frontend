@@ -16,14 +16,10 @@
 
 package filters
 
-import com.codahale.metrics.SharedMetricRegistries
-import org.scalatest.{MustMatchers, WordSpec}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import base.MovementBaseSpec
 import play.api.http.HttpFilters
 
-class ApplicationFiltersIntegrationTest extends WordSpec with GuiceOneAppPerSuite with MustMatchers {
-
-  SharedMetricRegistries.clear()
+class ApplicationFiltersIntegrationTest extends MovementBaseSpec {
 
   "Application filter" should {
     "contains whitespace filter" in {

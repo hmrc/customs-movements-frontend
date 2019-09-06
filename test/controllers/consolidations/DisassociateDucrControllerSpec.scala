@@ -16,54 +16,31 @@
 
 package controllers.consolidations
 
-import base.MockFactory.buildSubmissionServiceMock
-import testdata.CommonTestData.correctUcr
-import base.{MockAuthConnector, URIHelper}
+import base.{MockAuthConnector, MovementBaseSpec, URIHelper}
 import controllers.util.RoutingHelper
 import forms.DisassociateDucr
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
+import org.scalatest.MustMatchers
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.time.{Millis, Seconds, Span}
-import org.scalatest.{MustMatchers, WordSpec}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsString, JsValue}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.SubmissionService
-import uk.gov.hmrc.auth.core.AuthConnector
+import testdata.CommonTestData.correctUcr
 
 import scala.concurrent.Future
 
 class DisassociateDucrControllerSpec
-    extends WordSpec with GuiceOneAppPerSuite with MockAuthConnector with ScalaFutures with MustMatchers
-    with URIHelper {
+    extends MovementBaseSpec with MockAuthConnector with ScalaFutures with MustMatchers with URIHelper {
 
   import DisassociateDucrControllerSpec._
 
-  implicit val defaultPatience: PatienceConfig =
-    PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
-
   private val uri = uriWithContextPath("/disassociate-ducr")
-
-  private val submissionServiceMock = buildSubmissionServiceMock
-  override lazy val app: Application =
-    GuiceApplicationBuilder()
-      .overrides(bind[AuthConnector].to(authConnectorMock), bind[SubmissionService].to(submissionServiceMock))
-      .build()
-
-  private val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  private implicit val messages: Messages = messagesApi.preferred(FakeRequest())
 
   private val routingHelper = RoutingHelper(app, uri)
 
   private trait Test {
-    reset(authConnectorMock, submissionServiceMock)
-    when(submissionServiceMock.submitDucrDisassociation(any())(any(), any())).thenReturn(Future.successful(ACCEPTED))
+    reset(authConnectorMock, mockSubmissionService)
+    when(mockSubmissionService.submitDucrDisassociation(any())(any(), any())).thenReturn(Future.successful(ACCEPTED))
     authorizedUser()
   }
 
@@ -88,7 +65,7 @@ class DisassociateDucrControllerSpec
 
         routingHelper.routePost(body = correctForm).futureValue
 
-        verify(submissionServiceMock).submitDucrDisassociation(meq(DisassociateDucr(correctUcr)))(any(), any())
+        verify(mockSubmissionService).submitDucrDisassociation(meq(DisassociateDucr(correctUcr)))(any(), any())
       }
 
       "redirect to confirmation page" in new Test {
@@ -96,7 +73,7 @@ class DisassociateDucrControllerSpec
         redirectLocation(routingHelper.routePost(body = correctForm)) must be(
           Some(routes.DisassociateDucrConfirmationController.displayPage().url)
         )
-        verify(submissionServiceMock).submitDucrDisassociation(meq(DisassociateDucr(correctUcr)))(any(), any())
+        verify(mockSubmissionService).submitDucrDisassociation(meq(DisassociateDucr(correctUcr)))(any(), any())
       }
     }
 
@@ -111,13 +88,13 @@ class DisassociateDucrControllerSpec
 
         routingHelper.routePost(body = incorrectForm).futureValue
 
-        verifyZeroInteractions(submissionServiceMock)
+        verifyZeroInteractions(mockSubmissionService)
       }
     }
 
     "SubmissionService returns status other than Accepted" should {
       "return InternalServerError code" in new Test {
-        when(submissionServiceMock.submitDucrDisassociation(any())(any(), any()))
+        when(mockSubmissionService.submitDucrDisassociation(any())(any(), any()))
           .thenReturn(Future.successful(BAD_REQUEST))
 
         status(routingHelper.routePost(body = correctForm)) must be(INTERNAL_SERVER_ERROR)

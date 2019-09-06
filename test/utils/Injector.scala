@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-package filters
+package utils
 
 import com.codahale.metrics.SharedMetricRegistries
-import org.scalatest.{MustMatchers, WordSpec}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.http.HttpFilters
+import play.api.inject.guice.GuiceApplicationBuilder
 
-class ApplicationFiltersIntegrationTest extends WordSpec with GuiceOneAppPerSuite with MustMatchers {
+import scala.reflect.ClassTag
 
+trait Injector {
+
+  /**
+   * Clearing shared metrics registries to avoid `A metric named jvm.attribute.vendor already exists` error.
+   *
+   * It appears very often with places with injector. This is enough solution for this problem.
+   *
+   * Reference and other solutions: https://github.com/kenshoo/metrics-play/issues/74
+   */
   SharedMetricRegistries.clear()
 
-  "Application filter" should {
-    "contains whitespace filter" in {
-      atLeast(1, app.injector.instanceOf[HttpFilters].filters) mustBe a[WhitelistIpFilter]
-    }
-  }
+  private val injector = GuiceApplicationBuilder().injector()
 
+  def instanceOf[T <: AnyRef](implicit classTag: ClassTag[T]): T = injector.instanceOf[T]
 }

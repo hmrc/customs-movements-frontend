@@ -282,6 +282,8 @@ summary.departure.title = Check your answers before departing these goods
 summary.departure.goodsDeparted = Goods Departed
 summary.departure.date = Date of Departure
 
+summary.arrivalReference.reference = Reference
+
 disassociateDucr.title = Which DUCR do you want to disassociate?
 disassociateDucr.ducr.empty = Please enter DUCR
 disassociateDucr.ducr.error = Incorrect DUCR
@@ -398,3 +400,8 @@ decoder.soe.DeclarationClearanceAfterGoodsRelease = Declaration Clearance after 
 decoder.soe.InsufficientGuarantees = Insufficient Guarantees
 decoder.soe.Departed = Departed
 decoder.soe.Frustrated = Frustrated
+
+arrivalReference = Arrival reference
+arrivalReference.question = Give this arrival a unique reference
+arrivalReference.hint = This will be help you quickly identify it in the future. It can be no more than 25 characters. Leave it blank if you don''t want to add a reference.
+arrivalReference.error.format = The reference should be no more than 25 characters.

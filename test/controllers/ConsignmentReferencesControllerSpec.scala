@@ -93,7 +93,7 @@ class ConsignmentReferencesControllerSpec extends MovementBaseSpec {
       val headers = result.futureValue.header.headers
 
       status(result) must be(SEE_OTHER)
-      headers.get("Location") must be(Some("/customs-movements/movement-details"))
+      headers.get("Location") must be(Some("/customs-movements/arrival-reference"))
     }
 
     "redirect to location for correct form in departure journey" in new DepartureSetUp {

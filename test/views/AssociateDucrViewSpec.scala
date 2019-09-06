@@ -21,7 +21,7 @@ import helpers.views.{AssociateDucrMessages, CommonMessages}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.base.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest

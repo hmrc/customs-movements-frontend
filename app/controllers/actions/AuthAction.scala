@@ -35,7 +35,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, mcc: M
 
   override def invokeBlock[A](
     request: Request[A],
-    block: (AuthenticatedRequest[A]) => Future[Result]
+    block: AuthenticatedRequest[A] => Future[Result]
   ): Future[Result] = {
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
@@ -48,7 +48,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, mcc: M
             .flatMap(_.getIdentifier("EORINumber"))
 
           if (eori.isEmpty) {
-            throw new InsufficientEnrolments()
+            throw InsufficientEnrolments()
           }
 
           val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments)

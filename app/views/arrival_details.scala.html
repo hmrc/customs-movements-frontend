@@ -26,7 +26,7 @@
     @helper.form(routes.MovementDetailsController.saveMovementDetails(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(routes.ConsignmentReferencesController.displayPage())
+        @components.back_link(routes.ArrivalReferenceController.displayPage())
 
         @components.error_summary(form.errors)
 

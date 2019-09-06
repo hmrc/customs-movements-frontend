@@ -20,7 +20,7 @@ import forms.ShutMucr
 import helpers.views.{CommonMessages, ShutMucrMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.base.ViewSpec
 import views.html.shut_mucr
 import views.tags.ViewTest
 

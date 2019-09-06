@@ -18,7 +18,7 @@ package views
 
 import helpers.views.StartMessages
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.base.ViewSpec
 import views.html.start_page
 import views.tags.ViewTest
 

@@ -20,7 +20,7 @@ import forms.{ArrivalDetails, MovementDetails}
 import helpers.views.{ArrivalDetailsMessages, CommonMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.base.ViewSpec
 import views.html.arrival_details
 
 class ArrivalDetailsViewSpec extends ViewSpec with ArrivalDetailsMessages with CommonMessages {
@@ -72,7 +72,7 @@ class ArrivalDetailsViewSpec extends ViewSpec with ArrivalDetailsMessages with C
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-movements/consignment-references")
+      backButton.attr("href") must be("/customs-movements/arrival-reference")
     }
 
     "display \"Save and continue\" button on page" in {

@@ -18,50 +18,49 @@ package controllers
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
-import forms.ConsignmentReferences._
-import forms.{Choice, ConsignmentReferences}
+import forms.ArrivalReference._
+import forms.{ArrivalReference, Choice}
+import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.consignment_references
+import views.html.arrival_reference
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ConsignmentReferencesController @Inject()(
+class ArrivalReferenceController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
+  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
-  consignmentReferencesPage: consignment_references
+  arrivalReferencePage: arrival_reference
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[ConsignmentReferences](movementCacheId, formId)
-      .map(data => Ok(consignmentReferencesPage(data.fold(form)(form.fill(_)))))
+    request.choice.value match {
+      case Choice.AllowedChoiceValues.Arrival =>
+        customsCacheService
+          .fetchAndGetEntry[ArrivalReference](movementCacheId, formId)
+          .map(data => Ok(arrivalReferencePage(data.fold(form)(form.fill(_)))))
+      case _ => Future.successful(errorHandler.getBadRequestPage())
+    }
   }
 
-  def saveConsignmentReferences(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ConsignmentReferences]) =>
-          Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
+        (formWithErrors: Form[ArrivalReference]) =>
+          Future.successful(BadRequest(arrivalReferencePage(formWithErrors))),
         validForm =>
-          customsCacheService
-            .cache[ConsignmentReferences](movementCacheId(), formId, validForm)
-            .map { _ =>
-              request.choice match {
-                case Choice(Choice.AllowedChoiceValues.Arrival) =>
-                  Redirect(controllers.routes.ArrivalReferenceController.displayPage())
-                case Choice(Choice.AllowedChoiceValues.Departure) =>
-                  Redirect(controllers.routes.LocationController.displayPage())
-              }
+          customsCacheService.cache[ArrivalReference](movementCacheId, formId, validForm).map { _ =>
+            Redirect(controllers.routes.MovementDetailsController.displayPage())
           }
       )
   }

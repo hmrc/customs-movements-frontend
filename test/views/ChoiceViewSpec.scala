@@ -21,7 +21,7 @@ import forms.Choice.AllowedChoiceValues._
 import helpers.views.{ChoiceMessages, CommonMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.base.ViewSpec
 import views.html.choice_page
 import views.tags.ViewTest
 

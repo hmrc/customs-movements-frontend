@@ -20,7 +20,7 @@ import forms.MucrOptions
 import helpers.views.CommonMessages
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.base.ViewSpec
 
 class MucrOptionsViewSpec extends ViewSpec with CommonMessages {
 

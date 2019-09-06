@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package filters
+package unit.mocks
 
-import com.codahale.metrics.SharedMetricRegistries
-import org.scalatest.{MustMatchers, WordSpec}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.http.HttpFilters
+import base.MockCustomsCacheService
+import controllers.actions.JourneyAction
+import org.scalatest.{BeforeAndAfterEach, Suite}
+import org.scalatestplus.mockito.MockitoSugar
+import utils.Stubs
 
-class ApplicationFiltersIntegrationTest extends WordSpec with GuiceOneAppPerSuite with MustMatchers {
+trait JourneyActionMocks extends MockCustomsCacheService with BeforeAndAfterEach {
+  self: MockitoSugar with Suite with Stubs =>
 
-  SharedMetricRegistries.clear()
-
-  "Application filter" should {
-    "contains whitespace filter" in {
-      atLeast(1, app.injector.instanceOf[HttpFilters].filters) mustBe a[WhitelistIpFilter]
-    }
-  }
-
+  val mockJourneyAction: JourneyAction = JourneyAction(mockCustomsCacheService, stubMessagesControllerComponents())
 }

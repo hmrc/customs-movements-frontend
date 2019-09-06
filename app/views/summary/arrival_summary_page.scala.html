@@ -47,6 +47,15 @@
         ))
     }
 
+    @data.getEntry[ArrivalReference](ArrivalReference.formId).flatMap(_.reference).filter(_.nonEmpty).map { reference =>
+        @components.summary_list(Some(messages("arrivalReference"))){
+            @components.table_row_no_change_link(HtmlTableRow(
+                label = messages("summary.arrivalReference.reference"),
+                value = reference
+            ))
+        }
+    }
+
     @components.summary_list(Some(messages("arrivalDetails.title"))){
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("summary.arrival.date"),

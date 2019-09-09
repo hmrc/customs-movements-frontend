@@ -19,7 +19,8 @@ package connectors
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.notifications.NotificationFrontendModel
-import models.submissions.SubmissionFrontendModel
+import models.submissions.ActionType._
+import models.submissions.{ActionType, SubmissionFrontendModel}
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
@@ -27,6 +28,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 @Singleton
 class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
@@ -34,76 +36,81 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
   private val logger = Logger(this.getClass)
 
   private val CustomsDeclareExportsMovementsUrl = s"${appConfig.customsDeclareExportsMovements}"
-  private val ArrivalSubmissionUrl =
-    s"$CustomsDeclareExportsMovementsUrl${appConfig.movementArrivalSubmissionUri}"
-  private val DepartureSubmissionUrl =
-    s"$CustomsDeclareExportsMovementsUrl${appConfig.movementDepartureSubmissionUri}"
-  private val AssociateConsolidationUrl =
-    s"$CustomsDeclareExportsMovementsUrl${appConfig.movementConsolidationAssociateUri}"
-  private val DisassociateConsolidationUrl =
-    s"$CustomsDeclareExportsMovementsUrl${appConfig.movementConsolidationDisassociateUri}"
-  private val ShutMucrConsolidationUrl =
-    s"$CustomsDeclareExportsMovementsUrl${appConfig.movementConsolidationShutMucrUri}"
+
+  private val movementSubmissionUrl: PartialFunction[ActionType, String] = {
+    case Arrival            => s"$CustomsDeclareExportsMovementsUrl${appConfig.movementArrivalSubmissionUri}"
+    case Departure          => s"$CustomsDeclareExportsMovementsUrl${appConfig.movementDepartureSubmissionUri}"
+    case DucrAssociation    => s"$CustomsDeclareExportsMovementsUrl${appConfig.movementConsolidationAssociateUri}"
+    case DucrDisassociation => s"$CustomsDeclareExportsMovementsUrl${appConfig.movementConsolidationDisassociateUri}"
+    case ShutMucr           => s"$CustomsDeclareExportsMovementsUrl${appConfig.movementConsolidationShutMucrUri}"
+  }
 
   private val CommonMovementsHeaders =
     Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8), HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8))
 
   def sendArrivalDeclaration(
     requestXml: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    postRequest(ArrivalSubmissionUrl, requestXml)
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = postRequest(Arrival, requestXml)
 
   def sendDepartureDeclaration(
     requestXml: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    postRequest(DepartureSubmissionUrl, requestXml)
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = postRequest(Departure, requestXml)
 
   def sendAssociationRequest(
     requestXml: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    postRequest(AssociateConsolidationUrl, requestXml)
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = postRequest(DucrAssociation, requestXml)
 
   def sendDisassociationRequest(
     requestXml: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    postRequest(DisassociateConsolidationUrl, requestXml)
+    postRequest(DucrDisassociation, requestXml)
 
   def sendShutMucrRequest(requestXml: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    postRequest(ShutMucrConsolidationUrl, requestXml)
+    postRequest(ShutMucr, requestXml)
 
   private def postRequest(
-    url: String,
+    actionType: ActionType,
     requestXml: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
     httpClient
-      .POSTString[HttpResponse](url, requestXml, CommonMovementsHeaders)
-      .map(logResponse)
+      .POSTString[HttpResponse](movementSubmissionUrl(actionType), requestXml, CommonMovementsHeaders)
+      .andThen {
+        case Success(response) =>
+          logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response on ${actionType.value}. $response")
+        case Failure(exception) =>
+          logger.warn(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS failure on ${actionType.value}. $exception ")
+      }
 
   def fetchNotifications(
     conversationId: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[NotificationFrontendModel]] =
-    httpClient.GET[Seq[NotificationFrontendModel]](
-      s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}/$conversationId"
-    )
+    httpClient
+      .GET[Seq[NotificationFrontendModel]](
+        s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}/$conversationId"
+      )
+      .andThen {
+        case Success(response)  => logger.debug(s"Notifications fetch response. $response")
+        case Failure(exception) => logger.warn(s"Notifications fetch failure. $exception")
+      }
 
   def fetchAllSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[SubmissionFrontendModel]] =
     httpClient
       .GET[Seq[SubmissionFrontendModel]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchAllSubmissions}")
-      .map { response =>
-        logger.debug(s"CUSTOMS_MOVEMENTS_FRONTEND fetch submission response is --> ${response.toString}")
-        response
+      .andThen {
+        case Success(response)  => logger.debug(s"Submissions fetch response. $response")
+        case Failure(exception) => logger.warn(s"Submissions fetch failure. $exception")
       }
 
   def fetchSingleSubmission(
     conversationId: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SubmissionFrontendModel]] =
-    httpClient.GET[Option[SubmissionFrontendModel]](
-      s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchSingleSubmission}/$conversationId"
-    )
-
-  private def logResponse(response: HttpResponse): HttpResponse = {
-    logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response is --> ${response.toString}")
-    response
-  }
+    httpClient
+      .GET[Option[SubmissionFrontendModel]](
+        s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchSingleSubmission}/$conversationId"
+      )
+      .andThen {
+        case Success(response)  => logger.debug(s"Single submission fetch response. $response")
+        case Failure(exception) => logger.warn(s"Single submission fetch failure. $exception")
+      }
 
 }

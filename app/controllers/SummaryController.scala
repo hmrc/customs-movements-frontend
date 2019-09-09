@@ -53,9 +53,13 @@ class SummaryController @Inject()(
     val typeOfJourney = request.choice.value
 
     cacheMapOpt.map {
-      case Some(data) if typeOfJourney == Arrival   => Ok(arrivalSummaryPage(data))
-      case Some(data) if typeOfJourney == Departure => Ok(departureSummaryPage(data))
-      case _                                        => handleError("Could not obtain data from DB")
+      case Some(data) if typeOfJourney == Arrival =>
+        Ok(arrivalSummaryPage(data))
+      case Some(data) if typeOfJourney == Departure =>
+        Ok(departureSummaryPage(data))
+      case _ =>
+        logger.warn(s"No movement data found in cache.")
+        errorHandler.getInternalServerErrorPage
     }
   }
 
@@ -68,19 +72,11 @@ class SummaryController @Inject()(
             customsCacheService.remove(movementCacheId).map { _ =>
               Ok(movementConfirmationPage(request.choice.value))
             }
-          case _ => Future.successful(handleError(s"Unable to submit movement data"))
+          case _ =>
+            Future.successful {
+              logger.warn(s"No movement data found in cache.")
+              errorHandler.getInternalServerErrorPage
+            }
         }
     }
-
-  private def handleError(logMessage: String)(implicit request: JourneyRequest[_]): Result = {
-    logger.error(logMessage)
-    InternalServerError(
-      errorHandler.standardErrorTemplate(
-        pageTitle = Messages("global.error.title"),
-        heading = Messages("global.error.heading"),
-        message = Messages("global.error.message")
-      )
-    )
-  }
-
 }

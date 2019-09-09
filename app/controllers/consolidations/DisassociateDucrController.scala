@@ -21,6 +21,7 @@ import controllers.storage.FlashKeys
 import forms.DisassociateDucr._
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
+import org.slf4j.MDC
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -57,14 +58,12 @@ class DisassociateDucrController @Inject()(
             case ACCEPTED =>
               Redirect(routes.DisassociateDucrConfirmationController.displayPage())
                 .flashing(FlashKeys.DUCR -> formData.ducr)
-            case _ => handleError("Unable to submit DUCR Disassociation request")
+            case _ =>
+              MDC.put("DUCR", formData.ducr)
+              logger.warn(s"Unable to submit DUCR Disassociation request. DUCR ${formData.ducr}")
+              MDC.remove("DUCR")
+              errorHandler.getInternalServerErrorPage()
         }
       )
   }
-
-  private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
-    logger.error(logMessage)
-    errorHandler.getInternalServerErrorPage()
-  }
-
 }

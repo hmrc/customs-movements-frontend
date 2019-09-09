@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports Movements AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  Customs Declare Exports Movements
 // @author       You
 // @match        http*://*/customs-movements*
@@ -103,6 +103,29 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-movements/summary")){
+        document.getElementsByClassName('button')[0].click()
+    }
+    if(currentPageIs("/customs-movements/mucr-options")){
+        document.getElementById("mucrOptions.create").checked = true;
+        document.getElementById("newMucr").value = "5GB123456789000-123ABC456DEFIIIII"
+        document.getElementsByClassName('button')[0].click()
+    }
+    if(currentPageIs("/customs-movements/associate-ducr$")){
+        const now = new Date()
+        document.getElementById("ducr").value = `5GB123456789000-${now.valueOf()}IIIII`
+        document.getElementsByClassName('button')[0].click()
+    }
+    if(currentPageIs("/customs-movements/associate-ducr-summary")){
+        document.getElementsByClassName('button')[0].click()
+    }
+    if(currentPageIs("/customs-movements/disassociate-ducr")){
+        const now = new Date()
+        document.getElementById("ducr").value = `5GB123456789000-${now.valueOf()}IIIII`
+        document.getElementsByClassName('button')[0].click()
+    }
+    if(currentPageIs("customs-movements/shut-mucr")){
+        const now = new Date()
+        document.getElementById("mucr").value = `5GB123456789000-${now.valueOf()}IIIII`
         document.getElementsByClassName('button')[0].click()
     }
 }

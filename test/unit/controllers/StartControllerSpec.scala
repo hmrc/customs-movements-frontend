@@ -16,19 +16,47 @@
 
 package unit.controllers
 
-import base.MovementBaseSpec
+import controllers.StartController
+import forms.Choice
+import forms.Choice.AllowedChoiceValues.Arrival
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
+import unit.base.ControllerSpec
+import views.html.start_page
 
-class StartControllerSpec extends MovementBaseSpec {
+import scala.concurrent.ExecutionContext.global
 
-  private val uri = uriWithContextPath("/start")
+class StartControllerSpec extends ControllerSpec {
+
+  val mockStartPage = mock[start_page]
+
+  val controller = new StartController(stubMessagesControllerComponents(), mockStartPage)(global)
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+
+    authorizedUser()
+    withCaching(Choice.choiceId, Some(Choice(Arrival)))
+    when(mockStartPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockStartPage)
+
+    super.afterEach()
+  }
 
   "Start Controller on GET" should {
 
     "return 200 status code" in {
-      val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      val result = controller.displayStartPage()(getRequest())
+
+      status(result) mustBe OK
+
+      verify(mockStartPage, times(1)).apply()(any(), any())
     }
   }
 }

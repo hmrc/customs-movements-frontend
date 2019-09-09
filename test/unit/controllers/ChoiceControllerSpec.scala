@@ -14,48 +14,72 @@
  * limitations under the License.
  */
 
-package controllers
+package unit.controllers
 
-import base.MovementBaseSpec
+import controllers.{consolidations, routes, ChoiceController}
 import forms.Choice
 import forms.Choice._
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify}
-import org.scalatest.BeforeAndAfterEach
-import play.api.libs.json.{JsObject, JsString}
+import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
+import play.api.data.Form
+import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
-import views.base.ViewValidator
+import play.twirl.api.HtmlFormat
+import unit.base.ControllerSpec
+import views.html.choice_page
 
-class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with BeforeAndAfterEach {
+import scala.concurrent.ExecutionContext.global
 
-  private val choiceUri = uriWithContextPath("/choice")
+class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeAndAfterEach {
+
+  val mockChoicePage = mock[choice_page]
+
+  val controller =
+    new ChoiceController(mockAuthAction, mockCustomsCacheService, stubMessagesControllerComponents(), mockChoicePage)(
+      global
+    )
 
   override def beforeEach {
+    super.beforeEach()
+
     authorizedUser()
     withCaching[Choice](Choice.choiceId, None)
+    when(mockChoicePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override def afterEach {
-    reset(mockCustomsCacheService)
+    reset(mockChoicePage)
+
+    super.afterEach()
+  }
+
+  def theResponseForm: Form[Choice] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[Choice]])
+    verify(mockChoicePage).apply(captor.capture())(any(), any())
+    captor.getValue
   }
 
   "Choice Controller on GET" should {
 
     "return 200 status code" in {
-      val Some(result) = route(app, getRequest(choiceUri))
-      status(result) must be(OK)
+
+      val result = controller.displayChoiceForm()(getRequest())
+
+      status(result) mustBe OK
+      theResponseForm.value mustBe empty
     }
 
     "read item from cache and display it" in {
 
-      val cachedData = Choice("EAL")
-      withCaching[Choice](Choice.choiceId, Some(cachedData))
+      val cachedChoice = Choice("EAL")
+      withCaching[Choice](Choice.choiceId, Some(cachedChoice))
 
-      val Some(result) = route(app, getRequest(choiceUri))
-      status(result) must be(OK)
+      val result = controller.displayChoiceForm()(getRequest())
 
-      verifyChecked(contentAsString(result), "arrival")
+      status(result) mustBe OK
+      theResponseForm.value.value mustBe cachedChoice
     }
   }
 
@@ -65,20 +89,20 @@ class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with Befo
 
       "no value provided for choice" in {
 
-        val emptyForm = JsObject(Map("" -> JsString("")))
-        val result = route(app, postRequest(choiceUri, emptyForm)).get
+        val emptyForm: JsValue = JsObject(Map("" -> JsString("")))
 
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("choicePage.input.error.empty"))
+        val result = controller.submitChoice()(postRequest(emptyForm))
+
+        status(result) mustBe BAD_REQUEST
       }
 
       "wrong value provided for choice" in {
 
         val wrongForm = JsObject(Map("choice" -> JsString("test")))
-        val result = route(app, postRequest(choiceUri, wrongForm)).get
 
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("choicePage.input.error.incorrectValue"))
+        val result = controller.submitChoice()(postRequest(wrongForm))
+
+        status(result) mustBe BAD_REQUEST
       }
     }
 
@@ -87,7 +111,9 @@ class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with Befo
       withCaching(Choice.choiceId)
 
       val validChoiceForm = JsObject(Map("choice" -> JsString("EDL")))
-      route(app, postRequest(choiceUri, validChoiceForm)).get.futureValue
+      val result = controller.submitChoice()(postRequest(validChoiceForm))
+
+      status(result) mustBe SEE_OTHER
 
       verify(mockCustomsCacheService)
         .cache[Choice](any(), ArgumentMatchers.eq(Choice.choiceId), any())(any(), any(), any())
@@ -98,7 +124,8 @@ class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with Befo
       withCaching(Choice.choiceId)
 
       val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.Arrival)))
-      val Some(result) = route(app, postRequest(choiceUri, correctForm))
+
+      val result = controller.submitChoice()(postRequest(correctForm))
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some(routes.ConsignmentReferencesController.displayPage().url))
@@ -109,7 +136,7 @@ class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with Befo
       withCaching(Choice.choiceId)
 
       val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.Departure)))
-      val Some(result) = route(app, postRequest(choiceUri, correctForm))
+      val result = controller.submitChoice()(postRequest(correctForm))
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some(routes.ConsignmentReferencesController.displayPage().url))
@@ -119,7 +146,7 @@ class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with Befo
       withCaching(Choice.choiceId)
 
       val associateChoice = JsObject(Map("choice" -> JsString(AllowedChoiceValues.AssociateDUCR)))
-      val Some(result) = route(app, postRequest(choiceUri, associateChoice))
+      val result = controller.submitChoice()(postRequest(associateChoice))
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some(consolidations.routes.MucrOptionsController.displayPage().url))
@@ -130,7 +157,7 @@ class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with Befo
       withCaching(Choice.choiceId)
 
       val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.DisassociateDUCR)))
-      val result = route(app, postRequest(choiceUri, correctForm)).get
+      val result = controller.submitChoice()(postRequest(correctForm))
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some(consolidations.routes.DisassociateDucrController.displayPage().url))
@@ -142,7 +169,7 @@ class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with Befo
 
       val correctForm =
         JsObject(Map("choice" -> JsString(AllowedChoiceValues.ShutMucr)))
-      val result = route(app, postRequest(choiceUri, correctForm)).get
+      val result = controller.submitChoice()(postRequest(correctForm))
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some(consolidations.routes.ShutMucrController.displayPage().url))
@@ -154,7 +181,7 @@ class ChoiceControllerSpec extends MovementBaseSpec with ViewValidator with Befo
 
       val correctForm =
         JsObject(Map("choice" -> JsString(AllowedChoiceValues.Submissions)))
-      val result = route(app, postRequest(choiceUri, correctForm)).get
+      val result = controller.submitChoice()(postRequest(correctForm))
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some(controllers.routes.MovementsController.displayPage().url))

@@ -18,8 +18,9 @@ package base
 
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import org.mockito.stubbing.OngoingStubbing
+import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers.ACCEPTED
 import services.CustomsCacheService
@@ -28,7 +29,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
 
-trait MockCustomsCacheService extends MockitoSugar {
+trait MockCustomsCacheService extends MockitoSugar with BeforeAndAfterEach { self: Suite =>
 
   val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
 
@@ -49,4 +50,9 @@ trait MockCustomsCacheService extends MockitoSugar {
   def mockCustomsCacheServiceClearedSuccessfully(): OngoingStubbing[Future[HttpResponse]] =
     when(mockCustomsCacheService.remove(any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+
+  override protected def afterEach(): Unit = {
+    reset(mockCustomsCacheService)
+    super.afterEach()
+  }
 }

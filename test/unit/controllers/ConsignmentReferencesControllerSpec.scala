@@ -1,0 +1,155 @@
+/*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package unit.controllers
+
+import controllers.{routes, ConsignmentReferencesController}
+import forms.Choice.AllowedChoiceValues
+import forms.{Choice, ConsignmentReferences}
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.OptionValues
+import play.api.data.Form
+import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
+import unit.base.ControllerSpec
+import views.html.consignment_references
+
+import scala.concurrent.ExecutionContext.global
+
+class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValues {
+
+  val mockConsignmentReferencePage = mock[consignment_references]
+
+  val controller = new ConsignmentReferencesController(
+    mockAuthAction,
+    mockJourneyAction,
+    mockCustomsCacheService,
+    stubMessagesControllerComponents(),
+    mockConsignmentReferencePage
+  )(global)
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+
+    authorizedUser()
+    when(mockConsignmentReferencePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockConsignmentReferencePage)
+
+    super.afterEach()
+  }
+
+  def mockArrivalJourney(): Unit = withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Arrival)))
+
+  def mockDepartureJourney(): Unit = withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Departure)))
+
+  def theResponseForm: Form[ConsignmentReferences] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[ConsignmentReferences]])
+    verify(mockConsignmentReferencePage).apply(captor.capture())(any(), any())
+    captor.getValue
+  }
+
+  "Consignment Reference Controller" should {
+
+    "return 200 for get request" when {
+
+      "cache is empty" in {
+
+        mockArrivalJourney()
+        withCaching(ConsignmentReferences.formId, None)
+
+        val result = controller.displayPage()(getRequest())
+
+        status(result) mustBe OK
+        theResponseForm.value mustBe empty
+      }
+
+      "cache contains data" in {
+
+        mockArrivalJourney()
+        val cachedData = ConsignmentReferences("D", "123456")
+        withCaching(ConsignmentReferences.formId, Some(cachedData))
+
+        val result = controller.displayPage()(getRequest())
+
+        status(result) mustBe OK
+        theResponseForm.value.value mustBe cachedData
+      }
+    }
+
+    "return BadRequest for incorrect form" in {
+
+      mockArrivalJourney()
+
+      val incorrectForm: JsValue = JsObject(
+        Map(
+          "eori" -> JsString("GB717572504502811"),
+          "reference" -> JsString("reference"),
+          "referenceValue" -> JsString("")
+        )
+      )
+
+      val result = controller.saveConsignmentReferences()(postRequest(incorrectForm))
+
+      status(result) mustBe BAD_REQUEST
+    }
+
+    "redirect to goods date for correct form in arrival journey" in {
+
+      mockArrivalJourney()
+      withCaching(ConsignmentReferences.formId)
+
+      val correctForm: JsValue =
+        JsObject(
+          Map(
+            "eori" -> JsString("GB717572504502811"),
+            "reference" -> JsString("D"),
+            "referenceValue" -> JsString("5GB123456789000-123ABC456DEFIIIII")
+          )
+        )
+
+      val result = controller.saveConsignmentReferences()(postRequest(correctForm))
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).value mustBe routes.ArrivalReferenceController.displayPage().url
+    }
+
+    "redirect to location for correct form in departure journey" in {
+
+      mockDepartureJourney()
+      withCaching(ConsignmentReferences.formId)
+
+      val correctForm: JsValue =
+        JsObject(
+          Map(
+            "eori" -> JsString("GB717572504502811"),
+            "reference" -> JsString("D"),
+            "referenceValue" -> JsString("5GB123456789000-123ABC456DEFIIIII")
+          )
+        )
+
+      val result = controller.saveConsignmentReferences()(postRequest(correctForm))
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).value mustBe routes.LocationController.displayPage().url
+    }
+  }
+}

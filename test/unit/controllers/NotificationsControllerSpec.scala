@@ -16,7 +16,6 @@
 
 package unit.controllers
 
-import base.MockAuthConnector
 import base.MockFactory._
 import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.NotificationsController
@@ -24,10 +23,8 @@ import models.notifications.{NotificationFrontendModel, ResponseType}
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import models.viewmodels.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{MustMatchers, WordSpec}
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -35,30 +32,42 @@ import play.twirl.api.HtmlFormat
 import testdata.CommonTestData.{conversationId, validEori}
 import testdata.MovementsTestData.exampleSubmissionFrontendModel
 import testdata.NotificationTestData.exampleNotificationFrontendModel
-import utils.Stubs
+import unit.base.ControllerSpec
 import views.html.notifications
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NotificationsControllerSpec
-    extends WordSpec with MustMatchers with MockitoSugar with Stubs with MockAuthConnector with ScalaFutures {
+class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
 
-  private trait Test {
-    implicit val messages: Messages = stubMessages()
-    val customsExportsMovementsConnectorMock: CustomsDeclareExportsMovementsConnector =
-      buildCustomsDeclareExportsMovementsConnectorMock
-    val notificationPageSingleElementFactoryMock: NotificationPageSingleElementFactory =
-      buildNotificationPageSingleElementFactoryMock
-    val notificationsPageMock: notifications = mock[notifications]
+  implicit val messages: Messages = stubMessages()
+  val customsExportsMovementsConnectorMock: CustomsDeclareExportsMovementsConnector =
+    buildCustomsDeclareExportsMovementsConnectorMock
+  val notificationPageSingleElementFactoryMock: NotificationPageSingleElementFactory =
+    buildNotificationPageSingleElementFactoryMock
+  val notificationsPageMock: notifications = mock[notifications]
 
-    val expectedSubmission = exampleSubmissionFrontendModel()
-    val expectedNotifications = Seq(
-      exampleNotificationFrontendModel(),
-      exampleNotificationFrontendModel(responseType = ResponseType.MovementTotalsResponse)
-    )
-    val singleElementForSubmission = NotificationsPageSingleElement("REQUEST", "", HtmlFormat.empty)
-    val singleElementForNotification = NotificationsPageSingleElement("RESPONSE", "", HtmlFormat.empty)
+  val expectedSubmission = exampleSubmissionFrontendModel()
+  val expectedNotifications = Seq(
+    exampleNotificationFrontendModel(),
+    exampleNotificationFrontendModel(responseType = ResponseType.MovementTotalsResponse)
+  )
+  val singleElementForSubmission = NotificationsPageSingleElement("REQUEST", "", HtmlFormat.empty)
+  val singleElementForNotification = NotificationsPageSingleElement("RESPONSE", "", HtmlFormat.empty)
 
+  val controller = new NotificationsController(
+    mockAuthAction,
+    customsExportsMovementsConnectorMock,
+    notificationPageSingleElementFactoryMock,
+    stubMessagesControllerComponents(),
+    notificationsPageMock
+  )(ExecutionContext.global)
+
+  authorizedUser()
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+
+    authorizedUser()
     when(customsExportsMovementsConnectorMock.fetchSingleSubmission(any())(any(), any()))
       .thenReturn(Future.successful(Some(expectedSubmission)))
     when(customsExportsMovementsConnectorMock.fetchNotifications(any())(any(), any()))
@@ -68,37 +77,33 @@ class NotificationsControllerSpec
     when(notificationPageSingleElementFactoryMock.build(any[NotificationFrontendModel])(any()))
       .thenReturn(singleElementForNotification)
     when(notificationsPageMock.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
 
-    val controller = new NotificationsController(
-      mockAuthAction,
-      customsExportsMovementsConnectorMock,
-      notificationPageSingleElementFactoryMock,
-      stubMessagesControllerComponents(),
-      notificationsPageMock
-    )(ExecutionContext.global)
+  override protected def afterEach(): Unit = {
+    reset(customsExportsMovementsConnectorMock, notificationsPageMock, notificationPageSingleElementFactoryMock)
 
-    authorizedUser()
+    super.afterEach()
   }
 
   "NotificationController on listOfNotifications" when {
 
     "everything works correctly" should {
 
-      "call CustomsExportsMovementsConnector.fetchSingleSubmission, passing conversation ID provided" in new Test {
+      "call CustomsExportsMovementsConnector.fetchSingleSubmission, passing conversation ID provided" in {
 
         controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
 
         verify(customsExportsMovementsConnectorMock).fetchSingleSubmission(meq(conversationId))(any(), any())
       }
 
-      "call CustomsExportsMovementsConnector.fetchNotifications, passing conversation ID provided" in new Test {
+      "call CustomsExportsMovementsConnector.fetchNotifications, passing conversation ID provided" in {
 
         controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
 
         verify(customsExportsMovementsConnectorMock).fetchNotifications(meq(conversationId))(any(), any())
       }
 
-      "call NotificationPageSingleElementFactory, passing models returned by Connector" in new Test {
+      "call NotificationPageSingleElementFactory, passing models returned by Connector" in {
 
         controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
 
@@ -108,7 +113,7 @@ class NotificationsControllerSpec
         )
       }
 
-      "call notification view template, passing UCR related to the submission" in new Test {
+      "call notification view template, passing UCR related to the submission" in {
 
         controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
 
@@ -117,7 +122,7 @@ class NotificationsControllerSpec
         verify(notificationsPageMock).apply(meq(expectedUcr), any[Seq[NotificationsPageSingleElement]])(any(), any())
       }
 
-      "call notification view template, passing data returned by NotificationsPageSingleElementFactory" in new Test {
+      "call notification view template, passing data returned by NotificationsPageSingleElementFactory" in {
 
         val expectedViewInput: Seq[NotificationsPageSingleElement] =
           singleElementForSubmission +: expectedNotifications.map(_ => singleElementForNotification)
@@ -127,7 +132,7 @@ class NotificationsControllerSpec
         verify(notificationsPageMock).apply(any[String], meq(expectedViewInput))(any(), any())
       }
 
-      "return 200 (OK)" in new Test {
+      "return 200 (OK)" in {
 
         val result = controller.listOfNotifications(conversationId)(FakeRequest())
 
@@ -137,7 +142,7 @@ class NotificationsControllerSpec
 
     "submission is missing UCR" should {
 
-      "call notification view template, passing empty String as UCR" in new Test {
+      "call notification view template, passing empty String as UCR" in {
 
         when(customsExportsMovementsConnectorMock.fetchSingleSubmission(any())(any(), any()))
           .thenReturn(

@@ -18,6 +18,7 @@ package testdata
 
 import java.time.Instant
 
+import forms.Choice.AllowedChoiceValues.Arrival
 import testdata.CommonTestData._
 import forms.GoodsDeparted.AllowedPlaces
 import forms._
@@ -57,14 +58,18 @@ object MovementsTestData {
 
   val correctTransport: JsValue = JsObject(Map("modeOfTransport" -> JsString("M"), "nationality" -> JsString("PL")))
 
-  def cacheMapData(movementType: String, refType: String = "DUCR") =
+  def arrivalReference(movementType: String): ArrivalReference =
+    ArrivalReference(if (movementType == Arrival) Some("1234") else None)
+
+  def cacheMapData(movementType: String, refType: String = "DUCR"): Map[String, JsValue] =
     Map(
       Choice.choiceId -> Json.toJson(Choice(movementType)),
       ConsignmentReferences.formId -> Json.toJson(consignmentReferences(refType)),
       MovementDetails.formId -> arrivalDepartureTimes(movementType),
       GoodsDeparted.formId -> Json.toJson(goodsDeparted),
       Location.formId -> location,
-      Transport.formId -> correctTransport
+      Transport.formId -> correctTransport,
+      ArrivalReference.formId -> Json.toJson(arrivalReference(movementType))
     )
 
   def validMovementRequest(movementType: String): InventoryLinkingMovementRequest =

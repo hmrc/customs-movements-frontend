@@ -46,6 +46,8 @@ object Movement {
 
     val transport = cacheMap.getEntry[Transport](Transport.formId)
 
+    val arrivalReference = cacheMap.getEntry[ArrivalReference](ArrivalReference.formId).flatMap(_.reference)
+
     InventoryLinkingMovementRequest(
       messageCode = choice.value,
       agentDetails = None,
@@ -53,7 +55,8 @@ object Movement {
       goodsLocation = location.getOrElse(""),
       goodsArrivalDateTime = arrivalDetails,
       goodsDepartureDateTime = departureDetails.map(_.toString),
-      transportDetails = mapTransportDetails(transport)
+      transportDetails = mapTransportDetails(transport),
+      movementReference = arrivalReference
     )
   }
 

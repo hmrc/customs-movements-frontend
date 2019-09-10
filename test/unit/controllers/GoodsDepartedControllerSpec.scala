@@ -17,9 +17,8 @@
 package unit.controllers
 
 import controllers.{routes, GoodsDepartedController}
-import forms.Choice.AllowedChoiceValues
+import forms.GoodsDeparted
 import forms.GoodsDeparted.AllowedPlaces._
-import forms.{Choice, GoodsDeparted}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -60,10 +59,6 @@ class GoodsDepartedControllerSpec extends ControllerSpec with OptionValues {
     super.afterEach()
   }
 
-  def mockArrivalJourney(): Unit = withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Arrival)))
-
-  def mockDepartureJourney(): Unit = withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Departure)))
-
   def theResponseForm: Form[GoodsDeparted] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[GoodsDeparted]])
     verify(mockGoodsDepartedPage).apply(captor.capture())(any(), any())
@@ -76,7 +71,7 @@ class GoodsDepartedControllerSpec extends ControllerSpec with OptionValues {
 
       "cache is empty" in {
 
-        mockDepartureJourney()
+        givenAUserOnTheDepartureJourney()
         withCaching(GoodsDeparted.formId, None)
 
         val result = controller.displayPage()(getRequest())
@@ -87,7 +82,7 @@ class GoodsDepartedControllerSpec extends ControllerSpec with OptionValues {
 
       "cache contains data" in {
 
-        mockDepartureJourney()
+        givenAUserOnTheDepartureJourney()
         val cachedData = GoodsDeparted(outOfTheUk)
         withCaching(GoodsDeparted.formId, Some(cachedData))
 
@@ -102,7 +97,7 @@ class GoodsDepartedControllerSpec extends ControllerSpec with OptionValues {
 
       "user is during arrival journey" in {
 
-        mockArrivalJourney()
+        givenAUserOnTheArrivalJourney()
 
         val result = controller.displayPage()(getRequest())
 
@@ -111,7 +106,7 @@ class GoodsDepartedControllerSpec extends ControllerSpec with OptionValues {
 
       "form is incorrect" in {
 
-        mockDepartureJourney()
+        givenAUserOnTheDepartureJourney()
         withCaching(GoodsDeparted.formId)
 
         val incorrectForm: JsValue = JsObject(Map("departedPlace" -> JsString("123456")))
@@ -122,9 +117,9 @@ class GoodsDepartedControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    "redirect to date of departure page for correct form" in {
+    "redirect to date of departure page for out of UK choice" in {
 
-      mockDepartureJourney()
+      givenAUserOnTheDepartureJourney()
       withCaching(GoodsDeparted.formId)
 
       val correctForm: JsValue = JsObject(Map("departedPlace" -> JsString(outOfTheUk)))
@@ -133,6 +128,19 @@ class GoodsDepartedControllerSpec extends ControllerSpec with OptionValues {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result).value mustBe routes.MovementDetailsController.displayPage().url
+    }
+
+    "redirect to summary page for back into the Uk choice" in {
+
+      givenAUserOnTheDepartureJourney()
+      withCaching(GoodsDeparted.formId)
+
+      val correctForm: JsValue = JsObject(Map("departedPlace" -> JsString(backIntoTheUk)))
+
+      val result = controller.saveGoodsDeparted()(postRequest(correctForm))
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).value mustBe routes.SummaryController.displayPage().url
     }
   }
 }

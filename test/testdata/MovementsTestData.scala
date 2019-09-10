@@ -19,13 +19,13 @@ package testdata
 import java.time.Instant
 
 import forms.Choice.AllowedChoiceValues.Arrival
-import testdata.CommonTestData._
 import forms.GoodsDeparted.AllowedPlaces
 import forms._
 import forms.common.{Date, Time}
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import models.{SignedInUser, UcrBlock}
 import play.api.libs.json._
+import testdata.CommonTestData._
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
@@ -90,4 +90,5 @@ object MovementsTestData {
       actionType = actionType,
       requestTimestamp = requestTimestamp
     )
+
 }

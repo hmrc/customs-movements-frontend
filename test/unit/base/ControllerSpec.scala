@@ -19,7 +19,8 @@ package unit.base
 import base.{MockAuthConnector, MockCustomsCacheService}
 import testdata.MovementsTestData.newUser
 import forms.Choice
-import forms.Choice.AllowedChoiceValues.Arrival
+import forms.Choice.AllowedChoiceValues
+import forms.Choice.AllowedChoiceValues._
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson, Request}
@@ -43,4 +44,10 @@ trait ControllerSpec
     FakeRequest("POST", "")
       .withJsonBody(body)
       .withCSRFToken
+
+  protected def givenAUserOnTheArrivalJourney(): Unit =
+    withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Arrival)))
+
+  protected def givenAUserOnTheDepartureJourney(): Unit =
+    withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Departure)))
 }

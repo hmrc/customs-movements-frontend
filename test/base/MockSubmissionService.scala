@@ -17,19 +17,26 @@
 package base
 
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import org.mockito.stubbing.OngoingStubbing
+import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers.ACCEPTED
 import services.SubmissionService
 
 import scala.concurrent.Future
 
-trait MockSubmissionService extends MockitoSugar {
+trait MockSubmissionService extends MockitoSugar with BeforeAndAfterEach { self: Suite =>
 
   val mockSubmissionService: SubmissionService = mock[SubmissionService]
 
   def mockSubmission(status: Int = ACCEPTED): OngoingStubbing[Future[Int]] =
     when(mockSubmissionService.submitMovementRequest(any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(status))
+
+  override protected def afterEach(): Unit = {
+    reset(mockSubmissionService)
+
+    super.afterEach()
+  }
 }

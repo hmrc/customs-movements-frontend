@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(headingKey: String, headingSize: String = "heading-large")(implicit messages: Messages)
+package models.viewmodels.decoder
 
-<h1 class="@headingSize" id="error-header">@messages(headingKey)</h1>
+import models.viewmodels.decoder.ActionCode.{AcknowledgedAndProcessed, PartiallyAcknowledgedAndProcessed, Rejected}
+import unit.base.UnitSpec
+
+class ActionCodeSpec extends UnitSpec {
+
+  "Action Code" should {
+
+    "have correct code list" in {
+
+      val expectedCodes = Set(AcknowledgedAndProcessed, PartiallyAcknowledgedAndProcessed, Rejected)
+
+      ActionCode.codes mustBe expectedCodes
+    }
+  }
+}

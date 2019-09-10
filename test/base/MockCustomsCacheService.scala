@@ -53,6 +53,7 @@ trait MockCustomsCacheService extends MockitoSugar with BeforeAndAfterEach { sel
 
   override protected def afterEach(): Unit = {
     reset(mockCustomsCacheService)
+
     super.afterEach()
   }
 }

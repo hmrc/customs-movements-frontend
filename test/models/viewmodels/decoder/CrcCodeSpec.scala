@@ -14,9 +14,20 @@
  * limitations under the License.
  */
 
-package utils
+package models.viewmodels.decoder
 
-object CustomsHeaderNames {
-  val XUcr = "X-UCR"
-  val XMovementType = "X-MOVEMENT-TYPE"
+import models.viewmodels.decoder.CrcCode.{DeclarationNotArrived, PrelodgedDeclarationNotArrived, Success}
+import unit.base.UnitSpec
+
+class CrcCodeSpec extends UnitSpec {
+
+  "Crc Code" should {
+
+    "have correct list of codes" in {
+
+      val expectedCodes = Set(Success, PrelodgedDeclarationNotArrived, DeclarationNotArrived)
+
+      CrcCode.codes mustBe expectedCodes
+    }
+  }
 }

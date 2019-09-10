@@ -20,9 +20,10 @@ import base.MockCustomsExportsMovement
 import controllers.MovementsController
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, when}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import testdata.MovementsTestData.exampleSubmissionFrontendModel
+import testdata.NotificationTestData.exampleNotificationFrontendModel
 import unit.base.ControllerSpec
 import views.html.movements
 
@@ -57,9 +58,9 @@ class MovementsControllerSpec extends ControllerSpec with MockCustomsExportsMove
       "cache is empty" in {
 
         when(mockCustomsExportsMovementConnector.fetchAllSubmissions()(any(), any()))
-          .thenReturn(Future.successful(Seq.empty))
+          .thenReturn(Future.successful(Seq(exampleSubmissionFrontendModel())))
         when(mockCustomsExportsMovementConnector.fetchNotifications(anyString())(any(), any()))
-          .thenReturn(Future.successful(Seq.empty))
+          .thenReturn(Future.successful(Seq(exampleNotificationFrontendModel())))
 
         val result = controller.displayPage()(getRequest())
 

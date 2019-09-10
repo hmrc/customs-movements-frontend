@@ -51,7 +51,9 @@ class MovementConfirmationViewSpec extends UnitViewSpec with Stubs with Injector
 
     "have heading" in {
 
-      arrivalConfirmationView.getElementById("highlight-box-heading").text() mustBe messages("movement.choice.EAL.label") + " has been submitted"
+      arrivalConfirmationView.getElementById("highlight-box-heading").text() mustBe messages(
+        "movement.choice.EAL.label"
+      ) + " has been submitted"
     }
 
     "have back button" in {
@@ -72,7 +74,9 @@ class MovementConfirmationViewSpec extends UnitViewSpec with Stubs with Injector
 
     "have heading" in {
 
-      departureConfirmationView.getElementById("highlight-box-heading").text() mustBe messages("movement.choice.EDL.label") + " has been submitted"
+      departureConfirmationView.getElementById("highlight-box-heading").text() mustBe messages(
+        "movement.choice.EDL.label"
+      ) + " has been submitted"
     }
 
     "have back button" in {

@@ -48,7 +48,6 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
     super.beforeEach()
 
     authorizedUser()
-    withCaching(Choice.choiceId, Some(Choice(Arrival)))
     when(mockLocationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -70,6 +69,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
       "cache is empty" in {
 
+        givenAUserOnTheArrivalJourney()
         withCaching(Location.formId, None)
 
         val result = controller.displayPage()(getRequest())
@@ -80,6 +80,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
       "cache contains data" in {
 
+        givenAUserOnTheArrivalJourney()
         val cachedData = Location("A", "Y", "locationCode", "PL")
         withCaching(Location.formId, Some(cachedData))
 
@@ -92,6 +93,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
       "return Error" when {
 
         "no JourneyType found" in {
+
           withCaching(Choice.choiceId, None)
           withCaching(Location.formId, None)
 
@@ -104,6 +106,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
     "return BadRequest for incorrect form" in {
 
+      givenAUserOnTheArrivalJourney()
       withCaching(Location.formId)
 
       val incorrectForm: JsValue = Json.toJson(Location("incorrectValue", "Y", "locationCode", "PL"))
@@ -113,8 +116,9 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
       status(result) mustBe BAD_REQUEST
     }
 
-    "redirect to transport page for correct form" in {
+    "redirect to transport page for correct form during arrival" in {
 
+      givenAUserOnTheArrivalJourney()
       withCaching(Location.formId)
 
       val correctForm: JsValue = Json.toJson(Location("A", "Y", "locationCode", "PL"))
@@ -123,6 +127,19 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result).value mustBe routes.TransportController.displayPage().url
+    }
+
+    "redirect to goods departed page for correct form during departure" in {
+
+      givenAUserOnTheDepartureJourney()
+      withCaching(Location.formId)
+
+      val correctForm: JsValue = Json.toJson(Location("A", "Y", "locationCode", "PL"))
+
+      val result = controller.saveLocation()(postRequest(correctForm))
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).value mustBe routes.GoodsDepartedController.displayPage().url
     }
   }
 }

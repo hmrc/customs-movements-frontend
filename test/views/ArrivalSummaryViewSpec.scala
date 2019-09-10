@@ -103,4 +103,3 @@ class ArrivalSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
     }
   }
 }
-

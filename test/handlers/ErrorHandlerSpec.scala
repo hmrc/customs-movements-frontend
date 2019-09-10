@@ -23,7 +23,10 @@ import config.AppConfig
 import controllers.exception.IncompleteApplication
 import play.api.http.{HeaderNames, Status}
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
+
+import scala.concurrent.Future
 
 class ErrorHandlerSpec extends MovementBaseSpec {
 
@@ -34,7 +37,9 @@ class ErrorHandlerSpec extends MovementBaseSpec {
   val req = FakeRequest("GET", "/foo")
 
   "ErrorHandlerSpec" should {
+
     "standardErrorTemplate" in {
+
       val result = errorHandler
         .standardErrorTemplate("Page Title", "Heading", "Message")(FakeRequest())
         .body
@@ -42,6 +47,15 @@ class ErrorHandlerSpec extends MovementBaseSpec {
       result must include("Page Title")
       result must include("Heading")
       result must include("Message")
+    }
+
+    "return Bad Request page" in {
+
+      val result = contentAsString(Future.successful(errorHandler.getBadRequestPage()(FakeRequest())))
+
+      result must include(messages("global.error.title"))
+      result must include(messages("global.error.heading"))
+      result must include(messages("global.error.message"))
     }
   }
   "resolve error" should {

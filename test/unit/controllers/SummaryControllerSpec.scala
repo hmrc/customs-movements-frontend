@@ -53,7 +53,6 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
 
     authorizedUser()
     setupErrorHandler()
-    mockArrivalJourney()
     when(mockArrivalSummaryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockDepartureSummaryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockMovementConfirmationPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
@@ -67,12 +66,13 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
 
   private val emptyForm = JsObject(Map("" -> JsString("")))
 
-  // TODO Missing tests for departure summary page
   "MovementSummaryController.displaySummary()" when {
 
     "cannot read data from DB" should {
 
       "return 500 code and display error page" in {
+
+        givenAUserOnTheArrivalJourney()
         withCacheMap(None)
 
         val result = controller.displayPage()(getRequest())
@@ -83,7 +83,19 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
 
     "can read data from DB" should {
 
-      "return 200 code" in {
+      "return 200 code for arrival" in {
+
+        givenAUserOnTheArrivalJourney()
+        withCacheMap(Some(CacheMap("id", Map.empty[String, JsValue])))
+
+        val result = controller.displayPage()(getRequest())
+
+        status(result) mustBe OK
+      }
+
+      "return 200 code for departure" in {
+
+        givenAUserOnTheDepartureJourney()
         withCacheMap(Some(CacheMap("id", Map.empty[String, JsValue])))
 
         val result = controller.displayPage()(getRequest())
@@ -98,6 +110,8 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
     "Submission of data failed" should {
 
       "return 500 code" in {
+
+        givenAUserOnTheArrivalJourney()
         mockSubmission(INTERNAL_SERVER_ERROR)
 
         val result = controller.submitMovementRequest()(postRequest(emptyForm))
@@ -109,6 +123,8 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
     "Submission succeeded" should {
 
       "redirect to the new page" in {
+
+        givenAUserOnTheArrivalJourney()
         mockSubmission()
         mockCustomsCacheServiceClearedSuccessfully
 

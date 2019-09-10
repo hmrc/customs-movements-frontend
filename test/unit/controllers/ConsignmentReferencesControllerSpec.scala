@@ -69,7 +69,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
 
       "cache is empty" in {
 
-        mockArrivalJourney()
+        givenAUserOnTheArrivalJourney()
         withCaching(ConsignmentReferences.formId, None)
 
         val result = controller.displayPage()(getRequest())
@@ -80,7 +80,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
 
       "cache contains data" in {
 
-        mockArrivalJourney()
+        givenAUserOnTheArrivalJourney()
         val cachedData = ConsignmentReferences("D", "123456")
         withCaching(ConsignmentReferences.formId, Some(cachedData))
 
@@ -93,7 +93,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
 
     "return BadRequest for incorrect form" in {
 
-      mockArrivalJourney()
+      givenAUserOnTheArrivalJourney()
 
       val incorrectForm: JsValue = JsObject(
         Map(
@@ -110,7 +110,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
 
     "redirect to goods date for correct form in arrival journey" in {
 
-      mockArrivalJourney()
+      givenAUserOnTheArrivalJourney()
       withCaching(ConsignmentReferences.formId)
 
       val correctForm: JsValue =
@@ -130,7 +130,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
 
     "redirect to location for correct form in departure journey" in {
 
-      mockDepartureJourney()
+      givenAUserOnTheDepartureJourney()
       withCaching(ConsignmentReferences.formId)
 
       val correctForm: JsValue =

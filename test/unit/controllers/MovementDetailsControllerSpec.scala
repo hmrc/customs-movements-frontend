@@ -78,7 +78,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
 
       "cache is empty" in {
 
-        mockArrivalJourney()
+        givenAUserOnTheArrivalJourney()
         withCaching(MovementDetails.formId, None)
 
         val result = controller.displayPage()(getRequest())
@@ -89,7 +89,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
 
       "cache contains data" in {
 
-        mockArrivalJourney()
+        givenAUserOnTheArrivalJourney()
         val cachedData = ArrivalDetails(Date(Some(10), Some(2), Some(2019)), Time(Some("10"), Some("10")))
         withCaching(MovementDetails.formId, Some(cachedData))
 
@@ -102,7 +102,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
 
     "return BadRequest for incorrect form" in {
 
-      mockArrivalJourney()
+      givenAUserOnTheArrivalJourney()
 
       val incorrectForm: JsValue = JsObject(Map("dateOfArrival" -> JsString("")))
 
@@ -113,7 +113,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
 
     "redirect to location page for correct form" in {
 
-      mockArrivalJourney()
+      givenAUserOnTheArrivalJourney()
       withCaching(MovementDetails.formId)
 
       val correctDate: JsValue = JsObject(Map("day" -> JsNumber(10), "month" -> JsNumber(10), "year" -> JsNumber(2019)))
@@ -134,7 +134,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
 
       "cache is empty" in {
 
-        mockDepartureJourney()
+        givenAUserOnTheDepartureJourney()
         withCaching(MovementDetails.formId, None)
 
         val result = controller.displayPage()(getRequest())
@@ -145,7 +145,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
 
       "cache contains data" in {
 
-        mockDepartureJourney()
+        givenAUserOnTheDepartureJourney()
         val cachedData = DepartureDetails(Date(Some(10), Some(2), Some(2019)))
         withCaching(MovementDetails.formId, Some(cachedData))
 
@@ -158,7 +158,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
 
     "return BadRequest for incorrect form" in {
 
-      mockDepartureJourney()
+      givenAUserOnTheDepartureJourney()
 
       val incorrectForm: JsValue = JsObject(Map("dateOfDeparture" -> JsString("")))
 
@@ -169,7 +169,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
 
     "redirect to transport page for correct form" in {
 
-      mockDepartureJourney()
+      givenAUserOnTheDepartureJourney()
       withCaching(MovementDetails.formId)
 
       val correctDate: JsValue = JsObject(Map("day" -> JsNumber(10), "month" -> JsNumber(10), "year" -> JsNumber(2019)))

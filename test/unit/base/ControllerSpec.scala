@@ -45,7 +45,9 @@ trait ControllerSpec
       .withJsonBody(body)
       .withCSRFToken
 
-  protected def mockArrivalJourney(): Unit = withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Arrival)))
+  protected def givenAUserOnTheArrivalJourney(): Unit =
+    withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Arrival)))
 
-  protected def mockDepartureJourney(): Unit = withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Departure)))
+  protected def givenAUserOnTheDepartureJourney(): Unit =
+    withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Departure)))
 }

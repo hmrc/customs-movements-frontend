@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package controllers.util
+package unit.controllers.util
 
-import base.BaseSpec
 import controllers.storage.CacheIdGenerator
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.Arrival
@@ -24,8 +23,9 @@ import models.SignedInUser
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
+import unit.base.UnitSpec
 
-class CacheIdGeneratorSpec extends BaseSpec {
+class CacheIdGeneratorSpec extends UnitSpec {
 
   val userEori = "eori"
   val userChoice = Arrival

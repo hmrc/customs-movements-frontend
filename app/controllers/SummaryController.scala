@@ -63,20 +63,19 @@ class SummaryController @Inject()(
     }
   }
 
-  def submitMovementRequest(): Action[AnyContent] =
-    (authenticate andThen journeyType).async { implicit request =>
-      submissionService
-        .submitMovementRequest(movementCacheId, request.authenticatedRequest.user.eori, request.choice)
-        .flatMap {
-          case ACCEPTED =>
-            customsCacheService.remove(movementCacheId).map { _ =>
-              Ok(movementConfirmationPage(request.choice.value))
-            }
-          case _ =>
-            Future.successful {
-              logger.warn(s"No movement data found in cache.")
-              errorHandler.getInternalServerErrorPage
-            }
-        }
-    }
+  def submitMovementRequest(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    submissionService
+      .submitMovementRequest(movementCacheId, request.authenticatedRequest.user.eori, request.choice)
+      .flatMap {
+        case ACCEPTED =>
+          customsCacheService.remove(movementCacheId).map { _ =>
+            Ok(movementConfirmationPage(request.choice.value))
+          }
+        case _ =>
+          Future.successful {
+            logger.warn(s"No movement data found in cache.")
+            errorHandler.getInternalServerErrorPage
+          }
+      }
+  }
 }

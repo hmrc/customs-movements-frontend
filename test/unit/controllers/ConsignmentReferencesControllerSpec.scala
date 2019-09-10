@@ -57,10 +57,6 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
     super.afterEach()
   }
 
-  def mockArrivalJourney(): Unit = withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Arrival)))
-
-  def mockDepartureJourney(): Unit = withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Departure)))
-
   def theResponseForm: Form[ConsignmentReferences] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ConsignmentReferences]])
     verify(mockConsignmentReferencePage).apply(captor.capture())(any(), any())

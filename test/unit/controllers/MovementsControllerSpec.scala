@@ -14,45 +14,56 @@
  * limitations under the License.
  */
 
-package controllers
-import base.{MockCustomsExportsMovement, MovementBaseSpec}
+package unit.controllers
+
+import base.MockCustomsExportsMovement
+import controllers.MovementsController
 import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
+import unit.base.ControllerSpec
 import views.html.movements
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.global
+import scala.concurrent.Future
 
-class MovementsControllerSpec extends MovementBaseSpec with MockCustomsExportsMovement {
+class MovementsControllerSpec extends ControllerSpec with MockCustomsExportsMovement {
 
-  trait SetUp {
-    val movementsPage = new movements(mainTemplate)
+  val mockMovementsPage = mock[movements]
 
-    val controller = new MovementsController(
-      mockAuthAction,
-      mockCustomsExportsMovementConnector,
-      stubMessagesControllerComponents(),
-      movementsPage
-    )(ExecutionContext.global)
+  val controller = new MovementsController(
+    mockAuthAction,
+    mockCustomsExportsMovementConnector,
+    stubMessagesControllerComponents(),
+    mockMovementsPage
+  )(global)
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
 
     authorizedUser()
+    when(mockMovementsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
+
+  override protected def afterEach(): Unit =
+    reset(mockMovementsPage)
 
   "Submissions Controller" should {
 
     "return 200 for get request" when {
 
-      "cache is empty" in new SetUp {
+      "cache is empty" in {
 
         when(mockCustomsExportsMovementConnector.fetchAllSubmissions()(any(), any()))
           .thenReturn(Future.successful(Seq.empty))
         when(mockCustomsExportsMovementConnector.fetchNotifications(anyString())(any(), any()))
           .thenReturn(Future.successful(Seq.empty))
 
-        val result = controller.displayPage()(FakeRequest())
+        val result = controller.displayPage()(getRequest())
 
-        status(result) must be(OK)
+        status(result) mustBe OK
       }
     }
   }

@@ -60,10 +60,6 @@ class GoodsDepartedControllerSpec extends ControllerSpec with OptionValues {
     super.afterEach()
   }
 
-  def mockArrivalJourney(): Unit = withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Arrival)))
-
-  def mockDepartureJourney(): Unit = withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Departure)))
-
   def theResponseForm: Form[GoodsDeparted] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[GoodsDeparted]])
     verify(mockGoodsDepartedPage).apply(captor.capture())(any(), any())

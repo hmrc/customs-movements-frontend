@@ -14,45 +14,66 @@
  * limitations under the License.
  */
 
-package controllers.consolidations
+package unit.controllers.consolidations
 
-import base.MovementBaseSpec
+import controllers.consolidations.{routes, AssociateDucrController}
 import controllers.exception.IncompleteApplication
 import forms.Choice.AllowedChoiceValues
 import forms.{AssociateDucr, Choice, MucrOptions}
-import org.mockito.Mockito._
-import org.scalatest.BeforeAndAfterEach
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers._
-import views.base.ViewValidator
+import play.twirl.api.HtmlFormat
+import unit.base.ControllerSpec
+import views.html.associate_ducr
 
-class AssociateDucrControllerSpec extends MovementBaseSpec with ViewValidator with BeforeAndAfterEach {
+import scala.concurrent.ExecutionContext.global
 
-  private val uri = uriWithContextPath("/associate-ducr")
+class AssociateDucrControllerSpec extends ControllerSpec {
 
-  override def beforeEach() {
+  val mockAssociateDucrPage = mock[associate_ducr]
+
+  val controller = new AssociateDucrController(
+    mockAuthAction,
+    mockJourneyAction,
+    stubMessagesControllerComponents(),
+    mockCustomsCacheService,
+    mockAssociateDucrPage
+  )(global)
+
+  override protected def beforeEach() {
+    super.beforeEach()
+
     authorizedUser()
     withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.AssociateDUCR)))
-    withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
     withCaching(AssociateDucr.formId)
+    when(mockAssociateDucrPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
-  override def afterEach(): Unit = {
+  override protected def afterEach(): Unit = {
+    reset(mockAssociateDucrPage)
+
     super.afterEach()
-    reset(mockSubmissionService, mockCustomsCacheService)
   }
 
   "Associate DUCR GET" should {
 
     "throw incomplete application when cache empty" in {
+
       withCaching(MucrOptions.formId, None)
+
       assertThrows[IncompleteApplication] {
-        await(route(app, getRequest(uri)).get)
+        await(controller.displayPage()(getRequest()))
       }
     }
 
     "return Ok for GET request" in {
-      val result = route(app, getRequest(uri)).get
+
+      withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
+
+      val result = controller.displayPage()(getRequest())
+
       status(result) must be(OK)
     }
   }
@@ -60,48 +81,52 @@ class AssociateDucrControllerSpec extends MovementBaseSpec with ViewValidator wi
   "Associate DUCR POST" should {
 
     "throw incomplete application when cache empty" in {
+
       withCaching(MucrOptions.formId, None)
+
       assertThrows[IncompleteApplication] {
-        await(route(app, postRequest(uri, Json.obj())).get)
+        await(controller.submit()(postRequest(Json.obj())))
       }
     }
 
     "display an error for a missing DUCR" in {
-      val Some(result) = route(app, postRequest(uri, Json.obj()))
+
+      withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
+
+      val result = controller.submit()(postRequest(Json.obj()))
 
       status(result) must be(BAD_REQUEST)
-      val page = htmlBodyOf(result)
-      page must haveGlobalErrorSummary
-      page must haveFieldError("ducr", "Please enter a value")
     }
 
     "display an error for a empty DUCR" in {
-      val Some(result) = route(app, postRequest(uri, Json.obj("ducr" -> "")))
+
+      withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
+
+      val result = controller.submit()(postRequest(Json.obj("ducr" -> "")))
 
       status(result) must be(BAD_REQUEST)
-      val page = htmlBodyOf(result)
-      page must haveGlobalErrorSummary
-      page must haveFieldError("ducr", "Please enter a reference")
     }
 
     "display an error for an invalid DUCR" in {
-      val Some(result) = route(app, postRequest(uri, Json.obj("ducr" -> "invalid")))
+
+      withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
+
+      val result = controller.submit()(postRequest(Json.obj("ducr" -> "invalid")))
 
       status(result) must be(BAD_REQUEST)
-      val page = htmlBodyOf(result)
-      page must haveGlobalErrorSummary
-      page must haveFieldError("ducr", "Please enter a valid reference")
     }
 
     "Redirect to next page for a valid form" in {
+
+      withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
+
       val validMUCR =
         JsObject(Map("ducr" -> JsString("8GB12345612345612345")))
-      val Some(result) = route(app, postRequest(uri, validMUCR))
+
+      val result = controller.submit()(postRequest(validMUCR))
+
       status(result) must be(SEE_OTHER)
       redirectLocation(result) mustBe Some(routes.AssociateDucrSummaryController.displayPage().url)
-
-      theFormIDCached mustBe AssociateDucr.formId
-      theDataCached mustBe AssociateDucr("8GB12345612345612345")
     }
   }
 }

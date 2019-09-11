@@ -16,7 +16,8 @@
 
 package unit.controllers
 
-import controllers.{consolidations, routes, ChoiceController}
+import controllers.consolidations.{routes => consolidationRoutes}
+import controllers.{routes, ChoiceController}
 import forms.Choice
 import forms.Choice._
 import org.mockito.ArgumentMatchers.any
@@ -149,7 +150,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
       val result = controller.submitChoice()(postRequest(associateChoice))
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be(Some(consolidations.routes.MucrOptionsController.displayPage().url))
+      redirectLocation(result) must be(Some(consolidationRoutes.MucrOptionsController.displayPage().url))
     }
 
     "redirect to disassociate page when 'Disassociate' is selected" in {
@@ -160,7 +161,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
       val result = controller.submitChoice()(postRequest(correctForm))
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be(Some(consolidations.routes.DisassociateDucrController.displayPage().url))
+      redirectLocation(result) must be(Some(consolidationRoutes.DisassociateDucrController.displayPage().url))
     }
 
     "redirect to Shut a MUCR page when 'Shut a MUCR' is selected" in {
@@ -172,7 +173,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
       val result = controller.submitChoice()(postRequest(correctForm))
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be(Some(consolidations.routes.ShutMucrController.displayPage().url))
+      redirectLocation(result) must be(Some(consolidationRoutes.ShutMucrController.displayPage().url))
     }
 
     "redirect to Movements submissions summary page when 'Inspect my movements' is selected" in {

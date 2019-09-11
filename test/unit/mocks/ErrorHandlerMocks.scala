@@ -39,6 +39,7 @@ trait ErrorHandlerMocks extends BeforeAndAfterEach { self: MockitoSugar with Sui
 
   override protected def afterEach(): Unit = {
     Mockito.reset(mockErrorHandler)
+
     super.afterEach()
   }
 }

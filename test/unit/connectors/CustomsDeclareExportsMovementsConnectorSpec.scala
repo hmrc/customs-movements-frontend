@@ -14,35 +14,34 @@
  * limitations under the License.
  */
 
-package connectors
+package unit.connectors
 
-import testdata.CommonTestData._
-import testdata.ConsolidationTestData._
-import testdata.MovementsTestData
-import testdata.MovementsTestData.exampleSubmissionFrontendModel
-import testdata.NotificationTestData.exampleNotificationFrontendModel
 import config.AppConfig
+import connectors.CustomsDeclareExportsMovementsConnector
 import forms.Choice.AllowedChoiceValues.{Arrival, Departure}
 import models.notifications.NotificationFrontendModel
 import models.submissions.SubmissionFrontendModel
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.libs.json.Json
 import play.api.mvc.Codec
 import play.api.test.Helpers.OK
+import testdata.CommonTestData._
+import testdata.ConsolidationTestData._
+import testdata.MovementsTestData
+import testdata.MovementsTestData.exampleSubmissionFrontendModel
+import testdata.NotificationTestData.exampleNotificationFrontendModel
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
+import unit.base.UnitSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CustomsDeclareExportsMovementsConnectorSpec
-    extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures {
+class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFutures {
 
   import CustomsDeclareExportsMovementsConnectorSpec._
 
@@ -94,8 +93,7 @@ class CustomsDeclareExportsMovementsConnectorSpec
 
     "return response from HttpClient" in new Test {
 
-      val result =
-        connector.sendArrivalDeclaration(movementSubmissionRequestXmlString(Arrival)).futureValue
+      val result = connector.sendArrivalDeclaration(movementSubmissionRequestXmlString(Arrival)).futureValue
 
       result must equal(defaultHttpResponse)
     }
@@ -105,9 +103,7 @@ class CustomsDeclareExportsMovementsConnectorSpec
 
     "call HttpClient, passing URL for Departure submission endpoint" in new Test {
 
-      connector
-        .sendDepartureDeclaration(movementSubmissionRequestXmlString(Departure))
-        .futureValue
+      connector.sendDepartureDeclaration(movementSubmissionRequestXmlString(Departure)).futureValue
 
       val expectedSubmissionUrl =
         s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementDepartureSubmissionUri}"

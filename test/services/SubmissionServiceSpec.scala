@@ -16,7 +16,7 @@
 
 package services
 
-import base.{MockFactory, MovementsMetricsStub}
+import base.{MetricsMatchers, MockFactory, MovementsMetricsStub}
 import testdata.ConsolidationTestData._
 import testdata.MovementsTestData._
 import forms.Choice.AllowedChoiceValues.{Arrival, Departure}
@@ -38,7 +38,7 @@ import scala.concurrent.Future
 import scala.xml.{Node, Utility, XML}
 
 class SubmissionServiceSpec
-    extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures with MovementsMetricsStub {
+    extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures with MovementsMetricsStub with MetricsMatchers {
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(100, Millis))
@@ -186,17 +186,15 @@ class SubmissionServiceSpec
     }
 
     "increase counter for successful submissions" in new RequestAcceptedTest {
-      val counterName = "disassociation.counter"
-      val before = counter(counterName).getCount
-      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue
-      counter(counterName).getCount mustBe >(before)
+      counter("disassociation.counter") must changeOn {
+        submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue
+      }
     }
 
     "use timer to measure execution of successful disassociate request" in new Test {
-      val timerName = "disassociation.timer"
-      val before = timer(timerName).getCount
-      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue
-      timer(timerName).getCount mustBe >(before)
+      timer("disassociation.timer") must changeOn {
+        submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue
+      }
     }
   }
 
@@ -222,17 +220,15 @@ class SubmissionServiceSpec
     }
 
     "increase counter of successful shut request" in new Test {
-      val counterName = "shut.counter"
-      val before: Long = counter(counterName).getCount
-      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue
-      counter(counterName).getCount mustBe >(before)
+      counter("shut.counter") must changeOn {
+        submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue
+      }
     }
 
     "use timer to measure execution of successful shut request" in new Test {
-      private val timerName = "shut.timer"
-      val before: Long = timer(timerName).getCount
-      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue
-      timer(timerName).getCount mustBe >(before)
+      timer("shut.timer") must changeOn {
+        submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue
+      }
     }
   }
 

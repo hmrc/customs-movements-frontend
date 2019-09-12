@@ -55,12 +55,15 @@ class DisassociateDucrConfirmationControllerSpec extends ControllerSpec {
 
   "Disassociate Ducr Confirmation Controller" should {
 
-    "return 200 for get request" in {
+    "return 200 (OK)" when {
 
-      val result = controller.displayPage()(getRequest())
+      "display page method is invoked" in {
 
-      status(result) mustBe OK
-      verify(mockDisassociateDucrConfirmationPage).apply()(any(), any(), any())
+        val result = controller.displayPage()(getRequest())
+
+        status(result) mustBe OK
+        verify(mockDisassociateDucrConfirmationPage).apply()(any(), any(), any())
+      }
     }
   }
 }

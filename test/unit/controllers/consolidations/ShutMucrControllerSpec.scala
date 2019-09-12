@@ -83,7 +83,7 @@ class ShutMucrControllerSpec extends ControllerSpec with MockSubmissionService w
 
     "return 500 (INTERNAL_SERVER_ERROR)" when {
 
-      "submission service return different status than ACCPETED" in {
+      "submission service return different status than ACCEPTED" in {
 
         mockShutMucr(OK)
 

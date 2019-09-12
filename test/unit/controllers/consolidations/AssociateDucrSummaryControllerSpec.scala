@@ -17,26 +17,22 @@
 package unit.controllers.consolidations
 
 import base.MockSubmissionService
-import controllers.consolidations.{routes, AssociateDucrSummaryController}
+import controllers.consolidations.AssociateDucrSummaryController
 import controllers.exception.IncompleteApplication
-import controllers.storage.FlashKeys
-import forms.Choice.AllowedChoiceValues
+import forms.Choice.AllowedChoiceValues.AssociateDUCR
 import forms.{AssociateDucr, Choice, MucrOptions}
-import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import org.mockito.{InOrder, Mockito}
-import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.http.HttpResponse
 import unit.base.ControllerSpec
 import views.html.associate_ducr_summary
 
 import scala.concurrent.ExecutionContext.global
-import scala.concurrent.Future
 
-class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmissionService with ScalaFutures {
+class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmissionService {
 
   private val mockAssociateDucrSummaryPage = mock[associate_ducr_summary]
 
@@ -56,15 +52,7 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
     authorizedUser()
     setupErrorHandler()
     when(mockAssociateDucrSummaryPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-
-    when(mockCustomsCacheService.fetchAndGetEntry[Choice](any(), meq(Choice.choiceId))(any(), any(), any()))
-      .thenReturn(Future.successful(Some(Choice(AllowedChoiceValues.AssociateDUCR))))
-
-    when(mockCustomsCacheService.fetchAndGetEntry[MucrOptions](any(), meq(MucrOptions.formId))(any(), any(), any()))
-      .thenReturn(Future.successful(Some(MucrOptions("MUCR"))))
-
-    when(mockCustomsCacheService.fetchAndGetEntry[AssociateDucr](any(), meq(AssociateDucr.formId))(any(), any(), any()))
-      .thenReturn(Future.successful(Some(AssociateDucr("DUCR"))))
+    withCaching(Choice.choiceId, Some(Choice(AssociateDUCR)))
   }
 
   override protected def afterEach(): Unit = {
@@ -73,131 +61,101 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
     super.afterEach()
   }
 
-  "Associate DUCR Summary on GET" should {
-
-    "throw incomplete application when MUCROptions cache empty" in {
-
-      when(mockCustomsCacheService.fetchAndGetEntry[MucrOptions](any(), meq(MucrOptions.formId))(any(), any(), any()))
-        .thenReturn(Future.successful(None))
-
-      assertThrows[IncompleteApplication] { await(controller.displayPage()(getRequest())) }
-    }
-
-    "throw incomplete application when AssociateDUCR cache empty" in {
-
-      when(mockCustomsCacheService.fetchAndGetEntry[MucrOptions](any(), meq(AssociateDucr.formId))(any(), any(), any()))
-        .thenReturn(Future.successful(None))
-
-      assertThrows[IncompleteApplication] { await(controller.displayPage()(getRequest())) }
-    }
-
-    "return Ok for GET request" in {
-
-      val result = controller.displayPage()(getRequest())
-
-      status(result) mustBe OK
-    }
+  private def theResponseData: (AssociateDucr, String) = {
+    val associateDucrCaptor = ArgumentCaptor.forClass(classOf[AssociateDucr])
+    val mucrOptionsCaptor = ArgumentCaptor.forClass(classOf[String])
+    verify(mockAssociateDucrSummaryPage).apply(associateDucrCaptor.capture(), mucrOptionsCaptor.capture())(any(), any())
+    (associateDucrCaptor.getValue, mucrOptionsCaptor.getValue)
   }
 
-  "Associate DUCR Summary on POST" when {
+  "Associate Ducr Summary Controller" should {
 
-    "MUCROptions cache is empty" should {
-      "throw incomplete application" in {
+    "return 200 (OK)" when {
 
-        when(mockCustomsCacheService.fetchAndGetEntry[MucrOptions](any(), meq(MucrOptions.formId))(any(), any(), any()))
-          .thenReturn(Future.successful(None))
+      "display page is invoked with data in cache" in {
+        withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
+        withCaching(AssociateDucr.formId, Some(AssociateDucr("DUCR")))
 
-        assertThrows[IncompleteApplication] { await(controller.submit()(postRequest(Json.obj()))) }
+        val result = controller.displayPage()(getRequest())
+
+        status(result) mustBe OK
+        verify(mockAssociateDucrSummaryPage).apply(any(), any())(any(), any())
+
+        val (associateDucr, mucrOptions) = theResponseData
+        associateDucr.ducr mustBe "DUCR"
+        mucrOptions mustBe "MUCR"
       }
     }
 
-    "AssociateDUCR cache is empty" should {
-      "throw incomplete application" in {
+    "retrun 500 (INTERNAL_SERVER_ERROR)" when {
 
-        when(
-          mockCustomsCacheService.fetchAndGetEntry[MucrOptions](any(), meq(AssociateDucr.formId))(any(), any(), any())
-        ).thenReturn(Future.successful(None))
+      "submission service return status different than ACCEPTED" in {
 
-        assertThrows[IncompleteApplication] { await(controller.submit()(postRequest(Json.obj()))) }
-      }
-    }
-
-    "everything works correctly" should {
-
-      "return SeeOther code" in {
-
-        when(mockSubmissionService.submitDucrAssociation(any(), any())(any(), any()))
-          .thenReturn(Future.successful(ACCEPTED))
-        when(mockCustomsCacheService.remove(anyString())(any(), any()))
-          .thenReturn(Future.successful(mock[HttpResponse]))
-
-        val result = controller.submit()(postRequest(Json.obj()))
-
-        status(result) mustBe SEE_OTHER
-      }
-
-      "call SubmissionService and CustomsCacheService in correct order" in {
-
-        when(mockSubmissionService.submitDucrAssociation(any(), any())(any(), any()))
-          .thenReturn(Future.successful(ACCEPTED))
-        when(mockCustomsCacheService.remove(anyString())(any(), any()))
-          .thenReturn(Future.successful(mock[HttpResponse]))
-
-        controller.submit()(postRequest(Json.obj())).futureValue
-
-        val inOrder: InOrder = Mockito.inOrder(mockSubmissionService, mockCustomsCacheService)
-        inOrder
-          .verify(mockCustomsCacheService)
-          .fetchAndGetEntry[MucrOptions](any(), meq(MucrOptions.formId))(any(), any(), any())
-        inOrder
-          .verify(mockCustomsCacheService)
-          .fetchAndGetEntry[AssociateDucr](any(), meq(AssociateDucr.formId))(any(), any(), any())
-        inOrder
-          .verify(mockSubmissionService)
-          .submitDucrAssociation(meq(MucrOptions("MUCR")), meq(AssociateDucr("DUCR")))(any(), any())
-        inOrder.verify(mockCustomsCacheService).remove(anyString)(any(), any())
-      }
-
-      "Redirect to next page" in {
-
-        when(mockSubmissionService.submitDucrAssociation(any(), any())(any(), any()))
-          .thenReturn(Future.successful(ACCEPTED))
-        when(mockCustomsCacheService.remove(anyString())(any(), any()))
-          .thenReturn(Future.successful(mock[HttpResponse]))
-
-        val result = controller.submit()(postRequest(Json.obj()))
-
-        redirectLocation(result) mustBe Some(routes.AssociateDucrConfirmationController.displayPage().url)
-      }
-
-      "add MUCR to Flash" in {
-
-        when(mockSubmissionService.submitDucrAssociation(any(), any())(any(), any()))
-          .thenReturn(Future.successful(ACCEPTED))
-        when(mockCustomsCacheService.remove(anyString())(any(), any()))
-          .thenReturn(Future.successful(mock[HttpResponse]))
-
-        val result = controller.submit()(postRequest(Json.obj()))
-
-        flash(result).get(FlashKeys.MUCR) mustBe Some("MUCR")
-      }
-
-    }
-
-    "SubmissionService returns status other than Accepted" should {
-
-      "return InternalServerError code" in {
-
-        when(mockSubmissionService.submitDucrAssociation(any(), any())(any(), any()))
-          .thenReturn(Future.successful(BAD_REQUEST))
-        when(mockCustomsCacheService.remove(anyString())(any(), any()))
-          .thenReturn(Future.successful(mock[HttpResponse]))
+        withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
+        withCaching(AssociateDucr.formId, Some(AssociateDucr("DUCR")))
+        mockCustomsCacheServiceClearedSuccessfully()
+        mockDucrAssociation(BAD_REQUEST)
 
         val result = controller.submit()(postRequest(Json.obj()))
 
         status(result) mustBe INTERNAL_SERVER_ERROR
       }
     }
-  }
 
+    "throw an IncompleteApplication exception" when {
+
+      "Mucr Options is missing during displaying page" in {
+
+        withCaching(MucrOptions.formId, None)
+
+        assertThrows[IncompleteApplication] {
+          await(controller.displayPage()(getRequest()))
+        }
+      }
+
+      "Associate Ducr is missing during displaying page" in {
+
+        withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
+        withCaching(AssociateDucr.formId, None)
+
+        assertThrows[IncompleteApplication] {
+          await(controller.displayPage()(getRequest()))
+        }
+      }
+
+      "Mucr Options is missing during submitting page" in {
+
+        withCaching(MucrOptions.formId, None)
+
+        assertThrows[IncompleteApplication] {
+          await(controller.submit()(postRequest(Json.obj())))
+        }
+      }
+
+      "Associate Ducr is missing during submitting page" in {
+
+        withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
+        withCaching(AssociateDucr.formId, None)
+
+        assertThrows[IncompleteApplication] {
+          await(controller.submit()(postRequest(Json.obj())))
+        }
+      }
+    }
+
+    "return 303 (SEE_OTHER)" when {
+
+      "submission service returned ACCEPTED and all mandatory data is in cache" in {
+
+        withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
+        withCaching(AssociateDucr.formId, Some(AssociateDucr("DUCR")))
+        mockCustomsCacheServiceClearedSuccessfully()
+        mockDucrAssociation()
+
+        val result = controller.submit()(postRequest(Json.obj()))
+
+        status(result) mustBe SEE_OTHER
+      }
+    }
+  }
 }

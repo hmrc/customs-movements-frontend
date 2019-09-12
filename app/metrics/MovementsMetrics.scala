@@ -28,13 +28,15 @@ class MovementsMetrics @Inject()(metrics: Metrics) {
   val timers = Map(
     Arrival -> metrics.defaultRegistry.timer(s"$arrivalMetric.timer"),
     Departure -> metrics.defaultRegistry.timer(s"$departureMetric.timer"),
-    AssociateDUCR -> metrics.defaultRegistry.timer(s"$consolidationMetric.timer")
+    AssociateDUCR -> metrics.defaultRegistry.timer(s"$consolidationMetric.timer"),
+    ShutMucr -> metrics.defaultRegistry.timer(s"$shutMucr.timer")
   )
 
   val counters = Map(
     Arrival -> metrics.defaultRegistry.counter(s"$arrivalMetric.counter"),
     Departure -> metrics.defaultRegistry.counter(s"$departureMetric.counter"),
-    AssociateDUCR -> metrics.defaultRegistry.counter(s"$consolidationMetric.counter")
+    AssociateDUCR -> metrics.defaultRegistry.counter(s"$consolidationMetric.counter"),
+    ShutMucr -> metrics.defaultRegistry.counter(s"$shutMucr.counter")
   )
 
   def startTimer(feature: String): Context = timers(feature).time()
@@ -46,4 +48,5 @@ object MetricIdentifiers {
   val arrivalMetric = "arrival"
   val departureMetric = "departure"
   val consolidationMetric = "consolidation"
+  val shutMucr = "shut"
 }

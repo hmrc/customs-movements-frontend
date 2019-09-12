@@ -27,6 +27,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Success
 
 @Singleton
 class SubmissionService @Inject()(
@@ -76,6 +77,12 @@ class SubmissionService @Inject()(
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] =
     connector.sendDisassociationRequest(buildDisassociationRequest(disassociateDucr.ducr).toString).map(_.status)
 
-  def submitShutMucrRequest(shutMucr: ShutMucr)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] =
-    connector.sendShutMucrRequest(buildShutMucrRequest(shutMucr.mucr).toString).map(_.status)
+  def submitShutMucrRequest(shutMucr: ShutMucr)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
+    val timer = metrics.startTimer(Choice.AllowedChoiceValues.ShutMucr)
+    connector.sendShutMucrRequest(buildShutMucrRequest(shutMucr.mucr).toString).map(_.status).andThen {
+      case Success(_) =>
+        timer.stop()
+        metrics.incrementCounter(Choice.AllowedChoiceValues.ShutMucr)
+    }
+  }
 }

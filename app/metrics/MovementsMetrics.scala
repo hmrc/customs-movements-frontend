@@ -29,6 +29,7 @@ class MovementsMetrics @Inject()(metrics: Metrics) {
     Arrival -> metrics.defaultRegistry.timer(s"$arrivalMetric.timer"),
     Departure -> metrics.defaultRegistry.timer(s"$departureMetric.timer"),
     AssociateDUCR -> metrics.defaultRegistry.timer(s"$consolidationMetric.timer"),
+    DisassociateDUCR -> metrics.defaultRegistry.timer(s"$disassociationMetric.timer"),
     ShutMucr -> metrics.defaultRegistry.timer(s"$shutMucr.timer")
   )
 
@@ -36,6 +37,7 @@ class MovementsMetrics @Inject()(metrics: Metrics) {
     Arrival -> metrics.defaultRegistry.counter(s"$arrivalMetric.counter"),
     Departure -> metrics.defaultRegistry.counter(s"$departureMetric.counter"),
     AssociateDUCR -> metrics.defaultRegistry.counter(s"$consolidationMetric.counter"),
+    DisassociateDUCR -> metrics.defaultRegistry.counter(s"$disassociationMetric.counter"),
     ShutMucr -> metrics.defaultRegistry.counter(s"$shutMucr.counter")
   )
 
@@ -48,5 +50,6 @@ object MetricIdentifiers {
   val arrivalMetric = "arrival"
   val departureMetric = "departure"
   val consolidationMetric = "consolidation"
+  val disassociationMetric = "disassociation"
   val shutMucr = "shut"
 }

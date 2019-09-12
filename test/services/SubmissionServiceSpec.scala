@@ -184,6 +184,20 @@ class SubmissionServiceSpec
 
       assertEqual(XML.loadString(requestCaptor.getValue), exampleDisassociateDucrRequestXml)
     }
+
+    "increase counter for successful submissions" in new RequestAcceptedTest {
+      val counterName = "disassociation.counter"
+      val before = counter(counterName).getCount
+      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue
+      counter(counterName).getCount mustBe >(before)
+    }
+
+    "use timer to measure execution of successful disassociate request" in new Test {
+      val timerName = "disassociation.timer"
+      val before = timer(timerName).getCount
+      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue
+      timer(timerName).getCount mustBe >(before)
+    }
   }
 
   "SubmissionService on submitShutMucrRequest" should {

@@ -16,7 +16,7 @@
 
 package services
 
-import base.MockFactory
+import base.{MockFactory, MovementsMetricsStub}
 import testdata.ConsolidationTestData._
 import testdata.MovementsTestData._
 import forms.Choice.AllowedChoiceValues.{Arrival, Departure}
@@ -37,7 +37,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.xml.{Node, Utility, XML}
 
-class SubmissionServiceSpec extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures {
+class SubmissionServiceSpec
+    extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures with MovementsMetricsStub {
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(100, Millis))
@@ -47,10 +48,9 @@ class SubmissionServiceSpec extends WordSpec with MustMatchers with MockitoSugar
 
     val customsCacheServiceMock = MockFactory.buildCustomsCacheServiceMock
     val customsExportsMovementConnectorMock = MockFactory.buildCustomsDeclareExportsMovementsConnectorMock
-    val metricsMock = MockFactory.buildMovementsMetricsMock
 
     val submissionService =
-      new SubmissionService(customsCacheServiceMock, customsExportsMovementConnectorMock, metricsMock)
+      new SubmissionService(customsCacheServiceMock, customsExportsMovementConnectorMock, movementsMetricsStub)
   }
 
   private trait RequestAcceptedTest extends Test {
@@ -205,6 +205,20 @@ class SubmissionServiceSpec extends WordSpec with MustMatchers with MockitoSugar
       verify(customsExportsMovementConnectorMock).sendShutMucrRequest(requestCaptor.capture())(any(), any())
 
       assertEqual(XML.loadString(requestCaptor.getValue), exampleShutMucrRequestXml)
+    }
+
+    "increase counter of successful shut request" in new Test {
+      val counterName = "shut.counter"
+      val before: Long = counter(counterName).getCount
+      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue
+      counter(counterName).getCount mustBe >(before)
+    }
+
+    "use timer to measure execution of successful shut request" in new Test {
+      private val timerName = "shut.timer"
+      val before: Long = timer(timerName).getCount
+      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue
+      timer(timerName).getCount mustBe >(before)
     }
   }
 

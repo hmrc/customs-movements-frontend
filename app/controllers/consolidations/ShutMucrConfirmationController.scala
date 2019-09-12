@@ -36,5 +36,4 @@ class ShutMucrConfirmationController @Inject()(
   def displayPage(): Action[AnyContent] = authenticate { implicit request =>
     Ok(shutMucrConfirmationPage())
   }
-
 }

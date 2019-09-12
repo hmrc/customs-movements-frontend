@@ -40,21 +40,21 @@ import scala.concurrent.{ExecutionContext, Future}
 class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
 
   implicit val messages: Messages = stubMessages()
-  val customsExportsMovementsConnectorMock: CustomsDeclareExportsMovementsConnector =
+  private val customsExportsMovementsConnectorMock: CustomsDeclareExportsMovementsConnector =
     buildCustomsDeclareExportsMovementsConnectorMock
-  val notificationPageSingleElementFactoryMock: NotificationPageSingleElementFactory =
+  private val notificationPageSingleElementFactoryMock: NotificationPageSingleElementFactory =
     buildNotificationPageSingleElementFactoryMock
-  val notificationsPageMock: notifications = mock[notifications]
+  private val notificationsPageMock: notifications = mock[notifications]
 
-  val expectedSubmission = exampleSubmissionFrontendModel()
-  val expectedNotifications = Seq(
+  private val expectedSubmission = exampleSubmissionFrontendModel()
+  private val expectedNotifications = Seq(
     exampleNotificationFrontendModel(),
     exampleNotificationFrontendModel(responseType = ResponseType.MovementTotalsResponse)
   )
-  val singleElementForSubmission = NotificationsPageSingleElement("REQUEST", "", HtmlFormat.empty)
-  val singleElementForNotification = NotificationsPageSingleElement("RESPONSE", "", HtmlFormat.empty)
+  private val singleElementForSubmission = NotificationsPageSingleElement("REQUEST", "", HtmlFormat.empty)
+  private val singleElementForNotification = NotificationsPageSingleElement("RESPONSE", "", HtmlFormat.empty)
 
-  val controller = new NotificationsController(
+  private val controller = new NotificationsController(
     mockAuthAction,
     customsExportsMovementsConnectorMock,
     notificationPageSingleElementFactoryMock,

@@ -34,9 +34,9 @@ import scala.concurrent.ExecutionContext.global
 
 class GoodsDepartedControllerSpec extends ControllerSpec with OptionValues {
 
-  val mockGoodsDepartedPage = mock[goods_departed]
+  private val mockGoodsDepartedPage = mock[goods_departed]
 
-  val controller = new GoodsDepartedController(
+  private val controller = new GoodsDepartedController(
     mockAuthAction,
     mockJourneyAction,
     mockCustomsCacheService,
@@ -59,7 +59,7 @@ class GoodsDepartedControllerSpec extends ControllerSpec with OptionValues {
     super.afterEach()
   }
 
-  def theResponseForm: Form[GoodsDeparted] = {
+  private def theResponseForm: Form[GoodsDeparted] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[GoodsDeparted]])
     verify(mockGoodsDepartedPage).apply(captor.capture())(any(), any())
     captor.getValue

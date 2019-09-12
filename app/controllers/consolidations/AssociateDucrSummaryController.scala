@@ -32,7 +32,6 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.associate_ducr_summary
 
 import scala.concurrent.ExecutionContext
-import scala.util.Failure
 
 @Singleton
 class AssociateDucrSummaryController @Inject()(
@@ -50,21 +49,25 @@ class AssociateDucrSummaryController @Inject()(
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     for {
-      m: Option[MucrOptions] <- cacheService.fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId)
-      mucrOptions = m.getOrElse(throw IncompleteApplication)
+      mucrOptions <- cacheService
+        .fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId)
+        .map(_.getOrElse(throw IncompleteApplication))
 
-      a: Option[AssociateDucr] <- cacheService.fetchAndGetEntry[AssociateDucr](movementCacheId(), AssociateDucr.formId)
-      associateDucr = a.getOrElse(throw IncompleteApplication)
+      associateDucr <- cacheService
+        .fetchAndGetEntry[AssociateDucr](movementCacheId(), AssociateDucr.formId)
+        .map(_.getOrElse(throw IncompleteApplication))
     } yield Ok(associateDucrSummaryPage(associateDucr, mucrOptions.mucr))
   }
 
   def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     for {
-      m: Option[MucrOptions] <- cacheService.fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId)
-      mucrOptions = m.getOrElse(throw IncompleteApplication)
+      mucrOptions <- cacheService
+        .fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId)
+        .map(_.getOrElse(throw IncompleteApplication))
 
-      a: Option[AssociateDucr] <- cacheService.fetchAndGetEntry[AssociateDucr](movementCacheId(), AssociateDucr.formId)
-      associateDucr = a.getOrElse(throw IncompleteApplication)
+      associateDucr <- cacheService
+        .fetchAndGetEntry[AssociateDucr](movementCacheId(), AssociateDucr.formId)
+        .map(_.getOrElse(throw IncompleteApplication))
 
       submissionResult <- submissionService.submitDucrAssociation(mucrOptions, associateDucr)
       _ <- cacheService.remove(movementCacheId())

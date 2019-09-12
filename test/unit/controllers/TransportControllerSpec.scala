@@ -35,9 +35,9 @@ import scala.concurrent.ExecutionContext.global
 
 class TransportControllerSpec extends ControllerSpec with OptionValues {
 
-  val mockTransportPage = mock[transport]
+  private val mockTransportPage = mock[transport]
 
-  val controller = new TransportController(
+  private val controller = new TransportController(
     mockAuthAction,
     mockJourneyAction,
     mockCustomsCacheService,
@@ -59,7 +59,7 @@ class TransportControllerSpec extends ControllerSpec with OptionValues {
     super.afterEach()
   }
 
-  def theResponseForm: Form[Transport] = {
+  private def theResponseForm: Form[Transport] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Transport]])
     verify(mockTransportPage).apply(captor.capture(), any())(any(), any())
     captor.getValue

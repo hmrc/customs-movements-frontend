@@ -14,49 +14,53 @@
  * limitations under the License.
  */
 
-package unit.controllers
+package unit.controllers.consolidations
 
-import controllers.StartController
+import controllers.consolidations.DisassociateDucrConfirmationController
 import forms.Choice
-import forms.Choice.AllowedChoiceValues.Arrival
+import forms.Choice.AllowedChoiceValues
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.start_page
+import views.html.disassociate_ducr_confirmation
 
 import scala.concurrent.ExecutionContext.global
 
-class StartControllerSpec extends ControllerSpec {
+class DisassociateDucrConfirmationControllerSpec extends ControllerSpec {
 
-  private val mockStartPage = mock[start_page]
+  private val mockDisassociateDucrConfirmationPage = mock[disassociate_ducr_confirmation]
 
-  private val controller = new StartController(stubMessagesControllerComponents(), mockStartPage)(global)
+  private val controller = new DisassociateDucrConfirmationController(
+    mockAuthAction,
+    mockJourneyAction,
+    stubMessagesControllerComponents(),
+    mockDisassociateDucrConfirmationPage
+  )(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
     authorizedUser()
-    withCaching(Choice.choiceId, Some(Choice(Arrival)))
-    when(mockStartPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+    withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.DisassociateDUCR)))
+    when(mockDisassociateDucrConfirmationPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockStartPage)
+    reset(mockDisassociateDucrConfirmationPage)
 
     super.afterEach()
   }
 
-  "Start Controller on GET" should {
+  "Disassociate Ducr Confirmation Controller" should {
 
-    "return 200 status code" in {
+    "return 200 for get request" in {
 
-      val result = controller.displayStartPage()(getRequest())
+      val result = controller.displayPage()(getRequest())
 
       status(result) mustBe OK
-
-      verify(mockStartPage).apply()(any(), any())
+      verify(mockDisassociateDucrConfirmationPage).apply()(any(), any(), any())
     }
   }
 }

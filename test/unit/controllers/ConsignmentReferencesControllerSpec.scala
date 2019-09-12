@@ -17,8 +17,7 @@
 package unit.controllers
 
 import controllers.{routes, ConsignmentReferencesController}
-import forms.Choice.AllowedChoiceValues
-import forms.{Choice, ConsignmentReferences}
+import forms.ConsignmentReferences
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -34,9 +33,9 @@ import scala.concurrent.ExecutionContext.global
 
 class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValues {
 
-  val mockConsignmentReferencePage = mock[consignment_references]
+  private val mockConsignmentReferencePage = mock[consignment_references]
 
-  val controller = new ConsignmentReferencesController(
+  private val controller = new ConsignmentReferencesController(
     mockAuthAction,
     mockJourneyAction,
     mockCustomsCacheService,
@@ -57,7 +56,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
     super.afterEach()
   }
 
-  def theResponseForm: Form[ConsignmentReferences] = {
+  private def theResponseForm: Form[ConsignmentReferences] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ConsignmentReferences]])
     verify(mockConsignmentReferencePage).apply(captor.capture())(any(), any())
     captor.getValue

@@ -14,36 +14,51 @@
  * limitations under the License.
  */
 
-package controllers.consolidations
+package unit.controllers.consolidations
 
-import base.MovementBaseSpec
+import controllers.consolidations.AssociateDucrConfirmationController
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
-import org.mockito.Mockito._
-import org.scalatest.BeforeAndAfterEach
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
-import views.base.ViewValidator
+import play.twirl.api.HtmlFormat
+import unit.base.ControllerSpec
+import views.html.associate_ducr_confirmation
 
-class AssociateDucrConfirmationControllerSpec extends MovementBaseSpec with ViewValidator with BeforeAndAfterEach {
+class AssociateDucrConfirmationControllerSpec extends ControllerSpec {
 
-  private val uri = uriWithContextPath("/associate-ducr-confirmation")
+  private val mockAssociateDucrConfirmPage = mock[associate_ducr_confirmation]
+
+  private val controller = new AssociateDucrConfirmationController(
+    mockAuthAction,
+    mockJourneyAction,
+    stubMessagesControllerComponents(),
+    mockAssociateDucrConfirmPage
+  )
 
   override def beforeEach() {
+    super.beforeEach()
+
     authorizedUser()
     withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.AssociateDUCR)))
+    when(mockAssociateDucrConfirmPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override def afterEach(): Unit = {
+    reset(mockAssociateDucrConfirmPage)
+
     super.afterEach()
-    reset(mockSubmissionService, mockCustomsCacheService)
   }
 
   "Associate DUCR Confirmation GET" should {
 
     "return Ok for GET request" in {
-      val result = route(app, getRequest(uri)).get
+
+      val result = controller.displayPage()(getRequest())
+
       status(result) must be(OK)
+      verify(mockAssociateDucrConfirmPage).apply()(any(), any(), any())
     }
   }
-
 }

@@ -19,7 +19,7 @@ package unit.controllers
 import base.MockSubmissionService
 import controllers.SummaryController
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, verify, when}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -32,11 +32,11 @@ import scala.concurrent.ExecutionContext.global
 
 class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
 
-  val mockArrivalSummaryPage = mock[arrival_summary_page]
-  val mockDepartureSummaryPage = mock[departure_summary_page]
-  val mockMovementConfirmationPage = mock[movement_confirmation_page]
+  private val mockArrivalSummaryPage = mock[arrival_summary_page]
+  private val mockDepartureSummaryPage = mock[departure_summary_page]
+  private val mockMovementConfirmationPage = mock[movement_confirmation_page]
 
-  val controller = new SummaryController(
+  private val controller = new SummaryController(
     mockAuthAction,
     mockJourneyAction,
     mockErrorHandler,
@@ -131,7 +131,7 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
         val result = controller.submitMovementRequest()(postRequest(emptyForm))
 
         status(result) must be(OK)
-        verify(mockMovementConfirmationPage, times(1)).apply(any())(any(), any())
+        verify(mockMovementConfirmationPage).apply(any())(any(), any())
       }
     }
   }

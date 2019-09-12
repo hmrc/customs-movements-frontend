@@ -14,49 +14,42 @@
  * limitations under the License.
  */
 
-package unit.controllers
+package unit.controllers.consolidations
 
-import controllers.StartController
-import forms.Choice
-import forms.Choice.AllowedChoiceValues.Arrival
+import controllers.consolidations.ShutMucrConfirmationController
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.start_page
+import views.html.shut_mucr_confirmation
 
 import scala.concurrent.ExecutionContext.global
 
-class StartControllerSpec extends ControllerSpec {
+class ShutMucrConfirmationControllerSpec extends ControllerSpec {
 
-  private val mockStartPage = mock[start_page]
+  private val mockShutMucrConfirmationPage = mock[shut_mucr_confirmation]
 
-  private val controller = new StartController(stubMessagesControllerComponents(), mockStartPage)(global)
+  private val controller = new ShutMucrConfirmationController(
+    mockAuthAction,
+    stubMessagesControllerComponents(),
+    mockShutMucrConfirmationPage
+  )(global)
 
-  override protected def beforeEach(): Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach()
 
     authorizedUser()
-    withCaching(Choice.choiceId, Some(Choice(Arrival)))
-    when(mockStartPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockShutMucrConfirmationPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
   }
 
-  override protected def afterEach(): Unit = {
-    reset(mockStartPage)
+  "ShutMucr Confirmation Controller on GET" should {
 
-    super.afterEach()
-  }
+    "return Ok code" in {
 
-  "Start Controller on GET" should {
-
-    "return 200 status code" in {
-
-      val result = controller.displayStartPage()(getRequest())
+      val result = controller.displayPage()(getRequest())
 
       status(result) mustBe OK
-
-      verify(mockStartPage).apply()(any(), any())
     }
   }
 }

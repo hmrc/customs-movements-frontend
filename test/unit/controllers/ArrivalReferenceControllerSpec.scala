@@ -17,8 +17,7 @@
 package unit.controllers
 
 import controllers.ArrivalReferenceController
-import forms.Choice.AllowedChoiceValues.{Arrival, Departure}
-import forms.{ArrivalReference, Choice}
+import forms.ArrivalReference
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -35,9 +34,9 @@ import scala.concurrent.ExecutionContext.global
 
 class ArrivalReferenceControllerSpec extends ControllerSpec with OptionValues with ScalaFutures {
 
-  val mockArrivalReferencePage = mock[arrival_reference]
+  private val mockArrivalReferencePage = mock[arrival_reference]
 
-  val controller = new ArrivalReferenceController(
+  private val controller = new ArrivalReferenceController(
     mockAuthAction,
     mockJourneyAction,
     mockCustomsCacheService,
@@ -51,7 +50,6 @@ class ArrivalReferenceControllerSpec extends ControllerSpec with OptionValues wi
 
     authorizedUser()
     setupErrorHandler()
-    withCaching(Choice.choiceId, Some(Choice(Arrival)))
     when(mockArrivalReferencePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -61,7 +59,7 @@ class ArrivalReferenceControllerSpec extends ControllerSpec with OptionValues wi
     super.afterEach()
   }
 
-  def theResponseForm: Form[ArrivalReference] = {
+  private def theResponseForm: Form[ArrivalReference] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ArrivalReference]])
     verify(mockArrivalReferencePage).apply(captor.capture())(any(), any())
     captor.getValue
@@ -73,6 +71,7 @@ class ArrivalReferenceControllerSpec extends ControllerSpec with OptionValues wi
 
       "display page is invoked during arrival journey with empty cache" in {
 
+        givenAUserOnTheArrivalJourney()
         withCaching(ArrivalReference.formId, None)
 
         val result = controller.displayPage()(getRequest())
@@ -83,6 +82,7 @@ class ArrivalReferenceControllerSpec extends ControllerSpec with OptionValues wi
 
       "display page is invoked during arrival journey with data in cache" in {
 
+        givenAUserOnTheArrivalJourney()
         val reference = "123456"
         withCaching(ArrivalReference.formId, Some(ArrivalReference(Some(reference))))
 
@@ -97,7 +97,7 @@ class ArrivalReferenceControllerSpec extends ControllerSpec with OptionValues wi
 
       "display page is invoked during departure journey" in {
 
-        withCaching(Choice.choiceId, Some(Choice(Departure)))
+        givenAUserOnTheDepartureJourney()
 
         val result = controller.displayPage()(getRequest())
 
@@ -106,6 +106,7 @@ class ArrivalReferenceControllerSpec extends ControllerSpec with OptionValues wi
 
       "form contains errors during submission" in {
 
+        givenAUserOnTheArrivalJourney()
         withCaching(ArrivalReference.formId, None)
 
         val incorrectForm = Json.toJson(ArrivalReference(Some("!@#$%")))
@@ -120,6 +121,7 @@ class ArrivalReferenceControllerSpec extends ControllerSpec with OptionValues wi
 
       "form is correct" in {
 
+        givenAUserOnTheArrivalJourney()
         withCaching(ArrivalReference.formId)
         withCaching(ArrivalReference.formId, None)
 

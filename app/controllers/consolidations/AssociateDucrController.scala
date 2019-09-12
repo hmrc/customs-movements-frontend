@@ -37,7 +37,7 @@ class AssociateDucrController @Inject()(
   mcc: MessagesControllerComponents,
   cacheService: CustomsCacheService,
   associateDucrPage: associate_ducr
-)(implicit executionConetxt: ExecutionContext)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

@@ -34,10 +34,10 @@ import scala.concurrent.ExecutionContext.global
 
 class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
 
-  val mockArrivalDetailsPage = mock[arrival_details]
-  val mockDepartureDetailsPage = mock[departure_details]
+  private val mockArrivalDetailsPage = mock[arrival_details]
+  private val mockDepartureDetailsPage = mock[departure_details]
 
-  val controller = new MovementDetailsController(
+  private val controller = new MovementDetailsController(
     mockAuthAction,
     mockJourneyAction,
     mockCustomsCacheService,
@@ -60,13 +60,13 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
     super.afterEach()
   }
 
-  def arrivalResponseForm: Form[ArrivalDetails] = {
+  private def arrivalResponseForm: Form[ArrivalDetails] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ArrivalDetails]])
     verify(mockArrivalDetailsPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
-  def departureResponseForm: Form[DepartureDetails] = {
+  private def departureResponseForm: Form[DepartureDetails] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[DepartureDetails]])
     verify(mockDepartureDetailsPage).apply(captor.capture())(any(), any())
     captor.getValue

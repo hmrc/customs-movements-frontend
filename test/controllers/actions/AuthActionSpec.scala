@@ -23,7 +23,7 @@ import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
 class AuthActionSpec extends MovementBaseSpec {
 
-  val uri = uriWithContextPath("/choice")
+  val uri = "/customs-movements/choice"
 
   "Auth Action" should {
 

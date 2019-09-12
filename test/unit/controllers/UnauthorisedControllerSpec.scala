@@ -18,7 +18,7 @@ package unit.controllers
 
 import controllers.UnauthorisedController
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -50,7 +50,7 @@ class UnauthorisedControllerSpec extends ControllerSpec {
       val result = controller.onPageLoad()(getRequest())
 
       status(result) mustBe OK
-      verify(mockUnauthorisedPage, times(1)).apply()(any(), any())
+      verify(mockUnauthorisedPage).apply()(any(), any())
     }
   }
 }

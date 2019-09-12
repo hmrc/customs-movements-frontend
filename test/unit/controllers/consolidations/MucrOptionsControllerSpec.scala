@@ -16,7 +16,7 @@
 
 package unit.controllers.consolidations
 
-import controllers.consolidations.{MucrOptionsController, routes}
+import controllers.consolidations.{routes, MucrOptionsController}
 import forms.Choice.AllowedChoiceValues
 import forms.MucrOptions.Create
 import forms.{Choice, MucrOptions}

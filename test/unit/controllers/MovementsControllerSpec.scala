@@ -32,9 +32,9 @@ import scala.concurrent.Future
 
 class MovementsControllerSpec extends ControllerSpec with MockCustomsExportsMovement {
 
-  val mockMovementsPage = mock[movements]
+  private val mockMovementsPage = mock[movements]
 
-  val controller = new MovementsController(
+  private val controller = new MovementsController(
     mockAuthAction,
     mockCustomsExportsMovementConnector,
     stubMessagesControllerComponents(),
@@ -48,8 +48,11 @@ class MovementsControllerSpec extends ControllerSpec with MockCustomsExportsMove
     when(mockMovementsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
-  override protected def afterEach(): Unit =
+  override protected def afterEach(): Unit = {
     reset(mockMovementsPage)
+
+    super.afterEach()
+  }
 
   "Submissions Controller" should {
 

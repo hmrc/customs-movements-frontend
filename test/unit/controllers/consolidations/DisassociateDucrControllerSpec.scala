@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
-import play.api.libs.json.{JsObject, JsString, JsValue, Json}
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import testdata.CommonTestData.correctUcr
@@ -36,9 +36,9 @@ import scala.concurrent.Future
 class DisassociateDucrControllerSpec
     extends ControllerSpec with MockSubmissionService with ScalaFutures with OptionValues {
 
-  val mockDisassociateDucrPage = mock[disassociate_ducr]
+  private val mockDisassociateDucrPage = mock[disassociate_ducr]
 
-  val controller = new DisassociateDucrController(
+  private val controller = new DisassociateDucrController(
     mockAuthAction,
     mockJourneyAction,
     mockSubmissionService,
@@ -61,8 +61,8 @@ class DisassociateDucrControllerSpec
     super.afterEach()
   }
 
-  val correctForm = Json.toJson(DisassociateDucr(correctUcr))
-  val incorrectForm = Json.toJson(DisassociateDucr("abc"))
+  private val correctForm = Json.toJson(DisassociateDucr(correctUcr))
+  private val incorrectForm = Json.toJson(DisassociateDucr("abc"))
 
   "Disassociate Ducr Controller on GET" should {
 
@@ -106,8 +106,6 @@ class DisassociateDucrControllerSpec
         val result = controller.submit()(postRequest(correctForm))
 
         redirectLocation(result).value mustBe routes.DisassociateDucrConfirmationController.displayPage().url
-
-        verify(mockSubmissionService).submitDucrDisassociation(meq(DisassociateDucr(correctUcr)))(any(), any())
       }
     }
 

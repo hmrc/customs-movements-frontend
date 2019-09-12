@@ -38,9 +38,9 @@ import scala.concurrent.Future
 
 class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmissionService with ScalaFutures {
 
-  val mockAssociateDucrSummaryPage = mock[associate_ducr_summary]
+  private val mockAssociateDucrSummaryPage = mock[associate_ducr_summary]
 
-  val controller = new AssociateDucrSummaryController(
+  private val controller = new AssociateDucrSummaryController(
     mockAuthAction,
     mockJourneyAction,
     mockErrorHandler,
@@ -73,7 +73,7 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
     super.afterEach()
   }
 
-  "Associate DUCR Summary onGET" should {
+  "Associate DUCR Summary on GET" should {
 
     "throw incomplete application when MUCROptions cache empty" in {
 

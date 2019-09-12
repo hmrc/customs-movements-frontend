@@ -16,16 +16,12 @@
 
 package unit.controllers.consolidations
 
-import base.{MockAuthConnector, MockSubmissionService, MovementBaseSpec, URIHelper}
-import controllers.consolidations.{ShutMucrController, routes}
-import controllers.storage.FlashKeys
-import controllers.util.RoutingHelper
+import base.MockSubmissionService
+import controllers.consolidations.{routes, ShutMucrController}
 import forms.ShutMucr
-import forms.ShutMucrSpec._
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import org.scalatest.{MustMatchers, OptionValues}
-import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.OptionValues
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -33,7 +29,6 @@ import unit.base.ControllerSpec
 import views.html.shut_mucr
 
 import scala.concurrent.ExecutionContext.global
-import scala.concurrent.Future
 
 class ShutMucrControllerSpec extends ControllerSpec with MockSubmissionService with OptionValues {
 
@@ -49,15 +44,15 @@ class ShutMucrControllerSpec extends ControllerSpec with MockSubmissionService w
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    
+
     authorizedUser()
     setupErrorHandler()
     when(mockShutMucrPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
-  
+
   override protected def afterEach(): Unit = {
     reset(mockShutMucrPage)
-    
+
     super.afterEach()
   }
 

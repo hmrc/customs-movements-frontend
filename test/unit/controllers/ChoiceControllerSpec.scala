@@ -35,9 +35,9 @@ import scala.concurrent.ExecutionContext.global
 
 class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeAndAfterEach {
 
-  val mockChoicePage = mock[choice_page]
+  private val mockChoicePage = mock[choice_page]
 
-  val controller =
+  private val controller =
     new ChoiceController(mockAuthAction, mockCustomsCacheService, stubMessagesControllerComponents(), mockChoicePage)(
       global
     )
@@ -56,7 +56,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
     super.afterEach()
   }
 
-  def theResponseForm: Form[Choice] = {
+  private def theResponseForm: Form[Choice] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Choice]])
     verify(mockChoicePage).apply(captor.capture())(any(), any())
     captor.getValue

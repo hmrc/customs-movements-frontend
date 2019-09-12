@@ -32,9 +32,9 @@ import scala.concurrent.ExecutionContext.global
 
 class AssociateDucrControllerSpec extends ControllerSpec {
 
-  val mockAssociateDucrPage = mock[associate_ducr]
+  private val mockAssociateDucrPage = mock[associate_ducr]
 
-  val controller = new AssociateDucrController(
+  private val controller = new AssociateDucrController(
     mockAuthAction,
     mockJourneyAction,
     stubMessagesControllerComponents(),

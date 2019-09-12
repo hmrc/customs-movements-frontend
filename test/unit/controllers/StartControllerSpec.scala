@@ -20,7 +20,7 @@ import controllers.StartController
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.Arrival
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -30,9 +30,9 @@ import scala.concurrent.ExecutionContext.global
 
 class StartControllerSpec extends ControllerSpec {
 
-  val mockStartPage = mock[start_page]
+  private val mockStartPage = mock[start_page]
 
-  val controller = new StartController(stubMessagesControllerComponents(), mockStartPage)(global)
+  private val controller = new StartController(stubMessagesControllerComponents(), mockStartPage)(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -56,7 +56,7 @@ class StartControllerSpec extends ControllerSpec {
 
       status(result) mustBe OK
 
-      verify(mockStartPage, times(1)).apply()(any(), any())
+      verify(mockStartPage).apply()(any(), any())
     }
   }
 }

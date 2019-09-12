@@ -20,7 +20,7 @@ import controllers.consolidations.AssociateDucrConfirmationController
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -28,9 +28,9 @@ import views.html.associate_ducr_confirmation
 
 class AssociateDucrConfirmationControllerSpec extends ControllerSpec {
 
-  val mockAssociateDucrConfirmPage = mock[associate_ducr_confirmation]
+  private val mockAssociateDucrConfirmPage = mock[associate_ducr_confirmation]
 
-  val controller = new AssociateDucrConfirmationController(
+  private val controller = new AssociateDucrConfirmationController(
     mockAuthAction,
     mockJourneyAction,
     stubMessagesControllerComponents(),
@@ -58,7 +58,7 @@ class AssociateDucrConfirmationControllerSpec extends ControllerSpec {
       val result = controller.displayPage()(getRequest())
 
       status(result) must be(OK)
-      verify(mockAssociateDucrConfirmPage, times(1)).apply()(any(), any(), any())
+      verify(mockAssociateDucrConfirmPage).apply()(any(), any(), any())
     }
   }
 }

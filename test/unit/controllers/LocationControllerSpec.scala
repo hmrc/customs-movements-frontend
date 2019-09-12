@@ -17,7 +17,6 @@
 package unit.controllers
 
 import controllers.{routes, LocationController}
-import forms.Choice.AllowedChoiceValues.Arrival
 import forms.{Choice, Location}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -34,9 +33,9 @@ import scala.concurrent.ExecutionContext.global
 
 class LocationControllerSpec extends ControllerSpec with OptionValues {
 
-  val mockLocationPage = mock[location]
+  private val mockLocationPage = mock[location]
 
-  val controller = new LocationController(
+  private val controller = new LocationController(
     mockAuthAction,
     mockJourneyAction,
     mockCustomsCacheService,
@@ -57,7 +56,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
     super.afterEach()
   }
 
-  def theResponseForm: Form[Location] = {
+  private def theResponseForm: Form[Location] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Location]])
     verify(mockLocationPage).apply(captor.capture(), any())(any(), any())
     captor.getValue

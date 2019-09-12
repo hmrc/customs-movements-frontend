@@ -20,7 +20,7 @@ import controllers.consolidations.DisassociateDucrConfirmationController
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -30,9 +30,9 @@ import scala.concurrent.ExecutionContext.global
 
 class DisassociateDucrConfirmationControllerSpec extends ControllerSpec {
 
-  val mockDisassociateDucrConfirmationPage = mock[disassociate_ducr_confirmation]
+  private val mockDisassociateDucrConfirmationPage = mock[disassociate_ducr_confirmation]
 
-  val controller = new DisassociateDucrConfirmationController(
+  private val controller = new DisassociateDucrConfirmationController(
     mockAuthAction,
     mockJourneyAction,
     stubMessagesControllerComponents(),
@@ -55,15 +55,12 @@ class DisassociateDucrConfirmationControllerSpec extends ControllerSpec {
 
   "Disassociate Ducr Confirmation Controller" should {
 
-    "return 200 for get request" when {
+    "return 200 for get request" in {
 
-      "cache contains data" in {
+      val result = controller.displayPage()(getRequest())
 
-        val result = controller.displayPage()(getRequest())
-
-        status(result) mustBe OK
-        verify(mockDisassociateDucrConfirmationPage, times(1)).apply()(any(), any(), any())
-      }
+      status(result) mustBe OK
+      verify(mockDisassociateDucrConfirmationPage).apply()(any(), any(), any())
     }
   }
 }

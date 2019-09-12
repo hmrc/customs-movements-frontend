@@ -28,9 +28,9 @@ import scala.concurrent.ExecutionContext.global
 
 class ShutMucrConfirmationControllerSpec extends ControllerSpec {
 
-  val mockShutMucrConfirmationPage = mock[shut_mucr_confirmation]
+  private val mockShutMucrConfirmationPage = mock[shut_mucr_confirmation]
 
-  val controller = new ShutMucrConfirmationController(
+  private val controller = new ShutMucrConfirmationController(
     mockAuthAction,
     stubMessagesControllerComponents(),
     mockShutMucrConfirmationPage

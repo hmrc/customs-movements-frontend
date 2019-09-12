@@ -51,7 +51,7 @@ class ArrivalReferenceControllerSpec extends ControllerSpec with OptionValues wi
 
     authorizedUser()
     setupErrorHandler()
-    withCaching(Choice.choiceId, Some(Choice(Arrival)))
+    givenAUserOnTheArrivalJourney()
     when(mockArrivalReferencePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -97,7 +97,7 @@ class ArrivalReferenceControllerSpec extends ControllerSpec with OptionValues wi
 
       "display page is invoked during departure journey" in {
 
-        withCaching(Choice.choiceId, Some(Choice(Departure)))
+        givenAUserOnTheDepartureJourney()
 
         val result = controller.displayPage()(getRequest())
 

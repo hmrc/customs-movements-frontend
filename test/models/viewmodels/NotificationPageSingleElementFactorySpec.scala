@@ -19,21 +19,22 @@ package models.viewmodels
 import java.time.format.DateTimeFormatter
 import java.time.{ZoneId, ZonedDateTime}
 
-import testdata.CommonTestData._
-import testdata.MovementsTestData.exampleSubmissionFrontendModel
-import testdata.NotificationTestData.exampleNotificationFrontendModel
 import models.UcrBlock
 import models.notifications.ResponseType
 import models.submissions.{ActionType, SubmissionFrontendModel}
+import models.viewmodels.decoder.ErrorCode._
 import models.viewmodels.decoder._
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
+import testdata.CommonTestData._
+import testdata.MovementsTestData.exampleSubmissionFrontendModel
+import testdata.NotificationTestData.exampleNotificationFrontendModel
 
 class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatchers with MockitoSugar {
 
@@ -41,19 +42,22 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
   private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault())
   private val testTimestamp = ZonedDateTime.parse(testTimestampString, formatter).toInstant
 
+  private val crcCodeKeyFromDecoder = CrcCode.Success
+  private val roeKeyFromDecoder = RoeCode.DocumentaryControl
+  private val soeKeyFromDecoder = SoeCode.DeclarationAcceptance
+  private val AcknowledgedAndProcessedActionCode = ActionCode.AcknowledgedAndProcessed
+  private val MucrNotShutConsolidationErrorCode = ErrorCode.MucrNotShutConsolidation
+
   private trait Test {
     val decoderMock: Decoder = mock[Decoder]
     implicit val messages: Messages = Mockito.spy(stubMessages())
     val factory = new NotificationPageSingleElementFactory(decoderMock)
 
-    val crcCodeKeyFromDecoder = CrcCode.Success
-    val roeKeyFromDecoder = RoeCode.DocumentaryControl
-    val soeKeyFromDecoder = SoeCode.DeclarationAcceptance
-    val actionCodeKeyFromDecoder = ActionCode.AcknowledgedAndProcessed
-    when(decoderMock.crc(any())).thenReturn(Some(crcCodeKeyFromDecoder))
-    when(decoderMock.roe(any())).thenReturn(Some(roeKeyFromDecoder))
-    when(decoderMock.soe(any())).thenReturn(Some(soeKeyFromDecoder))
-    when(decoderMock.actionCode(any())).thenReturn(Some(actionCodeKeyFromDecoder))
+    when(decoderMock.crc(any[String])).thenReturn(Some(crcCodeKeyFromDecoder))
+    when(decoderMock.roe(any[String])).thenReturn(Some(roeKeyFromDecoder))
+    when(decoderMock.soe(any[String])).thenReturn(Some(soeKeyFromDecoder))
+    when(decoderMock.actionCode(any[String])).thenReturn(Some(AcknowledgedAndProcessedActionCode))
+    when(decoderMock.errorCode(any[String])).thenReturn(Some(MucrNotShutConsolidationErrorCode))
   }
 
   "NotificationPageSingleElementFactory" should {
@@ -168,63 +172,6 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
         assertEquality(result, expectedResult)
       }
-
-      "provided with ControlResponse NotificationFrontendModel" which {
-
-        "contains action code = 1" in new Test {
-
-          val input = exampleNotificationFrontendModel(
-            responseType = ResponseType.ControlResponse,
-            timestampReceived = testTimestamp,
-            actionCode = Some("1")
-          )
-          val expectedResult = NotificationsPageSingleElement(
-            title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
-            timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
-            content = Html(s"<p>${messages(actionCodeKeyFromDecoder.contentKey)}</p>")
-          )
-
-          val result: NotificationsPageSingleElement = factory.build(input)
-
-          assertEquality(result, expectedResult)
-        }
-
-        "contains action code = 2" in new Test {
-
-          val input = exampleNotificationFrontendModel(
-            responseType = ResponseType.ControlResponse,
-            timestampReceived = testTimestamp,
-            actionCode = Some("2")
-          )
-          val expectedResult = NotificationsPageSingleElement(
-            title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
-            timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
-            content = Html(s"<p>${messages(actionCodeKeyFromDecoder.contentKey)}</p>")
-          )
-
-          val result: NotificationsPageSingleElement = factory.build(input)
-
-          assertEquality(result, expectedResult)
-        }
-
-        "contains action code = 3" in new Test {
-
-          val input = exampleNotificationFrontendModel(
-            responseType = ResponseType.ControlResponse,
-            timestampReceived = testTimestamp,
-            actionCode = Some("3")
-          )
-          val expectedResult = NotificationsPageSingleElement(
-            title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
-            timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
-            content = Html(s"<p>${messages(actionCodeKeyFromDecoder.contentKey)}</p>")
-          )
-
-          val result: NotificationsPageSingleElement = factory.build(input)
-
-          assertEquality(result, expectedResult)
-        }
-      }
     }
 
   }
@@ -257,10 +204,10 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
         factory.build(input)
 
-        verifyMessages("notifications.elem.title.inventoryLinkingMovementResponse")
-        verifyMessages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34")
-        verifyMessages(crcCodeKeyFromDecoder.contentKey)
-        verifyMessages("notifications.elem.content.inventoryLinkingMovementResponse.crc")
+        verifyMessagesCalledWith("notifications.elem.title.inventoryLinkingMovementResponse")
+        verifyMessagesCalledWith("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34")
+        verifyMessagesCalledWith(crcCodeKeyFromDecoder.contentKey)
+        verifyMessagesCalledWith("notifications.elem.content.inventoryLinkingMovementResponse.crc")
       }
 
       "return NotificationsPageSingleElement with values returned by Messages" in new Test {
@@ -318,16 +265,16 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
         factory.build(input)
 
-        verifyMessages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
-        verifyMessages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34")
+        verifyMessagesCalledWith("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
+        verifyMessagesCalledWith("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34")
 
-        verifyMessages(crcCodeKeyFromDecoder.contentKey)
-        verifyMessages(roeKeyFromDecoder.contentKey)
-        verifyMessages(soeKeyFromDecoder.contentKey)
+        verifyMessagesCalledWith(crcCodeKeyFromDecoder.contentKey)
+        verifyMessagesCalledWith(roeKeyFromDecoder.contentKey)
+        verifyMessagesCalledWith(soeKeyFromDecoder.contentKey)
 
-        verifyMessages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")
-        verifyMessages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")
-        verifyMessages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")
+        verifyMessagesCalledWith("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")
+        verifyMessagesCalledWith("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")
+        verifyMessagesCalledWith("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")
       }
 
       "return NotificationsPageSingleElement with values returned by Messages" in new Test {
@@ -376,6 +323,136 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         assertEquality(result, expectedResult)
       }
     }
+
+    "provided with ControlResponse NotificationFrontendModel without errors" should {
+
+      "not call Decoder" in new Test {
+
+        val input = exampleNotificationFrontendModel(
+          responseType = ResponseType.ControlResponse,
+          timestampReceived = testTimestamp,
+          actionCode = Some(AcknowledgedAndProcessedActionCode.code)
+        )
+
+        factory.build(input)
+
+        verify(decoderMock, times(0)).errorCode(any())
+      }
+
+      "call Messages passing correct keys and arguments" in new Test {
+
+        val input = exampleNotificationFrontendModel(
+          responseType = ResponseType.ControlResponse,
+          timestampReceived = testTimestamp,
+          actionCode = Some(AcknowledgedAndProcessedActionCode.code)
+        )
+
+        factory.build(input)
+
+        verifyMessagesCalledWith("notifications.elem.title.inventoryLinkingControlResponse")
+        verifyMessagesCalledWith("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34")
+        verifyMessagesCalledWith(AcknowledgedAndProcessedActionCode.contentKey)
+      }
+
+      "return NotificationsPageSingleElement with values returned by Messages" in new Test {
+
+        val input = exampleNotificationFrontendModel(
+          responseType = ResponseType.ControlResponse,
+          timestampReceived = testTimestamp,
+          actionCode = Some(AcknowledgedAndProcessedActionCode.code)
+        )
+        val expectedResult = NotificationsPageSingleElement(
+          title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
+          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
+          content = Html(s"<p>${messages(AcknowledgedAndProcessedActionCode.contentKey)}</p>")
+        )
+
+        val result: NotificationsPageSingleElement = factory.build(input)
+
+        assertEquality(result, expectedResult)
+      }
+
+      "return NotificationsPageSingleElement with empty error explanation" in new Test {}
+    }
+
+    "provided with ControlResponse NotificationFrontendModel with errors" should {
+
+      "call Decoder" in new Test {
+
+        val input = exampleNotificationFrontendModel(
+          responseType = ResponseType.ControlResponse,
+          timestampReceived = testTimestamp,
+          actionCode = Some(AcknowledgedAndProcessedActionCode.code),
+          errorCodes = Seq("01", "29", "13")
+        )
+
+        factory.build(input)
+
+        verify(decoderMock).errorCode(meq("01"))
+        verify(decoderMock).errorCode(meq("29"))
+        verify(decoderMock).errorCode(meq("13"))
+      }
+
+      "return NotificationsPageSingleElement with values returned by Messages" in new Test {
+
+        when(decoderMock.errorCode(meq("01"))).thenReturn(Some(InvalidUcrFormat))
+        when(decoderMock.errorCode(meq("13"))).thenReturn(Some(NoPriorArrivalFoundAtDepartureLocation))
+        when(decoderMock.errorCode(meq("29"))).thenReturn(Some(MucrAlreadyDeparted))
+
+        val input = exampleNotificationFrontendModel(
+          responseType = ResponseType.ControlResponse,
+          timestampReceived = testTimestamp,
+          actionCode = Some(AcknowledgedAndProcessedActionCode.code),
+          errorCodes = Seq("01", "29", "13")
+        )
+        val expectedResult = NotificationsPageSingleElement(
+          title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
+          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
+          content = Html(
+            s"<p>${messages(AcknowledgedAndProcessedActionCode.contentKey)}</p>" +
+              s"<br/>" +
+              s"<p>${messages("decoder.errorCode.InvalidUcrFormat")}</p>" +
+              s"<p>${messages("decoder.errorCode.MucrAlreadyDeparted")}</p>" +
+              s"<p>${messages("decoder.errorCode.NoPriorArrivalFoundAtDepartureLocation")}</p>"
+          )
+        )
+
+        val result: NotificationsPageSingleElement = factory.build(input)
+
+        assertEquality(result, expectedResult)
+      }
+    }
+
+    "provided with ControlResponse NotificationFrontendModel with unknown error" should {
+
+      "return NotificationsPageSingleElement with empty content for this error" in new Test {
+
+        when(decoderMock.errorCode(any[String])).thenReturn(None)
+        when(decoderMock.errorCode(meq("01"))).thenReturn(Some(InvalidUcrFormat))
+        when(decoderMock.errorCode(meq("13"))).thenReturn(Some(NoPriorArrivalFoundAtDepartureLocation))
+
+        val input = exampleNotificationFrontendModel(
+          responseType = ResponseType.ControlResponse,
+          timestampReceived = testTimestamp,
+          actionCode = Some(AcknowledgedAndProcessedActionCode.code),
+          errorCodes = Seq("01", "123", "13")
+        )
+        val expectedResult = NotificationsPageSingleElement(
+          title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
+          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
+          content = Html(
+            s"<p>${messages(AcknowledgedAndProcessedActionCode.contentKey)}</p>" +
+              s"<br/>" +
+              s"<p>${messages("decoder.errorCode.InvalidUcrFormat")}</p>" +
+              s"<p>${messages("decoder.errorCode.NoPriorArrivalFoundAtDepartureLocation")}</p>"
+          )
+        )
+
+        val result: NotificationsPageSingleElement = factory.build(input)
+
+        assertEquality(result, expectedResult)
+      }
+    }
   }
 
   private def assertEquality(actual: NotificationsPageSingleElement, expected: NotificationsPageSingleElement): Unit = {
@@ -384,7 +461,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
     actual.content must equal(expected.content)
   }
 
-  private def verifyMessages(key: String, args: String*)(implicit messages: Messages): Unit =
+  private def verifyMessagesCalledWith(key: String, args: String*)(implicit messages: Messages): Unit =
     verify(messages).apply(meq(key), meq(args))
 
 }

@@ -25,12 +25,14 @@ import models.notifications.ResponseType._
 import models.submissions.ActionType._
 import models.submissions.SubmissionFrontendModel
 import models.viewmodels.decoder.Decoder
+import play.api.Logger
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 
 @Singleton
 class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
 
+  private val logger = Logger(this.getClass)
   private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
 
   def build(submission: SubmissionFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
@@ -54,9 +56,6 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
       content = content
     )
   }
-
-  private def timestampInfoRequest(responseTimestamp: Instant)(implicit messages: Messages): String =
-    messages("notifications.elem.timestampInfo.request", dateTimeFormatter.format(responseTimestamp))
 
   private def buildForDucrAssociation(
     submission: SubmissionFrontendModel
@@ -84,14 +83,30 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
     notification: NotificationFrontendModel
   )(implicit messages: Messages): NotificationsPageSingleElement = {
 
-    val content = notification.actionCode.map { code =>
-      s"<p>${messages(decoder.actionCode(code).map(_.contentKey).getOrElse(""))}</p>"
-    }
+    val actionCodeExplanation = for {
+      code <- notification.actionCode
+      actionCode <- decoder.actionCode(code)
+      content = s"<p>${messages(actionCode.contentKey)}</p>"
+    } yield content
+
+    val errorExplanation = (for {
+      code <- notification.errorCodes
+      errorCode <- decoder.errorCode(code) match {
+        case None =>
+          logger.warn(s"Received inventoryLinkingControlResponse with unknown error code: $code")
+          None
+        case knownCode => knownCode
+      }
+
+      content = s"<p>${messages(errorCode.contentKey)}</p>"
+    } yield content).foldLeft("")(_ + _)
+
+    val errorExplanationContent = if (errorExplanation.nonEmpty) "<br/>" + errorExplanation else ""
 
     NotificationsPageSingleElement(
       title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
       timestampInfo = timestampInfoResponse(notification.timestampReceived),
-      content = Html(content.getOrElse(""))
+      content = Html(actionCodeExplanation.getOrElse("") + errorExplanationContent)
     )
   }
 
@@ -155,6 +170,9 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
       decodedCrcCode <- decoder.crc(code)
       content = messages(decodedCrcCode.contentKey)
     } yield content
+
+  private def timestampInfoRequest(responseTimestamp: Instant)(implicit messages: Messages): String =
+    messages("notifications.elem.timestampInfo.request", dateTimeFormatter.format(responseTimestamp))
 
   private def timestampInfoResponse(responseTimestamp: Instant)(implicit messages: Messages): String =
     messages("notifications.elem.timestampInfo.response", dateTimeFormatter.format(responseTimestamp))

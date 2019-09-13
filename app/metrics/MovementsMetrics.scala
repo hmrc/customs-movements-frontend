@@ -49,7 +49,7 @@ class MovementsMetrics @Inject()(metrics: Metrics) {
 object MetricIdentifiers {
   val arrivalMetric = "arrival"
   val departureMetric = "departure"
-  val consolidationMetric = "consolidation"
+  val consolidationMetric = "association"
   val disassociationMetric = "disassociation"
   val shutMucr = "shut"
 }

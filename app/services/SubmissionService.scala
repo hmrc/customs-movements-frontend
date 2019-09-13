@@ -43,7 +43,7 @@ class SubmissionService @Inject()(
     cacheService.fetch(cacheId).flatMap {
       case Some(cacheMap) => {
         val data = Movement.createMovementRequest(cacheMap, eori, choice)
-        val timer = metrics.startTimer(data.messageCode)
+        val timer = metrics.startTimer(choice.value)
 
         sendMovementRequest(choice, data).map { submitResponse =>
           metrics.incrementCounter(data.messageCode)
@@ -67,10 +67,17 @@ class SubmissionService @Inject()(
   def submitDucrAssociation(
     mucrOptions: MucrOptions,
     associateDucr: AssociateDucr
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
+    val timer = metrics.startTimer(Choice.AllowedChoiceValues.AssociateDUCR)
     connector
       .sendAssociationRequest(buildAssociationRequest(mucr = mucrOptions.mucr, ducr = associateDucr.ducr).toString)
       .map(_.status)
+      .andThen {
+        case Success(_) =>
+          timer.stop()
+          metrics.incrementCounter(Choice.AllowedChoiceValues.AssociateDUCR)
+      }
+  }
 
   def submitDucrDisassociation(
     disassociateDucr: DisassociateDucr

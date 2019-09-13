@@ -21,7 +21,7 @@ import connectors.CustomsDeclareExportsMovementsConnector
 import metrics.MovementsMetrics
 import models.notifications.NotificationFrontendModel
 import models.submissions.SubmissionFrontendModel
-import models.viewmodels.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
+import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar

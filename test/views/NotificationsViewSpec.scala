@@ -16,7 +16,7 @@
 
 package views
 
-import models.viewmodels.NotificationsPageSingleElement
+import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

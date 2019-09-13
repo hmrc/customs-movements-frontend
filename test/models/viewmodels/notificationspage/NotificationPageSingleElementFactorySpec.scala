@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.viewmodels
+package models.viewmodels.notificationspage
 
 import java.time.format.DateTimeFormatter
 import java.time.{ZoneId, ZonedDateTime}

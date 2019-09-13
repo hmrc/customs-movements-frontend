@@ -17,7 +17,7 @@
 package unit.controllers
 
 import controllers.consolidations.{routes => consolidationRoutes}
-import controllers.{ChoiceController, routes}
+import controllers.{routes, ChoiceController}
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import org.mockito.ArgumentCaptor

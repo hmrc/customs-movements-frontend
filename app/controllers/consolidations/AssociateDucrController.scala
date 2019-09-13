@@ -47,12 +47,6 @@ class AssociateDucrController @Inject()(
     }
   }
 
-  /* TODO
-    Discuss logic around this method, if form has error and there is no data about MucrOptions page
-    we're throwing an exception, but if you provide correct form you're able to go to the next page and save data...
-    I know that this case can be achieved only by POSTMAN and I'm not sure that it's possible to make a post on
-    environments, but if not, we can remove this handling from form with errors
-   */
   def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()

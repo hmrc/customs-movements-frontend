@@ -121,7 +121,8 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
         givenAUserOnTheArrivalJourney()
         withCaching(MovementDetails.formId)
 
-        val correctDate: JsValue = JsObject(Map("day" -> JsNumber(10), "month" -> JsNumber(10), "year" -> JsNumber(2019)))
+        val correctDate: JsValue =
+          JsObject(Map("day" -> JsNumber(10), "month" -> JsNumber(10), "year" -> JsNumber(2019)))
         val correctTime: JsValue = JsObject(Map("hour" -> JsString("10"), "minute" -> JsString("10")))
 
         val correctForm: JsValue = JsObject(Map("dateOfArrival" -> correctDate, "timeOfArrival" -> correctTime))
@@ -183,7 +184,8 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
         givenAUserOnTheDepartureJourney()
         withCaching(MovementDetails.formId)
 
-        val correctDate: JsValue = JsObject(Map("day" -> JsNumber(10), "month" -> JsNumber(10), "year" -> JsNumber(2019)))
+        val correctDate: JsValue =
+          JsObject(Map("day" -> JsNumber(10), "month" -> JsNumber(10), "year" -> JsNumber(2019)))
 
         val correctForm: JsValue = JsObject(Map("dateOfDeparture" -> correctDate))
 

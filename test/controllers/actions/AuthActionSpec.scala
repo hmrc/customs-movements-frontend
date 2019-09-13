@@ -17,13 +17,14 @@
 package controllers.actions
 
 import base.MovementBaseSpec
+import controllers.routes
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
 class AuthActionSpec extends MovementBaseSpec {
 
-  val uri = "/customs-movements/choice"
+  val uri = routes.ChoiceController.displayChoiceForm().url
 
   "Auth Action" should {
 

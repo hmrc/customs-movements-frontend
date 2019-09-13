@@ -92,7 +92,7 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
         status(result) mustBe OK
       }
 
-      "submission service return ACCEPTED during submission"in {
+      "submission service return ACCEPTED during submission" in {
 
         givenAUserOnTheArrivalJourney()
         mockSubmission()

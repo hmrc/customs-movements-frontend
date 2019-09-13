@@ -24,6 +24,7 @@ import forms.{AssociateDucr, Choice, MucrOptions}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
+import org.scalatest.OptionValues
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -32,7 +33,7 @@ import views.html.associate_ducr_summary
 
 import scala.concurrent.ExecutionContext.global
 
-class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmissionService {
+class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmissionService with OptionValues {
 
   private val mockAssociateDucrSummaryPage = mock[associate_ducr_summary]
 
@@ -155,6 +156,7 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
         val result = controller.submit()(postRequest(Json.obj()))
 
         status(result) mustBe SEE_OTHER
+        flash(result).get("MUCR").value mustBe "MUCR"
       }
     }
   }

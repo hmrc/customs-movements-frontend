@@ -23,6 +23,12 @@ class SoeCodeSpec extends UnitSpec {
 
   "Soe Code" should {
 
+    "have correct amount of codes" in {
+
+      val expectedCodesAmount = 19
+      SoeCode.codes.size mustEqual expectedCodesAmount
+    }
+
     "have correct list of codes" in {
 
       val expectedCodes = Set(

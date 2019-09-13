@@ -23,6 +23,12 @@ class ActionCodeSpec extends UnitSpec {
 
   "Action Code" should {
 
+    "have correct amount of codes" in {
+
+      val expectedCodesAmount = 3
+      ActionCode.codes.size mustEqual expectedCodesAmount
+    }
+
     "have correct code list" in {
 
       val expectedCodes = Set(AcknowledgedAndProcessed, PartiallyAcknowledgedAndProcessed, Rejected)

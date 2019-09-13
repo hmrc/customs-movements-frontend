@@ -67,9 +67,9 @@ class TransportControllerSpec extends ControllerSpec with OptionValues {
 
   "Transport Controller" should {
 
-    "return 200 for get request" when {
+    "return 200 (OK)" when {
 
-      "cache is empty" in {
+      "display page method is invoked and cache is empty" in {
 
         withCaching(Transport.formId, None)
 
@@ -79,7 +79,7 @@ class TransportControllerSpec extends ControllerSpec with OptionValues {
         theResponseForm.value mustBe empty
       }
 
-      "cache contains data" in {
+      "display page method is invoked and cache contains data" in {
 
         val cachedData = Transport(Sea, "PL")
         withCaching(Transport.formId, Some(cachedData))
@@ -91,28 +91,34 @@ class TransportControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    "return BadRequest for incorrect form" in {
+    "return 400 (BAD_REQUEST)" when {
 
-      withCaching(Transport.formId)
+      "form is incorrect" in {
 
-      val incorrectForm: JsValue =
-        JsObject(Map("modeOfTransport" -> JsString("transport"), "nationality" -> JsString("Country")))
+        withCaching(Transport.formId)
 
-      val result = controller.saveTransport()(postRequest(incorrectForm))
+        val incorrectForm: JsValue =
+          JsObject(Map("modeOfTransport" -> JsString("transport"), "nationality" -> JsString("Country")))
 
-      status(result) mustBe BAD_REQUEST
+        val result = controller.saveTransport()(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+      }
     }
 
-    "redirect to summary page for correct form" in {
+    "return 303 (SEE_OTHER) and redirect to summary page" when {
 
-      withCaching(Transport.formId)
+      "form is correct" in {
 
-      val incorrectForm: JsValue = JsObject(Map("modeOfTransport" -> JsString(Sea), "nationality" -> JsString("PL")))
+        withCaching(Transport.formId)
 
-      val result = controller.saveTransport()(postRequest(incorrectForm))
+        val incorrectForm: JsValue = JsObject(Map("modeOfTransport" -> JsString(Sea), "nationality" -> JsString("PL")))
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).value mustBe routes.SummaryController.displayPage().url
+        val result = controller.saveTransport()(postRequest(incorrectForm))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.SummaryController.displayPage().url
+      }
     }
   }
 }

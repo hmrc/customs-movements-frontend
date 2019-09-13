@@ -18,6 +18,8 @@ package unit.controllers
 
 import base.MockSubmissionService
 import controllers.SummaryController
+import forms.Choice
+import forms.Choice.AllowedChoiceValues
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.libs.json.{JsObject, JsString, JsValue}
@@ -66,24 +68,11 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
 
   private val emptyForm = JsObject(Map("" -> JsString("")))
 
-  "MovementSummaryController.displaySummary()" when {
+  "Movement Summary Controller" should {
 
-    "cannot read data from DB" should {
+    "return 200 (OK)" when {
 
-      "return 500 code and display error page" in {
-
-        givenAUserOnTheArrivalJourney()
-        withCacheMap(None)
-
-        val result = controller.displayPage()(getRequest())
-
-        status(result) mustBe INTERNAL_SERVER_ERROR
-      }
-    }
-
-    "can read data from DB" should {
-
-      "return 200 code for arrival" in {
+      "cache contains data and user is during arrival journey" in {
 
         givenAUserOnTheArrivalJourney()
         withCacheMap(Some(CacheMap("id", Map.empty[String, JsValue])))
@@ -93,7 +82,7 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
         status(result) mustBe OK
       }
 
-      "return 200 code for departure" in {
+      "cache contains data and user is during departure journey" in {
 
         givenAUserOnTheDepartureJourney()
         withCacheMap(Some(CacheMap("id", Map.empty[String, JsValue])))
@@ -102,27 +91,8 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
 
         status(result) mustBe OK
       }
-    }
-  }
 
-  "MovementSummaryController.submitMovementRequest" when {
-
-    "Submission of data failed" should {
-
-      "return 500 code" in {
-
-        givenAUserOnTheArrivalJourney()
-        mockSubmission(INTERNAL_SERVER_ERROR)
-
-        val result = controller.submitMovementRequest()(postRequest(emptyForm))
-
-        status(result) mustBe INTERNAL_SERVER_ERROR
-      }
-    }
-
-    "Submission succeeded" should {
-
-      "redirect to the new page" in {
+      "submission service return ACCEPTED during submission"in {
 
         givenAUserOnTheArrivalJourney()
         mockSubmission()
@@ -134,6 +104,38 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
         verify(mockMovementConfirmationPage).apply(any())(any(), any())
       }
     }
-  }
 
+    "return 500 (INTERNAL_SERVER_ERROR)" when {
+
+      "there is no data in cache" in {
+
+        givenAUserOnTheArrivalJourney()
+        withCacheMap(None)
+
+        val result = controller.displayPage()(getRequest())
+
+        status(result) mustBe INTERNAL_SERVER_ERROR
+      }
+
+      "user is on different type of journey" in {
+
+        withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.ShutMucr)))
+        withCacheMap(Some(CacheMap("id", Map.empty[String, JsValue])))
+
+        val result = controller.displayPage()(getRequest())
+
+        status(result) mustBe INTERNAL_SERVER_ERROR
+      }
+
+      "submission service returned different status than ACCEPTED" in {
+
+        givenAUserOnTheArrivalJourney()
+        mockSubmission(BAD_REQUEST)
+
+        val result = controller.submitMovementRequest()(postRequest(emptyForm))
+
+        status(result) mustBe INTERNAL_SERVER_ERROR
+      }
+    }
+  }
 }

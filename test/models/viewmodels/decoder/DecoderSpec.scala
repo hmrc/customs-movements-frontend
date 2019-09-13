@@ -18,6 +18,7 @@ package models.viewmodels.decoder
 
 import models.viewmodels.decoder.ActionCode.Rejected
 import models.viewmodels.decoder.CrcCode.Success
+import models.viewmodels.decoder.ErrorCode.MucrNotShutDeparture
 import models.viewmodels.decoder.RoeCode.DocumentaryControl
 import models.viewmodels.decoder.SoeCode.Departed
 import unit.base.UnitSpec
@@ -46,6 +47,10 @@ class DecoderSpec extends UnitSpec {
     "find correct action code" in {
 
       decoder.actionCode(Rejected.code) mustBe Some(Rejected)
+    }
+
+    "find correct error code" in {
+      decoder.errorCode(MucrNotShutDeparture.code) mustBe Some(MucrNotShutDeparture)
     }
   }
 }

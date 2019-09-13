@@ -28,4 +28,6 @@ class Decoder {
   def soe(code: String): Option[SoeCode] = SoeCode.codes.find(_.code == code)
 
   def actionCode(code: String): Option[ActionCode] = ActionCode.codes.find(_.code == code)
+
+  def errorCode(code: String): Option[ErrorCode] = ErrorCode.codes.find(_.code == code)
 }

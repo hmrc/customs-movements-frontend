@@ -28,7 +28,7 @@ class MovementsMetrics @Inject()(metrics: Metrics) {
   val timers = Map(
     Arrival -> metrics.defaultRegistry.timer(s"$arrivalMetric.timer"),
     Departure -> metrics.defaultRegistry.timer(s"$departureMetric.timer"),
-    AssociateDUCR -> metrics.defaultRegistry.timer(s"$consolidationMetric.timer"),
+    AssociateDUCR -> metrics.defaultRegistry.timer(s"$associationMetric.timer"),
     DisassociateDUCR -> metrics.defaultRegistry.timer(s"$disassociationMetric.timer"),
     ShutMucr -> metrics.defaultRegistry.timer(s"$shutMucr.timer")
   )
@@ -36,7 +36,7 @@ class MovementsMetrics @Inject()(metrics: Metrics) {
   val counters = Map(
     Arrival -> metrics.defaultRegistry.counter(s"$arrivalMetric.counter"),
     Departure -> metrics.defaultRegistry.counter(s"$departureMetric.counter"),
-    AssociateDUCR -> metrics.defaultRegistry.counter(s"$consolidationMetric.counter"),
+    AssociateDUCR -> metrics.defaultRegistry.counter(s"$associationMetric.counter"),
     DisassociateDUCR -> metrics.defaultRegistry.counter(s"$disassociationMetric.counter"),
     ShutMucr -> metrics.defaultRegistry.counter(s"$shutMucr.counter")
   )
@@ -49,7 +49,7 @@ class MovementsMetrics @Inject()(metrics: Metrics) {
 object MetricIdentifiers {
   val arrivalMetric = "arrival"
   val departureMetric = "departure"
-  val consolidationMetric = "consolidation"
+  val associationMetric = "association"
   val disassociationMetric = "disassociation"
   val shutMucr = "shut"
 }

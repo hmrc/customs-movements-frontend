@@ -16,20 +16,21 @@
 
 package services
 
-import base.{MockFactory, MovementsMetricsStub}
-import testdata.ConsolidationTestData._
-import testdata.MovementsTestData._
+import base.{MetricsMatchers, MovementsMetricsStub}
+import connectors.CustomsDeclareExportsMovementsConnector
 import forms.Choice.AllowedChoiceValues.{Arrival, Departure}
 import forms._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Seconds, Span}
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.{BeforeAndAfterEach, MustMatchers, WordSpec}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers.ACCEPTED
+import testdata.ConsolidationTestData._
+import testdata.MovementsTestData._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -38,22 +39,26 @@ import scala.concurrent.Future
 import scala.xml.{Node, Utility, XML}
 
 class SubmissionServiceSpec
-    extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures with MovementsMetricsStub {
+    extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures with MovementsMetricsStub
+    with MetricsMatchers with BeforeAndAfterEach {
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(100, Millis))
 
-  private trait Test {
-    implicit val headerCarrierMock = mock[HeaderCarrier]
+  implicit val headerCarrierMock = mock[HeaderCarrier]
 
-    val customsCacheServiceMock = MockFactory.buildCustomsCacheServiceMock
-    val customsExportsMovementConnectorMock = MockFactory.buildCustomsDeclareExportsMovementsConnectorMock
+  val customsCacheServiceMock = mock[CustomsCacheService]
+  val customsExportsMovementConnectorMock = mock[CustomsDeclareExportsMovementsConnector]
 
-    val submissionService =
-      new SubmissionService(customsCacheServiceMock, customsExportsMovementConnectorMock, movementsMetricsStub)
+  val submissionService =
+    new SubmissionService(customsCacheServiceMock, customsExportsMovementConnectorMock, movementsMetricsStub)
+
+  override def afterEach(): Unit = {
+    reset(customsCacheServiceMock, customsExportsMovementConnectorMock)
+    super.afterEach()
   }
 
-  private trait RequestAcceptedTest extends Test {
+  private def requestAcceptedTest(block: => Any): Any = {
     when(customsExportsMovementConnectorMock.sendArrivalDeclaration(any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
     when(customsExportsMovementConnectorMock.sendDepartureDeclaration(any())(any(), any()))
@@ -65,13 +70,14 @@ class SubmissionServiceSpec
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
     when(customsExportsMovementConnectorMock.sendShutMucrRequest(any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+    block
   }
 
   "SubmissionService on submitMovementRequest" when {
 
     "submitting Arrival" should {
 
-      "return response from CustomsDeclareExportsMovementsConnector" in new RequestAcceptedTest {
+      "return response from CustomsDeclareExportsMovementsConnector" in requestAcceptedTest {
 
         when(customsCacheServiceMock.fetch(any())(any(), any()))
           .thenReturn(Future.successful(Some(CacheMap(Arrival, cacheMapData(Arrival)))))
@@ -85,7 +91,7 @@ class SubmissionServiceSpec
         )
       }
 
-      "call CustomsDeclareExportsMovementsConnector" in new RequestAcceptedTest {
+      "call CustomsDeclareExportsMovementsConnector" in requestAcceptedTest {
 
         when(customsCacheServiceMock.fetch(any())(any(), any()))
           .thenReturn(Future.successful(Some(CacheMap(Arrival, cacheMapData(Arrival)))))
@@ -95,7 +101,9 @@ class SubmissionServiceSpec
         verify(customsExportsMovementConnectorMock).sendArrivalDeclaration(any())(any(), any())
       }
 
-      "return Internal Server Error when no data in cache" in new RequestAcceptedTest {
+      "return Internal Server Error when no data in cache" in requestAcceptedTest {
+        when(customsCacheServiceMock.fetch(any())(any(), any()))
+          .thenReturn(Future.successful(None))
 
         submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue must equal(
           INTERNAL_SERVER_ERROR
@@ -105,7 +113,7 @@ class SubmissionServiceSpec
 
     "submitting Departure" should {
 
-      "return response from CustomsDeclareExportsMovementsConnector" in new RequestAcceptedTest {
+      "return response from CustomsDeclareExportsMovementsConnector" in requestAcceptedTest {
 
         when(customsCacheServiceMock.fetch(any())(any(), any()))
           .thenReturn(Future.successful(Some(CacheMap(Departure, cacheMapData(Departure)))))
@@ -119,7 +127,7 @@ class SubmissionServiceSpec
         )
       }
 
-      "call CustomsDeclareExportsMovementsConnector" in new RequestAcceptedTest {
+      "call CustomsDeclareExportsMovementsConnector" in requestAcceptedTest {
 
         when(customsCacheServiceMock.fetch(any())(any(), any()))
           .thenReturn(Future.successful(Some(CacheMap(Departure, cacheMapData(Departure)))))
@@ -129,7 +137,9 @@ class SubmissionServiceSpec
         verify(customsExportsMovementConnectorMock).sendDepartureDeclaration(any())(any(), any())
       }
 
-      "return Internal Server Error when no data in cache" in new RequestAcceptedTest {
+      "return Internal Server Error when no data in cache" in requestAcceptedTest {
+        when(customsCacheServiceMock.fetch(any())(any(), any()))
+          .thenReturn(Future.successful(None))
 
         submissionService.submitMovementRequest("EDL-eori1", "eori1", Choice(Departure)).futureValue must equal(
           INTERNAL_SERVER_ERROR
@@ -140,7 +150,7 @@ class SubmissionServiceSpec
 
   "SubmissionService on submitDucrAssociation" should {
 
-    "return response from CustomsDeclareExportsMovementsConnector" in new Test {
+    "return response from CustomsDeclareExportsMovementsConnector" in {
 
       val CustomHttpResponseCode = 123
       when(customsExportsMovementConnectorMock.sendAssociationRequest(any())(any(), any()))
@@ -151,7 +161,7 @@ class SubmissionServiceSpec
       )
     }
 
-    "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in new RequestAcceptedTest {
+    "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in requestAcceptedTest {
 
       submissionService.submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr)).futureValue
 
@@ -164,7 +174,7 @@ class SubmissionServiceSpec
 
   "SubmissionService on submitDucrDisassociation" should {
 
-    "return response from CustomsDeclareExportsMovementsConnector" in new Test {
+    "return response from CustomsDeclareExportsMovementsConnector" in {
 
       val CustomHttpResponseCode = 123
       when(customsExportsMovementConnectorMock.sendDisassociationRequest(any())(any(), any()))
@@ -175,7 +185,7 @@ class SubmissionServiceSpec
       )
     }
 
-    "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in new RequestAcceptedTest {
+    "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in requestAcceptedTest {
 
       submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue
 
@@ -184,11 +194,23 @@ class SubmissionServiceSpec
 
       assertEqual(XML.loadString(requestCaptor.getValue), exampleDisassociateDucrRequestXml)
     }
+
+    "increase counter for successful submissions" in requestAcceptedTest {
+      counter("disassociation.counter") must changeOn {
+        submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue
+      }
+    }
+
+    "use timer to measure execution of successful disassociate request" in requestAcceptedTest {
+      timer("disassociation.timer") must changeOn {
+        submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue
+      }
+    }
   }
 
   "SubmissionService on submitShutMucrRequest" should {
 
-    "return response from CustomsDeclareExportsMovementsConnector" in new Test {
+    "return response from CustomsDeclareExportsMovementsConnector" in {
 
       val CustomHttpResponseCode = 123
       when(customsExportsMovementConnectorMock.sendShutMucrRequest(any())(any(), any()))
@@ -197,7 +219,7 @@ class SubmissionServiceSpec
       submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue must equal(CustomHttpResponseCode)
     }
 
-    "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in new RequestAcceptedTest {
+    "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in requestAcceptedTest {
 
       submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue
 
@@ -207,18 +229,16 @@ class SubmissionServiceSpec
       assertEqual(XML.loadString(requestCaptor.getValue), exampleShutMucrRequestXml)
     }
 
-    "increase counter of successful shut request" in new Test {
-      val counterName = "shut.counter"
-      val before: Long = counter(counterName).getCount
-      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue
-      counter(counterName).getCount mustBe >(before)
+    "increase counter of successful shut request" in requestAcceptedTest {
+      counter("shut.counter") must changeOn {
+        submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue
+      }
     }
 
-    "use timer to measure execution of successful shut request" in new Test {
-      private val timerName = "shut.timer"
-      val before: Long = timer(timerName).getCount
-      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue
-      timer(timerName).getCount mustBe >(before)
+    "use timer to measure execution of successful shut request" in requestAcceptedTest {
+      timer("shut.timer") must changeOn {
+        submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue
+      }
     }
   }
 

@@ -74,8 +74,17 @@ class SubmissionService @Inject()(
 
   def submitDucrDisassociation(
     disassociateDucr: DisassociateDucr
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] =
-    connector.sendDisassociationRequest(buildDisassociationRequest(disassociateDucr.ducr).toString).map(_.status)
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
+    val timer = metrics.startTimer(Choice.AllowedChoiceValues.DisassociateDUCR)
+    connector
+      .sendDisassociationRequest(buildDisassociationRequest(disassociateDucr.ducr).toString)
+      .map(_.status)
+      .andThen {
+        case Success(_) =>
+          timer.stop()
+          metrics.incrementCounter(Choice.AllowedChoiceValues.DisassociateDUCR)
+      }
+  }
 
   def submitShutMucrRequest(shutMucr: ShutMucr)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
     val timer = metrics.startTimer(Choice.AllowedChoiceValues.ShutMucr)

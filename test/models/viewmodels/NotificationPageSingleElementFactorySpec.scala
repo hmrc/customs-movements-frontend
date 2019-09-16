@@ -410,7 +410,6 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
           content = Html(
             s"<p>${messages(AcknowledgedAndProcessedActionCode.contentKey)}</p>" +
-              s"<br/>" +
               s"<p>${messages("decoder.errorCode.InvalidUcrFormat")}</p>" +
               s"<p>${messages("decoder.errorCode.MucrAlreadyDeparted")}</p>" +
               s"<p>${messages("decoder.errorCode.NoPriorArrivalFoundAtDepartureLocation")}</p>"
@@ -442,7 +441,6 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
           content = Html(
             s"<p>${messages(AcknowledgedAndProcessedActionCode.contentKey)}</p>" +
-              s"<br/>" +
               s"<p>${messages("decoder.errorCode.InvalidUcrFormat")}</p>" +
               s"<p>${messages("decoder.errorCode.NoPriorArrivalFoundAtDepartureLocation")}</p>"
           )

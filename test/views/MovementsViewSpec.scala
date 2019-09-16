@@ -53,7 +53,6 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
       page.getElementById("ucrType") must containText(messages("submissions.submissionType"))
       page.getElementById("submissionAction") must containText(messages("submissions.submissionAction"))
       page.getElementById("dateOfRequest") must containText(messages("submissions.dateOfRequest"))
-      page.getElementById("noOfNotifications") must containText(messages("submissions.noOfNotifications"))
     }
 
     "contain correct submission data" in {
@@ -85,7 +84,6 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
       getElementById(pageWithData, s"ucrType-$conversationId").text() must be("MUCR")
       getElementById(pageWithData, s"submissionAction-$conversationId").text() must be("submissions.shutmucr")
       getElementById(pageWithData, s"dateOfRequest-$conversationId").text() must be("31 Oct 2019 at 00:00")
-      getElementById(pageWithData, s"noOfNotifications-$conversationId").text() must be("1")
     }
 
     "contain MUCR and DUCR if Submission contains both" in {

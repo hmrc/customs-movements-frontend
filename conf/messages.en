@@ -326,7 +326,6 @@ submissions.ucr = UCR
 submissions.dateOfRequest = Date of request
 submissions.dateOfUpdate = Date of update
 submissions.status = Status
-submissions.noOfNotifications = Notifications
 
 submissions.shutmucr = Shut
 submissions.arrival = Arrive

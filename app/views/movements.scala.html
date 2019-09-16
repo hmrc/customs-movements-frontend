@@ -38,7 +38,6 @@
                 <th scope="col" class="govuk-table__header"id="ucrType">@messages("submissions.submissionType")</th>
                 <th scope="col" class="govuk-table__header"id="dateOfRequest">@messages("submissions.dateOfRequest")</th>
                 <th scope="col" class="govuk-table__header"id="submissionAction">@messages("submissions.submissionAction")</th>
-                <th scope="col" class="govuk-table__header"id="noOfNotifications">@messages("submissions.noOfNotifications")</th>
             </tr>
             </thead>
             <tbody class="govuk-table__body">
@@ -47,22 +46,18 @@
                     <td class="govuk-table__cell" id="ucr-@submission.conversationId">
                         @if(notifications.isEmpty){
                             @components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucr))
-                        }else {
-                        <a href="@routes.NotificationsController.listOfNotifications(submission.conversationId)">
-                           @components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucr))
-                          </a>
+                        } else {
+                            <a href="@routes.NotificationsController.listOfNotifications(submission.conversationId)">
+                                @components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucr))
+                            </a>
                         }
 
                     </td>
                     <td class="govuk-table__cell" id="ucrType-@submission.conversationId">@{components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucrType + "UCR"))}</td>
                     <td class="govuk-table__cell" id="dateOfRequest-@submission.conversationId">
-                    @FieldContentFormatter.dateTime(submission.requestTimestamp)
+                        @FieldContentFormatter.dateTime(submission.requestTimestamp)
                     </td>
                     <td class="govuk-table__cell" id="submissionAction-@submission.conversationId">@messages(s"submissions.${submission.actionType.toString.toLowerCase}")</td>
-
-                    <td class="govuk-table__cell" id="noOfNotifications-@submission.conversationId">
-                        @{notifications.length}
-                    </td>
                 </tr>
             }
             </tbody>

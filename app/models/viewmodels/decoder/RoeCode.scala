@@ -16,7 +16,7 @@
 
 package models.viewmodels.decoder
 
-sealed abstract class RoeCode(override val code: String, override val status: String, override val contentKey: String)
+sealed abstract class RoeCode(override val code: String, override val contentKey: String)
     extends CodeWithContentKey
 
 object RoeCode {
@@ -31,24 +31,22 @@ object RoeCode {
   )
 
   case object DocumentaryControl
-      extends RoeCode(code = "1", status = "DocumentaryControl", contentKey = "decoder.roe.DocumentaryControl")
+      extends RoeCode(code = "1", contentKey = "decoder.roe.DocumentaryControl")
   case object PhysicalExternalPartyControl
       extends RoeCode(
         code = "2",
-        status = "PhysicalExternalPartyControl",
         contentKey = "decoder.roe.PhysicalExternalPartyControl"
       )
   case object NonBlockingDocumentaryControl
       extends RoeCode(
         code = "3",
-        status = "NonBlockingDocumentaryControl",
         contentKey = "decoder.roe.NonBlockingDocumentaryControl"
       )
   case object NoControlRequired
-      extends RoeCode(code = "6", status = "NoControlRequired", contentKey = "decoder.roe.NoControlRequired")
+      extends RoeCode(code = "6", contentKey = "decoder.roe.NoControlRequired")
   case object RiskingNotPerformed
-      extends RoeCode(code = "0", status = "RiskingNotPerformed", contentKey = "decoder.roe.RiskingNotPerformed")
+      extends RoeCode(code = "0", contentKey = "decoder.roe.RiskingNotPerformed")
   case object PrelodgePrefix
-      extends RoeCode(code = "H", status = "PrelodgePrefix", contentKey = "decoder.roe.PrelodgePrefix")
+      extends RoeCode(code = "H", contentKey = "decoder.roe.PrelodgePrefix")
 
 }

@@ -402,7 +402,7 @@ decoder.soe.Frustrated = Frustrated
 
 decoder.errorCode.InvalidUcrFormat = Invalid UCR Format, DUCR or MUCR
 decoder.errorCode.ClientIdValidationFailed = Client ID validation fails
-decoder.errorCode.UcrNotAtTopOfConsolidation = UCR is not at the top of its' consolidation
+decoder.errorCode.UcrNotAtTopOfConsolidation = UCR is not at the top of its'' consolidation
 decoder.errorCode.MucrNotShutConsolidation = Cannot consolidate the MUCR as it is not shut
 decoder.errorCode.ParentMucrInSameConsolidation = Immediate parent MUCR cannot already be within it's same tree/consolidation
 decoder.errorCode.ConsolidationNotFound = Cannot find the consolidation

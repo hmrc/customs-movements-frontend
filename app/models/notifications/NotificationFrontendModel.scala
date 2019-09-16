@@ -28,8 +28,9 @@ final case class NotificationFrontendModel(
   ucrBlocks: Seq[UcrBlock],
   masterRoe: Option[String],
   masterSoe: Option[String],
+  crcCode: Option[String],
   actionCode: Option[String],
-  crcCode: Option[String]
+  errorCodes: Seq[String]
 ) extends Ordered[NotificationFrontendModel] {
 
   override def compare(other: NotificationFrontendModel): Int =

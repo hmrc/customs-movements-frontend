@@ -16,19 +16,18 @@
 
 package models.viewmodels.decoder
 
-import models.viewmodels.decoder.RoeCode.{
-  DocumentaryControl,
-  NoControlRequired,
-  NonBlockingDocumentaryControl,
-  PhysicalExternalPartyControl,
-  PrelodgePrefix,
-  RiskingNotPerformed
-}
+import models.viewmodels.decoder.RoeCode._
 import unit.base.UnitSpec
 
 class RoeCodeSpec extends UnitSpec {
 
   "Roe Code" should {
+
+    "have correct amount of codes" in {
+
+      val expectedCodesAmount = 6
+      RoeCode.codes.size mustBe expectedCodesAmount
+    }
 
     "have correct list of codes" in {
 

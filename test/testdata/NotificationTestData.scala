@@ -18,9 +18,9 @@ package testdata
 
 import java.time.Instant
 
-import testdata.CommonTestData._
 import models.UcrBlock
 import models.notifications.{NotificationFrontendModel, ResponseType}
+import testdata.CommonTestData._
 
 object NotificationTestData {
 
@@ -32,7 +32,8 @@ object NotificationTestData {
     masterSoe: Option[String] = None,
     actionCode: Option[String] = None,
     crcCode: Option[String] = None,
-    timestampReceived: Instant = Instant.now()
+    timestampReceived: Instant = Instant.now(),
+    errorCodes: Seq[String] = Seq.empty
   ): NotificationFrontendModel =
     NotificationFrontendModel(
       timestampReceived = timestampReceived,
@@ -42,6 +43,7 @@ object NotificationTestData {
       masterRoe = masterRoe,
       masterSoe = masterSoe,
       actionCode = actionCode,
-      crcCode = crcCode
+      crcCode = crcCode,
+      errorCodes = errorCodes
     )
 }

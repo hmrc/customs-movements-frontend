@@ -23,6 +23,12 @@ class CrcCodeSpec extends UnitSpec {
 
   "Crc Code" should {
 
+    "have correct amount of codes" in {
+
+      val expectedCodesAmount = 3
+      CrcCode.codes.size mustBe expectedCodesAmount
+    }
+
     "have correct list of codes" in {
 
       val expectedCodes = Set(Success, PrelodgedDeclarationNotArrived, DeclarationNotArrived)

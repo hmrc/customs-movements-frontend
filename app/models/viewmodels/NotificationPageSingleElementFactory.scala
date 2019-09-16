@@ -91,11 +91,11 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
 
     val errorExplanation = (for {
       code <- notification.errorCodes
-      errorCode <- decoder.errorCode(code) match {
-        case None =>
-          logger.warn(s"Received inventoryLinkingControlResponse with unknown error code: $code")
-          None
-        case knownCode => knownCode
+      errorCode <- {
+        val errorCode = decoder.errorCode(code)
+        if (errorCode.isEmpty) logger.warn(s"Received inventoryLinkingControlResponse with unknown error code: $code")
+
+        errorCode
       }
 
       content = s"<p>${messages(errorCode.contentKey)}</p>"

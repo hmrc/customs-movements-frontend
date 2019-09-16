@@ -26,7 +26,7 @@ class CrcCodeSpec extends UnitSpec {
     "have correct amount of codes" in {
 
       val expectedCodesAmount = 3
-      CrcCode.codes.size mustEqual expectedCodesAmount
+      CrcCode.codes.size mustBe expectedCodesAmount
     }
 
     "have correct list of codes" in {

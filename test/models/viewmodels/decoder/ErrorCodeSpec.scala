@@ -26,7 +26,7 @@ class ErrorCodeSpec extends WordSpec with MustMatchers {
     "have correct amount of codes" in {
 
       val expectedCodesAmount = 29
-      ErrorCode.codes.size mustEqual expectedCodesAmount
+      ErrorCode.codes.size mustBe expectedCodesAmount
     }
 
     "have correct list of codes" in {

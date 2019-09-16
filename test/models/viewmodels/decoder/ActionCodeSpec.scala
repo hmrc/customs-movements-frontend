@@ -26,7 +26,7 @@ class ActionCodeSpec extends UnitSpec {
     "have correct amount of codes" in {
 
       val expectedCodesAmount = 3
-      ActionCode.codes.size mustEqual expectedCodesAmount
+      ActionCode.codes.size mustBe expectedCodesAmount
     }
 
     "have correct code list" in {

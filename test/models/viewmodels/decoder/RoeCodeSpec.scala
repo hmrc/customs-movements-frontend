@@ -26,7 +26,7 @@ class RoeCodeSpec extends UnitSpec {
     "have correct amount of codes" in {
 
       val expectedCodesAmount = 6
-      RoeCode.codes.size mustEqual expectedCodesAmount
+      RoeCode.codes.size mustBe expectedCodesAmount
     }
 
     "have correct list of codes" in {
@@ -40,7 +40,7 @@ class RoeCodeSpec extends UnitSpec {
         PrelodgePrefix
       )
 
-      RoeCode.codes mustEqual expectedCodes
+      RoeCode.codes mustBe expectedCodes
     }
   }
 }

@@ -101,12 +101,10 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
       content = s"<p>${messages(errorCode.contentKey)}</p>"
     } yield content).foldLeft("")(_ + _)
 
-    val errorExplanationContent = if (errorExplanation.nonEmpty) "<br/>" + errorExplanation else ""
-
     NotificationsPageSingleElement(
       title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
       timestampInfo = timestampInfoResponse(notification.timestampReceived),
-      content = Html(actionCodeExplanation.getOrElse("") + errorExplanationContent)
+      content = Html(actionCodeExplanation.getOrElse("") + errorExplanation)
     )
   }
 

@@ -45,12 +45,15 @@ class UnauthorisedControllerSpec extends ControllerSpec {
 
   "Unauthorised Controller" must {
 
-    "return 200 for a GET" in {
+    "return 200 (OK)" when {
 
-      val result = controller.onPageLoad()(getRequest())
+      "on page load method is invoked" in {
 
-      status(result) mustBe OK
-      verify(mockUnauthorisedPage).apply()(any(), any())
+        val result = controller.onPageLoad()(getRequest())
+
+        status(result) mustBe OK
+        verify(mockUnauthorisedPage).apply()(any(), any())
+      }
     }
   }
 }

@@ -17,7 +17,7 @@
 package unit.controllers
 
 import controllers.{routes, LocationController}
-import forms.{Choice, Location}
+import forms.Location
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -64,9 +64,9 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
   "Location Controller" should {
 
-    "return 200 for get request" when {
+    "return 200 (OK)" when {
 
-      "cache is empty" in {
+      "display page method is invoked and cache is empty" in {
 
         givenAUserOnTheArrivalJourney()
         withCaching(Location.formId, None)
@@ -77,7 +77,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
         theResponseForm.value mustBe empty
       }
 
-      "cache contains data" in {
+      "display page method is invoked and cache contains data" in {
 
         givenAUserOnTheArrivalJourney()
         val cachedData = Location("A", "Y", "locationCode", "PL")
@@ -88,57 +88,53 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
         status(result) mustBe OK
         theResponseForm.value.value mustBe cachedData
       }
+    }
 
-      "return Error" when {
+    "return 400 (BAD_REQUEST)" when {
 
-        "no JourneyType found" in {
+      "form is incorrect" in {
 
-          withCaching(Choice.choiceId, None)
-          withCaching(Location.formId, None)
+        givenAUserOnTheArrivalJourney()
+        withCaching(Location.formId)
 
-          val result = controller.displayPage()(getRequest())
+        val incorrectForm: JsValue = Json.toJson(Location("incorrectValue", "Y", "locationCode", "PL"))
 
-          status(result) mustBe CONFLICT
-        }
+        val result = controller.saveLocation()(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
       }
     }
 
-    "return BadRequest for incorrect form" in {
+    "return 303 (SEE_OTHER) and redirect to transport page" when {
 
-      givenAUserOnTheArrivalJourney()
-      withCaching(Location.formId)
+      "form is correct and user is during arrival journey" in {
 
-      val incorrectForm: JsValue = Json.toJson(Location("incorrectValue", "Y", "locationCode", "PL"))
+        givenAUserOnTheArrivalJourney()
+        withCaching(Location.formId)
 
-      val result = controller.saveLocation()(postRequest(incorrectForm))
+        val correctForm: JsValue = Json.toJson(Location("A", "Y", "locationCode", "PL"))
 
-      status(result) mustBe BAD_REQUEST
+        val result = controller.saveLocation()(postRequest(correctForm))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.TransportController.displayPage().url
+      }
     }
 
-    "redirect to transport page for correct form during arrival" in {
+    "return 303 (SEE_OTHER) and redirect to goods departed page" when {
 
-      givenAUserOnTheArrivalJourney()
-      withCaching(Location.formId)
+      "form is correct and user is during departure journey" in {
 
-      val correctForm: JsValue = Json.toJson(Location("A", "Y", "locationCode", "PL"))
+        givenAUserOnTheDepartureJourney()
+        withCaching(Location.formId)
 
-      val result = controller.saveLocation()(postRequest(correctForm))
+        val correctForm: JsValue = Json.toJson(Location("A", "Y", "locationCode", "PL"))
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).value mustBe routes.TransportController.displayPage().url
-    }
+        val result = controller.saveLocation()(postRequest(correctForm))
 
-    "redirect to goods departed page for correct form during departure" in {
-
-      givenAUserOnTheDepartureJourney()
-      withCaching(Location.formId)
-
-      val correctForm: JsValue = Json.toJson(Location("A", "Y", "locationCode", "PL"))
-
-      val result = controller.saveLocation()(postRequest(correctForm))
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).value mustBe routes.GoodsDepartedController.displayPage().url
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.GoodsDepartedController.displayPage().url
+      }
     }
   }
 }

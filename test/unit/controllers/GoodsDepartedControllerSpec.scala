@@ -67,9 +67,9 @@ class GoodsDepartedControllerSpec extends ControllerSpec with OptionValues {
 
   "Goods Departed Controller" should {
 
-    "return 200 for get request" when {
+    "return 200 (OK)" when {
 
-      "cache is empty" in {
+      "display page method is invoked and cache is empty" in {
 
         givenAUserOnTheDepartureJourney()
         withCaching(GoodsDeparted.formId, None)
@@ -80,7 +80,7 @@ class GoodsDepartedControllerSpec extends ControllerSpec with OptionValues {
         theResponseForm.value mustBe empty
       }
 
-      "cache contains data" in {
+      "display page method is invoked and cache contains data" in {
 
         givenAUserOnTheDepartureJourney()
         val cachedData = GoodsDeparted(outOfTheUk)
@@ -93,7 +93,7 @@ class GoodsDepartedControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    "return BadRequest" when {
+    "return 400 (BAD_REQUEST)" when {
 
       "user is during arrival journey" in {
 
@@ -117,30 +117,36 @@ class GoodsDepartedControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    "redirect to date of departure page for out of UK choice" in {
+    "return 303 (SEE_OTHER) and redirect to date of departure page" when {
 
-      givenAUserOnTheDepartureJourney()
-      withCaching(GoodsDeparted.formId)
+      "user choose out of UK option" in {
 
-      val correctForm: JsValue = JsObject(Map("departedPlace" -> JsString(outOfTheUk)))
+        givenAUserOnTheDepartureJourney()
+        withCaching(GoodsDeparted.formId)
 
-      val result = controller.saveGoodsDeparted()(postRequest(correctForm))
+        val correctForm: JsValue = JsObject(Map("departedPlace" -> JsString(outOfTheUk)))
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).value mustBe routes.MovementDetailsController.displayPage().url
+        val result = controller.saveGoodsDeparted()(postRequest(correctForm))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.MovementDetailsController.displayPage().url
+      }
     }
 
-    "redirect to summary page for back into the Uk choice" in {
+    "return 303 (SEE_OTHER) and redirect to summary page" when {
 
-      givenAUserOnTheDepartureJourney()
-      withCaching(GoodsDeparted.formId)
+      "user choose back into the UK option" in {
 
-      val correctForm: JsValue = JsObject(Map("departedPlace" -> JsString(backIntoTheUk)))
+        givenAUserOnTheDepartureJourney()
+        withCaching(GoodsDeparted.formId)
 
-      val result = controller.saveGoodsDeparted()(postRequest(correctForm))
+        val correctForm: JsValue = JsObject(Map("departedPlace" -> JsString(backIntoTheUk)))
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).value mustBe routes.SummaryController.displayPage().url
+        val result = controller.saveGoodsDeparted()(postRequest(correctForm))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.SummaryController.displayPage().url
+      }
     }
   }
 }

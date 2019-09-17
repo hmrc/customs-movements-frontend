@@ -51,14 +51,16 @@ class AssociateDucrConfirmationControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
-  "Associate DUCR Confirmation GET" should {
+  "Associate DUCR Confirmation controller" should {
 
-    "return Ok for GET request" in {
+    "return 200 (OK)" when {
 
-      val result = controller.displayPage()(getRequest())
+      "display page method is invoked" in {
+        val result = controller.displayPage()(getRequest())
 
-      status(result) must be(OK)
-      verify(mockAssociateDucrConfirmPage).apply()(any(), any(), any())
+        status(result) must be(OK)
+        verify(mockAssociateDucrConfirmPage).apply()(any(), any(), any())
+      }
     }
   }
 }

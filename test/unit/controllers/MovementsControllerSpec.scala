@@ -56,9 +56,9 @@ class MovementsControllerSpec extends ControllerSpec with MockCustomsExportsMove
 
   "Submissions Controller" should {
 
-    "return 200 for get request" when {
+    "return 200 (OK)" when {
 
-      "cache is empty" in {
+      "display page is invoked and cache is empty" in {
 
         when(mockCustomsExportsMovementConnector.fetchAllSubmissions()(any(), any()))
           .thenReturn(Future.successful(Seq(exampleSubmissionFrontendModel())))

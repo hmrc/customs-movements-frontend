@@ -22,7 +22,7 @@ import forms.Choice.AllowedChoiceValues
 import forms.{AssociateDucr, Choice, MucrOptions}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -57,76 +57,64 @@ class AssociateDucrControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
-  "Associate DUCR GET" should {
+  "Associate Ducr controller" should {
 
-    "throw incomplete application when cache empty" in {
+    "return OK (200)" when {
 
-      withCaching(MucrOptions.formId, None)
+      "display page method is invoked and Mucr Options page has data" in {
 
-      assertThrows[IncompleteApplication] {
-        await(controller.displayPage()(getRequest()))
+        withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
+
+        val result = controller.displayPage()(getRequest())
+
+        status(result) must be(OK)
       }
     }
 
-    "return Ok for GET request" in {
+    "throw an IncompleteApplication exception" when {
 
-      withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
+      "display page method is invoked and Mucr Options page is in cache" in {
+        withCaching(MucrOptions.formId, None)
 
-      val result = controller.displayPage()(getRequest())
+        assertThrows[IncompleteApplication] {
+          await(controller.displayPage()(getRequest()))
+        }
+      }
 
-      status(result) must be(OK)
-    }
-  }
+      "Mucr Options page is not in cache during saving with incorrect form" in {
+        withCaching(MucrOptions.formId, None)
 
-  "Associate DUCR POST" should {
-
-    "throw incomplete application when cache empty" in {
-
-      withCaching(MucrOptions.formId, None)
-
-      assertThrows[IncompleteApplication] {
-        await(controller.submit()(postRequest(Json.obj())))
+        assertThrows[IncompleteApplication] {
+          await(controller.submit()(postRequest(Json.obj())))
+        }
       }
     }
 
-    "display an error for a missing DUCR" in {
+    "return 400 (BAD_REQUEST)" when {
 
-      withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
+      "form is incorrect and cache contains data from previous page" in {
 
-      val result = controller.submit()(postRequest(Json.obj()))
+        withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
 
-      status(result) must be(BAD_REQUEST)
+        val result = controller.submit()(postRequest(Json.obj()))
+
+        status(result) must be(BAD_REQUEST)
+      }
     }
 
-    "display an error for a empty DUCR" in {
+    "return 303 (SEE_OTHER)" when {
 
-      withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
+      "form is correct" in {
 
-      val result = controller.submit()(postRequest(Json.obj("ducr" -> "")))
+        withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
 
-      status(result) must be(BAD_REQUEST)
-    }
+        val validMUCR = Json.toJson(AssociateDucr("8GB12345612345612345"))
 
-    "display an error for an invalid DUCR" in {
+        val result = controller.submit()(postRequest(validMUCR))
 
-      withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
-
-      val result = controller.submit()(postRequest(Json.obj("ducr" -> "invalid")))
-
-      status(result) must be(BAD_REQUEST)
-    }
-
-    "Redirect to next page for a valid form" in {
-
-      withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
-
-      val validMUCR =
-        JsObject(Map("ducr" -> JsString("8GB12345612345612345")))
-
-      val result = controller.submit()(postRequest(validMUCR))
-
-      status(result) must be(SEE_OTHER)
-      redirectLocation(result) mustBe Some(routes.AssociateDucrSummaryController.displayPage().url)
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) mustBe Some(routes.AssociateDucrSummaryController.displayPage().url)
+      }
     }
   }
 }

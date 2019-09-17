@@ -18,7 +18,7 @@ package unit.controllers.consolidations
 
 import controllers.consolidations.ShutMucrConfirmationController
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -43,13 +43,17 @@ class ShutMucrConfirmationControllerSpec extends ControllerSpec {
     when(mockShutMucrConfirmationPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
   }
 
-  "ShutMucr Confirmation Controller on GET" should {
+  "Shut Mucr Confirmation Controller" should {
 
-    "return Ok code" in {
+    "return 200 (OK)" when {
 
-      val result = controller.displayPage()(getRequest())
+      "display page is invoked" in {
 
-      status(result) mustBe OK
+        val result = controller.displayPage()(getRequest())
+
+        status(result) mustBe OK
+        verify(mockShutMucrConfirmationPage).apply()(any(), any(), any())
+      }
     }
   }
 }

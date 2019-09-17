@@ -40,7 +40,6 @@ class DisassociateDucrControllerSpec
 
   private val controller = new DisassociateDucrController(
     mockAuthAction,
-    mockJourneyAction,
     mockSubmissionService,
     mockErrorHandler,
     stubMessagesControllerComponents(),
@@ -64,70 +63,31 @@ class DisassociateDucrControllerSpec
   private val correctForm = Json.toJson(DisassociateDucr(correctUcr))
   private val incorrectForm = Json.toJson(DisassociateDucr("abc"))
 
-  "Disassociate Ducr Controller on GET" should {
+  "Disassociate Ducr Controller" should {
 
-    "return 200 for get request" in {
+    "return 200 (OK)" when {
 
-      val result = controller.displayPage()(getRequest())
+      "display page is invoked" in {
 
-      status(result) mustBe OK
-    }
-  }
+        val result = controller.displayPage()(getRequest())
 
-  "Disassociate Ducr Controller on POST" when {
-
-    "provided with correct data" should {
-
-      "return SeeOther code" in {
-
-        when(mockSubmissionService.submitDucrDisassociation(any())(any(), any()))
-          .thenReturn(Future.successful(ACCEPTED))
-
-        val result = controller.submit()(postRequest(correctForm))
-
-        status(result) mustBe SEE_OTHER
-      }
-
-      "call SubmissionService" in {
-
-        when(mockSubmissionService.submitDucrDisassociation(any())(any(), any()))
-          .thenReturn(Future.successful(ACCEPTED))
-
-        controller.submit()(postRequest(correctForm)).futureValue
-
-        verify(mockSubmissionService).submitDucrDisassociation(meq(DisassociateDucr(correctUcr)))(any(), any())
-      }
-
-      "redirect to confirmation page" in {
-
-        when(mockSubmissionService.submitDucrDisassociation(any())(any(), any()))
-          .thenReturn(Future.successful(ACCEPTED))
-
-        val result = controller.submit()(postRequest(correctForm))
-
-        redirectLocation(result).value mustBe routes.DisassociateDucrConfirmationController.displayPage().url
+        status(result) mustBe OK
       }
     }
 
-    "provided with incorrect data" should {
+    "return 400 (BAD_REQUEST)" when {
 
-      "return BadRequest code" in {
+      "incorrect form is submitted" in {
 
         val result = controller.submit()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
-
-      "not call SubmissionService" in {
-
-        controller.submit()(postRequest(incorrectForm)).futureValue
-
-        verifyZeroInteractions(mockSubmissionService)
-      }
     }
 
-    "SubmissionService returns status other than Accepted" should {
-      "return InternalServerError code" in {
+    "return 500 (BAD_REQUEST)" when {
+
+      "form is correct and submission service return status different than ACCEPTED" in {
 
         when(mockSubmissionService.submitDucrDisassociation(any())(any(), any()))
           .thenReturn(Future.successful(BAD_REQUEST))
@@ -137,6 +97,19 @@ class DisassociateDucrControllerSpec
         status(result) mustBe INTERNAL_SERVER_ERROR
       }
     }
-  }
 
+    "return 303 (SEE_OTHER)" when {
+
+      "form is correct and submission service return ACCEPTED status" in {
+
+        when(mockSubmissionService.submitDucrDisassociation(any())(any(), any()))
+          .thenReturn(Future.successful(ACCEPTED))
+
+        val result = controller.submit()(postRequest(correctForm))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.DisassociateDucrConfirmationController.displayPage().url
+      }
+    }
+  }
 }

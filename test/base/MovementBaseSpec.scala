@@ -16,4 +16,4 @@
 
 package base
 
-trait MovementBaseSpec extends MovementApp with URIHelper
+trait MovementBaseSpec extends MovementApp

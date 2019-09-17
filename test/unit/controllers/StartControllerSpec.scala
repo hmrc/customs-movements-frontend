@@ -48,15 +48,18 @@ class StartControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
-  "Start Controller on GET" should {
+  "Start Controller" should {
 
-    "return 200 status code" in {
+    "return 200 (OK)" when {
 
-      val result = controller.displayStartPage()(getRequest())
+      "display page method is invoked" in {
 
-      status(result) mustBe OK
+        val result = controller.displayStartPage()(getRequest())
 
-      verify(mockStartPage).apply()(any(), any())
+        status(result) mustBe OK
+
+        verify(mockStartPage).apply()(any(), any())
+      }
     }
   }
 }

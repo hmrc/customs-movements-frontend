@@ -72,11 +72,11 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
     captor.getValue
   }
 
-  "Movement Details Controller for arrival" should {
+  "Movement Details Controller for arrival journey" should {
 
-    "return 200 for get request" when {
+    "return 200 (OK)" when {
 
-      "cache is empty" in {
+      "display page method is invoked and cache is empty" in {
 
         givenAUserOnTheArrivalJourney()
         withCaching(MovementDetails.formId, None)
@@ -87,7 +87,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
         arrivalResponseForm.value mustBe empty
       }
 
-      "cache contains data" in {
+      "display page method is invoked and cache contains data" in {
 
         givenAUserOnTheArrivalJourney()
         val cachedData = ArrivalDetails(Date(Some(10), Some(2), Some(2019)), Time(Some("10"), Some("10")))
@@ -100,39 +100,46 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    "return BadRequest for incorrect form" in {
+    "return 400 (BAD_REQUEST)" when {
 
-      givenAUserOnTheArrivalJourney()
+      "form is incorrect" in {
 
-      val incorrectForm: JsValue = JsObject(Map("dateOfArrival" -> JsString("")))
+        givenAUserOnTheArrivalJourney()
 
-      val result = controller.saveMovementDetails()(postRequest(incorrectForm))
+        val incorrectForm: JsValue = JsObject(Map("dateOfArrival" -> JsString("")))
 
-      status(result) mustBe BAD_REQUEST
+        val result = controller.saveMovementDetails()(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+      }
     }
 
-    "redirect to location page for correct form" in {
+    "return 303 (SEE_OTHER) and redirect to location page" when {
 
-      givenAUserOnTheArrivalJourney()
-      withCaching(MovementDetails.formId)
+      "form is correct" in {
 
-      val correctDate: JsValue = JsObject(Map("day" -> JsNumber(10), "month" -> JsNumber(10), "year" -> JsNumber(2019)))
-      val correctTime: JsValue = JsObject(Map("hour" -> JsString("10"), "minute" -> JsString("10")))
+        givenAUserOnTheArrivalJourney()
+        withCaching(MovementDetails.formId)
 
-      val correctForm: JsValue = JsObject(Map("dateOfArrival" -> correctDate, "timeOfArrival" -> correctTime))
+        val correctDate: JsValue =
+          JsObject(Map("day" -> JsNumber(10), "month" -> JsNumber(10), "year" -> JsNumber(2019)))
+        val correctTime: JsValue = JsObject(Map("hour" -> JsString("10"), "minute" -> JsString("10")))
 
-      val result = controller.saveMovementDetails()(postRequest(correctForm))
+        val correctForm: JsValue = JsObject(Map("dateOfArrival" -> correctDate, "timeOfArrival" -> correctTime))
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).value mustBe routes.LocationController.displayPage().url
+        val result = controller.saveMovementDetails()(postRequest(correctForm))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.LocationController.displayPage().url
+      }
     }
   }
 
-  "Movement Details Controller for departure" should {
+  "Movement Details Controller for departure journey" should {
 
-    "return 200 for get request" when {
+    "return 200 (OK)" when {
 
-      "cache is empty" in {
+      "display page method is invoked and cache is empty" in {
 
         givenAUserOnTheDepartureJourney()
         withCaching(MovementDetails.formId, None)
@@ -143,7 +150,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
         departureResponseForm.value mustBe empty
       }
 
-      "cache contains data" in {
+      "display page method is invoked and cache contains data" in {
 
         givenAUserOnTheDepartureJourney()
         val cachedData = DepartureDetails(Date(Some(10), Some(2), Some(2019)))
@@ -156,30 +163,37 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    "return BadRequest for incorrect form" in {
+    "return 400 (BAD_REQUEST)" when {
 
-      givenAUserOnTheDepartureJourney()
+      "form is incorrect" in {
 
-      val incorrectForm: JsValue = JsObject(Map("dateOfDeparture" -> JsString("")))
+        givenAUserOnTheDepartureJourney()
 
-      val result = controller.saveMovementDetails()(postRequest(incorrectForm))
+        val incorrectForm: JsValue = JsObject(Map("dateOfDeparture" -> JsString("")))
 
-      status(result) mustBe BAD_REQUEST
+        val result = controller.saveMovementDetails()(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+      }
     }
 
-    "redirect to transport page for correct form" in {
+    "return 303 (SEE_OTHER) and redirect to transport page" when {
 
-      givenAUserOnTheDepartureJourney()
-      withCaching(MovementDetails.formId)
+      "form is correct" in {
 
-      val correctDate: JsValue = JsObject(Map("day" -> JsNumber(10), "month" -> JsNumber(10), "year" -> JsNumber(2019)))
+        givenAUserOnTheDepartureJourney()
+        withCaching(MovementDetails.formId)
 
-      val correctForm: JsValue = JsObject(Map("dateOfDeparture" -> correctDate))
+        val correctDate: JsValue =
+          JsObject(Map("day" -> JsNumber(10), "month" -> JsNumber(10), "year" -> JsNumber(2019)))
 
-      val result = controller.saveMovementDetails()(postRequest(correctForm))
+        val correctForm: JsValue = JsObject(Map("dateOfDeparture" -> correctDate))
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).value mustBe routes.TransportController.displayPage().url
+        val result = controller.saveMovementDetails()(postRequest(correctForm))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.TransportController.displayPage().url
+      }
     }
   }
 }

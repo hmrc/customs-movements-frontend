@@ -34,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DisassociateDucrController @Inject()(
   authenticate: AuthAction,
-  journeyType: JourneyAction,
   submissionService: SubmissionService,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,

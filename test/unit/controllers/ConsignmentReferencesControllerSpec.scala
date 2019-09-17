@@ -64,9 +64,9 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
 
   "Consignment Reference Controller" should {
 
-    "return 200 for get request" when {
+    "return 200 (OK)" when {
 
-      "cache is empty" in {
+      "display page method is invoked and cache is empty" in {
 
         givenAUserOnTheArrivalJourney()
         withCaching(ConsignmentReferences.formId, None)
@@ -77,7 +77,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
         theResponseForm.value mustBe empty
       }
 
-      "cache contains data" in {
+      "display page method is invoked and cache contains data" in {
 
         givenAUserOnTheArrivalJourney()
         val cachedData = ConsignmentReferences("D", "123456")
@@ -90,61 +90,70 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
       }
     }
 
-    "return BadRequest for incorrect form" in {
+    "return 400 (BAD_REQUEST)" when {
 
-      givenAUserOnTheArrivalJourney()
+      "form is incorrect" in {
 
-      val incorrectForm: JsValue = JsObject(
-        Map(
-          "eori" -> JsString("GB717572504502811"),
-          "reference" -> JsString("reference"),
-          "referenceValue" -> JsString("")
-        )
-      )
+        givenAUserOnTheArrivalJourney()
 
-      val result = controller.saveConsignmentReferences()(postRequest(incorrectForm))
-
-      status(result) mustBe BAD_REQUEST
-    }
-
-    "redirect to goods date for correct form in arrival journey" in {
-
-      givenAUserOnTheArrivalJourney()
-      withCaching(ConsignmentReferences.formId)
-
-      val correctForm: JsValue =
-        JsObject(
+        val incorrectForm: JsValue = JsObject(
           Map(
             "eori" -> JsString("GB717572504502811"),
-            "reference" -> JsString("D"),
-            "referenceValue" -> JsString("5GB123456789000-123ABC456DEFIIIII")
+            "reference" -> JsString("reference"),
+            "referenceValue" -> JsString("")
           )
         )
 
-      val result = controller.saveConsignmentReferences()(postRequest(correctForm))
+        val result = controller.saveConsignmentReferences()(postRequest(incorrectForm))
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).value mustBe routes.ArrivalReferenceController.displayPage().url
+        status(result) mustBe BAD_REQUEST
+      }
     }
 
-    "redirect to location for correct form in departure journey" in {
+    "return 303 (SEE_OTHER) and redirect to goods date page" when {
 
-      givenAUserOnTheDepartureJourney()
-      withCaching(ConsignmentReferences.formId)
+      "form is correct during arrival journey" in {
 
-      val correctForm: JsValue =
-        JsObject(
-          Map(
-            "eori" -> JsString("GB717572504502811"),
-            "reference" -> JsString("D"),
-            "referenceValue" -> JsString("5GB123456789000-123ABC456DEFIIIII")
+        givenAUserOnTheArrivalJourney()
+        withCaching(ConsignmentReferences.formId)
+
+        val correctForm: JsValue =
+          JsObject(
+            Map(
+              "eori" -> JsString("GB717572504502811"),
+              "reference" -> JsString("D"),
+              "referenceValue" -> JsString("5GB123456789000-123ABC456DEFIIIII")
+            )
           )
-        )
 
-      val result = controller.saveConsignmentReferences()(postRequest(correctForm))
+        val result = controller.saveConsignmentReferences()(postRequest(correctForm))
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).value mustBe routes.LocationController.displayPage().url
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.ArrivalReferenceController.displayPage().url
+      }
+    }
+
+    "return 303 (SEE_OTHER) and redirect to location page" when {
+
+      "form is correct during departure journey" in {
+
+        givenAUserOnTheDepartureJourney()
+        withCaching(ConsignmentReferences.formId)
+
+        val correctForm: JsValue =
+          JsObject(
+            Map(
+              "eori" -> JsString("GB717572504502811"),
+              "reference" -> JsString("D"),
+              "referenceValue" -> JsString("5GB123456789000-123ABC456DEFIIIII")
+            )
+          )
+
+        val result = controller.saveConsignmentReferences()(postRequest(correctForm))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.LocationController.displayPage().url
+      }
     }
   }
 }

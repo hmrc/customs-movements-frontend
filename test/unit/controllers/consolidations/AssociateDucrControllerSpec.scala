@@ -73,7 +73,7 @@ class AssociateDucrControllerSpec extends ControllerSpec {
 
     "throw an IncompleteApplication exception" when {
 
-      "display page method is invoked and Mucr Options page is not filled" in {
+      "display page method is invoked and Mucr Options page is in cache" in {
         withCaching(MucrOptions.formId, None)
 
         assertThrows[IncompleteApplication] {
@@ -81,7 +81,7 @@ class AssociateDucrControllerSpec extends ControllerSpec {
         }
       }
 
-      "Mucr Options page is not filled during saving with incorrect form" in {
+      "Mucr Options page is not in cache during saving with incorrect form" in {
         withCaching(MucrOptions.formId, None)
 
         assertThrows[IncompleteApplication] {

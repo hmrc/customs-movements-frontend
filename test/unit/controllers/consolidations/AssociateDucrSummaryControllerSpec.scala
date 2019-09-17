@@ -88,7 +88,7 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
       }
     }
 
-    "retrun 500 (INTERNAL_SERVER_ERROR)" when {
+    "return 500 (INTERNAL_SERVER_ERROR)" when {
 
       "submission service return status different than ACCEPTED" in {
 
@@ -146,7 +146,7 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
 
     "return 303 (SEE_OTHER)" when {
 
-      "submission service returned ACCEPTED and all mandatory data is in cache" in {
+      "all mandatory data is in cache and submission service returned ACCEPTED" in {
 
         withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
         withCaching(AssociateDucr.formId, Some(AssociateDucr("DUCR")))

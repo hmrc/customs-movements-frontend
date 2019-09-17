@@ -135,7 +135,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
     }
   }
 
-  "Movement Details Controller for departure" should {
+  "Movement Details Controller for departure journey" should {
 
     "return 200 (OK)" when {
 

@@ -48,7 +48,7 @@ class StartControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
-  "Start Controller on GET" should {
+  "Start Controller" should {
 
     "return 200 (OK)" when {
 

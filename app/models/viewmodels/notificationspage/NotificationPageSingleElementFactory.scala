@@ -30,7 +30,10 @@ import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 
 @Singleton
-class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
+class NotificationPageSingleElementFactory @Inject()(
+  decoder: Decoder,
+  controlResponseConverter: ControlResponseConverter
+) {
 
   private val logger = Logger(this.getClass)
   private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
@@ -79,34 +82,9 @@ class NotificationPageSingleElementFactory @Inject()(decoder: Decoder) {
       case _                      => buildForUnspecified(notification.timestampReceived)
     }
 
-  private def buildForControlResponse(
-    notification: NotificationFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement = {
-
-    val actionCodeExplanation = for {
-      code <- notification.actionCode
-      actionCode <- decoder.actionCode(code)
-      content = s"<p>${messages(actionCode.contentKey)}</p>"
-    } yield content
-
-    val errorExplanation = (for {
-      code <- notification.errorCodes
-      errorCode <- {
-        val errorCode = decoder.errorCode(code)
-        if (errorCode.isEmpty) logger.warn(s"Received inventoryLinkingControlResponse with unknown error code: $code")
-
-        errorCode
-      }
-
-      content = s"<p>${messages(errorCode.contentKey)}</p>"
-    } yield content).foldLeft("")(_ + _)
-
-    NotificationsPageSingleElement(
-      title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
-      timestampInfo = timestampInfoResponse(notification.timestampReceived),
-      content = Html(actionCodeExplanation.getOrElse("") + errorExplanation)
-    )
-  }
+  private def buildForControlResponse(notification: NotificationFrontendModel)(
+    implicit messages: Messages
+  ): NotificationsPageSingleElement = controlResponseConverter.convert(notification)
 
   private def buildForMovementTotalsResponse(
     notification: NotificationFrontendModel

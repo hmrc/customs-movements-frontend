@@ -18,9 +18,8 @@ package models.viewmodels.notificationspage
 
 import models.notifications.NotificationFrontendModel
 import play.api.i18n.Messages
-import play.twirl.api.Html
 
-trait NotificationPageSingleElementContentBuilder {
-  def canBuildFrom(notification: NotificationFrontendModel): Boolean
-  def build(notification: NotificationFrontendModel)(implicit messages: Messages): Html
+trait NotificationPageSingleElementConverter {
+  def canConvertFrom(notification: NotificationFrontendModel): Boolean
+  def convert(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement
 }

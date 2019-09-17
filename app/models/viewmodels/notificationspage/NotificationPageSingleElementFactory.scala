@@ -32,7 +32,8 @@ import play.twirl.api.{Html, HtmlFormat}
 @Singleton
 class NotificationPageSingleElementFactory @Inject()(
   decoder: Decoder,
-  controlResponseConverter: ControlResponseConverter
+  controlResponseConverter: ControlResponseConverter,
+  movementTotalsResponseConverter: MovementTotalsResponseConverter
 ) {
 
   private val logger = Logger(this.getClass)
@@ -86,32 +87,9 @@ class NotificationPageSingleElementFactory @Inject()(
     implicit messages: Messages
   ): NotificationsPageSingleElement = controlResponseConverter.convert(notification)
 
-  private def buildForMovementTotalsResponse(
-    notification: NotificationFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement = {
-
-    val crcCodeContent = getContentForCrcCode(notification)
-    val roeContent =
-      notification.masterRoe.flatMap(roe => decoder.roe(roe).map(decodedRoe => messages(decodedRoe.contentKey)))
-    val soeContent =
-      notification.masterSoe.flatMap(soe => decoder.soe(soe).map(decodedSoe => messages(decodedSoe.contentKey)))
-
-    val firstLine = crcCodeContent.map { content =>
-      s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")} $content</p>"
-    }
-    val secondLine = roeContent.map { content =>
-      s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} $content</p>"
-    }
-    val thirdLine = soeContent.map { content =>
-      s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} $content</p>"
-    }
-
-    NotificationsPageSingleElement(
-      title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-      timestampInfo = timestampInfoResponse(notification.timestampReceived),
-      content = Html(firstLine.getOrElse("") + secondLine.getOrElse("") + thirdLine.getOrElse(""))
-    )
-  }
+  private def buildForMovementTotalsResponse(notification: NotificationFrontendModel)(
+    implicit messages: Messages
+  ): NotificationsPageSingleElement = movementTotalsResponseConverter.convert(notification)
 
   private def buildForMovementResponse(
     notification: NotificationFrontendModel

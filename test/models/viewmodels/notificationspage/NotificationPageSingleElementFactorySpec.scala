@@ -57,13 +57,24 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
     when(decoderMock.actionCode(any[String])).thenReturn(Some(AcknowledgedAndProcessedActionCode))
     when(decoderMock.errorCode(any[String])).thenReturn(Some(MucrNotShutConsolidationErrorCode))
 
+    val emptyNotificationPageElement = NotificationsPageSingleElement("", "", HtmlFormat.empty)
+
     val controlResponseConverterMock: ControlResponseConverter = mock[ControlResponseConverter]
     when(controlResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
-    val emptyNotificationPageElement = NotificationsPageSingleElement("", "", HtmlFormat.empty)
     when(controlResponseConverterMock.convert(any[NotificationFrontendModel])(any()))
       .thenReturn(emptyNotificationPageElement)
 
-    val factory = new NotificationPageSingleElementFactory(decoderMock, controlResponseConverterMock)
+    val movementTotalsResponseContentBuilderMock: MovementTotalsResponseConverter =
+      mock[MovementTotalsResponseConverter]
+    when(movementTotalsResponseContentBuilderMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
+    when(movementTotalsResponseContentBuilderMock.convert(any[NotificationFrontendModel])(any()))
+      .thenReturn(emptyNotificationPageElement)
+
+    val factory = new NotificationPageSingleElementFactory(
+      decoderMock,
+      controlResponseConverterMock,
+      movementTotalsResponseContentBuilderMock
+    )
   }
 
   "NotificationPageSingleElementFactory" should {
@@ -238,27 +249,24 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
     "provided with MovementTotalsResponse NotificationFrontendModel" should {
 
-      "call Decoder" in new Test {
+      "call MovementTotalsResponseConverter" in new Test {
 
-        val crcCode = "000"
-        val masterRoe = "6"
-        val masterSoe = "1"
-        val input = exampleNotificationFrontendModel(
-          responseType = ResponseType.MovementTotalsResponse,
-          timestampReceived = testTimestamp,
-          crcCode = Some(crcCode),
-          masterRoe = Some(masterRoe),
-          masterSoe = Some(masterSoe)
-        )
+        val input = exampleNotificationFrontendModel(responseType = ResponseType.MovementTotalsResponse)
 
         factory.build(input)
 
-        verify(decoderMock).crc(meq(crcCode))
-        verify(decoderMock).roe(meq(masterRoe))
-        verify(decoderMock).soe(meq(masterSoe))
+        verify(movementTotalsResponseContentBuilderMock).convert(meq(input))(any[Messages])
       }
 
-      "call Messages passing correct keys and arguments" in new Test {
+      "return NotificationsPageSingleElement returned by MovementTotalsResponseConverter" in new Test {
+
+        val exampleNotificationPageElement = NotificationsPageSingleElement(
+          title = "TITLE",
+          timestampInfo = "TIMESTAMP",
+          content = Html("<test>HTML</test>")
+        )
+        when(movementTotalsResponseContentBuilderMock.convert(any[NotificationFrontendModel])(any()))
+          .thenReturn(exampleNotificationPageElement)
 
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.MovementTotalsResponse,
@@ -268,64 +276,9 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           masterSoe = Some("1")
         )
 
-        factory.build(input)
+        val result = factory.build(input)
 
-        verifyMessagesCalledWith("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
-        verifyMessagesCalledWith("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34")
-
-        verifyMessagesCalledWith(crcCodeKeyFromDecoder.contentKey)
-        verifyMessagesCalledWith(roeKeyFromDecoder.contentKey)
-        verifyMessagesCalledWith(soeKeyFromDecoder.contentKey)
-
-        verifyMessagesCalledWith("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")
-        verifyMessagesCalledWith("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")
-        verifyMessagesCalledWith("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")
-      }
-
-      "return NotificationsPageSingleElement with values returned by Messages" in new Test {
-
-        val input = exampleNotificationFrontendModel(
-          responseType = ResponseType.MovementTotalsResponse,
-          timestampReceived = testTimestamp,
-          crcCode = Some("000"),
-          masterRoe = Some("6"),
-          masterSoe = Some("1")
-        )
-        val expectedResult = NotificationsPageSingleElement(
-          title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
-          content = Html(
-            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")} ${crcCodeKeyFromDecoder.contentKey}</p>" +
-              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} ${roeKeyFromDecoder.contentKey}</p>" +
-              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} ${soeKeyFromDecoder.contentKey}</p>"
-          )
-        )
-
-        val result: NotificationsPageSingleElement = factory.build(input)
-
-        assertEquality(result, expectedResult)
-      }
-
-      "return NotificationsPageSingleElement with values returned by Messages for incomplete input" in new Test {
-
-        val input = exampleNotificationFrontendModel(
-          responseType = ResponseType.MovementTotalsResponse,
-          timestampReceived = testTimestamp,
-          crcCode = Some("000"),
-          masterSoe = Some("1")
-        )
-        val expectedResult = NotificationsPageSingleElement(
-          title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
-          content = Html(
-            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")} ${crcCodeKeyFromDecoder.contentKey}</p>" +
-              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} ${soeKeyFromDecoder.contentKey}</p>"
-          )
-        )
-
-        val result: NotificationsPageSingleElement = factory.build(input)
-
-        assertEquality(result, expectedResult)
+        result mustBe exampleNotificationPageElement
       }
     }
 
@@ -333,11 +286,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
       "call ControlResponseConverter" in new Test {
 
-        val input = exampleNotificationFrontendModel(
-          responseType = ResponseType.ControlResponse,
-          timestampReceived = testTimestamp,
-          actionCode = Some(AcknowledgedAndProcessedActionCode.code)
-        )
+        val input = exampleNotificationFrontendModel(responseType = ResponseType.ControlResponse)
 
         factory.build(input)
 
@@ -346,13 +295,13 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
       "return NotificationsPageSingleElement returned by ControlResponseConverter" in new Test {
 
-        val exampleNotificactionPageElement = NotificationsPageSingleElement(
+        val exampleNotificationPageElement = NotificationsPageSingleElement(
           title = "TITLE",
           timestampInfo = "TIMESTAMP",
           content = Html("<test>HTML</test>")
         )
         when(controlResponseConverterMock.convert(any[NotificationFrontendModel])(any()))
-          .thenReturn(exampleNotificactionPageElement)
+          .thenReturn(exampleNotificationPageElement)
 
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.ControlResponse,
@@ -362,7 +311,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
         val result = factory.build(input)
 
-        result mustBe exampleNotificactionPageElement
+        result mustBe exampleNotificationPageElement
       }
     }
   }

@@ -32,7 +32,7 @@ import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 
-class ControlResponseContentBuilderSpec extends BaseSpec with MockitoSugar {
+class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
 
   private val testTimestampString = "2019-10-23T12:34+00:00"
   private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault())

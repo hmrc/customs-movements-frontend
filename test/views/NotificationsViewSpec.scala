@@ -32,26 +32,28 @@ class NotificationsViewSpec extends WordSpec with MustMatchers with Stubs with V
   private val messages = stubMessages()
   private def page(
     submissionUcr: String = "",
+    submissionElement: NotificationsPageSingleElement,
     elementsToDisplay: Seq[NotificationsPageSingleElement] = Seq.empty
   ): Html =
-    new notifications(mainTemplate)(submissionUcr, elementsToDisplay)(FakeRequest(), messages)
+    new notifications(mainTemplate)(submissionUcr, submissionElement, elementsToDisplay)(FakeRequest(), messages)
 
   "Notification page" should {
 
     "contain title" in {
-
-      val title = page(submissionUcr = "TEST UCR").getElementById("title")
+      val title = page(
+        submissionUcr = "TEST UCR",
+        NotificationsPageSingleElement("title", "timestamp", Html("content"))
+      ).getElementById("title")
 
       title must containText(messages("notifications.title", "TEST UCR"))
     }
 
     "contain only request element if no notifications are present" in {
-
       val title = "REQUEST TITLE"
       val timestamp = "TIMESTAMP"
       val content = Html("<span>CONTENT</span>")
       val pageWithData: Html =
-        page(CommonTestData.correctUcr, Seq(NotificationsPageSingleElement(title, timestamp, content)))
+        page(CommonTestData.correctUcr, NotificationsPageSingleElement(title, timestamp, content))
 
       pageWithData.getElementById("notifications-request-title").text() mustBe title
       pageWithData.getElementById("notifications-request-timestamp").text() mustBe timestamp
@@ -64,12 +66,11 @@ class NotificationsViewSpec extends WordSpec with MustMatchers with Stubs with V
       val responseTitle_1 = "RESPONSE TITLE 1"
       val responseTitle_2 = "RESPONSE TITLE 2"
       val elementsToDisplay = Seq(
-        exampleNotificationPageSingleElement(title = requestTitle),
         exampleNotificationPageSingleElement(title = responseTitle_1),
         exampleNotificationPageSingleElement(title = responseTitle_2)
       )
 
-      val pageWithData: Html = page(CommonTestData.correctUcr, elementsToDisplay)
+      val pageWithData: Html = page(CommonTestData.correctUcr, exampleNotificationPageSingleElement(title = requestTitle), elementsToDisplay)
 
       getElementById(pageWithData, "notifications-request-title").text() must equal(requestTitle)
       getElementById(pageWithData, "title-1").text() must equal(responseTitle_1)

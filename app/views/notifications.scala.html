@@ -21,11 +21,18 @@
 @(submissionUcr: String, elementsToDisplay: Seq[NotificationsPageSingleElement])(implicit request: Request[_], messages: Messages)
 
 @notificationsList(elementsToDisplay: Seq[NotificationsPageSingleElement]) = {
-  <div class="govuk-grid-column-two-thirds">
-    @for((element, index) <- elementsToDisplay.zip(Stream.from(1)).reverse) {
-      @components.notifications_single_element(index, element)
-    }
-  </div>
+    <div class="govuk-grid-column-two-thirds">
+        @for((element, index) <- elementsToDisplay.drop(1).zip(Stream.from(1)).reverse) {
+            @components.notifications_single_element(index, element)
+        }
+        @elementsToDisplay.headOption.map { element =>
+            <div id="notifications-request">
+                <h2 id="notifications-request-title" class="heading-large">@element.title</h2>
+                <p id="notifications-request-timestamp">@{element.timestampInfo}</p>
+                <p id="notifications-request-content">@{element.content}</p>
+            </div>
+        }
+    </div>
 }
 
 @main_template(title = messages("notifications.title", submissionUcr)) {

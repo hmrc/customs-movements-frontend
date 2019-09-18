@@ -49,14 +49,13 @@ class NotificationsViewSpec extends WordSpec with MustMatchers with Stubs with V
 
       val title = "REQUEST TITLE"
       val timestamp = "TIMESTAMP"
-      val content = Html("<p>CONTENT</p>")
+      val content = Html("<span>CONTENT</span>")
       val pageWithData: Html =
         page(CommonTestData.correctUcr, Seq(NotificationsPageSingleElement(title, timestamp, content)))
 
-      getElementById(pageWithData, "index-1").text() must equal("1")
-      getElementById(pageWithData, "title-1").text() must equal(title)
-      getElementById(pageWithData, "timestampInfo-1").text() must equal(timestamp)
-      getElementById(pageWithData, "content-1").html() must equal(content.toString)
+      pageWithData.getElementById("notifications-request-title").text() mustBe title
+      pageWithData.getElementById("notifications-request-timestamp").text() mustBe timestamp
+      pageWithData.getElementById("notifications-request-content").html() mustBe content.toString()
     }
 
     "contain elements for request and all notifications in correct order" in {
@@ -72,12 +71,11 @@ class NotificationsViewSpec extends WordSpec with MustMatchers with Stubs with V
 
       val pageWithData: Html = page(CommonTestData.correctUcr, elementsToDisplay)
 
-      getElementById(pageWithData, "title-1").text() must equal(requestTitle)
+      getElementById(pageWithData, "notifications-request-title").text() must equal(requestTitle)
+      getElementById(pageWithData, "title-1").text() must equal(responseTitle_1)
       getElementById(pageWithData, "index-1").text() must equal("1")
-      getElementById(pageWithData, "title-2").text() must equal(responseTitle_1)
+      getElementById(pageWithData, "title-2").text() must equal(responseTitle_2)
       getElementById(pageWithData, "index-2").text() must equal("2")
-      getElementById(pageWithData, "title-3").text() must equal(responseTitle_2)
-      getElementById(pageWithData, "index-3").text() must equal("3")
     }
 
   }

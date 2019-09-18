@@ -23,7 +23,6 @@ import base.BaseSpec
 import models.notifications.ResponseType
 import models.viewmodels.decoder.{CrcCode, Decoder}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
@@ -40,7 +39,7 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
   private val crcCodeKeyFromDecoder = CrcCode.Success
 
   private trait Test {
-    implicit val messages: Messages = Mockito.spy(stubMessages())
+    implicit val messages: Messages = stubMessages()
 
     val decoderMock: Decoder = mock[Decoder]
     when(decoderMock.crc(any[String])).thenReturn(Some(crcCodeKeyFromDecoder))

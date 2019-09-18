@@ -24,7 +24,6 @@ import models.notifications.{NotificationFrontendModel, ResponseType}
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import models.viewmodels.decoder._
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
@@ -48,7 +47,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
   private val MucrNotShutConsolidationErrorCode = ErrorCode.MucrNotShutConsolidation
 
   private trait Test {
-    implicit val messages: Messages = Mockito.spy(stubMessages())
+    implicit val messages: Messages = stubMessages()
 
     val decoderMock: Decoder = mock[Decoder]
     when(decoderMock.crc(any[String])).thenReturn(Some(crcCodeKeyFromDecoder))
@@ -307,8 +306,5 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
     actual.timestampInfo must equal(expected.timestampInfo)
     actual.content must equal(expected.content)
   }
-
-  private def verifyMessagesCalledWith(key: String, args: String*)(implicit messages: Messages): Unit =
-    verify(messages).apply(meq(key), meq(args))
 
 }

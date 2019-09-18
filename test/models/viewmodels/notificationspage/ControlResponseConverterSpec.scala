@@ -24,7 +24,6 @@ import models.notifications.ResponseType
 import models.viewmodels.decoder.ErrorCode._
 import models.viewmodels.decoder.{ActionCode, Decoder}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
@@ -41,7 +40,7 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
   private val AcknowledgedAndProcessedActionCode = ActionCode.AcknowledgedAndProcessed
 
   private trait Test {
-    implicit val messages: Messages = Mockito.spy(stubMessages())
+    implicit val messages: Messages = stubMessages()
 
     val decoderMock: Decoder = mock[Decoder]
     when(decoderMock.actionCode(any[String])).thenReturn(Some(AcknowledgedAndProcessedActionCode))

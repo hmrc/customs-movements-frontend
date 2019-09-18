@@ -20,19 +20,25 @@ import base.{MetricsMatchers, MovementsMetricsStub}
 import connectors.CustomsDeclareExportsMovementsConnector
 import forms.Choice.AllowedChoiceValues.{Arrival, Departure}
 import forms._
-import org.mockito.ArgumentCaptor
+import models.SignedInUser
+import models.requests.{AuthenticatedRequest, JourneyRequest}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, verify, verifyZeroInteractions, when}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatest.{BeforeAndAfterEach, MustMatchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.INTERNAL_SERVER_ERROR
+import play.api.test.FakeRequest
 import play.api.test.Helpers.ACCEPTED
+import services.audit.AuditService
 import testdata.ConsolidationTestData._
 import testdata.MovementsTestData._
+import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import unit.base.UnitSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -40,21 +46,32 @@ import scala.xml.{Node, Utility, XML}
 
 class SubmissionServiceSpec
     extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures with MovementsMetricsStub
-    with MetricsMatchers with BeforeAndAfterEach {
+    with MetricsMatchers with BeforeAndAfterEach with UnitSpec {
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(100, Millis))
 
   implicit val headerCarrierMock = mock[HeaderCarrier]
 
+  implicit val journeyRequest = JourneyRequest(
+    AuthenticatedRequest(FakeRequest("", ""), SignedInUser("eori", Enrolments(Set.empty[Enrolment]))),
+    Choice(Arrival)
+  )
+
+  val mockAuditService = mock[AuditService]
   val customsCacheServiceMock = mock[CustomsCacheService]
   val customsExportsMovementConnectorMock = mock[CustomsDeclareExportsMovementsConnector]
 
   val submissionService =
-    new SubmissionService(customsCacheServiceMock, customsExportsMovementConnectorMock, movementsMetricsStub)
+    new SubmissionService(
+      customsCacheServiceMock,
+      customsExportsMovementConnectorMock,
+      mockAuditService,
+      movementsMetricsStub
+    )
 
   override def afterEach(): Unit = {
-    reset(customsCacheServiceMock, customsExportsMovementConnectorMock)
+    reset(customsCacheServiceMock, customsExportsMovementConnectorMock, mockAuditService)
     super.afterEach()
   }
 
@@ -89,6 +106,9 @@ class SubmissionServiceSpec
         submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue must equal(
           CustomHttpResponseCode
         )
+        verify(mockAuditService).audit(any(), any())(any())
+        verify(mockAuditService)
+          .auditAllPagesUserInput(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Arrival)), any())(any())
       }
 
       "call CustomsDeclareExportsMovementsConnector" in requestAcceptedTest {
@@ -99,6 +119,9 @@ class SubmissionServiceSpec
         submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue
 
         verify(customsExportsMovementConnectorMock).sendArrivalDeclaration(any())(any(), any())
+        verify(mockAuditService).audit(any(), any())(any())
+        verify(mockAuditService)
+          .auditAllPagesUserInput(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Arrival)), any())(any())
       }
 
       "return Internal Server Error when no data in cache" in requestAcceptedTest {
@@ -108,6 +131,7 @@ class SubmissionServiceSpec
         submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue must equal(
           INTERNAL_SERVER_ERROR
         )
+        verifyZeroInteractions(mockAuditService)
       }
     }
 
@@ -125,6 +149,9 @@ class SubmissionServiceSpec
         submissionService.submitMovementRequest("EDL-eori1", "eori1", Choice(Departure)).futureValue must equal(
           CustomHttpResponseCode
         )
+        verify(mockAuditService).audit(any(), any())(any())
+        verify(mockAuditService)
+          .auditAllPagesUserInput(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Departure)), any())(any())
       }
 
       "call CustomsDeclareExportsMovementsConnector" in requestAcceptedTest {
@@ -135,6 +162,9 @@ class SubmissionServiceSpec
         submissionService.submitMovementRequest("EDL-eori1", "eori1", Choice(Departure)).futureValue
 
         verify(customsExportsMovementConnectorMock).sendDepartureDeclaration(any())(any(), any())
+        verify(mockAuditService).audit(any(), any())(any())
+        verify(mockAuditService)
+          .auditAllPagesUserInput(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Departure)), any())(any())
       }
 
       "return Internal Server Error when no data in cache" in requestAcceptedTest {
@@ -144,6 +174,7 @@ class SubmissionServiceSpec
         submissionService.submitMovementRequest("EDL-eori1", "eori1", Choice(Departure)).futureValue must equal(
           INTERNAL_SERVER_ERROR
         )
+        verifyZeroInteractions(mockAuditService)
       }
     }
   }

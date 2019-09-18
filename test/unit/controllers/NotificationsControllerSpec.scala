@@ -119,16 +119,24 @@ class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
 
         val expectedUcr: String = expectedSubmission.ucrBlocks.head.ucr
 
-        verify(notificationsPageMock).apply(meq(expectedUcr), any[NotificationsPageSingleElement], any[Seq[NotificationsPageSingleElement]])(any(), any())
+        verify(notificationsPageMock).apply(
+          meq(expectedUcr),
+          any[NotificationsPageSingleElement],
+          any[Seq[NotificationsPageSingleElement]]
+        )(any(), any())
       }
 
       "call notification view template, passing data returned by NotificationsPageSingleElementFactory" in {
 
-        val expectedViewInput: Seq[NotificationsPageSingleElement] = expectedNotifications.map(_ => singleElementForNotification)
+        val expectedViewInput: Seq[NotificationsPageSingleElement] =
+          expectedNotifications.map(_ => singleElementForNotification)
 
         controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
 
-        verify(notificationsPageMock).apply(any[String], meq(singleElementForSubmission), meq(expectedViewInput))(any(), any())
+        verify(notificationsPageMock).apply(any[String], meq(singleElementForSubmission), meq(expectedViewInput))(
+          any(),
+          any()
+        )
       }
 
       "return 200 (OK)" in {

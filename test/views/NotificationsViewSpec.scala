@@ -40,10 +40,9 @@ class NotificationsViewSpec extends WordSpec with MustMatchers with Stubs with V
   "Notification page" should {
 
     "contain title" in {
-      val title = page(
-        submissionUcr = "TEST UCR",
-        NotificationsPageSingleElement("title", "timestamp", Html("content"))
-      ).getElementById("title")
+      val title =
+        page(submissionUcr = "TEST UCR", NotificationsPageSingleElement("title", "timestamp", Html("content")))
+          .getElementById("title")
 
       title must containText(messages("notifications.title", "TEST UCR"))
     }
@@ -70,7 +69,8 @@ class NotificationsViewSpec extends WordSpec with MustMatchers with Stubs with V
         exampleNotificationPageSingleElement(title = responseTitle_2)
       )
 
-      val pageWithData: Html = page(CommonTestData.correctUcr, exampleNotificationPageSingleElement(title = requestTitle), elementsToDisplay)
+      val pageWithData: Html =
+        page(CommonTestData.correctUcr, exampleNotificationPageSingleElement(title = requestTitle), elementsToDisplay)
 
       getElementById(pageWithData, "notifications-request-title").text() must equal(requestTitle)
       getElementById(pageWithData, "title-1").text() must equal(responseTitle_1)

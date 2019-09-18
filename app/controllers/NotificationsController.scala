@@ -40,14 +40,14 @@ class NotificationsController @Inject()(
 
   def listOfNotifications(conversationId: String): Action[AnyContent] = authenticate.async { implicit request =>
     val params = for {
-        submission: Option[SubmissionFrontendModel] <- connector.fetchSingleSubmission(conversationId)
-        submissionElement: Option[NotificationsPageSingleElement] = submission.map(factory.build)
+      submission: Option[SubmissionFrontendModel] <- connector.fetchSingleSubmission(conversationId)
+      submissionElement: Option[NotificationsPageSingleElement] = submission.map(factory.build)
 
-        submissionNotifications: Seq[NotificationFrontendModel] <- connector.fetchNotifications(conversationId)
-        notificationElements: Seq[NotificationsPageSingleElement] = submissionNotifications.sorted.map(factory.build)
+      submissionNotifications: Seq[NotificationFrontendModel] <- connector.fetchNotifications(conversationId)
+      notificationElements: Seq[NotificationsPageSingleElement] = submissionNotifications.sorted.map(factory.build)
 
-        submissionUcr: Option[String] = submission.flatMap(extractUcr)
-      } yield (submissionUcr, submissionElement, notificationElements)
+      submissionUcr: Option[String] = submission.flatMap(extractUcr)
+    } yield (submissionUcr, submissionElement, notificationElements)
 
     params.map {
       case (Some(submissionUcr), Some(submissionElement), notificationElements) =>

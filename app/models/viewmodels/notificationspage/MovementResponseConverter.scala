@@ -42,7 +42,7 @@ private[notificationspage] class MovementResponseConverter @Inject()(decoder: De
 
       val crcCodeContent = getContentForCrcCode(notification)
       val content = crcCodeContent.map { content =>
-        s"<p>${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} $content</p>"
+        paragraph(s"${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} $content")
       }
 
       NotificationsPageSingleElement(
@@ -62,6 +62,8 @@ private[notificationspage] class MovementResponseConverter @Inject()(decoder: De
       decodedCrcCode <- decoder.crc(code)
       content = messages(decodedCrcCode.contentKey)
     } yield content
+
+  private val paragraph: String => String = (text: String) => s"<p>$text</p>"
 
   private def timestampInfoResponse(responseTimestamp: Instant)(implicit messages: Messages): String =
     messages("notifications.elem.timestampInfo.response", dateTimeFormatter.format(responseTimestamp))

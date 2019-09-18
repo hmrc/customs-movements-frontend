@@ -45,7 +45,7 @@ private[notificationspage] class ControlResponseConverter @Inject()(decoder: Dec
       val actionCodeExplanation = for {
         code <- notification.actionCode
         actionCode <- decoder.actionCode(code)
-        content = s"<p>${messages(actionCode.contentKey)}</p>"
+        content = paragraph(messages(actionCode.contentKey))
       } yield content
 
       val errorExplanation = (for {
@@ -57,7 +57,7 @@ private[notificationspage] class ControlResponseConverter @Inject()(decoder: Dec
           errorCode
         }
 
-        content = s"<p>${messages(errorCode.contentKey)}</p>"
+        content = paragraph(messages(errorCode.contentKey))
       } yield content).foldLeft("")(_ + _)
 
       NotificationsPageSingleElement(
@@ -68,6 +68,8 @@ private[notificationspage] class ControlResponseConverter @Inject()(decoder: Dec
     } else {
       throw new IllegalArgumentException(s"Cannot build content for ${notification.responseType}")
     }
+
+  private val paragraph: String => String = (text: String) => s"<p>$text</p>"
 
   private def timestampInfoResponse(responseTimestamp: Instant)(implicit messages: Messages): String =
     messages("notifications.elem.timestampInfo.response", dateTimeFormatter.format(responseTimestamp))

@@ -76,23 +76,11 @@ class NotificationPageSingleElementFactory @Inject()(
 
   def build(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
     notification.responseType match {
-      case ControlResponse        => buildForControlResponse(notification)
-      case MovementTotalsResponse => buildForMovementTotalsResponse(notification)
-      case MovementResponse       => buildForMovementResponse(notification)
+      case ControlResponse        => controlResponseConverter.convert(notification)
+      case MovementTotalsResponse => movementTotalsResponseConverter.convert(notification)
+      case MovementResponse       => movementResponseConverter.convert(notification)
       case _                      => buildForUnspecified(notification.timestampReceived)
     }
-
-  private def buildForControlResponse(notification: NotificationFrontendModel)(
-    implicit messages: Messages
-  ): NotificationsPageSingleElement = controlResponseConverter.convert(notification)
-
-  private def buildForMovementTotalsResponse(notification: NotificationFrontendModel)(
-    implicit messages: Messages
-  ): NotificationsPageSingleElement = movementTotalsResponseConverter.convert(notification)
-
-  private def buildForMovementResponse(
-    notification: NotificationFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement = movementResponseConverter.convert(notification)
 
   private def buildForUnspecified(
     responseTimestamp: Instant

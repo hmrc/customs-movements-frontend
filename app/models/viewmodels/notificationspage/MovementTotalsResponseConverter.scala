@@ -47,13 +47,13 @@ private[notificationspage] class MovementTotalsResponseConverter @Inject()(decod
         notification.masterSoe.flatMap(soe => decoder.soe(soe).map(decodedSoe => messages(decodedSoe.contentKey)))
 
       val firstLine = crcCodeContent.map { content =>
-        s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")} $content</p>"
+        paragraph(s"${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")} $content")
       }
       val secondLine = roeContent.map { content =>
-        s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} $content</p>"
+        paragraph(s"${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} $content")
       }
       val thirdLine = soeContent.map { content =>
-        s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} $content</p>"
+        paragraph(s"${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} $content")
       }
 
       NotificationsPageSingleElement(
@@ -73,6 +73,8 @@ private[notificationspage] class MovementTotalsResponseConverter @Inject()(decod
       decodedCrcCode <- decoder.crc(code)
       content = messages(decodedCrcCode.contentKey)
     } yield content
+
+  private val paragraph: String => String = (text: String) => s"<p>$text</p>"
 
   private def timestampInfoResponse(responseTimestamp: Instant)(implicit messages: Messages): String =
     messages("notifications.elem.timestampInfo.response", dateTimeFormatter.format(responseTimestamp))

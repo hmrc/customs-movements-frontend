@@ -28,7 +28,7 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 
 @Singleton
-private[notificationspage] class ControlResponseConverter @Inject()(decoder: Decoder)
+class ControlResponseConverter @Inject()(decoder: Decoder)
     extends NotificationPageSingleElementConverter {
 
   private val logger = Logger(this.getClass)

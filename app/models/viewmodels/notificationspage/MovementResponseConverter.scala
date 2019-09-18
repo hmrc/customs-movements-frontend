@@ -27,7 +27,7 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 
 @Singleton
-private[notificationspage] class MovementResponseConverter @Inject()(decoder: Decoder)
+class MovementResponseConverter @Inject()(decoder: Decoder)
     extends NotificationPageSingleElementConverter {
 
   private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())

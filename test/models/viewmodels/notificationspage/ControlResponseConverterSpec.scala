@@ -50,7 +50,7 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
     val contentBuilder = new ControlResponseConverter(decoderMock)
   }
 
-  "ControlResponseContentBuilder on canBuildFrom" should {
+  "ControlResponseConverter on canConvertFrom" should {
 
     "return false" when {
       "provided with NotificationFrontendModel not for ControlResponse" in new Test {
@@ -71,7 +71,7 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
     }
   }
 
-  "ControlResponseContentBuilder on convert" when {
+  "ControlResponseConverter on convert" when {
 
     "provided with NotificationFrontendModel not for ControlResponse" should {
       "throw IllegalArgumentException" in new Test {

@@ -48,7 +48,7 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
     val converter = new MovementResponseConverter(decoderMock)
   }
 
-  "MovementResponseContentBuilder on canBuildFrom" should {
+  "MovementResponseConverter on canConvertFrom" should {
 
     "return false" when {
       "provided with NotificationFrontendModel not for MovementResponse" in new Test {

@@ -52,7 +52,7 @@ class MovementTotalsResponseConverterSpec extends BaseSpec with MockitoSugar {
     val contentBuilder = new MovementTotalsResponseConverter(decoderMock)
   }
 
-  "MovementTotalsResponseContentBuilder on canBuildFrom" should {
+  "MovementTotalsResponseConverter on canConvertFrom" should {
 
     "return false" when {
       "provided with NotificationFrontendModel not for MovementTotalsResponse" in new Test {
@@ -73,7 +73,7 @@ class MovementTotalsResponseConverterSpec extends BaseSpec with MockitoSugar {
     }
   }
 
-  "MovementTotalsResponseContentBuilder on build" when {
+  "MovementTotalsResponseConverter on build" when {
 
     "provided with NotificationFrontendModel not for MovementTotalsResponse" should {
       "throw IllegalArgumentException" in new Test {

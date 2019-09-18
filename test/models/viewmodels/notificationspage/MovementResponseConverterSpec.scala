@@ -22,6 +22,7 @@ import java.time.{ZoneId, ZonedDateTime}
 import base.BaseSpec
 import models.notifications.ResponseType
 import models.viewmodels.decoder.{CrcCode, Decoder}
+import modules.DateTimeFormatterModule.NotificationsPageFormatter
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -44,7 +45,7 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
     val decoderMock: Decoder = mock[Decoder]
     when(decoderMock.crc(any[String])).thenReturn(Some(crcCodeKeyFromDecoder))
 
-    val converter = new MovementResponseConverter(decoderMock)
+    val converter = new MovementResponseConverter(decoderMock, NotificationsPageFormatter)
   }
 
   "MovementResponseConverter on canConvertFrom" should {

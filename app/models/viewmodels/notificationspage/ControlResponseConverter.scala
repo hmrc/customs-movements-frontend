@@ -16,8 +16,8 @@
 
 package models.viewmodels.notificationspage
 
+import java.time.Instant
 import java.time.format.DateTimeFormatter
-import java.time.{Instant, ZoneId}
 
 import javax.inject.{Inject, Singleton}
 import models.notifications.NotificationFrontendModel
@@ -28,10 +28,10 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 
 @Singleton
-class ControlResponseConverter @Inject()(decoder: Decoder) extends NotificationPageSingleElementConverter {
+class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
+    extends NotificationPageSingleElementConverter {
 
   private val logger = Logger(this.getClass)
-  private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
 
   override def canConvertFrom(notification: NotificationFrontendModel): Boolean =
     notification.responseType == ControlResponse

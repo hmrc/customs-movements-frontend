@@ -22,6 +22,7 @@ import java.time.{ZoneId, ZonedDateTime}
 import base.BaseSpec
 import models.notifications.ResponseType
 import models.viewmodels.decoder._
+import modules.DateTimeFormatterModule.NotificationsPageFormatter
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -48,7 +49,7 @@ class MovementTotalsResponseConverterSpec extends BaseSpec with MockitoSugar {
     when(decoderMock.roe(any[String])).thenReturn(Some(roeKeyFromDecoder))
     when(decoderMock.soe(any[String])).thenReturn(Some(soeKeyFromDecoder))
 
-    val contentBuilder = new MovementTotalsResponseConverter(decoderMock)
+    val contentBuilder = new MovementTotalsResponseConverter(decoderMock, NotificationsPageFormatter)
   }
 
   "MovementTotalsResponseConverter on canConvertFrom" should {

@@ -16,8 +16,8 @@
 
 package models.viewmodels.notificationspage
 
+import java.time.Instant
 import java.time.format.DateTimeFormatter
-import java.time.{Instant, ZoneId}
 
 import javax.inject.{Inject, Singleton}
 import models.notifications.NotificationFrontendModel
@@ -27,9 +27,8 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 
 @Singleton
-class MovementResponseConverter @Inject()(decoder: Decoder) extends NotificationPageSingleElementConverter {
-
-  private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
+class MovementResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
+    extends NotificationPageSingleElementConverter {
 
   override def canConvertFrom(notification: NotificationFrontendModel): Boolean =
     notification.responseType == MovementResponse

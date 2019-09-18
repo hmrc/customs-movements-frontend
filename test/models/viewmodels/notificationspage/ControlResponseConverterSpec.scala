@@ -23,6 +23,7 @@ import base.BaseSpec
 import models.notifications.ResponseType
 import models.viewmodels.decoder.ErrorCode._
 import models.viewmodels.decoder.{ActionCode, Decoder}
+import modules.DateTimeFormatterModule.NotificationsPageFormatter
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -46,7 +47,7 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
     when(decoderMock.actionCode(any[String])).thenReturn(Some(AcknowledgedAndProcessedActionCode))
     when(decoderMock.errorCode(any[String])).thenReturn(None)
 
-    val contentBuilder = new ControlResponseConverter(decoderMock)
+    val contentBuilder = new ControlResponseConverter(decoderMock, NotificationsPageFormatter)
   }
 
   "ControlResponseConverter on canConvertFrom" should {

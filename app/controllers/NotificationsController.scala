@@ -19,10 +19,11 @@ package controllers
 import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
+import models.notifications.NotificationFrontendModel
 import models.submissions.SubmissionFrontendModel
-import models.viewmodels.NotificationPageSingleElementFactory
+import models.viewmodels.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.notifications
 
@@ -38,18 +39,22 @@ class NotificationsController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   def listOfNotifications(conversationId: String): Action[AnyContent] = authenticate.async { implicit request =>
-    for {
-      submission <- connector.fetchSingleSubmission(conversationId)
-      submissionElem = submission.map(factory.build)
+    val params = for {
+      submission: Option[SubmissionFrontendModel] <- connector.fetchSingleSubmission(conversationId)
+      submissionElement: Option[NotificationsPageSingleElement] = submission.map(factory.build)
 
-      notificationsElems <- connector
-        .fetchNotifications(conversationId)
-        .map(notifications => notifications.sorted.map(factory.build))
+      submissionNotifications: Seq[NotificationFrontendModel] <- connector.fetchNotifications(conversationId)
+      notificationElements: Seq[NotificationsPageSingleElement] = submissionNotifications.sorted.map(factory.build)
 
-      submissionUcr = submission.flatMap(extractUcr).getOrElse("")
-      elementsToDisplay = (submissionElem.toSeq ++ notificationsElems)
+      submissionUcr: Option[String] = submission.flatMap(extractUcr)
+    } yield (submissionUcr, submissionElement, notificationElements)
 
-    } yield Ok(notifications(submissionUcr, elementsToDisplay))
+    params.map {
+      case (Some(submissionUcr), Some(submissionElement), notificationElements) =>
+        Ok(notifications(submissionUcr, submissionElement, notificationElements))
+      case _ =>
+        Redirect(routes.MovementsController.displayPage())
+    }
   }
 
   private def extractUcr(submission: SubmissionFrontendModel): Option[String] =

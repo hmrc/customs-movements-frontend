@@ -76,7 +76,7 @@ class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
       .thenReturn(singleElementForSubmission)
     when(notificationPageSingleElementFactoryMock.build(any[NotificationFrontendModel])(any()))
       .thenReturn(singleElementForNotification)
-    when(notificationsPageMock.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(notificationsPageMock.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -119,17 +119,24 @@ class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
 
         val expectedUcr: String = expectedSubmission.ucrBlocks.head.ucr
 
-        verify(notificationsPageMock).apply(meq(expectedUcr), any[Seq[NotificationsPageSingleElement]])(any(), any())
+        verify(notificationsPageMock).apply(
+          meq(expectedUcr),
+          any[NotificationsPageSingleElement],
+          any[Seq[NotificationsPageSingleElement]]
+        )(any(), any())
       }
 
       "call notification view template, passing data returned by NotificationsPageSingleElementFactory" in {
 
         val expectedViewInput: Seq[NotificationsPageSingleElement] =
-          singleElementForSubmission +: expectedNotifications.map(_ => singleElementForNotification)
+          expectedNotifications.map(_ => singleElementForNotification)
 
         controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
 
-        verify(notificationsPageMock).apply(any[String], meq(expectedViewInput))(any(), any())
+        verify(notificationsPageMock).apply(any[String], meq(singleElementForSubmission), meq(expectedViewInput))(
+          any(),
+          any()
+        )
       }
 
       "return 200 (OK)" in {
@@ -142,7 +149,7 @@ class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
 
     "submission is missing UCR" should {
 
-      "call notification view template, passing empty String as UCR" in {
+      "redirect back to movements" in {
 
         when(customsExportsMovementsConnectorMock.fetchSingleSubmission(any())(any(), any()))
           .thenReturn(
@@ -158,9 +165,9 @@ class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
             )
           )
 
-        controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
-
-        verify(notificationsPageMock).apply(meq(""), any[Seq[NotificationsPageSingleElement]])(any(), any())
+        val result = controller.listOfNotifications(conversationId)(FakeRequest())
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.MovementsController.displayPage().url)
       }
     }
   }

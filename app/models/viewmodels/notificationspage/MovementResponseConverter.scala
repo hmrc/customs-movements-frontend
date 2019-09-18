@@ -21,53 +21,47 @@ import java.time.{Instant, ZoneId}
 
 import javax.inject.{Inject, Singleton}
 import models.notifications.NotificationFrontendModel
-import models.notifications.ResponseType.ControlResponse
+import models.notifications.ResponseType.MovementResponse
 import models.viewmodels.decoder.Decoder
-import play.api.Logger
 import play.api.i18n.Messages
 import play.twirl.api.Html
 
 @Singleton
-private[notificationspage] class ControlResponseConverter @Inject()(decoder: Decoder)
+private[notificationspage] class MovementResponseConverter @Inject()(decoder: Decoder)
     extends NotificationPageSingleElementConverter {
 
-  private val logger = Logger(this.getClass)
   private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
 
   override def canConvertFrom(notification: NotificationFrontendModel): Boolean =
-    notification.responseType == ControlResponse
+    notification.responseType == MovementResponse
 
   override def convert(
     notification: NotificationFrontendModel
   )(implicit messages: Messages): NotificationsPageSingleElement =
     if (canConvertFrom(notification)) {
 
-      val actionCodeExplanation = for {
-        code <- notification.actionCode
-        actionCode <- decoder.actionCode(code)
-        content = s"<p>${messages(actionCode.contentKey)}</p>"
-      } yield content
-
-      val errorExplanation = (for {
-        code <- notification.errorCodes
-        errorCode <- {
-          val errorCode = decoder.errorCode(code)
-          if (errorCode.isEmpty) logger.warn(s"Received inventoryLinkingControlResponse with unknown error code: $code")
-
-          errorCode
-        }
-
-        content = s"<p>${messages(errorCode.contentKey)}</p>"
-      } yield content).foldLeft("")(_ + _)
+      val crcCodeContent = getContentForCrcCode(notification)
+      val content = crcCodeContent.map { content =>
+        s"<p>${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} $content</p>"
+      }
 
       NotificationsPageSingleElement(
-        title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
+        title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
         timestampInfo = timestampInfoResponse(notification.timestampReceived),
-        content = Html(actionCodeExplanation.getOrElse("") + errorExplanation)
+        content = Html(content.getOrElse(""))
       )
     } else {
       throw new IllegalArgumentException(s"Cannot build content for ${notification.responseType}")
     }
+
+  private def getContentForCrcCode(
+    notification: NotificationFrontendModel
+  )(implicit messages: Messages): Option[String] =
+    for {
+      code <- notification.crcCode
+      decodedCrcCode <- decoder.crc(code)
+      content = messages(decodedCrcCode.contentKey)
+    } yield content
 
   private def timestampInfoResponse(responseTimestamp: Instant)(implicit messages: Messages): String =
     messages("notifications.elem.timestampInfo.response", dateTimeFormatter.format(responseTimestamp))

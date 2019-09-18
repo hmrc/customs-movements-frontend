@@ -70,10 +70,16 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
     when(movementTotalsResponseContentBuilderMock.convert(any[NotificationFrontendModel])(any()))
       .thenReturn(emptyNotificationPageElement)
 
+    val movementResponseConverterMock: MovementResponseConverter = mock[MovementResponseConverter]
+    when(movementResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
+    when(movementResponseConverterMock.convert(any[NotificationFrontendModel])(any()))
+      .thenReturn(emptyNotificationPageElement)
+
     val factory = new NotificationPageSingleElementFactory(
       decoderMock,
       controlResponseConverterMock,
-      movementTotalsResponseContentBuilderMock
+      movementTotalsResponseContentBuilderMock,
+      movementResponseConverterMock
     )
   }
 
@@ -196,54 +202,34 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
     "provided with MovementResponse NotificationFrontendModel" should {
 
-      "call Decoder" in new Test {
+      "call MovementResponseConverter" in new Test {
 
-        val crcCode = "000"
-        val input = exampleNotificationFrontendModel(
-          responseType = ResponseType.MovementResponse,
-          timestampReceived = testTimestamp,
-          crcCode = Some(crcCode)
-        )
+        val input = exampleNotificationFrontendModel(responseType = ResponseType.MovementResponse)
 
         factory.build(input)
 
-        verify(decoderMock).crc(meq(crcCode))
+        verify(movementResponseConverterMock).convert(meq(input))(any[Messages])
       }
 
-      "call Messages passing correct keys and arguments" in new Test {
+      "return NotificationsPageSingleElement returned by MovementResponseConverter" in new Test {
+
+        val exampleNotificationPageElement = NotificationsPageSingleElement(
+          title = "TITLE",
+          timestampInfo = "TIMESTAMP",
+          content = Html("<test>HTML</test>")
+        )
+        when(movementResponseConverterMock.convert(any[NotificationFrontendModel])(any()))
+          .thenReturn(exampleNotificationPageElement)
 
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.MovementResponse,
           timestampReceived = testTimestamp,
-          crcCode = Some("000")
+          crcCode = Some(crcCodeKeyFromDecoder.code)
         )
 
-        factory.build(input)
+        val result = factory.build(input)
 
-        verifyMessagesCalledWith("notifications.elem.title.inventoryLinkingMovementResponse")
-        verifyMessagesCalledWith("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34")
-        verifyMessagesCalledWith(crcCodeKeyFromDecoder.contentKey)
-        verifyMessagesCalledWith("notifications.elem.content.inventoryLinkingMovementResponse.crc")
-      }
-
-      "return NotificationsPageSingleElement with values returned by Messages" in new Test {
-
-        val input = exampleNotificationFrontendModel(
-          responseType = ResponseType.MovementResponse,
-          timestampReceived = testTimestamp,
-          crcCode = Some("000")
-        )
-        val expectedResult = NotificationsPageSingleElement(
-          title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
-          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
-          content = Html(
-            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} ${crcCodeKeyFromDecoder.contentKey}</p>"
-          )
-        )
-
-        val result: NotificationsPageSingleElement = factory.build(input)
-
-        assertEquality(result, expectedResult)
+        result mustBe exampleNotificationPageElement
       }
     }
 
@@ -271,9 +257,9 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.MovementTotalsResponse,
           timestampReceived = testTimestamp,
-          crcCode = Some("000"),
-          masterRoe = Some("6"),
-          masterSoe = Some("1")
+          crcCode = Some(crcCodeKeyFromDecoder.code),
+          masterRoe = Some(roeKeyFromDecoder.code),
+          masterSoe = Some(soeKeyFromDecoder.code)
         )
 
         val result = factory.build(input)

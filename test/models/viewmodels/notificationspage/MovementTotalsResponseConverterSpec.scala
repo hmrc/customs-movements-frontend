@@ -78,10 +78,7 @@ class MovementTotalsResponseConverterSpec extends BaseSpec with MockitoSugar {
     "provided with NotificationFrontendModel not for MovementTotalsResponse" should {
       "throw IllegalArgumentException" in new Test {
 
-        val input = exampleNotificationFrontendModel(
-          responseType = ResponseType.ControlResponse,
-          actionCode = Some(ActionCode.AcknowledgedAndProcessed.code)
-        )
+        val input = exampleNotificationFrontendModel(responseType = ResponseType.ControlResponse)
 
         intercept[IllegalArgumentException] { contentBuilder.convert(input) }
       }
@@ -91,21 +88,18 @@ class MovementTotalsResponseConverterSpec extends BaseSpec with MockitoSugar {
 
       "call Decoder" in new Test {
 
-        val crcCode = "000"
-        val masterRoe = "6"
-        val masterSoe = "1"
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.MovementTotalsResponse,
-          crcCode = Some(crcCode),
-          masterRoe = Some(masterRoe),
-          masterSoe = Some(masterSoe)
+          crcCode = Some(crcCodeKeyFromDecoder.code),
+          masterRoe = Some(roeKeyFromDecoder.code),
+          masterSoe = Some(soeKeyFromDecoder.code)
         )
 
         contentBuilder.convert(input)
 
-        verify(decoderMock).crc(meq(crcCode))
-        verify(decoderMock).roe(meq(masterRoe))
-        verify(decoderMock).soe(meq(masterSoe))
+        verify(decoderMock).crc(meq(crcCodeKeyFromDecoder.code))
+        verify(decoderMock).roe(meq(roeKeyFromDecoder.code))
+        verify(decoderMock).soe(meq(soeKeyFromDecoder.code))
       }
 
       "return NotificationsPageSingleElement with values returned by Messages" in new Test {

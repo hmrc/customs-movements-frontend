@@ -25,7 +25,6 @@ import models.notifications.ResponseType._
 import models.submissions.ActionType._
 import models.submissions.SubmissionFrontendModel
 import models.viewmodels.decoder.Decoder
-import play.api.Logger
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 
@@ -33,10 +32,10 @@ import play.twirl.api.{Html, HtmlFormat}
 class NotificationPageSingleElementFactory @Inject()(
   decoder: Decoder,
   controlResponseConverter: ControlResponseConverter,
-  movementTotalsResponseConverter: MovementTotalsResponseConverter
+  movementTotalsResponseConverter: MovementTotalsResponseConverter,
+  movementResponseConverter: MovementResponseConverter
 ) {
 
-  private val logger = Logger(this.getClass)
   private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
 
   def build(submission: SubmissionFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
@@ -93,19 +92,7 @@ class NotificationPageSingleElementFactory @Inject()(
 
   private def buildForMovementResponse(
     notification: NotificationFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement = {
-
-    val crcCodeContent = getContentForCrcCode(notification)
-    val content = crcCodeContent.map { content =>
-      s"<p>${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} $content</p>"
-    }
-
-    NotificationsPageSingleElement(
-      title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
-      timestampInfo = timestampInfoResponse(notification.timestampReceived),
-      content = Html(content.getOrElse(""))
-    )
-  }
+  )(implicit messages: Messages): NotificationsPageSingleElement = movementResponseConverter.convert(notification)
 
   private def buildForUnspecified(
     responseTimestamp: Instant
@@ -115,15 +102,6 @@ class NotificationPageSingleElementFactory @Inject()(
       timestampInfo = timestampInfoResponse(responseTimestamp),
       content = HtmlFormat.empty
     )
-
-  private def getContentForCrcCode(
-    notification: NotificationFrontendModel
-  )(implicit messages: Messages): Option[String] =
-    for {
-      code <- notification.crcCode
-      decodedCrcCode <- decoder.crc(code)
-      content = messages(decodedCrcCode.contentKey)
-    } yield content
 
   private def timestampInfoRequest(responseTimestamp: Instant)(implicit messages: Messages): String =
     messages("notifications.elem.timestampInfo.request", dateTimeFormatter.format(responseTimestamp))

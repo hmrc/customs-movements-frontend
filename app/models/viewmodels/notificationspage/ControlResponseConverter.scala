@@ -52,7 +52,7 @@ private[notificationspage] class ControlResponseConverter @Inject()(decoder: Dec
         code <- notification.errorCodes
         errorCode <- {
           val errorCode = decoder.errorCode(code)
-          if (errorCode.isEmpty) logger.warn(s"Received inventoryLinkingControlResponse with unknown error code: $code")
+          if (errorCode.isEmpty) logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $code")
 
           errorCode
         }

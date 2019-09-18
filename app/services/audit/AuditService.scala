@@ -17,8 +17,8 @@
 package services.audit
 
 import com.google.inject.Inject
-import config.AppConfig
 import forms.Choice
+import javax.inject.Named
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -29,7 +29,9 @@ import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(implicit ec: ExecutionContext) {
+class AuditService @Inject()(connector: AuditConnector, @Named("appName") appName: String)(
+  implicit ec: ExecutionContext
+) {
 
   private val logger = Logger(this.getClass)
 
@@ -40,7 +42,7 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
 
   private def createAuditEvent(choice: Choice, auditData: Map[String, String])(implicit hc: HeaderCarrier) =
     DataEvent(
-      auditSource = appConfig.appName,
+      auditSource = appName,
       auditType = choice.value,
       tags = getAuditTags(s"${choice.value}-request", path = s"$choice.value}"),
       detail = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails() ++ auditData
@@ -69,7 +71,7 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
   def auditAllPagesUserInput(choice: Choice, userInput: JsObject)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val auditType = choice.value
     val extendedEvent = ExtendedDataEvent(
-      auditSource = appConfig.appName,
+      auditSource = appName,
       auditType = auditType,
       tags = getAuditTags(s"${auditType}-payload-request", s"${auditType}/full-payload"),
       detail = getAuditDetails(userInput)

@@ -22,7 +22,11 @@ import forms._
 import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
 import models.external.requests.InventoryLinkingConsolidationRequestFactory._
+import models.requests.JourneyRequest
 import play.api.http.Status.INTERNAL_SERVER_ERROR
+import play.api.libs.json.{JsObject, Json}
+import services.audit.AuditService
+import services.audit.EventData._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
@@ -33,20 +37,25 @@ import scala.util.Success
 class SubmissionService @Inject()(
   cacheService: CustomsCacheService,
   connector: CustomsDeclareExportsMovementsConnector,
+  auditService: AuditService,
   metrics: MovementsMetrics
 ) {
 
-  def submitMovementRequest(cacheId: String, eori: String, choice: Choice)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[Int] =
+  def submitMovementRequest(
+    cacheId: String,
+    eori: String,
+    choice: Choice
+  )(implicit hc: HeaderCarrier, request: JourneyRequest[_], ec: ExecutionContext): Future[Int] =
     cacheService.fetch(cacheId).flatMap {
       case Some(cacheMap) => {
         val data = Movement.createMovementRequest(cacheMap, eori, choice)
         val timer = metrics.startTimer(choice.value)
 
+        auditService.auditAllPagesUserInput(choice, Json.toJson(cacheMap).as[JsObject])
+
         sendMovementRequest(choice, data).map { submitResponse =>
           metrics.incrementCounter(data.messageCode)
+          auditService.audit(choice, auditData(data, Success.toString))
           timer.stop()
           submitResponse.status
         }
@@ -63,6 +72,18 @@ class SubmissionService @Inject()(
       case Arrival   => connector.sendArrivalDeclaration(data.toXml)
       case Departure => connector.sendDepartureDeclaration(data.toXml)
     }
+
+  private def auditData(data: InventoryLinkingMovementRequest, result: String)(
+    implicit request: JourneyRequest[_]
+  ): Map[String, String] =
+    Map(
+      EORI.toString -> request.authenticatedRequest.user.eori,
+      MessageCode.toString -> data.messageCode,
+      UCRType.toString -> data.ucrBlock.ucrType,
+      UCR.toString -> data.ucrBlock.ucr,
+      MovementReference.toString -> data.movementReference.getOrElse(""),
+      SubmissionResult.toString -> result
+    )
 
   def submitDucrAssociation(
     mucrOptions: MucrOptions,

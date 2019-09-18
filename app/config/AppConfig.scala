@@ -30,7 +30,7 @@ class AppConfig @Inject()(
   val runModeConfiguration: Configuration,
   val environment: Environment,
   servicesConfig: ServicesConfig,
-  @Named("appName") appName: String
+  @Named("appName") val appName: String
 ) {
 
   private def loadConfig(key: String): String =

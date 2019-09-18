@@ -31,7 +31,7 @@ trait MockSubmissionService extends MockitoSugar with BeforeAndAfterEach { self:
   val mockSubmissionService: SubmissionService = mock[SubmissionService]
 
   def mockSubmission(status: Int = ACCEPTED): OngoingStubbing[Future[Int]] =
-    when(mockSubmissionService.submitMovementRequest(any(), any(), any())(any(), any()))
+    when(mockSubmissionService.submitMovementRequest(any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(status))
 
   def mockShutMucr(status: Int = ACCEPTED): OngoingStubbing[Future[Int]] =

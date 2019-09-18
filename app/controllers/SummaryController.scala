@@ -21,10 +21,9 @@ import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.Choice.AllowedChoiceValues._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.requests.JourneyRequest
 import play.api.Logger
-import play.api.i18n.{I18nSupport, Messages}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.movement_confirmation_page

@@ -27,8 +27,7 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 
 @Singleton
-class MovementTotalsResponseConverter @Inject()(decoder: Decoder)
-    extends NotificationPageSingleElementConverter {
+class MovementTotalsResponseConverter @Inject()(decoder: Decoder) extends NotificationPageSingleElementConverter {
 
   private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
 
@@ -40,39 +39,34 @@ class MovementTotalsResponseConverter @Inject()(decoder: Decoder)
   )(implicit messages: Messages): NotificationsPageSingleElement =
     if (canConvertFrom(notification)) {
 
-      val crcCodeContent = getContentForCrcCode(notification)
-      val roeContent =
-        notification.masterRoe.flatMap(roe => decoder.roe(roe).map(decodedRoe => messages(decodedRoe.contentKey)))
-      val soeContent =
-        notification.masterSoe.flatMap(soe => decoder.soe(soe).map(decodedSoe => messages(decodedSoe.contentKey)))
-
-      val firstLine = crcCodeContent.map { content =>
-        paragraph(s"${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")} $content")
-      }
-      val secondLine = roeContent.map { content =>
-        paragraph(s"${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} $content")
-      }
-      val thirdLine = soeContent.map { content =>
-        paragraph(s"${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} $content")
-      }
+      val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation)
+      val roeCodeExplanation = notification.masterRoe.flatMap(buildRoeCodeExplanation)
+      val soeCodeExplanation = notification.masterSoe.flatMap(buildSoeCodeExplanation)
 
       NotificationsPageSingleElement(
         title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
         timestampInfo = timestampInfoResponse(notification.timestampReceived),
-        content = Html(firstLine.getOrElse("") + secondLine.getOrElse("") + thirdLine.getOrElse(""))
+        content =
+          Html(crcCodeExplanation.getOrElse("") + roeCodeExplanation.getOrElse("") + soeCodeExplanation.getOrElse(""))
       )
     } else {
       throw new IllegalArgumentException(s"Cannot build content for ${notification.responseType}")
     }
 
-  private def getContentForCrcCode(
-    notification: NotificationFrontendModel
-  )(implicit messages: Messages): Option[String] =
-    for {
-      code <- notification.crcCode
-      decodedCrcCode <- decoder.crc(code)
-      content = messages(decodedCrcCode.contentKey)
-    } yield content
+  private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[String] = {
+    val CrcCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")
+    decoder.crc(crcCode).map(code => paragraph(s"$CrcCodeHeader ${code.contentKey}"))
+  }
+
+  private def buildRoeCodeExplanation(roeCode: String)(implicit messages: Messages): Option[String] = {
+    val RoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")
+    decoder.roe(roeCode).map(code => paragraph(s"$RoeCodeHeader ${code.contentKey}"))
+  }
+
+  private def buildSoeCodeExplanation(soeCode: String)(implicit messages: Messages): Option[String] = {
+    val SoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")
+    decoder.soe(soeCode).map(code => paragraph(s"$SoeCodeHeader ${code.contentKey}"))
+  }
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"
 

@@ -27,8 +27,7 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 
 @Singleton
-class MovementResponseConverter @Inject()(decoder: Decoder)
-    extends NotificationPageSingleElementConverter {
+class MovementResponseConverter @Inject()(decoder: Decoder) extends NotificationPageSingleElementConverter {
 
   private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
 
@@ -40,28 +39,21 @@ class MovementResponseConverter @Inject()(decoder: Decoder)
   )(implicit messages: Messages): NotificationsPageSingleElement =
     if (canConvertFrom(notification)) {
 
-      val crcCodeContent = getContentForCrcCode(notification)
-      val content = crcCodeContent.map { content =>
-        paragraph(s"${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} $content")
-      }
+      val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation)
 
       NotificationsPageSingleElement(
         title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
         timestampInfo = timestampInfoResponse(notification.timestampReceived),
-        content = Html(content.getOrElse(""))
+        content = Html(crcCodeExplanation.getOrElse(""))
       )
     } else {
       throw new IllegalArgumentException(s"Cannot build content for ${notification.responseType}")
     }
 
-  private def getContentForCrcCode(
-    notification: NotificationFrontendModel
-  )(implicit messages: Messages): Option[String] =
-    for {
-      code <- notification.crcCode
-      decodedCrcCode <- decoder.crc(code)
-      content = messages(decodedCrcCode.contentKey)
-    } yield content
+  private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[String] = {
+    val CrcCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")
+    decoder.crc(crcCode).map(code => paragraph(s"$CrcCodeHeader ${code.contentKey}"))
+  }
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"
 

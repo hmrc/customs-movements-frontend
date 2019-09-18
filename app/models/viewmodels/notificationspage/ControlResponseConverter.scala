@@ -28,8 +28,7 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 
 @Singleton
-class ControlResponseConverter @Inject()(decoder: Decoder)
-    extends NotificationPageSingleElementConverter {
+class ControlResponseConverter @Inject()(decoder: Decoder) extends NotificationPageSingleElementConverter {
 
   private val logger = Logger(this.getClass)
   private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
@@ -42,32 +41,30 @@ class ControlResponseConverter @Inject()(decoder: Decoder)
   )(implicit messages: Messages): NotificationsPageSingleElement =
     if (canConvertFrom(notification)) {
 
-      val actionCodeExplanation = for {
-        code <- notification.actionCode
-        actionCode <- decoder.actionCode(code)
-        content = paragraph(messages(actionCode.contentKey))
-      } yield content
-
-      val errorExplanation = (for {
-        code <- notification.errorCodes
-        errorCode <- {
-          val errorCode = decoder.errorCode(code)
-          if (errorCode.isEmpty) logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $code")
-
-          errorCode
-        }
-
-        content = paragraph(messages(errorCode.contentKey))
-      } yield content).foldLeft("")(_ + _)
+      val actionCodeExplanation = notification.actionCode.flatMap(buildActionCodeExplanation)
+      val errorsExplanation = buildErrorsExplanation(notification.errorCodes)
 
       NotificationsPageSingleElement(
         title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
         timestampInfo = timestampInfoResponse(notification.timestampReceived),
-        content = Html(actionCodeExplanation.getOrElse("") + errorExplanation)
+        content = Html(actionCodeExplanation.getOrElse("") + errorsExplanation)
       )
     } else {
       throw new IllegalArgumentException(s"Cannot build content for ${notification.responseType}")
     }
+
+  private def buildActionCodeExplanation(actionCode: String)(implicit messages: Messages): Option[String] =
+    decoder.actionCode(actionCode).map(code => paragraph(messages(code.contentKey)))
+
+  private def buildErrorsExplanation(errorCodes: Seq[String])(implicit messages: Messages): String = {
+    val errorsExplanation = errorCodes.flatMap { code =>
+      val errorCode = decoder.errorCode(code)
+      if (errorCode.isEmpty) logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $code")
+
+      errorCode
+    }
+    errorsExplanation.map(errorCode => paragraph(messages(errorCode.contentKey))).foldLeft("")(_ + _)
+  }
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"
 

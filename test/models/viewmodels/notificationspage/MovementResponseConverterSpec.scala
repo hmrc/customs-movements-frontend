@@ -145,10 +145,8 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
       "call Decoder" in new Test {
 
         val crcCode = "123456"
-        val input = exampleNotificationFrontendModel(
-          responseType = ResponseType.MovementResponse,
-          crcCode = Some(crcCode)
-        )
+        val input =
+          exampleNotificationFrontendModel(responseType = ResponseType.MovementResponse, crcCode = Some(crcCode))
 
         converter.convert(input)
 

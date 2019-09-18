@@ -16,8 +16,7 @@
 
 package models.viewmodels.decoder
 
-sealed abstract class CrcCode(override val code: String, override val contentKey: String)
-    extends CodeWithContentKey
+sealed abstract class CrcCode(override val code: String, override val contentKey: String) extends CodeWithContentKey
 
 object CrcCode {
 
@@ -25,11 +24,7 @@ object CrcCode {
 
   case object Success extends CrcCode(code = "000", contentKey = "decoder.crc.Success")
   case object PrelodgedDeclarationNotArrived
-      extends CrcCode(
-        code = "101",
-        contentKey = "decoder.crc.PrelodgedDeclarationNotArrived"
-      )
-  case object DeclarationNotArrived
-      extends CrcCode(code = "102", contentKey = "decoder.crc.DeclarationNotArrived")
+      extends CrcCode(code = "101", contentKey = "decoder.crc.PrelodgedDeclarationNotArrived")
+  case object DeclarationNotArrived extends CrcCode(code = "102", contentKey = "decoder.crc.DeclarationNotArrived")
 
 }

@@ -48,8 +48,10 @@ class NotificationPageSingleElementFactory @Inject()(
     submission: SubmissionFrontendModel
   )(implicit messages: Messages): NotificationsPageSingleElement = {
 
+    val ucrMessage = if (submission.hasMucr) "MUCR" else "DUCR"
+
     val content = Html(
-      s"<p>${messages(s"notifications.elem.content.${submission.actionType.value}")}</p>" +
+      s"<p>${messages(s"notifications.elem.content.${submission.actionType.value}", ucrMessage)}</p>" +
         s"<p>${messages("notifications.elem.content.footer")}</p>"
     )
 

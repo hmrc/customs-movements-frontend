@@ -351,8 +351,8 @@ notifications.elem.title.unspecified = Update message
 notifications.elem.timestampInfo.request = Request submitted {0}
 notifications.elem.timestampInfo.response = Notification generated {0}
 
-notifications.elem.content.Arrival = Your request to arrive this DUCR has been received.
-notifications.elem.content.Departure = Your request to depart this MUCR has been received.
+notifications.elem.content.Arrival = Your request to arrive this {0} has been received.
+notifications.elem.content.Departure = Your request to depart this {0} has been received.
 notifications.elem.content.DucrAssociation = Your request to consolidate these DUCRs into this MUCR has been received:
 notifications.elem.content.DucrDisassociation = Your request to disassociate this DUCR has been received.
 notifications.elem.content.ShutMucr = Your request to shut this MUCR has been received.

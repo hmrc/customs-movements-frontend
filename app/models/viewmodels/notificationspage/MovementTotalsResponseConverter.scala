@@ -39,8 +39,10 @@ class MovementTotalsResponseConverter @Inject()(decoder: Decoder, dateTimeFormat
     if (canConvertFrom(notification)) {
 
       val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation)
-      val roeCodeExplanation = notification.masterRoe.flatMap(buildRoeCodeExplanation)
-      val soeCodeExplanation = notification.masterSoe.flatMap(buildSoeCodeExplanation)
+      val roeCodeExplanation =
+        notification.entries.headOption.flatMap(_.entryStatus).flatMap(_.roe).flatMap(buildRoeCodeExplanation)
+      val soeCodeExplanation =
+        notification.entries.headOption.flatMap(_.entryStatus).flatMap(_.soe).flatMap(buildSoeCodeExplanation)
 
       NotificationsPageSingleElement(
         title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),

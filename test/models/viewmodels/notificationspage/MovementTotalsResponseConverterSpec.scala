@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter
 import java.time.{ZoneId, ZonedDateTime}
 
 import base.BaseSpec
-import models.notifications.ResponseType
+import models.notifications.{Entry, EntryStatus, ResponseType}
 import models.viewmodels.decoder._
 import modules.DateTimeFormatterModule.NotificationsPageFormatter
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -91,8 +91,11 @@ class MovementTotalsResponseConverterSpec extends BaseSpec with MockitoSugar {
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.MovementTotalsResponse,
           crcCode = Some(crcCodeKeyFromDecoder.code),
-          masterRoe = Some(roeKeyFromDecoder.code),
-          masterSoe = Some(soeKeyFromDecoder.code)
+          entries = Seq(
+            Entry(
+              entryStatus = Some(EntryStatus(roe = Some(roeKeyFromDecoder.code), soe = Some(soeKeyFromDecoder.code)))
+            )
+          )
         )
 
         contentBuilder.convert(input)
@@ -108,8 +111,11 @@ class MovementTotalsResponseConverterSpec extends BaseSpec with MockitoSugar {
           responseType = ResponseType.MovementTotalsResponse,
           timestampReceived = testTimestamp,
           crcCode = Some(crcCodeKeyFromDecoder.code),
-          masterRoe = Some(roeKeyFromDecoder.code),
-          masterSoe = Some(soeKeyFromDecoder.code)
+          entries = Seq(
+            Entry(
+              entryStatus = Some(EntryStatus(roe = Some(roeKeyFromDecoder.code), soe = Some(soeKeyFromDecoder.code)))
+            )
+          )
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
@@ -132,7 +138,7 @@ class MovementTotalsResponseConverterSpec extends BaseSpec with MockitoSugar {
         val masterSoe = "1"
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.MovementTotalsResponse,
-          masterSoe = Some(masterSoe)
+          entries = Seq(Entry(entryStatus = Some(EntryStatus(soe = Some(masterSoe)))))
         )
 
         contentBuilder.convert(input)
@@ -147,7 +153,7 @@ class MovementTotalsResponseConverterSpec extends BaseSpec with MockitoSugar {
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.MovementTotalsResponse,
           timestampReceived = testTimestamp,
-          masterSoe = Some(soeKeyFromDecoder.code)
+          entries = Seq(Entry(entryStatus = Some(EntryStatus(soe = Some(soeKeyFromDecoder.code)))))
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
@@ -171,8 +177,7 @@ class MovementTotalsResponseConverterSpec extends BaseSpec with MockitoSugar {
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.MovementTotalsResponse,
           crcCode = Some(crcCode),
-          masterRoe = Some(masterRoe),
-          masterSoe = Some(masterSoe)
+          entries = Seq(Entry(entryStatus = Some(EntryStatus(roe = Some(masterRoe), soe = Some(masterSoe)))))
         )
 
         contentBuilder.convert(input)
@@ -192,8 +197,7 @@ class MovementTotalsResponseConverterSpec extends BaseSpec with MockitoSugar {
           responseType = ResponseType.MovementTotalsResponse,
           timestampReceived = testTimestamp,
           crcCode = Some("1234"),
-          masterRoe = Some(roeKeyFromDecoder.code),
-          masterSoe = Some("123")
+          entries = Seq(Entry(entryStatus = Some(EntryStatus(roe = Some(roeKeyFromDecoder.code), soe = Some("123")))))
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),

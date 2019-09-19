@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter
 import java.time.{ZoneId, ZonedDateTime}
 
 import models.UcrBlock
-import models.notifications.{NotificationFrontendModel, ResponseType}
+import models.notifications.{Entry, EntryStatus, NotificationFrontendModel, ResponseType}
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import models.viewmodels.decoder._
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -257,8 +257,11 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           responseType = ResponseType.MovementTotalsResponse,
           timestampReceived = testTimestamp,
           crcCode = Some(crcCodeKeyFromDecoder.code),
-          masterRoe = Some(roeKeyFromDecoder.code),
-          masterSoe = Some(soeKeyFromDecoder.code)
+          entries = Seq(
+            Entry(
+              entryStatus = Some(EntryStatus(roe = Some(roeKeyFromDecoder.code), soe = Some(soeKeyFromDecoder.code)))
+            )
+          )
         )
 
         val result = factory.build(input)

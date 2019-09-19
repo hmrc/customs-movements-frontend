@@ -190,6 +190,8 @@ class SubmissionServiceSpec
       submissionService.submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr)).futureValue must equal(
         CustomHttpResponseCode
       )
+      verify(mockAuditService)
+        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.AssociateDUCR)), any())(any())
     }
 
     "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in requestAcceptedTest {
@@ -198,6 +200,8 @@ class SubmissionServiceSpec
 
       val requestCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       verify(customsExportsMovementConnectorMock).sendAssociationRequest(requestCaptor.capture())(any(), any())
+      verify(mockAuditService)
+        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.AssociateDUCR)), any())(any())
 
       assertEqual(XML.loadString(requestCaptor.getValue), exampleAssociateDucrRequestXml)
     }

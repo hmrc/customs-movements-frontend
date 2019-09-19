@@ -429,6 +429,9 @@ decoder.errorCode.InvalidGoodsLocation = Goods Location is invalid
 decoder.errorCode.MucrAlreadyDeparted = MUCR has been departed
 decoder.errorCode.UcrRejectedUponArrival = UCR cannot be associated as it has been rejected upon arrival
 
+decoder.icsCode.InvalidationAtTraderRequest = The declaration was invalidated at the trader's request
+decoder.icsCode.InvalidationByCustoms = The declaration was invalidated by customs due to major discrepancies
+
 arrivalReference = Arrival reference
 arrivalReference.question = Give this arrival a unique reference
 arrivalReference.hint = This will be help you quickly identify it in the future. It can be no more than 25 characters. Leave it blank if you don''t want to add a reference.

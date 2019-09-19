@@ -26,12 +26,11 @@ import models.requests.JourneyRequest
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.{JsObject, Json}
 import services.audit.AuditService
-import services.audit.EventData._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Success
+import scala.util.{Failure, Success}
 
 @Singleton
 class SubmissionService @Inject()(
@@ -55,7 +54,10 @@ class SubmissionService @Inject()(
 
         sendMovementRequest(choice, data).map { submitResponse =>
           metrics.incrementCounter(data.messageCode)
-          auditService.audit(choice, auditData(data, Success.toString))
+          auditService.audit(
+            choice,
+            auditService.auditMovementsData(request.authenticatedRequest.user.eori, data, Success.toString)
+          )
           timer.stop()
           submitResponse.status
         }
@@ -73,28 +75,37 @@ class SubmissionService @Inject()(
       case Departure => connector.sendDepartureDeclaration(data.toXml)
     }
 
-  private def auditData(data: InventoryLinkingMovementRequest, result: String)(
-    implicit request: JourneyRequest[_]
-  ): Map[String, String] =
-    Map(
-      EORI.toString -> request.authenticatedRequest.user.eori,
-      MessageCode.toString -> data.messageCode,
-      UCRType.toString -> data.ucrBlock.ucrType,
-      UCR.toString -> data.ucrBlock.ucr,
-      MovementReference.toString -> data.movementReference.getOrElse(""),
-      SubmissionResult.toString -> result
-    )
-
   def submitDucrAssociation(
     mucrOptions: MucrOptions,
     associateDucr: AssociateDucr
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: JourneyRequest[_]): Future[Int] = {
     val timer = metrics.startTimer(Choice.AllowedChoiceValues.AssociateDUCR)
     connector
       .sendAssociationRequest(buildAssociationRequest(mucr = mucrOptions.mucr, ducr = associateDucr.ducr).toString)
       .map(_.status)
       .andThen {
         case Success(_) =>
+          auditService.audit(
+            Choice(Choice.AllowedChoiceValues.AssociateDUCR),
+            auditService.auditAssociateData(
+              request.authenticatedRequest.user.eori,
+              mucrOptions.mucr,
+              associateDucr.ducr,
+              Success.toString
+            )
+          )
+          timer.stop()
+          metrics.incrementCounter(Choice.AllowedChoiceValues.AssociateDUCR)
+        case _ =>
+          auditService.audit(
+            Choice(Choice.AllowedChoiceValues.AssociateDUCR),
+            auditService.auditAssociateData(
+              request.authenticatedRequest.user.eori,
+              mucrOptions.mucr,
+              associateDucr.ducr,
+              Failure.toString
+            )
+          )
           timer.stop()
           metrics.incrementCounter(Choice.AllowedChoiceValues.AssociateDUCR)
       }

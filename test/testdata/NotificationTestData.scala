@@ -31,7 +31,8 @@ object NotificationTestData {
     crcCode: Option[String] = None,
     actionCode: Option[String] = None,
     timestampReceived: Instant = Instant.now(),
-    errorCodes: Seq[String] = Seq.empty
+    errorCodes: Seq[String] = Seq.empty,
+    messageCode: String = ""
   ): NotificationFrontendModel =
     NotificationFrontendModel(
       timestampReceived = timestampReceived,
@@ -40,6 +41,7 @@ object NotificationTestData {
       entries = entries,
       crcCode = crcCode,
       actionCode = actionCode,
-      errorCodes = errorCodes
+      errorCodes = errorCodes,
+      messageCode = messageCode
     )
 }

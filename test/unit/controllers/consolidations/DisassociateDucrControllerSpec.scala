@@ -19,7 +19,7 @@ package unit.controllers.consolidations
 import base.MockSubmissionService
 import controllers.consolidations.{routes, DisassociateDucrController}
 import forms.DisassociateDucr
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
@@ -45,6 +45,8 @@ class DisassociateDucrControllerSpec
     stubMessagesControllerComponents(),
     mockDisassociateDucrPage
   )(global)
+  private val correctForm = Json.toJson(DisassociateDucr(correctUcr))
+  private val incorrectForm = Json.toJson(DisassociateDucr("abc"))
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -59,9 +61,6 @@ class DisassociateDucrControllerSpec
 
     super.afterEach()
   }
-
-  private val correctForm = Json.toJson(DisassociateDucr(correctUcr))
-  private val incorrectForm = Json.toJson(DisassociateDucr("abc"))
 
   "Disassociate Ducr Controller" should {
 
@@ -89,7 +88,7 @@ class DisassociateDucrControllerSpec
 
       "form is correct and submission service return status different than ACCEPTED" in {
 
-        when(mockSubmissionService.submitDucrDisassociation(any())(any(), any()))
+        when(mockSubmissionService.submitDucrDisassociation(any())(any(), any(), any()))
           .thenReturn(Future.successful(BAD_REQUEST))
 
         val result = controller.submit()(postRequest(correctForm))
@@ -102,7 +101,7 @@ class DisassociateDucrControllerSpec
 
       "form is correct and submission service return ACCEPTED status" in {
 
-        when(mockSubmissionService.submitDucrDisassociation(any())(any(), any()))
+        when(mockSubmissionService.submitDucrDisassociation(any())(any(), any(), any()))
           .thenReturn(Future.successful(ACCEPTED))
 
         val result = controller.submit()(postRequest(correctForm))

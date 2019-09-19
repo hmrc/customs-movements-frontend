@@ -23,13 +23,19 @@ class SOECodeSpec extends UnitSpec {
 
   "Soe Code" should {
 
-    "have correct amount of codes" in {
+    "have correct amount of DUCR codes" in {
 
       val expectedCodesAmount = 19
-      SOECode.codes.size mustBe expectedCodesAmount
+      SOECode.DucrCodes.size mustBe expectedCodesAmount
     }
 
-    "have correct list of codes" in {
+    "have correct amount of MUCR codes" in {
+
+      val expectedCodesAmount = 3
+      SOECode.MucrCodes.size mustBe expectedCodesAmount
+    }
+
+    "have correct list of DUCR codes" in {
 
       val expectedCodes = Set(
         DeclarationValidation,
@@ -53,7 +59,14 @@ class SOECodeSpec extends UnitSpec {
         Frustrated
       )
 
-      SOECode.codes mustBe expectedCodes
+      SOECode.DucrCodes mustBe expectedCodes
+    }
+
+    "have correct list of MUCR codes" in {
+
+      val expectedCodes = Set(ConsolidationOpen, ConsolidationClosedWithoutP2P, ConsolidationHasP2P)
+
+      SOECode.MucrCodes mustBe expectedCodes
     }
   }
 }

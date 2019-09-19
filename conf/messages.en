@@ -398,6 +398,9 @@ decoder.soe.DeclarationClearanceAfterGoodsRelease = Declaration Clearance after 
 decoder.soe.InsufficientGuarantees = Insufficient Guarantees
 decoder.soe.Departed = Departed
 decoder.soe.Frustrated = Frustrated
+decoder.soe.ConsolidationOpen = The MUCR is still open, or contains no declarations.
+decoder.soe.ConsolidationClosedWithoutP2P = The consolidation is closed, but there are underlying declarations that do not have P2P.
+decoder.soe.ConsolidationHasP2P = The consolidation is closed and all underlying declarations have P2P or have departed.
 
 decoder.errorCode.InvalidUcrFormat = Invalid UCR Format, DUCR or MUCR
 decoder.errorCode.ClientIdValidationFailed = Client ID validation fails

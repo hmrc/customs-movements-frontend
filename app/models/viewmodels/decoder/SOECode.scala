@@ -20,7 +20,7 @@ sealed abstract class SOECode(override val code: String, override val contentKey
 
 object SOECode {
 
-  val codes: Set[SOECode] = Set(
+  val DucrCodes: Set[SOECode] = Set(
     DeclarationValidation,
     DeclarationGoodsRelease,
     DeclarationClearance,
@@ -41,6 +41,8 @@ object SOECode {
     Departed,
     Frustrated
   )
+
+  val MucrCodes: Set[SOECode] = Set(ConsolidationOpen, ConsolidationClosedWithoutP2P, ConsolidationHasP2P)
 
   case object DeclarationValidation extends SOECode(code = "1", contentKey = "decoder.soe.DeclarationValidation")
 
@@ -86,5 +88,12 @@ object SOECode {
   case object Departed extends SOECode(code = "D", contentKey = "decoder.soe.Departed")
 
   case object Frustrated extends SOECode(code = "F", contentKey = "decoder.soe.Frustrated")
+
+  case object ConsolidationOpen extends SOECode(code = "0", contentKey = "decoder.soe.ConsolidationOpen")
+
+  case object ConsolidationClosedWithoutP2P
+      extends SOECode(code = "C", contentKey = "decoder.soe.ConsolidationClosedWithoutP2P")
+
+  case object ConsolidationHasP2P extends SOECode(code = "3", contentKey = "decoder.soe.ConsolidationHasP2P")
 
 }

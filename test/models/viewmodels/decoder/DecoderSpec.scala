@@ -19,8 +19,9 @@ package models.viewmodels.decoder
 import models.viewmodels.decoder.ActionCode.Rejected
 import models.viewmodels.decoder.CRCCode.Success
 import models.viewmodels.decoder.ErrorCode.MucrNotShutDeparture
+import models.viewmodels.decoder.ICSCode.InvalidationAtTraderRequest
 import models.viewmodels.decoder.ROECode.DocumentaryControl
-import models.viewmodels.decoder.SOECode.Departed
+import models.viewmodels.decoder.SOECode.{ConsolidationOpen, Departed}
 import unit.base.UnitSpec
 
 class DecoderSpec extends UnitSpec {
@@ -34,6 +35,11 @@ class DecoderSpec extends UnitSpec {
       decoder.crc(Success.code) mustBe Some(Success)
     }
 
+    "find correct ics code" in {
+
+      decoder.ics(InvalidationAtTraderRequest.code) mustBe Some(InvalidationAtTraderRequest)
+    }
+
     "find correct roe code" in {
 
       decoder.roe(DocumentaryControl.code) mustBe Some(DocumentaryControl)
@@ -42,6 +48,21 @@ class DecoderSpec extends UnitSpec {
     "find correct soe code" in {
 
       decoder.soe(Departed.code) mustBe Some(Departed)
+    }
+
+    "not find MUCR soe code when provided with DUCR soe code" in {
+
+      decoder.mucrSoe(Departed.code) mustBe None
+    }
+
+    "find correct MUCR soe code" in {
+
+      decoder.mucrSoe(ConsolidationOpen.code) mustBe Some(ConsolidationOpen)
+    }
+
+    "not find DUCR soe code when provided with MUCR soe code" in {
+
+      decoder.soe(ConsolidationOpen.code) mustBe None
     }
 
     "find correct action code" in {

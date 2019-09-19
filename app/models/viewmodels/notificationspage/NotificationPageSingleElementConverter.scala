@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package models.viewmodels.decoder
+package models.viewmodels.notificationspage
 
-trait CodeWithContentKey {
-  val code: String
-  val contentKey: String
+import models.notifications.NotificationFrontendModel
+import play.api.i18n.Messages
+
+trait NotificationPageSingleElementConverter {
+  def canConvertFrom(notification: NotificationFrontendModel): Boolean
+  def convert(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement
 }

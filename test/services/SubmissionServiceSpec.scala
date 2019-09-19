@@ -204,6 +204,17 @@ class SubmissionServiceSpec
 
       assertEqual(XML.loadString(requestCaptor.getValue), exampleAssociateDucrRequestXml)
     }
+
+    "return Internal Server Error when no data in cache" in requestAcceptedTest {
+      when(customsExportsMovementConnectorMock.sendAssociationRequest(any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
+
+      submissionService.submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr)).futureValue must equal(
+        INTERNAL_SERVER_ERROR
+      )
+      verify(mockAuditService)
+        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.AssociateDUCR)), any())(any())
+    }
   }
 
   "SubmissionService on submitDucrDisassociation" should {
@@ -234,6 +245,17 @@ class SubmissionServiceSpec
       assertEqual(XML.loadString(requestCaptor.getValue), exampleDisassociateDucrRequestXml)
     }
 
+    "return Internal Server Error when no data in cache" in requestAcceptedTest {
+      when(customsExportsMovementConnectorMock.sendDisassociationRequest(any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
+
+      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue must equal(
+        INTERNAL_SERVER_ERROR
+      )
+      verify(mockAuditService)
+        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.DisassociateDUCR)), any())(any())
+    }
+
     "increase counter for successful submissions" in requestAcceptedTest {
       counter("disassociation.counter") must changeOn {
         submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue
@@ -256,6 +278,8 @@ class SubmissionServiceSpec
         .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
       submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue must equal(CustomHttpResponseCode)
+      verify(mockAuditService)
+        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.ShutMucr)), any())(any())
     }
 
     "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in requestAcceptedTest {
@@ -264,8 +288,19 @@ class SubmissionServiceSpec
 
       val requestCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       verify(customsExportsMovementConnectorMock).sendShutMucrRequest(requestCaptor.capture())(any(), any())
+      verify(mockAuditService)
+        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.ShutMucr)), any())(any())
 
       assertEqual(XML.loadString(requestCaptor.getValue), exampleShutMucrRequestXml)
+    }
+
+    "return Internal Server Error when no data in cache" in requestAcceptedTest {
+      when(customsExportsMovementConnectorMock.sendShutMucrRequest(any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
+
+      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue must equal(INTERNAL_SERVER_ERROR)
+      verify(mockAuditService)
+        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.ShutMucr)), any())(any())
     }
 
     "increase counter of successful shut request" in requestAcceptedTest {

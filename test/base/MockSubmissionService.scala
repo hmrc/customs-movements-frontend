@@ -35,10 +35,11 @@ trait MockSubmissionService extends MockitoSugar with BeforeAndAfterEach { self:
       .thenReturn(Future.successful(status))
 
   def mockShutMucr(status: Int = ACCEPTED): OngoingStubbing[Future[Int]] =
-    when(mockSubmissionService.submitShutMucrRequest(any())(any(), any())).thenReturn(Future.successful(status))
+    when(mockSubmissionService.submitShutMucrRequest(any())(any(), any(), any())).thenReturn(Future.successful(status))
 
   def mockDucrAssociation(status: Int = ACCEPTED): OngoingStubbing[Future[Int]] =
-    when(mockSubmissionService.submitDucrAssociation(any(), any())(any(), any(), any())).thenReturn(Future.successful(status))
+    when(mockSubmissionService.submitDucrAssociation(any(), any())(any(), any(), any()))
+      .thenReturn(Future.successful(status))
 
   override protected def afterEach(): Unit = {
     reset(mockSubmissionService)

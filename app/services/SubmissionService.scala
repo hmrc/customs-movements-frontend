@@ -30,7 +30,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
+import scala.util.Success
 
 @Singleton
 class SubmissionService @Inject()(
@@ -56,7 +56,8 @@ class SubmissionService @Inject()(
           metrics.incrementCounter(data.messageCode)
           auditService.audit(
             choice,
-            auditService.auditMovementsData(request.authenticatedRequest.user.eori, data, Success.toString)
+            auditService
+              .auditMovementsData(request.authenticatedRequest.user.eori, data, submitResponse.status.toString)
           )
           timer.stop()
           submitResponse.status
@@ -84,26 +85,14 @@ class SubmissionService @Inject()(
       .sendAssociationRequest(buildAssociationRequest(mucr = mucrOptions.mucr, ducr = associateDucr.ducr).toString)
       .map(_.status)
       .andThen {
-        case Success(_) =>
+        case Success(status) =>
           auditService.audit(
             Choice(Choice.AllowedChoiceValues.AssociateDUCR),
             auditService.auditAssociateData(
               request.authenticatedRequest.user.eori,
               mucrOptions.mucr,
               associateDucr.ducr,
-              Success.toString
-            )
-          )
-          timer.stop()
-          metrics.incrementCounter(Choice.AllowedChoiceValues.AssociateDUCR)
-        case _ =>
-          auditService.audit(
-            Choice(Choice.AllowedChoiceValues.AssociateDUCR),
-            auditService.auditAssociateData(
-              request.authenticatedRequest.user.eori,
-              mucrOptions.mucr,
-              associateDucr.ducr,
-              Failure.toString
+              status.toString
             )
           )
           timer.stop()
@@ -119,29 +108,28 @@ class SubmissionService @Inject()(
       .sendDisassociationRequest(buildDisassociationRequest(disassociateDucr.ducr).toString)
       .map(_.status)
       .andThen {
-        case Success(_) =>
+        case Success(status) =>
           auditService.audit(
             Choice(Choice.AllowedChoiceValues.DisassociateDUCR),
             auditService
-              .auditDisassociateData(request.user.eori, disassociateDucr.ducr, Success.toString)
-          )
-          timer.stop()
-          metrics.incrementCounter(Choice.AllowedChoiceValues.DisassociateDUCR)
-        case _ =>
-          auditService.audit(
-            Choice(Choice.AllowedChoiceValues.DisassociateDUCR),
-            auditService
-              .auditDisassociateData(request.user.eori, disassociateDucr.ducr, Failure.toString)
+              .auditDisassociateData(request.user.eori, disassociateDucr.ducr, status.toString)
           )
           timer.stop()
           metrics.incrementCounter(Choice.AllowedChoiceValues.DisassociateDUCR)
       }
   }
 
-  def submitShutMucrRequest(shutMucr: ShutMucr)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
+  def submitShutMucrRequest(
+    shutMucr: ShutMucr
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[Int] = {
     val timer = metrics.startTimer(Choice.AllowedChoiceValues.ShutMucr)
     connector.sendShutMucrRequest(buildShutMucrRequest(shutMucr.mucr).toString).map(_.status).andThen {
-      case Success(_) =>
+      case Success(status) =>
+        auditService.audit(
+          Choice(Choice.AllowedChoiceValues.ShutMucr),
+          auditService
+            .auditShutMucrData(request.user.eori, shutMucr.mucr, status.toString)
+        )
         timer.stop()
         metrics.incrementCounter(Choice.AllowedChoiceValues.ShutMucr)
     }

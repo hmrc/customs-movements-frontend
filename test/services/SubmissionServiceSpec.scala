@@ -53,10 +53,9 @@ class SubmissionServiceSpec
 
   implicit val headerCarrierMock = mock[HeaderCarrier]
 
-  implicit val journeyRequest = JourneyRequest(
-    AuthenticatedRequest(FakeRequest("", ""), SignedInUser("eori", Enrolments(Set.empty[Enrolment]))),
-    Choice(Arrival)
-  )
+  implicit val authenticatedRequest =
+    AuthenticatedRequest(FakeRequest("", ""), SignedInUser("eori", Enrolments(Set.empty[Enrolment])))
+  implicit val journeyRequest = JourneyRequest(authenticatedRequest, Choice(Arrival))
 
   val mockAuditService = mock[AuditService]
   val customsCacheServiceMock = mock[CustomsCacheService]
@@ -218,6 +217,9 @@ class SubmissionServiceSpec
       submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue must equal(
         CustomHttpResponseCode
       )
+      verify(mockAuditService)
+        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.DisassociateDUCR)), any())(any())
+
     }
 
     "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in requestAcceptedTest {
@@ -226,6 +228,8 @@ class SubmissionServiceSpec
 
       val requestCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       verify(customsExportsMovementConnectorMock).sendDisassociationRequest(requestCaptor.capture())(any(), any())
+      verify(mockAuditService)
+        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.DisassociateDUCR)), any())(any())
 
       assertEqual(XML.loadString(requestCaptor.getValue), exampleDisassociateDucrRequestXml)
     }

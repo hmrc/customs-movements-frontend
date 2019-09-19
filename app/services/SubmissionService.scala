@@ -22,7 +22,7 @@ import forms._
 import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
 import models.external.requests.InventoryLinkingConsolidationRequestFactory._
-import models.requests.JourneyRequest
+import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.{JsObject, Json}
 import services.audit.AuditService
@@ -113,13 +113,26 @@ class SubmissionService @Inject()(
 
   def submitDucrDisassociation(
     disassociateDucr: DisassociateDucr
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[Int] = {
     val timer = metrics.startTimer(Choice.AllowedChoiceValues.DisassociateDUCR)
     connector
       .sendDisassociationRequest(buildDisassociationRequest(disassociateDucr.ducr).toString)
       .map(_.status)
       .andThen {
         case Success(_) =>
+          auditService.audit(
+            Choice(Choice.AllowedChoiceValues.DisassociateDUCR),
+            auditService
+              .auditDisassociateData(request.user.eori, disassociateDucr.ducr, Success.toString)
+          )
+          timer.stop()
+          metrics.incrementCounter(Choice.AllowedChoiceValues.DisassociateDUCR)
+        case _ =>
+          auditService.audit(
+            Choice(Choice.AllowedChoiceValues.DisassociateDUCR),
+            auditService
+              .auditDisassociateData(request.user.eori, disassociateDucr.ducr, Failure.toString)
+          )
           timer.stop()
           metrics.incrementCounter(Choice.AllowedChoiceValues.DisassociateDUCR)
       }

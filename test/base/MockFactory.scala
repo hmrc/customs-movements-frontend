@@ -58,7 +58,7 @@ object MockFactory extends MockitoSugar {
       .thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
     when(submissionServiceMock.submitDucrAssociation(any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
-    when(submissionServiceMock.submitDucrDisassociation(any())(any(), any()))
+    when(submissionServiceMock.submitDucrDisassociation(any())(any(), any(), any()))
       .thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
     when(submissionServiceMock.submitShutMucrRequest(any())(any(), any()))
       .thenReturn(Future.successful(INTERNAL_SERVER_ERROR))

@@ -35,6 +35,9 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
 ) {
   private val logger = Logger(this.getClass)
 
+  def auditDisassociateData(eori: String, ducr: String, result: String): Map[String, String] =
+    Map(EventData.EORI.toString -> eori, EventData.DUCR.toString -> ducr, EventData.SubmissionResult.toString -> result)
+
   def auditAssociateData(eori: String, mucr: String, ducr: String, result: String): Map[String, String] =
     Map(
       EventData.EORI.toString -> eori,

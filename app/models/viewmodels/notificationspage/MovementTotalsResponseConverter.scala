@@ -56,17 +56,23 @@ class MovementTotalsResponseConverter @Inject()(decoder: Decoder, dateTimeFormat
 
   private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[String] = {
     val CrcCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")
-    decoder.crc(crcCode).map(code => paragraph(s"$CrcCodeHeader ${code.contentKey}"))
+    val crcCodeExplanationText = decoder.crc(crcCode).map(code => messages(code.contentKey))
+
+    crcCodeExplanationText.map(explanation => paragraph(s"$CrcCodeHeader $explanation"))
   }
 
   private def buildRoeCodeExplanation(roeCode: String)(implicit messages: Messages): Option[String] = {
     val RoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")
-    decoder.roe(roeCode).map(code => paragraph(s"$RoeCodeHeader ${code.contentKey}"))
+    val roeCodeExplanationText = decoder.roe(roeCode).map(code => messages(code.contentKey))
+
+    roeCodeExplanationText.map(explanation => paragraph(s"$RoeCodeHeader $explanation"))
   }
 
   private def buildSoeCodeExplanation(soeCode: String)(implicit messages: Messages): Option[String] = {
     val SoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")
-    decoder.soe(soeCode).map(code => paragraph(s"$SoeCodeHeader ${code.contentKey}"))
+    val soeCodeExplanationText = decoder.soe(soeCode).map(code => messages(code.contentKey))
+
+    soeCodeExplanationText.map(explanation => paragraph(s"$SoeCodeHeader $explanation"))
   }
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"

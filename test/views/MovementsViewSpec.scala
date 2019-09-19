@@ -20,19 +20,19 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit.MINUTES
 import java.time.{Instant, LocalDate, ZoneId, ZonedDateTime}
 
-import base.ViewValidator
-import testdata.CommonTestData.conversationId
-import testdata.ConsolidationTestData
-import testdata.ConsolidationTestData.{exampleAssociateDucrRequestSubmission, ValidDucr, ValidMucr}
-import testdata.NotificationTestData.exampleNotificationFrontendModel
 import models.UcrBlock
-import models.notifications.ResponseType
+import models.notifications.{Entry, ResponseType}
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import testdata.CommonTestData.conversationId
+import testdata.ConsolidationTestData
+import testdata.ConsolidationTestData._
+import testdata.NotificationTestData.exampleNotificationFrontendModel
 import utils.Stubs
+import views.base.ViewValidator
 import views.html.movements
 
 class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewValidator {
@@ -74,7 +74,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
           timestampReceived = dateTime.plus(10, MINUTES),
           conversationId = conversationId,
           responseType = ResponseType.ControlResponse,
-          ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M"))
+          entries = Seq(Entry(ucrBlock = Some(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M"))))
         )
       )
 
@@ -91,7 +91,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
         exampleNotificationFrontendModel(
           conversationId = conversationId,
           responseType = ResponseType.ControlResponse,
-          ucrBlocks = Seq(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M"))
+          entries = Seq(Entry(ucrBlock = Some(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M"))))
         )
       )
 

@@ -21,7 +21,7 @@ import controllers.actions.AuthAction
 import javax.inject.Inject
 import models.notifications.NotificationFrontendModel
 import models.submissions.SubmissionFrontendModel
-import models.viewmodels.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
+import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController

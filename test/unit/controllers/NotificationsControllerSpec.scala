@@ -21,7 +21,7 @@ import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.NotificationsController
 import models.notifications.{NotificationFrontendModel, ResponseType}
 import models.submissions.{ActionType, SubmissionFrontendModel}
-import models.viewmodels.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
+import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.concurrent.ScalaFutures

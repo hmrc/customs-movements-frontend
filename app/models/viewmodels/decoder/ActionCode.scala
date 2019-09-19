@@ -16,11 +16,7 @@
 
 package models.viewmodels.decoder
 
-sealed abstract class ActionCode(
-  override val code: String,
-  override val status: String,
-  override val contentKey: String
-) extends CodeWithContentKey
+sealed abstract class ActionCode(override val code: String, override val contentKey: String) extends CodeWithContentKey
 
 object ActionCode {
 
@@ -29,19 +25,13 @@ object ActionCode {
   case object AcknowledgedAndProcessed
       extends ActionCode(
         code = "1",
-        status = "AcknowledgedAndProcessed",
         contentKey = "notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed"
       )
   case object PartiallyAcknowledgedAndProcessed
       extends ActionCode(
         code = "2",
-        status = "PartiallyAcknowledgedAndProcessed",
         contentKey = "notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed"
       )
   case object Rejected
-      extends ActionCode(
-        code = "3",
-        status = "Rejected",
-        contentKey = "notifications.elem.content.inventoryLinkingControlResponse.Rejected"
-      )
+      extends ActionCode(code = "3", contentKey = "notifications.elem.content.inventoryLinkingControlResponse.Rejected")
 }

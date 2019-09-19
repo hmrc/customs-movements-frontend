@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.viewmodels
+package models.viewmodels.notificationspage
 
 import play.twirl.api.Html
 

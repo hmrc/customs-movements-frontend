@@ -16,7 +16,7 @@
 
 package testdata
 
-import models.viewmodels.NotificationsPageSingleElement
+import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.twirl.api.Html
 
 object CommonTestData {

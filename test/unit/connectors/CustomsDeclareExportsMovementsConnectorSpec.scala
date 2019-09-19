@@ -267,8 +267,8 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
       val expectedResponseContent = Seq(
         exampleNotificationFrontendModel(conversationId = conversationId),
-        exampleNotificationFrontendModel(conversationId = conversationId, masterRoe = None),
-        exampleNotificationFrontendModel(conversationId = conversationId, masterSoe = None)
+        exampleNotificationFrontendModel(conversationId = conversationId),
+        exampleNotificationFrontendModel(conversationId = conversationId)
       )
       when(httpClientMock.GET[Seq[NotificationFrontendModel]](any())(any(), any(), any()))
         .thenReturn(Future.successful(expectedResponseContent))

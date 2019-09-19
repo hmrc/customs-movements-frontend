@@ -14,9 +14,21 @@
  * limitations under the License.
  */
 
-package models.viewmodels.decoder
+package modules
 
-trait CodeWithContentKey {
-  val code: String
-  val contentKey: String
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+
+import com.google.inject.AbstractModule
+import modules.DateTimeFormatterModule.NotificationsPageFormatter
+
+class DateTimeFormatterModule extends AbstractModule {
+  override def configure(): Unit =
+    bind(classOf[DateTimeFormatter]).toInstance(NotificationsPageFormatter)
+}
+
+object DateTimeFormatterModule {
+  lazy val NotificationsPageFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
+
 }

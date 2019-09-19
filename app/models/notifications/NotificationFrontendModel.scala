@@ -27,7 +27,8 @@ final case class NotificationFrontendModel(
   entries: Seq[Entry],
   crcCode: Option[String],
   actionCode: Option[String],
-  errorCodes: Seq[String]
+  errorCodes: Seq[String],
+  messageCode: String
 ) extends Ordered[NotificationFrontendModel] {
 
   override def compare(other: NotificationFrontendModel): Int =

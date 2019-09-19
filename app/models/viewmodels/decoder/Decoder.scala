@@ -21,11 +21,11 @@ import javax.inject.Singleton
 @Singleton
 class Decoder {
 
-  def crc(code: String): Option[CrcCode] = CrcCode.codes.find(_.code == code)
+  def crc(code: String): Option[CRCCode] = CRCCode.codes.find(_.code == code)
 
-  def roe(code: String): Option[RoeCode] = RoeCode.codes.find(_.code == code)
+  def roe(code: String): Option[ROECode] = ROECode.codes.find(_.code == code)
 
-  def soe(code: String): Option[SoeCode] = SoeCode.codes.find(_.code == code)
+  def soe(code: String): Option[SOECode] = SOECode.codes.find(_.code == code)
 
   def actionCode(code: String): Option[ActionCode] = ActionCode.codes.find(_.code == code)
 

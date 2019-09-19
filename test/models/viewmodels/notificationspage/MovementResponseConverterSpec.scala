@@ -21,7 +21,7 @@ import java.time.{ZoneId, ZonedDateTime}
 
 import base.BaseSpec
 import models.notifications.ResponseType
-import models.viewmodels.decoder.{CrcCode, Decoder}
+import models.viewmodels.decoder.{CRCCode, Decoder}
 import modules.DateTimeFormatterModule.NotificationsPageFormatter
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{times, verify, when}
@@ -37,7 +37,7 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
   private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault())
   private val testTimestamp = ZonedDateTime.parse(testTimestampString, formatter).toInstant
 
-  private val crcCodeKeyFromDecoder = CrcCode.Success
+  private val crcCodeKeyFromDecoder = CRCCode.Success
 
   private trait Test {
     implicit val messages: Messages = stubMessages()

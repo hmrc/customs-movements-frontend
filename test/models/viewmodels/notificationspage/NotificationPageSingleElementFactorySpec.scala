@@ -40,9 +40,9 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
   private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault())
   private val testTimestamp = ZonedDateTime.parse(testTimestampString, formatter).toInstant
 
-  private val crcCodeKeyFromDecoder = CrcCode.Success
-  private val roeKeyFromDecoder = RoeCode.DocumentaryControl
-  private val soeKeyFromDecoder = SoeCode.DeclarationAcceptance
+  private val crcCodeKeyFromDecoder = CRCCode.Success
+  private val roeKeyFromDecoder = ROECode.DocumentaryControl
+  private val soeKeyFromDecoder = SOECode.DeclarationAcceptance
   private val AcknowledgedAndProcessedActionCode = ActionCode.AcknowledgedAndProcessed
   private val MucrNotShutConsolidationErrorCode = ErrorCode.MucrNotShutConsolidation
 

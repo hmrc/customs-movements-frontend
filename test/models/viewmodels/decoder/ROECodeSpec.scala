@@ -16,15 +16,31 @@
 
 package models.viewmodels.decoder
 
-sealed abstract class CrcCode(override val code: String, override val contentKey: String) extends CodeWithContentKey
+import models.viewmodels.decoder.ROECode._
+import unit.base.UnitSpec
 
-object CrcCode {
+class ROECodeSpec extends UnitSpec {
 
-  val codes: Set[CrcCode] = Set(Success, PrelodgedDeclarationNotArrived, DeclarationNotArrived)
+  "Roe Code" should {
 
-  case object Success extends CrcCode(code = "000", contentKey = "decoder.crc.Success")
-  case object PrelodgedDeclarationNotArrived
-      extends CrcCode(code = "101", contentKey = "decoder.crc.PrelodgedDeclarationNotArrived")
-  case object DeclarationNotArrived extends CrcCode(code = "102", contentKey = "decoder.crc.DeclarationNotArrived")
+    "have correct amount of codes" in {
 
+      val expectedCodesAmount = 6
+      ROECode.codes.size mustBe expectedCodesAmount
+    }
+
+    "have correct list of codes" in {
+
+      val expectedCodes = Set(
+        DocumentaryControl,
+        PhysicalExternalPartyControl,
+        NonBlockingDocumentaryControl,
+        NoControlRequired,
+        RiskingNotPerformed,
+        PrelodgePrefix
+      )
+
+      ROECode.codes mustBe expectedCodes
+    }
+  }
 }

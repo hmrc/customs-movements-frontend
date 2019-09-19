@@ -17,10 +17,10 @@
 package models.viewmodels.decoder
 
 import models.viewmodels.decoder.ActionCode.Rejected
-import models.viewmodels.decoder.CrcCode.Success
+import models.viewmodels.decoder.CRCCode.Success
 import models.viewmodels.decoder.ErrorCode.MucrNotShutDeparture
-import models.viewmodels.decoder.RoeCode.DocumentaryControl
-import models.viewmodels.decoder.SoeCode.Departed
+import models.viewmodels.decoder.ROECode.DocumentaryControl
+import models.viewmodels.decoder.SOECode.Departed
 import unit.base.UnitSpec
 
 class DecoderSpec extends UnitSpec {

@@ -40,10 +40,8 @@ class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTi
     if (canConvertFrom(notification)) {
 
       val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation)
-      val roeCodeExplanation =
-        findMucrEntry(notification.entries).flatMap(_.entryStatus).flatMap(_.roe).flatMap(buildRoeCodeExplanation)
-      val soeCodeExplanation =
-        findMucrEntry(notification.entries).flatMap(_.entryStatus).flatMap(_.soe).flatMap(buildSoeCodeExplanation)
+      val roeCodeExplanation = findMucrEntry(notification.entries).flatMap(_.roe).flatMap(buildRoeCodeExplanation)
+      val soeCodeExplanation = findMucrEntry(notification.entries).flatMap(_.soe).flatMap(buildSoeCodeExplanation)
 
       NotificationsPageSingleElement(
         title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
@@ -55,7 +53,7 @@ class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTi
       throw new IllegalArgumentException(s"Cannot build content for ${notification.responseType}")
     }
 
-  private def findMucrEntry(entries: Seq[Entry]): Option[Entry] = entries.find(_.ucrBlock.map(_.ucrType).contains("M"))
+  private def findMucrEntry(entries: Seq[Entry]): Option[Entry] = entries.find(_.ucrType.contains("M"))
 
   private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[String] = {
     val crcCodeExplanationText = decoder.crc(crcCode).map(code => messages(code.contentKey))

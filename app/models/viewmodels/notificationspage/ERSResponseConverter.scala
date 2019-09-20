@@ -39,12 +39,9 @@ class ERSResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTi
   )(implicit messages: Messages): NotificationsPageSingleElement =
     if (canConvertFrom(notification)) {
 
-      val roeCodeExplanation =
-        findDucrEntry(notification.entries).flatMap(_.entryStatus).flatMap(_.roe).flatMap(buildRoeCodeExplanation)
-      val soeCodeExplanation =
-        findDucrEntry(notification.entries).flatMap(_.entryStatus).flatMap(_.soe).flatMap(buildSoeCodeExplanation)
-      val icsCodeExplanation =
-        findDucrEntry(notification.entries).flatMap(_.entryStatus).flatMap(_.ics).flatMap(buildIcsCodeExplanation)
+      val roeCodeExplanation = findDucrEntry(notification.entries).flatMap(_.roe).flatMap(buildRoeCodeExplanation)
+      val soeCodeExplanation = findDucrEntry(notification.entries).flatMap(_.soe).flatMap(buildSoeCodeExplanation)
+      val icsCodeExplanation = findDucrEntry(notification.entries).flatMap(_.ics).flatMap(buildIcsCodeExplanation)
 
       NotificationsPageSingleElement(
         title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
@@ -56,7 +53,7 @@ class ERSResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTi
       throw new IllegalArgumentException(s"Cannot build content for ${notification.responseType}")
     }
 
-  private def findDucrEntry(entries: Seq[Entry]): Option[Entry] = entries.find(_.ucrBlock.map(_.ucrType).contains("D"))
+  private def findDucrEntry(entries: Seq[Entry]): Option[Entry] = entries.find(_.ucrType.contains("D"))
 
   private def buildRoeCodeExplanation(roeCode: String)(implicit messages: Messages): Option[String] = {
     val RoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")

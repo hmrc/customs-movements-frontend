@@ -54,13 +54,13 @@ object MockFactory extends MockitoSugar {
   def buildSubmissionServiceMock: SubmissionService = {
     val submissionServiceMock = mock[SubmissionService]
 
-    when(submissionServiceMock.submitMovementRequest(any(), any(), any())(any(), any(), any()))
+    when(submissionServiceMock.submitMovementRequest(any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
-    when(submissionServiceMock.submitDucrAssociation(any(), any())(any(), any(), any()))
+    when(submissionServiceMock.submitDucrAssociation(any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
-    when(submissionServiceMock.submitDucrDisassociation(any())(any(), any(), any()))
+    when(submissionServiceMock.submitDucrDisassociation(any(), any())(any(), any()))
       .thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
-    when(submissionServiceMock.submitShutMucrRequest(any())(any(), any(), any()))
+    when(submissionServiceMock.submitShutMucrRequest(any(), any())(any(), any()))
       .thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
 
     submissionServiceMock

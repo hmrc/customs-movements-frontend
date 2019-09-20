@@ -20,8 +20,6 @@ import base.{MetricsMatchers, MovementsMetricsStub}
 import connectors.CustomsDeclareExportsMovementsConnector
 import forms.Choice.AllowedChoiceValues.{Arrival, Departure}
 import forms._
-import models.SignedInUser
-import models.requests.{AuthenticatedRequest, JourneyRequest}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, verifyZeroInteractions, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
@@ -30,12 +28,10 @@ import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatest.{BeforeAndAfterEach, MustMatchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.INTERNAL_SERVER_ERROR
-import play.api.test.FakeRequest
 import play.api.test.Helpers.ACCEPTED
 import services.audit.AuditService
 import testdata.ConsolidationTestData._
 import testdata.MovementsTestData._
-import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import unit.base.UnitSpec
@@ -52,10 +48,6 @@ class SubmissionServiceSpec
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(100, Millis))
 
   implicit val headerCarrierMock = mock[HeaderCarrier]
-
-  implicit val authenticatedRequest =
-    AuthenticatedRequest(FakeRequest("", ""), SignedInUser("eori", Enrolments(Set.empty[Enrolment])))
-  implicit val journeyRequest = JourneyRequest(authenticatedRequest, Choice(Arrival))
 
   val mockAuditService = mock[AuditService]
   val customsCacheServiceMock = mock[CustomsCacheService]
@@ -105,7 +97,12 @@ class SubmissionServiceSpec
         submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue must equal(
           CustomHttpResponseCode
         )
-        verify(mockAuditService).audit(any(), any())(any())
+        verify(mockAuditService).auditMovements(
+          any(),
+          any(),
+          any(),
+          ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Arrival))
+        )(any())
         verify(mockAuditService)
           .auditAllPagesUserInput(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Arrival)), any())(any())
       }
@@ -118,7 +115,12 @@ class SubmissionServiceSpec
         submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue
 
         verify(customsExportsMovementConnectorMock).sendArrivalDeclaration(any())(any(), any())
-        verify(mockAuditService).audit(any(), any())(any())
+        verify(mockAuditService).auditMovements(
+          any(),
+          any(),
+          any(),
+          ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Arrival))
+        )(any())
         verify(mockAuditService)
           .auditAllPagesUserInput(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Arrival)), any())(any())
       }
@@ -148,7 +150,12 @@ class SubmissionServiceSpec
         submissionService.submitMovementRequest("EDL-eori1", "eori1", Choice(Departure)).futureValue must equal(
           CustomHttpResponseCode
         )
-        verify(mockAuditService).audit(any(), any())(any())
+        verify(mockAuditService).auditMovements(
+          any(),
+          any(),
+          any(),
+          ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Departure))
+        )(any())
         verify(mockAuditService)
           .auditAllPagesUserInput(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Departure)), any())(any())
       }
@@ -161,7 +168,12 @@ class SubmissionServiceSpec
         submissionService.submitMovementRequest("EDL-eori1", "eori1", Choice(Departure)).futureValue
 
         verify(customsExportsMovementConnectorMock).sendDepartureDeclaration(any())(any(), any())
-        verify(mockAuditService).audit(any(), any())(any())
+        verify(mockAuditService).auditMovements(
+          any(),
+          any(),
+          any(),
+          ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Departure))
+        )(any())
         verify(mockAuditService)
           .auditAllPagesUserInput(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Departure)), any())(any())
       }
@@ -186,21 +198,21 @@ class SubmissionServiceSpec
       when(customsExportsMovementConnectorMock.sendAssociationRequest(any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
-      submissionService.submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr)).futureValue must equal(
-        CustomHttpResponseCode
-      )
+      submissionService
+        .submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr), "eori")
+        .futureValue must equal(CustomHttpResponseCode)
       verify(mockAuditService)
-        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.AssociateDUCR)), any())(any())
+        .auditAssociate(ArgumentMatchers.eq("eori"), any(), any(), any())(any())
     }
 
     "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in requestAcceptedTest {
 
-      submissionService.submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr)).futureValue
+      submissionService.submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr), "eori").futureValue
 
       val requestCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       verify(customsExportsMovementConnectorMock).sendAssociationRequest(requestCaptor.capture())(any(), any())
       verify(mockAuditService)
-        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.AssociateDUCR)), any())(any())
+        .auditAssociate(ArgumentMatchers.eq("eori"), any(), any(), any())(any())
 
       assertEqual(XML.loadString(requestCaptor.getValue), exampleAssociateDucrRequestXml)
     }
@@ -209,11 +221,13 @@ class SubmissionServiceSpec
       when(customsExportsMovementConnectorMock.sendAssociationRequest(any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
 
-      submissionService.submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr)).futureValue must equal(
-        INTERNAL_SERVER_ERROR
-      )
+      submissionService
+        .submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr), "eori")
+        .futureValue must equal(INTERNAL_SERVER_ERROR)
       verify(mockAuditService)
-        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.AssociateDUCR)), any())(any())
+        .auditAssociate(ArgumentMatchers.eq("eori"), any(), any(), ArgumentMatchers.eq(INTERNAL_SERVER_ERROR.toString))(
+          any()
+        )
     }
   }
 
@@ -225,22 +239,20 @@ class SubmissionServiceSpec
       when(customsExportsMovementConnectorMock.sendDisassociationRequest(any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
-      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue must equal(
+      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr), "eori").futureValue must equal(
         CustomHttpResponseCode
       )
-      verify(mockAuditService)
-        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.DisassociateDUCR)), any())(any())
+      verify(mockAuditService).auditDisassociate(ArgumentMatchers.eq("eori"), any(), any())(any())
 
     }
 
     "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in requestAcceptedTest {
 
-      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue
+      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr), "eori").futureValue
 
       val requestCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       verify(customsExportsMovementConnectorMock).sendDisassociationRequest(requestCaptor.capture())(any(), any())
-      verify(mockAuditService)
-        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.DisassociateDUCR)), any())(any())
+      verify(mockAuditService).auditDisassociate(ArgumentMatchers.eq("eori"), any(), any())(any())
 
       assertEqual(XML.loadString(requestCaptor.getValue), exampleDisassociateDucrRequestXml)
     }
@@ -249,22 +261,24 @@ class SubmissionServiceSpec
       when(customsExportsMovementConnectorMock.sendDisassociationRequest(any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
 
-      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue must equal(
+      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr), "eori").futureValue must equal(
         INTERNAL_SERVER_ERROR
       )
       verify(mockAuditService)
-        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.DisassociateDUCR)), any())(any())
+        .auditDisassociate(ArgumentMatchers.eq("eori"), any(), ArgumentMatchers.eq(INTERNAL_SERVER_ERROR.toString))(
+          any()
+        )
     }
 
     "increase counter for successful submissions" in requestAcceptedTest {
       counter("disassociation.counter") must changeOn {
-        submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue
+        submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr), "eori").futureValue
       }
     }
 
     "use timer to measure execution of successful disassociate request" in requestAcceptedTest {
       timer("disassociation.timer") must changeOn {
-        submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr)).futureValue
+        submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr), "eori").futureValue
       }
     }
   }
@@ -277,19 +291,19 @@ class SubmissionServiceSpec
       when(customsExportsMovementConnectorMock.sendShutMucrRequest(any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
-      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue must equal(CustomHttpResponseCode)
-      verify(mockAuditService)
-        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.ShutMucr)), any())(any())
+      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), "eori").futureValue must equal(
+        CustomHttpResponseCode
+      )
+      verify(mockAuditService).auditShutMucr(ArgumentMatchers.eq("eori"), any(), any())(any())
     }
 
     "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in requestAcceptedTest {
 
-      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue
+      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), "eori").futureValue
 
       val requestCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       verify(customsExportsMovementConnectorMock).sendShutMucrRequest(requestCaptor.capture())(any(), any())
-      verify(mockAuditService)
-        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.ShutMucr)), any())(any())
+      verify(mockAuditService).auditShutMucr(ArgumentMatchers.eq("eori"), any(), any())(any())
 
       assertEqual(XML.loadString(requestCaptor.getValue), exampleShutMucrRequestXml)
     }
@@ -298,20 +312,20 @@ class SubmissionServiceSpec
       when(customsExportsMovementConnectorMock.sendShutMucrRequest(any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
 
-      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue must equal(INTERNAL_SERVER_ERROR)
+      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), "eori").futureValue must equal(INTERNAL_SERVER_ERROR)
       verify(mockAuditService)
-        .audit(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.ShutMucr)), any())(any())
+        .auditShutMucr(ArgumentMatchers.eq("eori"), any(), ArgumentMatchers.eq(INTERNAL_SERVER_ERROR.toString))(any())
     }
 
     "increase counter of successful shut request" in requestAcceptedTest {
       counter("shut.counter") must changeOn {
-        submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue
+        submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), "eori").futureValue
       }
     }
 
     "use timer to measure execution of successful shut request" in requestAcceptedTest {
       timer("shut.timer") must changeOn {
-        submissionService.submitShutMucrRequest(ShutMucr(ValidMucr)).futureValue
+        submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), "eori").futureValue
       }
     }
   }

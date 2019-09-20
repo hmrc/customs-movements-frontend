@@ -16,7 +16,7 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.AuthAction
 import controllers.storage.FlashKeys
 import forms.DisassociateDucr._
 import handlers.ErrorHandler
@@ -53,7 +53,7 @@ class DisassociateDucrController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(disassociateDucrPage(formWithErrors))),
         formData =>
-          submissionService.submitDucrDisassociation(formData).map {
+          submissionService.submitDucrDisassociation(formData, request.user.eori).map {
             case ACCEPTED =>
               Redirect(routes.DisassociateDucrConfirmationController.displayPage())
                 .flashing(FlashKeys.DUCR -> formData.ducr)

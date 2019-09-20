@@ -69,7 +69,8 @@ class AssociateDucrSummaryController @Inject()(
         .fetchAndGetEntry[AssociateDucr](movementCacheId(), AssociateDucr.formId)
         .map(_.getOrElse(throw IncompleteApplication))
 
-      submissionResult <- submissionService.submitDucrAssociation(mucrOptions, associateDucr)
+      submissionResult <- submissionService
+        .submitDucrAssociation(mucrOptions, associateDucr, request.authenticatedRequest.user.eori)
       _ <- cacheService.remove(movementCacheId())
 
       result = submissionResult match {

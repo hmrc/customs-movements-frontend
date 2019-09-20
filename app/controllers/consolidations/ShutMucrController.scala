@@ -53,7 +53,7 @@ class ShutMucrController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(shutMucrPage(formWithErrors))),
         shutMucr =>
-          submissionService.submitShutMucrRequest(shutMucr).map {
+          submissionService.submitShutMucrRequest(shutMucr, request.user.eori).map {
             case ACCEPTED =>
               Redirect(routes.ShutMucrConfirmationController.displayPage())
                 .flashing(Flash(Map(FlashKeys.MUCR -> shutMucr.mucr)))

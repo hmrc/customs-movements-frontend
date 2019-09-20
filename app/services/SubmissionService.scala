@@ -22,7 +22,6 @@ import forms._
 import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
 import models.external.requests.InventoryLinkingConsolidationRequestFactory._
-import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.{JsObject, Json}
 import services.audit.AuditService
@@ -40,11 +39,10 @@ class SubmissionService @Inject()(
   metrics: MovementsMetrics
 ) {
 
-  def submitMovementRequest(
-    cacheId: String,
-    eori: String,
-    choice: Choice
-  )(implicit hc: HeaderCarrier, request: JourneyRequest[_], ec: ExecutionContext): Future[Int] =
+  def submitMovementRequest(cacheId: String, eori: String, choice: Choice)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Int] =
     cacheService.fetch(cacheId).flatMap {
       case Some(cacheMap) => {
         val data = Movement.createMovementRequest(cacheMap, eori, choice)
@@ -54,11 +52,8 @@ class SubmissionService @Inject()(
 
         sendMovementRequest(choice, data).map { submitResponse =>
           metrics.incrementCounter(data.messageCode)
-          auditService.audit(
-            choice,
-            auditService
-              .auditMovementsData(request.authenticatedRequest.user.eori, data, submitResponse.status.toString)
-          )
+          auditService
+            .auditMovements(eori, data, submitResponse.status.toString, choice)
           timer.stop()
           submitResponse.status
         }
@@ -76,60 +71,46 @@ class SubmissionService @Inject()(
       case Departure => connector.sendDepartureDeclaration(data.toXml)
     }
 
-  def submitDucrAssociation(
-    mucrOptions: MucrOptions,
-    associateDucr: AssociateDucr
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: JourneyRequest[_]): Future[Int] = {
+  def submitDucrAssociation(mucrOptions: MucrOptions, associateDucr: AssociateDucr, eori: String)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Int] = {
     val timer = metrics.startTimer(Choice.AllowedChoiceValues.AssociateDUCR)
     connector
       .sendAssociationRequest(buildAssociationRequest(mucr = mucrOptions.mucr, ducr = associateDucr.ducr).toString)
       .map(_.status)
       .andThen {
         case Success(status) =>
-          auditService.audit(
-            Choice(Choice.AllowedChoiceValues.AssociateDUCR),
-            auditService.auditAssociateData(
-              request.authenticatedRequest.user.eori,
-              mucrOptions.mucr,
-              associateDucr.ducr,
-              status.toString
-            )
-          )
+          auditService.auditAssociate(eori, mucrOptions.mucr, associateDucr.ducr, status.toString)
           timer.stop()
           metrics.incrementCounter(Choice.AllowedChoiceValues.AssociateDUCR)
       }
   }
 
   def submitDucrDisassociation(
-    disassociateDucr: DisassociateDucr
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[Int] = {
+    disassociateDucr: DisassociateDucr,
+    eori: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
     val timer = metrics.startTimer(Choice.AllowedChoiceValues.DisassociateDUCR)
     connector
       .sendDisassociationRequest(buildDisassociationRequest(disassociateDucr.ducr).toString)
       .map(_.status)
       .andThen {
         case Success(status) =>
-          auditService.audit(
-            Choice(Choice.AllowedChoiceValues.DisassociateDUCR),
-            auditService
-              .auditDisassociateData(request.user.eori, disassociateDucr.ducr, status.toString)
-          )
+          auditService.auditDisassociate(eori, disassociateDucr.ducr, status.toString)
           timer.stop()
           metrics.incrementCounter(Choice.AllowedChoiceValues.DisassociateDUCR)
       }
   }
 
   def submitShutMucrRequest(
-    shutMucr: ShutMucr
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[Int] = {
+    shutMucr: ShutMucr,
+    eori: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
     val timer = metrics.startTimer(Choice.AllowedChoiceValues.ShutMucr)
     connector.sendShutMucrRequest(buildShutMucrRequest(shutMucr.mucr).toString).map(_.status).andThen {
       case Success(status) =>
-        auditService.audit(
-          Choice(Choice.AllowedChoiceValues.ShutMucr),
-          auditService
-            .auditShutMucrData(request.user.eori, shutMucr.mucr, status.toString)
-        )
+        auditService.auditShutMucr(eori, shutMucr.mucr, status.toString)
         timer.stop()
         metrics.incrementCounter(Choice.AllowedChoiceValues.ShutMucr)
     }

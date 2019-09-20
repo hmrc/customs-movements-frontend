@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.viewmodels.notificationspage
+package models.viewmodels.notificationspage.converters
 
 import java.time.format.DateTimeFormatter
 import java.time.{ZoneId, ZonedDateTime}
@@ -22,6 +22,7 @@ import java.time.{ZoneId, ZonedDateTime}
 import base.BaseSpec
 import models.notifications.ResponseType
 import models.viewmodels.decoder.{CRCCode, Decoder}
+import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import modules.DateTimeFormatterModule.NotificationsPageFormatter
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{times, verify, when}

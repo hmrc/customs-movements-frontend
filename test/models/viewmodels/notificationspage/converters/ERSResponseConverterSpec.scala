@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package models.viewmodels.notificationspage
+package models.viewmodels.notificationspage.converters
 
 import java.time.format.DateTimeFormatter
-import java.time.{ZoneId, ZonedDateTime}
+import java.time.{Instant, ZoneId, ZonedDateTime}
 
 import base.BaseSpec
 import models.UcrBlock
-import models.notifications.ResponseType.{ControlResponse, MovementTotalsResponse}
+import models.notifications.ResponseType._
 import models.notifications.{Entry, EntryStatus, ResponseType}
-import models.viewmodels.decoder.{CRCCode, Decoder, ROECode, SOECode}
+import models.viewmodels.decoder.{Decoder, ICSCode, ROECode, SOECode}
 import models.viewmodels.notificationspage.MovementTotalsResponseType.{EMR, ERS}
+import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import modules.DateTimeFormatterModule.NotificationsPageFormatter
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{times, verify, when}
@@ -32,32 +33,32 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
-import testdata.CommonTestData.correctUcr
+import testdata.CommonTestData._
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 
-class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
+class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
 
-  import EMRResponseConverterSpec._
+  import ERSResponseConverterSpec._
 
   private trait Test {
     implicit val messages: Messages = stubMessages()
 
     val decoderMock: Decoder = mock[Decoder]
-    when(decoderMock.crc(any[String])).thenReturn(Some(crcKeyFromDecoder))
+    when(decoderMock.ics(any[String])).thenReturn(Some(icsKeyFromDecoder))
     when(decoderMock.roe(any[String])).thenReturn(Some(roeKeyFromDecoder))
-    when(decoderMock.mucrSoe(any[String])).thenReturn(Some(mucrSoeKeyFromDecoder))
+    when(decoderMock.soe(any[String])).thenReturn(Some(soeKeyFromDecoder))
 
-    val contentBuilder = new EMRResponseConverter(decoderMock, NotificationsPageFormatter)
+    val contentBuilder = new ERSResponseConverter(decoderMock, NotificationsPageFormatter)
   }
 
-  "EMRResponseConverter on canConvertFrom" should {
+  "ERSResponseConverter on canConvertFrom" should {
 
     "return false" when {
 
-      "provided ERS response" in new Test {
+      "provided EMR response" in new Test {
 
         val input =
-          exampleNotificationFrontendModel(responseType = MovementTotalsResponse, messageCode = ERS.code)
+          exampleNotificationFrontendModel(responseType = MovementTotalsResponse, messageCode = EMR.code)
 
         contentBuilder.canConvertFrom(input) mustBe false
       }
@@ -78,19 +79,19 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
     }
 
     "return true" when {
-      "provided with EMR response" in new Test {
+      "provided with ERS response" in new Test {
 
         val input =
-          exampleNotificationFrontendModel(responseType = MovementTotalsResponse, messageCode = EMR.code)
+          exampleNotificationFrontendModel(responseType = MovementTotalsResponse, messageCode = ERS.code)
 
         contentBuilder.canConvertFrom(input) mustBe true
       }
     }
   }
 
-  "EMRResponseConverter on convert" when {
+  "ERSResponseConverter on convert" when {
 
-    "provided with response of type different than EMR" should {
+    "provided with response of type different than ERS" should {
       "throw IllegalArgumentException" in new Test {
 
         val input = exampleNotificationFrontendModel(responseType = ResponseType.ControlResponse, messageCode = "EDL")
@@ -99,59 +100,31 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
       }
     }
 
-    "provided with EMR MovementTotalsResponse with all codes" should {
+    "provided with ERS MovementTotalsResponse with all codes" should {
 
       "call Decoder" in new Test {
 
-        val input = emrResponseAllCodes
+        val input = ersResponseAllCodes
 
         contentBuilder.convert(input)
 
-        verify(decoderMock).crc(meq(crcKeyFromDecoder.code))
+        verify(decoderMock).ics(meq(icsKeyFromDecoder.code))
         verify(decoderMock).roe(meq(roeKeyFromDecoder.code))
-        verify(decoderMock).mucrSoe(meq(mucrSoeKeyFromDecoder.code))
-        verify(decoderMock, times(0)).ics(any())
-        verify(decoderMock, times(0)).soe(any())
-      }
-
-      "return NotificationsPageSingleElement with values returned by Messages" in new Test {
-
-        val input = emrResponseAllCodes
-        val expectedResult = NotificationsPageSingleElement(
-          title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
-          content = Html(
-            s"<p>${messages(crcKeyFromDecoder.contentKey)}</p>" +
-              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} ${messages(roeKeyFromDecoder.contentKey)}</p>" +
-              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} ${messages(mucrSoeKeyFromDecoder.contentKey)}</p>"
-          )
-        )
-
-        contentBuilder.convert(input) mustBe expectedResult
-      }
-    }
-
-    "provided with EMR MovementTotalsResponse with empty codes" should {
-
-      "call Decoder only for existing codes" in new Test {
-
-        val input = emrResponseMissingCodes
-
-        contentBuilder.convert(input)
-
-        verify(decoderMock).roe(meq(roeKeyFromDecoder.code))
+        verify(decoderMock).soe(meq(soeKeyFromDecoder.code))
         verify(decoderMock, times(0)).crc(any())
         verify(decoderMock, times(0)).mucrSoe(any())
       }
 
-      "return NotificationsPageSingleElement without content for missing codes" in new Test {
+      "return NotificationsPageSingleElement with values returned by Messages" in new Test {
 
-        val input = emrResponseMissingCodes
+        val input = ersResponseAllCodes
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
           timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
           content = Html(
-            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} ${messages(roeKeyFromDecoder.contentKey)}</p>"
+            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} ${messages(roeKeyFromDecoder.contentKey)}</p>" +
+              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} ${messages(soeKeyFromDecoder.contentKey)}</p>" +
+              s"<p>${messages(icsKeyFromDecoder.contentKey)}</p>"
           )
         )
 
@@ -159,26 +132,54 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
       }
     }
 
-    "provided with EMR MovementTotalsResponse with unknown codes" should {
+    "provided with ERS MovementTotalsResponse with empty codes" should {
 
-      "call Decoder for all codes" in new Test {
+      "call Decoder only for existing codes" in new Test {
 
-        val input = emrResponseUnknownCodes
+        val input = ersResponseMissingCodes
 
         contentBuilder.convert(input)
 
-        verify(decoderMock).crc(meq(UnknownCrcCode))
+        verify(decoderMock, times(0)).ics(any())
+        verify(decoderMock, times(0)).roe(any())
+        verify(decoderMock).soe(meq(soeKeyFromDecoder.code))
+      }
+
+      "return NotificationsPageSingleElement without content for missing codes" in new Test {
+
+        val input = ersResponseMissingCodes
+        val expectedResult = NotificationsPageSingleElement(
+          title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
+          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
+          content = Html(
+            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} ${messages(soeKeyFromDecoder.contentKey)}</p>"
+          )
+        )
+
+        contentBuilder.convert(input) mustBe expectedResult
+      }
+    }
+
+    "provided with ERS MovementTotalsResponse with unknown codes" should {
+
+      "call Decoder for all codes" in new Test {
+
+        val input = ersResponseUnknownCodes
+
+        contentBuilder.convert(input)
+
+        verify(decoderMock).ics(meq(UnknownIcsCode))
         verify(decoderMock).roe(meq(UnknownRoeCode))
-        verify(decoderMock).mucrSoe(meq(UnknownMucrSoeCode))
+        verify(decoderMock).soe(meq(UnknownSoeCode))
       }
 
       "return NotificationsPageSingleElement without content for unknown codes" in new Test {
 
-        when(decoderMock.crc(meq(UnknownCrcCode))).thenReturn(None)
+        when(decoderMock.ics(meq(UnknownIcsCode))).thenReturn(None)
         when(decoderMock.roe(meq(UnknownRoeCode))).thenReturn(None)
-        when(decoderMock.mucrSoe(meq(UnknownMucrSoeCode))).thenReturn(None)
+        when(decoderMock.soe(meq(UnknownSoeCode))).thenReturn(None)
 
-        val input = emrResponseUnknownCodes
+        val input = ersResponseUnknownCodes
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
           timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
@@ -192,54 +193,59 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
 
 }
 
-object EMRResponseConverterSpec {
+object ERSResponseConverterSpec {
 
   private val testTimestampString = "2019-10-23T12:34+00:00"
   private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault())
-  val testTimestamp = ZonedDateTime.parse(testTimestampString, formatter).toInstant
+  val testTimestamp: Instant = ZonedDateTime.parse(testTimestampString, formatter).toInstant
 
-  val crcKeyFromDecoder = CRCCode.Success
+  val icsKeyFromDecoder = ICSCode.InvalidationByCustoms
   val roeKeyFromDecoder = ROECode.DocumentaryControl
-  val mucrSoeKeyFromDecoder = SOECode.ConsolidationOpen
+  val soeKeyFromDecoder = SOECode.DeclarationAcceptance
 
-  val emrResponseAllCodes = exampleNotificationFrontendModel(
+  val ersResponseAllCodes = exampleNotificationFrontendModel(
     responseType = ResponseType.MovementTotalsResponse,
-    messageCode = EMR.code,
+    messageCode = ERS.code,
     timestampReceived = testTimestamp,
-    crcCode = Some(crcKeyFromDecoder.code),
     entries = Seq(
       Entry(
-        ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "M")),
-        entryStatus = Some(EntryStatus(roe = Some(roeKeyFromDecoder.code), soe = Some(mucrSoeKeyFromDecoder.code)))
+        ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "D")),
+        entryStatus = Some(
+          EntryStatus(
+            ics = Some(icsKeyFromDecoder.code),
+            roe = Some(roeKeyFromDecoder.code),
+            soe = Some(soeKeyFromDecoder.code)
+          )
+        )
       )
     )
   )
 
-  val emrResponseMissingCodes = exampleNotificationFrontendModel(
+  val ersResponseMissingCodes = exampleNotificationFrontendModel(
     responseType = ResponseType.MovementTotalsResponse,
-    messageCode = EMR.code,
+    messageCode = ERS.code,
     timestampReceived = testTimestamp,
     entries = Seq(
       Entry(
-        ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "M")),
-        entryStatus = Some(EntryStatus(roe = Some(roeKeyFromDecoder.code)))
+        ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "D")),
+        entryStatus = Some(EntryStatus(soe = Some(soeKeyFromDecoder.code)))
       )
     )
   )
 
-  val UnknownCrcCode = "1234"
+  val UnknownIcsCode = "123"
   val UnknownRoeCode = "456"
-  val UnknownMucrSoeCode = "7890"
+  val UnknownSoeCode = "7890"
 
-  val emrResponseUnknownCodes = exampleNotificationFrontendModel(
+  val ersResponseUnknownCodes = exampleNotificationFrontendModel(
     responseType = ResponseType.MovementTotalsResponse,
-    messageCode = EMR.code,
+    messageCode = ERS.code,
     timestampReceived = testTimestamp,
-    crcCode = Some(UnknownCrcCode),
     entries = Seq(
       Entry(
-        ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "M")),
-        entryStatus = Some(EntryStatus(roe = Some(UnknownRoeCode), soe = Some(UnknownMucrSoeCode)))
+        ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "D")),
+        entryStatus =
+          Some(EntryStatus(ics = Some(UnknownIcsCode), roe = Some(UnknownRoeCode), soe = Some(UnknownSoeCode)))
       )
     )
   )

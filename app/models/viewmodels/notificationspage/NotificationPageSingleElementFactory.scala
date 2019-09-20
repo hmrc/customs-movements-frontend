@@ -24,6 +24,7 @@ import models.notifications.NotificationFrontendModel
 import models.submissions.ActionType._
 import models.submissions.SubmissionFrontendModel
 import models.viewmodels.decoder.Decoder
+import models.viewmodels.notificationspage.converters._
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 

@@ -24,6 +24,7 @@ import models.notifications.{Entry, EntryStatus, NotificationFrontendModel, Resp
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import models.viewmodels.decoder._
 import models.viewmodels.notificationspage.MovementTotalsResponseType.{EMR, ERS}
+import models.viewmodels.notificationspage.converters._
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
@@ -222,9 +223,9 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
       "return NotificationsPageSingleElement returned by MovementResponseConverter" in new Test {
 
         val exampleNotificationPageElement = NotificationsPageSingleElement(
-            title = "TITLE",
-            timestampInfo = "TIMESTAMP",
-            content = Html("<test>HTML</test>")
+          title = "TITLE",
+          timestampInfo = "TIMESTAMP",
+          content = Html("<test>HTML</test>")
         )
         when(movementResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
         when(movementResponseConverterMock.convert(any[NotificationFrontendModel])(any()))

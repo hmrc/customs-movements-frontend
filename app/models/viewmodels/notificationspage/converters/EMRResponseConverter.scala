@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.viewmodels.notificationspage
+package models.viewmodels.notificationspage.converters
 
 import java.time.Instant
 import java.time.format.DateTimeFormatter
@@ -23,37 +23,44 @@ import javax.inject.{Inject, Singleton}
 import models.notifications.ResponseType.MovementTotalsResponse
 import models.notifications.{Entry, NotificationFrontendModel}
 import models.viewmodels.decoder.Decoder
-import models.viewmodels.notificationspage.MovementTotalsResponseType.ERS
+import models.viewmodels.notificationspage.MovementTotalsResponseType.EMR
+import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 import play.twirl.api.Html
 
 @Singleton
-class ERSResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
+class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
     extends NotificationPageSingleElementConverter {
 
   override def canConvertFrom(notification: NotificationFrontendModel): Boolean =
-    (notification.responseType == MovementTotalsResponse) && (notification.messageCode == ERS.code)
+    (notification.responseType == MovementTotalsResponse) && (notification.messageCode == EMR.code)
 
   override def convert(
     notification: NotificationFrontendModel
   )(implicit messages: Messages): NotificationsPageSingleElement =
     if (canConvertFrom(notification)) {
 
-      val roeCodeExplanation = findDucrEntry(notification.entries).flatMap(_.roe).flatMap(buildRoeCodeExplanation)
-      val soeCodeExplanation = findDucrEntry(notification.entries).flatMap(_.soe).flatMap(buildSoeCodeExplanation)
-      val icsCodeExplanation = findDucrEntry(notification.entries).flatMap(_.ics).flatMap(buildIcsCodeExplanation)
+      val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation)
+      val roeCodeExplanation = findMucrEntry(notification.entries).flatMap(_.roe).flatMap(buildRoeCodeExplanation)
+      val soeCodeExplanation = findMucrEntry(notification.entries).flatMap(_.soe).flatMap(buildSoeCodeExplanation)
 
       NotificationsPageSingleElement(
         title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
         timestampInfo = timestampInfoResponse(notification.timestampReceived),
         content =
-          Html(roeCodeExplanation.getOrElse("") + soeCodeExplanation.getOrElse("") + icsCodeExplanation.getOrElse(""))
+          Html(crcCodeExplanation.getOrElse("") + roeCodeExplanation.getOrElse("") + soeCodeExplanation.getOrElse(""))
       )
     } else {
       throw new IllegalArgumentException(s"Cannot build content for ${notification.responseType}")
     }
 
-  private def findDucrEntry(entries: Seq[Entry]): Option[Entry] = entries.find(_.ucrType.contains("D"))
+  private def findMucrEntry(entries: Seq[Entry]): Option[Entry] = entries.find(_.ucrType.contains("M"))
+
+  private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[String] = {
+    val crcCodeExplanationText = decoder.crc(crcCode).map(code => messages(code.contentKey))
+
+    crcCodeExplanationText.map(explanation => paragraph(explanation))
+  }
 
   private def buildRoeCodeExplanation(roeCode: String)(implicit messages: Messages): Option[String] = {
     val RoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")
@@ -64,15 +71,9 @@ class ERSResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTi
 
   private def buildSoeCodeExplanation(soeCode: String)(implicit messages: Messages): Option[String] = {
     val SoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")
-    val soeCodeExplanationText = decoder.soe(soeCode).map(code => messages(code.contentKey))
+    val soeCodeExplanationText = decoder.mucrSoe(soeCode).map(code => messages(code.contentKey))
 
     soeCodeExplanationText.map(explanation => paragraph(s"$SoeCodeHeader $explanation"))
-  }
-
-  private def buildIcsCodeExplanation(icsCode: String)(implicit messages: Messages): Option[String] = {
-    val icsCodeExplanationText = decoder.ics(icsCode).map(code => messages(code.contentKey))
-
-    icsCodeExplanationText.map(explanation => paragraph(explanation))
   }
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"

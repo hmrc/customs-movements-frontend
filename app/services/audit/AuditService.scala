@@ -35,28 +35,14 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
 ) {
   private val logger = Logger(this.getClass)
 
-  def auditShutMucrData(eori: String, mucr: String, result: String): Map[String, String] =
-    Map(EventData.EORI.toString -> eori, EventData.MUCR.toString -> mucr, EventData.SubmissionResult.toString -> result)
-
-  def auditDisassociateData(eori: String, ducr: String, result: String): Map[String, String] =
-    Map(EventData.EORI.toString -> eori, EventData.DUCR.toString -> ducr, EventData.SubmissionResult.toString -> result)
-
-  def auditAssociateData(eori: String, mucr: String, ducr: String, result: String): Map[String, String] =
-    Map(
-      EventData.EORI.toString -> eori,
-      EventData.MUCR.toString -> mucr,
-      EventData.DUCR.toString -> ducr,
-      EventData.SubmissionResult.toString -> result
-    )
-
-  def auditMovementsData(eori: String, data: InventoryLinkingMovementRequest, result: String): Map[String, String] =
-    Map(
-      EventData.EORI.toString -> eori,
-      EventData.MessageCode.toString -> data.messageCode,
-      EventData.UCRType.toString -> data.ucrBlock.ucrType,
-      EventData.UCR.toString -> data.ucrBlock.ucr,
-      EventData.MovementReference.toString -> data.movementReference.getOrElse(""),
-      EventData.SubmissionResult.toString -> result
+  def auditShutMucr(eori: String, mucr: String, result: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
+    audit(
+      Choice(Choice.AllowedChoiceValues.ShutMucr),
+      Map(
+        EventData.EORI.toString -> eori,
+        EventData.MUCR.toString -> mucr,
+        EventData.SubmissionResult.toString -> result
+      )
     )
 
   def audit(choice: Choice, auditData: Map[String, String])(implicit hc: HeaderCarrier): Future[AuditResult] = {
@@ -71,17 +57,6 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
       tags = getAuditTags(s"${choice.value}-request", path = s"$choice.value}"),
       detail = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails() ++ auditData
     )
-
-  def auditAllPagesUserInput(choice: Choice, userInput: JsObject)(implicit hc: HeaderCarrier): Future[AuditResult] = {
-    val auditType = choice.value
-    val extendedEvent = ExtendedDataEvent(
-      auditSource = appName,
-      auditType = auditType,
-      tags = getAuditTags(s"${auditType}-payload-request", s"${auditType}/full-payload"),
-      detail = getAuditDetails(userInput)
-    )
-    connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType))
-  }
 
   private def getAuditTags(transactionName: String, path: String)(implicit hc: HeaderCarrier) =
     AuditExtensions
@@ -101,6 +76,55 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
     case Disabled =>
       logger.warn(s"Auditing Disabled")
       Disabled
+  }
+
+  def auditDisassociate(eori: String, ducr: String, result: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
+    audit(
+      Choice(Choice.AllowedChoiceValues.DisassociateDUCR),
+      Map(
+        EventData.EORI.toString -> eori,
+        EventData.DUCR.toString -> ducr,
+        EventData.SubmissionResult.toString -> result
+      )
+    )
+
+  def auditAssociate(eori: String, mucr: String, ducr: String, result: String)(
+    implicit hc: HeaderCarrier
+  ): Future[AuditResult] =
+    audit(
+      Choice(Choice.AllowedChoiceValues.AssociateDUCR),
+      Map(
+        EventData.EORI.toString -> eori,
+        EventData.MUCR.toString -> mucr,
+        EventData.DUCR.toString -> ducr,
+        EventData.SubmissionResult.toString -> result
+      )
+    )
+
+  def auditMovements(eori: String, data: InventoryLinkingMovementRequest, result: String, choice: Choice)(
+    implicit hc: HeaderCarrier
+  ): Future[AuditResult] =
+    audit(
+      choice,
+      Map(
+        EventData.EORI.toString -> eori,
+        EventData.MessageCode.toString -> data.messageCode,
+        EventData.UCRType.toString -> data.ucrBlock.ucrType,
+        EventData.UCR.toString -> data.ucrBlock.ucr,
+        EventData.MovementReference.toString -> data.movementReference.getOrElse(""),
+        EventData.SubmissionResult.toString -> result
+      )
+    )
+
+  def auditAllPagesUserInput(choice: Choice, userInput: JsObject)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+    val auditType = choice.value
+    val extendedEvent = ExtendedDataEvent(
+      auditSource = appName,
+      auditType = auditType,
+      tags = getAuditTags(s"${auditType}-payload-request", s"${auditType}/full-payload"),
+      detail = getAuditDetails(userInput)
+    )
+    connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType))
   }
 
   private def getAuditDetails(userInput: JsObject)(implicit hc: HeaderCarrier) = {

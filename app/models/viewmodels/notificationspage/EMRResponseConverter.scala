@@ -20,18 +20,19 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
-import models.notifications.NotificationFrontendModel
 import models.notifications.ResponseType.MovementTotalsResponse
+import models.notifications.{Entry, NotificationFrontendModel}
 import models.viewmodels.decoder.Decoder
+import models.viewmodels.notificationspage.MovementTotalsResponseType.EMR
 import play.api.i18n.Messages
 import play.twirl.api.Html
 
 @Singleton
-class MovementTotalsResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
+class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
     extends NotificationPageSingleElementConverter {
 
   override def canConvertFrom(notification: NotificationFrontendModel): Boolean =
-    notification.responseType == MovementTotalsResponse
+    (notification.responseType == MovementTotalsResponse) && (notification.messageCode == EMR.code)
 
   override def convert(
     notification: NotificationFrontendModel
@@ -40,9 +41,9 @@ class MovementTotalsResponseConverter @Inject()(decoder: Decoder, dateTimeFormat
 
       val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation)
       val roeCodeExplanation =
-        notification.entries.headOption.flatMap(_.entryStatus).flatMap(_.roe).flatMap(buildRoeCodeExplanation)
+        findMucrEntry(notification.entries).flatMap(_.entryStatus).flatMap(_.roe).flatMap(buildRoeCodeExplanation)
       val soeCodeExplanation =
-        notification.entries.headOption.flatMap(_.entryStatus).flatMap(_.soe).flatMap(buildSoeCodeExplanation)
+        findMucrEntry(notification.entries).flatMap(_.entryStatus).flatMap(_.soe).flatMap(buildSoeCodeExplanation)
 
       NotificationsPageSingleElement(
         title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
@@ -54,11 +55,12 @@ class MovementTotalsResponseConverter @Inject()(decoder: Decoder, dateTimeFormat
       throw new IllegalArgumentException(s"Cannot build content for ${notification.responseType}")
     }
 
+  private def findMucrEntry(entries: Seq[Entry]): Option[Entry] = entries.find(_.ucrBlock.map(_.ucrType).contains("M"))
+
   private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[String] = {
-    val CrcCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")
     val crcCodeExplanationText = decoder.crc(crcCode).map(code => messages(code.contentKey))
 
-    crcCodeExplanationText.map(explanation => paragraph(s"$CrcCodeHeader $explanation"))
+    crcCodeExplanationText.map(explanation => paragraph(explanation))
   }
 
   private def buildRoeCodeExplanation(roeCode: String)(implicit messages: Messages): Option[String] = {
@@ -70,7 +72,7 @@ class MovementTotalsResponseConverter @Inject()(decoder: Decoder, dateTimeFormat
 
   private def buildSoeCodeExplanation(soeCode: String)(implicit messages: Messages): Option[String] = {
     val SoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")
-    val soeCodeExplanationText = decoder.soe(soeCode).map(code => messages(code.contentKey))
+    val soeCodeExplanationText = decoder.mucrSoe(soeCode).map(code => messages(code.contentKey))
 
     soeCodeExplanationText.map(explanation => paragraph(s"$SoeCodeHeader $explanation"))
   }
@@ -79,5 +81,4 @@ class MovementTotalsResponseConverter @Inject()(decoder: Decoder, dateTimeFormat
 
   private def timestampInfoResponse(responseTimestamp: Instant)(implicit messages: Messages): String =
     messages("notifications.elem.timestampInfo.response", dateTimeFormatter.format(responseTimestamp))
-
 }

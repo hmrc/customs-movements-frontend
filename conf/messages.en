@@ -364,7 +364,6 @@ notifications.elem.content.inventoryLinkingControlResponse.Rejected = Your reque
 
 notifications.elem.content.inventoryLinkingMovementResponse.crc = CRC:
 
-notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc = CRC:
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Route of entry is:
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Status of entry is:
 

@@ -23,6 +23,7 @@ import models.UcrBlock
 import models.notifications.{Entry, EntryStatus, NotificationFrontendModel, ResponseType}
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import models.viewmodels.decoder._
+import models.viewmodels.notificationspage.MovementTotalsResponseType.{EMR, ERS}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
@@ -40,9 +41,11 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
   private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault())
   private val testTimestamp = ZonedDateTime.parse(testTimestampString, formatter).toInstant
 
-  private val crcCodeKeyFromDecoder = CRCCode.Success
+  private val crcKeyFromDecoder = CRCCode.Success
+  private val icsKeyFromDecoder = ICSCode.InvalidationByCustoms
   private val roeKeyFromDecoder = ROECode.DocumentaryControl
   private val soeKeyFromDecoder = SOECode.DeclarationAcceptance
+  private val mucrSoeKeyFromDecoder = SOECode.ConsolidationOpen
   private val AcknowledgedAndProcessedActionCode = ActionCode.AcknowledgedAndProcessed
   private val MucrNotShutConsolidationErrorCode = ErrorCode.MucrNotShutConsolidation
 
@@ -50,7 +53,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
     implicit val messages: Messages = stubMessages()
 
     val decoderMock: Decoder = mock[Decoder]
-    when(decoderMock.crc(any[String])).thenReturn(Some(crcCodeKeyFromDecoder))
+    when(decoderMock.crc(any[String])).thenReturn(Some(crcKeyFromDecoder))
     when(decoderMock.roe(any[String])).thenReturn(Some(roeKeyFromDecoder))
     when(decoderMock.soe(any[String])).thenReturn(Some(soeKeyFromDecoder))
     when(decoderMock.actionCode(any[String])).thenReturn(Some(AcknowledgedAndProcessedActionCode))
@@ -59,25 +62,30 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
     val emptyNotificationPageElement = NotificationsPageSingleElement("", "", HtmlFormat.empty)
 
     val controlResponseConverterMock: ControlResponseConverter = mock[ControlResponseConverter]
-    when(controlResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
+    when(controlResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(false)
     when(controlResponseConverterMock.convert(any[NotificationFrontendModel])(any()))
       .thenReturn(emptyNotificationPageElement)
 
-    val movementTotalsResponseContentBuilderMock: MovementTotalsResponseConverter =
-      mock[MovementTotalsResponseConverter]
-    when(movementTotalsResponseContentBuilderMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
-    when(movementTotalsResponseContentBuilderMock.convert(any[NotificationFrontendModel])(any()))
+    val ersResponseConverterMock: ERSResponseConverter = mock[ERSResponseConverter]
+    when(ersResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(false)
+    when(ersResponseConverterMock.convert(any[NotificationFrontendModel])(any()))
+      .thenReturn(emptyNotificationPageElement)
+
+    val emrResponseConverterMock: EMRResponseConverter = mock[EMRResponseConverter]
+    when(emrResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(false)
+    when(emrResponseConverterMock.convert(any[NotificationFrontendModel])(any()))
       .thenReturn(emptyNotificationPageElement)
 
     val movementResponseConverterMock: MovementResponseConverter = mock[MovementResponseConverter]
-    when(movementResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
+    when(movementResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(false)
     when(movementResponseConverterMock.convert(any[NotificationFrontendModel])(any()))
       .thenReturn(emptyNotificationPageElement)
 
     val factory = new NotificationPageSingleElementFactory(
       decoderMock,
       controlResponseConverterMock,
-      movementTotalsResponseContentBuilderMock,
+      ersResponseConverterMock,
+      emrResponseConverterMock,
       movementResponseConverterMock
     )
   }
@@ -203,6 +211,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
       "call MovementResponseConverter" in new Test {
 
+        when(movementResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
         val input = exampleNotificationFrontendModel(responseType = ResponseType.MovementResponse)
 
         factory.build(input)
@@ -213,17 +222,18 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
       "return NotificationsPageSingleElement returned by MovementResponseConverter" in new Test {
 
         val exampleNotificationPageElement = NotificationsPageSingleElement(
-          title = "TITLE",
-          timestampInfo = "TIMESTAMP",
-          content = Html("<test>HTML</test>")
+            title = "TITLE",
+            timestampInfo = "TIMESTAMP",
+            content = Html("<test>HTML</test>")
         )
+        when(movementResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
         when(movementResponseConverterMock.convert(any[NotificationFrontendModel])(any()))
           .thenReturn(exampleNotificationPageElement)
 
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.MovementResponse,
           timestampReceived = testTimestamp,
-          crcCode = Some(crcCodeKeyFromDecoder.code)
+          crcCode = Some(crcKeyFromDecoder.code)
         )
 
         val result = factory.build(input)
@@ -232,34 +242,88 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
       }
     }
 
-    "provided with MovementTotalsResponse NotificationFrontendModel" should {
+    "provided with ERS MovementTotalsResponse NotificationFrontendModel" should {
 
-      "call MovementTotalsResponseConverter" in new Test {
+      "call ERSResponseConverter" in new Test {
 
-        val input = exampleNotificationFrontendModel(responseType = ResponseType.MovementTotalsResponse)
+        when(ersResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
+        val input =
+          exampleNotificationFrontendModel(responseType = ResponseType.MovementTotalsResponse, messageCode = ERS.code)
 
         factory.build(input)
 
-        verify(movementTotalsResponseContentBuilderMock).convert(meq(input))(any[Messages])
+        verify(ersResponseConverterMock).convert(meq(input))(any[Messages])
       }
 
-      "return NotificationsPageSingleElement returned by MovementTotalsResponseConverter" in new Test {
+      "return NotificationsPageSingleElement returned by ERSResponseConverter" in new Test {
 
         val exampleNotificationPageElement = NotificationsPageSingleElement(
           title = "TITLE",
           timestampInfo = "TIMESTAMP",
           content = Html("<test>HTML</test>")
         )
-        when(movementTotalsResponseContentBuilderMock.convert(any[NotificationFrontendModel])(any()))
+        when(ersResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
+        when(ersResponseConverterMock.convert(any[NotificationFrontendModel])(any()))
           .thenReturn(exampleNotificationPageElement)
 
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.MovementTotalsResponse,
+          messageCode = ERS.code,
           timestampReceived = testTimestamp,
-          crcCode = Some(crcCodeKeyFromDecoder.code),
           entries = Seq(
             Entry(
-              entryStatus = Some(EntryStatus(roe = Some(roeKeyFromDecoder.code), soe = Some(soeKeyFromDecoder.code)))
+              ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "D")),
+              entryStatus = Some(
+                EntryStatus(
+                  ics = Some(icsKeyFromDecoder.code),
+                  roe = Some(roeKeyFromDecoder.code),
+                  soe = Some(soeKeyFromDecoder.code)
+                )
+              )
+            )
+          )
+        )
+
+        val result = factory.build(input)
+
+        result mustBe exampleNotificationPageElement
+      }
+    }
+
+    "provided with EMR MovementTotalsResponse NotificationFrontendModel" should {
+
+      "call EMRResponseConverter" in new Test {
+
+        when(emrResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
+        val input =
+          exampleNotificationFrontendModel(responseType = ResponseType.MovementTotalsResponse, messageCode = EMR.code)
+
+        factory.build(input)
+
+        verify(emrResponseConverterMock).convert(meq(input))(any[Messages])
+      }
+
+      "return NotificationsPageSingleElement returned by EMRResponseConverter" in new Test {
+
+        val exampleNotificationPageElement = NotificationsPageSingleElement(
+          title = "TITLE",
+          timestampInfo = "TIMESTAMP",
+          content = Html("<test>HTML</test>")
+        )
+        when(emrResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
+        when(emrResponseConverterMock.convert(any[NotificationFrontendModel])(any()))
+          .thenReturn(exampleNotificationPageElement)
+
+        val input = exampleNotificationFrontendModel(
+          responseType = ResponseType.MovementTotalsResponse,
+          messageCode = EMR.code,
+          timestampReceived = testTimestamp,
+          crcCode = Some(crcKeyFromDecoder.code),
+          entries = Seq(
+            Entry(
+              ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "M")),
+              entryStatus =
+                Some(EntryStatus(roe = Some(roeKeyFromDecoder.code), soe = Some(mucrSoeKeyFromDecoder.code)))
             )
           )
         )
@@ -274,6 +338,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
       "call ControlResponseConverter" in new Test {
 
+        when(controlResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
         val input = exampleNotificationFrontendModel(responseType = ResponseType.ControlResponse)
 
         factory.build(input)
@@ -288,6 +353,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           timestampInfo = "TIMESTAMP",
           content = Html("<test>HTML</test>")
         )
+        when(controlResponseConverterMock.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
         when(controlResponseConverterMock.convert(any[NotificationFrontendModel])(any()))
           .thenReturn(exampleNotificationPageElement)
 

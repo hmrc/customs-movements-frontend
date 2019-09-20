@@ -371,11 +371,11 @@ decoder.crc.Success = Success
 decoder.crc.PrelodgedDeclarationNotArrived = Pre-lodged Declaration has not arrived
 decoder.crc.DeclarationNotArrived = Declaration has not arrived
 
-decoder.roe.DocumentaryControl = Documentary Control
-decoder.roe.PhysicalExternalPartyControl = Physical / External Party Control
-decoder.roe.NonBlockingDocumentaryControl = Non-Blocking Documentary Control
-decoder.roe.NoControlRequired = No control required
-decoder.roe.RiskingNotPerformed = Risking not yet performed
+decoder.roe.DocumentaryControl = You need to provide additional documents before your goods can be released
+decoder.roe.PhysicalExternalPartyControl = We're reviewing your declaration
+decoder.roe.NonBlockingDocumentaryControl = You need to provide additional documents after your goods have been released
+decoder.roe.NoControlRequired = The goods have passed risking
+decoder.roe.RiskingNotPerformed = Your goods are in processing waiting to be risked
 decoder.roe.PrelodgePrefix = Pre-lodge pre-fix
 
 decoder.soe.DeclarationValidation = Declaration Validation

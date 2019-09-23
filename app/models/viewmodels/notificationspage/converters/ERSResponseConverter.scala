@@ -14,64 +14,70 @@
  * limitations under the License.
  */
 
-package models.viewmodels.notificationspage
+package models.viewmodels.notificationspage.converters
 
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
-import models.notifications.NotificationFrontendModel
 import models.notifications.ResponseType.MovementTotalsResponse
+import models.notifications.{Entry, NotificationFrontendModel}
 import models.viewmodels.decoder.Decoder
+import models.viewmodels.notificationspage.MovementTotalsResponseType.ERS
+import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 import play.twirl.api.Html
 
 @Singleton
-class MovementTotalsResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
+class ERSResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
     extends NotificationPageSingleElementConverter {
 
   override def canConvertFrom(notification: NotificationFrontendModel): Boolean =
-    notification.responseType == MovementTotalsResponse
+    (notification.responseType == MovementTotalsResponse) && (notification.messageCode == ERS.code)
 
   override def convert(
     notification: NotificationFrontendModel
   )(implicit messages: Messages): NotificationsPageSingleElement =
     if (canConvertFrom(notification)) {
 
-      val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation)
-      val roeCodeExplanation =
-        notification.entries.headOption.flatMap(_.entryStatus).flatMap(_.roe).flatMap(buildRoeCodeExplanation)
-      val soeCodeExplanation =
-        notification.entries.headOption.flatMap(_.entryStatus).flatMap(_.soe).flatMap(buildSoeCodeExplanation)
+      val roeCodeExplanation = findDucrEntry(notification.entries).flatMap(_.roe).flatMap(buildRoeCodeExplanation)
+      val soeCodeExplanation = findDucrEntry(notification.entries).flatMap(_.soe).flatMap(buildSoeCodeExplanation)
+      val icsCodeExplanation = findDucrEntry(notification.entries).flatMap(_.ics).flatMap(buildIcsCodeExplanation)
 
       NotificationsPageSingleElement(
         title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
         timestampInfo = timestampInfoResponse(notification.timestampReceived),
         content =
-          Html(crcCodeExplanation.getOrElse("") + roeCodeExplanation.getOrElse("") + soeCodeExplanation.getOrElse(""))
+          Html(roeCodeExplanation.getOrElse("") + soeCodeExplanation.getOrElse("") + icsCodeExplanation.getOrElse(""))
       )
     } else {
       throw new IllegalArgumentException(s"Cannot build content for ${notification.responseType}")
     }
 
-  private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[String] = {
-    val CrcCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc")
-    decoder.crc(crcCode).map(code => paragraph(s"$CrcCodeHeader ${code.contentKey}"))
-  }
+  private def findDucrEntry(entries: Seq[Entry]): Option[Entry] = entries.find(_.ucrType.contains("D"))
 
   private def buildRoeCodeExplanation(roeCode: String)(implicit messages: Messages): Option[String] = {
     val RoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")
-    decoder.roe(roeCode).map(code => paragraph(s"$RoeCodeHeader ${code.contentKey}"))
+    val roeCodeExplanationText = decoder.roe(roeCode).map(code => messages(code.contentKey))
+
+    roeCodeExplanationText.map(explanation => paragraph(s"$RoeCodeHeader $explanation"))
   }
 
   private def buildSoeCodeExplanation(soeCode: String)(implicit messages: Messages): Option[String] = {
     val SoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")
-    decoder.soe(soeCode).map(code => paragraph(s"$SoeCodeHeader ${code.contentKey}"))
+    val soeCodeExplanationText = decoder.ducrSoe(soeCode).map(code => messages(code.contentKey))
+
+    soeCodeExplanationText.map(explanation => paragraph(s"$SoeCodeHeader $explanation"))
+  }
+
+  private def buildIcsCodeExplanation(icsCode: String)(implicit messages: Messages): Option[String] = {
+    val icsCodeExplanationText = decoder.ics(icsCode).map(code => messages(code.contentKey))
+
+    icsCodeExplanationText.map(explanation => paragraph(explanation))
   }
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"
 
   private def timestampInfoResponse(responseTimestamp: Instant)(implicit messages: Messages): String =
     messages("notifications.elem.timestampInfo.response", dateTimeFormatter.format(responseTimestamp))
-
 }

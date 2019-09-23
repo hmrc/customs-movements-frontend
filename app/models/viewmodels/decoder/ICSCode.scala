@@ -16,22 +16,14 @@
 
 package models.viewmodels.decoder
 
-import javax.inject.Singleton
+sealed abstract class ICSCode(override val code: String, override val contentKey: String) extends CodeWithContentKey
 
-@Singleton
-class Decoder {
+object ICSCode {
 
-  def crc(code: String): Option[CRCCode] = CRCCode.codes.find(_.code == code)
+  val codes: Set[ICSCode] = Set(InvalidationAtTraderRequest, InvalidationByCustoms)
 
-  def ics(code: String): Option[ICSCode] = ICSCode.codes.find(_.code == code)
+  case object InvalidationAtTraderRequest
+      extends ICSCode(code = "3", contentKey = "decoder.icsCode.InvalidationAtTraderRequest")
+  case object InvalidationByCustoms extends ICSCode(code = "6", contentKey = "decoder.icsCode.InvalidationByCustoms")
 
-  def roe(code: String): Option[ROECode] = ROECode.codes.find(_.code == code)
-
-  def ducrSoe(code: String): Option[SOECode] = SOECode.DucrCodes.find(_.code == code)
-
-  def mucrSoe(code: String): Option[SOECode] = SOECode.MucrCodes.find(_.code == code)
-
-  def actionCode(code: String): Option[ActionCode] = ActionCode.codes.find(_.code == code)
-
-  def errorCode(code: String): Option[ErrorCode] = ErrorCode.codes.find(_.code == code)
 }

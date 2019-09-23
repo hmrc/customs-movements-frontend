@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package models.viewmodels.notificationspage
+package models.viewmodels.notificationspage.converters
 
 import models.notifications.NotificationFrontendModel
+import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 
 trait NotificationPageSingleElementConverter {

@@ -16,22 +16,17 @@
 
 package models.viewmodels.decoder
 
-import javax.inject.Singleton
+import base.BaseSpec
 
-@Singleton
-class Decoder {
+class ICSCodeSpec extends BaseSpec {
 
-  def crc(code: String): Option[CRCCode] = CRCCode.codes.find(_.code == code)
+  "ICSCode" should {
 
-  def ics(code: String): Option[ICSCode] = ICSCode.codes.find(_.code == code)
+    "have correct amount of codes" in {
 
-  def roe(code: String): Option[ROECode] = ROECode.codes.find(_.code == code)
+      val expectedCodesAmount = 2
+      ICSCode.codes.size mustBe expectedCodesAmount
+    }
+  }
 
-  def ducrSoe(code: String): Option[SOECode] = SOECode.DucrCodes.find(_.code == code)
-
-  def mucrSoe(code: String): Option[SOECode] = SOECode.MucrCodes.find(_.code == code)
-
-  def actionCode(code: String): Option[ActionCode] = ActionCode.codes.find(_.code == code)
-
-  def errorCode(code: String): Option[ErrorCode] = ErrorCode.codes.find(_.code == code)
 }

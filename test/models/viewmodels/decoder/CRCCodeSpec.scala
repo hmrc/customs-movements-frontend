@@ -16,31 +16,24 @@
 
 package models.viewmodels.decoder
 
-import models.viewmodels.decoder.RoeCode._
+import models.viewmodels.decoder.CRCCode.{DeclarationNotArrived, PrelodgedDeclarationNotArrived, Success}
 import unit.base.UnitSpec
 
-class RoeCodeSpec extends UnitSpec {
+class CRCCodeSpec extends UnitSpec {
 
-  "Roe Code" should {
+  "Crc Code" should {
 
     "have correct amount of codes" in {
 
-      val expectedCodesAmount = 6
-      RoeCode.codes.size mustBe expectedCodesAmount
+      val expectedCodesAmount = 3
+      CRCCode.codes.size mustBe expectedCodesAmount
     }
 
     "have correct list of codes" in {
 
-      val expectedCodes = Set(
-        DocumentaryControl,
-        PhysicalExternalPartyControl,
-        NonBlockingDocumentaryControl,
-        NoControlRequired,
-        RiskingNotPerformed,
-        PrelodgePrefix
-      )
+      val expectedCodes = Set(Success, PrelodgedDeclarationNotArrived, DeclarationNotArrived)
 
-      RoeCode.codes mustBe expectedCodes
+      CRCCode.codes mustBe expectedCodes
     }
   }
 }

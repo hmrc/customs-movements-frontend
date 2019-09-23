@@ -16,20 +16,26 @@
 
 package models.viewmodels.decoder
 
-import models.viewmodels.decoder.SoeCode._
+import models.viewmodels.decoder.SOECode._
 import unit.base.UnitSpec
 
-class SoeCodeSpec extends UnitSpec {
+class SOECodeSpec extends UnitSpec {
 
   "Soe Code" should {
 
-    "have correct amount of codes" in {
+    "have correct amount of DUCR codes" in {
 
       val expectedCodesAmount = 19
-      SoeCode.codes.size mustBe expectedCodesAmount
+      SOECode.DucrCodes.size mustBe expectedCodesAmount
     }
 
-    "have correct list of codes" in {
+    "have correct amount of MUCR codes" in {
+
+      val expectedCodesAmount = 3
+      SOECode.MucrCodes.size mustBe expectedCodesAmount
+    }
+
+    "have correct list of DUCR codes" in {
 
       val expectedCodes = Set(
         DeclarationValidation,
@@ -53,7 +59,14 @@ class SoeCodeSpec extends UnitSpec {
         Frustrated
       )
 
-      SoeCode.codes mustBe expectedCodes
+      SOECode.DucrCodes mustBe expectedCodes
+    }
+
+    "have correct list of MUCR codes" in {
+
+      val expectedCodes = Set(ConsolidationOpen, ConsolidationClosedWithoutP2P, ConsolidationHasP2P)
+
+      SOECode.MucrCodes mustBe expectedCodes
     }
   }
 }

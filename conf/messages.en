@@ -364,7 +364,6 @@ notifications.elem.content.inventoryLinkingControlResponse.Rejected = Your reque
 
 notifications.elem.content.inventoryLinkingMovementResponse.crc = CRC:
 
-notifications.elem.content.inventoryLinkingMovementTotalsResponse.crc = CRC:
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Route of entry is:
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Status of entry is:
 
@@ -372,11 +371,11 @@ decoder.crc.Success = Success
 decoder.crc.PrelodgedDeclarationNotArrived = Pre-lodged Declaration has not arrived
 decoder.crc.DeclarationNotArrived = Declaration has not arrived
 
-decoder.roe.DocumentaryControl = Documentary Control
-decoder.roe.PhysicalExternalPartyControl = Physical / External Party Control
-decoder.roe.NonBlockingDocumentaryControl = Non-Blocking Documentary Control
-decoder.roe.NoControlRequired = No control required
-decoder.roe.RiskingNotPerformed = Risking not yet performed
+decoder.roe.DocumentaryControl = You need to provide additional documents before your goods can be released
+decoder.roe.PhysicalExternalPartyControl = We're reviewing your declaration
+decoder.roe.NonBlockingDocumentaryControl = You need to provide additional documents after your goods have been released
+decoder.roe.NoControlRequired = The goods have passed risking
+decoder.roe.RiskingNotPerformed = Your goods are in processing waiting to be risked
 decoder.roe.PrelodgePrefix = Pre-lodge pre-fix
 
 decoder.soe.DeclarationValidation = Declaration Validation
@@ -398,6 +397,9 @@ decoder.soe.DeclarationClearanceAfterGoodsRelease = Declaration Clearance after 
 decoder.soe.InsufficientGuarantees = Insufficient Guarantees
 decoder.soe.Departed = Departed
 decoder.soe.Frustrated = Frustrated
+decoder.soe.ConsolidationOpen = The MUCR is still open, or contains no declarations.
+decoder.soe.ConsolidationClosedWithoutP2P = The consolidation is closed, but there are underlying declarations that do not have P2P.
+decoder.soe.ConsolidationHasP2P = The consolidation is closed and all underlying declarations have P2P or have departed.
 
 decoder.errorCode.InvalidUcrFormat = Invalid UCR Format, DUCR or MUCR
 decoder.errorCode.ClientIdValidationFailed = Client ID validation fails
@@ -428,6 +430,9 @@ decoder.errorCode.LocationBasedPermissionFailed = Location-Based Permission fail
 decoder.errorCode.InvalidGoodsLocation = Goods Location is invalid
 decoder.errorCode.MucrAlreadyDeparted = MUCR has been departed
 decoder.errorCode.UcrRejectedUponArrival = UCR cannot be associated as it has been rejected upon arrival
+
+decoder.icsCode.InvalidationAtTraderRequest = The declaration was invalidated at the trader's request
+decoder.icsCode.InvalidationByCustoms = The declaration was invalidated by customs due to major discrepancies
 
 arrivalReference = Arrival reference
 arrivalReference.question = Give this arrival a unique reference

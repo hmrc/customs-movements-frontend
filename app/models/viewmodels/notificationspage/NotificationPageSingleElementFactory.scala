@@ -21,10 +21,10 @@ import java.time.{Instant, ZoneId}
 
 import javax.inject.{Inject, Singleton}
 import models.notifications.NotificationFrontendModel
-import models.notifications.ResponseType._
 import models.submissions.ActionType._
 import models.submissions.SubmissionFrontendModel
 import models.viewmodels.decoder.Decoder
+import models.viewmodels.notificationspage.converters._
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 
@@ -32,7 +32,8 @@ import play.twirl.api.{Html, HtmlFormat}
 class NotificationPageSingleElementFactory @Inject()(
   decoder: Decoder,
   controlResponseConverter: ControlResponseConverter,
-  movementTotalsResponseConverter: MovementTotalsResponseConverter,
+  ersResponseConverter: ERSResponseConverter,
+  emrResponseConverter: EMRResponseConverter,
   movementResponseConverter: MovementResponseConverter
 ) {
 
@@ -76,13 +77,14 @@ class NotificationPageSingleElementFactory @Inject()(
     buildForRequest(submission).copy(content = content)
   }
 
+  private val converters =
+    Set(controlResponseConverter, ersResponseConverter, emrResponseConverter, movementResponseConverter)
+
   def build(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
-    notification.responseType match {
-      case ControlResponse        => controlResponseConverter.convert(notification)
-      case MovementTotalsResponse => movementTotalsResponseConverter.convert(notification)
-      case MovementResponse       => movementResponseConverter.convert(notification)
-      case _                      => buildForUnspecified(notification.timestampReceived)
-    }
+    converters
+      .find(_.canConvertFrom(notification))
+      .map(_.convert(notification))
+      .getOrElse(buildForUnspecified(notification.timestampReceived))
 
   private def buildForUnspecified(
     responseTimestamp: Instant

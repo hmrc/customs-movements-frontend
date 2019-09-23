@@ -16,22 +16,31 @@
 
 package models.viewmodels.decoder
 
-import javax.inject.Singleton
+import models.viewmodels.decoder.ROECode._
+import unit.base.UnitSpec
 
-@Singleton
-class Decoder {
+class ROECodeSpec extends UnitSpec {
 
-  def crc(code: String): Option[CRCCode] = CRCCode.codes.find(_.code == code)
+  "Roe Code" should {
 
-  def ics(code: String): Option[ICSCode] = ICSCode.codes.find(_.code == code)
+    "have correct amount of codes" in {
 
-  def roe(code: String): Option[ROECode] = ROECode.codes.find(_.code == code)
+      val expectedCodesAmount = 6
+      ROECode.codes.size mustBe expectedCodesAmount
+    }
 
-  def ducrSoe(code: String): Option[SOECode] = SOECode.DucrCodes.find(_.code == code)
+    "have correct list of codes" in {
 
-  def mucrSoe(code: String): Option[SOECode] = SOECode.MucrCodes.find(_.code == code)
+      val expectedCodes = Set(
+        DocumentaryControl,
+        PhysicalExternalPartyControl,
+        NonBlockingDocumentaryControl,
+        NoControlRequired,
+        RiskingNotPerformed,
+        PrelodgePrefix
+      )
 
-  def actionCode(code: String): Option[ActionCode] = ActionCode.codes.find(_.code == code)
-
-  def errorCode(code: String): Option[ErrorCode] = ErrorCode.codes.find(_.code == code)
+      ROECode.codes mustBe expectedCodes
+    }
+  }
 }

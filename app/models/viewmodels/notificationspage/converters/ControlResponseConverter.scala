@@ -43,7 +43,8 @@ class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: Da
     if (canConvertFrom(notification)) {
 
       val actionCodeExplanation = notification.actionCode.flatMap(buildActionCodeExplanation)
-      val errorsExplanation = buildErrorsExplanation(notification.errorCodes)
+      val errorsExplanation =
+        buildILEErrorsExplanation(notification.errorCodes) + buildCHIEFErrorsExplanation(notification.errorCodes)
 
       NotificationsPageSingleElement(
         title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
@@ -57,14 +58,20 @@ class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: Da
   private def buildActionCodeExplanation(actionCode: String)(implicit messages: Messages): Option[String] =
     decoder.actionCode(actionCode).map(code => paragraph(messages(code.contentKey)))
 
-  private def buildErrorsExplanation(errorCodes: Seq[String])(implicit messages: Messages): String = {
+  private def buildILEErrorsExplanation(errorCodes: Seq[String])(implicit messages: Messages): String = {
     val errorsExplanation = errorCodes.flatMap { code =>
-      val errorCode = decoder.errorCode(code)
+      val errorCode = decoder.ileErrorCode(code)
       if (errorCode.isEmpty) logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $code")
 
       errorCode
     }
     errorsExplanation.map(errorCode => paragraph(messages(errorCode.contentKey))).foldLeft("")(_ + _)
+  }
+
+  private def buildCHIEFErrorsExplanation(errorCodes: Seq[String]): String = {
+    val errorsExplanation = errorCodes.flatMap(decoder.chiefErrorCode(_))
+
+    errorsExplanation.map(error => paragraph(error.code + " " + error.description)).foldLeft("")(_ + _)
   }
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"

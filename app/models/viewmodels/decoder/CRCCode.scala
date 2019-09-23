@@ -16,6 +16,12 @@
 
 package models.viewmodels.decoder
 
+/** CRC codes mapping based on Inventory Linking Exports codes.
+  * Details can be found in Exports Notifications Behaviour sheet.
+  *
+  * @param code the code value
+  * @param contentKey messages key with related description
+  */
 sealed abstract class CRCCode(override val code: String, override val contentKey: String) extends CodeWithContentKey
 
 object CRCCode {

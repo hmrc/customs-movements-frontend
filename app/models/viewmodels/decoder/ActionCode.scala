@@ -16,6 +16,12 @@
 
 package models.viewmodels.decoder
 
+/** Action codes mapping based on Inventory Linking Exports codes.
+  * Details can be found in Exports Notifications Behaviour sheet.
+  *
+  * @param code the code value
+  * @param contentKey messages key with related description
+  */
 sealed abstract class ActionCode(override val code: String, override val contentKey: String) extends CodeWithContentKey
 
 object ActionCode {

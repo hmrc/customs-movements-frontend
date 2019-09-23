@@ -17,7 +17,7 @@
 package base
 
 import testdata.MovementsTestData._
-import controllers.actions.AuthActionImpl
+import controllers.actions.{AuthActionImpl, EoriWhitelist}
 import models.SignedInUser
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -31,7 +31,8 @@ import scala.concurrent.Future
 
 trait MockAuthConnector extends MockitoSugar with Stubs {
   lazy val authConnectorMock: AuthConnector = mock[AuthConnector]
-  val mockAuthAction = new AuthActionImpl(authConnectorMock, stubMessagesControllerComponents())
+  val mockAuthAction =
+    new AuthActionImpl(authConnectorMock, new EoriWhitelist(Seq.empty), stubMessagesControllerComponents())
 
   def authorizedUser(user: SignedInUser = newUser("12345")): Unit =
     when(authConnectorMock.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any()))

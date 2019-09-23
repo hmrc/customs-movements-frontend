@@ -16,9 +16,12 @@
 
 package controllers.actions
 
-import com.google.inject.{ImplementedBy, Inject}
+import com.google.inject.{ImplementedBy, Inject, ProvidedBy}
+import controllers.routes
+import javax.inject.Provider
 import models.SignedInUser
 import models.requests.AuthenticatedRequest
+import play.api.Configuration
 import play.api.mvc._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.{NoActiveSession, _}
@@ -27,8 +30,11 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector, mcc: MessagesControllerComponents)
-    extends AuthAction with AuthorisedFunctions {
+class AuthActionImpl @Inject()(
+  override val authConnector: AuthConnector,
+  eoriWhitelist: EoriWhitelist,
+  mcc: MessagesControllerComponents
+) extends AuthAction with AuthorisedFunctions {
 
   implicit override val executionContext: ExecutionContext = mcc.executionContext
   override val parser: BodyParser[AnyContent] = mcc.parsers.defaultBodyParser
@@ -50,7 +56,11 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, mcc: M
 
           val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments)
 
-          block(AuthenticatedRequest(request, cdsLoggedInUser))
+          if (eoriWhitelist.allow(cdsLoggedInUser)) {
+            block(AuthenticatedRequest(request, cdsLoggedInUser))
+          } else {
+            Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad()))
+          }
       }
   }
 }
@@ -60,3 +70,12 @@ trait AuthAction
     extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
 case class NoExternalId() extends NoActiveSession("No externalId was found")
+@ProvidedBy(classOf[EoriWhitelistProvider])
+class EoriWhitelist(values: Seq[String]) {
+  def allow(user: SignedInUser): Boolean = values.isEmpty || values.contains(user.eori)
+}
+
+class EoriWhitelistProvider @Inject()(configuration: Configuration) extends Provider[EoriWhitelist] {
+  override def get(): EoriWhitelist =
+    new EoriWhitelist(configuration.get[Seq[String]]("whitelist.eori"))
+}

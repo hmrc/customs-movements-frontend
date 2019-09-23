@@ -43,8 +43,7 @@ class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: Da
     if (canConvertFrom(notification)) {
 
       val actionCodeExplanation = notification.actionCode.flatMap(buildActionCodeExplanation)
-      val errorsExplanation =
-        buildILEErrorsExplanation(notification.errorCodes) + buildCHIEFErrorsExplanation(notification.errorCodes)
+      val errorsExplanation = notification.errorCodes.map(buildErrorExplanation).flatten.foldLeft("")(_ + _)
 
       NotificationsPageSingleElement(
         title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
@@ -58,21 +57,24 @@ class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: Da
   private def buildActionCodeExplanation(actionCode: String)(implicit messages: Messages): Option[String] =
     decoder.actionCode(actionCode).map(code => paragraph(messages(code.contentKey)))
 
-  private def buildILEErrorsExplanation(errorCodes: Seq[String])(implicit messages: Messages): String = {
-    val errorsExplanation = errorCodes.flatMap { code =>
-      val errorCode = decoder.ileErrorCode(code)
-      if (errorCode.isEmpty) logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $code")
+  private def buildErrorExplanation(errorCode: String)(implicit messages: Messages): Option[String] = {
+    val isChiefError = decoder.chiefErrorCode(errorCode).isDefined
 
-      errorCode
+    if (isChiefError) buildCHIEFErrorExplanation(errorCode)
+    else buildILEErrorExplanation(errorCode)
+  }
+
+  // TODO move logging for missing error codes to backend
+  private def buildILEErrorExplanation(errorCode: String)(implicit messages: Messages): Option[String] =
+    decoder.ileErrorCode(errorCode).map(error => paragraph(messages(error.contentKey))) match {
+      case None =>
+        logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $errorCode")
+        None
+      case error => error
     }
-    errorsExplanation.map(errorCode => paragraph(messages(errorCode.contentKey))).foldLeft("")(_ + _)
-  }
 
-  private def buildCHIEFErrorsExplanation(errorCodes: Seq[String]): String = {
-    val errorsExplanation = errorCodes.flatMap(decoder.chiefErrorCode(_))
-
-    errorsExplanation.map(error => paragraph(error.code + " " + error.description)).foldLeft("")(_ + _)
-  }
+  private def buildCHIEFErrorExplanation(errorCode: String): Option[String] =
+    decoder.chiefErrorCode(errorCode).map(error => paragraph(error.code + " " + error.description))
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"
 

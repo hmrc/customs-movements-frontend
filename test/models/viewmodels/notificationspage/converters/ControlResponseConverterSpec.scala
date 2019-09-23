@@ -168,12 +168,14 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
 
       "return NotificationsPageSingleElement with values returned by Messages" in new Test {
 
+        val chiefCode = "E408"
+        val chiefMessage = "Unique Consignment reference does not exist"
+
         when(decoderMock.actionCode(any[String])).thenReturn(Some(ActionCode.Rejected))
         when(decoderMock.ileErrorCode(meq("01"))).thenReturn(Some(InvalidUcrFormat))
         when(decoderMock.ileErrorCode(meq("13"))).thenReturn(Some(NoPriorArrivalFoundAtDepartureLocation))
         when(decoderMock.ileErrorCode(meq("29"))).thenReturn(Some(MucrAlreadyDeparted))
-        when(decoderMock.chiefErrorCode("E408"))
-          .thenReturn(Some(CHIEFError("E408", "Unique Consignment reference does not exist")))
+        when(decoderMock.chiefErrorCode("E408")).thenReturn(Some(CHIEFError(chiefCode, chiefMessage)))
 
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.ControlResponse,
@@ -189,7 +191,7 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
               s"<p>${messages("decoder.errorCode.InvalidUcrFormat")}</p>" +
               s"<p>${messages("decoder.errorCode.MucrAlreadyDeparted")}</p>" +
               s"<p>${messages("decoder.errorCode.NoPriorArrivalFoundAtDepartureLocation")}</p>" +
-              s"<p>E408 Unique Consignment reference does not exist</p>"
+              s"<p>$chiefCode $chiefMessage</p>"
           )
         )
 

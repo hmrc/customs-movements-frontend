@@ -71,7 +71,14 @@ class DecoderSpec extends UnitSpec {
     }
 
     "find correct error code" in {
-      decoder.errorCode(MucrNotShutDeparture.code) mustBe Some(MucrNotShutDeparture)
+      decoder.ileErrorCode(MucrNotShutDeparture.code) mustBe Some(MucrNotShutDeparture)
+    }
+
+    "find correct CHIEF error description" in {
+
+      val chiefError = CHIEFError("E2898", "Already arrived by a Consolidation")
+
+      decoder.chiefErrorCode(chiefError.code) mustBe Some(chiefError)
     }
   }
 }

@@ -58,7 +58,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
     when(decoderMock.roe(any[String])).thenReturn(Some(roeKeyFromDecoder))
     when(decoderMock.ducrSoe(any[String])).thenReturn(Some(ducrSoeKeyFromDecoder))
     when(decoderMock.actionCode(any[String])).thenReturn(Some(AcknowledgedAndProcessedActionCode))
-    when(decoderMock.errorCode(any[String])).thenReturn(Some(MucrNotShutConsolidationErrorCode))
+    when(decoderMock.ileErrorCode(any[String])).thenReturn(Some(MucrNotShutConsolidationErrorCode))
 
     val emptyNotificationPageElement = NotificationsPageSingleElement("", "", HtmlFormat.empty)
 

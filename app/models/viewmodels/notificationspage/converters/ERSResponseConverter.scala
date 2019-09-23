@@ -65,7 +65,7 @@ class ERSResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTi
 
   private def buildSoeCodeExplanation(soeCode: String)(implicit messages: Messages): Option[String] = {
     val SoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")
-    val soeCodeExplanationText = decoder.soe(soeCode).map(code => messages(code.contentKey))
+    val soeCodeExplanationText = decoder.ducrSoe(soeCode).map(code => messages(code.contentKey))
 
     soeCodeExplanationText.map(explanation => paragraph(s"$SoeCodeHeader $explanation"))
   }

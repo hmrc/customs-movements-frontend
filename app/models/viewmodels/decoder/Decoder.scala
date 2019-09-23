@@ -27,7 +27,7 @@ class Decoder {
 
   def roe(code: String): Option[ROECode] = ROECode.codes.find(_.code == code)
 
-  def soe(code: String): Option[SOECode] = SOECode.DucrCodes.find(_.code == code)
+  def ducrSoe(code: String): Option[SOECode] = SOECode.DucrCodes.find(_.code == code)
 
   def mucrSoe(code: String): Option[SOECode] = SOECode.MucrCodes.find(_.code == code)
 

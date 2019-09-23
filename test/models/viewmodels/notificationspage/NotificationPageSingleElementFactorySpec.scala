@@ -45,7 +45,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
   private val crcKeyFromDecoder = CRCCode.Success
   private val icsKeyFromDecoder = ICSCode.InvalidationByCustoms
   private val roeKeyFromDecoder = ROECode.DocumentaryControl
-  private val soeKeyFromDecoder = SOECode.DeclarationAcceptance
+  private val ducrSoeKeyFromDecoder = SOECode.DeclarationAcceptance
   private val mucrSoeKeyFromDecoder = SOECode.ConsolidationOpen
   private val AcknowledgedAndProcessedActionCode = ActionCode.AcknowledgedAndProcessed
   private val MucrNotShutConsolidationErrorCode = ErrorCode.MucrNotShutConsolidation
@@ -56,7 +56,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
     val decoderMock: Decoder = mock[Decoder]
     when(decoderMock.crc(any[String])).thenReturn(Some(crcKeyFromDecoder))
     when(decoderMock.roe(any[String])).thenReturn(Some(roeKeyFromDecoder))
-    when(decoderMock.soe(any[String])).thenReturn(Some(soeKeyFromDecoder))
+    when(decoderMock.ducrSoe(any[String])).thenReturn(Some(ducrSoeKeyFromDecoder))
     when(decoderMock.actionCode(any[String])).thenReturn(Some(AcknowledgedAndProcessedActionCode))
     when(decoderMock.errorCode(any[String])).thenReturn(Some(MucrNotShutConsolidationErrorCode))
 
@@ -278,7 +278,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
                 EntryStatus(
                   ics = Some(icsKeyFromDecoder.code),
                   roe = Some(roeKeyFromDecoder.code),
-                  soe = Some(soeKeyFromDecoder.code)
+                  soe = Some(ducrSoeKeyFromDecoder.code)
                 )
               )
             )

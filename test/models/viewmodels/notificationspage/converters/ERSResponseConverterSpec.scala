@@ -46,7 +46,7 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
     val decoderMock: Decoder = mock[Decoder]
     when(decoderMock.ics(any[String])).thenReturn(Some(icsKeyFromDecoder))
     when(decoderMock.roe(any[String])).thenReturn(Some(roeKeyFromDecoder))
-    when(decoderMock.soe(any[String])).thenReturn(Some(soeKeyFromDecoder))
+    when(decoderMock.ducrSoe(any[String])).thenReturn(Some(soeKeyFromDecoder))
 
     val contentBuilder = new ERSResponseConverter(decoderMock, NotificationsPageFormatter)
   }
@@ -110,7 +110,7 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
 
         verify(decoderMock).ics(meq(icsKeyFromDecoder.code))
         verify(decoderMock).roe(meq(roeKeyFromDecoder.code))
-        verify(decoderMock).soe(meq(soeKeyFromDecoder.code))
+        verify(decoderMock).ducrSoe(meq(soeKeyFromDecoder.code))
         verify(decoderMock, times(0)).crc(any())
         verify(decoderMock, times(0)).mucrSoe(any())
       }
@@ -142,7 +142,7 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
 
         verify(decoderMock, times(0)).ics(any())
         verify(decoderMock, times(0)).roe(any())
-        verify(decoderMock).soe(meq(soeKeyFromDecoder.code))
+        verify(decoderMock).ducrSoe(meq(soeKeyFromDecoder.code))
       }
 
       "return NotificationsPageSingleElement without content for missing codes" in new Test {
@@ -170,14 +170,14 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
 
         verify(decoderMock).ics(meq(UnknownIcsCode))
         verify(decoderMock).roe(meq(UnknownRoeCode))
-        verify(decoderMock).soe(meq(UnknownSoeCode))
+        verify(decoderMock).ducrSoe(meq(UnknownSoeCode))
       }
 
       "return NotificationsPageSingleElement without content for unknown codes" in new Test {
 
         when(decoderMock.ics(meq(UnknownIcsCode))).thenReturn(None)
         when(decoderMock.roe(meq(UnknownRoeCode))).thenReturn(None)
-        when(decoderMock.soe(meq(UnknownSoeCode))).thenReturn(None)
+        when(decoderMock.ducrSoe(meq(UnknownSoeCode))).thenReturn(None)
 
         val input = ersResponseUnknownCodes
         val expectedResult = NotificationsPageSingleElement(

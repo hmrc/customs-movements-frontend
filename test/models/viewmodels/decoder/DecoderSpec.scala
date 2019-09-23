@@ -47,7 +47,7 @@ class DecoderSpec extends UnitSpec {
 
     "find correct soe code" in {
 
-      decoder.soe(Departed.code) mustBe Some(Departed)
+      decoder.ducrSoe(Departed.code) mustBe Some(Departed)
     }
 
     "not find MUCR soe code when provided with DUCR soe code" in {
@@ -62,7 +62,7 @@ class DecoderSpec extends UnitSpec {
 
     "not find DUCR soe code when provided with MUCR soe code" in {
 
-      decoder.soe(ConsolidationOpen.code) mustBe None
+      decoder.ducrSoe(ConsolidationOpen.code) mustBe None
     }
 
     "find correct action code" in {

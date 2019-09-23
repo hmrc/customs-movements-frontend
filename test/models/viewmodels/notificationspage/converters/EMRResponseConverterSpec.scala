@@ -112,7 +112,7 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
         verify(decoderMock).roe(meq(roeKeyFromDecoder.code))
         verify(decoderMock).mucrSoe(meq(mucrSoeKeyFromDecoder.code))
         verify(decoderMock, times(0)).ics(any())
-        verify(decoderMock, times(0)).soe(any())
+        verify(decoderMock, times(0)).ducrSoe(any())
       }
 
       "return NotificationsPageSingleElement with values returned by Messages" in new Test {

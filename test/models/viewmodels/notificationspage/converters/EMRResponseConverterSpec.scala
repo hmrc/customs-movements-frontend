@@ -121,11 +121,11 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
         val expectedTitle = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
         val expectedTimestampInfo = "23 Oct 2019 at 12:34"
         val expectedContentElements = Seq(
-          messages(crcKeyFromDecoder.contentKey),
+          messages(crcKeyFromDecoder.messageKey),
           messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe"),
-          messages(roeKeyFromDecoder.contentKey),
+          messages(roeKeyFromDecoder.messageKey),
           messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe"),
-          messages(mucrSoeKeyFromDecoder.contentKey)
+          messages(mucrSoeKeyFromDecoder.messageKey)
         )
 
         val result = contentBuilder.convert(input)
@@ -160,7 +160,7 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
         val expectedTimestampInfo = "23 Oct 2019 at 12:34"
         val expectedContentElements = Seq(
           messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe"),
-          messages(roeKeyFromDecoder.contentKey)
+          messages(roeKeyFromDecoder.messageKey)
         )
 
         val result = contentBuilder.convert(input)

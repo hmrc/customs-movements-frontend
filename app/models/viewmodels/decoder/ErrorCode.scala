@@ -20,9 +20,9 @@ package models.viewmodels.decoder
   * Details can be found in Exports Notifications Behaviour sheet.
   *
   * @param code the code value
-  * @param contentKey messages key with related description
+  * @param messageKey messages key with related description
   */
-sealed abstract class ErrorCode(override val code: String, override val contentKey: String) extends CodeWithContentKey
+sealed abstract class ErrorCode(override val code: String, override val messageKey: String) extends CodeWithMessageKey
 
 object ErrorCode {
 
@@ -58,80 +58,80 @@ object ErrorCode {
     UcrRejectedUponArrival
   )
 
-  case object InvalidUcrFormat extends ErrorCode(code = "01", contentKey = "decoder.errorCode.InvalidUcrFormat")
+  case object InvalidUcrFormat extends ErrorCode(code = "01", messageKey = "decoder.errorCode.InvalidUcrFormat")
 
   case object ClientIdValidationFailed
-      extends ErrorCode(code = "02", contentKey = "decoder.errorCode.ClientIdValidationFailed")
+      extends ErrorCode(code = "02", messageKey = "decoder.errorCode.ClientIdValidationFailed")
 
   case object UcrNotAtTopOfConsolidation
-      extends ErrorCode(code = "03", contentKey = "decoder.errorCode.UcrNotAtTopOfConsolidation")
+      extends ErrorCode(code = "03", messageKey = "decoder.errorCode.UcrNotAtTopOfConsolidation")
 
   case object MucrNotShutConsolidation
-      extends ErrorCode(code = "04", contentKey = "decoder.errorCode.MucrNotShutConsolidation")
+      extends ErrorCode(code = "04", messageKey = "decoder.errorCode.MucrNotShutConsolidation")
 
   case object ParentMucrInSameConsolidation
-      extends ErrorCode(code = "05", contentKey = "decoder.errorCode.ParentMucrInSameConsolidation")
+      extends ErrorCode(code = "05", messageKey = "decoder.errorCode.ParentMucrInSameConsolidation")
 
   case object ConsolidationNotFound
-      extends ErrorCode(code = "06", contentKey = "decoder.errorCode.ConsolidationNotFound")
+      extends ErrorCode(code = "06", messageKey = "decoder.errorCode.ConsolidationNotFound")
 
   case object ConsolidationAlreadyShut
-      extends ErrorCode(code = "07", contentKey = "decoder.errorCode.ConsolidationAlreadyShut")
+      extends ErrorCode(code = "07", messageKey = "decoder.errorCode.ConsolidationAlreadyShut")
 
   case object UcrTypeNotMatchingUcrFormat
-      extends ErrorCode(code = "08", contentKey = "decoder.errorCode.UcrTypeNotMatchingUcrFormat")
+      extends ErrorCode(code = "08", messageKey = "decoder.errorCode.UcrTypeNotMatchingUcrFormat")
 
-  case object DeclarationNotExist extends ErrorCode(code = "10", contentKey = "decoder.errorCode.DeclarationNotExist")
+  case object DeclarationNotExist extends ErrorCode(code = "10", messageKey = "decoder.errorCode.DeclarationNotExist")
 
-  case object UcrAlreadyAssociated extends ErrorCode(code = "11", contentKey = "decoder.errorCode.UcrAlreadyAssociated")
+  case object UcrAlreadyAssociated extends ErrorCode(code = "11", messageKey = "decoder.errorCode.UcrAlreadyAssociated")
 
   case object PriorMovementLocationDifferentThanOnDeparture
-      extends ErrorCode(code = "12", contentKey = "decoder.errorCode.PriorMovementLocationDifferentThanOnDeparture")
+      extends ErrorCode(code = "12", messageKey = "decoder.errorCode.PriorMovementLocationDifferentThanOnDeparture")
 
   case object NoPriorArrivalFoundAtDepartureLocation
-      extends ErrorCode(code = "13", contentKey = "decoder.errorCode.NoPriorArrivalFoundAtDepartureLocation")
+      extends ErrorCode(code = "13", messageKey = "decoder.errorCode.NoPriorArrivalFoundAtDepartureLocation")
 
   case object DeclarationsMissingP2P
-      extends ErrorCode(code = "14", contentKey = "decoder.errorCode.DeclarationsMissingP2P")
+      extends ErrorCode(code = "14", messageKey = "decoder.errorCode.DeclarationsMissingP2P")
 
   case object DeclarationCancelledOrTerminated
-      extends ErrorCode(code = "15", contentKey = "decoder.errorCode.DeclarationCancelledOrTerminated")
+      extends ErrorCode(code = "15", messageKey = "decoder.errorCode.DeclarationCancelledOrTerminated")
 
   case object UnknownDeclarationIdentifier
-      extends ErrorCode(code = "16", contentKey = "decoder.errorCode.UnknownDeclarationIdentifier")
+      extends ErrorCode(code = "16", messageKey = "decoder.errorCode.UnknownDeclarationIdentifier")
 
   case object ConsolidationLevelLimitReached
-      extends ErrorCode(code = "17", contentKey = "decoder.errorCode.ConsolidationLevelLimitReached")
+      extends ErrorCode(code = "17", messageKey = "decoder.errorCode.ConsolidationLevelLimitReached")
 
-  case object InvalidGoodsDateTime extends ErrorCode(code = "18", contentKey = "decoder.errorCode.InvalidGoodsDateTime")
+  case object InvalidGoodsDateTime extends ErrorCode(code = "18", messageKey = "decoder.errorCode.InvalidGoodsDateTime")
 
-  case object MucrNotShutDeparture extends ErrorCode(code = "19", contentKey = "decoder.errorCode.MucrNotShutDeparture")
+  case object MucrNotShutDeparture extends ErrorCode(code = "19", messageKey = "decoder.errorCode.MucrNotShutDeparture")
 
   case object FutureDateTimeOverExceeded
-      extends ErrorCode(code = "20", contentKey = "decoder.errorCode.FutureDateTimeOverExceeded")
+      extends ErrorCode(code = "20", messageKey = "decoder.errorCode.FutureDateTimeOverExceeded")
 
-  case object UcrIsNotMucr extends ErrorCode(code = "21", contentKey = "decoder.errorCode.UcrIsNotMucr")
+  case object UcrIsNotMucr extends ErrorCode(code = "21", messageKey = "decoder.errorCode.UcrIsNotMucr")
 
-  case object UcrNotExist extends ErrorCode(code = "22", contentKey = "decoder.errorCode.UcrNotExist")
+  case object UcrNotExist extends ErrorCode(code = "22", messageKey = "decoder.errorCode.UcrNotExist")
 
   case object UcrAlreadyDisassociated
-      extends ErrorCode(code = "23", contentKey = "decoder.errorCode.UcrAlreadyDisassociated")
+      extends ErrorCode(code = "23", messageKey = "decoder.errorCode.UcrAlreadyDisassociated")
 
   case object UcrFieldCompletionNotMatchingEacAction
-      extends ErrorCode(code = "24", contentKey = "decoder.errorCode.UcrFieldCompletionNotMatchingEacAction")
+      extends ErrorCode(code = "24", messageKey = "decoder.errorCode.UcrFieldCompletionNotMatchingEacAction")
 
-  case object EmptyMucr extends ErrorCode(code = "25", contentKey = "decoder.errorCode.EmptyMucr")
+  case object EmptyMucr extends ErrorCode(code = "25", messageKey = "decoder.errorCode.EmptyMucr")
 
-  case object InvalidExitMessage extends ErrorCode(code = "26", contentKey = "decoder.errorCode.InvalidExitMessage")
+  case object InvalidExitMessage extends ErrorCode(code = "26", messageKey = "decoder.errorCode.InvalidExitMessage")
 
   case object LocationBasedPermissionFailed
-      extends ErrorCode(code = "27", contentKey = "decoder.errorCode.LocationBasedPermissionFailed")
+      extends ErrorCode(code = "27", messageKey = "decoder.errorCode.LocationBasedPermissionFailed")
 
-  case object InvalidGoodsLocation extends ErrorCode(code = "28", contentKey = "decoder.errorCode.InvalidGoodsLocation")
+  case object InvalidGoodsLocation extends ErrorCode(code = "28", messageKey = "decoder.errorCode.InvalidGoodsLocation")
 
-  case object MucrAlreadyDeparted extends ErrorCode(code = "29", contentKey = "decoder.errorCode.MucrAlreadyDeparted")
+  case object MucrAlreadyDeparted extends ErrorCode(code = "29", messageKey = "decoder.errorCode.MucrAlreadyDeparted")
 
   case object UcrRejectedUponArrival
-      extends ErrorCode(code = "30", contentKey = "decoder.errorCode.UcrRejectedUponArrival")
+      extends ErrorCode(code = "30", messageKey = "decoder.errorCode.UcrRejectedUponArrival")
 
 }

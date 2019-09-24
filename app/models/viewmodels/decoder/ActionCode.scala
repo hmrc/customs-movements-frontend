@@ -20,9 +20,9 @@ package models.viewmodels.decoder
   * Details can be found in Exports Notifications Behaviour sheet.
   *
   * @param code the code value
-  * @param contentKey messages key with related description
+  * @param messageKey messages key with related description
   */
-sealed abstract class ActionCode(override val code: String, override val contentKey: String) extends CodeWithContentKey
+sealed abstract class ActionCode(override val code: String, override val messageKey: String) extends CodeWithMessageKey
 
 object ActionCode {
 
@@ -31,13 +31,13 @@ object ActionCode {
   case object AcknowledgedAndProcessed
       extends ActionCode(
         code = "1",
-        contentKey = "notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed"
+        messageKey = "notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed"
       )
   case object PartiallyAcknowledgedAndProcessed
       extends ActionCode(
         code = "2",
-        contentKey = "notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed"
+        messageKey = "notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed"
       )
   case object Rejected
-      extends ActionCode(code = "3", contentKey = "notifications.elem.content.inventoryLinkingControlResponse.Rejected")
+      extends ActionCode(code = "3", messageKey = "notifications.elem.content.inventoryLinkingControlResponse.Rejected")
 }

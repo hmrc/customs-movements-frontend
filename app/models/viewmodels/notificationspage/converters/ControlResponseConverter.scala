@@ -54,7 +54,7 @@ class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: Da
     }
 
   private def buildActionCodeExplanation(actionCode: String)(implicit messages: Messages): Option[String] =
-    decoder.actionCode(actionCode).map(code => paragraph(messages(code.contentKey)))
+    decoder.actionCode(actionCode).map(code => paragraph(messages(code.messageKey)))
 
   private def buildErrorExplanation(errorCode: String)(implicit messages: Messages): Option[String] = {
     val isChiefError = decoder.chiefErrorCode(errorCode).isDefined
@@ -65,7 +65,7 @@ class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: Da
 
   // TODO move logging for missing error codes to backend
   private def buildILEErrorExplanation(errorCode: String)(implicit messages: Messages): Option[String] =
-    decoder.ileErrorCode(errorCode).map(error => paragraph(messages(error.contentKey))) match {
+    decoder.ileErrorCode(errorCode).map(error => paragraph(messages(error.messageKey))) match {
       case None =>
         logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $errorCode")
         None

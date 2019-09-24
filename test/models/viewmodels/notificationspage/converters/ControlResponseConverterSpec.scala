@@ -123,7 +123,7 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
           timestampInfo = "23 Oct 2019 at 12:34",
-          content = Html(s"<p>${messages(AcknowledgedAndProcessedActionCode.contentKey)}</p>")
+          content = Html(s"<p>${messages(AcknowledgedAndProcessedActionCode.messageKey)}</p>")
         )
 
         contentBuilder.convert(input) mustBe expectedResult
@@ -187,7 +187,7 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
           title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
           timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
-            s"<p>${messages(ActionCode.Rejected.contentKey)}</p>" +
+            s"<p>${messages(ActionCode.Rejected.messageKey)}</p>" +
               s"<p>${messages("decoder.errorCode.InvalidUcrFormat")}</p>" +
               s"<p>${messages("decoder.errorCode.MucrAlreadyDeparted")}</p>" +
               s"<p>${messages("decoder.errorCode.NoPriorArrivalFoundAtDepartureLocation")}</p>" +
@@ -215,7 +215,7 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
           title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
           timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
-            s"<p>${messages(ActionCode.Rejected.contentKey)}</p>" +
+            s"<p>${messages(ActionCode.Rejected.messageKey)}</p>" +
               s"<p>${messages("decoder.errorCode.InvalidUcrFormat")}</p>" +
               s"<p>${messages("decoder.errorCode.NoPriorArrivalFoundAtDepartureLocation")}</p>"
           )

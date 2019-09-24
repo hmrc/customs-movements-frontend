@@ -18,7 +18,7 @@ package forms
 
 import forms.common.Date
 import play.api.data.Forms
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class DepartureDetails(dateOfDeparture: Date) {
 
@@ -26,7 +26,7 @@ case class DepartureDetails(dateOfDeparture: Date) {
 }
 
 object DepartureDetails {
-  implicit val format = Json.format[DepartureDetails]
+  implicit val format: OFormat[DepartureDetails] = Json.format[DepartureDetails]
 
   val mapping =
     Forms.mapping("dateOfDeparture" -> Date.mapping)(DepartureDetails.apply)(DepartureDetails.unapply)

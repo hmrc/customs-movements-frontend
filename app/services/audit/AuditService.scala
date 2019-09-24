@@ -17,11 +17,12 @@
 package services.audit
 
 import com.google.inject.Inject
-import forms.Choice
+import forms._
 import javax.inject.Named
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
@@ -121,15 +122,34 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
       )
     )
 
-  def auditAllPagesUserInput(choice: Choice, userInput: JsObject)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+  def auditAllPagesUserInput(choice: Choice, cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val auditType = choice.value
     val extendedEvent = ExtendedDataEvent(
       auditSource = appName,
       auditType = auditType,
       tags = getAuditTags(s"${auditType}-payload-request", s"${auditType}/full-payload"),
-      detail = getAuditDetails(userInput)
+      detail = getAuditDetails(getMovementsData(choice, cacheMap))
     )
     connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType))
+  }
+
+  def getMovementsData(choice: Choice, cacheMap: CacheMap): JsObject = {
+    val movementDetails =
+      if (choice.value == Choice.AllowedChoiceValues.Arrival)
+        Json.toJson(cacheMap.getEntry[ArrivalDetails](MovementDetails.formId))
+      else Json.toJson(cacheMap.getEntry[DepartureDetails](MovementDetails.formId))
+
+    val userInput = Map(
+      ConsignmentReferences.formId -> Json.toJson(
+        cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.formId)
+      ),
+      GoodsDeparted.formId -> Json.toJson(cacheMap.getEntry[GoodsDeparted](GoodsDeparted.formId)),
+      Location.formId -> Json.toJson(cacheMap.getEntry[Location](Location.formId)),
+      MovementDetails.formId -> movementDetails,
+      Transport.formId -> Json.toJson(cacheMap.getEntry[Transport](Transport.formId)),
+      ArrivalReference.formId -> Json.toJson(cacheMap.getEntry[ArrivalReference](ArrivalReference.formId))
+    )
+    Json.toJson(userInput).as[JsObject]
   }
 
   private def getAuditDetails(userInput: JsObject)(implicit hc: HeaderCarrier) = {

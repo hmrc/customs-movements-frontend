@@ -92,11 +92,10 @@ class MovementDetailsController @Inject()(
         validForm =>
           customsCacheService.cache[DepartureDetails](movementCacheId, formId, validForm).map { cacheMap: CacheMap =>
             cacheMap.getEntry[GoodsDeparted](GoodsDeparted.formId) match {
-              case (Some(goodsDeparted)) if (goodsDeparted.departedPlace == AllowedPlaces.outOfTheUk) =>
+              case Some(goodsDeparted) if (goodsDeparted.departedPlace == AllowedPlaces.outOfTheUk) =>
                 Right(controllers.routes.TransportController.displayPage())
               case _ => Right(controllers.routes.SummaryController.displayPage())
             }
-
         }
       )
 }

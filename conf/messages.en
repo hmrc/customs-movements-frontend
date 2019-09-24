@@ -372,7 +372,7 @@ decoder.crc.PrelodgedDeclarationNotArrived = Pre-lodged Declaration has not arri
 decoder.crc.DeclarationNotArrived = Declaration has not arrived
 
 decoder.roe.DocumentaryControl = You need to provide additional documents before your goods can be released
-decoder.roe.PhysicalExternalPartyControl = We're reviewing your declaration
+decoder.roe.PhysicalExternalPartyControl = We''re reviewing your declaration
 decoder.roe.NonBlockingDocumentaryControl = You need to provide additional documents after your goods have been released
 decoder.roe.NoControlRequired = The goods have passed risking
 decoder.roe.RiskingNotPerformed = Your goods are in processing waiting to be risked
@@ -405,7 +405,7 @@ decoder.errorCode.InvalidUcrFormat = Invalid UCR Format, DUCR or MUCR
 decoder.errorCode.ClientIdValidationFailed = Client ID validation fails
 decoder.errorCode.UcrNotAtTopOfConsolidation = UCR is not at the top of its'' consolidation
 decoder.errorCode.MucrNotShutConsolidation = Cannot consolidate the MUCR as it is not shut
-decoder.errorCode.ParentMucrInSameConsolidation = Immediate parent MUCR cannot already be within it's same tree/consolidation
+decoder.errorCode.ParentMucrInSameConsolidation = Immediate parent MUCR cannot already be within it''s same tree/consolidation
 decoder.errorCode.ConsolidationNotFound = Cannot find the consolidation
 decoder.errorCode.ConsolidationAlreadyShut = Consolidation already shut
 decoder.errorCode.UcrTypeNotMatchingUcrFormat = UCR Type does not match UCR Format
@@ -431,7 +431,7 @@ decoder.errorCode.InvalidGoodsLocation = Goods Location is invalid
 decoder.errorCode.MucrAlreadyDeparted = MUCR has been departed
 decoder.errorCode.UcrRejectedUponArrival = UCR cannot be associated as it has been rejected upon arrival
 
-decoder.icsCode.InvalidationAtTraderRequest = The declaration was invalidated at the trader's request
+decoder.icsCode.InvalidationAtTraderRequest = The declaration was invalidated at the trader''s request
 decoder.icsCode.InvalidationByCustoms = The declaration was invalidated by customs due to major discrepancies
 
 arrivalReference = Arrival reference

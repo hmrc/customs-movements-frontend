@@ -56,7 +56,7 @@ class AuthActionImpl @Inject()(
 
           val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments)
 
-          if (eoriWhitelist.allow(cdsLoggedInUser)) {
+          if (eoriWhitelist.contains(cdsLoggedInUser)) {
             block(AuthenticatedRequest(request, cdsLoggedInUser))
           } else {
             Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad()))
@@ -70,9 +70,10 @@ trait AuthAction
     extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
 case class NoExternalId() extends NoActiveSession("No externalId was found")
+
 @ProvidedBy(classOf[EoriWhitelistProvider])
 class EoriWhitelist(values: Seq[String]) {
-  def allow(user: SignedInUser): Boolean = values.isEmpty || values.contains(user.eori)
+  def contains(user: SignedInUser): Boolean = values.isEmpty || values.contains(user.eori)
 }
 
 class EoriWhitelistProvider @Inject()(configuration: Configuration) extends Provider[EoriWhitelist] {

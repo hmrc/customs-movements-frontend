@@ -16,7 +16,6 @@
 
 package services.audit
 import base.BaseSpec
-import forms.Choice
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.{reset, verify, when}
@@ -48,7 +47,7 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach {
     "audit Shut a Mucr data" in {
       val dataToAudit = Map(EORI.toString -> "eori", MUCR.toString -> "mucr", SubmissionResult.toString -> "200")
       spyAuditService.auditShutMucr("eori", "mucr", "200")
-      verify(spyAuditService).audit(Choice(Choice.AllowedChoiceValues.ShutMucr), dataToAudit)
+      verify(spyAuditService).audit(AuditTypes.AuditShutMucr, dataToAudit)
     }
 
     "audit an association" in {
@@ -59,13 +58,13 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach {
         SubmissionResult.toString -> "200"
       )
       spyAuditService.auditAssociate("eori", "mucr", "ducr", "200")
-      verify(spyAuditService).audit(Choice(Choice.AllowedChoiceValues.AssociateDUCR), dataToAudit)
+      verify(spyAuditService).audit(AuditTypes.AuditAssociate, dataToAudit)
     }
 
     "audit a disassociation" in {
       val dataToAudit = Map(EORI.toString -> "eori", DUCR.toString -> "ducr", SubmissionResult.toString -> "200")
       spyAuditService.auditDisassociate("eori", "ducr", "200")
-      verify(spyAuditService).audit(Choice(Choice.AllowedChoiceValues.DisassociateDUCR), dataToAudit)
+      verify(spyAuditService).audit(AuditTypes.AuditDisassociate, dataToAudit)
     }
 
     "audit a movement" in {
@@ -79,8 +78,8 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach {
       )
       val data =
         InventoryLinkingMovementRequest(messageCode = "EAD", ucrBlock = UcrBlock("UCR", "D"), goodsLocation = "")
-      spyAuditService.auditMovements("eori", data, "200", Choice(Choice.AllowedChoiceValues.Arrival))
-      verify(spyAuditService).audit(Choice(Choice.AllowedChoiceValues.Arrival), dataToAudit)
+      spyAuditService.auditMovements("eori", data, "200", AuditTypes.AuditArrival)
+      verify(spyAuditService).audit(AuditTypes.AuditArrival, dataToAudit)
     }
   }
 }

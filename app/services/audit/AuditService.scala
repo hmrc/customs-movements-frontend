@@ -37,7 +37,7 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
 
   def auditShutMucr(eori: String, mucr: String, result: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
     audit(
-      Choice(Choice.AllowedChoiceValues.ShutMucr),
+      AuditTypes.AuditShutMucr,
       Map(
         EventData.EORI.toString -> eori,
         EventData.MUCR.toString -> mucr,
@@ -45,16 +45,41 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
       )
     )
 
-  def audit(choice: Choice, auditData: Map[String, String])(implicit hc: HeaderCarrier): Future[AuditResult] = {
-    val event = createAuditEvent(choice: Choice, auditData: Map[String, String])
-    connector.sendEvent(event).map(handleResponse(_, choice.value))
+  def auditDisassociate(eori: String, ducr: String, result: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
+    audit(
+      AuditTypes.AuditDisassociate,
+      Map(
+        EventData.EORI.toString -> eori,
+        EventData.DUCR.toString -> ducr,
+        EventData.SubmissionResult.toString -> result
+      )
+    )
+
+  def auditAssociate(eori: String, mucr: String, ducr: String, result: String)(
+    implicit hc: HeaderCarrier
+  ): Future[AuditResult] =
+    audit(
+      AuditTypes.AuditAssociate,
+      Map(
+        EventData.EORI.toString -> eori,
+        EventData.MUCR.toString -> mucr,
+        EventData.DUCR.toString -> ducr,
+        EventData.SubmissionResult.toString -> result
+      )
+    )
+
+  def audit(auditType: AuditTypes.Audit, auditData: Map[String, String])(
+    implicit hc: HeaderCarrier
+  ): Future[AuditResult] = {
+    val event = createAuditEvent(auditType, auditData)
+    connector.sendEvent(event).map(handleResponse(_, auditType.toString))
   }
 
-  private def createAuditEvent(choice: Choice, auditData: Map[String, String])(implicit hc: HeaderCarrier) =
+  private def createAuditEvent(choice: AuditTypes.Audit, auditData: Map[String, String])(implicit hc: HeaderCarrier) =
     DataEvent(
       auditSource = appName,
-      auditType = choice.value,
-      tags = getAuditTags(s"${choice.value}-request", path = s"$choice.value}"),
+      auditType = choice.toString,
+      tags = getAuditTags(s"${choice}-request", path = s"$choice.value}"),
       detail = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails() ++ auditData
     )
 
@@ -78,34 +103,14 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
       Disabled
   }
 
-  def auditDisassociate(eori: String, ducr: String, result: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
+  def auditMovements(
+    eori: String,
+    data: InventoryLinkingMovementRequest,
+    result: String,
+    movementAuditType: AuditTypes.Audit
+  )(implicit hc: HeaderCarrier): Future[AuditResult] =
     audit(
-      Choice(Choice.AllowedChoiceValues.DisassociateDUCR),
-      Map(
-        EventData.EORI.toString -> eori,
-        EventData.DUCR.toString -> ducr,
-        EventData.SubmissionResult.toString -> result
-      )
-    )
-
-  def auditAssociate(eori: String, mucr: String, ducr: String, result: String)(
-    implicit hc: HeaderCarrier
-  ): Future[AuditResult] =
-    audit(
-      Choice(Choice.AllowedChoiceValues.AssociateDUCR),
-      Map(
-        EventData.EORI.toString -> eori,
-        EventData.MUCR.toString -> mucr,
-        EventData.DUCR.toString -> ducr,
-        EventData.SubmissionResult.toString -> result
-      )
-    )
-
-  def auditMovements(eori: String, data: InventoryLinkingMovementRequest, result: String, choice: Choice)(
-    implicit hc: HeaderCarrier
-  ): Future[AuditResult] =
-    audit(
-      choice,
+      movementAuditType,
       Map(
         EventData.EORI.toString -> eori,
         EventData.MessageCode.toString -> data.messageCode,
@@ -135,7 +140,11 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
 
 object AuditTypes extends Enumeration {
   type Audit = Value
-  val Arrival, Departure, Associate, Disassociate, ShutMucr = Value
+  val AuditArrival: AuditTypes.Value = Value("Arrival")
+  val AuditDeparture: AuditTypes.Value = Value("Departure")
+  val AuditAssociate: AuditTypes.Value = Value("Associate")
+  val AuditDisassociate: AuditTypes.Value = Value("Disassociate")
+  val AuditShutMucr: AuditTypes.Value = Value("ShutMucr")
 }
 object EventData extends Enumeration {
   type Data = Value

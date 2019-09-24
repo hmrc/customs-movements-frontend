@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports Movements AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  Customs Declare Exports Movements
 // @author       You
 // @match        http*://*/customs-movements*
@@ -96,6 +96,7 @@ function completePage() {
     if(currentPageIs("/customs-movements/transport")){
         selectRadioOption(document.getElementById("modeOfTransport"), 0);
         document.getElementById('nationality').value = 'GB';
+        document.getElementById('transportId').value = 'TransportReference';
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-movements/goods-departed")){

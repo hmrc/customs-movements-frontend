@@ -260,8 +260,12 @@ transport.modeOfTransport.postalOrMail = Postal or mail
 transport.modeOfTransport.fixed = Fixed transport installations
 transport.modeOfTransport.inlandWaterway = Inland waterway transport
 transport.modeOfTransport.other = Other, for example own propulsion
-transport.nationality.question = Nationality of transport crossing the border
-transport.nationality.hint = A 2 digit code
+transport.transportId.question = Reference for the selected mode of transport 
+transport.transportId.hint = For example, vehicle registration number, IATA flight number, etc.
+transport.transportId.empty = Please provide reference for transport used
+transport.transportId.error = Transport reference is incorrect
+transport.nationality.question = What is the nationality of the transport type?
+transport.nationality.hint = This is a 2 digit country code. For example FR for France.
 transport.nationality.empty = Please provide nationality of transport
 transport.nationality.error = Nationality of transport is incorrect
 
@@ -271,6 +275,7 @@ summary.referenceType = Reference Type
 summary.referenceValue = Reference Value
 summary.goodsLocation = Goods Location
 summary.modeOfTransport = Mode of transport
+summary.transportId = Reference
 summary.nationality = Nationality
 
 summary.arrival.title = Check your answers before arriving these goods

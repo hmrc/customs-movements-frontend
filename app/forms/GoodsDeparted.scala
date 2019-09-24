@@ -17,6 +17,7 @@
 package forms
 
 import forms.Mapping.requiredRadio
+import forms.Transport.ModesOfTransport._
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
@@ -29,8 +30,8 @@ object GoodsDeparted {
   val formId = "GoodsDeparted"
 
   object AllowedPlaces {
-    val outOfTheUk = "OutOfTheUk"
-    val backIntoTheUk = "BackIntoTheUk"
+    val outOfTheUk = "outOfTheUk"
+    val backIntoTheUk = "backIntoTheUk"
   }
 
   import AllowedPlaces._
@@ -43,4 +44,7 @@ object GoodsDeparted {
   )(GoodsDeparted.apply)(GoodsDeparted.unapply)
 
   def form(): Form[GoodsDeparted] = Form(mapping)
+
+  def messageKey(place: String) =
+    s"transport.modeOfTransport.$place"
 }

@@ -24,6 +24,8 @@
 
 @(form: Form[Transport], choice: String)(implicit request: Request[_], messages: Messages)
 
+@radio(mode: String) = { RadioOption(mode, mode, Transport.messageKey(mode)) }
+
 @main_template(title = messages("transport.title")) {
     @helper.form(routes.TransportController.saveTransport(), 'autoComplete -> "off") {
         @helper.CSRF.formField
@@ -38,20 +40,28 @@
 
         @components.page_title(Some("transport.title"))
 
+
+
         @components.input_radio(
             field = form("modeOfTransport"),
             legend = messages("transport.modeOfTransport.question"),
             hint = Some(messages("transport.modeOfTransport.hint")),
             inputs = Seq(
-                RadioOption(Sea, Sea, "transport.modeOfTransport.sea"),
-                RadioOption(Rail, Rail, "transport.modeOfTransport.rail"),
-                RadioOption(Road, Road, "transport.modeOfTransport.road"),
-                RadioOption(Air, Air, "transport.modeOfTransport.air"),
-                RadioOption(PostalOrMail, PostalOrMail, "transport.modeOfTransport.postalOrMail"),
-                RadioOption(FixedInstallations, FixedInstallations, "transport.modeOfTransport.fixed"),
-                RadioOption(InlandWaterway, InlandWaterway, "transport.modeOfTransport.inlandWaterway"),
-                RadioOption(Other, Other, "transport.modeOfTransport.other")
+                RadioOption(Sea, Sea, Transport.messageKey(Sea)),
+                RadioOption(Rail, Rail, Transport.messageKey(Rail)),
+                RadioOption(Road, Road, Transport.messageKey(Road)),
+                RadioOption(Air, Air, Transport.messageKey(Air)),
+                RadioOption(PostalOrMail, PostalOrMail, Transport.messageKey(PostalOrMail)),
+                RadioOption(FixedInstallations, FixedInstallations, Transport.messageKey(FixedInstallations)),
+                RadioOption(InlandWaterway, InlandWaterway, Transport.messageKey(InlandWaterway)),
+                RadioOption(Other, Other, Transport.messageKey(Other))
             )
+        )
+
+        @components.input_text(
+            field = form("transportId"),
+            label = messages("transport.transportId.question"),
+            hint = Some(messages("transport.transportId.hint"))
         )
 
         @components.input_text(

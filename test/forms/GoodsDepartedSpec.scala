@@ -31,8 +31,8 @@ class GoodsDepartedSpec extends BaseSpec {
 
     "has correct values for allowed places" in {
 
-      GoodsDeparted.AllowedPlaces.outOfTheUk must be("OutOfTheUk")
-      GoodsDeparted.AllowedPlaces.backIntoTheUk must be("BackIntoTheUk")
+      GoodsDeparted.AllowedPlaces.outOfTheUk must be("outOfTheUk")
+      GoodsDeparted.AllowedPlaces.backIntoTheUk must be("backIntoTheUk")
     }
 
     "has list contained allowed places" in {

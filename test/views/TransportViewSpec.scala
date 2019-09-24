@@ -24,7 +24,7 @@ import views.base.ViewSpec
 
 class TransportViewSpec extends ViewSpec with TransportMessages with CommonMessages {
 
-  private val form: Form[Transport] = Transport.form()
+  private val form: Form[Transport] = Transport.form
   private val transportPage = injector.instanceOf[views.html.transport]
 
   private def createArrivalView(form: Form[Transport] = form): Html =
@@ -48,8 +48,8 @@ class TransportViewSpec extends ViewSpec with TransportMessages with CommonMessa
       assertMessage(modeOfTransportFixed, "Fixed transport installations")
       assertMessage(modeOfTransportInland, "Inland waterway transport")
       assertMessage(modeOfTransportOther, "Other, for example own propulsion")
-      assertMessage(nationalityQuestion, "Nationality of transport crossing the border")
-      assertMessage(nationalityHint, "A 2 digit code")
+      assertMessage(nationalityQuestion, "What is the nationality of the transport type?")
+      assertMessage(nationalityHint, "This is a 2 digit country code. For example FR for France.")
     }
 
     "have a proper labels for errors" in {

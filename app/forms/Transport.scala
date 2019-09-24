@@ -22,7 +22,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class Transport(modeOfTransport: String, nationality: String)
+case class Transport(modeOfTransport: String, nationality: String, transportId: String)
 
 object Transport {
   implicit val format = Json.format[Transport]
@@ -42,15 +42,33 @@ object Transport {
 
   import ModesOfTransport._
 
-  val allowedModeOfTransport = Seq(Sea, Rail, Road, Air, PostalOrMail, FixedInstallations, InlandWaterway, Other)
+  val allowedModeOfTransport =
+    Seq(Sea, Rail, Road, Air, PostalOrMail, FixedInstallations, InlandWaterway, Other)
 
   val mapping = Forms.mapping(
     "modeOfTransport" -> requiredRadio("transport.modeOfTransport.empty")
       .verifying("transport.modeOfTransport.error", isContainedIn(allowedModeOfTransport)),
     "nationality" -> text()
       .verifying("transport.nationality.empty", nonEmpty)
-      .verifying("transport.nationality.error", isEmpty or isValidCountryCode)
+      .verifying("transport.nationality.error", isEmpty or isValidCountryCode),
+    "transportId" -> text()
+      .verifying("transport.transportId.empty", nonEmpty)
+      .verifying("transport.transportId.error", isEmpty or (noLongerThan(35) and isAlphanumeric))
   )(Transport.apply)(Transport.unapply)
 
-  def form(): Form[Transport] = Form(mapping)
+  def form: Form[Transport] =
+    Form(mapping)
+
+  def messageKey(mode: String) =
+    s"transport.modeOfTransport.${mode match {
+      case Sea                => "sea"
+      case Rail               => "rail"
+      case Road               => "road"
+      case Air                => "air"
+      case PostalOrMail       => "postalOrMail"
+      case FixedInstallations => "fixed"
+      case InlandWaterway     => "inlandWaterway"
+      case Other              => "other"
+      case _                  => "unknown"
+    }}"
 }

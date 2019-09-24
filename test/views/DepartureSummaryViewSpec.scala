@@ -16,7 +16,10 @@
 
 package views
 
+import forms.GoodsDeparted
+import forms.GoodsDeparted.AllowedPlaces
 import play.api.i18n.MessagesApi
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import testdata.MovementsTestData.cacheMapData
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -26,10 +29,15 @@ import views.html.summary.departure_summary_page
 
 class DepartureSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
 
-  val cachedData = cacheMapData("EDL")
+  val cachedDataOutOfUk = cacheMapData("EDL")
+  val cachedDataBackIntoUk = cachedDataOutOfUk + (GoodsDeparted.formId -> Json.toJson(
+    GoodsDeparted(AllowedPlaces.backIntoTheUk)
+  ))
   val departureSummaryPage = new departure_summary_page(mainTemplate)
-  val departureSummaryView = departureSummaryPage(CacheMap("id", cachedData))(request, messages)
-  val departureSummaryContent = contentAsString(departureSummaryView)
+  val departureSummaryViewOut = departureSummaryPage(CacheMap("id", cachedDataOutOfUk))(request, messages)
+  val departureSummaryContentOut = contentAsString(departureSummaryViewOut)
+  val departureSummaryViewIn = departureSummaryPage(CacheMap("id", cachedDataBackIntoUk))(request, messages)
+  val departureSummaryContentIn = contentAsString(departureSummaryViewIn)
 
   "Departure Summary messages" should {
 
@@ -52,45 +60,60 @@ class DepartureSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
 
     "have correct title" in {
 
-      departureSummaryView.getElementsByTag("title").text() mustBe messages("summary.title")
+      departureSummaryViewOut.getElementsByTag("title").text() mustBe messages("summary.title")
     }
 
     "have correct heading" in {
 
-      departureSummaryView.getElementById("title").text() mustBe messages("summary.departure.title")
+      departureSummaryViewOut.getElementById("title").text() mustBe messages("summary.departure.title")
     }
 
     "have correct main buttons" in {
 
-      departureSummaryContent must include("site.back")
-      departureSummaryContent must include("site.acceptAndSend")
+      departureSummaryContentOut must include("site.back")
+      departureSummaryContentOut must include("site.acceptAndSend")
     }
 
     "have correct consignment references part" in {
 
-      departureSummaryContent must include("consignmentReferences.title")
-      departureSummaryContent must include("summary.referenceType")
-      departureSummaryContent must include("consignmentReferences.reference.mucr")
-      departureSummaryContent must include("summary.referenceValue")
+      departureSummaryContentOut must include("consignmentReferences.title")
+      departureSummaryContentOut must include("summary.referenceType")
+      departureSummaryContentOut must include("consignmentReferences.reference.mucr")
+      departureSummaryContentOut must include("summary.referenceValue")
     }
 
-    "have correct departure details part" in {
+    "have correct departure details part for depart out" in {
 
-      departureSummaryContent must include("departureDetails.title")
-      departureSummaryContent must include("summary.departure.date")
+      departureSummaryContentOut must include("departureDetails.title")
+      departureSummaryContentOut must include("summary.departure.date")
+    }
+
+    "have correct departure details part for depart in" in {
+
+      departureSummaryContentIn must include("departureDetails.title")
+      departureSummaryContentIn must include("summary.departure.date")
     }
 
     "have correct location part" in {
 
-      departureSummaryContent must include("location.title")
-      departureSummaryContent must include("summary.goodsLocation")
+      departureSummaryContentOut must include("location.title")
+      departureSummaryContentOut must include("summary.goodsLocation")
     }
 
-    "have correct transport part" in {
+    "have correct transport part for depart out" in {
 
-      departureSummaryContent must include("transport.title")
-      departureSummaryContent must include("summary.modeOfTransport")
-      departureSummaryContent must include("summary.nationality")
+      departureSummaryContentOut must include("transport.title")
+      departureSummaryContentOut must include("summary.modeOfTransport")
+      departureSummaryContentOut must include("summary.transportId")
+      departureSummaryContentOut must include("summary.nationality")
+    }
+
+    "not have correct transport part for depart in" in {
+
+      departureSummaryContentIn must not include ("transport.title")
+      departureSummaryContentIn must not include ("summary.modeOfTransport")
+      departureSummaryContentIn must not include ("summary.transportId")
+      departureSummaryContentIn must not include ("summary.nationality")
     }
   }
 }

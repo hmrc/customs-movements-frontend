@@ -63,7 +63,11 @@ object Movement {
   private def mapTransportDetails(transport: Option[Transport]) =
     transport.map(
       data =>
-        TransportDetails(transportMode = Some(data.modeOfTransport), transportNationality = Some(data.nationality))
+        TransportDetails(
+          transportID = Some(data.transportId),
+          transportMode = Some(data.modeOfTransport),
+          transportNationality = Some(data.nationality)
+      )
     )
 
 }

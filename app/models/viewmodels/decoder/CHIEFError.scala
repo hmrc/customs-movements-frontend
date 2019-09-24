@@ -37,7 +37,7 @@ object CHIEFError {
   }
 
   private val chiefErrors: List[CHIEFError] = {
-    val source = Source.fromURL(getClass.getClassLoader.getResource("chief_errors.csv"), "UTF-8")
+    val source = Source.fromURL(getClass.getClassLoader.getResource("code_lists/chief_errors.csv"), "UTF-8")
 
     val reader = CSVReader.open(source)
 

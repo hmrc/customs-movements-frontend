@@ -30,7 +30,7 @@ object Countries {
 
   private val mdgCountryCodes: List[String] =
     Source
-      .fromInputStream(getClass.getResourceAsStream("/mdg-country-codes.csv"))
+      .fromInputStream(getClass.getResourceAsStream("/code_lists/mdg-country-codes.csv"))
       .getLines()
       .mkString
       .split(',')

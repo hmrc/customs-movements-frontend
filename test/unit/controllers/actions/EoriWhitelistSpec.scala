@@ -18,6 +18,7 @@ package unit.controllers.actions
 
 import controllers.actions.EoriWhitelist
 import models.SignedInUser
+import play.api.Configuration
 import testdata.MovementsTestData._
 import unit.base.UnitSpec
 
@@ -27,22 +28,27 @@ class EoriWhitelistSpec extends UnitSpec {
 
   val secondUser: SignedInUser = newUser("0986")
 
+  val config = Configuration("whitelist.eori.0" -> "1234")
+
+  val emptyListConfig = Configuration("whitelist.eori" -> Seq.empty)
+
   "EORI whitelist" when {
     "is empty" should {
       "pass everyone" in {
-        val whitelist = new EoriWhitelist(Seq.empty)
-        whitelist.allow(firstUser) mustBe true
-        whitelist.allow(secondUser) mustBe true
+        val whitelist = new EoriWhitelist(emptyListConfig)
+        whitelist.contains(firstUser) mustBe true
+        whitelist.contains(secondUser) mustBe true
       }
     }
     "has entry in list" should {
-      val whitelist = new EoriWhitelist(Seq("1234"))
+      val whitelist = new EoriWhitelist(config)
       "allow users on list" in {
-        whitelist.allow(firstUser) mustBe true
+        whitelist.contains(firstUser) mustBe true
       }
       "block user absent on list" in {
-        whitelist.allow(secondUser) mustBe false
+        whitelist.contains(secondUser) mustBe false
       }
     }
+
   }
 }

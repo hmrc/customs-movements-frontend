@@ -71,12 +71,7 @@ trait AuthAction
 
 case class NoExternalId() extends NoActiveSession("No externalId was found")
 
-@ProvidedBy(classOf[EoriWhitelistProvider])
-class EoriWhitelist(values: Seq[String]) {
+class EoriWhitelist @Inject()(configuration: Configuration) {
+  private val values = configuration.get[Seq[String]]("whitelist.eori")
   def contains(user: SignedInUser): Boolean = values.isEmpty || values.contains(user.eori)
-}
-
-class EoriWhitelistProvider @Inject()(configuration: Configuration) extends Provider[EoriWhitelist] {
-  override def get(): EoriWhitelist =
-    new EoriWhitelist(configuration.get[Seq[String]]("whitelist.eori"))
 }

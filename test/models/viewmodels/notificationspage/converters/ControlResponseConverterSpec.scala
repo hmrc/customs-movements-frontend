@@ -191,7 +191,7 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
               s"<p>${messages("decoder.errorCode.InvalidUcrFormat")}</p>" +
               s"<p>${messages("decoder.errorCode.MucrAlreadyDeparted")}</p>" +
               s"<p>${messages("decoder.errorCode.NoPriorArrivalFoundAtDepartureLocation")}</p>" +
-              s"<p>$chiefCode $chiefMessage</p>"
+              s"<p>$chiefMessage</p>"
           )
         )
 

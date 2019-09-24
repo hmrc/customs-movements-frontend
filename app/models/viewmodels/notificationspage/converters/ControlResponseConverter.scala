@@ -16,7 +16,6 @@
 
 package models.viewmodels.notificationspage.converters
 
-import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
@@ -47,7 +46,7 @@ class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: Da
 
       NotificationsPageSingleElement(
         title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
-        timestampInfo = timestampInfoResponse(notification.timestampReceived),
+        timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
         content = Html(actionCodeExplanation.getOrElse("") + errorsExplanation)
       )
     } else {
@@ -77,8 +76,5 @@ class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: Da
     decoder.chiefErrorCode(errorCode).map(error => paragraph(error.description))
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"
-
-  private def timestampInfoResponse(responseTimestamp: Instant)(implicit messages: Messages): String =
-    messages("notifications.elem.timestampInfo.response", dateTimeFormatter.format(responseTimestamp))
 
 }

@@ -16,7 +16,6 @@
 
 package models.viewmodels.notificationspage.converters
 
-import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
@@ -46,7 +45,7 @@ class ERSResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTi
 
       NotificationsPageSingleElement(
         title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-        timestampInfo = timestampInfoResponse(notification.timestampReceived),
+        timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
         content =
           Html(roeCodeExplanation.getOrElse("") + soeCodeExplanation.getOrElse("") + icsCodeExplanation.getOrElse(""))
       )
@@ -78,6 +77,4 @@ class ERSResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTi
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"
 
-  private def timestampInfoResponse(responseTimestamp: Instant)(implicit messages: Messages): String =
-    messages("notifications.elem.timestampInfo.response", dateTimeFormatter.format(responseTimestamp))
 }

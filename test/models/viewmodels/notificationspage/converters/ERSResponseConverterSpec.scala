@@ -120,7 +120,7 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
         val input = ersResponseAllCodes
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
+          timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
             s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} ${messages(roeKeyFromDecoder.contentKey)}</p>" +
               s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} ${messages(soeKeyFromDecoder.contentKey)}</p>" +
@@ -150,7 +150,7 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
         val input = ersResponseMissingCodes
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
+          timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
             s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} ${messages(soeKeyFromDecoder.contentKey)}</p>"
           )
@@ -182,7 +182,7 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
         val input = ersResponseUnknownCodes
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
+          timestampInfo = "23 Oct 2019 at 12:34",
           content = Html("")
         )
 

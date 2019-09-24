@@ -122,7 +122,7 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
-          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
+          timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(s"<p>${messages(AcknowledgedAndProcessedActionCode.contentKey)}</p>")
         )
 
@@ -185,7 +185,7 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
-          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
+          timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
             s"<p>${messages(ActionCode.Rejected.contentKey)}</p>" +
               s"<p>${messages("decoder.errorCode.InvalidUcrFormat")}</p>" +
@@ -213,7 +213,7 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
-          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
+          timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
             s"<p>${messages(ActionCode.Rejected.contentKey)}</p>" +
               s"<p>${messages("decoder.errorCode.InvalidUcrFormat")}</p>" +

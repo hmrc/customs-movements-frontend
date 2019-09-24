@@ -16,7 +16,6 @@
 
 package models.viewmodels.notificationspage.converters
 
-import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
@@ -43,7 +42,7 @@ class MovementResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: D
 
       NotificationsPageSingleElement(
         title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
-        timestampInfo = timestampInfoResponse(notification.timestampReceived),
+        timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
         content = Html(crcCodeExplanation.getOrElse(""))
       )
     } else {
@@ -56,8 +55,5 @@ class MovementResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: D
   }
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"
-
-  private def timestampInfoResponse(responseTimestamp: Instant)(implicit messages: Messages): String =
-    messages("notifications.elem.timestampInfo.response", dateTimeFormatter.format(responseTimestamp))
 
 }

@@ -101,7 +101,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           exampleSubmissionFrontendModel(actionType = ActionType.Arrival, requestTimestamp = testTimestamp)
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.Arrival"),
-          timestampInfo = messages("notifications.elem.timestampInfo.request", "23 Oct 2019 at 12:34"),
+          timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
             s"<p>${messages("notifications.elem.content.Arrival")}</p>" +
               s"<p>${messages("notifications.elem.content.footer")}</p>"
@@ -119,7 +119,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           exampleSubmissionFrontendModel(actionType = ActionType.Departure, requestTimestamp = testTimestamp)
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.Departure"),
-          timestampInfo = messages("notifications.elem.timestampInfo.request", "23 Oct 2019 at 12:34"),
+          timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
             s"<p>${messages("notifications.elem.content.Departure")}</p>" +
               s"<p>${messages("notifications.elem.content.footer")}</p>"
@@ -146,7 +146,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.DucrAssociation"),
-          timestampInfo = messages("notifications.elem.timestampInfo.request", "23 Oct 2019 at 12:34"),
+          timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
             s"<p>${messages("notifications.elem.content.DucrAssociation")}</p>" +
               s"<p>$correctUcr_2</p>" +
@@ -170,7 +170,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.DucrDisassociation"),
-          timestampInfo = messages("notifications.elem.timestampInfo.request", "23 Oct 2019 at 12:34"),
+          timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
             s"<p>${messages("notifications.elem.content.DucrDisassociation")}</p>" +
               s"<p>${messages("notifications.elem.content.footer")}</p>"
@@ -192,7 +192,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.ShutMucr"),
-          timestampInfo = messages("notifications.elem.timestampInfo.request", "23 Oct 2019 at 12:34"),
+          timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
             s"<p>${messages("notifications.elem.content.ShutMucr")}</p>" +
               s"<p>${messages("notifications.elem.content.footer")}</p>"

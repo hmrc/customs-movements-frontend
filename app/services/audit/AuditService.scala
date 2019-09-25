@@ -46,29 +46,6 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
       )
     )
 
-  def auditDisassociate(eori: String, ducr: String, result: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
-    audit(
-      AuditTypes.AuditDisassociate,
-      Map(
-        EventData.EORI.toString -> eori,
-        EventData.DUCR.toString -> ducr,
-        EventData.SubmissionResult.toString -> result
-      )
-    )
-
-  def auditAssociate(eori: String, mucr: String, ducr: String, result: String)(
-    implicit hc: HeaderCarrier
-  ): Future[AuditResult] =
-    audit(
-      AuditTypes.AuditAssociate,
-      Map(
-        EventData.EORI.toString -> eori,
-        EventData.MUCR.toString -> mucr,
-        EventData.DUCR.toString -> ducr,
-        EventData.SubmissionResult.toString -> result
-      )
-    )
-
   def audit(auditType: AuditTypes.Audit, auditData: Map[String, String])(
     implicit hc: HeaderCarrier
   ): Future[AuditResult] = {
@@ -104,6 +81,29 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
       Disabled
   }
 
+  def auditDisassociate(eori: String, ducr: String, result: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
+    audit(
+      AuditTypes.AuditDisassociate,
+      Map(
+        EventData.EORI.toString -> eori,
+        EventData.DUCR.toString -> ducr,
+        EventData.SubmissionResult.toString -> result
+      )
+    )
+
+  def auditAssociate(eori: String, mucr: String, ducr: String, result: String)(
+    implicit hc: HeaderCarrier
+  ): Future[AuditResult] =
+    audit(
+      AuditTypes.AuditAssociate,
+      Map(
+        EventData.EORI.toString -> eori,
+        EventData.MUCR.toString -> mucr,
+        EventData.DUCR.toString -> ducr,
+        EventData.SubmissionResult.toString -> result
+      )
+    )
+
   def auditMovements(
     eori: String,
     data: InventoryLinkingMovementRequest,
@@ -123,7 +123,11 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
     )
 
   def auditAllPagesUserInput(choice: Choice, cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[AuditResult] = {
-    val auditType = choice.value
+    val auditType =
+      if (choice.value == Choice.AllowedChoiceValues.Arrival)
+        AuditTypes.AuditArrival.toString
+      else AuditTypes.AuditDeparture.toString
+
     val extendedEvent = ExtendedDataEvent(
       auditSource = appName,
       auditType = auditType,

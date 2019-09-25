@@ -29,8 +29,8 @@ object GoodsDeparted {
   val formId = "GoodsDeparted"
 
   object AllowedPlaces {
-    val outOfTheUk = "OutOfTheUk"
-    val backIntoTheUk = "BackIntoTheUk"
+    val outOfTheUk = "outOfTheUk"
+    val backIntoTheUk = "backIntoTheUk"
   }
 
   import AllowedPlaces._
@@ -44,10 +44,4 @@ object GoodsDeparted {
 
   def form(): Form[GoodsDeparted] = Form(mapping)
 
-  def messageKey(place: String) =
-    s"goodsDeparted.departedPlace.${place match {
-      case AllowedPlaces.outOfTheUk    => "outOfTheUk"
-      case AllowedPlaces.backIntoTheUk => "backIntoTheUk"
-      case _                           => "unknown"
-    }}"
 }

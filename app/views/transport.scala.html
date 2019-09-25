@@ -46,26 +46,28 @@
             field = form("modeOfTransport"),
             legend = messages("transport.modeOfTransport.question"),
             inputs = Seq(
-                RadioOption(Sea, Sea, Transport.messageKey(Sea)),
-                RadioOption(Rail, Rail, Transport.messageKey(Rail)),
-                RadioOption(Road, Road, Transport.messageKey(Road)),
-                RadioOption(Air, Air, Transport.messageKey(Air)),
-                RadioOption(PostalOrMail, PostalOrMail, Transport.messageKey(PostalOrMail)),
-                RadioOption(FixedInstallations, FixedInstallations, Transport.messageKey(FixedInstallations)),
-                RadioOption(InlandWaterway, InlandWaterway, Transport.messageKey(InlandWaterway)),
-                RadioOption(Other, Other, Transport.messageKey(Other))
+                RadioOption(Sea, Sea, s"transport.modeOfTransport.$Sea"),
+                RadioOption(Rail, Rail, s"transport.modeOfTransport.$Rail"),
+                RadioOption(Road, Road, s"transport.modeOfTransport.$Road"),
+                RadioOption(Air, Air, s"transport.modeOfTransport.$Air"),
+                RadioOption(PostalOrMail, PostalOrMail, s"transport.modeOfTransport.$PostalOrMail"),
+                RadioOption(FixedInstallations, FixedInstallations, s"transport.modeOfTransport.$FixedInstallations"),
+                RadioOption(InlandWaterway, InlandWaterway, s"transport.modeOfTransport.$InlandWaterway"),
+                RadioOption(Other, Other, s"transport.modeOfTransport.$Other")
             )
         )
 
         @components.input_text(
             field = form("transportId"),
             label = messages("transport.transportId.question"),
+            labelClass = Some("bold-small"),
             hint = Some(messages("transport.transportId.hint"))
         )
 
         @components.input_text(
             field = form("nationality"),
             label = messages("transport.nationality.question"),
+            labelClass = Some("bold-small"),
             hint = Some(messages("transport.nationality.hint"))
         )
 

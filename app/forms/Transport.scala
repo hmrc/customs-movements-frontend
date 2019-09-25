@@ -53,22 +53,12 @@ object Transport {
       .verifying("transport.nationality.error", isEmpty or isValidCountryCode),
     "transportId" -> text()
       .verifying("transport.transportId.empty", nonEmpty)
-      .verifying("transport.transportId.error", isEmpty or (noLongerThan(35) and isAlphanumeric))
+      .verifying(
+        "transport.transportId.error",
+        isEmpty or (noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)
+      )
   )(Transport.apply)(Transport.unapply)
 
   def form: Form[Transport] =
     Form(mapping)
-
-  def messageKey(mode: String) =
-    s"transport.modeOfTransport.${mode match {
-      case ModesOfTransport.Sea                => "sea"
-      case ModesOfTransport.Rail               => "rail"
-      case ModesOfTransport.Road               => "road"
-      case ModesOfTransport.Air                => "air"
-      case ModesOfTransport.PostalOrMail       => "postalOrMail"
-      case ModesOfTransport.FixedInstallations => "fixed"
-      case ModesOfTransport.InlandWaterway     => "inlandWaterway"
-      case ModesOfTransport.Other              => "other"
-      case _                                   => "unknown"
-    }}"
 }

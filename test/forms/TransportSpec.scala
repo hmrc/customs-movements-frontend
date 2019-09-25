@@ -56,16 +56,6 @@ class TransportSpec extends BaseSpec {
       Transport.allowedModeOfTransport must contain(Other)
     }
 
-    "has correct message mapping" in {
-      Transport.messageKey(Sea) must be("transport.modeOfTransport.sea")
-      Transport.messageKey(Rail) must be("transport.modeOfTransport.rail")
-      Transport.messageKey(Road) must be("transport.modeOfTransport.road")
-      Transport.messageKey(Air) must be("transport.modeOfTransport.air")
-      Transport.messageKey(PostalOrMail) must be("transport.modeOfTransport.postalOrMail")
-      Transport.messageKey(FixedInstallations) must be("transport.modeOfTransport.fixed")
-      Transport.messageKey(InlandWaterway) must be("transport.modeOfTransport.inlandWaterway")
-      Transport.messageKey(Other) must be("transport.modeOfTransport.other")
-    }
   }
 
   "Transport mapping" should {
@@ -101,7 +91,7 @@ class TransportSpec extends BaseSpec {
         val transportPoland = Transport(Sea, "PL", "Reference")
         Transport.form.fillAndValidate(transportPoland).errors mustBe empty
 
-        val transportFinland = Transport(Rail, "FI", "1231212")
+        val transportFinland = Transport(Rail, "FI", "SHIP-123")
         Transport.form.fillAndValidate(transportFinland).errors mustBe empty
       }
     }

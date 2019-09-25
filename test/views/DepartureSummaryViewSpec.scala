@@ -30,7 +30,7 @@ import views.html.summary.departure_summary_page
 class DepartureSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
 
   val cachedDataOutOfUk = cacheMapData("EDL")
-  val cachedDataBackIntoUk = cachedDataOutOfUk + (GoodsDeparted.formId -> Json.toJson(
+  val cachedDataBackIntoUk = cacheMapData("EDL") + (GoodsDeparted.formId -> Json.toJson(
     GoodsDeparted(AllowedPlaces.backIntoTheUk)
   ))
   val departureSummaryPage = new departure_summary_page(mainTemplate)
@@ -56,7 +56,7 @@ class DepartureSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
       messages("summary.nationality") mustBe "Nationality"
       messages("goodsDeparted.departedPlace.outOfTheUk") mustBe "Out of the UK"
       messages("goodsDeparted.departedPlace.backIntoTheUk") mustBe "Back into the UK"
-      messages("transport.modeOfTransport.rail") mustBe "Rail transport"
+      messages("transport.modeOfTransport.2") mustBe "Rail transport"
     }
   }
 
@@ -114,7 +114,7 @@ class DepartureSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
       departureSummaryContentOut must include("summary.modeOfTransport")
       departureSummaryContentOut must include("summary.transportId")
       departureSummaryContentOut must include("summary.nationality")
-      departureSummaryContentOut must include("transport.modeOfTransport.rail")
+      departureSummaryContentOut must include("transport.modeOfTransport.2")
     }
 
     "not have correct transport part for depart in" in {

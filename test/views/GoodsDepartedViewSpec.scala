@@ -62,8 +62,8 @@ class GoodsDepartedViewSpec extends ViewSpec with GoodsDepartedMessages with Com
     "display radio option hint with all options" in {
 
       getElementById(createView(), "departedPlace-hint").text() must be(messages(goodsDepartedHint))
-      getElementById(createView(), "OutOfTheUk-label").text() must be(messages(goodsDepartedOutOfTheUk))
-      getElementById(createView(), "BackIntoTheUk-label").text() must be(messages(goodsDepartedBackIntoTheUk))
+      getElementById(createView(), "outOfTheUk-label").text() must be(messages(goodsDepartedOutOfTheUk))
+      getElementById(createView(), "backIntoTheUk-label").text() must be(messages(goodsDepartedBackIntoTheUk))
     }
 
     "display \"Back\" button that links to Location" in {

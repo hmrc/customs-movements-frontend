@@ -20,10 +20,10 @@ trait ChoiceMessages {
 
   val title: String = "movement.choice.title"
 
-  val arrivalDecLabel: String = "movement.choice.EAL.label"
-  val departureDecLabel: String = "movement.choice.EDL.label"
+  val arrivalDecLabel: String = "movement.choice.arrival.label"
+  val departureDecLabel: String = "movement.choice.departure.label"
   val associateDecLabel: String = "movement.choice.associate.label"
-  val disassociateDecLabel: String = "movement.choice.EAC.label"
+  val disassociateDecLabel: String = "movement.choice.disassociateDucr.label"
   val shutMucrLabel: String = "movement.choice.shutMucr.label"
   val choiceEmpty: String = "choicePage.input.error.empty"
   val choiceError: String = "choicePage.input.error.incorrectValue"

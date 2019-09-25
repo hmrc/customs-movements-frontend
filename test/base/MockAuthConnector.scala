@@ -16,17 +16,20 @@
 
 package base
 
-import testdata.MovementsTestData._
 import controllers.actions.{AuthActionImpl, EoriWhitelist}
 import models.SignedInUser
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.PlayBodyParsers
+import play.api.test.NoMaterializer
+import testdata.MovementsTestData._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import utils.Stubs
 
+import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
 trait MockAuthConnector extends MockitoSugar with Stubs {
@@ -36,7 +39,7 @@ trait MockAuthConnector extends MockitoSugar with Stubs {
   val eoriWhitelistMock: EoriWhitelist = mock[EoriWhitelist]
 
   val mockAuthAction =
-    new AuthActionImpl(authConnectorMock, eoriWhitelistMock, stubMessagesControllerComponents())
+    new AuthActionImpl(authConnectorMock, eoriWhitelistMock, PlayBodyParsers()(NoMaterializer))(global)
 
   def authorizedUser(user: SignedInUser = newUser("12345")): Unit = {
     when(authConnectorMock.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any()))

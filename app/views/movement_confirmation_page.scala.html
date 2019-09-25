@@ -14,14 +14,16 @@
  * limitations under the License.
  *@
 
+@import forms.Choice
+
 @this(main_template: views.html.main_template)
 
-@(movementType: String)(implicit request: Request[_], messages: Messages)
+@(choice: Choice)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = messages(s"movement.${movementType}.confirmation")) {
+@main_template(title = messages(s"movement.${choice.value}.confirmation")) {
 
   @components.highlight_box_with_reference(
-    headingText = messages(s"movement.choice.${movementType}.label") + " has been submitted"
+    headingText = messages(s"movement.choice.${choice.value}.label") + " has been submitted"
   )
 
   @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())

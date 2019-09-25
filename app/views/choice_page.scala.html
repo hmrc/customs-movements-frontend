@@ -16,7 +16,7 @@
 
 @import controllers.routes
 @import forms.Choice
-@import forms.Choice.AllowedChoiceValues
+@import forms.Choice._
 @import views.components.fields.RadioOption
 
 @this(main_template: views.html.main_template)
@@ -36,12 +36,12 @@
         field = form("choice"),
         legend = "",
         inputs = Seq(
-            RadioOption("arrival", AllowedChoiceValues.Arrival, messages(s"movement.choice.${AllowedChoiceValues.Arrival}.label")),
-            RadioOption("departure", AllowedChoiceValues.Departure, messages(s"movement.choice.${AllowedChoiceValues.Departure}.label")),
-            RadioOption("associate", AllowedChoiceValues.AssociateDUCR, messages(s"movement.choice.associate.label")),
-            RadioOption("disassociate", AllowedChoiceValues.DisassociateDUCR, messages(s"movement.choice.${AllowedChoiceValues.DisassociateDUCR}.label")),
-            RadioOption("shut_mucr", AllowedChoiceValues.ShutMucr, messages("movement.choice.shutMucr.label")),
-            RadioOption("submissions", AllowedChoiceValues.Submissions, messages("movement.choice.submissions.label"))
+            RadioOption("arrival", Arrival.value, messages(s"movement.choice.arrival.label")),
+            RadioOption("departure", Departure.value, messages(s"movement.choice.departure.label")),
+            RadioOption("associate", AssociateDUCR.value, messages(s"movement.choice.associate.label")),
+            RadioOption("disassociate", DisassociateDUCR.value, messages(s"movement.choice.disassociateDucr.label")),
+            RadioOption("shut_mucr", ShutMUCR.value, messages("movement.choice.shutMucr.label")),
+            RadioOption("submissions", Submissions.value, messages("movement.choice.submissions.label"))
         )
       )
 

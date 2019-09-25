@@ -16,7 +16,7 @@
 
 package forms
 
-import forms.Choice.AllowedChoiceValues._
+import forms.Choice._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.inventorylinking.common.{TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
@@ -29,12 +29,12 @@ object Movement {
         .getEntry[ConsignmentReferences](ConsignmentReferences.formId)
         .getOrElse(ConsignmentReferences("", ""))
 
-    val departureDetails = choice.value match {
+    val departureDetails = choice match {
       case Departure => cacheMap.getEntry[DepartureDetails](MovementDetails.formId)
       case _         => None
     }
 
-    val arrivalDetails = choice.value match {
+    val arrivalDetails = choice match {
       case Arrival =>
         cacheMap
           .getEntry[ArrivalDetails](MovementDetails.formId)
@@ -49,7 +49,7 @@ object Movement {
     val arrivalReference = cacheMap.getEntry[ArrivalReference](ArrivalReference.formId).flatMap(_.reference)
 
     InventoryLinkingMovementRequest(
-      messageCode = choice.value,
+      messageCode = extractChoice(choice),
       agentDetails = None,
       ucrBlock = UcrBlock(ucr = referencesForm.referenceValue, ucrType = referencesForm.reference),
       goodsLocation = location.getOrElse(""),
@@ -60,7 +60,7 @@ object Movement {
     )
   }
 
-  private def mapTransportDetails(transport: Option[Transport]) =
+  private def mapTransportDetails(transport: Option[Transport]): Option[TransportDetails] =
     transport.map(
       data =>
         TransportDetails(
@@ -70,4 +70,9 @@ object Movement {
       )
     )
 
+  private def extractChoice(choice: Choice): String = choice match {
+    case Arrival   => "EAL"
+    case Departure => "EDL"
+    case _         => throw new IllegalArgumentException("Allowed is only arrival or departure here")
+  }
 }

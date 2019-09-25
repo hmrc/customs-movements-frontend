@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
-import forms.Choice.AllowedChoiceValues._
+import forms.Choice._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.Logger
@@ -49,7 +49,7 @@ class SummaryController @Inject()(
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val cacheMapOpt = customsCacheService.fetch(movementCacheId)
 
-    val typeOfJourney = request.choice.value
+    val typeOfJourney = request.choice
 
     cacheMapOpt.map {
       case Some(data) if typeOfJourney == Arrival =>
@@ -68,7 +68,7 @@ class SummaryController @Inject()(
       .flatMap {
         case ACCEPTED =>
           customsCacheService.remove(movementCacheId).map { _ =>
-            Ok(movementConfirmationPage(request.choice.value))
+            Ok(movementConfirmationPage(request.choice))
           }
         case _ =>
           Future.successful {

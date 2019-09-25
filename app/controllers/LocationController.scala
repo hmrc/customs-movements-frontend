@@ -18,8 +18,9 @@ package controllers
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
+import forms.Choice.{Arrival, Departure}
 import forms.Location._
-import forms.{Choice, Location}
+import forms.Location
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -43,23 +44,22 @@ class LocationController @Inject()(
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
       .fetchAndGetEntry[Location](movementCacheId, formId)
-      .map(data => Ok(locationPage(data.fold(form)(form.fill(_)), request.choice.value)))
+      .map(data => Ok(locationPage(data.fold(form)(form.fill(_)), request.choice)))
   }
 
   def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Location]) =>
-          Future.successful(BadRequest(locationPage(formWithErrors, request.choice.value))),
+        (formWithErrors: Form[Location]) => Future.successful(BadRequest(locationPage(formWithErrors, request.choice))),
         validForm =>
           customsCacheService
             .cache[Location](movementCacheId(), formId, validForm)
             .map { _ =>
               request.choice match {
-                case Choice(Choice.AllowedChoiceValues.Arrival) =>
+                case Arrival =>
                   Redirect(controllers.routes.SummaryController.displayPage())
-                case Choice(Choice.AllowedChoiceValues.Departure) =>
+                case Departure =>
                   Redirect(controllers.routes.GoodsDepartedController.displayPage())
               }
           }

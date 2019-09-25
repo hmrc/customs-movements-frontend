@@ -17,8 +17,7 @@
 package unit.controllers.util
 
 import controllers.storage.CacheIdGenerator
-import forms.Choice
-import forms.Choice.AllowedChoiceValues.Arrival
+import forms.Choice.Arrival
 import models.SignedInUser
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.test.FakeRequest
@@ -34,7 +33,7 @@ class CacheIdGeneratorSpec extends UnitSpec {
   val user = SignedInUser(userEori, Enrolments(Set.empty[Enrolment]))
 
   val authenticatedRequest = AuthenticatedRequest(fakeRequest, user)
-  val journeyRequest = JourneyRequest(authenticatedRequest, Choice(userChoice))
+  val journeyRequest = JourneyRequest(authenticatedRequest, userChoice)
 
   "Cache Id Generator" should {
 
@@ -50,7 +49,7 @@ class CacheIdGeneratorSpec extends UnitSpec {
 
     "return correct movement cache Id" in {
 
-      CacheIdGenerator.movementCacheId()(journeyRequest) must be(s"$userChoice-$userEori")
+      CacheIdGenerator.movementCacheId()(journeyRequest) must be(s"${userChoice.value}-$userEori")
     }
   }
 }

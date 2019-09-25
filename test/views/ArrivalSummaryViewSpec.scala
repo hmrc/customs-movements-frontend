@@ -17,6 +17,7 @@
 package views
 
 import controllers.routes
+import forms.Choice.Arrival
 import play.api.i18n.MessagesApi
 import play.api.test.Helpers._
 import testdata.MovementsTestData.cacheMapData
@@ -27,7 +28,7 @@ import views.html.summary.arrival_summary_page
 
 class ArrivalSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
 
-  val cachedData = cacheMapData("EAL")
+  val cachedData = cacheMapData(Arrival)
   val arrivalSummaryPage = new arrival_summary_page(mainTemplate)
   val arrivalSummaryView = arrivalSummaryPage(CacheMap("id", cachedData))(request, messages)
   val arrivalSummaryContent = contentAsString(arrivalSummaryView)

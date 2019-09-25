@@ -19,7 +19,8 @@ package controllers
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.ConsignmentReferences._
-import forms.{Choice, ConsignmentReferences}
+import forms.ConsignmentReferences
+import forms.Choice.{Arrival, Departure}
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -57,9 +58,9 @@ class ConsignmentReferencesController @Inject()(
             .cache[ConsignmentReferences](movementCacheId(), formId, validForm)
             .map { _ =>
               request.choice match {
-                case Choice(Choice.AllowedChoiceValues.Arrival) =>
+                case Arrival =>
                   Redirect(controllers.routes.ArrivalReferenceController.displayPage())
-                case Choice(Choice.AllowedChoiceValues.Departure) =>
+                case Departure =>
                   Redirect(controllers.routes.LocationController.displayPage())
               }
           }

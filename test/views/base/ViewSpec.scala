@@ -55,7 +55,7 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator {
   def assertMessage(key: String, expected: String): Unit =
     messages(key) must be(expected)
 
-  def fakeJourneyRequest(choice: String): JourneyRequest[AnyContentAsEmpty.type] =
-    JourneyRequest(AuthenticatedRequest(fakeRequest, MovementsTestData.newUser("")), new Choice(choice))
+  def fakeJourneyRequest(choice: Choice): JourneyRequest[AnyContentAsEmpty.type] =
+    JourneyRequest(AuthenticatedRequest(fakeRequest, MovementsTestData.newUser("")), choice)
 
 }

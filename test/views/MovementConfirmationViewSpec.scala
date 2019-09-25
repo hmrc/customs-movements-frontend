@@ -17,6 +17,7 @@
 package views
 
 import controllers.routes
+import forms.Choice.{Arrival, Departure}
 import play.api.i18n.MessagesApi
 import utils.{Injector, Stubs}
 import views.base.UnitViewSpec
@@ -25,8 +26,8 @@ import views.html.movement_confirmation_page
 class MovementConfirmationViewSpec extends UnitViewSpec with Stubs with Injector {
 
   val movementConfirmationPage = new movement_confirmation_page(mainTemplate)
-  val arrivalConfirmationView = movementConfirmationPage("EAL")(request, messages)
-  val departureConfirmationView = movementConfirmationPage("EDL")(request, messages)
+  val arrivalConfirmationView = movementConfirmationPage(Arrival)(request, messages)
+  val departureConfirmationView = movementConfirmationPage(Departure)(request, messages)
 
   "Movement Confirmation Page" should {
 
@@ -34,10 +35,10 @@ class MovementConfirmationViewSpec extends UnitViewSpec with Stubs with Injector
 
       val messages = instanceOf[MessagesApi].preferred(request)
 
-      messages("movement.EAL.confirmation") mustBe "Arrival confirmation"
-      messages("movement.EDL.confirmation") mustBe "Departure confirmation"
-      messages("movement.choice.EAL.label") mustBe "Arrival"
-      messages("movement.choice.EDL.label") mustBe "Departure"
+      messages("movement.arrival.confirmation") mustBe "Arrival confirmation"
+      messages("movement.departure.confirmation") mustBe "Departure confirmation"
+      messages("movement.choice.arrival.label") mustBe "Arrival"
+      messages("movement.choice.departure.label") mustBe "Departure"
       messages("site.backToStartPage") mustBe "Back to start page"
     }
   }
@@ -46,13 +47,13 @@ class MovementConfirmationViewSpec extends UnitViewSpec with Stubs with Injector
 
     "have title" in {
 
-      arrivalConfirmationView.getElementsByTag("title").text() mustBe messages("movement.EAL.confirmation")
+      arrivalConfirmationView.getElementsByTag("title").text() mustBe messages("movement.arrival.confirmation")
     }
 
     "have heading" in {
 
       arrivalConfirmationView.getElementById("highlight-box-heading").text() mustBe messages(
-        "movement.choice.EAL.label"
+        "movement.choice.arrival.label"
       ) + " has been submitted"
     }
 
@@ -69,13 +70,13 @@ class MovementConfirmationViewSpec extends UnitViewSpec with Stubs with Injector
 
     "have title" in {
 
-      departureConfirmationView.getElementsByTag("title").text() mustBe messages("movement.EDL.confirmation")
+      departureConfirmationView.getElementsByTag("title").text() mustBe messages("movement.departure.confirmation")
     }
 
     "have heading" in {
 
       departureConfirmationView.getElementById("highlight-box-heading").text() mustBe messages(
-        "movement.choice.EDL.label"
+        "movement.choice.departure.label"
       ) + " has been submitted"
     }
 

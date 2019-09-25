@@ -17,7 +17,7 @@
 package views
 
 import forms.Choice
-import forms.Choice.AllowedChoiceValues._
+import forms.Choice._
 import helpers.views.{ChoiceMessages, CommonMessages}
 import play.api.data.Form
 import play.twirl.api.Html
@@ -71,7 +71,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
     "display 4 radio buttons with labels" in {
 
-      val view = createView(Choice.form().fill(Choice("")))
+      val view = createView(Choice.form())
 
       getElementByCss(view, "#choice>div:nth-child(2)>label").text() must be(messages(arrivalDecLabel))
       getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(departureDecLabel))
@@ -82,7 +82,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
     "display 4 unchecked radio buttons" in {
 
-      val view = createView(Choice.form().fill(Choice("")))
+      val view = createView(Choice.form())
 
       verifyUnchecked(view, "arrival")
       verifyUnchecked(view, "departure")
@@ -120,7 +120,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
     "display selected 1st radio button - Arrival (EAL)" in {
 
-      val view = createView(Choice.form().fill(Choice(Arrival)))
+      val view = createView(Choice.form().fill(Arrival))
 
       verifyChecked(view, "arrival")
       verifyUnchecked(view, "departure")
@@ -130,7 +130,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
     "display selected 2nd radio button - Departure (EDL)" in {
 
-      val view = createView(Choice.form().fill(Choice(Departure)))
+      val view = createView(Choice.form().fill(Departure))
 
       verifyUnchecked(view, "arrival")
       verifyChecked(view, "departure")
@@ -140,7 +140,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
     "display selected 3rd radio button - Disassociate (EAC)" in {
 
-      val view = createView(Choice.form().fill(Choice(DisassociateDUCR)))
+      val view = createView(Choice.form().fill(DisassociateDUCR))
 
       verifyUnchecked(view, "arrival")
       verifyUnchecked(view, "departure")
@@ -150,7 +150,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
     "display selected 4th radio button - Shut a MUCR (CST)" in {
 
-      val view = createView(Choice.form().fill(Choice(ShutMucr)))
+      val view = createView(Choice.form().fill(ShutMUCR))
 
       verifyUnchecked(view, "arrival")
       verifyUnchecked(view, "departure")

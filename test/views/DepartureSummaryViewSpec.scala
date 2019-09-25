@@ -17,6 +17,7 @@
 package views
 
 import controllers.routes
+import forms.Choice.Departure
 import forms.GoodsDeparted
 import forms.GoodsDeparted.AllowedPlaces
 import play.api.i18n.MessagesApi
@@ -30,8 +31,8 @@ import views.html.summary.departure_summary_page
 
 class DepartureSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
 
-  val cachedDataOutOfUk = cacheMapData("EDL")
-  val cachedDataBackIntoUk = cacheMapData("EDL") + (GoodsDeparted.formId -> Json.toJson(
+  val cachedDataOutOfUk = cacheMapData(Departure)
+  val cachedDataBackIntoUk = cacheMapData(Departure) + (GoodsDeparted.formId -> Json.toJson(
     GoodsDeparted(AllowedPlaces.backIntoTheUk)
   ))
   val departureSummaryPage = new departure_summary_page(mainTemplate)

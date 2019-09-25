@@ -18,6 +18,7 @@ package services.audit
 
 import com.google.inject.Inject
 import forms._
+import forms.Choice._
 import javax.inject.Named
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
@@ -124,7 +125,7 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
 
   def auditAllPagesUserInput(choice: Choice, cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val auditType =
-      if (choice.value == Choice.AllowedChoiceValues.Arrival)
+      if (choice == Arrival)
         AuditTypes.AuditArrival.toString
       else AuditTypes.AuditDeparture.toString
 
@@ -139,7 +140,7 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
 
   def getMovementsData(choice: Choice, cacheMap: CacheMap): JsObject = {
     val movementDetails =
-      if (choice.value == Choice.AllowedChoiceValues.Arrival)
+      if (choice == Arrival)
         Json.toJson(cacheMap.getEntry[ArrivalDetails](MovementDetails.formId))
       else Json.toJson(cacheMap.getEntry[DepartureDetails](MovementDetails.formId))
 

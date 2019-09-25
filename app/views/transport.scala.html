@@ -16,13 +16,15 @@
 
 @import controllers.routes
 @import uk.gov.hmrc.play.views.html._
+@import forms.Choice
+@import forms.Choice.Arrival
 @import forms.Transport
 @import forms.Transport.ModesOfTransport._
 @import views.components.fields.RadioOption
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[Transport], choice: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Transport], choice: Choice)(implicit request: Request[_], messages: Messages)
 
 @radio(mode: String) = { RadioOption(mode, mode, Transport.messageKey(mode)) }
 
@@ -30,7 +32,7 @@
     @helper.form(routes.TransportController.saveTransport(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @if(choice == "EAL") {
+        @if(choice == Arrival) {
             @components.back_link(routes.LocationController.displayPage())
         } else {
             @components.back_link(routes.MovementDetailsController.displayPage())

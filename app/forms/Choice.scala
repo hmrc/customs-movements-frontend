@@ -18,32 +18,44 @@ package forms
 
 import forms.Mapping.requiredRadio
 import play.api.data.{Form, Forms, Mapping}
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, JsError, JsResult, JsString, JsSuccess, JsValue}
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class Choice(value: String)
+sealed abstract class Choice(val value: String)
 
 object Choice {
-  implicit val format = Json.format[Choice]
+
+  def unapply(status: Choice): Option[String] = Some(status.value)
+
+  def apply(input: String): Choice =
+    allChoices.find(_.value == input).getOrElse(throw new IllegalArgumentException("Incorrect choice"))
+
+  implicit object ChoiceValueFormat extends Format[Choice] {
+    def reads(status: JsValue): JsResult[Choice] = status match {
+      case JsString(choice) =>
+        allChoices.find(_.value == choice).map(JsSuccess(_)).getOrElse(JsError("Incorrect choice"))
+      case _ => JsError("Incorrect choice")
+    }
+
+    def writes(choice: Choice): JsValue = JsString(choice.value)
+  }
+
+  case object Arrival extends Choice("arrival")
+  case object Departure extends Choice("departure")
+  case object AssociateDUCR extends Choice("associateDUCR")
+  case object DisassociateDUCR extends Choice("disassociateDUCR")
+  case object ShutMUCR extends Choice("shutMUCR")
+  case object Submissions extends Choice("submissions")
+
+  val allChoices = Seq(Arrival, Departure, AssociateDUCR, DisassociateDUCR, ShutMUCR, Submissions)
 
   val choiceId = "Choice"
 
-  import AllowedChoiceValues._
-  private val correctChoices = Set(Arrival, Departure, AssociateDUCR, DisassociateDUCR, ShutMucr, Submissions)
-
-  val choiceMapping: Mapping[Choice] = Forms.mapping(
-    "choice" -> requiredRadio("choicePage.input.error.empty")
-      .verifying("choicePage.input.error.incorrectValue", isContainedIn(correctChoices))
-  )(Choice.apply)(Choice.unapply)
+  val choiceMapping: Mapping[Choice] =
+    Forms.mapping(
+      "choice" -> requiredRadio("choicePage.input.error.empty")
+        .verifying("choicePage.input.error.incorrectValue", isContainedIn(allChoices.map(_.value)))
+    )(Choice.apply)(Choice.unapply)
 
   def form(): Form[Choice] = Form(choiceMapping)
-
-  object AllowedChoiceValues {
-    val Arrival = "EAL"
-    val Departure = "EDL"
-    val AssociateDUCR = "Associate"
-    val DisassociateDUCR = "EAC"
-    val ShutMucr = "CST"
-    val Submissions = "SUB"
-  }
 }

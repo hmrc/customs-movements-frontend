@@ -18,7 +18,7 @@ package unit.controllers.consolidations
 
 import controllers.consolidations.DisassociateDucrConfirmationController
 import forms.Choice
-import forms.Choice.AllowedChoiceValues
+import forms.Choice.DisassociateDUCR
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
@@ -43,7 +43,7 @@ class DisassociateDucrConfirmationControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.DisassociateDUCR)))
+    withCaching(Choice.choiceId, Some(DisassociateDUCR))
     when(mockDisassociateDucrConfirmationPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
   }
 

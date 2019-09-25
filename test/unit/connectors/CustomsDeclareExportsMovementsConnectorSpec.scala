@@ -18,7 +18,8 @@ package unit.connectors
 
 import config.AppConfig
 import connectors.CustomsDeclareExportsMovementsConnector
-import forms.Choice.AllowedChoiceValues.{Arrival, Departure}
+import forms.Choice
+import forms.Choice.{Arrival, Departure}
 import models.notifications.NotificationFrontendModel
 import models.submissions.SubmissionFrontendModel
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -340,9 +341,9 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
 object CustomsDeclareExportsMovementsConnectorSpec {
 
-  def movementSubmissionRequest(movementType: String): InventoryLinkingMovementRequest =
+  def movementSubmissionRequest(movementType: Choice): InventoryLinkingMovementRequest =
     MovementsTestData.validMovementRequest(movementType)
-  def movementSubmissionRequestXmlString(movementType: String): String = movementSubmissionRequest(movementType).toXml
+  def movementSubmissionRequestXmlString(movementType: Choice): String = movementSubmissionRequest(movementType).toXml
 
   val expectedMovementSubmissionRequestHeaders: Seq[(String, String)] =
     Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8), HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8))

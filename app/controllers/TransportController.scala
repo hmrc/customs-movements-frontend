@@ -44,7 +44,7 @@ class TransportController @Inject()(
     customsCacheService.fetchAndGetEntry[Transport](movementCacheId, formId).map { data =>
       val formForView = data.fold(form)(form.fill(_))
 
-      Ok(transportPage(formForView, request.choice.value))
+      Ok(transportPage(formForView, request.choice))
     }
   }
 
@@ -53,7 +53,7 @@ class TransportController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Transport]) =>
-          Future.successful(BadRequest(transportPage(formWithErrors, request.choice.value))),
+          Future.successful(BadRequest(transportPage(formWithErrors, request.choice))),
         validForm =>
           customsCacheService.cache[Transport](movementCacheId, formId, validForm).map { _ =>
             Redirect(controllers.routes.SummaryController.displayPage())

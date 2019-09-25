@@ -18,8 +18,9 @@ package controllers
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
+import forms.Choice.Departure
 import forms.GoodsDeparted._
-import forms.{Choice, GoodsDeparted}
+import forms.GoodsDeparted
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
@@ -43,8 +44,8 @@ class GoodsDepartedController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    request.choice.value match {
-      case Choice.AllowedChoiceValues.Departure =>
+    request.choice match {
+      case Departure =>
         customsCacheService
           .fetchAndGetEntry[GoodsDeparted](movementCacheId, formId)
           .map(data => Ok(goodsDepartedPage(data.fold(form)(form.fill(_)))))

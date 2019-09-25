@@ -17,7 +17,8 @@
 package unit.controllers.consolidations
 
 import controllers.consolidations.{routes, MucrOptionsController}
-import forms.Choice.AllowedChoiceValues
+
+import forms.Choice.AssociateDUCR
 import forms.MucrOptions.Create
 import forms.{Choice, MucrOptions}
 import org.mockito.ArgumentMatchers.any
@@ -47,7 +48,7 @@ class MucrOptionsControllerSpec extends ControllerSpec with OptionValues {
     super.beforeEach()
 
     authorizedUser()
-    withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.AssociateDUCR)))
+    withCaching(Choice.choiceId, Some(AssociateDUCR))
     withCaching(MucrOptions.formId)
     when(mockMucrOptionsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }

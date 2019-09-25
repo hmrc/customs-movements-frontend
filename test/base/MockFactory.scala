@@ -22,7 +22,7 @@ import metrics.MovementsMetrics
 import models.notifications.NotificationFrontendModel
 import models.submissions.SubmissionFrontendModel
 import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.INTERNAL_SERVER_ERROR
@@ -104,7 +104,7 @@ object MockFactory extends MockitoSugar {
   def buildMovementsMetricsMock: MovementsMetrics = {
     val movementsMetricsMock = mock[MovementsMetrics]
 
-    when(movementsMetricsMock.startTimer(any())).thenReturn(new Timer().time())
+    when(movementsMetricsMock.startTimer(anyString)).thenReturn(new Timer().time())
 
     movementsMetricsMock
   }

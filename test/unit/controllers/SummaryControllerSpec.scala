@@ -19,7 +19,7 @@ package unit.controllers
 import base.MockSubmissionService
 import controllers.SummaryController
 import forms.Choice
-import forms.Choice.AllowedChoiceValues
+import forms.Choice.ShutMUCR
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.libs.json.{JsObject, JsString, JsValue}
@@ -119,7 +119,7 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
 
       "user is on different type of journey" in {
 
-        withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.ShutMucr)))
+        withCaching(Choice.choiceId, Some(ShutMUCR))
         withCacheMap(Some(CacheMap("id", Map.empty[String, JsValue])))
 
         val result = controller.displayPage()(getRequest())

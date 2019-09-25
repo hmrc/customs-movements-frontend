@@ -19,6 +19,8 @@ package forms
 import base.BaseSpec
 import forms.Transport.ModesOfTransport._
 import play.api.data.FormError
+import utils.TestDataHelper
+import utils.TestDataHelper.createRandomAlphanumericString
 
 class TransportSpec extends BaseSpec {
 
@@ -53,41 +55,44 @@ class TransportSpec extends BaseSpec {
       Transport.allowedModeOfTransport must contain(InlandWaterway)
       Transport.allowedModeOfTransport must contain(Other)
     }
+
   }
 
   "Transport mapping" should {
 
     "return error" when {
 
-      "mode of transport and nationality are empty" in {
+      "mode of transport, reference and nationality are empty" in {
 
-        val inputData = Transport("", "")
-        val errors = Transport.form().fillAndValidate(inputData).errors
+        val inputData = Transport("", "", "")
+        val errors = Transport.form.fillAndValidate(inputData).errors
 
-        errors.length must be(2)
+        errors.length must be(3)
         errors(0) must be(FormError("modeOfTransport", "transport.modeOfTransport.error"))
         errors(1) must be(FormError("nationality", "transport.nationality.empty"))
+        errors(2) must be(FormError("transportId", "transport.transportId.empty"))
       }
 
-      "mode of transport and nationality are incorrect" in {
+      "mode of transport, reference and nationality are incorrect" in {
 
-        val inputData = Transport("incorrect", "incorrect")
-        val errors = Transport.form().fillAndValidate(inputData).errors
+        val inputData = Transport("incorrect", "incorrect", createRandomAlphanumericString(36))
+        val errors = Transport.form.fillAndValidate(inputData).errors
 
-        errors.length must be(2)
+        errors.length must be(3)
         errors(0) must be(FormError("modeOfTransport", "transport.modeOfTransport.error"))
         errors(1) must be(FormError("nationality", "transport.nationality.error"))
+        errors(2) must be(FormError("transportId", "transport.transportId.error"))
       }
     }
 
     "return no error" when {
 
       "values are correct for different country codes" in {
-        val transportPoland = Transport(Sea, "PL")
-        Transport.form().fillAndValidate(transportPoland).errors mustBe empty
+        val transportPoland = Transport(Sea, "PL", "Reference")
+        Transport.form.fillAndValidate(transportPoland).errors mustBe empty
 
-        val transportFinland = Transport(Sea, "FI")
-        Transport.form().fillAndValidate(transportFinland).errors mustBe empty
+        val transportFinland = Transport(Rail, "FI", "SHIP-123")
+        Transport.form.fillAndValidate(transportFinland).errors mustBe empty
       }
     }
   }

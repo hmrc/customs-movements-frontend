@@ -19,8 +19,9 @@ package controllers
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.Choice.AllowedChoiceValues
+import forms.GoodsDeparted.AllowedPlaces
 import forms.MovementDetails._
-import forms.{ArrivalDetails, DepartureDetails}
+import forms.{ArrivalDetails, DepartureDetails, GoodsDeparted}
 import javax.inject.{Inject, Singleton}
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -28,6 +29,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import play.twirl.api.Html
 import services.CustomsCacheService
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.{arrival_details, departure_details}
 
@@ -88,8 +90,12 @@ class MovementDetailsController @Inject()(
       .fold(
         (formWithErrors: Form[DepartureDetails]) => Future.successful(Left(departureDetailsPage(formWithErrors))),
         validForm =>
-          customsCacheService.cache[DepartureDetails](movementCacheId, formId, validForm).map { _ =>
-            Right(controllers.routes.TransportController.displayPage())
+          customsCacheService.cache[DepartureDetails](movementCacheId, formId, validForm).map { cacheMap: CacheMap =>
+            cacheMap.getEntry[GoodsDeparted](GoodsDeparted.formId) match {
+              case Some(goodsDeparted) if (goodsDeparted.departedPlace == AllowedPlaces.outOfTheUk) =>
+                Right(controllers.routes.TransportController.displayPage())
+              case _ => Right(controllers.routes.SummaryController.displayPage())
+            }
         }
       )
 }

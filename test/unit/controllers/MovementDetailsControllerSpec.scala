@@ -177,7 +177,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to transport page" when {
+    "return 303 (SEE_OTHER) and redirect to summary" when {
 
       "form is correct" in {
 
@@ -192,7 +192,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveMovementDetails()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.TransportController.displayPage().url
+        redirectLocation(result).value mustBe routes.SummaryController.displayPage().url
       }
     }
   }

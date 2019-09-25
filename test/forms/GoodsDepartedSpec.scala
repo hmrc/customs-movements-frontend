@@ -29,12 +29,6 @@ class GoodsDepartedSpec extends BaseSpec {
       GoodsDeparted.formId must be("GoodsDeparted")
     }
 
-    "has correct values for allowed places" in {
-
-      GoodsDeparted.AllowedPlaces.outOfTheUk must be("OutOfTheUk")
-      GoodsDeparted.AllowedPlaces.backIntoTheUk must be("BackIntoTheUk")
-    }
-
     "has list contained allowed places" in {
 
       GoodsDeparted.allowedPlaces.length must be(2)

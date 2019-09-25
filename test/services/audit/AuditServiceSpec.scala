@@ -83,7 +83,7 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustoms
         ArrivalReference.formId -> Json.toJson(ArrivalReference(Some("213"))),
         GoodsDeparted.formId -> Json.toJson(GoodsDeparted("Bricks")),
         ConsignmentReferences.formId -> Json.toJson(ConsignmentReferences("reference", "value")),
-        Transport.formId -> Json.toJson(Transport("1", "GB"))
+        Transport.formId -> Json.toJson(Transport("1", "GB", "SHIP-123"))
       )
 
       val cacheMap = CacheMap(id = "CacheID", data = expectedResult)

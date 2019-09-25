@@ -24,6 +24,8 @@
 
 @(form: Form[Transport], choice: String)(implicit request: Request[_], messages: Messages)
 
+@radio(mode: String) = { RadioOption(mode, mode, Transport.messageKey(mode)) }
+
 @main_template(title = messages("transport.title")) {
     @helper.form(routes.TransportController.saveTransport(), 'autoComplete -> "off") {
         @helper.CSRF.formField
@@ -38,25 +40,34 @@
 
         @components.page_title(Some("transport.title"))
 
+
+
         @components.input_radio(
             field = form("modeOfTransport"),
             legend = messages("transport.modeOfTransport.question"),
-            hint = Some(messages("transport.modeOfTransport.hint")),
             inputs = Seq(
-                RadioOption(Sea, Sea, "transport.modeOfTransport.sea"),
-                RadioOption(Rail, Rail, "transport.modeOfTransport.rail"),
-                RadioOption(Road, Road, "transport.modeOfTransport.road"),
-                RadioOption(Air, Air, "transport.modeOfTransport.air"),
-                RadioOption(PostalOrMail, PostalOrMail, "transport.modeOfTransport.postalOrMail"),
-                RadioOption(FixedInstallations, FixedInstallations, "transport.modeOfTransport.fixed"),
-                RadioOption(InlandWaterway, InlandWaterway, "transport.modeOfTransport.inlandWaterway"),
-                RadioOption(Other, Other, "transport.modeOfTransport.other")
+                RadioOption(Sea, Sea, s"transport.modeOfTransport.$Sea"),
+                RadioOption(Rail, Rail, s"transport.modeOfTransport.$Rail"),
+                RadioOption(Road, Road, s"transport.modeOfTransport.$Road"),
+                RadioOption(Air, Air, s"transport.modeOfTransport.$Air"),
+                RadioOption(PostalOrMail, PostalOrMail, s"transport.modeOfTransport.$PostalOrMail"),
+                RadioOption(FixedInstallations, FixedInstallations, s"transport.modeOfTransport.$FixedInstallations"),
+                RadioOption(InlandWaterway, InlandWaterway, s"transport.modeOfTransport.$InlandWaterway"),
+                RadioOption(Other, Other, s"transport.modeOfTransport.$Other")
             )
+        )
+
+        @components.input_text(
+            field = form("transportId"),
+            label = messages("transport.transportId.question"),
+            labelClass = Some("bold-small"),
+            hint = Some(messages("transport.transportId.hint"))
         )
 
         @components.input_text(
             field = form("nationality"),
             label = messages("transport.nationality.question"),
+            labelClass = Some("bold-small"),
             hint = Some(messages("transport.nationality.hint"))
         )
 

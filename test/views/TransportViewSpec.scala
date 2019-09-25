@@ -24,7 +24,7 @@ import views.base.ViewSpec
 
 class TransportViewSpec extends ViewSpec with TransportMessages with CommonMessages {
 
-  private val form: Form[Transport] = Transport.form()
+  private val form: Form[Transport] = Transport.form
   private val transportPage = injector.instanceOf[views.html.transport]
 
   private def createArrivalView(form: Form[Transport] = form): Html =
@@ -38,8 +38,7 @@ class TransportViewSpec extends ViewSpec with TransportMessages with CommonMessa
     "have a proper labels for messages" in {
 
       assertMessage(title, "Transport")
-      assertMessage(modeOfTransportQuestion, "What is the mode of transport at the border?")
-      assertMessage(modeOfTransportHint, "The transport that the goods will be loaded on when the depart at the border")
+      assertMessage(modeOfTransportQuestion, "What transport type took the goods across the border?")
       assertMessage(modeOfTransportSea, "Sea transport")
       assertMessage(modeOfTransportRail, "Rail transport")
       assertMessage(modeOfTransportRoad, "Road transport")
@@ -48,15 +47,15 @@ class TransportViewSpec extends ViewSpec with TransportMessages with CommonMessa
       assertMessage(modeOfTransportFixed, "Fixed transport installations")
       assertMessage(modeOfTransportInland, "Inland waterway transport")
       assertMessage(modeOfTransportOther, "Other, for example own propulsion")
-      assertMessage(nationalityQuestion, "Nationality of transport crossing the border")
-      assertMessage(nationalityHint, "A 2 digit code")
+      assertMessage(nationalityQuestion, "What is the nationality of the transport type?")
+      assertMessage(nationalityHint, "This is a 2 digit country code. For example FR for France.")
     }
 
     "have a proper labels for errors" in {
 
       assertMessage(modeOfTransportEmpty, "You need to choose mode of transport")
       assertMessage(modeOfTransportError, "Mode of transport is incorrect")
-      assertMessage(nationalityEmpty, "Please provide nationality of transport")
+      assertMessage(nationalityEmpty, "You need to provide the transport nationality")
       assertMessage(nationalityError, "Nationality of transport is incorrect")
     }
   }
@@ -76,7 +75,6 @@ class TransportViewSpec extends ViewSpec with TransportMessages with CommonMessa
     "display input for mode of transport with all possible answers" in {
 
       getElementById(createArrivalView(), "modeOfTransport-label").text() must be(messages(modeOfTransportQuestion))
-      getElementById(createArrivalView(), "modeOfTransport-hint").text() must be(messages(modeOfTransportHint))
       getElementById(createArrivalView(), "1-label").text() must be(messages(modeOfTransportSea))
       getElementById(createArrivalView(), "2-label").text() must be(messages(modeOfTransportRail))
       getElementById(createArrivalView(), "3-label").text() must be(messages(modeOfTransportRoad))

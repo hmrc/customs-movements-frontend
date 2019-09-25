@@ -133,7 +133,7 @@ class GoodsDepartedControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to summary page" when {
+    "return 303 (SEE_OTHER) and redirect to movement details (date) page" when {
 
       "user choose back into the UK option" in {
 
@@ -145,7 +145,7 @@ class GoodsDepartedControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveGoodsDeparted()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.SummaryController.displayPage().url
+        redirectLocation(result).value mustBe routes.MovementDetailsController.displayPage().url
       }
     }
   }

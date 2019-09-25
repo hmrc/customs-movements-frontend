@@ -105,7 +105,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to transport page" when {
+    "return 303 (SEE_OTHER) and redirect to summary page" when {
 
       "form is correct and user is during arrival journey" in {
 
@@ -117,7 +117,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveLocation()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.TransportController.displayPage().url
+        redirectLocation(result).value mustBe routes.SummaryController.displayPage().url
       }
     }
 

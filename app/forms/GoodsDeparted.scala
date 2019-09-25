@@ -29,8 +29,8 @@ object GoodsDeparted {
   val formId = "GoodsDeparted"
 
   object AllowedPlaces {
-    val outOfTheUk = "OutOfTheUk"
-    val backIntoTheUk = "BackIntoTheUk"
+    val outOfTheUk = "outOfTheUk"
+    val backIntoTheUk = "backIntoTheUk"
   }
 
   import AllowedPlaces._
@@ -43,4 +43,5 @@ object GoodsDeparted {
   )(GoodsDeparted.apply)(GoodsDeparted.unapply)
 
   def form(): Form[GoodsDeparted] = Form(mapping)
+
 }

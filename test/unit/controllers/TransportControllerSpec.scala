@@ -81,7 +81,7 @@ class TransportControllerSpec extends ControllerSpec with OptionValues {
 
       "display page method is invoked and cache contains data" in {
 
-        val cachedData = Transport(Sea, "PL")
+        val cachedData = Transport(Sea, "PL", "")
         withCaching(Transport.formId, Some(cachedData))
 
         val result = controller.displayPage()(getRequest())
@@ -112,7 +112,13 @@ class TransportControllerSpec extends ControllerSpec with OptionValues {
 
         withCaching(Transport.formId)
 
-        val incorrectForm: JsValue = JsObject(Map("modeOfTransport" -> JsString(Sea), "nationality" -> JsString("PL")))
+        val incorrectForm: JsValue = JsObject(
+          Map(
+            "modeOfTransport" -> JsString(Sea),
+            "nationality" -> JsString("PL"),
+            "transportId" -> JsString("someReference")
+          )
+        )
 
         val result = controller.saveTransport()(postRequest(incorrectForm))
 

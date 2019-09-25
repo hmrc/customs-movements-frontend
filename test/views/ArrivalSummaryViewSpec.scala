@@ -94,12 +94,5 @@ class ArrivalSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
       arrivalSummaryContent must include("location.title")
       arrivalSummaryContent must include("summary.goodsLocation")
     }
-
-    "have correct transport part" in {
-
-      arrivalSummaryContent must include("transport.title")
-      arrivalSummaryContent must include("summary.modeOfTransport")
-      arrivalSummaryContent must include("summary.nationality")
-    }
   }
 }

@@ -104,7 +104,7 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
-          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
+          timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
             s"<p>${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} ${crcCodeKeyFromDecoder.contentKey}</p>"
           )
@@ -133,7 +133,7 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
-          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
+          timestampInfo = "23 Oct 2019 at 12:34",
           content = Html("")
         )
 
@@ -166,7 +166,7 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
-          timestampInfo = messages("notifications.elem.timestampInfo.response", "23 Oct 2019 at 12:34"),
+          timestampInfo = "23 Oct 2019 at 12:34",
           content = Html("")
         )
 

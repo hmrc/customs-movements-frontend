@@ -58,7 +58,7 @@ class NotificationPageSingleElementFactory @Inject()(
 
     NotificationsPageSingleElement(
       title = messages(s"notifications.elem.title.${submission.actionType.value}"),
-      timestampInfo = timestampInfoRequest(submission.requestTimestamp),
+      timestampInfo = dateTimeFormatter.format(submission.requestTimestamp),
       content = content
     )
   }
@@ -91,14 +91,8 @@ class NotificationPageSingleElementFactory @Inject()(
   )(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
       title = messages("notifications.elem.title.unspecified"),
-      timestampInfo = timestampInfoResponse(responseTimestamp),
+      timestampInfo = dateTimeFormatter.format(responseTimestamp),
       content = HtmlFormat.empty
     )
-
-  private def timestampInfoRequest(responseTimestamp: Instant)(implicit messages: Messages): String =
-    messages("notifications.elem.timestampInfo.request", dateTimeFormatter.format(responseTimestamp))
-
-  private def timestampInfoResponse(responseTimestamp: Instant)(implicit messages: Messages): String =
-    messages("notifications.elem.timestampInfo.response", dateTimeFormatter.format(responseTimestamp))
 
 }

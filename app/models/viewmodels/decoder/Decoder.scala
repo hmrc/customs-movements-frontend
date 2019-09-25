@@ -33,7 +33,7 @@ class Decoder {
 
   def actionCode(code: String): Option[ActionCode] = ActionCode.codes.find(_.code == code)
 
-  def ileErrorCode(code: String): Option[ErrorCode] = ErrorCode.codes.find(_.code == code)
+  def ileErrorCode(code: String): Option[ILEError] = ILEError.allErrors.find(_.code == code)
 
   def chiefErrorCode(code: String): Option[CHIEFError] = CHIEFError(code)
 }

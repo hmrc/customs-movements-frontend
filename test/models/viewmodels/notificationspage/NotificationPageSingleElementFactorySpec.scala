@@ -48,7 +48,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
   private val ducrSoeKeyFromDecoder = SOECode.DeclarationAcceptance
   private val mucrSoeKeyFromDecoder = SOECode.ConsolidationOpen
   private val AcknowledgedAndProcessedActionCode = ActionCode.AcknowledgedAndProcessed
-  private val MucrNotShutConsolidationErrorCode = ErrorCode.MucrNotShutConsolidation
+  private val MucrNotShutConsolidationErrorCode = ILEError("04", "Cannot consolidate the MUCR as it is not shut")
 
   private trait Test {
     implicit val messages: Messages = stubMessages()

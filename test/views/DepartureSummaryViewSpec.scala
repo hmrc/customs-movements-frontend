@@ -53,6 +53,10 @@ class DepartureSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
       messages("summary.goodsLocation") mustBe "Goods Location"
       messages("summary.modeOfTransport") mustBe "Mode of transport"
       messages("summary.nationality") mustBe "Nationality"
+      messages("summary.nationality") mustBe "Nationality"
+      messages("goodsDeparted.departedPlace.outOfTheUk") mustBe "Out of the UK"
+      messages("goodsDeparted.departedPlace.backIntoTheUk") mustBe "Back into the UK"
+      messages("transport.modeOfTransport.rail") mustBe "Rail transport"
     }
   }
 
@@ -86,12 +90,16 @@ class DepartureSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
 
       departureSummaryContentOut must include("departureDetails.title")
       departureSummaryContentOut must include("summary.departure.date")
+      departureSummaryContentOut must include("summary.departure.goodsDeparted")
+      departureSummaryContentOut must include("goodsDeparted.departedPlace.outOfTheUk")
     }
 
     "have correct departure details part for depart in" in {
 
       departureSummaryContentIn must include("departureDetails.title")
       departureSummaryContentIn must include("summary.departure.date")
+      departureSummaryContentIn must include("summary.departure.goodsDeparted")
+      departureSummaryContentIn must include("goodsDeparted.departedPlace.backIntoTheUk")
     }
 
     "have correct location part" in {
@@ -106,6 +114,7 @@ class DepartureSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
       departureSummaryContentOut must include("summary.modeOfTransport")
       departureSummaryContentOut must include("summary.transportId")
       departureSummaryContentOut must include("summary.nationality")
+      departureSummaryContentOut must include("transport.modeOfTransport.rail")
     }
 
     "not have correct transport part for depart in" in {

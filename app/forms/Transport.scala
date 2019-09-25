@@ -61,14 +61,14 @@ object Transport {
 
   def messageKey(mode: String) =
     s"transport.modeOfTransport.${mode match {
-      case Sea                => "sea"
-      case Rail               => "rail"
-      case Road               => "road"
-      case Air                => "air"
-      case PostalOrMail       => "postalOrMail"
-      case FixedInstallations => "fixed"
-      case InlandWaterway     => "inlandWaterway"
-      case Other              => "other"
-      case _                  => "unknown"
+      case ModesOfTransport.Sea                => "sea"
+      case ModesOfTransport.Rail               => "rail"
+      case ModesOfTransport.Road               => "road"
+      case ModesOfTransport.Air                => "air"
+      case ModesOfTransport.PostalOrMail       => "postalOrMail"
+      case ModesOfTransport.FixedInstallations => "fixed"
+      case ModesOfTransport.InlandWaterway     => "inlandWaterway"
+      case ModesOfTransport.Other              => "other"
+      case _                                   => "unknown"
     }}"
 }

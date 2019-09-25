@@ -57,7 +57,7 @@ object MovementsTestData {
   val location: JsValue = Json.toJson(Location("A", "Y", "correct", "PL"))
 
   val correctTransport: JsValue = JsObject(
-    Map("modeOfTransport" -> JsString("M"), "nationality" -> JsString("PL"), "transportId" -> JsString("REF"))
+    Map("modeOfTransport" -> JsString("2"), "nationality" -> JsString("PL"), "transportId" -> JsString("REF"))
   )
 
   def arrivalReference(movementType: String): ArrivalReference =

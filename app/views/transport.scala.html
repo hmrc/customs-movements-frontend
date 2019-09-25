@@ -45,7 +45,6 @@
         @components.input_radio(
             field = form("modeOfTransport"),
             legend = messages("transport.modeOfTransport.question"),
-            hint = Some(messages("transport.modeOfTransport.hint")),
             inputs = Seq(
                 RadioOption(Sea, Sea, Transport.messageKey(Sea)),
                 RadioOption(Rail, Rail, Transport.messageKey(Rail)),

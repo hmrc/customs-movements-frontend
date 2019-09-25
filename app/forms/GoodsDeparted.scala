@@ -45,9 +45,9 @@ object GoodsDeparted {
   def form(): Form[GoodsDeparted] = Form(mapping)
 
   def messageKey(place: String) =
-    s"transport.modeOfTransport.${place match {
-      case outOfTheUk    => "outOfTheUk"
-      case backIntoTheUk => "backIntoTheUk"
-      case _             => "unknown"
+    s"goodsDeparted.departedPlace.${place match {
+      case AllowedPlaces.outOfTheUk    => "outOfTheUk"
+      case AllowedPlaces.backIntoTheUk => "backIntoTheUk"
+      case _                           => "unknown"
     }}"
 }

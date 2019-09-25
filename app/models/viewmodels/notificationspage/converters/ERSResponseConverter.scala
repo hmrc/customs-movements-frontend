@@ -75,7 +75,7 @@ class ERSResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTi
   private def buildIcsCodeExplanation(icsCode: String)(implicit messages: Messages): Option[Html] = {
     val icsCodeExplanationText = decoder.ics(icsCode).map(code => messages(code.contentKey))
 
-    icsCodeExplanationText.map(explanation => paragraph(explanation)).map(Html(_))
+    icsCodeExplanationText.map(explanation => Html(paragraph(explanation)))
   }
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"

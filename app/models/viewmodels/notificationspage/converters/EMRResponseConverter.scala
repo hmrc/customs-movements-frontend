@@ -60,7 +60,7 @@ class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTi
   private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[Html] = {
     val crcCodeExplanationText = decoder.crc(crcCode).map(code => messages(code.contentKey))
 
-    crcCodeExplanationText.map(explanation => paragraph(explanation)).map(Html(_))
+    crcCodeExplanationText.map(explanation => Html(paragraph(explanation)))
   }
 
   private def buildRoeCodeExplanation(roeCode: String)(implicit messages: Messages): Option[Html] = {

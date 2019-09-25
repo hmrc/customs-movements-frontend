@@ -21,6 +21,12 @@ import play.api.Logger
 
 import scala.io.Source
 
+/** CHIEF errors mapping based on Status DE-code document.
+  * Details can be found in Exports Notifications Behaviour sheet.
+  *
+  * @param code the code value
+  * @param description description for this error code
+  */
 case class CHIEFError(code: String, description: String)
 
 object CHIEFError {

@@ -25,7 +25,8 @@ import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.MovementTotalsResponseType.EMR
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
-import play.twirl.api.Html
+import play.twirl.api.{Html, HtmlFormat}
+import views.html.components.code_explanation
 
 @Singleton
 class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
@@ -39,15 +40,16 @@ class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTi
   )(implicit messages: Messages): NotificationsPageSingleElement =
     if (canConvertFrom(notification)) {
 
-      val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation)
-      val roeCodeExplanation = findMucrEntry(notification.entries).flatMap(_.roe).flatMap(buildRoeCodeExplanation)
-      val soeCodeExplanation = findMucrEntry(notification.entries).flatMap(_.soe).flatMap(buildSoeCodeExplanation)
+      val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation).getOrElse(HtmlFormat.empty)
+      val roeCodeExplanation =
+        findMucrEntry(notification.entries).flatMap(_.roe).flatMap(buildRoeCodeExplanation).getOrElse(HtmlFormat.empty)
+      val soeCodeExplanation =
+        findMucrEntry(notification.entries).flatMap(_.soe).flatMap(buildSoeCodeExplanation).getOrElse(HtmlFormat.empty)
 
       NotificationsPageSingleElement(
         title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
         timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
-        content =
-          Html(crcCodeExplanation.getOrElse("") + roeCodeExplanation.getOrElse("") + soeCodeExplanation.getOrElse(""))
+        content = new Html(List(crcCodeExplanation, roeCodeExplanation, soeCodeExplanation))
       )
     } else {
       throw new IllegalArgumentException(s"Cannot build content for ${notification.responseType}")
@@ -55,24 +57,24 @@ class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTi
 
   private def findMucrEntry(entries: Seq[Entry]): Option[Entry] = entries.find(_.ucrType.contains("M"))
 
-  private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[String] = {
+  private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[Html] = {
     val crcCodeExplanationText = decoder.crc(crcCode).map(code => messages(code.contentKey))
 
-    crcCodeExplanationText.map(explanation => paragraph(explanation))
+    crcCodeExplanationText.map(explanation => paragraph(explanation)).map(Html(_))
   }
 
-  private def buildRoeCodeExplanation(roeCode: String)(implicit messages: Messages): Option[String] = {
+  private def buildRoeCodeExplanation(roeCode: String)(implicit messages: Messages): Option[Html] = {
     val RoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")
     val roeCodeExplanationText = decoder.roe(roeCode).map(code => messages(code.contentKey))
 
-    roeCodeExplanationText.map(explanation => paragraph(s"$RoeCodeHeader $explanation"))
+    roeCodeExplanationText.map(explanation => code_explanation(RoeCodeHeader, explanation))
   }
 
-  private def buildSoeCodeExplanation(soeCode: String)(implicit messages: Messages): Option[String] = {
+  private def buildSoeCodeExplanation(soeCode: String)(implicit messages: Messages): Option[Html] = {
     val SoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")
     val soeCodeExplanationText = decoder.mucrSoe(soeCode).map(code => messages(code.contentKey))
 
-    soeCodeExplanationText.map(explanation => paragraph(s"$SoeCodeHeader $explanation"))
+    soeCodeExplanationText.map(explanation => code_explanation(SoeCodeHeader, explanation))
   }
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"

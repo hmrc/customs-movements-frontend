@@ -118,17 +118,25 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
       "return NotificationsPageSingleElement with values returned by Messages" in new Test {
 
         val input = emrResponseAllCodes
-        val expectedResult = NotificationsPageSingleElement(
-          title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-          timestampInfo = "23 Oct 2019 at 12:34",
-          content = Html(
-            s"<p>${messages(crcKeyFromDecoder.contentKey)}</p>" +
-              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} ${messages(roeKeyFromDecoder.contentKey)}</p>" +
-              s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} ${messages(mucrSoeKeyFromDecoder.contentKey)}</p>"
-          )
+        val expectedTitle = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
+        val expectedTimestampInfo = "23 Oct 2019 at 12:34"
+        val expectedContentElements = Seq(
+          messages(crcKeyFromDecoder.contentKey),
+          messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe"),
+          messages(roeKeyFromDecoder.contentKey),
+          messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe"),
+          messages(mucrSoeKeyFromDecoder.contentKey)
         )
 
-        contentBuilder.convert(input) mustBe expectedResult
+        val result = contentBuilder.convert(input)
+
+        result.title mustBe expectedTitle
+        result.timestampInfo mustBe expectedTimestampInfo
+
+        val contentAsString = result.content.toString()
+        expectedContentElements.map { contentElement =>
+          contentAsString must include(contentElement)
+        }
       }
     }
 
@@ -148,15 +156,22 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
       "return NotificationsPageSingleElement without content for missing codes" in new Test {
 
         val input = emrResponseMissingCodes
-        val expectedResult = NotificationsPageSingleElement(
-          title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-          timestampInfo = "23 Oct 2019 at 12:34",
-          content = Html(
-            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} ${messages(roeKeyFromDecoder.contentKey)}</p>"
-          )
+        val expectedTitle = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
+        val expectedTimestampInfo = "23 Oct 2019 at 12:34"
+        val expectedContentElements = Seq(
+          messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe"),
+          messages(roeKeyFromDecoder.contentKey)
         )
 
-        contentBuilder.convert(input) mustBe expectedResult
+        val result = contentBuilder.convert(input)
+
+        result.title mustBe expectedTitle
+        result.timestampInfo mustBe expectedTimestampInfo
+
+        val contentAsString = result.content.toString()
+        expectedContentElements.map { contentElement =>
+          contentAsString must include(contentElement)
+        }
       }
     }
 

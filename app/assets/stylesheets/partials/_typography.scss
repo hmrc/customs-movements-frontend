@@ -26,7 +26,6 @@ p.font-xsmall{
   }
 }
 
-
 /*give some space to the hero*/
 .hero {
   margin: 1em 0;
@@ -34,4 +33,18 @@ p.font-xsmall{
 .hero__heading-large,
 .hero__heading-small {
   display: block;
+}
+
+/*
+====================================
+Utility bold
+Pulled from GDS elements typography
+====================================
+*/
+.bold {
+  font-weight: 700;
+}
+
+.normal {
+  font-weight: normal;
 }

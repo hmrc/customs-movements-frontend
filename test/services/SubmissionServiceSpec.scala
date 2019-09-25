@@ -29,7 +29,7 @@ import org.scalatest.{BeforeAndAfterEach, MustMatchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers.ACCEPTED
-import services.audit.AuditService
+import services.audit.{AuditService, AuditTypes}
 import testdata.ConsolidationTestData._
 import testdata.MovementsTestData._
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -97,12 +97,9 @@ class SubmissionServiceSpec
         submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue must equal(
           CustomHttpResponseCode
         )
-        verify(mockAuditService).auditMovements(
-          any(),
-          any(),
-          any(),
-          ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Arrival))
-        )(any())
+        verify(mockAuditService).auditMovements(any(), any(), any(), ArgumentMatchers.eq(AuditTypes.AuditArrival))(
+          any()
+        )
         verify(mockAuditService)
           .auditAllPagesUserInput(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Arrival)), any())(any())
       }
@@ -115,12 +112,9 @@ class SubmissionServiceSpec
         submissionService.submitMovementRequest("EAL-eori1", "eori1", Choice(Arrival)).futureValue
 
         verify(customsExportsMovementConnectorMock).sendArrivalDeclaration(any())(any(), any())
-        verify(mockAuditService).auditMovements(
-          any(),
-          any(),
-          any(),
-          ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Arrival))
-        )(any())
+        verify(mockAuditService).auditMovements(any(), any(), any(), ArgumentMatchers.eq(AuditTypes.AuditArrival))(
+          any()
+        )
         verify(mockAuditService)
           .auditAllPagesUserInput(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Arrival)), any())(any())
       }
@@ -150,12 +144,9 @@ class SubmissionServiceSpec
         submissionService.submitMovementRequest("EDL-eori1", "eori1", Choice(Departure)).futureValue must equal(
           CustomHttpResponseCode
         )
-        verify(mockAuditService).auditMovements(
-          any(),
-          any(),
-          any(),
-          ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Departure))
-        )(any())
+        verify(mockAuditService).auditMovements(any(), any(), any(), ArgumentMatchers.eq(AuditTypes.AuditDeparture))(
+          any()
+        )
         verify(mockAuditService)
           .auditAllPagesUserInput(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Departure)), any())(any())
       }
@@ -168,12 +159,9 @@ class SubmissionServiceSpec
         submissionService.submitMovementRequest("EDL-eori1", "eori1", Choice(Departure)).futureValue
 
         verify(customsExportsMovementConnectorMock).sendDepartureDeclaration(any())(any(), any())
-        verify(mockAuditService).auditMovements(
-          any(),
-          any(),
-          any(),
-          ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Departure))
-        )(any())
+        verify(mockAuditService).auditMovements(any(), any(), any(), ArgumentMatchers.eq(AuditTypes.AuditDeparture))(
+          any()
+        )
         verify(mockAuditService)
           .auditAllPagesUserInput(ArgumentMatchers.eq(Choice(Choice.AllowedChoiceValues.Departure)), any())(any())
       }

@@ -16,7 +16,6 @@
 
 package models.viewmodels.notificationspage.converters
 
-import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
@@ -43,11 +42,11 @@ class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: Da
     if (canConvertFrom(notification)) {
 
       val actionCodeExplanation = notification.actionCode.flatMap(buildActionCodeExplanation)
-      val errorsExplanation = buildErrorsExplanation(notification.errorCodes)
+      val errorsExplanation = notification.errorCodes.map(buildErrorExplanation).flatten.foldLeft("")(_ + _)
 
       NotificationsPageSingleElement(
         title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
-        timestampInfo = timestampInfoResponse(notification.timestampReceived),
+        timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
         content = Html(actionCodeExplanation.getOrElse("") + errorsExplanation)
       )
     } else {
@@ -57,19 +56,25 @@ class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: Da
   private def buildActionCodeExplanation(actionCode: String)(implicit messages: Messages): Option[String] =
     decoder.actionCode(actionCode).map(code => paragraph(messages(code.contentKey)))
 
-  private def buildErrorsExplanation(errorCodes: Seq[String])(implicit messages: Messages): String = {
-    val errorsExplanation = errorCodes.flatMap { code =>
-      val errorCode = decoder.errorCode(code)
-      if (errorCode.isEmpty) logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $code")
+  private def buildErrorExplanation(errorCode: String)(implicit messages: Messages): Option[String] = {
+    val isChiefError = decoder.chiefErrorCode(errorCode).isDefined
 
-      errorCode
-    }
-    errorsExplanation.map(errorCode => paragraph(messages(errorCode.contentKey))).foldLeft("")(_ + _)
+    if (isChiefError) buildCHIEFErrorExplanation(errorCode)
+    else buildILEErrorExplanation(errorCode)
   }
 
-  private val paragraph: String => String = (text: String) => s"<p>$text</p>"
+  // TODO move logging for missing error codes to backend
+  private def buildILEErrorExplanation(errorCode: String)(implicit messages: Messages): Option[String] =
+    decoder.ileErrorCode(errorCode).map(error => paragraph(messages(error.contentKey))) match {
+      case None =>
+        logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $errorCode")
+        None
+      case error => error
+    }
 
-  private def timestampInfoResponse(responseTimestamp: Instant)(implicit messages: Messages): String =
-    messages("notifications.elem.timestampInfo.response", dateTimeFormatter.format(responseTimestamp))
+  private def buildCHIEFErrorExplanation(errorCode: String): Option[String] =
+    decoder.chiefErrorCode(errorCode).map(error => paragraph(error.description))
+
+  private val paragraph: String => String = (text: String) => s"<p>$text</p>"
 
 }

@@ -23,8 +23,7 @@ import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
 import models.external.requests.InventoryLinkingConsolidationRequestFactory._
 import play.api.http.Status.INTERNAL_SERVER_ERROR
-import play.api.libs.json.{JsObject, Json}
-import services.audit.AuditService
+import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
@@ -48,12 +47,15 @@ class SubmissionService @Inject()(
         val data = Movement.createMovementRequest(cacheMap, eori, choice)
         val timer = metrics.startTimer(choice.value)
 
-        auditService.auditAllPagesUserInput(choice, Json.toJson(cacheMap).as[JsObject])
+        auditService.auditAllPagesUserInput(choice, cacheMap)
+
+        val movementAuditType =
+          if (choice.value == Choice.AllowedChoiceValues.Arrival) AuditTypes.AuditArrival else AuditTypes.AuditDeparture
 
         sendMovementRequest(choice, data).map { submitResponse =>
           metrics.incrementCounter(data.messageCode)
           auditService
-            .auditMovements(eori, data, submitResponse.status.toString, choice)
+            .auditMovements(eori, data, submitResponse.status.toString, movementAuditType)
           timer.stop()
           submitResponse.status
         }

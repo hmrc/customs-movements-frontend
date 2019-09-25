@@ -13,15 +13,15 @@
   list-style: none;
 }
 
-.exports-notifications__step:nth-last-child(even) .exports-notifications__header {
+.exports-notifications__step:nth-last-child(odd) .exports-notifications__header {
   background-color: govuk-colour("grey-5");
 }
 
-.exports-notifications__step:nth-last-child(even) .govuk-form-group {
+.exports-notifications__step:nth-last-child(odd) .govuk-form-group {
   background-color: govuk-colour("grey-5");
 }
 
-.exports-notifications__step:nth-last-child(even) .exports-notifications__panel {
+.exports-notifications__step:nth-last-child(odd) .exports-notifications__panel {
   border-bottom: solid 2px govuk-colour("grey-3");
 }
 

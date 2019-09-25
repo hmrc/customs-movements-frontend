@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package filters
+@(header: String, explanation: String)
 
-import base.MovementBaseSpec
-import play.api.http.HttpFilters
-
-class ApplicationFiltersIntegrationTest extends MovementBaseSpec {
-
-  "Application filter" should {
-    "contains whitespace filter" in {
-      atLeast(1, app.injector.instanceOf[HttpFilters].filters) mustBe a[WhitelistIpFilter]
-    }
-  }
-
-}
+<div>
+ <p><span class="bold">@header</span><span class="normal"> @explanation</span></p>
+</div>

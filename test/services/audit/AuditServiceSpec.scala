@@ -15,22 +15,24 @@
  */
 
 package services.audit
-import base.BaseSpec
-import forms.Choice
+import base.{BaseSpec, MockCustomsCacheService}
+import forms._
+import forms.common.{Date, Time}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar.mock
+import play.api.libs.json.Json
 import services.audit.EventData._
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.wco.dec.inventorylinking.common.UcrBlock
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach {
+class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustomsCacheService {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
   implicit val headerCarrier = HeaderCarrier()
@@ -48,7 +50,7 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach {
     "audit Shut a Mucr data" in {
       val dataToAudit = Map(EORI.toString -> "eori", MUCR.toString -> "mucr", SubmissionResult.toString -> "200")
       spyAuditService.auditShutMucr("eori", "mucr", "200")
-      verify(spyAuditService).audit(Choice(Choice.AllowedChoiceValues.ShutMucr), dataToAudit)
+      verify(spyAuditService).audit(AuditTypes.AuditShutMucr, dataToAudit)
     }
 
     "audit an association" in {
@@ -59,13 +61,35 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach {
         SubmissionResult.toString -> "200"
       )
       spyAuditService.auditAssociate("eori", "mucr", "ducr", "200")
-      verify(spyAuditService).audit(Choice(Choice.AllowedChoiceValues.AssociateDUCR), dataToAudit)
+      verify(spyAuditService).audit(AuditTypes.AuditAssociate, dataToAudit)
     }
 
     "audit a disassociation" in {
       val dataToAudit = Map(EORI.toString -> "eori", DUCR.toString -> "ducr", SubmissionResult.toString -> "200")
       spyAuditService.auditDisassociate("eori", "ducr", "200")
-      verify(spyAuditService).audit(Choice(Choice.AllowedChoiceValues.DisassociateDUCR), dataToAudit)
+      verify(spyAuditService).audit(AuditTypes.AuditDisassociate, dataToAudit)
+    }
+
+    "get movements data in a Json format" in {
+
+      val expectedResult = Map(
+        Location.formId -> Json.toJson(Location("A", "U", "correct", "PL")),
+        MovementDetails.formId -> Json.toJson(
+          ArrivalDetails(
+            dateOfArrival = Date(Some(12), Some(1), Some(2019)),
+            timeOfArrival = Time(Some("10"), Some("10"))
+          )
+        ),
+        ArrivalReference.formId -> Json.toJson(ArrivalReference(Some("213"))),
+        GoodsDeparted.formId -> Json.toJson(GoodsDeparted("Bricks")),
+        ConsignmentReferences.formId -> Json.toJson(ConsignmentReferences("reference", "value")),
+        Transport.formId -> Json.toJson(Transport("1", "GB"))
+      )
+
+      val cacheMap = CacheMap(id = "CacheID", data = expectedResult)
+      spyAuditService.getMovementsData(Choice(Choice.AllowedChoiceValues.Arrival), cacheMap) mustBe Json.toJson(
+        expectedResult
+      )
     }
 
     "audit a movement" in {
@@ -79,8 +103,8 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach {
       )
       val data =
         InventoryLinkingMovementRequest(messageCode = "EAD", ucrBlock = UcrBlock("UCR", "D"), goodsLocation = "")
-      spyAuditService.auditMovements("eori", data, "200", Choice(Choice.AllowedChoiceValues.Arrival))
-      verify(spyAuditService).audit(Choice(Choice.AllowedChoiceValues.Arrival), dataToAudit)
+      spyAuditService.auditMovements("eori", data, "200", AuditTypes.AuditArrival)
+      verify(spyAuditService).audit(AuditTypes.AuditArrival, dataToAudit)
     }
   }
 }

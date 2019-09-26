@@ -40,7 +40,7 @@ class CHIEFErrorSpec extends UnitSpec {
 
     "contain correct prefix for all message keys" in {
 
-      val expectedPrefix = "decoder.chiefError."
+      val expectedPrefix = "error.chief."
 
       CHIEFError.allErrors.foreach { error =>
         error.messageKey must include(expectedPrefix)

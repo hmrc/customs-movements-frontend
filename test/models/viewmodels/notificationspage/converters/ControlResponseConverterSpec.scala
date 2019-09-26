@@ -39,12 +39,12 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
   private val testTimestamp = ZonedDateTime.parse(testTimestampString, formatter).toInstant
 
   private val AcknowledgedAndProcessedActionCode = ActionCode.AcknowledgedAndProcessed
-  private val InvalidUcrFormatILEError = ILEError("01", "decoder.ileError.InvalidUcrFormat")
+  private val InvalidUcrFormatILEError = ILEError("01", "error.ile.InvalidUcrFormat")
   private val NoPriorArrivalFoundAtDepartureLocationILEError =
-    ILEError("13", "decoder.ileError.NoPriorArrivalFoundAtDepartureLocation")
-  private val MucrAlreadyDepartedILEError = ILEError("29", "decoder.ileError.MucrAlreadyDeparted")
+    ILEError("13", "error.ile.NoPriorArrivalFoundAtDepartureLocation")
+  private val MucrAlreadyDepartedILEError = ILEError("29", "error.ile.MucrAlreadyDeparted")
 
-  private val UcrNotExistCHIEFError = CHIEFError("E408", "decoder.chiefError.UcrNotExist")
+  private val UcrNotExistCHIEFError = CHIEFError("E408", "error.chief.UcrNotExist")
 
   private trait Test {
     implicit val messages: Messages = stubMessages()
@@ -220,8 +220,8 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
           timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
             s"<p>${messages(ActionCode.Rejected.messageKey)}</p>" +
-              s"<p>${messages("decoder.ileError.InvalidUcrFormat")}</p>" +
-              s"<p>${messages("decoder.ileError.NoPriorArrivalFoundAtDepartureLocation")}</p>"
+              s"<p>${messages("error.ile.InvalidUcrFormat")}</p>" +
+              s"<p>${messages("error.ile.NoPriorArrivalFoundAtDepartureLocation")}</p>"
           )
         )
 

@@ -38,7 +38,7 @@ class ILEErrorSpec extends WordSpec with MustMatchers {
 
     "contain correct prefix for all message keys" in {
 
-      val expectedPrefix = "decoder.ileError."
+      val expectedPrefix = "error.ile."
 
       ILEError.allErrors.foreach { error =>
         error.messageKey must include(expectedPrefix)

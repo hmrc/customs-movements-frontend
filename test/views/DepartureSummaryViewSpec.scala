@@ -72,6 +72,16 @@ class DepartureSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
       departureSummaryViewOut.getElementById("title").text() mustBe messages("summary.departure.title")
     }
 
+    "have correct back link for depart out of uk" in {
+
+      departureSummaryViewOut.getElementById("link-back").attr("href") must endWith("/transport")
+    }
+
+    "have correct back link for depart into of uk" in {
+
+      departureSummaryViewIn.getElementById("link-back").attr("href") must endWith("/movement-details")
+    }
+
     "have correct main buttons" in {
 
       departureSummaryContentOut must include("site.back")

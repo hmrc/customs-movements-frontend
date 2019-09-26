@@ -62,6 +62,11 @@ class ArrivalSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
       arrivalSummaryView.getElementById("title").text() mustBe messages("summary.arrival.title")
     }
 
+    "have correct back link" in {
+
+      arrivalSummaryView.getElementById("link-back").attr("href") must endWith("/location")
+    }
+
     "have correct main buttons" in {
 
       arrivalSummaryContent must include("site.back")

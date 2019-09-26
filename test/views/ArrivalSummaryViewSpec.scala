@@ -16,6 +16,7 @@
 
 package views
 
+import controllers.routes
 import play.api.i18n.MessagesApi
 import play.api.test.Helpers._
 import testdata.MovementsTestData.cacheMapData
@@ -64,7 +65,7 @@ class ArrivalSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
 
     "have correct back link" in {
 
-      arrivalSummaryView.getElementById("link-back").attr("href") must endWith("/location")
+      arrivalSummaryView.getElementById("link-back").attr("href") mustBe routes.LocationController.displayPage().url
     }
 
     "have correct main buttons" in {

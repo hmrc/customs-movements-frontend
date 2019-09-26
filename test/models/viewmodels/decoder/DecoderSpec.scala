@@ -73,14 +73,14 @@ class DecoderSpec extends UnitSpec {
 
       val mucrNotShutDeparture = ILEError("04", "decoder.ileError.MucrNotShutConsolidation")
 
-      decoder.ileErrorCode(mucrNotShutDeparture.code) mustBe Some(mucrNotShutDeparture)
+      decoder.error(mucrNotShutDeparture.code) mustBe Some(mucrNotShutDeparture)
     }
 
     "find correct CHIEF error description" in {
 
       val chiefError = CHIEFError("E2898", "decoder.chiefError.AlreadyArrived")
 
-      decoder.chiefErrorCode(chiefError.code) mustBe Some(chiefError)
+      decoder.error(chiefError.code) mustBe Some(chiefError)
     }
   }
 }

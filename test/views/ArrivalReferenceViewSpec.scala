@@ -70,8 +70,8 @@ class ArrivalReferenceViewSpec extends UnitViewSpec with Stubs with Injector {
 
       val backButton = createView().getElementById("link-back")
 
-      backButton.text() mustBe messages("site.back")
-      backButton.attr("href") mustBe routes.ConsignmentReferencesController.displayPage().url
+      backButton must containText(messages("site.back"))
+      backButton must haveHref(routes.ConsignmentReferencesController.displayPage())
     }
   }
 }

@@ -19,6 +19,7 @@ package views.base
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.scalatest.matchers.{MatchResult, Matcher}
+import play.api.mvc.Call
 
 //noinspection ScalaStyle
 trait ViewMatchers {
@@ -203,4 +204,6 @@ trait ViewMatchers {
       content
     )
   def haveGlobalErrorSummary: Matcher[Element] = new ContainElementWithIDMatcher("error-summary-heading")
+
+  def haveHref(value: Call): Matcher[Element] = new ElementHasAttributeValueMatcher("href", value.url)
 }

@@ -65,7 +65,7 @@ class ArrivalSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
 
     "have correct back link" in {
 
-      arrivalSummaryView.getElementById("link-back").attr("href") mustBe routes.LocationController.displayPage().url
+      arrivalSummaryView.getElementById("link-back") must haveHref(routes.LocationController.displayPage())
     }
 
     "have correct main buttons" in {

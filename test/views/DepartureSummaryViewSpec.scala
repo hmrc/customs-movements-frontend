@@ -75,12 +75,12 @@ class DepartureSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
 
     "have correct back link for depart out of uk" in {
 
-      departureSummaryViewOut.getElementById("link-back").attr("href") mustBe routes.TransportController.displayPage().url
+      departureSummaryViewOut.getElementById("link-back") must haveHref(routes.TransportController.displayPage())
     }
 
     "have correct back link for depart into of uk" in {
 
-      departureSummaryViewIn.getElementById("link-back").attr("href") mustBe routes.MovementDetailsController.displayPage().url
+      departureSummaryViewIn.getElementById("link-back") must haveHref(routes.MovementDetailsController.displayPage())
     }
 
     "have correct main buttons" in {

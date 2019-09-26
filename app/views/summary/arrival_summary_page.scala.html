@@ -26,7 +26,7 @@
 @(data: CacheMap)(implicit request: Request[_], messages: Messages)
 
 @main_template(title = messages("summary.title")){
-    @components.back_link(routes.TransportController.displayPage())
+    @components.back_link(routes.LocationController.displayPage())
 
     @components.page_title(Some("summary.arrival.title"))
 

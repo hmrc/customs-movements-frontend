@@ -16,6 +16,7 @@
 
 package views
 
+import controllers.routes
 import forms.GoodsDeparted
 import forms.GoodsDeparted.AllowedPlaces
 import play.api.i18n.MessagesApi
@@ -70,6 +71,16 @@ class DepartureSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
     "have correct heading" in {
 
       departureSummaryViewOut.getElementById("title").text() mustBe messages("summary.departure.title")
+    }
+
+    "have correct back link for depart out of uk" in {
+
+      departureSummaryViewOut.getElementById("link-back") must haveHref(routes.TransportController.displayPage())
+    }
+
+    "have correct back link for depart into of uk" in {
+
+      departureSummaryViewIn.getElementById("link-back") must haveHref(routes.MovementDetailsController.displayPage())
     }
 
     "have correct main buttons" in {

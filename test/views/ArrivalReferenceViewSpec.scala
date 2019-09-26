@@ -16,6 +16,7 @@
 
 package views
 
+import controllers.routes
 import forms.ArrivalReference
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -69,8 +70,8 @@ class ArrivalReferenceViewSpec extends UnitViewSpec with Stubs with Injector {
 
       val backButton = createView().getElementById("link-back")
 
-      backButton.text() mustBe messages("site.back")
-      backButton.attr("href") must endWith("/consignment-references")
+      backButton must containText(messages("site.back"))
+      backButton must haveHref(routes.ConsignmentReferencesController.displayPage())
     }
   }
 }

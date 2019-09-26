@@ -20,9 +20,9 @@ package models.viewmodels.decoder
   * Details can be found in Exports Notifications Behaviour sheet.
   *
   * @param code the code value
-  * @param contentKey messages key with related description
+  * @param messageKey messages key with related description
   */
-sealed abstract class ROECode(override val code: String, override val contentKey: String) extends CodeWithContentKey
+sealed abstract class ROECode(override val code: String, override val messageKey: String) extends CodeWithMessageKey
 
 object ROECode {
 
@@ -35,13 +35,13 @@ object ROECode {
     PrelodgePrefix
   )
 
-  case object DocumentaryControl extends ROECode(code = "1", contentKey = "decoder.roe.DocumentaryControl")
+  case object DocumentaryControl extends ROECode(code = "1", messageKey = "decoder.roe.DocumentaryControl")
   case object PhysicalExternalPartyControl
-      extends ROECode(code = "2", contentKey = "decoder.roe.PhysicalExternalPartyControl")
+      extends ROECode(code = "2", messageKey = "decoder.roe.PhysicalExternalPartyControl")
   case object NonBlockingDocumentaryControl
-      extends ROECode(code = "3", contentKey = "decoder.roe.NonBlockingDocumentaryControl")
-  case object NoControlRequired extends ROECode(code = "6", contentKey = "decoder.roe.NoControlRequired")
-  case object RiskingNotPerformed extends ROECode(code = "0", contentKey = "decoder.roe.RiskingNotPerformed")
-  case object PrelodgePrefix extends ROECode(code = "H", contentKey = "decoder.roe.PrelodgePrefix")
+      extends ROECode(code = "3", messageKey = "decoder.roe.NonBlockingDocumentaryControl")
+  case object NoControlRequired extends ROECode(code = "6", messageKey = "decoder.roe.NoControlRequired")
+  case object RiskingNotPerformed extends ROECode(code = "0", messageKey = "decoder.roe.RiskingNotPerformed")
+  case object PrelodgePrefix extends ROECode(code = "H", messageKey = "decoder.roe.PrelodgePrefix")
 
 }

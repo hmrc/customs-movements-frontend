@@ -27,6 +27,8 @@ import play.api.Logger
 import play.api.i18n.Messages
 import play.twirl.api.Html
 
+import scala.language.implicitConversions
+
 @Singleton
 class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
     extends NotificationPageSingleElementConverter {
@@ -54,26 +56,14 @@ class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: Da
     }
 
   private def buildActionCodeExplanation(actionCode: String)(implicit messages: Messages): Option[String] =
-    decoder.actionCode(actionCode).map(code => paragraph(messages(code.contentKey)))
-
-  private def buildErrorExplanation(errorCode: String)(implicit messages: Messages): Option[String] = {
-    val isChiefError = decoder.chiefErrorCode(errorCode).isDefined
-
-    if (isChiefError) buildCHIEFErrorExplanation(errorCode)
-    else buildILEErrorExplanation(errorCode)
-  }
+    decoder.actionCode(actionCode).map(code => paragraph(messages(code.messageKey)))
 
   // TODO move logging for missing error codes to backend
-  private def buildILEErrorExplanation(errorCode: String)(implicit messages: Messages): Option[String] =
-    decoder.ileErrorCode(errorCode).map(error => paragraph(messages(error.contentKey))) match {
-      case None =>
-        logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $errorCode")
-        None
-      case error => error
+  private def buildErrorExplanation(errorCode: String)(implicit messages: Messages): Option[String] =
+    decoder.error(errorCode).map(error => paragraph(messages(error.messageKey))).orElse {
+      logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $errorCode")
+      None
     }
-
-  private def buildCHIEFErrorExplanation(errorCode: String): Option[String] =
-    decoder.chiefErrorCode(errorCode).map(error => paragraph(error.description))
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"
 

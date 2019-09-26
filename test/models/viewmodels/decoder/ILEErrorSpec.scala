@@ -16,23 +16,21 @@
 
 package models.viewmodels.decoder
 
-import unit.base.UnitSpec
+import org.scalatest.{MustMatchers, WordSpec}
 
-class CHIEFErrorSpec extends UnitSpec {
+class ILEErrorSpec extends WordSpec with MustMatchers {
 
-  val expectedCHIEFError = CHIEFError("E408", "Unique Consignment reference does not exist")
-
-  "CHIEF Error" should {
+  "ILE Error" should {
 
     "have correct amount of codes" in {
 
-      val expectedCodesAmount = 25
-      CHIEFError.allErrors.size mustBe expectedCodesAmount
+      val expectedCodesAmount = 29
+      ILEError.allErrors.size mustBe expectedCodesAmount
     }
 
     "contain non-empty code and description for every error" in {
 
-      CHIEFError.allErrors.foreach { error =>
+      ILEError.allErrors.foreach { error =>
         error.code mustNot be(empty)
         error.messageKey mustNot be(empty)
       }
@@ -40,38 +38,31 @@ class CHIEFErrorSpec extends UnitSpec {
 
     "contain correct prefix for all message keys" in {
 
-      val expectedPrefix = "error.chief."
+      val expectedPrefix = "error.ile."
 
-      CHIEFError.allErrors.foreach { error =>
+      ILEError.allErrors.foreach { error =>
         error.messageKey must include(expectedPrefix)
       }
     }
   }
 
-  "CHIEF Error on apply" should {
-
-    "create CHIEF error based on list with 2 strings" in {
-
-      val correctCHIEFError = List("E408", "Unique Consignment reference does not exist")
-
-      CHIEFError(correctCHIEFError) mustBe expectedCHIEFError
-    }
+  "ILE Error on apply" should {
 
     "throw IllegalArgumentException" when {
 
       "list is empty" in {
 
-        intercept[IllegalArgumentException] { CHIEFError(List.empty) }
+        intercept[IllegalArgumentException] { ILEError(List.empty) }
       }
 
       "list contains only one element" in {
 
-        intercept[IllegalArgumentException] { CHIEFError(List("code")) }
+        intercept[IllegalArgumentException] { ILEError(List("code")) }
       }
 
       "list contains more than two elements" in {
 
-        intercept[IllegalArgumentException] { CHIEFError(List("code", "description", "incorrect")) }
+        intercept[IllegalArgumentException] { ILEError(List("code", "description", "incorrect")) }
       }
     }
   }

@@ -106,7 +106,7 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
           title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
           timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
-            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} ${crcCodeKeyFromDecoder.contentKey}</p>"
+            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} ${crcCodeKeyFromDecoder.messageKey}</p>"
           )
         )
 

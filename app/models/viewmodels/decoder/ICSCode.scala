@@ -20,16 +20,16 @@ package models.viewmodels.decoder
   * Details can be found in Exports Notifications Behaviour sheet.
   *
   * @param code the code value
-  * @param contentKey messages key with related description
+  * @param messageKey messages key with related description
   */
-sealed abstract class ICSCode(override val code: String, override val contentKey: String) extends CodeWithContentKey
+sealed abstract class ICSCode(override val code: String, override val messageKey: String) extends CodeWithMessageKey
 
 object ICSCode {
 
   val codes: Set[ICSCode] = Set(InvalidationAtTraderRequest, InvalidationByCustoms)
 
   case object InvalidationAtTraderRequest
-      extends ICSCode(code = "3", contentKey = "decoder.icsCode.InvalidationAtTraderRequest")
-  case object InvalidationByCustoms extends ICSCode(code = "6", contentKey = "decoder.icsCode.InvalidationByCustoms")
+      extends ICSCode(code = "3", messageKey = "decoder.icsCode.InvalidationAtTraderRequest")
+  case object InvalidationByCustoms extends ICSCode(code = "6", messageKey = "decoder.icsCode.InvalidationByCustoms")
 
 }

@@ -16,7 +16,7 @@
 
 package models.viewmodels.decoder
 
-trait CodeWithContentKey {
+trait CodeWithMessageKey {
   val code: String
-  val contentKey: String
+  val messageKey: String
 }

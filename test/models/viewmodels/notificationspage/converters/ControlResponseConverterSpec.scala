@@ -21,8 +21,7 @@ import java.time.{ZoneId, ZonedDateTime}
 
 import base.BaseSpec
 import models.notifications.ResponseType
-import models.viewmodels.decoder.ErrorCode._
-import models.viewmodels.decoder.{ActionCode, CHIEFError, Decoder}
+import models.viewmodels.decoder.{ActionCode, CHIEFError, Decoder, ILEError}
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import modules.DateTimeFormatterModule.NotificationsPageFormatter
 import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
@@ -40,14 +39,20 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
   private val testTimestamp = ZonedDateTime.parse(testTimestampString, formatter).toInstant
 
   private val AcknowledgedAndProcessedActionCode = ActionCode.AcknowledgedAndProcessed
+  private val InvalidUcrFormatILEError = ILEError("01", "error.ile.InvalidUcrFormat")
+  private val NoPriorArrivalFoundAtDepartureLocationILEError =
+    ILEError("13", "error.ile.NoPriorArrivalFoundAtDepartureLocation")
+  private val MucrAlreadyDepartedILEError = ILEError("29", "error.ile.MucrAlreadyDeparted")
+
+  private val UcrNotExistCHIEFError = CHIEFError("E408", "error.chief.UcrNotExist")
 
   private trait Test {
     implicit val messages: Messages = stubMessages()
 
     val decoderMock: Decoder = mock[Decoder]
     when(decoderMock.actionCode(anyString)).thenReturn(Some(AcknowledgedAndProcessedActionCode))
-    when(decoderMock.ileErrorCode(anyString)).thenReturn(None)
-    when(decoderMock.chiefErrorCode(anyString)).thenReturn(None)
+    when(decoderMock.error(anyString)).thenReturn(None)
+    when(decoderMock.error(anyString)).thenReturn(None)
 
     val contentBuilder = new ControlResponseConverter(decoderMock, NotificationsPageFormatter)
   }
@@ -110,7 +115,7 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
 
         contentBuilder.convert(input)
 
-        verify(decoderMock, times(0)).ileErrorCode(any[String])
+        verify(decoderMock, times(0)).error(any[String])
       }
 
       "return NotificationsPageSingleElement with values returned by Messages" in new Test {
@@ -123,7 +128,7 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
           timestampInfo = "23 Oct 2019 at 12:34",
-          content = Html(s"<p>${messages(AcknowledgedAndProcessedActionCode.contentKey)}</p>")
+          content = Html(s"<p>${messages(AcknowledgedAndProcessedActionCode.messageKey)}</p>")
         )
 
         contentBuilder.convert(input) mustBe expectedResult
@@ -159,23 +164,22 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
 
         contentBuilder.convert(input)
 
-        verify(decoderMock).ileErrorCode(meq("01"))
-        verify(decoderMock).ileErrorCode(meq("29"))
-        verify(decoderMock).ileErrorCode(meq("13"))
-        verify(decoderMock).chiefErrorCode(meq("E408"))
-        verify(decoderMock).chiefErrorCode(meq("E3305"))
+        verify(decoderMock).error(meq("01"))
+        verify(decoderMock).error(meq("29"))
+        verify(decoderMock).error(meq("13"))
+        verify(decoderMock).error(meq("E408"))
+        verify(decoderMock).error(meq("E3305"))
       }
 
       "return NotificationsPageSingleElement with values returned by Messages" in new Test {
 
-        val chiefCode = "E408"
-        val chiefMessage = "Unique Consignment reference does not exist"
-
         when(decoderMock.actionCode(any[String])).thenReturn(Some(ActionCode.Rejected))
-        when(decoderMock.ileErrorCode(meq("01"))).thenReturn(Some(InvalidUcrFormat))
-        when(decoderMock.ileErrorCode(meq("13"))).thenReturn(Some(NoPriorArrivalFoundAtDepartureLocation))
-        when(decoderMock.ileErrorCode(meq("29"))).thenReturn(Some(MucrAlreadyDeparted))
-        when(decoderMock.chiefErrorCode("E408")).thenReturn(Some(CHIEFError(chiefCode, chiefMessage)))
+        when(decoderMock.error(meq(InvalidUcrFormatILEError.code))).thenReturn(Some(InvalidUcrFormatILEError))
+        when(decoderMock.error(meq(NoPriorArrivalFoundAtDepartureLocationILEError.code)))
+          .thenReturn(Some(NoPriorArrivalFoundAtDepartureLocationILEError))
+        when(decoderMock.error(meq(MucrAlreadyDepartedILEError.code)))
+          .thenReturn(Some(MucrAlreadyDepartedILEError))
+        when(decoderMock.error(meq(UcrNotExistCHIEFError.code))).thenReturn(Some(UcrNotExistCHIEFError))
 
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.ControlResponse,
@@ -187,11 +191,11 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
           title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
           timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
-            s"<p>${messages(ActionCode.Rejected.contentKey)}</p>" +
-              s"<p>${messages("decoder.errorCode.InvalidUcrFormat")}</p>" +
-              s"<p>${messages("decoder.errorCode.MucrAlreadyDeparted")}</p>" +
-              s"<p>${messages("decoder.errorCode.NoPriorArrivalFoundAtDepartureLocation")}</p>" +
-              s"<p>$chiefMessage</p>"
+            s"<p>${messages(ActionCode.Rejected.messageKey)}</p>" +
+              s"<p>${messages(InvalidUcrFormatILEError.messageKey)}</p>" +
+              s"<p>${messages(MucrAlreadyDepartedILEError.messageKey)}</p>" +
+              s"<p>${messages(NoPriorArrivalFoundAtDepartureLocationILEError.messageKey)}</p>" +
+              s"<p>${messages(UcrNotExistCHIEFError.messageKey)}</p>"
           )
         )
 
@@ -201,9 +205,9 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
       "return NotificationsPageSingleElement with empty content for unknown error" in new Test {
 
         when(decoderMock.actionCode(any[String])).thenReturn(Some(ActionCode.Rejected))
-        when(decoderMock.ileErrorCode(any[String])).thenReturn(None)
-        when(decoderMock.ileErrorCode(meq("01"))).thenReturn(Some(InvalidUcrFormat))
-        when(decoderMock.ileErrorCode(meq("13"))).thenReturn(Some(NoPriorArrivalFoundAtDepartureLocation))
+        when(decoderMock.error(any[String])).thenReturn(None)
+        when(decoderMock.error(meq("01"))).thenReturn(Some(InvalidUcrFormatILEError))
+        when(decoderMock.error(meq("13"))).thenReturn(Some(NoPriorArrivalFoundAtDepartureLocationILEError))
 
         val input = exampleNotificationFrontendModel(
           responseType = ResponseType.ControlResponse,
@@ -215,9 +219,9 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
           title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
           timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
-            s"<p>${messages(ActionCode.Rejected.contentKey)}</p>" +
-              s"<p>${messages("decoder.errorCode.InvalidUcrFormat")}</p>" +
-              s"<p>${messages("decoder.errorCode.NoPriorArrivalFoundAtDepartureLocation")}</p>"
+            s"<p>${messages(ActionCode.Rejected.messageKey)}</p>" +
+              s"<p>${messages("error.ile.InvalidUcrFormat")}</p>" +
+              s"<p>${messages("error.ile.NoPriorArrivalFoundAtDepartureLocation")}</p>"
           )
         )
 

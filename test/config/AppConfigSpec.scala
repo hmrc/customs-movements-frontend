@@ -36,8 +36,11 @@ class AppConfigSpec extends MovementBaseSpec {
         |microservice.services.auth.host=localhostauth
         |google-analytics.token=N/A
         |google-analytics.host=localhostGoogle
-        |countryCodesCsvFilename=mdg-country-codes.csv
+        |
+        |countryCodesCsvFilename=code_lists/mdg-country-codes.csv
         |countryCodesJsonFilename=location-autocomplete-canonical-list.json
+        |euCountryCodesCsvFilename=code_lists/mdg-country-codes-eu.csv
+        |
         |microservice.services.nrs.host=localhostnrs
         |microservice.services.nrs.port=7654
         |microservice.services.nrs.apikey=cds-exports
@@ -157,7 +160,7 @@ class AppConfigSpec extends MovementBaseSpec {
     }
 
     "have countriesCsvFilename" in {
-      validConfigService.countriesCsvFilename must be("mdg-country-codes.csv")
+      validConfigService.countriesCsvFilename must be("code_lists/mdg-country-codes.csv")
     }
 
     "have nrsServiceUrl" in {

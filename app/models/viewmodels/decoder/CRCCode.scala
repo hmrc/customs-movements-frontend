@@ -20,17 +20,17 @@ package models.viewmodels.decoder
   * Details can be found in Exports Notifications Behaviour sheet.
   *
   * @param code the code value
-  * @param contentKey messages key with related description
+  * @param messageKey messages key with related description
   */
-sealed abstract class CRCCode(override val code: String, override val contentKey: String) extends CodeWithContentKey
+sealed abstract class CRCCode(override val code: String, override val messageKey: String) extends CodeWithMessageKey
 
 object CRCCode {
 
   val codes: Set[CRCCode] = Set(Success, PrelodgedDeclarationNotArrived, DeclarationNotArrived)
 
-  case object Success extends CRCCode(code = "000", contentKey = "decoder.crc.Success")
+  case object Success extends CRCCode(code = "000", messageKey = "decoder.crc.Success")
   case object PrelodgedDeclarationNotArrived
-      extends CRCCode(code = "101", contentKey = "decoder.crc.PrelodgedDeclarationNotArrived")
-  case object DeclarationNotArrived extends CRCCode(code = "102", contentKey = "decoder.crc.DeclarationNotArrived")
+      extends CRCCode(code = "101", messageKey = "decoder.crc.PrelodgedDeclarationNotArrived")
+  case object DeclarationNotArrived extends CRCCode(code = "102", messageKey = "decoder.crc.DeclarationNotArrived")
 
 }

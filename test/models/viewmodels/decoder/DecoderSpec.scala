@@ -18,7 +18,6 @@ package models.viewmodels.decoder
 
 import models.viewmodels.decoder.ActionCode.Rejected
 import models.viewmodels.decoder.CRCCode.Success
-import models.viewmodels.decoder.ErrorCode.MucrNotShutDeparture
 import models.viewmodels.decoder.ICSCode.InvalidationAtTraderRequest
 import models.viewmodels.decoder.ROECode.DocumentaryControl
 import models.viewmodels.decoder.SOECode.{ConsolidationOpen, Departed}
@@ -70,15 +69,18 @@ class DecoderSpec extends UnitSpec {
       decoder.actionCode(Rejected.code) mustBe Some(Rejected)
     }
 
-    "find correct error code" in {
-      decoder.ileErrorCode(MucrNotShutDeparture.code) mustBe Some(MucrNotShutDeparture)
+    "find correct ILE error" in {
+
+      val mucrNotShutDeparture = ILEError("04", "error.ile.MucrNotShutConsolidation")
+
+      decoder.error(mucrNotShutDeparture.code) mustBe Some(mucrNotShutDeparture)
     }
 
     "find correct CHIEF error description" in {
 
-      val chiefError = CHIEFError("E2898", "Already arrived by a Consolidation")
+      val chiefError = CHIEFError("E2898", "error.chief.AlreadyArrived")
 
-      decoder.chiefErrorCode(chiefError.code) mustBe Some(chiefError)
+      decoder.error(chiefError.code) mustBe Some(chiefError)
     }
   }
 }

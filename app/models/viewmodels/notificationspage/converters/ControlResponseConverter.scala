@@ -27,6 +27,8 @@ import play.api.Logger
 import play.api.i18n.Messages
 import play.twirl.api.Html
 
+import scala.language.implicitConversions
+
 @Singleton
 class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
     extends NotificationPageSingleElementConverter {
@@ -58,11 +60,9 @@ class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: Da
 
   // TODO move logging for missing error codes to backend
   private def buildErrorExplanation(errorCode: String)(implicit messages: Messages): Option[String] =
-    decoder.error(errorCode).map(error => paragraph(messages(error.messageKey))) match {
-      case None =>
-        logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $errorCode")
-        None
-      case error => error
+    decoder.error(errorCode).map(error => paragraph(messages(error.messageKey))).orElse {
+      logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $errorCode")
+      None
     }
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"

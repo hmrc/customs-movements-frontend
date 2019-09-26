@@ -18,7 +18,7 @@ package unit.controllers
 
 import controllers.StartController
 import forms.Choice
-import forms.Choice.AllowedChoiceValues.Arrival
+import forms.Choice.Arrival
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
@@ -38,7 +38,7 @@ class StartControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    withCaching(Choice.choiceId, Some(Choice(Arrival)))
+    withCaching(Choice.choiceId, Some(Arrival))
     when(mockStartPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
 

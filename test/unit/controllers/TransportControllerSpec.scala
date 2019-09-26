@@ -17,7 +17,7 @@
 package unit.controllers
 
 import controllers.{routes, TransportController}
-import forms.Choice.AllowedChoiceValues
+import forms.Choice.Arrival
 import forms.Transport.ModesOfTransport.Sea
 import forms.{Choice, Transport}
 import org.mockito.ArgumentCaptor
@@ -49,7 +49,7 @@ class TransportControllerSpec extends ControllerSpec with OptionValues {
     super.beforeEach()
 
     authorizedUser()
-    withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.Arrival)))
+    withCaching(Choice.choiceId, Some(Arrival))
     when(mockTransportPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 

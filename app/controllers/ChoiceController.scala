@@ -19,7 +19,6 @@ package controllers
 import controllers.actions.AuthAction
 import controllers.storage.CacheIdGenerator.cacheId
 import forms.Choice
-import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
@@ -54,13 +53,13 @@ class ChoiceController @Inject()(
           customsCacheService
             .cache[Choice](cacheId, choiceId, validChoice)
             .map { _ =>
-              validChoice.value match {
+              validChoice match {
                 case Arrival | Departure => Redirect(routes.ConsignmentReferencesController.displayPage())
                 case AssociateDUCR =>
                   Redirect(consolidations.routes.MucrOptionsController.displayPage())
                 case DisassociateDUCR =>
                   Redirect(consolidations.routes.DisassociateDucrController.displayPage())
-                case ShutMucr    => Redirect(consolidations.routes.ShutMucrController.displayPage())
+                case ShutMUCR    => Redirect(consolidations.routes.ShutMucrController.displayPage())
                 case Submissions => Redirect(controllers.routes.MovementsController.displayPage())
               }
           }

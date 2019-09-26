@@ -18,7 +18,7 @@ package unit.controllers.consolidations
 
 import controllers.consolidations.{routes, AssociateDucrController}
 import controllers.exception.IncompleteApplication
-import forms.Choice.AllowedChoiceValues
+import forms.Choice.AssociateDUCR
 import forms.{AssociateDucr, Choice, MucrOptions}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -46,7 +46,7 @@ class AssociateDucrControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.AssociateDUCR)))
+    withCaching(Choice.choiceId, Some(AssociateDUCR))
     withCaching(AssociateDucr.formId)
     when(mockAssociateDucrPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }

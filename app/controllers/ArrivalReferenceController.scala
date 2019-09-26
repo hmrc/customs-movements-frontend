@@ -19,6 +19,7 @@ package controllers
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.ArrivalReference._
+import forms.Choice.Arrival
 import forms.{ArrivalReference, Choice}
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
@@ -43,8 +44,8 @@ class ArrivalReferenceController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    request.choice.value match {
-      case Choice.AllowedChoiceValues.Arrival =>
+    request.choice match {
+      case Arrival =>
         customsCacheService
           .fetchAndGetEntry[ArrivalReference](movementCacheId, formId)
           .map(data => Ok(arrivalReferencePage(data.fold(form)(form.fill(_)))))

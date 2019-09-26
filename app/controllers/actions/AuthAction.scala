@@ -16,15 +16,14 @@
 
 package controllers.actions
 
-import com.google.inject.{ImplementedBy, Inject, ProvidedBy}
+import com.google.inject.{ImplementedBy, Inject}
 import controllers.routes
-import javax.inject.Provider
 import models.SignedInUser
 import models.requests.AuthenticatedRequest
 import play.api.Configuration
 import play.api.mvc._
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
-import uk.gov.hmrc.auth.core.{NoActiveSession, _}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
@@ -33,11 +32,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthActionImpl @Inject()(
   override val authConnector: AuthConnector,
   eoriWhitelist: EoriWhitelist,
-  mcc: MessagesControllerComponents
-) extends AuthAction with AuthorisedFunctions {
+  bodyParsers: PlayBodyParsers
+)(implicit override val executionContext: ExecutionContext)
+    extends AuthAction with AuthorisedFunctions {
 
-  implicit override val executionContext: ExecutionContext = mcc.executionContext
-  override val parser: BodyParser[AnyContent] = mcc.parsers.defaultBodyParser
+  override val parser: BodyParser[AnyContent] = bodyParsers.anyContent
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier =
@@ -68,8 +67,6 @@ class AuthActionImpl @Inject()(
 @ImplementedBy(classOf[AuthActionImpl])
 trait AuthAction
     extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
-
-case class NoExternalId() extends NoActiveSession("No externalId was found")
 
 class EoriWhitelist @Inject()(configuration: Configuration) {
   private val values = configuration.get[Seq[String]]("whitelist.eori")

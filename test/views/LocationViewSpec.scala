@@ -16,7 +16,8 @@
 
 package views
 
-import forms.{Choice, Location}
+import forms.Choice.{Arrival, Departure}
+import forms.Location
 import helpers.views.{CommonMessages, LocationMessages}
 import play.api.data.Form
 import play.twirl.api.Html
@@ -28,10 +29,10 @@ class LocationViewSpec extends ViewSpec with LocationMessages with CommonMessage
   private val locationPage = injector.instanceOf[views.html.location]
 
   private def createArrivalView(form: Form[Location] = form): Html =
-    locationPage(form, Choice.AllowedChoiceValues.Arrival)
+    locationPage(form, Arrival)
 
   private def createDepartureView(form: Form[Location] = form): Html =
-    locationPage(form, Choice.AllowedChoiceValues.Departure)
+    locationPage(form, Departure)
 
   "Location View" should {
 

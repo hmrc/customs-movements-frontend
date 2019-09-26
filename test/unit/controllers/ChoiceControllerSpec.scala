@@ -19,7 +19,7 @@ package unit.controllers
 import controllers.consolidations.{routes => consolidationRoutes}
 import controllers.{routes, ChoiceController}
 import forms.Choice
-import forms.Choice.AllowedChoiceValues._
+import forms.Choice._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -77,7 +77,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
 
       "display page method is invoked with data in cache" in {
 
-        val cachedData = Choice(Arrival)
+        val cachedData = Arrival
         withCaching(Choice.choiceId, Some(cachedData))
 
         val result = controller.displayChoiceForm()(getRequest())
@@ -87,11 +87,11 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
       }
     }
 
-    "return 400 (BAD_REQUEST)" when {
+    "throw an IllegalArgumentException" when {
 
       "form is incorrect" in {
 
-        val incorrectForm = Json.toJson(Choice("incorrect"))
+        val incorrectForm = JsObject(Map("choice" -> JsString("Incorrect")))
 
         val result = controller.submitChoice()(postRequest(incorrectForm))
 
@@ -103,7 +103,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
 
       "choice is Arrival" in {
 
-        val arrivalForm = JsObject(Map("choice" -> JsString(Arrival)))
+        val arrivalForm = JsObject(Map("choice" -> JsString(Arrival.value)))
 
         val result = controller.submitChoice()(postRequest(arrivalForm))
 
@@ -113,7 +113,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
 
       "choice is Departure" in {
 
-        val departureForm = JsObject(Map("choice" -> JsString(Departure)))
+        val departureForm = JsObject(Map("choice" -> JsString(Departure.value)))
 
         val result = controller.submitChoice()(postRequest(departureForm))
 
@@ -123,7 +123,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
 
       "choice is Associate Ducr" in {
 
-        val associateDUCRForm = JsObject(Map("choice" -> JsString(AssociateDUCR)))
+        val associateDUCRForm = JsObject(Map("choice" -> JsString(AssociateDUCR.value)))
 
         val result = controller.submitChoice()(postRequest(associateDUCRForm))
 
@@ -133,7 +133,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
 
       "choice is Disassociate Ducr" in {
 
-        val disassociateDUCRForm = JsObject(Map("choice" -> JsString(DisassociateDUCR)))
+        val disassociateDUCRForm = JsObject(Map("choice" -> JsString(DisassociateDUCR.value)))
 
         val result = controller.submitChoice()(postRequest(disassociateDUCRForm))
 
@@ -143,7 +143,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
 
       "choice is Shut Mucr" in {
 
-        val shutMucrForm = JsObject(Map("choice" -> JsString(ShutMucr)))
+        val shutMucrForm = JsObject(Map("choice" -> JsString(ShutMUCR.value)))
 
         val result = controller.submitChoice()(postRequest(shutMucrForm))
 
@@ -153,7 +153,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
 
       "choice is Submission" in {
 
-        val submissionsForm = JsObject(Map("choice" -> JsString(Submissions)))
+        val submissionsForm = JsObject(Map("choice" -> JsString(Submissions.value)))
 
         val result = controller.submitChoice()(postRequest(submissionsForm))
 

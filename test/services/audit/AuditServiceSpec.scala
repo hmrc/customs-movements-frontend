@@ -15,8 +15,10 @@
  */
 
 package services.audit
+
 import base.{BaseSpec, MockCustomsCacheService}
 import forms._
+import forms.Choice.Arrival
 import forms.common.{Date, Time}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
@@ -87,9 +89,7 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustoms
       )
 
       val cacheMap = CacheMap(id = "CacheID", data = expectedResult)
-      spyAuditService.getMovementsData(Choice(Choice.AllowedChoiceValues.Arrival), cacheMap) mustBe Json.toJson(
-        expectedResult
-      )
+      spyAuditService.getMovementsData(Arrival, cacheMap) mustBe Json.toJson(expectedResult)
     }
 
     "audit a movement" in {

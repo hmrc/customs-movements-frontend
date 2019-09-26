@@ -22,8 +22,10 @@ import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import utils.Stubs
 
+import scala.concurrent.ExecutionContext.global
+
 trait JourneyActionMocks extends MockCustomsCacheService with BeforeAndAfterEach {
   self: MockitoSugar with Suite with Stubs =>
 
-  val mockJourneyAction: JourneyAction = JourneyAction(mockCustomsCacheService, stubMessagesControllerComponents())
+  val mockJourneyAction: JourneyAction = JourneyAction(mockCustomsCacheService)(global)
 }

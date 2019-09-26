@@ -18,7 +18,7 @@ package unit.controllers.consolidations
 
 import controllers.consolidations.AssociateDucrConfirmationController
 import forms.Choice
-import forms.Choice.AllowedChoiceValues
+import forms.Choice.AssociateDUCR
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
@@ -41,7 +41,7 @@ class AssociateDucrConfirmationControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    withCaching(Choice.choiceId, Some(Choice(AllowedChoiceValues.AssociateDUCR)))
+    withCaching(Choice.choiceId, Some(AssociateDUCR))
     when(mockAssociateDucrConfirmPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
   }
 

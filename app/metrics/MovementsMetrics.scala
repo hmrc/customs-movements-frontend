@@ -18,7 +18,8 @@ package metrics
 
 import com.codahale.metrics.Timer.Context
 import com.kenshoo.play.metrics.Metrics
-import forms.Choice.AllowedChoiceValues._
+import forms.Choice
+import forms.Choice._
 import javax.inject.{Inject, Singleton}
 import metrics.MetricIdentifiers._
 
@@ -26,24 +27,28 @@ import metrics.MetricIdentifiers._
 class MovementsMetrics @Inject()(metrics: Metrics) {
 
   val timers = Map(
-    Arrival -> metrics.defaultRegistry.timer(s"$arrivalMetric.timer"),
-    Departure -> metrics.defaultRegistry.timer(s"$departureMetric.timer"),
-    AssociateDUCR -> metrics.defaultRegistry.timer(s"$associationMetric.timer"),
-    DisassociateDUCR -> metrics.defaultRegistry.timer(s"$disassociationMetric.timer"),
-    ShutMucr -> metrics.defaultRegistry.timer(s"$shutMucr.timer")
+    Arrival.value -> metrics.defaultRegistry.timer(s"$arrivalMetric.timer"),
+    Departure.value -> metrics.defaultRegistry.timer(s"$departureMetric.timer"),
+    AssociateDUCR.value -> metrics.defaultRegistry.timer(s"$associationMetric.timer"),
+    DisassociateDUCR.value -> metrics.defaultRegistry.timer(s"$disassociationMetric.timer"),
+    ShutMUCR.value -> metrics.defaultRegistry.timer(s"$shutMucr.timer")
   )
 
   val counters = Map(
-    Arrival -> metrics.defaultRegistry.counter(s"$arrivalMetric.counter"),
-    Departure -> metrics.defaultRegistry.counter(s"$departureMetric.counter"),
-    AssociateDUCR -> metrics.defaultRegistry.counter(s"$associationMetric.counter"),
-    DisassociateDUCR -> metrics.defaultRegistry.counter(s"$disassociationMetric.counter"),
-    ShutMucr -> metrics.defaultRegistry.counter(s"$shutMucr.counter")
+    Arrival.value -> metrics.defaultRegistry.counter(s"$arrivalMetric.counter"),
+    Departure.value -> metrics.defaultRegistry.counter(s"$departureMetric.counter"),
+    AssociateDUCR.value -> metrics.defaultRegistry.counter(s"$associationMetric.counter"),
+    DisassociateDUCR.value -> metrics.defaultRegistry.counter(s"$disassociationMetric.counter"),
+    ShutMUCR.value -> metrics.defaultRegistry.counter(s"$shutMucr.counter")
   )
 
   def startTimer(feature: String): Context = timers(feature).time()
 
+  def startTimer(feature: Choice): Context = timers(feature.value).time()
+
   def incrementCounter(feature: String): Unit = counters(feature).inc()
+
+  def incrementCounter(feature: Choice): Unit = counters(feature.value).inc()
 }
 
 object MetricIdentifiers {

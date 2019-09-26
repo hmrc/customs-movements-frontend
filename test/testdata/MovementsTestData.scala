@@ -18,7 +18,7 @@ package testdata
 
 import java.time.Instant
 
-import forms.Choice.AllowedChoiceValues.Arrival
+import forms.Choice.Arrival
 import forms.GoodsDeparted.AllowedPlaces
 import forms._
 import forms.common.{Date, Time}
@@ -47,9 +47,9 @@ object MovementsTestData {
   val date = Date(Some(10), Some(8), Some(2018))
   val departureDetails = DepartureDetails(date)
 
-  def arrivalDepartureTimes(movementType: String): JsValue = movementType match {
-    case "EAL" => Json.toJson(ArrivalDetails(date, Time(Some("13"), Some("34"))))
-    case _     => Json.toJson(DepartureDetails(date))
+  def arrivalDepartureTimes(movementType: Choice): JsValue = movementType match {
+    case Arrival => Json.toJson(ArrivalDetails(date, Time(Some("13"), Some("34"))))
+    case _       => Json.toJson(DepartureDetails(date))
   }
 
   val goodsDeparted = GoodsDeparted(AllowedPlaces.outOfTheUk)
@@ -60,12 +60,12 @@ object MovementsTestData {
     Map("modeOfTransport" -> JsString("2"), "nationality" -> JsString("PL"), "transportId" -> JsString("REF"))
   )
 
-  def arrivalReference(movementType: String): ArrivalReference =
+  def arrivalReference(movementType: Choice): ArrivalReference =
     ArrivalReference(if (movementType == Arrival) Some("1234") else None)
 
-  def cacheMapData(movementType: String, refType: String = "DUCR"): Map[String, JsValue] =
+  def cacheMapData(movementType: Choice, refType: String = "DUCR"): Map[String, JsValue] =
     Map(
-      Choice.choiceId -> Json.toJson(Choice(movementType)),
+      Choice.choiceId -> Json.toJson(movementType),
       ConsignmentReferences.formId -> Json.toJson(consignmentReferences(refType)),
       MovementDetails.formId -> arrivalDepartureTimes(movementType),
       GoodsDeparted.formId -> Json.toJson(goodsDeparted),
@@ -74,8 +74,8 @@ object MovementsTestData {
       ArrivalReference.formId -> Json.toJson(arrivalReference(movementType))
     )
 
-  def validMovementRequest(movementType: String): InventoryLinkingMovementRequest =
-    Movement.createMovementRequest(CacheMap(movementType, cacheMapData(movementType)), "eori1", Choice(movementType))
+  def validMovementRequest(movementType: Choice): InventoryLinkingMovementRequest =
+    Movement.createMovementRequest(CacheMap(movementType.toString, cacheMapData(movementType)), "eori1", movementType)
 
   def exampleSubmissionFrontendModel(
     eori: String = validEori,

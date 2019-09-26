@@ -16,7 +16,7 @@
 
 package forms
 
-import forms.Choice.AllowedChoiceValues._
+import forms.Choice.Arrival
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
@@ -26,7 +26,7 @@ class ChoiceSpec extends WordSpec with MustMatchers {
   "Validation defined in Choice mapping" should {
 
     "attach errors to form" when {
-      "provided with  empty input" in {
+      "provided with empty input" in {
         val form = Choice.form().bind(emptyChoiceJSON)
 
         form.hasErrors must be(true)
@@ -34,7 +34,7 @@ class ChoiceSpec extends WordSpec with MustMatchers {
         form.errors.head.message must equal("choicePage.input.error.empty")
       }
 
-      "provided with a value not defined in AllowedChoiceValues" in {
+      "provided with an incorrect value" in {
         val form = Choice.form().bind(incorrectChoiceJSON)
 
         form.hasErrors must be(true)
@@ -51,14 +51,11 @@ class ChoiceSpec extends WordSpec with MustMatchers {
       }
     }
   }
-
 }
 
 object ChoiceSpec {
-  val incorrectChoice = Choice("InvalidChoice")
-  val emptyChoice = Choice("")
 
-  val correctChoiceJSON: JsValue = createChoiceJSON(Arrival)
+  val correctChoiceJSON: JsValue = createChoiceJSON(Arrival.value)
   val incorrectChoiceJSON: JsValue = createChoiceJSON("InvalidChoice")
   val emptyChoiceJSON: JsValue = createChoiceJSON()
 

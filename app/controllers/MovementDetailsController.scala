@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
-import forms.Choice.AllowedChoiceValues
+import forms.Choice.{Arrival, Departure}
 import forms.GoodsDeparted.AllowedPlaces
 import forms.MovementDetails._
 import forms.{ArrivalDetails, DepartureDetails, GoodsDeparted}
@@ -47,9 +47,9 @@ class MovementDetailsController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    request.choice.value match {
-      case AllowedChoiceValues.Arrival   => arrivalPage().map(Ok(_))
-      case AllowedChoiceValues.Departure => departurePage().map(Ok(_))
+    request.choice match {
+      case Arrival   => arrivalPage().map(Ok(_))
+      case Departure => departurePage().map(Ok(_))
     }
   }
 
@@ -64,9 +64,9 @@ class MovementDetailsController @Inject()(
       .map(data => departureDetailsPage(data.fold(departureForm)(departureForm.fill(_))))
 
   def saveMovementDetails(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    (request.choice.value match {
-      case AllowedChoiceValues.Arrival   => handleSavingArrival()
-      case AllowedChoiceValues.Departure => handleSavingDeparture()
+    (request.choice match {
+      case Arrival   => handleSavingArrival()
+      case Departure => handleSavingDeparture()
     }).flatMap {
       case Left(resultView) => Future.successful(BadRequest(resultView))
       case Right(call)      => Future.successful(Redirect(call))

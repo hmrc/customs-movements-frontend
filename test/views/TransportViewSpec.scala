@@ -16,7 +16,8 @@
 
 package views
 
-import forms.{Choice, Transport}
+import forms.Choice.{Arrival, Departure}
+import forms.Transport
 import helpers.views.{CommonMessages, TransportMessages}
 import play.api.data.Form
 import play.twirl.api.Html
@@ -28,10 +29,10 @@ class TransportViewSpec extends ViewSpec with TransportMessages with CommonMessa
   private val transportPage = injector.instanceOf[views.html.transport]
 
   private def createArrivalView(form: Form[Transport] = form): Html =
-    transportPage(form, Choice.AllowedChoiceValues.Arrival)
+    transportPage(form, Arrival)
 
   private def createDepartureView(form: Form[Transport] = form): Html =
-    transportPage(form, Choice.AllowedChoiceValues.Departure)
+    transportPage(form, Departure)
 
   "Transport View" should {
 

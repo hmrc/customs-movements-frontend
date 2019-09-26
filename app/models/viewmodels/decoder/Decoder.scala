@@ -35,5 +35,5 @@ class Decoder {
 
   def ileErrorCode(code: String): Option[ILEError] = ILEError.allErrors.find(_.code == code)
 
-  def chiefErrorCode(code: String): Option[CHIEFError] = CHIEFError(code)
+  def chiefErrorCode(code: String): Option[CHIEFError] = CHIEFError.allErrors.find(_.code == code)
 }

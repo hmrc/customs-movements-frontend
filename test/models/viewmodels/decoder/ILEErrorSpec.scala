@@ -20,7 +20,7 @@ import org.scalatest.{MustMatchers, WordSpec}
 
 class ILEErrorSpec extends WordSpec with MustMatchers {
 
-  "Error Code" should {
+  "ILE Error" should {
 
     "have correct amount of codes" in {
 
@@ -36,5 +36,34 @@ class ILEErrorSpec extends WordSpec with MustMatchers {
       }
     }
 
+    "contain correct prefix for all message keys" in {
+
+      val expectedPrefix = "decoder.ileError."
+
+      ILEError.allErrors.map { error =>
+        error.messageKey must include(expectedPrefix)
+      }
+    }
+  }
+
+  "ILE Error on apply" should {
+
+    "throw IllegalArgumentException" when {
+
+      "list is empty" in {
+
+        intercept[IllegalArgumentException] { ILEError(List.empty) }
+      }
+
+      "list contains only one element" in {
+
+        intercept[IllegalArgumentException] { ILEError(List("code")) }
+      }
+
+      "list contains more than two elements" in {
+
+        intercept[IllegalArgumentException] { ILEError(List("code", "description", "incorrect")) }
+      }
+    }
   }
 }

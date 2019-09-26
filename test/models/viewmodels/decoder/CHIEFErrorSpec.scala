@@ -22,14 +22,35 @@ class CHIEFErrorSpec extends UnitSpec {
 
   val expectedCHIEFError = CHIEFError("E408", "Unique Consignment reference does not exist")
 
-  "CHIEF error" should {
+  "CHIEF Error" should {
 
-    "return correct CHIEF error based on code" in {
+    "have correct amount of codes" in {
 
-      CHIEFError(expectedCHIEFError.code) mustBe Some(expectedCHIEFError)
+      val expectedCodesAmount = 25
+      CHIEFError.allErrors.size mustBe expectedCodesAmount
     }
 
-    "create CHIEF error based on list of string" in {
+    "contain non-empty code and description for every error" in {
+
+      CHIEFError.allErrors.map { error =>
+        error.code mustNot be(empty)
+        error.messageKey mustNot be(empty)
+      }
+    }
+
+    "contain correct prefix for all message keys" in {
+
+      val expectedPrefix = "decoder.chiefError."
+
+      CHIEFError.allErrors.map { error =>
+        error.messageKey must include(expectedPrefix)
+      }
+    }
+  }
+
+  "CHIEF Error on apply" should {
+
+    "create CHIEF error based on list with 2 strings" in {
 
       val correctCHIEFError = List("E408", "Unique Consignment reference does not exist")
 

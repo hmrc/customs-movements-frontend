@@ -73,7 +73,7 @@ class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: Da
     }
 
   private def buildCHIEFErrorExplanation(errorCode: String): Option[String] =
-    decoder.chiefErrorCode(errorCode).map(error => paragraph(error.description))
+    decoder.chiefErrorCode(errorCode).map(error => paragraph(error.messageKey))
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"
 

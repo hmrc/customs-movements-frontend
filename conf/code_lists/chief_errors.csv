@@ -1,25 +1,25 @@
-E3481,MUCR is already shut
-E408,Unique Consignment reference does not exist
-E1231,Refused - User Role not matched on MUCR Arrivals
-E2897,UCR is already associated to Master
-E1036,Invalid characters in UCR or wrong length; please check Tariff
-E10200,Invalid character in UCR or Part
-E666,Shutting an empty consolidation is not permitted
-E1001,No movements can be departed
-E1025,Date / Time is before Timeout Period
-E10419,Data validation primary error
-E10434,Message contains invalid characters
-E1228,Action not permitted; Declaration is finalised
-E2165,Entry has been cancelled
-E2672,Number of Anticipated Arrivals for UCR has been exceeded
-E2898,Already arrived by a Consolidation
-E3130,Master UCR is already reserved for use with Imports consolidation
-E3199,Anticipated arrival not allowed - Arrival already notified
-E3303,MRN: Format is invalid
-E3305,MRN: Does not match the latest version on the Entry
-E3476,Unable to arrive MUCR as it is contained in another MUCR
-E3479,Unable to depart MUCR as it is contained in another MUCR
-E607,Entry Reference is not suitable for Export movement
-E3464,Refused – User Role not matched on MUCR arrivals
-E3480,Only shut MUCRs can be associated into another MUCR
-E1264,Cannot shut the consolidation since it is moving
+E3481,decoder.chiefError.MucrAlreadyShut
+E408,decoder.chiefError.UcrNotExist
+E1231,decoder.chiefError.Refused
+E2897,decoder.chiefError.UcrAlreadyAssociated
+E1036,decoder.chiefError.InvalidUcrFormat
+E10200,decoder.chiefError.InvalidCharacterInUcrOrPart
+E666,decoder.chiefError.EmptyConsolidation
+E1001,decoder.chiefError.CannotDepartMovements
+E1025,decoder.chiefError.DateTimeBeforeTimeout
+E10419,decoder.chiefError.DataValidationPrimaryError
+E10434,decoder.chiefError.InvalidCharacterInMessage
+E1228,decoder.chiefError.DeclarationFinalised
+E2165,decoder.chiefError.CancelledEntry
+E2672,decoder.chiefError.TooManyAnticipatedArrivals
+E2898,decoder.chiefError.AlreadyArrived
+E3130,decoder.chiefError.MucrAlreadyInUseWithImports
+E3199,decoder.chiefError.ArrivalAlreadyNotified
+E3303,decoder.chiefError.InvalidMrnFormat
+E3305,decoder.chiefError.MrnNotMatchEntry
+E3476,decoder.chiefError.CannotArriveContainedMucr
+E3479,decoder.chiefError.CannotDepartContainedMucr
+E607,decoder.chiefError.NotSuitableEntryReference
+E3464,decoder.chiefError.Refused
+E3480,decoder.chiefError.MucrNotShutForAssociation
+E1264,decoder.chiefError.CannotShutMovingConsolidation

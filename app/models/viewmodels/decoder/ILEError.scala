@@ -38,7 +38,7 @@ object ILEError {
     case code :: description :: Nil => ILEError(code, description)
     case error =>
       logger.warn(s"Record in ILE errors config file [$sourcePath] is incorrect: " + error)
-      throw new IllegalArgumentException("Error has incorrect structure")
+      throw new IllegalArgumentException("Errors file has incorrect structure")
   }
 
   val allErrors: List[ILEError] = {

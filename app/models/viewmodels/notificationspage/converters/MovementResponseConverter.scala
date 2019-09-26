@@ -51,7 +51,8 @@ class MovementResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: D
 
   private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[String] = {
     val CrcCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")
-    decoder.crc(crcCode).map(code => paragraph(s"$CrcCodeHeader ${code.contentKey}"))
+
+    decoder.crc(crcCode).map(code => paragraph(s"$CrcCodeHeader ${messages(code.contentKey)}"))
   }
 
   private val paragraph: String => String = (text: String) => s"<p>$text</p>"

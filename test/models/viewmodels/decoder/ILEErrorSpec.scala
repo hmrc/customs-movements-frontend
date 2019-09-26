@@ -30,7 +30,7 @@ class ILEErrorSpec extends WordSpec with MustMatchers {
 
     "contain non-empty code and description for every error" in {
 
-      ILEError.allErrors.map { error =>
+      ILEError.allErrors.foreach { error =>
         error.code mustNot be(empty)
         error.messageKey mustNot be(empty)
       }
@@ -40,7 +40,7 @@ class ILEErrorSpec extends WordSpec with MustMatchers {
 
       val expectedPrefix = "decoder.ileError."
 
-      ILEError.allErrors.map { error =>
+      ILEError.allErrors.foreach { error =>
         error.messageKey must include(expectedPrefix)
       }
     }

@@ -32,7 +32,7 @@ class CHIEFErrorSpec extends UnitSpec {
 
     "contain non-empty code and description for every error" in {
 
-      CHIEFError.allErrors.map { error =>
+      CHIEFError.allErrors.foreach { error =>
         error.code mustNot be(empty)
         error.messageKey mustNot be(empty)
       }
@@ -42,7 +42,7 @@ class CHIEFErrorSpec extends UnitSpec {
 
       val expectedPrefix = "decoder.chiefError."
 
-      CHIEFError.allErrors.map { error =>
+      CHIEFError.allErrors.foreach { error =>
         error.messageKey must include(expectedPrefix)
       }
     }

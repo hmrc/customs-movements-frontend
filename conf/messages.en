@@ -350,7 +350,7 @@ notifications.elem.title.ShutMucr = Shut MUCR request
 notifications.elem.title.inventoryLinkingControlResponse = Request received
 notifications.elem.title.inventoryLinkingMovementResponse = Update message
 notifications.elem.title.inventoryLinkingMovementTotalsResponse = Update message
-notifications.elem.title.unspecified = Update message
+notifications.elem.title.unknown = Update message
 
 notifications.elem.content.Arrival = Your request to arrive this {0} has been received.
 notifications.elem.content.Departure = Your request to depart this {0} has been received.

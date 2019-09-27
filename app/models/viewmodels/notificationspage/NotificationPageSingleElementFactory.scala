@@ -16,25 +16,20 @@
 
 package models.viewmodels.notificationspage
 
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.time.{Instant, ZoneId}
 
 import javax.inject.{Inject, Singleton}
 import models.notifications.NotificationFrontendModel
 import models.submissions.ActionType._
 import models.submissions.SubmissionFrontendModel
-import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.converters._
 import play.api.i18n.Messages
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.Html
 
 @Singleton
 class NotificationPageSingleElementFactory @Inject()(
-  decoder: Decoder,
-  controlResponseConverter: ControlResponseConverter,
-  ersResponseConverter: ERSResponseConverter,
-  emrResponseConverter: EMRResponseConverter,
-  movementResponseConverter: MovementResponseConverter
+  responseConverterProvider: ResponseConverterProvider
 ) {
 
   private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
@@ -77,22 +72,9 @@ class NotificationPageSingleElementFactory @Inject()(
     buildForRequest(submission).copy(content = content)
   }
 
-  private val converters =
-    Set(controlResponseConverter, ersResponseConverter, emrResponseConverter, movementResponseConverter)
-
-  def build(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
-    converters
-      .find(_.canConvertFrom(notification))
-      .map(_.convert(notification))
-      .getOrElse(buildForUnspecified(notification.timestampReceived))
-
-  private def buildForUnspecified(
-    responseTimestamp: Instant
-  )(implicit messages: Messages): NotificationsPageSingleElement =
-    NotificationsPageSingleElement(
-      title = messages("notifications.elem.title.unspecified"),
-      timestampInfo = dateTimeFormatter.format(responseTimestamp),
-      content = HtmlFormat.empty
-    )
+  def build(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement = {
+    val responseConverter = responseConverterProvider.provideResponseConverter(notification)
+    responseConverter.convert(notification)
+  }
 
 }

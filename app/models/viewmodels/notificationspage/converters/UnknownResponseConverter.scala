@@ -28,8 +28,6 @@ import play.twirl.api.HtmlFormat
 class UnknownResponseConverter @Inject()(dateTimeFormatter: DateTimeFormatter)
     extends NotificationPageSingleElementConverter {
 
-  override def canConvertFrom(notification: NotificationFrontendModel): Boolean = ???
-
   override def convert(
     notification: NotificationFrontendModel
   )(implicit messages: Messages): NotificationsPageSingleElement = NotificationsPageSingleElement(

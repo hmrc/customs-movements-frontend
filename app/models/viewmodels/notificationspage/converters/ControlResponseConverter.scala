@@ -20,7 +20,6 @@ import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
 import models.notifications.NotificationFrontendModel
-import models.notifications.ResponseType.ControlResponse
 import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.Logger
@@ -35,25 +34,19 @@ class ControlResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: Da
 
   private val logger = Logger(this.getClass)
 
-  override def canConvertFrom(notification: NotificationFrontendModel): Boolean =
-    notification.responseType == ControlResponse
-
   override def convert(
     notification: NotificationFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement =
-    if (canConvertFrom(notification)) {
+  )(implicit messages: Messages): NotificationsPageSingleElement = {
 
-      val actionCodeExplanation = notification.actionCode.flatMap(buildActionCodeExplanation)
-      val errorsExplanation = notification.errorCodes.map(buildErrorExplanation).flatten.foldLeft("")(_ + _)
+    val actionCodeExplanation = notification.actionCode.flatMap(buildActionCodeExplanation)
+    val errorsExplanation = notification.errorCodes.map(buildErrorExplanation).flatten.foldLeft("")(_ + _)
 
-      NotificationsPageSingleElement(
-        title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
-        timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
-        content = Html(actionCodeExplanation.getOrElse("") + errorsExplanation)
-      )
-    } else {
-      throw new IllegalArgumentException(s"Cannot build content for ${notification.responseType}")
-    }
+    NotificationsPageSingleElement(
+      title = messages("notifications.elem.title.inventoryLinkingControlResponse"),
+      timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
+      content = Html(actionCodeExplanation.getOrElse("") + errorsExplanation)
+    )
+  }
 
   private def buildActionCodeExplanation(actionCode: String)(implicit messages: Messages): Option[String] =
     decoder.actionCode(actionCode).map(code => paragraph(messages(code.messageKey)))

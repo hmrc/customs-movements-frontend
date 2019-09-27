@@ -20,7 +20,6 @@ import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
 import models.notifications.NotificationFrontendModel
-import models.notifications.ResponseType.MovementResponse
 import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
@@ -30,24 +29,18 @@ import play.twirl.api.Html
 class MovementResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
     extends NotificationPageSingleElementConverter {
 
-  override def canConvertFrom(notification: NotificationFrontendModel): Boolean =
-    notification.responseType == MovementResponse
-
   override def convert(
     notification: NotificationFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement =
-    if (canConvertFrom(notification)) {
+  )(implicit messages: Messages): NotificationsPageSingleElement = {
 
-      val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation)
+    val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation)
 
-      NotificationsPageSingleElement(
-        title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
-        timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
-        content = Html(crcCodeExplanation.getOrElse(""))
-      )
-    } else {
-      throw new IllegalArgumentException(s"Cannot build content for ${notification.responseType}")
-    }
+    NotificationsPageSingleElement(
+      title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
+      timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
+      content = Html(crcCodeExplanation.getOrElse(""))
+    )
+  }
 
   private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[String] = {
     val CrcCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")

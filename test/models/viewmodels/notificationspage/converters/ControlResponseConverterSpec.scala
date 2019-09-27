@@ -57,40 +57,7 @@ class ControlResponseConverterSpec extends BaseSpec with MockitoSugar {
     val contentBuilder = new ControlResponseConverter(decoderMock, NotificationsPageFormatter)
   }
 
-  "ControlResponseConverter on canConvertFrom" should {
-
-    "return false" when {
-      "provided with NotificationFrontendModel not for ControlResponse" in new Test {
-
-        val input = exampleNotificationFrontendModel(responseType = ResponseType.MovementTotalsResponse)
-
-        contentBuilder.canConvertFrom(input) mustBe false
-      }
-    }
-
-    "return true" when {
-      "provided with ControlResponse NotificationFrontendModel" in new Test {
-
-        val input = exampleNotificationFrontendModel(responseType = ResponseType.ControlResponse)
-
-        contentBuilder.canConvertFrom(input) mustBe true
-      }
-    }
-  }
-
   "ControlResponseConverter on convert" when {
-
-    "provided with NotificationFrontendModel not for ControlResponse" should {
-      "throw IllegalArgumentException" in new Test {
-
-        val input = exampleNotificationFrontendModel(
-          responseType = ResponseType.MovementTotalsResponse,
-          actionCode = Some(AcknowledgedAndProcessedActionCode.code)
-        )
-
-        intercept[IllegalArgumentException] { contentBuilder.convert(input) }
-      }
-    }
 
     "provided with ControlResponse NotificationFrontendModel without errors" should {
 

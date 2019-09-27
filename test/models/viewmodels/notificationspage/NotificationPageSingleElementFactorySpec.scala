@@ -189,7 +189,6 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           content = Html("<test>HTML</test>")
         )
         val responseConverter = mock[NotificationPageSingleElementConverter]
-        when(responseConverter.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
         when(responseConverter.convert(any[NotificationFrontendModel])(any()))
           .thenReturn(exampleNotificationPageElement)
 
@@ -211,7 +210,6 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           content = Html("<test>HTML</test>")
         )
         val responseConverter = mock[NotificationPageSingleElementConverter]
-        when(responseConverter.canConvertFrom(any[NotificationFrontendModel])).thenReturn(true)
         when(responseConverter.convert(any[NotificationFrontendModel])(any()))
           .thenReturn(exampleNotificationPageElement)
 

@@ -21,6 +21,5 @@ import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 
 trait NotificationPageSingleElementConverter {
-  def canConvertFrom(notification: NotificationFrontendModel): Boolean
   def convert(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement
 }

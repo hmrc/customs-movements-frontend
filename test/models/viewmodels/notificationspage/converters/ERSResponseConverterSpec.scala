@@ -21,10 +21,9 @@ import java.time.{Instant, ZoneId, ZonedDateTime}
 
 import base.BaseSpec
 import models.UcrBlock
-import models.notifications.ResponseType._
 import models.notifications.{Entry, EntryStatus, ResponseType}
 import models.viewmodels.decoder.{Decoder, ICSCode, ROECode, SOECode}
-import models.viewmodels.notificationspage.MovementTotalsResponseType.{EMR, ERS}
+import models.viewmodels.notificationspage.MovementTotalsResponseType.ERS
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import modules.DateTimeFormatterModule.NotificationsPageFormatter
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -51,54 +50,7 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
     val contentBuilder = new ERSResponseConverter(decoderMock, NotificationsPageFormatter)
   }
 
-  "ERSResponseConverter on canConvertFrom" should {
-
-    "return false" when {
-
-      "provided EMR response" in new Test {
-
-        val input =
-          exampleNotificationFrontendModel(responseType = MovementTotalsResponse, messageCode = EMR.code)
-
-        contentBuilder.canConvertFrom(input) mustBe false
-      }
-
-      "provided with MovementTotalsResponse but empty messageCode" in new Test {
-
-        val input = exampleNotificationFrontendModel(responseType = MovementTotalsResponse)
-
-        contentBuilder.canConvertFrom(input) mustBe false
-      }
-
-      "provided with different response type" in new Test {
-
-        val input = exampleNotificationFrontendModel(responseType = ControlResponse, messageCode = "EDL")
-
-        contentBuilder.canConvertFrom(input) mustBe false
-      }
-    }
-
-    "return true" when {
-      "provided with ERS response" in new Test {
-
-        val input =
-          exampleNotificationFrontendModel(responseType = MovementTotalsResponse, messageCode = ERS.code)
-
-        contentBuilder.canConvertFrom(input) mustBe true
-      }
-    }
-  }
-
   "ERSResponseConverter on convert" when {
-
-    "provided with response of type different than ERS" should {
-      "throw IllegalArgumentException" in new Test {
-
-        val input = exampleNotificationFrontendModel(responseType = ResponseType.ControlResponse, messageCode = "EDL")
-
-        intercept[IllegalArgumentException] { contentBuilder.convert(input) }
-      }
-    }
 
     "provided with ERS MovementTotalsResponse with all codes" should {
 

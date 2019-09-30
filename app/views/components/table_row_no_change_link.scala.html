@@ -20,7 +20,7 @@
 
 <tr class="section">
     <td class="previous-question-title bold">@tableRow.label</td>
-    <td class="previous-question-body">
+    <td class="previous-question-body text-right">
         @tableRow.values.map { value =>
             @value.getOrElse("None")<br/>
         }

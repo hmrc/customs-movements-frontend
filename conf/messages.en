@@ -347,7 +347,9 @@ notifications.elem.title.DucrAssociation = Consolidation request
 notifications.elem.title.DucrDisassociation = Disassociate request
 notifications.elem.title.ShutMucr = Shut MUCR request
 
-notifications.elem.title.inventoryLinkingControlResponse = Request received
+notifications.elem.title.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Request received
+notifications.elem.title.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed = Request blocked
+notifications.elem.title.inventoryLinkingControlResponse.Rejected = Request rejected
 notifications.elem.title.inventoryLinkingMovementResponse = Update message
 notifications.elem.title.inventoryLinkingMovementTotalsResponse = Update message
 notifications.elem.title.unknown = Update message
@@ -360,8 +362,10 @@ notifications.elem.content.ShutMucr = Your request to shut this MUCR has been re
 notifications.elem.content.footer = We will notify you when it has been successful.
 
 notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Your request has been acknowledged and processed.
-notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed = Your request has been partially acknowledged and processed.
-notifications.elem.content.inventoryLinkingControlResponse.Rejected = Your request has been rejected.
+notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed.singleError = The following error is blocking your request:
+notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed.multiError = The following errors are blocking your request:
+notifications.elem.content.inventoryLinkingControlResponse.Rejected.singleError = Your request has been rejected because of the following error:
+notifications.elem.content.inventoryLinkingControlResponse.Rejected.multiError = Your request has been rejected because of the following errors:
 
 notifications.elem.content.inventoryLinkingMovementResponse.crc = CRC:
 

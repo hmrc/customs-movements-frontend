@@ -19,13 +19,16 @@ package models.viewmodels.notificationspage.converters
 import javax.inject.{Inject, Singleton}
 import models.notifications.NotificationFrontendModel
 import models.notifications.ResponseType._
+import models.viewmodels.decoder.ActionCode._
 import models.viewmodels.notificationspage.MovementTotalsResponseType.{EMR, ERS}
 
 import scala.util.{Failure, Success, Try}
 
 @Singleton
 class ResponseConverterProvider @Inject()(
-  controlResponseConverter: ControlResponseConverter,
+  controlResponseAcknowledgedConverter: ControlResponseAcknowledgedConverter,
+  controlResponseBlockedConverter: ControlResponseBlockedConverter,
+  controlResponseRejectedConverter: ControlResponseRejectedConverter,
   ersResponseConverter: ERSResponseConverter,
   emrResponseConverter: EMRResponseConverter,
   movementResponseConverter: MovementResponseConverter,
@@ -43,7 +46,7 @@ class ResponseConverterProvider @Inject()(
   ): Try[NotificationPageSingleElementConverter] =
     Try(notification.responseType match {
       case MovementTotalsResponse => getMovementTotalsResponseConverter(notification)
-      case ControlResponse        => controlResponseConverter
+      case ControlResponse        => getControlResponseConverter(notification)
       case MovementResponse       => movementResponseConverter
     })
 
@@ -52,6 +55,14 @@ class ResponseConverterProvider @Inject()(
   ): NotificationPageSingleElementConverter = notification.messageCode match {
     case ERS.code => ersResponseConverter
     case EMR.code => emrResponseConverter
+  }
+
+  private def getControlResponseConverter(
+    notification: NotificationFrontendModel
+  ): NotificationPageSingleElementConverter = notification.actionCode match {
+    case Some(AcknowledgedAndProcessed.code)          => controlResponseAcknowledgedConverter
+    case Some(PartiallyAcknowledgedAndProcessed.code) => controlResponseBlockedConverter
+    case Some(Rejected.code)                          => controlResponseRejectedConverter
   }
 
 }

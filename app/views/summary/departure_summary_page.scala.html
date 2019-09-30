@@ -79,7 +79,7 @@
             @components.summary_list(Some(messages("transport.title"))) {
                 @components.table_row_no_change_link(HtmlTableRow(
                     label = messages("summary.modeOfTransport"),
-                    value = data.getEntry[Transport](Transport.formId).map(transport => messages(s"transport.modeOfTransport.${transport.modeOfTransport}")))
+                    value = data.getEntry[Transport](Transport.formId).map(transport => messages(s"transport.modeOfTransport.${transport.modeOfTransport}"))
                 ))
                 @components.table_row_no_change_link(HtmlTableRow(
                     label = messages("summary.transportId"),

@@ -49,37 +49,7 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
     val converter = new MovementResponseConverter(decoderMock, NotificationsPageFormatter)
   }
 
-  "MovementResponseConverter on canConvertFrom" should {
-
-    "return false" when {
-      "provided with NotificationFrontendModel not for MovementResponse" in new Test {
-
-        val input = exampleNotificationFrontendModel(responseType = ResponseType.ControlResponse)
-
-        converter.canConvertFrom(input) mustBe false
-      }
-    }
-
-    "return true" when {
-      "provided with MovementResponse NotificationFrontendModel" in new Test {
-
-        val input = exampleNotificationFrontendModel(responseType = ResponseType.MovementResponse)
-
-        converter.canConvertFrom(input) mustBe true
-      }
-    }
-  }
-
   "MovementResponseConverter on build" when {
-
-    "provided with NotificationFrontendModel not for MovementResponse" should {
-      "throw IllegalArgumentException" in new Test {
-
-        val input = exampleNotificationFrontendModel(responseType = ResponseType.ControlResponse)
-
-        intercept[IllegalArgumentException] { converter.convert(input) }
-      }
-    }
 
     "provided with MovementResponse NotificationFrontendModel" should {
 

@@ -16,10 +16,23 @@
 
 package models.viewmodels.notificationspage.converters
 
+import java.time.format.DateTimeFormatter
+
+import javax.inject.{Inject, Singleton}
 import models.notifications.NotificationFrontendModel
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 
-trait NotificationPageSingleElementConverter {
-  def convert(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement
+@Singleton
+class UnknownResponseConverter @Inject()(dateTimeFormatter: DateTimeFormatter)
+    extends NotificationPageSingleElementConverter {
+
+  override def convert(
+    notification: NotificationFrontendModel
+  )(implicit messages: Messages): NotificationsPageSingleElement = NotificationsPageSingleElement(
+    title = messages("notifications.elem.title.unknown"),
+    timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
+    content = HtmlFormat.empty
+  )
 }

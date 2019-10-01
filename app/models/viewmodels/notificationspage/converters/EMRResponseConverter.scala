@@ -19,10 +19,8 @@ package models.viewmodels.notificationspage.converters
 import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
-import models.notifications.ResponseType.MovementTotalsResponse
 import models.notifications.{Entry, NotificationFrontendModel}
 import models.viewmodels.decoder.Decoder
-import models.viewmodels.notificationspage.MovementTotalsResponseType.EMR
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
@@ -32,28 +30,21 @@ import views.html.components.code_explanation
 class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
     extends NotificationPageSingleElementConverter {
 
-  override def canConvertFrom(notification: NotificationFrontendModel): Boolean =
-    (notification.responseType == MovementTotalsResponse) && (notification.messageCode == EMR.code)
-
   override def convert(
     notification: NotificationFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement =
-    if (canConvertFrom(notification)) {
+  )(implicit messages: Messages): NotificationsPageSingleElement = {
+    val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation).getOrElse(HtmlFormat.empty)
+    val roeCodeExplanation =
+      findMucrEntry(notification.entries).flatMap(_.roe).flatMap(buildRoeCodeExplanation).getOrElse(HtmlFormat.empty)
+    val soeCodeExplanation =
+      findMucrEntry(notification.entries).flatMap(_.soe).flatMap(buildSoeCodeExplanation).getOrElse(HtmlFormat.empty)
 
-      val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation).getOrElse(HtmlFormat.empty)
-      val roeCodeExplanation =
-        findMucrEntry(notification.entries).flatMap(_.roe).flatMap(buildRoeCodeExplanation).getOrElse(HtmlFormat.empty)
-      val soeCodeExplanation =
-        findMucrEntry(notification.entries).flatMap(_.soe).flatMap(buildSoeCodeExplanation).getOrElse(HtmlFormat.empty)
-
-      NotificationsPageSingleElement(
-        title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-        timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
-        content = new Html(List(crcCodeExplanation, roeCodeExplanation, soeCodeExplanation))
-      )
-    } else {
-      throw new IllegalArgumentException(s"Cannot build content for ${notification.responseType}")
-    }
+    NotificationsPageSingleElement(
+      title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
+      timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
+      content = new Html(List(crcCodeExplanation, roeCodeExplanation, soeCodeExplanation))
+    )
+  }
 
   private def findMucrEntry(entries: Seq[Entry]): Option[Entry] = entries.find(_.ucrType.contains("M"))
 

@@ -23,31 +23,27 @@ import models.notifications.NotificationFrontendModel
 import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
-import play.twirl.api.Html
+import play.twirl.api.{Html, HtmlFormat}
+import views.html.components.paragraph
 
 @Singleton
-class MovementResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
+class ControlResponseAcknowledgedConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
     extends NotificationPageSingleElementConverter {
+
+  private val TitleMessagesKey = "notifications.elem.title.inventoryLinkingControlResponse.AcknowledgedAndProcessed"
 
   override def convert(
     notification: NotificationFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement = {
+  )(implicit messages: Messages): NotificationsPageSingleElement = NotificationsPageSingleElement(
+    title = messages(TitleMessagesKey),
+    timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
+    content = buildContent(notification)
+  )
 
-    val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation)
-
-    NotificationsPageSingleElement(
-      title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
-      timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
-      content = Html(crcCodeExplanation.getOrElse(""))
-    )
-  }
-
-  private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[String] = {
-    val CrcCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")
-
-    decoder.crc(crcCode).map(code => paragraph(s"$CrcCodeHeader ${messages(code.messageKey)}"))
-  }
-
-  private val paragraph: String => String = (text: String) => s"<p>$text</p>"
+  private def buildContent(notification: NotificationFrontendModel)(implicit messages: Messages): Html =
+    notification.actionCode
+      .flatMap(decoder.actionCode)
+      .map(actionCode => paragraph(messages(actionCode.messageKey)))
+      .getOrElse(HtmlFormat.empty)
 
 }

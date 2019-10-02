@@ -41,9 +41,15 @@ class AssociateDucrController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    cacheService.fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId).map {
-      case Some(options) => Ok(associateDucrPage(form, options.mucr))
-      case None          => throw IncompleteApplication
+    cacheService.fetch(movementCacheId()).map {
+      case Some(cache) =>
+        cache.getEntry[MucrOptions](MucrOptions.formId) match {
+          case Some(mucr) =>
+            val savedDucr = cache.getEntry[AssociateDucr](AssociateDucr.formId)
+            Ok(associateDucrPage(savedDucr.fold(form)(form.fill), mucr))
+          case None => throw IncompleteApplication
+        }
+      case None => throw IncompleteApplication
     }
   }
 
@@ -53,7 +59,7 @@ class AssociateDucrController @Inject()(
       .fold(
         formWithErrors =>
           cacheService.fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId).map {
-            case Some(options) => BadRequest(associateDucrPage(formWithErrors, options.mucr))
+            case Some(options) => BadRequest(associateDucrPage(formWithErrors, options))
             case None          => throw IncompleteApplication
         },
         formData =>

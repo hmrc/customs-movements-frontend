@@ -23,7 +23,7 @@ import utils.{Injector, Stubs}
 import views.base.UnitViewSpec
 import views.html.movement_confirmation_page
 
-class MovementConfirmationViewSpec extends UnitViewSpec with Stubs with Injector {
+class MovementConfirmationViewSpec extends UnitViewSpec {
 
   val movementConfirmationPage = new movement_confirmation_page(mainTemplate)
   val arrivalConfirmationView = movementConfirmationPage(Arrival)(request, messages)
@@ -33,7 +33,7 @@ class MovementConfirmationViewSpec extends UnitViewSpec with Stubs with Injector
 
     "have correct messages" in {
 
-      val messages = instanceOf[MessagesApi].preferred(request)
+      val messages = messagesApi.preferred(request)
 
       messages("movement.arrival.confirmation") mustBe "Arrival confirmation"
       messages("movement.departure.confirmation") mustBe "Departure confirmation"

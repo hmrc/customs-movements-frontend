@@ -29,7 +29,7 @@ import utils.{Injector, Stubs}
 import views.base.UnitViewSpec
 import views.html.summary.departure_summary_page
 
-class DepartureSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
+class DepartureSummaryViewSpec extends UnitViewSpec {
 
   val cachedDataOutOfUk = cacheMapData(Departure)
   val cachedDataBackIntoUk = cacheMapData(Departure) + (GoodsDeparted.formId -> Json.toJson(
@@ -45,7 +45,7 @@ class DepartureSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
 
     "have correct content" in {
 
-      val messages = instanceOf[MessagesApi].preferred(request)
+      val messages = messagesApi.preferred(request)
 
       messages("summary.title") mustBe "Check your answers"
       messages("summary.departure.title") mustBe "Check your answers before departing these goods"

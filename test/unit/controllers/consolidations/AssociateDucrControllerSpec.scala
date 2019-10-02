@@ -20,13 +20,17 @@ import controllers.consolidations.{routes, AssociateDucrController}
 import controllers.exception.IncompleteApplication
 import forms.Choice.AssociateDUCR
 import forms.{AssociateDucr, Choice, MucrOptions}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
+import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.http.cache.client.CacheMap
 import unit.base.ControllerSpec
 import views.html.associate_ducr
+import controllers.storage.CacheIdGenerator._
 
 import scala.concurrent.ExecutionContext.global
 
@@ -53,31 +57,59 @@ class AssociateDucrControllerSpec extends ControllerSpec {
 
   override protected def afterEach(): Unit = {
     reset(mockAssociateDucrPage)
-
     super.afterEach()
   }
+
+  val formCaptor: ArgumentCaptor[Form[AssociateDucr]] = ArgumentCaptor.forClass(classOf[Form[AssociateDucr]])
 
   "Associate Ducr controller" should {
 
     "return OK (200)" when {
 
       "display page method is invoked and Mucr Options page has data" in {
+        val request = getRequest()
+        withCacheMap(
+          Some(CacheMap(movementCacheId()(request), Map(MucrOptions.formId -> Json.toJson(MucrOptions("MUCR")))))
+        )
 
-        withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
-
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage()(request)
 
         status(result) must be(OK)
+
+        verify(mockAssociateDucrPage).apply(formCaptor.capture(), any())(any(), any())
+        formCaptor.getValue.value mustBe empty
+      }
+
+      "display previously gathered data" in {
+        val request = getRequest()
+        withCacheMap(
+          Some(
+            CacheMap(
+              movementCacheId()(request),
+              Map(
+                MucrOptions.formId -> Json.toJson(MucrOptions("MUCR")),
+                AssociateDucr.formId -> Json.toJson(AssociateDucr("DUCR"))
+              )
+            )
+          )
+        )
+
+        val result = controller.displayPage()(request)
+
+        status(result) must be(OK)
+        verify(mockAssociateDucrPage).apply(formCaptor.capture(), any())(any(), any())
+        formCaptor.getValue.value.get mustBe AssociateDucr("DUCR")
       }
     }
 
     "throw an IncompleteApplication exception" when {
 
       "display page method is invoked and Mucr Options page is in cache" in {
-        withCaching(MucrOptions.formId, None)
+        val request = getRequest()
+        withCacheMap(Some(CacheMap(movementCacheId()(request), Map.empty)))
 
         assertThrows[IncompleteApplication] {
-          await(controller.displayPage()(getRequest()))
+          await(controller.displayPage()(request))
         }
       }
 

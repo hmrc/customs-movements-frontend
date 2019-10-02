@@ -16,40 +16,43 @@
 
 package views
 
-import forms.AssociateDucr
+import forms.{AssociateDucr, MucrOptions}
 import helpers.views.{AssociateDucrMessages, CommonMessages}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
-import views.base.ViewSpec
+import views.base.{UnitViewSpec, ViewSpec}
 import views.tags.ViewTest
 
 @ViewTest
-class AssociateDucrViewSpec extends ViewSpec with AssociateDucrMessages with CommonMessages {
+class AssociateDucrViewSpec extends UnitViewSpec with AssociateDucrMessages with CommonMessages {
 
-  private val page = injector.instanceOf[views.html.associate_ducr]
+  private val page = new views.html.associate_ducr(mainTemplate)
 
-  private def createView(mucr: String, form: Form[AssociateDucr]): Html =
-    page(form, mucr)(fakeRequest, messages)
+  val mucrOptions = MucrOptions("MUCR")
+
+  private def createView(mucr: MucrOptions, form: Form[AssociateDucr]): Html =
+    page(form, mucr)(request, messages)
 
   "Disassociate Ducr Confirmation View" should {
 
     "have a proper labels for messages" in {
+      val messages = messagesApi.preferred(request)
       messages(title, "{MUCR}") mustBe "Add a DUCR to {MUCR}"
       messages(hint) mustBe "Make sure you have entered the right MUCR details before adding a DUCR."
     }
 
     "display 'Add' button on page" in {
-      val view: Document = createView("MUCR", AssociateDucr.form)
+      val view: Document = createView(mucrOptions, AssociateDucr.form)
 
-      view.getElementsByClass("button").text() must be(messages(add))
+      view.getElementsByClass("button").text() mustBe add
     }
 
     "display DUCR Form errors" in {
-      val view: Document = createView("MUCR", AssociateDucr.form.fillAndValidate(AssociateDucr("")))
+      val view: Document = createView(mucrOptions, AssociateDucr.form.fillAndValidate(AssociateDucr("")))
 
       view must haveGlobalErrorSummary
-      view must haveFieldError("ducr", "Please enter a reference")
+      view must haveFieldError("ducr", "mucrOptions.reference.value.empty")
     }
   }
 

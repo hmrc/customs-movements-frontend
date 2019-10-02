@@ -15,28 +15,29 @@
  *@
 
 @import forms.AssociateDucr
+@import forms.MucrOptions
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[AssociateDucr], mucr: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[AssociateDucr], mucrOptions: MucrOptions)(implicit request: Request[_], messages: Messages)
 
 
- @main_template(title = messages("associateDucr.title", mucr)) {
-  @helper.form(consolidations.routes.AssociateDucrController.submit(), 'autoComplete -> "off") {
-   @helper.CSRF.formField
+@main_template(title = messages("associateDucr.title", mucrOptions.mucr)) {
+    @helper.form(consolidations.routes.AssociateDucrController.submit(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
 
-   @components.back_link(consolidations.routes.MucrOptionsController.displayPage())
+        @components.back_link(consolidations.routes.MucrOptionsController.displayPage())
 
-   @components.error_summary(form.errors)
+        @components.error_summary(form.errors)
 
-   @components.page_title(Some(messages("associateDucr.title", mucr)))
+        @components.page_title(Some(messages("associateDucr.title", mucrOptions.mucr)))
 
-   @components.input_text(
-    field = form("ducr"),
-    label = "",
-    hint = Some(messages("associateDucr.reference.hint"))
-   )
+        @components.input_text(
+            field = form("ducr"),
+            label = "",
+            hint = Some(messages("associateDucr.reference.hint"))
+        )
 
-   @components.submit_button(messages("site.add"))
-  }
- }
+        @components.submit_button(messages("site.add"))
+    }
+}

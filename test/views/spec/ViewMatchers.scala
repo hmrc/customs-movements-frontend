@@ -219,6 +219,7 @@ trait ViewMatchers {
   def haveGlobalErrorSummary: Matcher[Element] = new ContainElementWithIDMatcher("error-summary-heading")
 
   def haveHref(value: Call): Matcher[Element] = new ElementHasAttributeValueMatcher("href", value.url)
+  def haveHref(url: String): Matcher[Element] = new ElementHasAttributeValueMatcher("href", url)
 
   def haveTranslationFor(key: String): Matcher[Messages] = new TranslationKeyMatcher(key)
 }

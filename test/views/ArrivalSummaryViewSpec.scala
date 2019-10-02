@@ -26,7 +26,7 @@ import utils.{Injector, Stubs}
 import views.base.UnitViewSpec
 import views.html.summary.arrival_summary_page
 
-class ArrivalSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
+class ArrivalSummaryViewSpec extends UnitViewSpec {
 
   val cachedData = cacheMapData(Arrival)
   val arrivalSummaryPage = new arrival_summary_page(mainTemplate)
@@ -37,7 +37,7 @@ class ArrivalSummaryViewSpec extends UnitViewSpec with Stubs with Injector {
 
     "have correct content" in {
 
-      val messages = instanceOf[MessagesApi].preferred(request)
+      val messages = messagesApi.preferred(request)
 
       messages("summary.title") mustBe "Check your answers"
       messages("summary.arrival.title") mustBe "Check your answers before arriving these goods"

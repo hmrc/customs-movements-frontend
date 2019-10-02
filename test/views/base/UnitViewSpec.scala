@@ -19,12 +19,31 @@ package views.base
 import akka.util.Timeout
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.i18n.Messages
+import play.api.Configuration
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers.contentAsString
 import play.api.test.{FakeRequest, Helpers}
 import play.twirl.api.Html
+import uk.gov.hmrc.play.config.{AssetsConfig, GTMConfig, OptimizelyConfig}
+import uk.gov.hmrc.play.views.html.layouts.{
+  Article,
+  Footer,
+  FooterLinks,
+  GTMSnippet,
+  Head,
+  HeaderNav,
+  MainContent,
+  MainContentHeader,
+  OptimizelySnippet,
+  ServiceInfo,
+  Sidebar
+}
 import unit.base.UnitSpec
+import utils.Stubs
+import views.html.layouts.GovUkTemplate
+import views.html.{govuk_wrapper, main_template}
 
 import scala.concurrent.Future
 
@@ -36,8 +55,16 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
 
   implicit val messages: Messages = Helpers.stubMessages()
 
+  def mainTemplate: main_template = UnitViewSpec.mainTemplate
+
+  def messagesApi: MessagesApi = UnitViewSpec.realMessagesApi
+
   implicit protected def htmlBodyOf(html: Html): Document = Jsoup.parse(html.toString())
   implicit protected def htmlBodyOf(page: String): Document = Jsoup.parse(page)
   implicit protected def htmlBodyOf(result: Future[Result])(implicit timeout: Timeout): Document =
     htmlBodyOf(contentAsString(result))
+}
+
+object UnitViewSpec extends Stubs {
+  val realMessagesApi = new GuiceApplicationBuilder().injector().instanceOf[MessagesApi]
 }

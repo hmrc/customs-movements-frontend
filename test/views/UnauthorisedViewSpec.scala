@@ -22,7 +22,7 @@ import utils.{Injector, Stubs}
 import views.base.UnitViewSpec
 import views.html.unauthorised
 
-class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector {
+class UnauthorisedViewSpec extends UnitViewSpec {
 
   val unauthorisedPage = new unauthorised(mainTemplate)
   val unauthorisedView: Html = unauthorisedPage()(request, messages)
@@ -31,7 +31,7 @@ class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector {
 
     "have correct content" in {
 
-      val messages = instanceOf[MessagesApi].preferred(request)
+      val messages = messagesApi.preferred(request)
 
       messages("unauthorised.title") mustBe "You can’t access this service with this account"
     }

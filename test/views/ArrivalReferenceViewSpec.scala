@@ -25,7 +25,7 @@ import utils.{Injector, Stubs}
 import views.base.UnitViewSpec
 import views.html.arrival_reference
 
-class ArrivalReferenceViewSpec extends UnitViewSpec with Stubs with Injector {
+class ArrivalReferenceViewSpec extends UnitViewSpec {
 
   val arrivalReferencePage = new arrival_reference(mainTemplate)
   def createView(form: Form[ArrivalReference] = ArrivalReference.form): Html =
@@ -35,7 +35,7 @@ class ArrivalReferenceViewSpec extends UnitViewSpec with Stubs with Injector {
 
     "have correct content" in {
 
-      val messages = instanceOf[MessagesApi].preferred(request)
+      val messages = messagesApi.preferred(request)
 
       messages("arrivalReference") mustBe "Arrival reference"
       messages("arrivalReference.question") mustBe "Give this arrival a unique reference"

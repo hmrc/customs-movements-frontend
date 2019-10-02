@@ -19,31 +19,15 @@ package views.base
 import akka.util.Timeout
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Configuration
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers.contentAsString
 import play.api.test.{FakeRequest, Helpers}
 import play.twirl.api.Html
-import uk.gov.hmrc.play.config.{AssetsConfig, GTMConfig, OptimizelyConfig}
-import uk.gov.hmrc.play.views.html.layouts.{
-  Article,
-  Footer,
-  FooterLinks,
-  GTMSnippet,
-  Head,
-  HeaderNav,
-  MainContent,
-  MainContentHeader,
-  OptimizelySnippet,
-  ServiceInfo,
-  Sidebar
-}
 import unit.base.UnitSpec
 import utils.Stubs
-import views.html.layouts.GovUkTemplate
-import views.html.{govuk_wrapper, main_template}
+import views.html.main_template
 
 import scala.concurrent.Future
 

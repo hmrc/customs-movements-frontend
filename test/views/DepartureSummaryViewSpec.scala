@@ -26,7 +26,7 @@ import play.api.test.Helpers._
 import testdata.MovementsTestData.cacheMapData
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.{Injector, Stubs}
-import views.base.UnitViewSpec
+import views.spec.UnitViewSpec
 import views.html.summary.departure_summary_page
 
 class DepartureSummaryViewSpec extends UnitViewSpec {

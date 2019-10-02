@@ -20,7 +20,7 @@ import forms.{DepartureDetails, MovementDetails}
 import helpers.views.{CommonMessages, DepartureDetailsMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.base.ViewSpec
+import views.spec.ViewSpec
 
 class DepartureDetailsViewSpec extends ViewSpec with DepartureDetailsMessages with CommonMessages {
 

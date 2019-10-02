@@ -18,8 +18,8 @@ package views
 
 import helpers.views.StartMessages
 import play.twirl.api.Html
-import views.base.ViewSpec
 import views.html.start_page
+import views.spec.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest

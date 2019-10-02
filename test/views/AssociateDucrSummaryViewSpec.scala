@@ -19,7 +19,7 @@ package views
 import forms.AssociateDucr
 import helpers.views.{AssociateDucrSummaryMessages, CommonMessages}
 import play.twirl.api.Html
-import views.base.ViewSpec
+import views.spec.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest

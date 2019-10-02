@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.base
+package views.spec
 
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements

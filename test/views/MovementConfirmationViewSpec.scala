@@ -20,7 +20,7 @@ import controllers.routes
 import forms.Choice.{Arrival, Departure}
 import play.api.i18n.MessagesApi
 import utils.{Injector, Stubs}
-import views.base.UnitViewSpec
+import views.spec.UnitViewSpec
 import views.html.movement_confirmation_page
 
 class MovementConfirmationViewSpec extends UnitViewSpec {

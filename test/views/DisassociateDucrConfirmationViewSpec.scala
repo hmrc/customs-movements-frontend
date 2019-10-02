@@ -20,7 +20,7 @@ import controllers.storage.FlashKeys
 import helpers.views.{CommonMessages, DisassociateDucrConfirmationMessages}
 import play.api.mvc.Flash
 import play.twirl.api.Html
-import views.base.ViewSpec
+import views.spec.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest

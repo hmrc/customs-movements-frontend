@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.base
+package views.spec
 
 import akka.util.Timeout
 import org.jsoup.Jsoup

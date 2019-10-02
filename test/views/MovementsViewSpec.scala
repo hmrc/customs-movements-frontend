@@ -32,7 +32,7 @@ import testdata.ConsolidationTestData
 import testdata.ConsolidationTestData._
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import utils.Stubs
-import views.base.ViewValidator
+import views.spec.ViewValidator
 import views.html.movements
 
 class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewValidator {

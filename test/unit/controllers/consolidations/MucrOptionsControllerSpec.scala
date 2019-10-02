@@ -17,16 +17,18 @@
 package unit.controllers.consolidations
 
 import controllers.consolidations.{routes, MucrOptionsController}
-
 import forms.Choice.AssociateDUCR
 import forms.MucrOptions.Create
 import forms.{Choice, MucrOptions}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
+import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import testdata.CommonTestData
 import unit.base.ControllerSpec
 import views.html.mucr_options
 
@@ -49,7 +51,7 @@ class MucrOptionsControllerSpec extends ControllerSpec with OptionValues {
 
     authorizedUser()
     withCaching(Choice.choiceId, Some(AssociateDUCR))
-    withCaching(MucrOptions.formId)
+    withCaching(MucrOptions.formId, None)
     when(mockMucrOptionsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -64,17 +66,30 @@ class MucrOptionsControllerSpec extends ControllerSpec with OptionValues {
     "return 200 (OK)" when {
 
       "display page method is invoked" in {
+        withCaching(MucrOptions.formId, None)
 
         val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
         verify(mockMucrOptionsPage).apply(any())(any(), any())
       }
+
+      "display page with filled data" in {
+        withCaching(MucrOptions.formId, Some(MucrOptions(CommonTestData.correctUcr)))
+
+        val result = controller.displayPage()(getRequest())
+
+        status(result) mustBe OK
+        val captor: ArgumentCaptor[Form[MucrOptions]] = ArgumentCaptor.forClass(classOf[Form[MucrOptions]])
+        verify(mockMucrOptionsPage).apply(captor.capture())(any(), any())
+        captor.getValue.value.get.mucr mustBe CommonTestData.correctUcr
+      }
     }
 
     "return 400 (BAD_REQUEST)" when {
 
       "form is incorrect during saving on first validation" in {
+        withCaching(MucrOptions.formId, None)
 
         val incorrectForm = Json.toJson(MucrOptions("8GB12345612345612345", "8GB12345612345612345", ""))
 
@@ -85,6 +100,7 @@ class MucrOptionsControllerSpec extends ControllerSpec with OptionValues {
       }
 
       "form is incorrect during saving on second validation" in {
+        withCaching(MucrOptions.formId, None)
 
         val incorrectForm = Json.toJson(MucrOptions("incorrect", "incorrect", Create))
 
@@ -98,6 +114,8 @@ class MucrOptionsControllerSpec extends ControllerSpec with OptionValues {
     "return 303 (SEE_OTHER)" when {
 
       "form is correct" in {
+        withCaching(MucrOptions.formId, None)
+        withCaching(MucrOptions.formId)
 
         val correctForm = Json.toJson(MucrOptions("8GB12345612345612345", "", Create))
 

@@ -39,10 +39,10 @@ class MucrOptionsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async  { implicit request =>
-    cacheService.fetchAndGetEntry[MucrOptions](movementCacheId(), formId).map( data =>
-      Ok(mucrOptionsPage(data.fold(form)(form.fill)))
-    )
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    cacheService
+      .fetchAndGetEntry[MucrOptions](movementCacheId(), formId)
+      .map(data => Ok(mucrOptionsPage(data.fold(form)(form.fill))))
   }
 
   def save(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

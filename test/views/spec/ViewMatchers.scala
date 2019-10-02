@@ -22,8 +22,12 @@ import org.scalatest.matchers.{MatchResult, Matcher}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
+import scala.collection.JavaConverters._
+
 //noinspection ScalaStyle
 trait ViewMatchers {
+
+  implicit private def elements2Scala(elements: Elements): Iterator[Element] = elements.iterator().asScala
 
   private def actualContentWas(node: Element): String =
     if (node == null) {

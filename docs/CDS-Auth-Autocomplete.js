@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name     CDS Movements Authorisation
 // @namespace  http://tampermonkey.net/
-// @version   0.1
+// @version   0.2
 // @description Authenticates with CDS Declare
 // @author    You
-// @match     http*://*/auth-login-stub/gg-sign-in?continue=*customs-movments*
+// @match     http*://*/auth-login-stub/gg-sign-in?continue=*customs-movements*
 // @grant     none
 // @updateURL https://raw.githubusercontent.com/hmrc/customs-movements-frontend/master/docs/CDS-Auth-Autocomplete.js
 // ==/UserScript==
@@ -38,7 +38,7 @@ function createQuickButton() {
 function getBaseUrl() {
     let host = window.location.host;
     if (window.location.hostname === 'localhost') {
-        host = 'localhost:6791'
+        host = 'localhost:6796'
     }
     return window.location.protocol + "//" + host;
 }

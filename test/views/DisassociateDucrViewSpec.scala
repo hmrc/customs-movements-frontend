@@ -20,7 +20,7 @@ import forms.DisassociateDucr
 import helpers.views.{CommonMessages, DisassociateDucrMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.base.ViewSpec
+import views.spec.ViewSpec
 
 class DisassociateDucrViewSpec extends ViewSpec with DisassociateDucrMessages with CommonMessages {
 

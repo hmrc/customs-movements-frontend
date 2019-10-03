@@ -21,8 +21,8 @@ import forms.Choice._
 import helpers.views.{ChoiceMessages, CommonMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.base.ViewSpec
 import views.html.choice_page
+import views.spec.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest
@@ -58,7 +58,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
     "display header with hint" in {
 
-      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
+      getElementById(createView(), "title").text() must be(messages(title))
     }
 
     "display 'Back' button that links to 'Make an export declaration' page" in {

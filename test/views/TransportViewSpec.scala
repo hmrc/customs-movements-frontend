@@ -21,7 +21,7 @@ import forms.Transport
 import helpers.views.{CommonMessages, TransportMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.base.ViewSpec
+import views.spec.ViewSpec
 
 class TransportViewSpec extends ViewSpec with TransportMessages with CommonMessages {
 

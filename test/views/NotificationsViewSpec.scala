@@ -24,7 +24,7 @@ import play.twirl.api.Html
 import testdata.CommonTestData
 import testdata.CommonTestData.exampleNotificationPageSingleElement
 import utils.Stubs
-import views.base.ViewValidator
+import views.spec.ViewValidator
 import views.html.notifications
 
 class NotificationsViewSpec extends WordSpec with MustMatchers with Stubs with ViewValidator {

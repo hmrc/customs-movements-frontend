@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
-package views.base
+package views.spec
 
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.scalatest.matchers.{MatchResult, Matcher}
+import play.api.i18n.Messages
 import play.api.mvc.Call
+
+import scala.collection.JavaConverters._
 
 //noinspection ScalaStyle
 trait ViewMatchers {
+
+  implicit private def elements2Scala(elements: Elements): Iterator[Element] = elements.iterator().asScala
 
   private def actualContentWas(node: Element): String =
     if (node == null) {
@@ -178,6 +183,14 @@ trait ViewMatchers {
     }
   }
 
+  class TranslationKeyMatcher(key: String) extends Matcher[Messages] {
+    override def apply(left: Messages): MatchResult = MatchResult(
+      matches = left.isDefinedAt(key),
+      rawFailureMessage = s"$key is not defined in Messages",
+      rawNegatedFailureMessage = s"$key is defined in Messages"
+    )
+  }
+
   class ChildMatcherBuilder(tag: String) {
     def containingText(text: String) = new ElementContainsChildWithTextMatcher(tag, text)
     def withAttribute(key: String, value: String) = new ElementContainsChildWithAttributeMatcher(tag, key, value)
@@ -206,4 +219,7 @@ trait ViewMatchers {
   def haveGlobalErrorSummary: Matcher[Element] = new ContainElementWithIDMatcher("error-summary-heading")
 
   def haveHref(value: Call): Matcher[Element] = new ElementHasAttributeValueMatcher("href", value.url)
+  def haveHref(url: String): Matcher[Element] = new ElementHasAttributeValueMatcher("href", url)
+
+  def haveTranslationFor(key: String): Matcher[Messages] = new TranslationKeyMatcher(key)
 }

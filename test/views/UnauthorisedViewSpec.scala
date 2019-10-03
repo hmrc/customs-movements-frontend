@@ -19,7 +19,7 @@ package views
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.{Injector, Stubs}
-import views.base.UnitViewSpec
+import views.spec.UnitViewSpec
 import views.html.unauthorised
 
 class UnauthorisedViewSpec extends UnitViewSpec {

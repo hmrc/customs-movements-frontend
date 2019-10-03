@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package views.base
+package views.spec
 
 import akka.util.Timeout
+import base.Injector
+import config.AppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers.contentAsString
 import play.api.test.{FakeRequest, Helpers}
@@ -43,12 +44,15 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
 
   def messagesApi: MessagesApi = UnitViewSpec.realMessagesApi
 
+  def appConfig: AppConfig = UnitViewSpec.realAppConfig
+
   implicit protected def htmlBodyOf(html: Html): Document = Jsoup.parse(html.toString())
   implicit protected def htmlBodyOf(page: String): Document = Jsoup.parse(page)
   implicit protected def htmlBodyOf(result: Future[Result])(implicit timeout: Timeout): Document =
     htmlBodyOf(contentAsString(result))
 }
 
-object UnitViewSpec extends Stubs {
-  val realMessagesApi = new GuiceApplicationBuilder().injector().instanceOf[MessagesApi]
+object UnitViewSpec extends Stubs with Injector {
+  val realMessagesApi = instanceOf[MessagesApi]
+  val realAppConfig = instanceOf[AppConfig]
 }

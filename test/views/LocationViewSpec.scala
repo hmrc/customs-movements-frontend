@@ -21,7 +21,7 @@ import forms.Location
 import helpers.views.{CommonMessages, LocationMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.base.ViewSpec
+import views.spec.ViewSpec
 
 class LocationViewSpec extends ViewSpec with LocationMessages with CommonMessages {
 

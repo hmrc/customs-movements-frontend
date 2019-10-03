@@ -16,190 +16,127 @@
 
 package views
 
-import helpers.views.StartMessages
 import play.twirl.api.Html
-import views.base.ViewSpec
 import views.html.start_page
+import views.spec.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class StartViewSpec extends ViewSpec with StartMessages {
+class StartViewSpec extends UnitViewSpec {
 
-  private val startPage = injector.instanceOf[start_page]
-  private def createView(): Html = startPage()
+  private val page = new start_page(mainTemplate, appConfig)
+  private def createView(): Html = page()(request, messages)
 
-  "Start View" should {
+  "Start Page view" should {
 
     "have proper messages for labels" in {
+      val messages = messagesApi.preferred(request)
+      messages must haveTranslationFor("startPage.title.sectionHeader")
+      messages must haveTranslationFor("startPage.title")
+      messages must haveTranslationFor("startPage.description")
+      messages must haveTranslationFor("startPage.contents.header")
+      messages must haveTranslationFor("startPage.beforeYouStart.header")
+      messages must haveTranslationFor("startPage.beforeYouStart.line.1")
+      messages must haveTranslationFor("startPage.beforeYouStart.line.1.link")
+      messages must haveTranslationFor("startPage.beforeYouStart.line.2")
+      messages must haveTranslationFor("startPage.beforeYouStart.line.3")
+      messages must haveTranslationFor("startPage.informationYouNeed.header")
+      messages must haveTranslationFor("startPage.informationYouNeed.line.1")
+      messages must haveTranslationFor("startPage.informationYouNeed.listItem.1")
+      messages must haveTranslationFor("startPage.informationYouNeed.listItem.2")
+      messages must haveTranslationFor("startPage.informationYouNeed.listItem.3")
+      messages must haveTranslationFor("startPage.informationYouNeed.listItem.4")
+      messages must haveTranslationFor("startPage.reportYourArrivalAndDeparture.header")
+      messages must haveTranslationFor("startPage.problemsWithServiceNotice")
+      messages must haveTranslationFor("startPage.problemsWithServiceNotice.link")
+      messages must haveTranslationFor("startPage.buttonName")
+    }
 
-      assertMessage(title, "Register for customs services")
-      assertMessage(heading, "Make an export declaration")
-      assertMessage(
-        description,
-        "An export declaration must be completed for any export leaving the UK. This includes goods being exported through the EU to a third (non-EU) country."
-      )
-      assertMessage(listHeading, "You will need:")
-      assertMessage(listItemOne, "your Government Gateway details")
-      assertMessage(listItemTwoPreUrl, "your")
-      assertMessage(listItemTwoPostUrl, "number")
-      assertMessage(listItemTwoUrl, "Economic Operator Registration and Identification (EORI)")
-      assertMessage(
-        listItemThree,
-        "any licences you may need, for example, for military controlled items and highly sensitive dual-use goods"
-      )
-      assertMessage(listItemFour, "details of where you’re sending the export")
+    val view = createView()
 
-      // for some reason it does not pick up the ' in message - possibly some java/scala issue
-      assertMessage(
-        listItemFive,
-        "a description of the item, including the value, weight, size and type of package its in"
+    "display title" in {
+      view.select("title").text() mustBe "startPage.title"
+    }
+
+    "display section header" in {
+      view.getElementById("section-header").text() mustBe "startPage.title.sectionHeader"
+    }
+
+    "display header" in {
+      view.getElementById("title").text() mustBe "startPage.title"
+    }
+
+    "display general description" in {
+      view.getElementById("description").text() mustBe "startPage.description"
+    }
+
+    "display Contents section" in {
+      view.getElementById("contents").text() mustBe "startPage.contents.header"
+
+      view.getElementById("contents-element-1").text() mustBe "startPage.beforeYouStart.header"
+      view.getElementById("contents-element-2").text() mustBe "startPage.informationYouNeed.header"
+      view.getElementById("contents-element-3").text() mustBe "startPage.reportYourArrivalAndDeparture.header"
+    }
+
+    "contain links in Contents section" in {
+      view.getElementById("contents-element-1").child(0) must haveHref("#before-you-start")
+      view.getElementById("contents-element-2").child(0) must haveHref("#information-you-need")
+      view.getElementById("contents-element-3").child(0) must haveHref("#report-your-arrival-and-departure")
+    }
+
+    "display 'Before you start' section" in {
+      view.getElementById("before-you-start").text() mustBe "startPage.beforeYouStart.header"
+
+      view.getElementById("before-you-start-line-1").text() must include("startPage.beforeYouStart.line.1")
+      view.getElementById("before-you-start-line-1").text() must include("startPage.beforeYouStart.line.1.link")
+      view.getElementById("before-you-start-line-2").text() mustBe "startPage.beforeYouStart.line.2"
+      view.getElementById("before-you-start-line-3").text() mustBe "startPage.beforeYouStart.line.3"
+    }
+
+    "contain link to Customs Declarations Guidance in 'Before you start' section" in {
+      view.getElementById("before-you-start-line-1").child(0) must haveHref(
+        "https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"
       )
-      assertMessage(listItemSix, "your")
-      assertMessage(listItemSixUrl, "commodity code(s)")
-      assertMessage(listItemSeven, "for your item")
-      assertMessage(listItemSevenUrl, "customs procedure code(s)")
-      assertMessage(buttonName, "Start now")
-      assertMessage(additionalInformation, "Your information is saved automatically.")
-      assertMessage(referenceTitle, "Help and support")
-      assertMessage(reference, "If you are having problems registering, phone:")
-      assertMessage(referenceNumber, "0300 200 3700")
-      assertMessage(referenceText, "Open 8am to 6pm, Monday to Friday (closed bank holidays)")
-      assertMessage(enquiries, "General enquires help")
+    }
+
+    "display 'Information you need' section" in {
+      view.getElementById("information-you-need").text() mustBe "startPage.informationYouNeed.header"
+
+      view.getElementById("information-you-need-line-1").text() mustBe "startPage.informationYouNeed.line.1"
+      view.getElementById("information-you-need-listItem-1").text() mustBe "startPage.informationYouNeed.listItem.1"
+      view.getElementById("information-you-need-listItem-2").text() mustBe "startPage.informationYouNeed.listItem.2"
+      view.getElementById("information-you-need-listItem-3").text() mustBe "startPage.informationYouNeed.listItem.3"
+      view.getElementById("information-you-need-listItem-4").text() mustBe "startPage.informationYouNeed.listItem.4"
+    }
+
+    "display 'Report your arrival and departure' section" in {
+      view
+        .getElementById("report-your-arrival-and-departure")
+        .text() mustBe "startPage.reportYourArrivalAndDeparture.header"
+    }
+
+    "display problems with service notice" in {
+      view.getElementById("problems-with-service-notice").text() must include("startPage.problemsWithServiceNotice")
+      view.getElementById("problems-with-service-notice").text() must include(
+        "startPage.problemsWithServiceNotice.link"
+      )
+    }
+
+    "contain link to service availability in 'Report your arrival and departure' section" in {
+      view.getElementById("problems-with-service-notice").child(0) must haveHref(
+        "https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
+      )
+    }
+
+    "display 'Start now' button" in {
+      view.getElementById("button-start").text() mustBe "startPage.buttonName"
+      view.getElementById("button-start") must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+    }
+
+    "display link to go back to Contents section" in {
+      view.getElementById("back-to-top").text() mustBe "startPage.contents.header"
+      view.getElementById("back-to-top").child(0) must haveHref("#contents")
     }
   }
 
-  "Start View on empty page" when {
-
-    "display page title" in {
-
-      getElementByCss(createView(), "title").text() must be(messages(title))
-    }
-
-    "display \"Export\" header" in {
-
-      getElementByCss(createView(), "h1").text() must be(messages(heading))
-    }
-
-    "display \"Export\" description" in {
-
-      getElementByCss(createView(), "article>div>div>p:nth-child(2)")
-        .text() must be(messages(description))
-    }
-
-    "display list header" in {
-
-      getElementByCss(createView(), "h3").text() must be(messages(listHeading))
-    }
-
-    "display list with elements" should {
-
-      "first element" in {
-
-        getElementByCss(createView(), "article>div>div>ul>li:nth-child(1)")
-          .text() must be(messages(listItemOne))
-      }
-
-      "second element" in {
-
-        getElementByCss(createView(), "article>div>div>ul>li:nth-child(2)")
-          .text() must be(
-          messages(listItemTwoPreUrl) + " " + messages(listItemTwoUrl) + " " + messages(listItemTwoPostUrl)
-        )
-      }
-
-      "link in second element to \"EORI\" page" in {
-
-        val link =
-          getElementByCss(createView(), "article>div>div>ul>li:nth-child(2)>a")
-
-        link.text() must be(messages(listItemTwoUrl))
-        link.attr("href") must be("http://www.gov.uk/eori")
-      }
-
-      "third element" in {
-
-        getElementByCss(createView(), "article>div>div>ul>li:nth-child(3)")
-          .text() must be(messages(listItemThree))
-      }
-
-      "fourth element" in {
-
-        getElementByCss(createView(), "article>div>div>ul>li:nth-child(4)")
-          .text() must be(messages(listItemFour))
-      }
-
-      "fifth element" in {
-
-        getElementByCss(createView(), "article>div>div>ul>li:nth-child(5)")
-          .text() must be(messages(listItemFive))
-      }
-
-      "sixth element" in {
-
-        getElementByCss(createView(), "article>div>div>ul>li:nth-child(6)")
-          .text() must be(messages(listItemSix) + " " + messages(listItemSixUrl))
-      }
-
-      "link in sixth element to \"Commodity codes\" page" in {
-
-        val link =
-          getElementByCss(createView(), "article>div>div>ul>li:nth-child(6)>a")
-
-        link.text() must be(messages(listItemSixUrl))
-        link.attr("href") must be("https://www.gov.uk/trade-tariff")
-      }
-
-      "seventh element" in {
-
-        getElementByCss(createView(), "article>div>div>ul>li:nth-child(7)")
-          .text() must be(messages(listItemSevenUrl) + " " + messages(listItemSeven))
-      }
-
-      "link in seventh element to\"Customs procedure codes\" page" in {
-
-        val link =
-          getElementByCss(createView(), "article>div>div>ul>li:nth-child(7)>a")
-
-        link.text() must be(messages(listItemSevenUrl))
-        link.attr("href") must be(
-          "https://www.gov.uk/government/publications/uk-trade-tariff-customs-procedure-codes/customs-procedure-codes-box-37"
-        )
-      }
-    }
-
-    "display \"Start Now\" button" in {
-
-      getElementByCss(createView(), "article>div>div>p:nth-child(5)>a")
-        .text() must be(messages(buttonName))
-    }
-
-    "display message under button" in {
-
-      getElementByCss(createView(), "article>div>div>p:nth-child(6)")
-        .text() must be(messages(additionalInformation))
-    }
-
-    "display \"Help and Support\" header" in {
-
-      getElementByCss(createView(), "article>div>div>div>h2").text() must be(messages(referenceTitle))
-    }
-
-    "display \"Help and Support\" description" in {
-
-      getElementByCss(createView(), "#content > article > div > div > div > p:nth-child(2)").text() must be(
-        messages(reference) + " " + messages(referenceNumber) + " " + messages(referenceText)
-      )
-    }
-
-    "display link to \"General Enquires page\"" in {
-
-      val link =
-        getElementByCss(createView(), "article>div>div>div>p:nth-child(3)>a")
-
-      link.text() must be(messages(enquiries))
-      link.attr("href") must be(
-        "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries"
-      )
-    }
-  }
 }

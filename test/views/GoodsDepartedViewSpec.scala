@@ -20,7 +20,7 @@ import forms.GoodsDeparted
 import helpers.views.{CommonMessages, GoodsDepartedMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.base.ViewSpec
+import views.spec.ViewSpec
 
 class GoodsDepartedViewSpec extends ViewSpec with GoodsDepartedMessages with CommonMessages {
 

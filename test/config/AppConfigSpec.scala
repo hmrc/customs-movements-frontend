@@ -33,6 +33,9 @@ class AppConfigSpec extends MovementBaseSpec {
       """
         |urls.login="http://localhost:9949/auth-login-stub/gg-sign-in"
         |urls.loginContinue="http://localhost:9000/customs-declare-exports-frontend"
+        |urls.customsDeclarationsGoodsTakenOutOfEu="https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"
+        |urls.serviceAvailability="https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
+        |
         |microservice.services.auth.host=localhostauth
         |google-analytics.token=N/A
         |google-analytics.host=localhostGoogle
@@ -88,6 +91,14 @@ class AppConfigSpec extends MovementBaseSpec {
 
     "have login URL" in {
       validConfigService.loginUrl must be("http://localhost:9949/auth-login-stub/gg-sign-in")
+    }
+
+    "have customsDeclarationsGoodsTakenOutOfEu URL" in {
+      validConfigService.customsDeclarationsGoodsTakenOutOfEuUrl must be("https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu")
+    }
+
+    "have serviceAvailability URL" in {
+      validConfigService.serviceAvailabilityUrl must be("https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues")
     }
 
     // what is continue URL - redirect ?

@@ -51,6 +51,8 @@ class AppConfig @Inject()(
   lazy val authUrl = servicesConfig.baseUrl("auth")
   lazy val loginUrl = loadConfig("urls.login")
   lazy val loginContinueUrl = loadConfig("urls.loginContinue")
+  lazy val customsDeclarationsGoodsTakenOutOfEuUrl = loadConfig("urls.customsDeclarationsGoodsTakenOutOfEu")
+  lazy val serviceAvailabilityUrl = loadConfig("urls.serviceAvailability")
 
   lazy val customsDeclareExportsMovements = servicesConfig.baseUrl("customs-declare-exports-movements")
 

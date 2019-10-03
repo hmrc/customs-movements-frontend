@@ -7,17 +7,17 @@
   list-style: none;
 }
 
-ul.dashed {
+.dashed-list {
   list-style: none;
   padding-left: 0;
 }
 
-ul.dashed > li {
+.dashed-list .dashed-list-item {
   margin-left: 15px;
 }
 
 /* Prevent nested li's from getting messed up */
-ul.dashed > li::before {
+.dashed-list .dashed-list-item::before {
   content: "- ";
   margin-left: -15px;
 }

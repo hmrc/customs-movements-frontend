@@ -41,10 +41,10 @@
     <div class="column-full">
 
       <p id="contents">@messages("startPage.contents.header")</p>
-      <ul class="dashed">
-        <li id="contents-element-1"><a href="#before-you-start">@messages("startPage.beforeYouStart.header")</a></li>
-        <li id="contents-element-2"><a href="#information-you-need">@messages("startPage.informationYouNeed.header")</a></li>
-        <li id="contents-element-3"><a href="#report-your-arrival-and-departure">@messages("startPage.reportYourArrivalAndDeparture.header")</a></li>
+      <ul class="dashed-list">
+        <li id="contents-element-1" class="dashed-list-item"><a href="#before-you-start">@messages("startPage.beforeYouStart.header")</a></li>
+        <li id="contents-element-2" class="dashed-list-item"><a href="#information-you-need">@messages("startPage.informationYouNeed.header")</a></li>
+        <li id="contents-element-3" class="dashed-list-item"><a href="#report-your-arrival-and-departure">@messages("startPage.reportYourArrivalAndDeparture.header")</a></li>
       </ul>
 
       <h2 id="before-you-start" class="heading-medium">@messages("startPage.beforeYouStart.header")</h2>
@@ -76,11 +76,7 @@
         @messages("startPage.buttonName")
       </a>
 
-      <div>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+      <div style="margin-top: 5em">
         <p id="back-to-top">
           <a class="govuk-link" href="#contents">
             <svg class="app-c-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">

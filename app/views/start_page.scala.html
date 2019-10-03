@@ -15,7 +15,6 @@
  *@
 
 @import config.AppConfig
-@import controllers.routes
 
 @this(main_template: views.html.main_template, appConfig: AppConfig)
 
@@ -74,9 +73,9 @@
         @messages("startPage.buttonName")
       </a>
 
-      <div style="margin-top: 5em">
+      <div class="back-to-top-panel">
         <p id="back-to-top">
-          <a class="govuk-link" href="#contents">
+          <a href="#contents">
             <svg class="app-c-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
               <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
             </svg>

@@ -30,20 +30,20 @@ import scala.concurrent.ExecutionContext.global
 
 class StartControllerSpec extends ControllerSpec {
 
-  private val mockStartPage = mock[start_page]
+  private val startPage = mock[start_page]
 
-  private val controller = new StartController(stubMessagesControllerComponents(), mockStartPage)(global)
+  private val controller = new StartController(stubMessagesControllerComponents(), startPage)(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
     authorizedUser()
     withCaching(Choice.choiceId, Some(Arrival))
-    when(mockStartPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+    when(startPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockStartPage)
+    reset(startPage)
 
     super.afterEach()
   }
@@ -58,7 +58,7 @@ class StartControllerSpec extends ControllerSpec {
 
         status(result) mustBe OK
 
-        verify(mockStartPage).apply()(any(), any())
+        verify(startPage).apply()(any(), any())
       }
     }
   }

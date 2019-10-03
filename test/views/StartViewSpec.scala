@@ -24,7 +24,7 @@ import views.tags.ViewTest
 @ViewTest
 class StartViewSpec extends UnitViewSpec {
 
-  private val page = new start_page(mainTemplate)
+  private val page = new start_page(mainTemplate, appConfig)
   private def createView(): Html = page()(request, messages)
 
   "Start Page view" should {

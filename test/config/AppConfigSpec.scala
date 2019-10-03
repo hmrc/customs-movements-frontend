@@ -94,11 +94,15 @@ class AppConfigSpec extends MovementBaseSpec {
     }
 
     "have customsDeclarationsGoodsTakenOutOfEu URL" in {
-      validConfigService.customsDeclarationsGoodsTakenOutOfEuUrl must be("https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu")
+      validConfigService.customsDeclarationsGoodsTakenOutOfEuUrl must be(
+        "https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"
+      )
     }
 
     "have serviceAvailability URL" in {
-      validConfigService.serviceAvailabilityUrl must be("https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues")
+      validConfigService.serviceAvailabilityUrl must be(
+        "https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
+      )
     }
 
     // what is continue URL - redirect ?

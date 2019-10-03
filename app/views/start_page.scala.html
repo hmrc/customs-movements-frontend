@@ -14,14 +14,12 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.routes
 
-@this(main_template: views.html.main_template)
+@this(main_template: views.html.main_template, appConfig: AppConfig)
 
 @()(implicit request: Request[_], messages: Messages)
-
-@customsDeclarationsOutOfEuUrl = {"https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"}
-@serviceAvailabilityUrl = {"https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"}
 
 @main_template(title = messages("startPage.title")) {
 
@@ -49,7 +47,7 @@
 
       <h2 id="before-you-start" class="heading-medium">@messages("startPage.beforeYouStart.header")</h2>
       <p id="before-you-start-line-1">
-        @messages("startPage.beforeYouStart.line.1") <a href=@customsDeclarationsOutOfEuUrl>@messages("startPage.beforeYouStart.line.1.link")</a>
+        @messages("startPage.beforeYouStart.line.1") <a href=@{appConfig.customsDeclarationsGoodsTakenOutOfEuUrl}>@messages("startPage.beforeYouStart.line.1.link")</a>
       </p>
       <p id="before-you-start-line-2">@messages("startPage.beforeYouStart.line.2")</p>
       <p id="before-you-start-line-3">@messages("startPage.beforeYouStart.line.3")</p>
@@ -67,7 +65,7 @@
 
       <div class="panel panel-border-wide">
         <p id="problems-with-service-notice">
-          @messages("startPage.problemsWithServiceNotice") <a href=@serviceAvailabilityUrl>@messages("startPage.problemsWithServiceNotice.link")</a>
+          @messages("startPage.problemsWithServiceNotice") <a href=@{appConfig.serviceAvailabilityUrl}>@messages("startPage.problemsWithServiceNotice.link")</a>
         </p>
       </div>
 

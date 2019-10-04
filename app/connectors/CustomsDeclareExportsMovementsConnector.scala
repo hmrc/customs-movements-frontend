@@ -43,8 +43,6 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
   private val movementSubmissionUrl: PartialFunction[ActionType, String] = {
     case Arrival   => s"$CustomsDeclareExportsMovementsUrl${appConfig.movementArrivalSubmissionUri}"
     case Departure => s"$CustomsDeclareExportsMovementsUrl${appConfig.movementDepartureSubmissionUri}"
-    case DucrAssociation | DucrDisassociation | ShutMucr =>
-      s"$CustomsDeclareExportsMovementsUrl${appConfig.movementConsolidationUri}"
   }
 
   private val CommonMovementsHeaders =

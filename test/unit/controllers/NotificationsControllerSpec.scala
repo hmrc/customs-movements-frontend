@@ -70,7 +70,7 @@ class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
     authorizedUser()
     when(customsExportsMovementsConnectorMock.fetchSingleSubmission(any())(any()))
       .thenReturn(Future.successful(Some(expectedSubmission)))
-    when(customsExportsMovementsConnectorMock.fetchNotifications(any())(any()))
+    when(customsExportsMovementsConnectorMock.fetchNotifications(any())(any(), any()))
       .thenReturn(Future.successful(expectedNotifications))
     when(notificationPageSingleElementFactoryMock.build(any[SubmissionFrontendModel])(any()))
       .thenReturn(singleElementForSubmission)
@@ -100,7 +100,7 @@ class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
 
         controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
 
-        verify(customsExportsMovementsConnectorMock).fetchNotifications(meq(conversationId))(any())
+        verify(customsExportsMovementsConnectorMock).fetchNotifications(meq(conversationId))(any(), any())
       }
 
       "call NotificationPageSingleElementFactory, passing models returned by Connector" in {

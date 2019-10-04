@@ -22,6 +22,7 @@ import forms.Choice
 import forms.Choice.{Arrival, Departure}
 import models.external.requests.ConsolidationRequest
 import models.notifications.NotificationFrontendModel
+import models.requests.MovementRequest
 import models.submissions.SubmissionFrontendModel
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
@@ -37,7 +38,6 @@ import testdata.MovementsTestData.exampleSubmissionFrontendModel
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 import unit.base.UnitSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -67,7 +67,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
       connector.sendArrivalDeclaration(movementSubmissionRequestXmlString(Arrival)).futureValue
 
       val expectedSubmissionUrl =
-        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementArrivalSubmissionUri}"
+        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementsSubmissionUri}"
       verify(httpClientMock).POSTString(meq(expectedSubmissionUrl), any(), any())(any(), any(), any())
     }
 
@@ -108,7 +108,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
       connector.sendDepartureDeclaration(movementSubmissionRequestXmlString(Departure)).futureValue
 
       val expectedSubmissionUrl =
-        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementDepartureSubmissionUri}"
+        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementsSubmissionUri}"
       verify(httpClientMock).POSTString(meq(expectedSubmissionUrl), any(), any())(any(), any(), any())
     }
 
@@ -303,11 +303,13 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
 object CustomsDeclareExportsMovementsConnectorSpec {
 
-  def movementSubmissionRequest(movementType: Choice): InventoryLinkingMovementRequest =
-    MovementsTestData.validMovementRequest(movementType)
-  def movementSubmissionRequestXmlString(movementType: Choice): String = movementSubmissionRequest(movementType).toXml
-
   val expectedMovementSubmissionRequestHeaders: Seq[(String, String)] =
     Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8), HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8))
+
+  def movementSubmissionRequestXmlString(movementType: Choice): String =
+    Json.toJson(movementSubmissionRequest(movementType)).toString()
+
+  def movementSubmissionRequest(movementType: Choice): MovementRequest =
+    MovementsTestData.validMovementRequest(movementType)
 
 }

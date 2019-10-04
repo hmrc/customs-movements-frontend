@@ -57,8 +57,7 @@ class AppConfigSpec extends MovementBaseSpec {
         |microservice.services.customs-declare-exports-movements.fetch-all-submissions=/movements
         |microservice.services.customs-declare-exports-movements.fetch-single-submission=/movements
         |
-        |microservice.services.customs-declare-exports-movements.submit-movement-arrival=/movements/arrival
-        |microservice.services.customs-declare-exports-movements.submit-movement-departure=/movements/departure
+        |microservice.services.customs-declare-exports-movements.submit-movements=/movements
         |microservice.services.customs-declare-exports-movements.submit-consolidation=/consolidation
       """.stripMargin
     )
@@ -136,12 +135,8 @@ class AppConfigSpec extends MovementBaseSpec {
       validConfigService.customsDeclareExportsMovements must be("http://localhost:9876")
     }
 
-    "have movement Arrival submission URL" in {
-      validConfigService.movementArrivalSubmissionUri must be("/movements/arrival")
-    }
-
-    "have movement Departure submission URL" in {
-      validConfigService.movementDepartureSubmissionUri must be("/movements/departure")
+    "have movements submission URL" in {
+      validConfigService.movementsSubmissionUri must be("/movements")
     }
 
     "have movement consolidation submission URL" in {
@@ -201,14 +196,8 @@ class AppConfigSpec extends MovementBaseSpec {
   }
 
   "throw an exception when movement Arrival submission uri is missing" in {
-    intercept[Exception](emptyConfigService.movementArrivalSubmissionUri).getMessage must be(
-      "Missing configuration for Customs Declarations Exports Movements Arrival submission URI"
-    )
-  }
-
-  "throw an exception when movement Departure submission uri is missing" in {
-    intercept[Exception](emptyConfigService.movementDepartureSubmissionUri).getMessage must be(
-      "Missing configuration for Customs Declarations Exports Movements Departure submission URI"
+    intercept[Exception](emptyConfigService.movementsSubmissionUri).getMessage must be(
+      "Missing configuration for Customs Declarations Exports Movements submission URI"
     )
   }
 

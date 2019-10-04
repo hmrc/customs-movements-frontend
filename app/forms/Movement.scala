@@ -17,58 +17,39 @@
 package forms
 
 import forms.Choice._
+import models.requests.{MovementDetailsRequest, MovementRequest}
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.wco.dec.inventorylinking.common.{TransportDetails, UcrBlock}
-import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 object Movement {
 
-  def createMovementRequest(cacheMap: CacheMap, eori: String, choice: Choice): InventoryLinkingMovementRequest = {
-    val referencesForm =
+  def createMovementRequest(cacheMap: CacheMap, eori: String, choice: Choice): MovementRequest = {
+    val consignmentReference =
       cacheMap
         .getEntry[ConsignmentReferences](ConsignmentReferences.formId)
         .getOrElse(ConsignmentReferences("", ""))
 
-    val departureDetails = choice match {
-      case Departure => cacheMap.getEntry[DepartureDetails](MovementDetails.formId)
-      case _         => None
-    }
-
-    val arrivalDetails = choice match {
+    val movementDateTime = choice match {
+      case Departure =>
+        cacheMap
+          .getEntry[DepartureDetails](MovementDetails.formId)
+          .map(_.dateOfDeparture.toString)
+          .getOrElse("")
       case Arrival =>
         cacheMap
           .getEntry[ArrivalDetails](MovementDetails.formId)
           .map(res => s"${res.dateOfArrival.toString}T${res.timeOfArrival.toString}:00")
-      case _ => None
+          .getOrElse("")
     }
 
-    val location = cacheMap.getEntry[Location](Location.formId).map(_.asString)
-
-    val transport = cacheMap.getEntry[Transport](Transport.formId)
-
-    val arrivalReference = cacheMap.getEntry[ArrivalReference](ArrivalReference.formId).flatMap(_.reference)
-
-    InventoryLinkingMovementRequest(
-      messageCode = extractChoice(choice),
-      agentDetails = None,
-      ucrBlock = UcrBlock(ucr = referencesForm.referenceValue, ucrType = referencesForm.reference),
-      goodsLocation = location.getOrElse(""),
-      goodsArrivalDateTime = arrivalDetails,
-      goodsDepartureDateTime = departureDetails.map(_.toString),
-      transportDetails = mapTransportDetails(transport),
-      movementReference = arrivalReference
+    MovementRequest(
+      choice = extractChoice(choice),
+      consignmentReference = consignmentReference,
+      movementDetails = MovementDetailsRequest(movementDateTime),
+      location = cacheMap.getEntry[Location](Location.formId),
+      transport = cacheMap.getEntry[Transport](Transport.formId),
+      arrivalReference = cacheMap.getEntry[ArrivalReference](ArrivalReference.formId)
     )
   }
-
-  private def mapTransportDetails(transport: Option[Transport]): Option[TransportDetails] =
-    transport.map(
-      data =>
-        TransportDetails(
-          transportID = Some(data.transportId),
-          transportMode = Some(data.modeOfTransport),
-          transportNationality = Some(data.nationality)
-      )
-    )
 
   private def extractChoice(choice: Choice): String = choice match {
     case Arrival   => "EAL"

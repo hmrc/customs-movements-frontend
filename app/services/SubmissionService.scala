@@ -23,10 +23,11 @@ import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
 import models.external.requests.ConsolidationRequest
 import models.external.requests.ConsolidationRequestFactory._
+import models.requests.MovementRequest
 import play.api.http.Status.{ACCEPTED, INTERNAL_SERVER_ERROR}
+import play.api.libs.json.Json
 import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Success
@@ -62,12 +63,13 @@ class SubmissionService @Inject()(
         Future.successful(INTERNAL_SERVER_ERROR)
     }
 
-  private def sendMovementRequest(choice: Choice, data: InventoryLinkingMovementRequest)(
-    implicit hc: HeaderCarrier
-  ): Future[HttpResponse] =
+  private def sendMovementRequest(
+    choice: Choice,
+    data: MovementRequest
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
     choice match {
-      case Arrival   => connector.sendArrivalDeclaration(data.toXml)
-      case Departure => connector.sendDepartureDeclaration(data.toXml)
+      case Arrival   => connector.sendArrivalDeclaration(Json.toJson(data).toString())
+      case Departure => connector.sendDepartureDeclaration(Json.toJson(data).toString())
     }
 
   def submitDucrAssociation(mucrOptions: MucrOptions, associateDucr: AssociateDucr, eori: String)(

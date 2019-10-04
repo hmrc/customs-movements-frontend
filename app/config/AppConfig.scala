@@ -70,25 +70,9 @@ class AppConfig @Inject()(
     )
   )
 
-  lazy val movementConsolidationShutMucrUri = servicesConfig.getConfString(
-    "customs-declare-exports-movements.submit-consolidation-mucr-shut",
-    throw new IllegalStateException(
-      "Missing configuration for Customs Declarations Exports Movements consolidation MUCR shut URI"
-    )
-  )
-
-  lazy val movementConsolidationAssociateUri = servicesConfig.getConfString(
-    "customs-declare-exports-movements.submit-consolidation-association",
-    throw new IllegalStateException(
-      "Missing configuration for Customs Declarations Exports Movements consolidation Associate URI"
-    )
-  )
-
-  lazy val movementConsolidationDisassociateUri = servicesConfig.getConfString(
-    "customs-declare-exports-movements.submit-consolidation-disassociation",
-    throw new IllegalStateException(
-      "Missing configuration for Customs Declarations Exports Movements consolidation Disassociate URI"
-    )
+  lazy val movementConsolidationUri = servicesConfig.getConfString(
+    "customs-declare-exports-movements.submit-consolidation",
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports Movements Consolidation")
   )
 
   lazy val fetchAllSubmissions = servicesConfig.getConfString(

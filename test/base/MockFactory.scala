@@ -16,75 +16,36 @@
 
 package base
 
-import com.codahale.metrics.Timer
 import connectors.CustomsDeclareExportsMovementsConnector
-import metrics.MovementsMetrics
 import models.notifications.NotificationFrontendModel
 import models.submissions.SubmissionFrontendModel
 import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
-import org.mockito.ArgumentMatchers.{any, anyString}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers.NO_CONTENT
 import play.twirl.api.HtmlFormat
-import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.http.HttpResponse
-import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
 
 object MockFactory extends MockitoSugar {
 
-  private val emptyCacheMap = CacheMap("", Map.empty)
-
-  def buildCustomsCacheServiceMock: CustomsCacheService = {
-    val customsCacheServiceMock = mock[CustomsCacheService]
-
-    when(customsCacheServiceMock.fetchAndGetEntry(any(), any())(any(), any(), any()))
-      .thenReturn(Future.successful(None))
-    when(customsCacheServiceMock.fetch(any())(any(), any())).thenReturn(Future.successful(None))
-    when(customsCacheServiceMock.cache(any(), any(), any())(any(), any(), any()))
-      .thenReturn(Future.successful(emptyCacheMap))
-    when(customsCacheServiceMock.remove(any())(any(), any())).thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
-
-    customsCacheServiceMock
-  }
-
-  def buildSubmissionServiceMock: SubmissionService = {
-    val submissionServiceMock = mock[SubmissionService]
-
-    when(submissionServiceMock.submitMovementRequest(any(), any(), any())(any(), any()))
-      .thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
-    when(submissionServiceMock.submitDucrAssociation(any(), any(), any())(any(), any()))
-      .thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
-    when(submissionServiceMock.submitDucrDisassociation(any(), any())(any(), any()))
-      .thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
-    when(submissionServiceMock.submitShutMucrRequest(any(), any())(any(), any()))
-      .thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
-
-    submissionServiceMock
-  }
-
   def buildCustomsDeclareExportsMovementsConnectorMock: CustomsDeclareExportsMovementsConnector = {
     val customsDeclareExportsMovementsConnector = mock[CustomsDeclareExportsMovementsConnector]
 
-    when(customsDeclareExportsMovementsConnector.sendArrivalDeclaration(any())(any(), any()))
+    when(customsDeclareExportsMovementsConnector.sendArrivalDeclaration(any())(any()))
       .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
-    when(customsDeclareExportsMovementsConnector.sendDepartureDeclaration(any())(any(), any()))
+    when(customsDeclareExportsMovementsConnector.sendDepartureDeclaration(any())(any()))
       .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
-    when(customsDeclareExportsMovementsConnector.sendAssociationRequest(any())(any(), any()))
-      .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
-    when(customsDeclareExportsMovementsConnector.sendDisassociationRequest(any())(any(), any()))
-      .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
-    when(customsDeclareExportsMovementsConnector.sendShutMucrRequest(any())(any(), any()))
+    when(customsDeclareExportsMovementsConnector.sendConsolidationRequest(any())(any()))
       .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
 
-    when(customsDeclareExportsMovementsConnector.fetchNotifications(any())(any(), any()))
+    when(customsDeclareExportsMovementsConnector.fetchNotifications(any())(any()))
       .thenReturn(Future.successful(Seq.empty))
-    when(customsDeclareExportsMovementsConnector.fetchAllSubmissions()(any(), any()))
+    when(customsDeclareExportsMovementsConnector.fetchAllSubmissions()(any()))
       .thenReturn(Future.successful(Seq.empty))
-    when(customsDeclareExportsMovementsConnector.fetchSingleSubmission(any())(any(), any()))
+    when(customsDeclareExportsMovementsConnector.fetchSingleSubmission(any())(any()))
       .thenReturn(Future.successful(None))
 
     customsDeclareExportsMovementsConnector
@@ -100,13 +61,4 @@ object MockFactory extends MockitoSugar {
 
     notificationPageSingleElementFactoryMock
   }
-
-  def buildMovementsMetricsMock: MovementsMetrics = {
-    val movementsMetricsMock = mock[MovementsMetrics]
-
-    when(movementsMetricsMock.startTimer(anyString)).thenReturn(new Timer().time())
-
-    movementsMetricsMock
-  }
-
 }

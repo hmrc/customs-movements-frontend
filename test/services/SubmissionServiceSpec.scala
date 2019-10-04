@@ -17,16 +17,15 @@
 package services
 
 import base.{MetricsMatchers, MockCustomsCacheService, MockCustomsExportsMovement, MovementsMetricsStub}
-import connectors.CustomsDeclareExportsMovementsConnector
 import forms.Choice.{Arrival, Departure}
 import forms._
+import models.external.requests.ConsolidationRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, verifyZeroInteractions, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
-import org.scalatest.{BeforeAndAfterEach, MustMatchers, WordSpec}
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers._
 import services.audit.{AuditService, AuditTypes}
@@ -65,16 +64,16 @@ class SubmissionServiceSpec
   }
 
   private def requestAcceptedTest(block: => Any): Any = {
-    when(mockCustomsExportsMovementConnector.sendArrivalDeclaration(any())(any(), any()))
+    when(mockCustomsExportsMovementConnector.sendArrivalDeclaration(any())(any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
-    when(mockCustomsExportsMovementConnector.sendDepartureDeclaration(any())(any(), any()))
+    when(mockCustomsExportsMovementConnector.sendDepartureDeclaration(any())(any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
 
-    when(mockCustomsExportsMovementConnector.sendAssociationRequest(any())(any(), any()))
+    when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
-    when(mockCustomsExportsMovementConnector.sendDisassociationRequest(any())(any(), any()))
+    when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
-    when(mockCustomsExportsMovementConnector.sendShutMucrRequest(any())(any(), any()))
+    when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
     block
   }
@@ -89,7 +88,7 @@ class SubmissionServiceSpec
           .thenReturn(Future.successful(Some(CacheMap(Arrival.value, cacheMapData(Arrival)))))
 
         val CustomHttpResponseCode = 123
-        when(mockCustomsExportsMovementConnector.sendArrivalDeclaration(any())(any(), any()))
+        when(mockCustomsExportsMovementConnector.sendArrivalDeclaration(any())(any()))
           .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
         await(submissionService.submitMovementRequest("arrival-eori1", "eori1", Arrival)) must equal(
@@ -109,7 +108,7 @@ class SubmissionServiceSpec
 
         submissionService.submitMovementRequest("arrival-eori1", "eori1", Arrival).futureValue
 
-        verify(mockCustomsExportsMovementConnector).sendArrivalDeclaration(any())(any(), any())
+        verify(mockCustomsExportsMovementConnector).sendArrivalDeclaration(any())(any())
         verify(mockAuditService).auditMovements(any(), any(), any(), ArgumentMatchers.eq(AuditTypes.AuditArrival))(
           any()
         )
@@ -136,7 +135,7 @@ class SubmissionServiceSpec
           .thenReturn(Future.successful(Some(CacheMap(Departure.value, cacheMapData(Departure)))))
 
         val CustomHttpResponseCode = 123
-        when(mockCustomsExportsMovementConnector.sendDepartureDeclaration(any())(any(), any()))
+        when(mockCustomsExportsMovementConnector.sendDepartureDeclaration(any())(any()))
           .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
         submissionService.submitMovementRequest("departure-eori1", "eori1", Departure).futureValue must equal(
@@ -156,7 +155,7 @@ class SubmissionServiceSpec
 
         submissionService.submitMovementRequest("departure-eori1", "eori1", Departure).futureValue
 
-        verify(mockCustomsExportsMovementConnector).sendDepartureDeclaration(any())(any(), any())
+        verify(mockCustomsExportsMovementConnector).sendDepartureDeclaration(any())(any())
         verify(mockAuditService).auditMovements(any(), any(), any(), ArgumentMatchers.eq(AuditTypes.AuditDeparture))(
           any()
         )
@@ -181,7 +180,7 @@ class SubmissionServiceSpec
     "return response from CustomsDeclareExportsMovementsConnector" in {
 
       val CustomHttpResponseCode = 123
-      when(mockCustomsExportsMovementConnector.sendAssociationRequest(any())(any(), any()))
+      when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
         .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
       submissionService
@@ -195,16 +194,16 @@ class SubmissionServiceSpec
 
       submissionService.submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr), "eori").futureValue
 
-      val requestCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      verify(mockCustomsExportsMovementConnector).sendAssociationRequest(requestCaptor.capture())(any(), any())
+      val requestCaptor: ArgumentCaptor[ConsolidationRequest] = ArgumentCaptor.forClass(classOf[ConsolidationRequest])
+      verify(mockCustomsExportsMovementConnector).sendConsolidationRequest(requestCaptor.capture())(any())
       verify(mockAuditService)
         .auditAssociate(ArgumentMatchers.eq("eori"), any(), any(), any())(any())
 
-      assertEqual(XML.loadString(requestCaptor.getValue), exampleAssociateDucrRequestXml)
+      requestCaptor.getValue mustBe exampleAssociateDucrRequest
     }
 
     "return Internal Server Error when no data in cache" in requestAcceptedTest {
-      when(mockCustomsExportsMovementConnector.sendAssociationRequest(any())(any(), any()))
+      when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
         .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
 
       submissionService
@@ -222,7 +221,7 @@ class SubmissionServiceSpec
     "return response from CustomsDeclareExportsMovementsConnector" in {
 
       val CustomHttpResponseCode = 123
-      when(mockCustomsExportsMovementConnector.sendDisassociationRequest(any())(any(), any()))
+      when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
         .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
       submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr), "eori").futureValue must equal(
@@ -236,15 +235,15 @@ class SubmissionServiceSpec
 
       submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr), "eori").futureValue
 
-      val requestCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      verify(mockCustomsExportsMovementConnector).sendDisassociationRequest(requestCaptor.capture())(any(), any())
+      val requestCaptor: ArgumentCaptor[ConsolidationRequest] = ArgumentCaptor.forClass(classOf[ConsolidationRequest])
+      verify(mockCustomsExportsMovementConnector).sendConsolidationRequest(requestCaptor.capture())(any())
       verify(mockAuditService).auditDisassociate(ArgumentMatchers.eq("eori"), any(), any())(any())
 
-      assertEqual(XML.loadString(requestCaptor.getValue), exampleDisassociateDucrRequestXml)
+      requestCaptor.getValue mustBe exampleDisassociateDucrRequest
     }
 
     "return Internal Server Error when no data in cache" in requestAcceptedTest {
-      when(mockCustomsExportsMovementConnector.sendDisassociationRequest(any())(any(), any()))
+      when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
         .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
 
       submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr), "eori").futureValue must equal(
@@ -274,7 +273,7 @@ class SubmissionServiceSpec
     "return response from CustomsDeclareExportsMovementsConnector" in {
 
       val CustomHttpResponseCode = 123
-      when(mockCustomsExportsMovementConnector.sendShutMucrRequest(any())(any(), any()))
+      when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
         .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
       submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), "eori").futureValue must equal(
@@ -287,15 +286,15 @@ class SubmissionServiceSpec
 
       submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), "eori").futureValue
 
-      val requestCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      verify(mockCustomsExportsMovementConnector).sendShutMucrRequest(requestCaptor.capture())(any(), any())
+      val requestCaptor: ArgumentCaptor[ConsolidationRequest] = ArgumentCaptor.forClass(classOf[ConsolidationRequest])
+      verify(mockCustomsExportsMovementConnector).sendConsolidationRequest(requestCaptor.capture())(any())
       verify(mockAuditService).auditShutMucr(ArgumentMatchers.eq("eori"), any(), any())(any())
 
-      assertEqual(XML.loadString(requestCaptor.getValue), exampleShutMucrRequestXml)
+      requestCaptor.getValue mustBe exampleShutMucrRequest
     }
 
     "return Internal Server Error when no data in cache" in requestAcceptedTest {
-      when(mockCustomsExportsMovementConnector.sendShutMucrRequest(any())(any(), any()))
+      when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
         .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
 
       submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), "eori").futureValue must equal(INTERNAL_SERVER_ERROR)

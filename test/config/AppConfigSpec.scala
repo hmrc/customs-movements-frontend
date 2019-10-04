@@ -59,9 +59,7 @@ class AppConfigSpec extends MovementBaseSpec {
         |
         |microservice.services.customs-declare-exports-movements.submit-movement-arrival=/movements/arrival
         |microservice.services.customs-declare-exports-movements.submit-movement-departure=/movements/departure
-        |microservice.services.customs-declare-exports-movements.submit-consolidation-mucr-shut=/consolidations/shut
-        |microservice.services.customs-declare-exports-movements.submit-consolidation-association=/consolidations/associate
-        |microservice.services.customs-declare-exports-movements.submit-consolidation-disassociation=/consolidations/disassociate
+        |microservice.services.customs-declare-exports-movements.submit-consolidation=/consolidation
       """.stripMargin
     )
   private val emptyAppConfig: Config = ConfigFactory.parseString("")
@@ -146,16 +144,8 @@ class AppConfigSpec extends MovementBaseSpec {
       validConfigService.movementDepartureSubmissionUri must be("/movements/departure")
     }
 
-    "have movement consolidation MUCR shut submission URL" in {
-      validConfigService.movementConsolidationShutMucrUri must be("/consolidations/shut")
-    }
-
-    "have movement consolidation Association submission URL" in {
-      validConfigService.movementConsolidationAssociateUri must be("/consolidations/associate")
-    }
-
-    "have movement consolidation Disassociation submission URL" in {
-      validConfigService.movementConsolidationDisassociateUri must be("/consolidations/disassociate")
+    "have movement consolidation submission URL" in {
+      validConfigService.movementConsolidationUri must be("/consolidation")
     }
 
     "have fetch all submissions URL" in {
@@ -238,21 +228,9 @@ class AppConfigSpec extends MovementBaseSpec {
     )
   }
 
-  "throw an exception when consolidation MUCR shut submission uri is missing" in {
-    intercept[Exception](emptyConfigService.movementConsolidationShutMucrUri).getMessage must be(
-      "Missing configuration for Customs Declarations Exports Movements consolidation MUCR shut URI"
-    )
-  }
-
-  "throw an exception when consolidation Association submission uri is missing" in {
-    intercept[Exception](emptyConfigService.movementConsolidationAssociateUri).getMessage must be(
-      "Missing configuration for Customs Declarations Exports Movements consolidation Associate URI"
-    )
-  }
-
-  "throw an exception when consolidation Disassociation submission uri is missing" in {
-    intercept[Exception](emptyConfigService.movementConsolidationDisassociateUri).getMessage must be(
-      "Missing configuration for Customs Declarations Exports Movements consolidation Disassociate URI"
+  "throw an exception when consolidation submission uri is missing" in {
+    intercept[Exception](emptyConfigService.movementConsolidationUri).getMessage must be(
+      "Missing configuration for Customs Declarations Exports Movements Consolidation"
     )
   }
 

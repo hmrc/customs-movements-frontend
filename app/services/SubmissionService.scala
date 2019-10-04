@@ -21,7 +21,7 @@ import forms.Choice._
 import forms._
 import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
-import models.external.requests.InventoryLinkingConsolidationRequestFactory._
+import models.external.requests.ConsolidationRequestFactory._
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -36,12 +36,9 @@ class SubmissionService @Inject()(
   connector: CustomsDeclareExportsMovementsConnector,
   auditService: AuditService,
   metrics: MovementsMetrics
-) {
+)(implicit ec: ExecutionContext) {
 
-  def submitMovementRequest(cacheId: String, eori: String, choice: Choice)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[Int] =
+  def submitMovementRequest(cacheId: String, eori: String, choice: Choice)(implicit hc: HeaderCarrier): Future[Int] =
     cacheService.fetch(cacheId).flatMap {
       case Some(cacheMap) => {
         val data = Movement.createMovementRequest(cacheMap, eori, choice)
@@ -64,22 +61,20 @@ class SubmissionService @Inject()(
         Future.successful(INTERNAL_SERVER_ERROR)
     }
 
-  private def sendMovementRequest(
-    choice: Choice,
-    data: InventoryLinkingMovementRequest
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+  private def sendMovementRequest(choice: Choice, data: InventoryLinkingMovementRequest)(
+    implicit hc: HeaderCarrier
+  ): Future[HttpResponse] =
     choice match {
       case Arrival   => connector.sendArrivalDeclaration(data.toXml)
       case Departure => connector.sendDepartureDeclaration(data.toXml)
     }
 
   def submitDucrAssociation(mucrOptions: MucrOptions, associateDucr: AssociateDucr, eori: String)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext
+    implicit hc: HeaderCarrier
   ): Future[Int] = {
     val timer = metrics.startTimer(AssociateDUCR)
     connector
-      .sendAssociationRequest(buildAssociationRequest(mucr = mucrOptions.mucr, ducr = associateDucr.ducr).toString)
+      .sendConsolidationRequest(buildAssociationRequest(mucrOptions.mucr, associateDucr.ducr))
       .map(_.status)
       .andThen {
         case Success(status) =>
@@ -89,13 +84,12 @@ class SubmissionService @Inject()(
       }
   }
 
-  def submitDucrDisassociation(
-    disassociateDucr: DisassociateDucr,
-    eori: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
+  def submitDucrDisassociation(disassociateDucr: DisassociateDucr, eori: String)(
+    implicit hc: HeaderCarrier
+  ): Future[Int] = {
     val timer = metrics.startTimer(DisassociateDUCR)
     connector
-      .sendDisassociationRequest(buildDisassociationRequest(disassociateDucr.ducr).toString)
+      .sendConsolidationRequest(buildDisassociationRequest(disassociateDucr.ducr))
       .map(_.status)
       .andThen {
         case Success(status) =>
@@ -105,12 +99,9 @@ class SubmissionService @Inject()(
       }
   }
 
-  def submitShutMucrRequest(
-    shutMucr: ShutMucr,
-    eori: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
+  def submitShutMucrRequest(shutMucr: ShutMucr, eori: String)(implicit hc: HeaderCarrier): Future[Int] = {
     val timer = metrics.startTimer(ShutMUCR)
-    connector.sendShutMucrRequest(buildShutMucrRequest(shutMucr.mucr).toString).map(_.status).andThen {
+    connector.sendConsolidationRequest(buildShutMucrRequest(shutMucr.mucr)).map(_.status).andThen {
       case Success(status) =>
         auditService.auditShutMucr(eori, shutMucr.mucr, status.toString)
         timer.stop()

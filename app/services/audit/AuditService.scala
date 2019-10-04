@@ -17,9 +17,10 @@
 package services.audit
 
 import com.google.inject.Inject
-import forms._
 import forms.Choice._
+import forms._
 import javax.inject.Named
+import models.requests.MovementRequest
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -28,7 +29,6 @@ import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
-import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -43,6 +43,44 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
       Map(
         EventData.EORI.toString -> eori,
         EventData.MUCR.toString -> mucr,
+        EventData.SubmissionResult.toString -> result
+      )
+    )
+
+  def auditDisassociate(eori: String, ducr: String, result: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
+    audit(
+      AuditTypes.AuditDisassociate,
+      Map(
+        EventData.EORI.toString -> eori,
+        EventData.DUCR.toString -> ducr,
+        EventData.SubmissionResult.toString -> result
+      )
+    )
+
+  def auditAssociate(eori: String, mucr: String, ducr: String, result: String)(
+    implicit hc: HeaderCarrier
+  ): Future[AuditResult] =
+    audit(
+      AuditTypes.AuditAssociate,
+      Map(
+        EventData.EORI.toString -> eori,
+        EventData.MUCR.toString -> mucr,
+        EventData.DUCR.toString -> ducr,
+        EventData.SubmissionResult.toString -> result
+      )
+    )
+
+  def auditMovements(eori: String, data: MovementRequest, result: String, movementAuditType: AuditTypes.Audit)(
+    implicit hc: HeaderCarrier
+  ): Future[AuditResult] =
+    audit(
+      movementAuditType,
+      Map(
+        EventData.EORI.toString -> eori,
+        EventData.MessageCode.toString -> data.choice,
+        EventData.UCRType.toString -> data.consignmentReference.referenceValue,
+        EventData.UCR.toString -> data.consignmentReference.reference,
+        EventData.MovementReference.toString -> data.arrivalReference.flatMap(_.reference).getOrElse(""),
         EventData.SubmissionResult.toString -> result
       )
     )
@@ -81,47 +119,6 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
       logger.warn(s"Auditing Disabled")
       Disabled
   }
-
-  def auditDisassociate(eori: String, ducr: String, result: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
-    audit(
-      AuditTypes.AuditDisassociate,
-      Map(
-        EventData.EORI.toString -> eori,
-        EventData.DUCR.toString -> ducr,
-        EventData.SubmissionResult.toString -> result
-      )
-    )
-
-  def auditAssociate(eori: String, mucr: String, ducr: String, result: String)(
-    implicit hc: HeaderCarrier
-  ): Future[AuditResult] =
-    audit(
-      AuditTypes.AuditAssociate,
-      Map(
-        EventData.EORI.toString -> eori,
-        EventData.MUCR.toString -> mucr,
-        EventData.DUCR.toString -> ducr,
-        EventData.SubmissionResult.toString -> result
-      )
-    )
-
-  def auditMovements(
-    eori: String,
-    data: InventoryLinkingMovementRequest,
-    result: String,
-    movementAuditType: AuditTypes.Audit
-  )(implicit hc: HeaderCarrier): Future[AuditResult] =
-    audit(
-      movementAuditType,
-      Map(
-        EventData.EORI.toString -> eori,
-        EventData.MessageCode.toString -> data.messageCode,
-        EventData.UCRType.toString -> data.ucrBlock.ucrType,
-        EventData.UCR.toString -> data.ucrBlock.ucr,
-        EventData.MovementReference.toString -> data.movementReference.getOrElse(""),
-        EventData.SubmissionResult.toString -> result
-      )
-    )
 
   def auditAllPagesUserInput(choice: Choice, cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val auditType =

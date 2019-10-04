@@ -24,7 +24,6 @@ import models.submissions.ActionType._
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
-import play.api.libs.json.Json
 import play.api.mvc.Codec
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -42,8 +41,7 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
   private val CustomsDeclareExportsMovementsUrl = s"${appConfig.customsDeclareExportsMovements}"
 
   private val movementSubmissionUrl: PartialFunction[ActionType, String] = {
-    case Arrival   => s"$CustomsDeclareExportsMovementsUrl${appConfig.movementArrivalSubmissionUri}"
-    case Departure => s"$CustomsDeclareExportsMovementsUrl${appConfig.movementDepartureSubmissionUri}"
+    case Arrival | Departure => s"$CustomsDeclareExportsMovementsUrl${appConfig.movementsSubmissionUri}"
   }
 
   private val CommonMovementsHeaders =
@@ -57,6 +55,19 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
   def sendDepartureDeclaration(requestXml: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     postRequest(Departure, requestXml)
 
+  private def postRequest(
+    actionType: ActionType,
+    payload: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    httpClient
+      .POSTString[HttpResponse](movementSubmissionUrl(actionType), payload, CommonMovementsHeaders)
+      .andThen {
+        case Success(response) =>
+          logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response on ${actionType.value}. $response")
+        case Failure(exception) =>
+          logger.warn(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS failure on ${actionType.value}. $exception ")
+      }
+
   def sendConsolidationRequest(
     consolidation: ConsolidationRequest
   )(implicit hc: HeaderCarrier): Future[ConsolidationRequest] =
@@ -66,19 +77,9 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
       JsonHeaders
     )
 
-  private def postRequest(actionType: ActionType, requestXml: String)(
-    implicit hc: HeaderCarrier
-  ): Future[HttpResponse] =
-    httpClient
-      .POSTString[HttpResponse](movementSubmissionUrl(actionType), requestXml, CommonMovementsHeaders)
-      .andThen {
-        case Success(response) =>
-          logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response on ${actionType.value}. $response")
-        case Failure(exception) =>
-          logger.warn(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS failure on ${actionType.value}. $exception ")
-      }
-
-  def fetchNotifications(conversationId: String)(implicit hc: HeaderCarrier): Future[Seq[NotificationFrontendModel]] =
+  def fetchNotifications(
+    conversationId: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[NotificationFrontendModel]] =
     httpClient
       .GET[Seq[NotificationFrontendModel]](
         s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}/$conversationId"

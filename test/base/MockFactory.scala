@@ -42,7 +42,7 @@ object MockFactory extends MockitoSugar {
     when(customsDeclareExportsMovementsConnector.sendConsolidationRequest(any())(any()))
       .thenReturn(Future.successful(exampleShutMucrRequest))
 
-    when(customsDeclareExportsMovementsConnector.fetchNotifications(any())(any()))
+    when(customsDeclareExportsMovementsConnector.fetchNotifications(any())(any(), any()))
       .thenReturn(Future.successful(Seq.empty))
     when(customsDeclareExportsMovementsConnector.fetchAllSubmissions()(any()))
       .thenReturn(Future.successful(Seq.empty))

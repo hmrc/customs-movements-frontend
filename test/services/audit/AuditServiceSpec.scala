@@ -17,9 +17,10 @@
 package services.audit
 
 import base.{BaseSpec, MockCustomsCacheService}
-import forms._
 import forms.Choice.Arrival
+import forms._
 import forms.common.{Date, Time}
+import models.requests.{MovementDetailsRequest, MovementRequest}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.{reset, verify, when}
@@ -29,8 +30,6 @@ import services.audit.EventData._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
-import uk.gov.hmrc.wco.dec.inventorylinking.common.UcrBlock
-import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -102,7 +101,11 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustoms
         SubmissionResult.toString -> "200"
       )
       val data =
-        InventoryLinkingMovementRequest(messageCode = "EAD", ucrBlock = UcrBlock("UCR", "D"), goodsLocation = "")
+        MovementRequest(
+          choice = "EAD",
+          consignmentReference = ConsignmentReferences("UCR", "D"),
+          movementDetails = MovementDetailsRequest("dateTime")
+        )
       spyAuditService.auditMovements("eori", data, "200", AuditTypes.AuditArrival)
       verify(spyAuditService).audit(AuditTypes.AuditArrival, dataToAudit)
     }

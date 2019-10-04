@@ -56,18 +56,9 @@ class AppConfig @Inject()(
 
   lazy val customsDeclareExportsMovements = servicesConfig.baseUrl("customs-declare-exports-movements")
 
-  lazy val movementArrivalSubmissionUri = servicesConfig.getConfString(
-    "customs-declare-exports-movements.submit-movement-arrival",
-    throw new IllegalStateException(
-      "Missing configuration for Customs Declarations Exports Movements Arrival submission URI"
-    )
-  )
-
-  lazy val movementDepartureSubmissionUri = servicesConfig.getConfString(
-    "customs-declare-exports-movements.submit-movement-departure",
-    throw new IllegalStateException(
-      "Missing configuration for Customs Declarations Exports Movements Departure submission URI"
-    )
+  lazy val movementsSubmissionUri = servicesConfig.getConfString(
+    "customs-declare-exports-movements.submit-movements",
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports Movements submission URI")
   )
 
   lazy val movementConsolidationUri = servicesConfig.getConfString(

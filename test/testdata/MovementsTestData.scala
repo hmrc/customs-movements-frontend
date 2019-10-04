@@ -22,18 +22,15 @@ import forms.Choice.Arrival
 import forms.GoodsDeparted.AllowedPlaces
 import forms._
 import forms.common.{Date, Time}
+import models.requests.MovementRequest
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import models.{SignedInUser, UcrBlock}
 import play.api.libs.json._
 import testdata.CommonTestData._
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 object MovementsTestData {
-
-  def newUser(eori: String): SignedInUser =
-    SignedInUser(eori, Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori))))
 
   val incorrectTransport: JsValue = JsObject(
     Map(
@@ -42,26 +39,19 @@ object MovementsTestData {
       "transportNationality" -> JsString("Transport nationality")
     )
   )
-
-  def consignmentReferences(refType: String) = ConsignmentReferences(refType, CommonTestData.correctUcr)
   val date = Date(Some(10), Some(8), Some(2018))
   val departureDetails = DepartureDetails(date)
-
-  def arrivalDepartureTimes(movementType: Choice): JsValue = movementType match {
-    case Arrival => Json.toJson(ArrivalDetails(date, Time(Some("13"), Some("34"))))
-    case _       => Json.toJson(DepartureDetails(date))
-  }
-
   val goodsDeparted = GoodsDeparted(AllowedPlaces.outOfTheUk)
-
   val location: JsValue = Json.toJson(Location("A", "Y", "correct", "PL"))
-
   val correctTransport: JsValue = JsObject(
     Map("modeOfTransport" -> JsString("2"), "nationality" -> JsString("PL"), "transportId" -> JsString("REF"))
   )
 
-  def arrivalReference(movementType: Choice): ArrivalReference =
-    ArrivalReference(if (movementType == Arrival) Some("1234") else None)
+  def newUser(eori: String): SignedInUser =
+    SignedInUser(eori, Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori))))
+
+  def validMovementRequest(movementType: Choice): MovementRequest =
+    Movement.createMovementRequest(CacheMap(movementType.toString, cacheMapData(movementType)), "eori1", movementType)
 
   def cacheMapData(movementType: Choice, refType: String = "DUCR"): Map[String, JsValue] =
     Map(
@@ -74,8 +64,15 @@ object MovementsTestData {
       ArrivalReference.formId -> Json.toJson(arrivalReference(movementType))
     )
 
-  def validMovementRequest(movementType: Choice): InventoryLinkingMovementRequest =
-    Movement.createMovementRequest(CacheMap(movementType.toString, cacheMapData(movementType)), "eori1", movementType)
+  def consignmentReferences(refType: String) = ConsignmentReferences(refType, CommonTestData.correctUcr)
+
+  def arrivalDepartureTimes(movementType: Choice): JsValue = movementType match {
+    case Arrival => Json.toJson(ArrivalDetails(date, Time(Some("13"), Some("34"))))
+    case _       => Json.toJson(DepartureDetails(date))
+  }
+
+  def arrivalReference(movementType: Choice): ArrivalReference =
+    ArrivalReference(if (movementType == Arrival) Some("1234") else None)
 
   def exampleSubmissionFrontendModel(
     eori: String = validEori,

@@ -35,19 +35,19 @@ trait MockCustomsExportsMovement extends MockitoSugar with BeforeAndAfterEach { 
   def sendMovementRequest202Response(): OngoingStubbing[Future[HttpResponse]] =
     when(
       mockCustomsExportsMovementConnector
-        .sendArrivalDeclaration(any())(any(), any())
+        .sendArrivalDeclaration(any())(any())
     ).thenReturn(Future.successful(HttpResponse(ACCEPTED)))
 
   def sendMovementRequest400Response(): OngoingStubbing[Future[HttpResponse]] =
     when(
       mockCustomsExportsMovementConnector
-        .sendArrivalDeclaration(any())(any(), any())
+        .sendArrivalDeclaration(any())(any())
     ).thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
   def listOfSubmissions(
     submissions: Seq[SubmissionFrontendModel]
   ): OngoingStubbing[Future[Seq[SubmissionFrontendModel]]] =
-    when(mockCustomsExportsMovementConnector.fetchAllSubmissions()(any(), any()))
+    when(mockCustomsExportsMovementConnector.fetchAllSubmissions()(any()))
       .thenReturn(Future.successful(submissions))
 
   override protected def afterEach(): Unit = {

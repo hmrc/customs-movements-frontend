@@ -60,9 +60,9 @@ class MovementsControllerSpec extends ControllerSpec with MockCustomsExportsMove
 
       "display page is invoked and cache is empty" in {
 
-        when(mockCustomsExportsMovementConnector.fetchAllSubmissions()(any(), any()))
+        when(mockCustomsExportsMovementConnector.fetchAllSubmissions()(any()))
           .thenReturn(Future.successful(Seq(exampleSubmissionFrontendModel())))
-        when(mockCustomsExportsMovementConnector.fetchNotifications(anyString())(any(), any()))
+        when(mockCustomsExportsMovementConnector.fetchNotifications(anyString())(any()))
           .thenReturn(Future.successful(Seq(exampleNotificationFrontendModel())))
 
         val result = controller.displayPage()(getRequest())

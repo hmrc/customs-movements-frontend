@@ -16,28 +16,19 @@
 
 package testdata
 
-import testdata.CommonTestData._
 import models.UcrBlock
+import models.external.requests.ConsolidationRequest
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import play.api.http.{ContentTypes, HeaderNames}
-import play.api.mvc.Codec
-
-import scala.xml.Elem
+import testdata.CommonTestData._
 
 object ConsolidationTestData {
 
   val ValidMucr = "5GB123456789000-123ABC456DEFIIIII"
   val ValidDucr = "4GB123456789000-123ABC456DEFIIIII"
 
-  val exampleAssociateDucrRequestXml: Elem =
-    <inventoryLinkingConsolidationRequest xmlns="http://gov.uk/customs/inventoryLinking/v1">
-      <messageCode>EAC</messageCode>
-      <masterUCR>{ValidMucr}</masterUCR>
-      <ucrBlock>
-        <ucr>{ValidDucr}</ucr>
-        <ucrType>D</ucrType>
-      </ucrBlock>
-    </inventoryLinkingConsolidationRequest>
+  val exampleAssociateDucrRequest: ConsolidationRequest =
+    ConsolidationRequest("associateDucr", Some(ValidMucr), Some(ValidDucr))
 
   val exampleAssociateDucrRequestSubmission: SubmissionFrontendModel = SubmissionFrontendModel(
     eori = validEori,
@@ -46,22 +37,12 @@ object ConsolidationTestData {
     ucrBlocks = Seq(UcrBlock(ucr = ValidMucr, ucrType = "M"), UcrBlock(ucr = ValidDucr, ucrType = "D"))
   )
 
-  val exampleDisassociateDucrRequestXml: Elem =
-    <inventoryLinkingConsolidationRequest xmlns="http://gov.uk/customs/inventoryLinking/v1">
-      <messageCode>EAC</messageCode>
-      <ucrBlock>
-        <ucr>{ValidDucr}</ucr>
-        <ucrType>D</ucrType>
-      </ucrBlock>
-    </inventoryLinkingConsolidationRequest>
+  val exampleDisassociateDucrRequest: ConsolidationRequest =
+    ConsolidationRequest("disassociateDucr", None, Some(ValidDucr))
 
-  val exampleShutMucrRequestXml: Elem =
-    <inventoryLinkingConsolidationRequest xmlns="http://gov.uk/customs/inventoryLinking/v1">
-      <messageCode>CST</messageCode>
-      <masterUCR>{ValidMucr}</masterUCR>
-    </inventoryLinkingConsolidationRequest>
+  val exampleShutMucrRequest: ConsolidationRequest = ConsolidationRequest("shutMucr", Some(ValidMucr), None)
 
   val validConsolidationRequestHeaders: Seq[(String, String)] =
-    Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8), HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8))
+    Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.JSON, HeaderNames.ACCEPT -> ContentTypes.JSON)
 
 }

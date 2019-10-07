@@ -88,7 +88,7 @@ class DisassociateDucrControllerSpec
 
       "form is correct and submission service return status different than ACCEPTED" in {
 
-        when(mockSubmissionService.submitDucrDisassociation(any(), any())(any(), any()))
+        when(mockSubmissionService.submitDucrDisassociation(any(), any())(any()))
           .thenReturn(Future.successful(BAD_REQUEST))
 
         val result = controller.submit()(postRequest(correctForm))
@@ -101,7 +101,7 @@ class DisassociateDucrControllerSpec
 
       "form is correct and submission service return ACCEPTED status" in {
 
-        when(mockSubmissionService.submitDucrDisassociation(any(), any())(any(), any()))
+        when(mockSubmissionService.submitDucrDisassociation(any(), any())(any()))
           .thenReturn(Future.successful(ACCEPTED))
 
         val result = controller.submit()(postRequest(correctForm))

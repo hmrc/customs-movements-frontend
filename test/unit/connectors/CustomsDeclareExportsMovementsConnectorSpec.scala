@@ -20,6 +20,7 @@ import config.AppConfig
 import connectors.CustomsDeclareExportsMovementsConnector
 import forms.Choice
 import forms.Choice.{Arrival, Departure}
+import models.external.requests.ConsolidationRequest
 import models.notifications.NotificationFrontendModel
 import models.submissions.SubmissionFrontendModel
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -53,6 +54,8 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
     val defaultHttpResponse = HttpResponse(OK, Some(Json.toJson("Success")))
 
     when(httpClientMock.POSTString[HttpResponse](any(), any(), any())(any(), any(), any()))
+      .thenReturn(Future.successful(defaultHttpResponse))
+    when(httpClientMock.POST[ConsolidationRequest, HttpResponse](any(), any(), any())(any(), any(), any(), any()))
       .thenReturn(Future.successful(defaultHttpResponse))
     when(httpClientMock.GET(any())(any(), any(), any())).thenReturn(Future.failed(new NotImplementedError()))
 
@@ -147,106 +150,55 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
     }
   }
 
-  "CustomsDeclareExportsMovementsConnector on sendAssociationRequest" should {
+  "CustomsDeclareExportsMovementsConnector on sendConsolidation" should {
 
-    "call HttpClient, passing URL for Association endpoint" in new Test {
+    "call HttpClient for Association" in new Test {
 
-      connector.sendAssociationRequest(exampleAssociateDucrRequestXml.toString).futureValue
+      val result = connector.sendConsolidationRequest(exampleAssociateDucrRequest).futureValue
 
       val expectedUrl =
-        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementConsolidationAssociateUri}"
-      verify(httpClientMock).POSTString(meq(expectedUrl), any(), any())(any(), any(), any())
-    }
-
-    "call HttpClient, passing body provided" in new Test {
-
-      connector.sendAssociationRequest(exampleAssociateDucrRequestXml.toString).futureValue
-
-      verify(httpClientMock).POSTString(any(), meq(exampleAssociateDucrRequestXml.toString), any())(any(), any(), any())
-    }
-
-    "call HttpClient, passing correct headers" in new Test {
-
-      connector.sendAssociationRequest(exampleAssociateDucrRequestXml.toString).futureValue
-
-      verify(httpClientMock).POSTString(any(), any(), meq(validConsolidationRequestHeaders))(any(), any(), any())
-    }
-
-    "return response from HttpClient" in new Test {
-
-      val result = connector.sendAssociationRequest(exampleAssociateDucrRequestXml.toString).futureValue
+        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementConsolidationUri}"
 
       result must equal(defaultHttpResponse)
+
+      verify(httpClientMock).POST(
+        meq(expectedUrl),
+        meq(exampleAssociateDucrRequest),
+        meq(validConsolidationRequestHeaders)
+      )(any(), any(), any(), any())
     }
-  }
 
-  "CustomsDeclareExportsMovementsConnector on sendDisassociationRequest" should {
+    "call HttpClient for Disassociation" in new Test {
 
-    "call HttpClient, passing URL for Disassociation endpoint" in new Test {
-
-      connector.sendDisassociationRequest(exampleDisassociateDucrRequestXml.toString).futureValue
+      val result = connector.sendConsolidationRequest(exampleDisassociateDucrRequest).futureValue
 
       val expectedUrl =
-        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementConsolidationDisassociateUri}"
-      verify(httpClientMock).POSTString(meq(expectedUrl), any(), any())(any(), any(), any())
+        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementConsolidationUri}"
+
+      result must equal(defaultHttpResponse)
+
+      verify(httpClientMock).POST(
+        meq(expectedUrl),
+        meq(exampleDisassociateDucrRequest),
+        meq(validConsolidationRequestHeaders)
+      )(any(), any(), any(), any())
     }
 
-    "call HttpClient, passing body provided" in new Test {
+    "call HttpClient for Shut Mucr " in new Test {
 
-      connector.sendDisassociationRequest(exampleDisassociateDucrRequestXml.toString).futureValue
+      val result = connector.sendConsolidationRequest(exampleShutMucrRequest).futureValue
 
-      verify(httpClientMock).POSTString(any(), meq(exampleDisassociateDucrRequestXml.toString), any())(
+      val expectedUrl =
+        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementConsolidationUri}"
+
+      result must equal(defaultHttpResponse)
+
+      verify(httpClientMock).POST(meq(expectedUrl), meq(exampleShutMucrRequest), meq(validConsolidationRequestHeaders))(
+        any(),
         any(),
         any(),
         any()
       )
-    }
-
-    "call HttpClient, passing correct headers" in new Test {
-
-      connector.sendDisassociationRequest(exampleDisassociateDucrRequestXml.toString).futureValue
-
-      verify(httpClientMock).POSTString(any(), any(), meq(validConsolidationRequestHeaders))(any(), any(), any())
-    }
-
-    "return response from HttpClient" in new Test {
-
-      val result = connector.sendDisassociationRequest(exampleDisassociateDucrRequestXml.toString).futureValue
-
-      result must equal(defaultHttpResponse)
-    }
-  }
-
-  "CustomsDeclareExportsMovementsConnector on sendShutMucrRequest" should {
-
-    "call HttpClient, passing URL for Shut Mucr endpoint" in new Test {
-
-      connector.sendShutMucrRequest(exampleShutMucrRequestXml.toString).futureValue
-
-      val expectedUrl =
-        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementConsolidationShutMucrUri}"
-      verify(httpClientMock).POSTString(meq(expectedUrl), any(), any())(any(), any(), any())
-    }
-
-    "call HttpClient, passing body provided" in new Test {
-
-      connector.sendShutMucrRequest(exampleShutMucrRequestXml.toString).futureValue
-
-      verify(httpClientMock).POSTString(any(), meq(exampleShutMucrRequestXml.toString), any())(any(), any(), any())
-    }
-
-    "call HttpClient, passing correct headers" in new Test {
-
-      connector.sendShutMucrRequest(exampleShutMucrRequestXml.toString).futureValue
-
-      verify(httpClientMock).POSTString(any(), any(), meq(validConsolidationRequestHeaders))(any(), any(), any())
-    }
-
-    "return response from HttpClient" in new Test {
-
-      val result = connector.sendShutMucrRequest(exampleShutMucrRequestXml.toString).futureValue
-
-      result must equal(defaultHttpResponse)
     }
   }
 

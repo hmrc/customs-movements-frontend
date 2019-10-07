@@ -16,25 +16,22 @@
 
 package models.external.requests
 
+import models.external.requests.ConsolidationType.{ConsolidationType, _}
 import play.api.libs.json.Json
 
 object ConsolidationRequestFactory {
 
-  private val associateDucrType = "associateDucr"
-  private val disassociateDucrType = "disassociateDucr"
-  private val shutMucrType = "shutMucr"
-
   def buildAssociationRequest(mucr: String, ducr: String): ConsolidationRequest =
-    ConsolidationRequest(associateDucrType, Some(mucr), Some(ducr))
+    ConsolidationRequest(ASSOCIATE_DUCR, Some(mucr), Some(ducr))
 
   def buildDisassociationRequest(ducr: String): ConsolidationRequest =
-    ConsolidationRequest(disassociateDucrType, None, Some(ducr))
+    ConsolidationRequest(DISASSOCIATE_DUCR, None, Some(ducr))
 
   def buildShutMucrRequest(mucr: String): ConsolidationRequest =
-    ConsolidationRequest(shutMucrType, Some(mucr), None)
+    ConsolidationRequest(SHUT_MUCR, Some(mucr), None)
 }
 
-case class ConsolidationRequest(`type`: String, mucr: Option[String], ducr: Option[String])
+case class ConsolidationRequest(consolidationType: ConsolidationType, mucr: Option[String], ducr: Option[String])
 
 object ConsolidationRequest {
   implicit val format = Json.format[ConsolidationRequest]

@@ -21,8 +21,9 @@ import forms.Choice._
 import forms._
 import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
+import models.external.requests.ConsolidationRequest
 import models.external.requests.ConsolidationRequestFactory._
-import play.api.http.Status.INTERNAL_SERVER_ERROR
+import play.api.http.Status.{ACCEPTED, INTERNAL_SERVER_ERROR}
 import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
@@ -71,14 +72,13 @@ class SubmissionService @Inject()(
 
   def submitDucrAssociation(mucrOptions: MucrOptions, associateDucr: AssociateDucr, eori: String)(
     implicit hc: HeaderCarrier
-  ): Future[Int] = {
+  ): Future[ConsolidationRequest] = {
     val timer = metrics.startTimer(AssociateDUCR)
     connector
       .sendConsolidationRequest(buildAssociationRequest(mucrOptions.mucr, associateDucr.ducr))
-      .map(_.status)
       .andThen {
-        case Success(status) =>
-          auditService.auditAssociate(eori, mucrOptions.mucr, associateDucr.ducr, status.toString)
+        case Success(_) =>
+          auditService.auditAssociate(eori, mucrOptions.mucr, associateDucr.ducr, ACCEPTED.toString)
           timer.stop()
           metrics.incrementCounter(AssociateDUCR)
       }
@@ -86,24 +86,25 @@ class SubmissionService @Inject()(
 
   def submitDucrDisassociation(disassociateDucr: DisassociateDucr, eori: String)(
     implicit hc: HeaderCarrier
-  ): Future[Int] = {
+  ): Future[ConsolidationRequest] = {
     val timer = metrics.startTimer(DisassociateDUCR)
     connector
       .sendConsolidationRequest(buildDisassociationRequest(disassociateDucr.ducr))
-      .map(_.status)
       .andThen {
-        case Success(status) =>
-          auditService.auditDisassociate(eori, disassociateDucr.ducr, status.toString)
+        case Success(_) =>
+          auditService.auditDisassociate(eori, disassociateDucr.ducr, ACCEPTED.toString)
           timer.stop()
           metrics.incrementCounter(DisassociateDUCR)
       }
   }
 
-  def submitShutMucrRequest(shutMucr: ShutMucr, eori: String)(implicit hc: HeaderCarrier): Future[Int] = {
+  def submitShutMucrRequest(shutMucr: ShutMucr, eori: String)(
+    implicit hc: HeaderCarrier
+  ): Future[ConsolidationRequest] = {
     val timer = metrics.startTimer(ShutMUCR)
-    connector.sendConsolidationRequest(buildShutMucrRequest(shutMucr.mucr)).map(_.status).andThen {
-      case Success(status) =>
-        auditService.auditShutMucr(eori, shutMucr.mucr, status.toString)
+    connector.sendConsolidationRequest(buildShutMucrRequest(shutMucr.mucr)).andThen {
+      case Success(_) =>
+        auditService.auditShutMucr(eori, shutMucr.mucr, ACCEPTED.toString)
         timer.stop()
         metrics.incrementCounter(ShutMUCR)
     }

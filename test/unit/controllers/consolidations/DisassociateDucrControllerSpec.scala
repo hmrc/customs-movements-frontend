@@ -19,6 +19,8 @@ package unit.controllers.consolidations
 import base.MockSubmissionService
 import controllers.consolidations.{routes, DisassociateDucrController}
 import forms.DisassociateDucr
+import models.external.requests.ConsolidationRequest
+import models.external.requests.ConsolidationType.DISASSOCIATE_DUCR
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.OptionValues
@@ -46,6 +48,7 @@ class DisassociateDucrControllerSpec
     mockDisassociateDucrPage
   )(global)
   private val correctForm = Json.toJson(DisassociateDucr(correctUcr))
+  private val expectedConsolidationRequest = ConsolidationRequest(DISASSOCIATE_DUCR, None, Some(correctUcr))
   private val incorrectForm = Json.toJson(DisassociateDucr("abc"))
 
   override protected def beforeEach(): Unit = {
@@ -84,25 +87,12 @@ class DisassociateDucrControllerSpec
       }
     }
 
-    "return 500 (BAD_REQUEST)" when {
-
-      "form is correct and submission service return status different than ACCEPTED" in {
-
-        when(mockSubmissionService.submitDucrDisassociation(any(), any())(any()))
-          .thenReturn(Future.successful(BAD_REQUEST))
-
-        val result = controller.submit()(postRequest(correctForm))
-
-        status(result) mustBe INTERNAL_SERVER_ERROR
-      }
-    }
-
     "return 303 (SEE_OTHER)" when {
 
       "form is correct and submission service return ACCEPTED status" in {
 
         when(mockSubmissionService.submitDucrDisassociation(any(), any())(any()))
-          .thenReturn(Future.successful(ACCEPTED))
+          .thenReturn(Future.successful(expectedConsolidationRequest))
 
         val result = controller.submit()(postRequest(correctForm))
 

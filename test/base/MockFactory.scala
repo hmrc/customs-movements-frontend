@@ -26,6 +26,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers.NO_CONTENT
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.HttpResponse
+import testdata.ConsolidationTestData.exampleShutMucrRequest
 
 import scala.concurrent.Future
 
@@ -39,7 +40,7 @@ object MockFactory extends MockitoSugar {
     when(customsDeclareExportsMovementsConnector.sendDepartureDeclaration(any())(any()))
       .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
     when(customsDeclareExportsMovementsConnector.sendConsolidationRequest(any())(any()))
-      .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
+      .thenReturn(Future.successful(exampleShutMucrRequest))
 
     when(customsDeclareExportsMovementsConnector.fetchNotifications(any())(any()))
       .thenReturn(Future.successful(Seq.empty))

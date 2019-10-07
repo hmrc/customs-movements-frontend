@@ -24,6 +24,7 @@ import models.submissions.ActionType._
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
+import play.api.libs.json.Json
 import play.api.mvc.Codec
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -56,8 +57,10 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
   def sendDepartureDeclaration(requestXml: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     postRequest(Departure, requestXml)
 
-  def sendConsolidationRequest(consolidation: ConsolidationRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    httpClient.POST[ConsolidationRequest, HttpResponse](
+  def sendConsolidationRequest(
+    consolidation: ConsolidationRequest
+  )(implicit hc: HeaderCarrier): Future[ConsolidationRequest] =
+    httpClient.POST[ConsolidationRequest, ConsolidationRequest](
       s"$CustomsDeclareExportsMovementsUrl${appConfig.movementConsolidationUri}",
       consolidation,
       JsonHeaders
@@ -104,5 +107,4 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
         case Success(response)  => logger.debug(s"Single submission fetch response. $response")
         case Failure(exception) => logger.warn(s"Single submission fetch failure. $exception")
       }
-
 }

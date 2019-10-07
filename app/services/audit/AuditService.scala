@@ -77,7 +77,7 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
       movementAuditType,
       Map(
         EventData.EORI.toString -> eori,
-        EventData.MessageCode.toString -> data.choice,
+        EventData.MessageCode.toString -> data.choice.toString,
         EventData.UCRType.toString -> data.consignmentReference.referenceValue,
         EventData.UCR.toString -> data.consignmentReference.reference,
         EventData.MovementReference.toString -> data.arrivalReference.flatMap(_.reference).getOrElse(""),

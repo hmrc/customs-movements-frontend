@@ -20,7 +20,7 @@ import base.{BaseSpec, MockCustomsCacheService}
 import forms.Choice.Arrival
 import forms._
 import forms.common.{Date, Time}
-import models.requests.{MovementDetailsRequest, MovementRequest}
+import models.requests.{MovementDetailsRequest, MovementRequest, MovementType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.{reset, verify, when}
@@ -95,14 +95,14 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustoms
       val dataToAudit = Map(
         MovementReference.toString -> "",
         EORI.toString -> "eori",
-        MessageCode.toString -> "EAD",
+        MessageCode.toString -> "EAL",
         UCR.toString -> "UCR",
         UCRType.toString -> "D",
         SubmissionResult.toString -> "200"
       )
       val data =
         MovementRequest(
-          choice = "EAD",
+          choice = MovementType.Arrival,
           consignmentReference = ConsignmentReferences("UCR", "D"),
           movementDetails = MovementDetailsRequest("dateTime")
         )

@@ -19,8 +19,8 @@ package forms.common
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-import play.api.data.{Forms, Mapping}
 import play.api.data.Forms.{number, optional}
+import play.api.data.{Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 
 import scala.util.Try
@@ -42,6 +42,8 @@ case class Date(day: Option[Int], month: Option[Int], year: Option[Int]) {
   }
 
   override def toString: String = LocalDate.of(year.getOrElse(0), month.getOrElse(0), day.getOrElse(0)).toString
+  def toLocalDateTimeString: String =
+    LocalDate.of(year.getOrElse(0), month.getOrElse(0), day.getOrElse(0)).atStartOfDay().toString + ":00"
 }
 
 object Date {

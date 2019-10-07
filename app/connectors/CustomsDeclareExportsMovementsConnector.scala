@@ -20,11 +20,11 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.external.requests.ConsolidationRequest
 import models.notifications.NotificationFrontendModel
+import models.requests.MovementRequest
 import models.submissions.ActionType._
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
-import play.api.mvc.Codec
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -44,23 +44,20 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
     case Arrival | Departure => s"$CustomsDeclareExportsMovementsUrl${appConfig.movementsSubmissionUri}"
   }
 
-  private val CommonMovementsHeaders =
-    Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8), HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8))
-
   private val JsonHeaders = Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.JSON, HeaderNames.ACCEPT -> ContentTypes.JSON)
 
-  def sendArrivalDeclaration(requestXml: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    postRequest(Arrival, requestXml)
+  def sendArrivalDeclaration(movementRequest: MovementRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] =
+    postRequest(Arrival, movementRequest)
 
-  def sendDepartureDeclaration(requestXml: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    postRequest(Departure, requestXml)
+  def sendDepartureDeclaration(movementRequest: MovementRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] =
+    postRequest(Departure, movementRequest)
 
   private def postRequest(
     actionType: ActionType,
-    payload: String
+    movementRequest: MovementRequest
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
     httpClient
-      .POSTString[HttpResponse](movementSubmissionUrl(actionType), payload, CommonMovementsHeaders)
+      .POST[MovementRequest, HttpResponse](movementSubmissionUrl(actionType), movementRequest, JsonHeaders)
       .andThen {
         case Success(response) =>
           logger.debug(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS response on ${actionType.value}. $response")

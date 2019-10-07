@@ -25,7 +25,6 @@ import models.external.requests.ConsolidationRequest
 import models.external.requests.ConsolidationRequestFactory._
 import models.requests.MovementRequest
 import play.api.http.Status.{ACCEPTED, INTERNAL_SERVER_ERROR}
-import play.api.libs.json.Json
 import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -65,11 +64,11 @@ class SubmissionService @Inject()(
 
   private def sendMovementRequest(
     choice: Choice,
-    data: MovementRequest
+    movementRequest: MovementRequest
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
     choice match {
-      case Arrival   => connector.sendArrivalDeclaration(Json.toJson(data).toString())
-      case Departure => connector.sendDepartureDeclaration(Json.toJson(data).toString())
+      case Arrival   => connector.sendArrivalDeclaration(movementRequest)
+      case Departure => connector.sendDepartureDeclaration(movementRequest)
     }
 
   def submitDucrAssociation(mucrOptions: MucrOptions, associateDucr: AssociateDucr, eori: String)(

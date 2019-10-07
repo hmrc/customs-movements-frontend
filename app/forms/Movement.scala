@@ -17,7 +17,7 @@
 package forms
 
 import forms.Choice._
-import models.requests.{MovementDetailsRequest, MovementRequest}
+import models.requests.{MovementDetailsRequest, MovementRequest, MovementType}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 object Movement {
@@ -32,7 +32,7 @@ object Movement {
       case Departure =>
         cacheMap
           .getEntry[DepartureDetails](MovementDetails.formId)
-          .map(_.dateOfDeparture.toString)
+          .map(_.dateOfDeparture.toLocalDateTimeString)
           .getOrElse("")
       case Arrival =>
         cacheMap
@@ -51,9 +51,9 @@ object Movement {
     )
   }
 
-  private def extractChoice(choice: Choice): String = choice match {
-    case Arrival   => "EAL"
-    case Departure => "EDL"
+  private def extractChoice(choice: Choice) = choice match {
+    case Arrival   => MovementType.Arrival
+    case Departure => MovementType.Departure
     case _         => throw new IllegalArgumentException("Allowed is only arrival or departure here")
   }
 }

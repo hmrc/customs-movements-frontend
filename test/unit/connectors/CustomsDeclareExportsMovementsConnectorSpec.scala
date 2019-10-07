@@ -27,9 +27,7 @@ import models.submissions.SubmissionFrontendModel
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures
-import play.api.http.{ContentTypes, HeaderNames}
 import play.api.libs.json.Json
-import play.api.mvc.Codec
 import play.api.test.Helpers.OK
 import testdata.CommonTestData._
 import testdata.ConsolidationTestData._
@@ -53,7 +51,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
     val httpClientMock: HttpClient = mock[HttpClient]
     val defaultHttpResponse = HttpResponse(OK, Some(Json.toJson("Success")))
 
-    when(httpClientMock.POSTString[HttpResponse](any(), any(), any())(any(), any(), any()))
+    when(httpClientMock.POST[MovementRequest, HttpResponse](any(), any(), any())(any(), any(), any(), any()))
       .thenReturn(Future.successful(defaultHttpResponse))
     when(httpClientMock.GET(any())(any(), any(), any())).thenReturn(Future.failed(new NotImplementedError()))
 
@@ -64,38 +62,30 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
     "call HttpClient, passing URL for Arrival submission endpoint" in new Test {
 
-      connector.sendArrivalDeclaration(movementSubmissionRequestXmlString(Arrival)).futureValue
+      connector.sendArrivalDeclaration(movementSubmissionRequest(Arrival)).futureValue
 
       val expectedSubmissionUrl =
         s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementsSubmissionUri}"
-      verify(httpClientMock).POSTString(meq(expectedSubmissionUrl), any(), any())(any(), any(), any())
+      verify(httpClientMock).POST(meq(expectedSubmissionUrl), any(), any())(any(), any(), any(), any())
     }
 
     "call HttpClient, passing body provided" in new Test {
 
-      connector.sendArrivalDeclaration(movementSubmissionRequestXmlString(Arrival)).futureValue
+      connector.sendArrivalDeclaration(movementSubmissionRequest(Arrival)).futureValue
 
-      verify(httpClientMock).POSTString(any(), meq(movementSubmissionRequestXmlString(Arrival)), any())(
-        any(),
-        any(),
-        any()
-      )
+      verify(httpClientMock).POST(any(), meq(movementSubmissionRequest(Arrival)), any())(any(), any(), any(), any())
     }
 
     "call HttpClient, passing correct headers" in new Test {
 
-      connector.sendArrivalDeclaration(movementSubmissionRequestXmlString(Arrival)).futureValue
+      connector.sendArrivalDeclaration(movementSubmissionRequest(Arrival)).futureValue
 
-      verify(httpClientMock).POSTString(any(), any(), meq(expectedMovementSubmissionRequestHeaders))(
-        any(),
-        any(),
-        any()
-      )
+      verify(httpClientMock).POST(any(), any(), any())(any(), any(), any(), any())
     }
 
     "return response from HttpClient" in new Test {
 
-      val result = connector.sendArrivalDeclaration(movementSubmissionRequestXmlString(Arrival)).futureValue
+      val result = connector.sendArrivalDeclaration(movementSubmissionRequest(Arrival)).futureValue
 
       result must equal(defaultHttpResponse)
     }
@@ -105,43 +95,35 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
     "call HttpClient, passing URL for Departure submission endpoint" in new Test {
 
-      connector.sendDepartureDeclaration(movementSubmissionRequestXmlString(Departure)).futureValue
+      connector.sendDepartureDeclaration(movementSubmissionRequest(Departure)).futureValue
 
       val expectedSubmissionUrl =
         s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementsSubmissionUri}"
-      verify(httpClientMock).POSTString(meq(expectedSubmissionUrl), any(), any())(any(), any(), any())
+      verify(httpClientMock).POST(meq(expectedSubmissionUrl), any(), any())(any(), any(), any(), any())
     }
 
     "call HttpClient, passing body provided" in new Test {
 
       connector
-        .sendDepartureDeclaration(movementSubmissionRequestXmlString(Departure))
+        .sendDepartureDeclaration(movementSubmissionRequest(Departure))
         .futureValue
 
-      verify(httpClientMock).POSTString(any(), meq(movementSubmissionRequestXmlString(Departure)), any())(
-        any(),
-        any(),
-        any()
-      )
+      verify(httpClientMock).POST(any(), meq(movementSubmissionRequest(Departure)), any())(any(), any(), any(), any())
     }
 
     "call HttpClient, passing correct headers" in new Test {
 
       connector
-        .sendDepartureDeclaration(movementSubmissionRequestXmlString(Departure))
+        .sendDepartureDeclaration(movementSubmissionRequest(Departure))
         .futureValue
 
-      verify(httpClientMock).POSTString(any(), any(), meq(expectedMovementSubmissionRequestHeaders))(
-        any(),
-        any(),
-        any()
-      )
+      verify(httpClientMock).POST(any(), any(), any())(any(), any(), any(), any())
     }
 
     "return response from HttpClient" in new Test {
 
       val result = connector
-        .sendDepartureDeclaration(movementSubmissionRequestXmlString(Departure))
+        .sendDepartureDeclaration(movementSubmissionRequest(Departure))
         .futureValue
 
       result must equal(defaultHttpResponse)
@@ -302,14 +284,6 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 }
 
 object CustomsDeclareExportsMovementsConnectorSpec {
-
-  val expectedMovementSubmissionRequestHeaders: Seq[(String, String)] =
-    Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8), HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8))
-
-  def movementSubmissionRequestXmlString(movementType: Choice): String =
-    Json.toJson(movementSubmissionRequest(movementType)).toString()
-
   def movementSubmissionRequest(movementType: Choice): MovementRequest =
     MovementsTestData.validMovementRequest(movementType)
-
 }

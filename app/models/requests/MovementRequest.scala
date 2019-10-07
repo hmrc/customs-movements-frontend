@@ -20,7 +20,7 @@ import forms._
 import play.api.libs.json.{Json, OFormat}
 
 case class MovementRequest(
-  choice: String,
+  choice: MovementType,
   consignmentReference: ConsignmentReferences,
   movementDetails: MovementDetailsRequest,
   location: Option[Location] = None,

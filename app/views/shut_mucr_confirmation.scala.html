@@ -16,12 +16,13 @@
 
 @import controllers.routes
 @import controllers.storage.FlashKeys
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
-@main_template(title = messages("shutMucrConfirmation.title")) {
+@main_template(title = Title("shutMucrConfirmation.title")) {
 
   @components.highlight_box_with_reference(
     headingText = messages("shutMucrConfirmation.title"),

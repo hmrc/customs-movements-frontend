@@ -18,12 +18,13 @@
 @import forms.Choice
 @import forms.Choice._
 @import views.components.fields.RadioOption
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(form: Form[Choice])(implicit request: Request[_], messages: Messages)
 
-  @main_template(title = messages("movement.choice.title")) {
+  @main_template(title = Title("movement.choice.title")) {
 
     @helper.form(routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
       @helper.CSRF.formField

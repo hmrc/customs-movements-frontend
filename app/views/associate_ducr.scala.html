@@ -16,13 +16,14 @@
 
 @import forms.AssociateDucr
 @import forms.MucrOptions
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(form: Form[AssociateDucr], mucrOptions: MucrOptions)(implicit request: Request[_], messages: Messages)
 
 
-@main_template(title = messages("associateDucr.title", mucrOptions.mucr)) {
+@main_template(title = Title(messages("associateDucr.title", mucrOptions.mucr))) {
     @helper.form(consolidations.routes.AssociateDucrController.submit(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 

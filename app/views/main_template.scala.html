@@ -16,10 +16,11 @@
 
 @import config.AppConfig
 @import uk.gov.hmrc.play.views.html.layouts.{Article, Sidebar}
+@import views.Title
 
 @this(govuk_wrapper: views.html.govuk_wrapper, sidebar_di: Sidebar, article_di: Article)
 
-@(title: String,
+@(title: Title,
   sidebarLinks: Option[Html] = None,
   contentHeader: Option[Html] = None,
   bodyClasses: Option[String] = None,
@@ -37,7 +38,7 @@
     }
 }
 
-@govuk_wrapper(title = title,
+@govuk_wrapper(title = title.toString,
                mainClass = mainClass,
                bodyClasses = bodyClasses,
                sidebar = sidebar,

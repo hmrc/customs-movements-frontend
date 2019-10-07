@@ -44,9 +44,10 @@ class ShutMucrConfirmationViewSpec extends ViewSpec with ShutMucrConfirmationMes
       assertMessage(additionalNote, "You might want to take a screenshot of this for your records.")
     }
 
-    "display tab title" in {
+    "display same page title as header" in {
 
-      getElementByCss(createView(), "head>title").text() must equal(messages(title))
+      val view = createView()
+      view.title() must include(view.getElementsByTag("h1").text())
     }
 
     "display page heading inside highlight box" in {

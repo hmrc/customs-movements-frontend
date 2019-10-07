@@ -48,9 +48,10 @@ class ShutMucrViewSpec extends ViewSpec with ShutMucrMessages with CommonMessage
 
   "ShutMucr View on empty page" should {
 
-    "display tab title" in {
+    "display same page title as header" in {
 
-      getElementByCss(createView(), "head>title").text() must equal(messages(tabTitle))
+      val view = createView()
+      view.title() must include(view.getElementsByTag("h1").text())
     }
 
     "display 'Back' button that links to 'Choice' page" in {

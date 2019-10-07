@@ -17,12 +17,13 @@
 @import controllers.routes
 @import uk.gov.hmrc.play.views.html._
 @import forms.DepartureDetails
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(form: Form[DepartureDetails])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = messages("departureDetails.title")) {
+@main_template(title = Title("departureDetails.header")) {
     @helper.form(routes.MovementDetailsController.saveMovementDetails(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 

@@ -51,9 +51,10 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
   "Choice View on empty page" should {
 
-    "display page title" in {
+    "display same page title as header" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title))
+      val view = createView()
+      view.title() must include(view.getElementsByTag("h1").text())
     }
 
     "display header with hint" in {

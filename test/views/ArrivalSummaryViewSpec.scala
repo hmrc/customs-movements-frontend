@@ -54,9 +54,10 @@ class ArrivalSummaryViewSpec extends UnitViewSpec {
 
   "Arrival Summary Page" should {
 
-    "have correct title" in {
+    "display same page title as header" in {
 
-      arrivalSummaryView.getElementsByTag("title").text() mustBe messages("summary.title")
+      val view = arrivalSummaryPage(CacheMap("id", cachedData))(request, messagesApi.preferred(request))
+      view.title() must include(view.getElementsByTag("h1").text())
     }
 
     "have correct heading" in {

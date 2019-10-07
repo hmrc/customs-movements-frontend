@@ -45,9 +45,10 @@ class ArrivalDetailsViewSpec extends ViewSpec with ArrivalDetailsMessages with C
 
   "Arrival Details View on empty page" should {
 
-    "display page title" in {
+    "display same page title as header" in {
 
-      getElementByCss(createView(), "head>title").text() must be(messages(arrivalTitle))
+      val view = createView()
+      view.title() must include(view.getElementsByTag("h1").text())
     }
 
     "display page header" in {

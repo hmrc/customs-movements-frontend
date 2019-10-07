@@ -15,12 +15,13 @@
  *@
 
 @import forms.ArrivalReference
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(form: Form[ArrivalReference])(implicit request: Request[_], messages: Messages)
 
-@main_template(messages("arrivalReference")) {
+@main_template(Title("arrivalReference.question")) {
 
     @helper.form(controllers.routes.ArrivalReferenceController.submit(), 'autoComplete -> "off") {
         @helper.CSRF.formField

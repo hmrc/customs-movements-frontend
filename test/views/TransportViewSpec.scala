@@ -63,9 +63,10 @@ class TransportViewSpec extends ViewSpec with TransportMessages with CommonMessa
 
   "Transport View on empty page" should {
 
-    "display page title" in {
+    "display same page title as header" in {
 
-      getElementByCss(createArrivalView(), "head>title").text() must be(messages(title))
+      val view = createArrivalView()
+      view.title() must include(view.getElementsByTag("h1").text())
     }
 
     "display page header" in {

@@ -15,6 +15,7 @@
  *@
 
 @import models.viewmodels.notificationspage.NotificationsPageSingleElement
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
@@ -34,7 +35,7 @@
     </div>
 }
 
-@main_template(title = messages("notifications.title", submissionUcr)) {
+@main_template(title = Title(messages("notifications.title", submissionUcr))) {
 
   @components.back_link(routes.MovementsController.displayPage())
 

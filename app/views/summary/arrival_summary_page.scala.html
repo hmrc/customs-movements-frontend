@@ -20,12 +20,13 @@
 @import forms._
 @import uk.gov.hmrc.play.views.html._
 @import forms.ConsignmentReferences.AllowedReferences
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(data: CacheMap)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = messages("summary.title")){
+@main_template(title = Title("summary.arrival.title")){
     @components.back_link(routes.LocationController.displayPage())
 
     @components.page_title(Some("summary.arrival.title"))

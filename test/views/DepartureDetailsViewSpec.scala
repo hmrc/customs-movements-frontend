@@ -42,14 +42,10 @@ class DepartureDetailsViewSpec extends ViewSpec with DepartureDetailsMessages wi
 
   "Arrival Details View on empty page" should {
 
-    "display page title" in {
+    "display same page title as header" in {
 
-      getElementByCss(createView(), "head>title").text() must be(messages(departureTitle))
-    }
-
-    "display page header" in {
-
-      getElementById(createView(), "title").text() must be(messages(departureHeader))
+      val view = createView()
+      view.title() must include(view.getElementsByTag("h1").text())
     }
 
     "display input with hint for date" in {

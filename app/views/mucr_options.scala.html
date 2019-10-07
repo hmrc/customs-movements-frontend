@@ -17,12 +17,13 @@
 @import forms.MucrOptions
 @import MucrOptions._
 @import views.components.fields.RadioOption
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(form: Form[MucrOptions])(implicit request: Request[_], messages: Messages)
 
-    @main_template(title = messages("mucrOptions.title")) {
+    @main_template(title = Title("mucrOptions.title")) {
         @helper.form(consolidations.routes.MucrOptionsController.save(), 'autoComplete -> "off") {
             @helper.CSRF.formField
 

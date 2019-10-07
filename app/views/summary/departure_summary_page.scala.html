@@ -22,12 +22,13 @@
 @import forms.Transport._
 
 @import uk.gov.hmrc.play.views.html._
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(data: CacheMap)(implicit request: Request[_], messages: Messages)
 
-    @main_template(title = messages("summary.title")) {
+    @main_template(title = Title("summary.departure.title")) {
 
         @if(data.getEntry[GoodsDeparted](GoodsDeparted.formId).map(_.departedPlace).contains(GoodsDeparted.AllowedPlaces.outOfTheUk)){
             @components.back_link(routes.TransportController.displayPage())

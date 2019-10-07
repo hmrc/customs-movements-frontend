@@ -95,15 +95,6 @@ class AppConfig @Inject()(
       .getOptional[Boolean]("microservice.services.features.welsh-translation")
       .getOrElse(true)
 
-  lazy val countriesCsvFilename: String = loadConfig("countryCodesCsvFilename")
-
-  lazy val countryCodesJsonFilename: String = loadConfig("countryCodesJsonFilename")
-
-  lazy val nrsServiceUrl: String = servicesConfig.baseUrl("nrs")
-
-  lazy val nrsApiKey =
-    servicesConfig.getConfString("nrs.apikey", throw new IllegalStateException("Missing configuration for nrs apikey"))
-
   def languageMap: Map[String, Lang] =
     Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
 

@@ -160,22 +160,6 @@ class AppConfigSpec extends MovementBaseSpec {
       validConfigService.fetchNotifications must be("/notifications")
     }
 
-    "have countryCodesJsonFilename" in {
-      validConfigService.countryCodesJsonFilename must be("location-autocomplete-canonical-list.json")
-    }
-
-    "have countriesCsvFilename" in {
-      validConfigService.countriesCsvFilename must be("code_lists/mdg-country-codes.csv")
-    }
-
-    "have nrsServiceUrl" in {
-      validConfigService.nrsServiceUrl must be("http://localhostnrs:7654")
-    }
-
-    "have nrsApiKey" in {
-      validConfigService.nrsApiKey must be("cds-exports")
-    }
-
   }
 
   "throw an exception when google-analytics.host is missing" in {
@@ -250,26 +234,6 @@ class AppConfigSpec extends MovementBaseSpec {
     intercept[Exception](emptyConfigService.fetchNotifications).getMessage must be(
       "Missing configuration for Customs Declarations Exports fetch notifications URI"
     )
-  }
-
-  "throw an exception when countryCodesJsonFilename is missing" in {
-    intercept[Exception](emptyConfigService.countryCodesJsonFilename).getMessage must be(
-      "Missing configuration key: countryCodesJsonFilename"
-    )
-  }
-
-  "throw an exception when countryCodesCsvFilename is missing" in {
-    intercept[Exception](emptyConfigService.countriesCsvFilename).getMessage must be(
-      "Missing configuration key: countryCodesCsvFilename"
-    )
-  }
-
-  "throw an exception when nrs.host is missing" in {
-    intercept[Exception](emptyConfigService.nrsServiceUrl).getMessage must be("Could not find config nrs.host")
-  }
-
-  "throw an exception when nrs apikey is missing" in {
-    intercept[Exception](emptyConfigService.nrsApiKey).getMessage must be("Missing configuration for nrs apikey")
   }
 
 }

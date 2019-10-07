@@ -69,24 +69,12 @@ class AssociateDucrSummaryController @Inject()(
         .fetchAndGetEntry[AssociateDucr](movementCacheId(), AssociateDucr.formId)
         .map(_.getOrElse(throw IncompleteApplication))
 
-      submissionResult <- submissionService
+      _ <- submissionService
         .submitDucrAssociation(mucrOptions, associateDucr, request.authenticatedRequest.user.eori)
       _ <- cacheService.remove(movementCacheId())
 
-      result = submissionResult match {
-        case ACCEPTED =>
-          Redirect(routes.AssociateDucrConfirmationController.displayPage())
-            .flashing(FlashKeys.MUCR -> mucrOptions.mucr)
-        case _ =>
-          MDC.put("MUCR", mucrOptions.mucr)
-          MDC.put("DUCR", associateDucr.ducr)
-          logger.warn(
-            s"Unable to submit Association Consolidation request: MUCR ${mucrOptions.mucr} and DUCR $associateDucr"
-          )
-          MDC.remove("MUCR")
-          MDC.remove("DUCR")
-          errorHandler.getInternalServerErrorPage()
-      }
-    } yield result
+    } yield
+      Redirect(routes.AssociateDucrConfirmationController.displayPage())
+        .flashing(FlashKeys.MUCR -> mucrOptions.mucr)
   }
 }

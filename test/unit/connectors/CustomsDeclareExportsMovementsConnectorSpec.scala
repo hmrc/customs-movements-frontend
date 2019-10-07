@@ -55,8 +55,6 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
     when(httpClientMock.POSTString[HttpResponse](any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(defaultHttpResponse))
-    when(httpClientMock.POST[ConsolidationRequest, HttpResponse](any(), any(), any())(any(), any(), any(), any()))
-      .thenReturn(Future.successful(defaultHttpResponse))
     when(httpClientMock.GET(any())(any(), any(), any())).thenReturn(Future.failed(new NotImplementedError()))
 
     val connector = new CustomsDeclareExportsMovementsConnector(appConfigMock, httpClientMock)
@@ -154,12 +152,16 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
     "call HttpClient for Association" in new Test {
 
+      when(
+        httpClientMock.POST[ConsolidationRequest, ConsolidationRequest](any(), any(), any())(any(), any(), any(), any())
+      ).thenReturn(Future.successful(exampleAssociateDucrRequest))
+
       val result = connector.sendConsolidationRequest(exampleAssociateDucrRequest).futureValue
 
       val expectedUrl =
         s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementConsolidationUri}"
 
-      result must equal(defaultHttpResponse)
+      result must equal(exampleAssociateDucrRequest)
 
       verify(httpClientMock).POST(
         meq(expectedUrl),
@@ -170,12 +172,16 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
     "call HttpClient for Disassociation" in new Test {
 
+      when(
+        httpClientMock.POST[ConsolidationRequest, ConsolidationRequest](any(), any(), any())(any(), any(), any(), any())
+      ).thenReturn(Future.successful(exampleDisassociateDucrRequest))
+
       val result = connector.sendConsolidationRequest(exampleDisassociateDucrRequest).futureValue
 
       val expectedUrl =
         s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementConsolidationUri}"
 
-      result must equal(defaultHttpResponse)
+      result must equal(exampleDisassociateDucrRequest)
 
       verify(httpClientMock).POST(
         meq(expectedUrl),
@@ -186,12 +192,16 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
     "call HttpClient for Shut Mucr " in new Test {
 
+      when(
+        httpClientMock.POST[ConsolidationRequest, ConsolidationRequest](any(), any(), any())(any(), any(), any(), any())
+      ).thenReturn(Future.successful(exampleShutMucrRequest))
+
       val result = connector.sendConsolidationRequest(exampleShutMucrRequest).futureValue
 
       val expectedUrl =
         s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementConsolidationUri}"
 
-      result must equal(defaultHttpResponse)
+      result must equal(exampleShutMucrRequest)
 
       verify(httpClientMock).POST(meq(expectedUrl), meq(exampleShutMucrRequest), meq(validConsolidationRequestHeaders))(
         any(),

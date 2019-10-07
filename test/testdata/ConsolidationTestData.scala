@@ -18,6 +18,7 @@ package testdata
 
 import models.UcrBlock
 import models.external.requests.ConsolidationRequest
+import models.external.requests.ConsolidationType._
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import play.api.http.{ContentTypes, HeaderNames}
 import testdata.CommonTestData._
@@ -28,7 +29,7 @@ object ConsolidationTestData {
   val ValidDucr = "4GB123456789000-123ABC456DEFIIIII"
 
   val exampleAssociateDucrRequest: ConsolidationRequest =
-    ConsolidationRequest("associateDucr", Some(ValidMucr), Some(ValidDucr))
+    ConsolidationRequest(ASSOCIATE_DUCR, Some(ValidMucr), Some(ValidDucr))
 
   val exampleAssociateDucrRequestSubmission: SubmissionFrontendModel = SubmissionFrontendModel(
     eori = validEori,
@@ -38,9 +39,9 @@ object ConsolidationTestData {
   )
 
   val exampleDisassociateDucrRequest: ConsolidationRequest =
-    ConsolidationRequest("disassociateDucr", None, Some(ValidDucr))
+    ConsolidationRequest(DISASSOCIATE_DUCR, None, Some(ValidDucr))
 
-  val exampleShutMucrRequest: ConsolidationRequest = ConsolidationRequest("shutMucr", Some(ValidMucr), None)
+  val exampleShutMucrRequest: ConsolidationRequest = ConsolidationRequest(SHUT_MUCR, Some(ValidMucr), None)
 
   val validConsolidationRequestHeaders: Seq[(String, String)] =
     Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.JSON, HeaderNames.ACCEPT -> ContentTypes.JSON)

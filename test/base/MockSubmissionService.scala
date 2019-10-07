@@ -16,6 +16,7 @@
 
 package base
 
+import models.external.requests.ConsolidationRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.mockito.stubbing.OngoingStubbing
@@ -23,6 +24,7 @@ import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers.ACCEPTED
 import services.SubmissionService
+import testdata.ConsolidationTestData._
 
 import scala.concurrent.Future
 
@@ -34,12 +36,17 @@ trait MockSubmissionService extends MockitoSugar with BeforeAndAfterEach { self:
     when(mockSubmissionService.submitMovementRequest(any(), any(), any())(any()))
       .thenReturn(Future.successful(status))
 
-  def mockShutMucr(status: Int = ACCEPTED): OngoingStubbing[Future[Int]] =
-    when(mockSubmissionService.submitShutMucrRequest(any(), any())(any())).thenReturn(Future.successful(status))
+  def mockShutMucr(
+    shutMucrRequest: ConsolidationRequest = exampleShutMucrRequest
+  ): OngoingStubbing[Future[ConsolidationRequest]] =
+    when(mockSubmissionService.submitShutMucrRequest(any(), any())(any()))
+      .thenReturn(Future.successful(shutMucrRequest))
 
-  def mockDucrAssociation(status: Int = ACCEPTED): OngoingStubbing[Future[Int]] =
+  def mockDucrAssociation(
+    consolidationRequest: ConsolidationRequest = exampleAssociateDucrRequest
+  ): OngoingStubbing[Future[ConsolidationRequest]] =
     when(mockSubmissionService.submitDucrAssociation(any(), any(), any())(any()))
-      .thenReturn(Future.successful(status))
+      .thenReturn(Future.successful(consolidationRequest))
 
   override protected def afterEach(): Unit = {
     reset(mockSubmissionService)

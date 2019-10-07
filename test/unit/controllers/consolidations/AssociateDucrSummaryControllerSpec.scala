@@ -88,21 +88,6 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
       }
     }
 
-    "return 500 (INTERNAL_SERVER_ERROR)" when {
-
-      "submission service return status different than ACCEPTED" in {
-
-        withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
-        withCaching(AssociateDucr.formId, Some(AssociateDucr("DUCR")))
-        mockCustomsCacheServiceClearedSuccessfully()
-        mockDucrAssociation(BAD_REQUEST)
-
-        val result = controller.submit()(postRequest(Json.obj()))
-
-        status(result) mustBe INTERNAL_SERVER_ERROR
-      }
-    }
-
     "throw an IncompleteApplication exception" when {
 
       "Mucr Options is missing during displaying page" in {

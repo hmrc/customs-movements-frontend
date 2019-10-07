@@ -53,16 +53,9 @@ class ShutMucrController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(shutMucrPage(formWithErrors))),
         shutMucr =>
-          submissionService.submitShutMucrRequest(shutMucr, request.user.eori).map {
-            case ACCEPTED =>
-              Redirect(routes.ShutMucrConfirmationController.displayPage())
-                .flashing(Flash(Map(FlashKeys.MUCR -> shutMucr.mucr)))
-            case _ =>
-              val mucr = shutMucr.mucr
-              MDC.put("MUCR", mucr)
-              logger.warn(s"Unable to submit Shut a Mucr Consolidation request. MUCR $mucr")
-              MDC.remove("MUCR")
-              errorHandler.getInternalServerErrorPage()
+          submissionService.submitShutMucrRequest(shutMucr, request.user.eori).map { _ =>
+            Redirect(routes.ShutMucrConfirmationController.displayPage())
+              .flashing(Flash(Map(FlashKeys.MUCR -> shutMucr.mucr)))
         }
       )
   }

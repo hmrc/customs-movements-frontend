@@ -17,6 +17,7 @@
 package unit.models.external.requests
 
 import models.external.requests.ConsolidationRequest
+import models.external.requests.ConsolidationType._
 import models.external.requests.ConsolidationRequestFactory._
 import unit.base.UnitSpec
 
@@ -29,21 +30,21 @@ class ConsolidationRequestFactorySpec extends UnitSpec {
 
     "build correct Association request" in {
 
-      val expectedAssociationRequest = ConsolidationRequest("associateDucr", Some(mucr), Some(ducr))
+      val expectedAssociationRequest = ConsolidationRequest(ASSOCIATE_DUCR, Some(mucr), Some(ducr))
 
       buildAssociationRequest(mucr, ducr) mustBe expectedAssociationRequest
     }
 
     "build correct Disassociation request" in {
 
-      val expectedDisassociateRequest = ConsolidationRequest("disassociateDucr", None, Some(ducr))
+      val expectedDisassociateRequest = ConsolidationRequest(DISASSOCIATE_DUCR, None, Some(ducr))
 
       buildDisassociationRequest(ducr) mustBe expectedDisassociateRequest
     }
 
     "build correct Shut Mucr request" in {
 
-      val expectedShutMucrRequest = ConsolidationRequest("shutMucr", Some(mucr), None)
+      val expectedShutMucrRequest = ConsolidationRequest(SHUT_MUCR, Some(mucr), None)
 
       buildShutMucrRequest(mucr) mustBe expectedShutMucrRequest
     }

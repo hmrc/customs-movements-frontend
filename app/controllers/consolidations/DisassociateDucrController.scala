@@ -53,15 +53,9 @@ class DisassociateDucrController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(disassociateDucrPage(formWithErrors))),
         formData =>
-          submissionService.submitDucrDisassociation(formData, request.user.eori).map {
-            case ACCEPTED =>
-              Redirect(routes.DisassociateDucrConfirmationController.displayPage())
-                .flashing(FlashKeys.DUCR -> formData.ducr)
-            case _ =>
-              MDC.put("DUCR", formData.ducr)
-              logger.warn(s"Unable to submit DUCR Disassociation request. DUCR ${formData.ducr}")
-              MDC.remove("DUCR")
-              errorHandler.getInternalServerErrorPage()
+          submissionService.submitDucrDisassociation(formData, request.user.eori).map { _ =>
+            Redirect(routes.DisassociateDucrConfirmationController.displayPage())
+              .flashing(FlashKeys.DUCR -> formData.ducr)
         }
       )
   }

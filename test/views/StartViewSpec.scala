@@ -54,8 +54,10 @@ class StartViewSpec extends UnitViewSpec {
 
     val view = createView()
 
-    "display title" in {
-      view.select("title").text() mustBe "startPage.title"
+    "display same page title as header" in {
+
+      val view = page()(request, messagesApi.preferred(request))
+      view.title() must include(view.getElementsByTag("h1").text())
     }
 
     "display section header" in {

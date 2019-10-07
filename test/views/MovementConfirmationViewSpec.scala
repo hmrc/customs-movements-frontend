@@ -18,10 +18,8 @@ package views
 
 import controllers.routes
 import forms.Choice.{Arrival, Departure}
-import play.api.i18n.MessagesApi
-import utils.{Injector, Stubs}
-import views.spec.UnitViewSpec
 import views.html.movement_confirmation_page
+import views.spec.UnitViewSpec
 
 class MovementConfirmationViewSpec extends UnitViewSpec {
 
@@ -35,8 +33,8 @@ class MovementConfirmationViewSpec extends UnitViewSpec {
 
       val messages = messagesApi.preferred(request)
 
-      messages("movement.arrival.confirmation") mustBe "Arrival confirmation"
-      messages("movement.departure.confirmation") mustBe "Departure confirmation"
+      messages("movement.arrival.confirmation") mustBe "Arrival has been submitted"
+      messages("movement.departure.confirmation") mustBe "Departure has been submitted"
       messages("movement.choice.arrival.label") mustBe "Arrival"
       messages("movement.choice.departure.label") mustBe "Departure"
       messages("site.backToStartPage") mustBe "Back to start page"
@@ -45,16 +43,17 @@ class MovementConfirmationViewSpec extends UnitViewSpec {
 
   "Arrival Confirmation Page" should {
 
-    "have title" in {
+    "display same page title as header" in {
 
-      arrivalConfirmationView.getElementsByTag("title").text() mustBe messages("movement.arrival.confirmation")
+      val view = movementConfirmationPage(Arrival)(request, messagesApi.preferred(request))
+      view.title() must include(view.getElementsByTag("h1").text())
     }
 
     "have heading" in {
 
       arrivalConfirmationView.getElementById("highlight-box-heading").text() mustBe messages(
-        "movement.choice.arrival.label"
-      ) + " has been submitted"
+        "movement.arrival.confirmation"
+      )
     }
 
     "have back button" in {
@@ -68,16 +67,17 @@ class MovementConfirmationViewSpec extends UnitViewSpec {
 
   "Departure Confirmation Page" should {
 
-    "have title" in {
+    "display same page title as header" in {
 
-      departureConfirmationView.getElementsByTag("title").text() mustBe messages("movement.departure.confirmation")
+      val view = movementConfirmationPage(Departure)(request, messagesApi.preferred(request))
+      view.title() must include(view.getElementsByTag("h1").text())
     }
 
     "have heading" in {
 
       departureConfirmationView.getElementById("highlight-box-heading").text() mustBe messages(
-        "movement.choice.departure.label"
-      ) + " has been submitted"
+        "movement.departure.confirmation"
+      )
     }
 
     "have back button" in {

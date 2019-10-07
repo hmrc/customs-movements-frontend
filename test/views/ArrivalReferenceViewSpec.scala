@@ -21,6 +21,7 @@ import forms.ArrivalReference
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
+import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.{Injector, Stubs}
 import views.spec.UnitViewSpec
 import views.html.arrival_reference
@@ -46,9 +47,10 @@ class ArrivalReferenceViewSpec extends UnitViewSpec {
 
   "Arrival Reference page" should {
 
-    "have title" in {
+    "display same page title as header" in {
 
-      createView().getElementsByTag("title").text() mustBe messages("arrivalReference")
+      val view = arrivalReferencePage(ArrivalReference.form)(request, messagesApi.preferred(request))
+      view.title() must include(view.getElementsByTag("h1").text())
     }
 
     "have question" in {

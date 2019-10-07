@@ -17,12 +17,13 @@
 @import controllers.routes
 @import uk.gov.hmrc.play.views.html._
 @import controllers.storage.FlashKeys
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
- @main_template(title = messages("associateDucrConfirmation.title")) {
+ @main_template(title = Title("associateDucrConfirmation.title")) {
 
   @components.highlight_box_with_reference(
    headingText = messages("associateDucrConfirmation.title"),

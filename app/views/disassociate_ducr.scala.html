@@ -15,12 +15,13 @@
  *@
 
 @import forms.DisassociateDucr
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(form: Form[DisassociateDucr])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = messages("disassociateDucr.title")) {
+@main_template(title = Title("disassociateDucr.title")) {
     @helper.form(consolidations.routes.DisassociateDucrController.submit(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 

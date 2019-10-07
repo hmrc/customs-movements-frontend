@@ -1,3 +1,10 @@
+service.name=Customs Movements Service
+
+title.format={0} - {1} - GOV.UK
+title.withSection.format={0} - {1} - {2} - GOV.UK
+
+
+
 date.day = Day
 date.month = Month
 date.year = Year
@@ -101,8 +108,8 @@ arrivals.title = Arrivals
 arrivals.heading = Arrivals
 arrivals.ducr = DUCR
 
-movement.arrival.confirmation = Arrival confirmation
-movement.departure.confirmation = Departure confirmation
+movement.arrival.confirmation = Arrival has been submitted
+movement.departure.confirmation = Departure has been submitted
 movement.arrival.title = Arrival
 movement.arrival.heading = Arrival
 movement.departure.title = Departure

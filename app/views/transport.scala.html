@@ -21,6 +21,7 @@
 @import forms.Transport
 @import forms.Transport.ModesOfTransport._
 @import views.components.fields.RadioOption
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
@@ -28,7 +29,7 @@
 
 @radio(mode: String) = { RadioOption(mode, mode, Transport.messageKey(mode)) }
 
-@main_template(title = messages("transport.title")) {
+@main_template(title = Title("transport.title")) {
     @helper.form(routes.TransportController.saveTransport(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 

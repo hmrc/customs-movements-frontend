@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import views.Title
+package views
 
-@this(main_template: views.html.main_template)
+import play.api.i18n.Messages
 
-@()(implicit request: Request[_], messages: Messages)
+case class Title(headingKey: String, sectionKey: String = "") {
 
-@main_template(title = Title("unauthorised.title")) {
-
-    @components.error_heading("unauthorised.title")
-
+  def toString(implicit messages: Messages): String =
+    if (sectionKey.isEmpty) {
+      messages("title.format", messages(headingKey), messages("service.name"))
+    } else {
+      messages("title.withSection.format", messages(headingKey), messages(sectionKey), messages("service.name"))
+    }
 }

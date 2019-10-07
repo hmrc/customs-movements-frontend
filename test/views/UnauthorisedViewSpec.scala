@@ -18,6 +18,7 @@ package views
 
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
+import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.{Injector, Stubs}
 import views.spec.UnitViewSpec
 import views.html.unauthorised
@@ -39,9 +40,10 @@ class UnauthorisedViewSpec extends UnitViewSpec {
 
   "Unauthorised page" should {
 
-    "have title" in {
+    "display same page title as header" in {
 
-      unauthorisedView.getElementsByTag("title").text() mustBe messages("unauthorised.title")
+      val view = unauthorisedPage()(request, messagesApi.preferred(request))
+      view.title() must include(view.getElementsByTag("h1").text())
     }
 
     "have heading" in {

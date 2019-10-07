@@ -64,9 +64,10 @@ class DepartureSummaryViewSpec extends UnitViewSpec {
 
   "Departure Summary Page" should {
 
-    "have correct title" in {
+    "display same page title as header" in {
 
-      departureSummaryViewOut.getElementsByTag("title").text() mustBe messages("summary.title")
+      val view = departureSummaryPage(CacheMap("id", cachedDataOutOfUk))(request, messagesApi.preferred(request))
+      view.title() must include(view.getElementsByTag("h1").text())
     }
 
     "have correct heading" in {

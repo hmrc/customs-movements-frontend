@@ -38,26 +38,26 @@
     <div class="column-full">
 
       <p id="contents">@messages("startPage.contents.header")</p>
-      <ul class="dashed-list">
-        <li id="contents-element-1" class="dashed-list-item"><a href="#before-you-start">@messages("startPage.beforeYouStart.header")</a></li>
-        <li id="contents-element-2" class="dashed-list-item"><a href="#information-you-need">@messages("startPage.informationYouNeed.header")</a></li>
-        <li id="contents-element-3" class="dashed-list-item"><a href="#report-your-arrival-and-departure">@messages("startPage.reportYourArrivalAndDeparture.header")</a></li>
+      <ul id="contents-list" class="dashed-list">
+        <li class="dashed-list-item"><a href="#before-you-start">@messages("startPage.beforeYouStart.header")</a></li>
+        <li class="dashed-list-item"><a href="#information-you-need">@messages("startPage.informationYouNeed.header")</a></li>
+        <li class="dashed-list-item"><a href="#report-your-arrival-and-departure">@messages("startPage.reportYourArrivalAndDeparture.header")</a></li>
       </ul>
 
       <h2 id="before-you-start" class="heading-medium">@messages("startPage.beforeYouStart.header")</h2>
-      <p id="before-you-start-line-1">
+      <p id="before-you-start-element-1">
         @messages("startPage.beforeYouStart.line.1") <a href=@{appConfig.customsDeclarationsGoodsTakenOutOfEuUrl}>@messages("startPage.beforeYouStart.line.1.link")</a>
       </p>
-      <p id="before-you-start-line-2">@messages("startPage.beforeYouStart.line.2")</p>
-      <p id="before-you-start-line-3">@messages("startPage.beforeYouStart.line.3")</p>
+      <p id="before-you-start-element-2">@messages("startPage.beforeYouStart.line.2")</p>
+      <p id="before-you-start-element-3">@messages("startPage.beforeYouStart.line.3")</p>
 
       <h2 id="information-you-need" class="heading-medium">@messages("startPage.informationYouNeed.header")</h2>
-      <p id="information-you-need-line-1">@messages("startPage.informationYouNeed.line.1")</p>
-      <ul class="list list-bullet">
-        <li id="information-you-need-listItem-1">@messages("startPage.informationYouNeed.listItem.1")</li>
-        <li id="information-you-need-listItem-2">@messages("startPage.informationYouNeed.listItem.2")</li>
-        <li id="information-you-need-listItem-3">@messages("startPage.informationYouNeed.listItem.3")</li>
-        <li id="information-you-need-listItem-4">@messages("startPage.informationYouNeed.listItem.4")</li>
+      <p id="information-you-need-element-1">@messages("startPage.informationYouNeed.line.1")</p>
+      <ul id="information-you-need-list" class="list list-bullet">
+        <li>@messages("startPage.informationYouNeed.listItem.1")</li>
+        <li>@messages("startPage.informationYouNeed.listItem.2")</li>
+        <li>@messages("startPage.informationYouNeed.listItem.3")</li>
+        <li>@messages("startPage.informationYouNeed.listItem.4")</li>
       </ul>
 
       <h2 id="report-your-arrival-and-departure" class="heading-medium">@messages("startPage.reportYourArrivalAndDeparture.header")</h2>
@@ -73,7 +73,7 @@
         @messages("startPage.buttonName")
       </a>
 
-      <div class="back-to-top-panel">
+      <div class="mt-5">
         <p id="back-to-top">
           <a href="#contents">
             <svg class="app-c-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">

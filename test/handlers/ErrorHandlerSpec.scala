@@ -57,6 +57,15 @@ class ErrorHandlerSpec extends MovementBaseSpec {
       result must include(messages("global.error.heading"))
       result must include(messages("global.error.message"))
     }
+
+    "return Internal Server Error page" in {
+
+      val result = contentAsString(Future.successful(errorHandler.getInternalServerErrorPage()(FakeRequest())))
+
+      result must include(messages("global.error.title"))
+      result must include(messages("global.error.heading"))
+      result must include(messages("global.error.message"))
+    }
   }
   "resolve error" should {
 

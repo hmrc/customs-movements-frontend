@@ -68,9 +68,9 @@ class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
     super.beforeEach()
 
     authorizedUser()
-    when(customsExportsMovementsConnectorMock.fetchSingleSubmission(any())(any(), any()))
+    when(customsExportsMovementsConnectorMock.fetchSingleSubmission(any())(any()))
       .thenReturn(Future.successful(Some(expectedSubmission)))
-    when(customsExportsMovementsConnectorMock.fetchNotifications(any())(any(), any()))
+    when(customsExportsMovementsConnectorMock.fetchNotifications(any())(any()))
       .thenReturn(Future.successful(expectedNotifications))
     when(notificationPageSingleElementFactoryMock.build(any[SubmissionFrontendModel])(any()))
       .thenReturn(singleElementForSubmission)
@@ -93,14 +93,14 @@ class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
 
         controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
 
-        verify(customsExportsMovementsConnectorMock).fetchSingleSubmission(meq(conversationId))(any(), any())
+        verify(customsExportsMovementsConnectorMock).fetchSingleSubmission(meq(conversationId))(any())
       }
 
       "call CustomsExportsMovementsConnector.fetchNotifications, passing conversation ID provided" in {
 
         controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
 
-        verify(customsExportsMovementsConnectorMock).fetchNotifications(meq(conversationId))(any(), any())
+        verify(customsExportsMovementsConnectorMock).fetchNotifications(meq(conversationId))(any())
       }
 
       "call NotificationPageSingleElementFactory, passing models returned by Connector" in {
@@ -151,7 +151,7 @@ class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
 
       "redirect back to movements" in {
 
-        when(customsExportsMovementsConnectorMock.fetchSingleSubmission(any())(any(), any()))
+        when(customsExportsMovementsConnectorMock.fetchSingleSubmission(any())(any()))
           .thenReturn(
             Future.successful(
               Some(

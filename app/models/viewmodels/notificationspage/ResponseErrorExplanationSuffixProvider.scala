@@ -18,16 +18,14 @@ package models.viewmodels.notificationspage
 
 import config.AppConfig
 import javax.inject.Inject
-import models.viewmodels.notificationspage.ResponseErrorExplanationMode._
 
-class ResponseErrorExplanationSwitch @Inject()(appConfig: AppConfig) {
+class ResponseErrorExplanationSuffixProvider @Inject()(appConfig: AppConfig) {
 
-  private val DefaultMode = Exports
+  private val DefaultSuffix = ".Exports"
 
-  def getResponseErrorExplanationMode: ResponseErrorExplanationMode =
-    appConfig.responseErrorExplanationMode match {
-      case "CDS" => CDS
-      case "Exports" => Exports
-      case _ => DefaultMode
-    }
+  lazy val suffix: String = appConfig.responseErrorExplanationMode match {
+    case "CDS"     => ".CDS"
+    case "Exports" => ".Exports"
+    case _         => DefaultSuffix
+  }
 }

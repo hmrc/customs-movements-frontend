@@ -18,15 +18,14 @@ package models.viewmodels.notificationspage
 
 import base.BaseSpec
 import config.AppConfig
-import models.viewmodels.notificationspage.ResponseErrorExplanationMode._
 import org.mockito.Mockito
 import org.scalatestplus.mockito.MockitoSugar
 
-class ResponseErrorExplanationSwitchSpec extends BaseSpec with MockitoSugar {
+class ResponseErrorExplanationSuffixProviderSpec extends BaseSpec with MockitoSugar {
 
   private trait Test {
     val appConfig = mock[AppConfig]
-    val switch = new ResponseErrorExplanationSwitch(appConfig)
+    val provider = new ResponseErrorExplanationSuffixProvider(appConfig)
   }
 
   "Response Error Explanation Switch" should {
@@ -35,21 +34,21 @@ class ResponseErrorExplanationSwitchSpec extends BaseSpec with MockitoSugar {
 
       Mockito.when(appConfig.responseErrorExplanationMode).thenReturn("CDS")
 
-      switch.getResponseErrorExplanationMode mustBe CDS
+      provider.suffix mustBe ".CDS"
     }
 
     "return Exports when response-error-explanation-mode is set to Exports in config" in new Test {
 
       Mockito.when(appConfig.responseErrorExplanationMode).thenReturn("Exports")
 
-      switch.getResponseErrorExplanationMode mustBe Exports
+      provider.suffix mustBe ".Exports"
     }
 
     "return Exports for any other value" in new Test {
 
       Mockito.when(appConfig.responseErrorExplanationMode).thenReturn("OtherValue")
 
-      switch.getResponseErrorExplanationMode mustBe Exports
+      provider.suffix mustBe ".Exports"
     }
   }
 

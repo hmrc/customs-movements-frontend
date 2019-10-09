@@ -35,7 +35,7 @@ object CHIEFError {
   private val sourcePath = "code_lists/chief_errors.csv"
 
   def apply(list: List[String]): CHIEFError = list match {
-    case code :: description :: Nil => CHIEFError(code, description)
+    case code :: messageKey :: Nil => CHIEFError(code, messageKey + ".CDS")
     case error =>
       logger.warn(s"Record in ILE errors config file [$sourcePath] is incorrect: " + error)
       throw new IllegalArgumentException("Errors file has incorrect structure")

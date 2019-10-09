@@ -20,7 +20,7 @@ import unit.base.UnitSpec
 
 class CHIEFErrorSpec extends UnitSpec {
 
-  val expectedCHIEFError = CHIEFError("E408", "Unique Consignment reference does not exist")
+  val expectedCHIEFError = CHIEFError("E408", "error.chief.UcrNotExist.CDS")
 
   "CHIEF Error" should {
 
@@ -52,7 +52,7 @@ class CHIEFErrorSpec extends UnitSpec {
 
     "create CHIEF error based on list with 2 strings" in {
 
-      val correctCHIEFError = List("E408", "Unique Consignment reference does not exist")
+      val correctCHIEFError = List("E408", "error.chief.UcrNotExist")
 
       CHIEFError(correctCHIEFError) mustBe expectedCHIEFError
     }

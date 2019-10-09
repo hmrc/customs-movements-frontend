@@ -34,8 +34,8 @@ object ILEError {
   private val logger = Logger(this.getClass)
   private val sourcePath = "code_lists/ile_errors.csv"
 
-  def apply(codeWithDescription: List[String]): ILEError = codeWithDescription match {
-    case code :: description :: Nil => ILEError(code, description)
+  def apply(rawCodeAndMessageKey: List[String]): ILEError = rawCodeAndMessageKey match {
+    case code :: messageKey :: Nil => ILEError(code, messageKey + ".CDS")
     case error =>
       logger.warn(s"Record in ILE errors config file [$sourcePath] is incorrect: " + error)
       throw new IllegalArgumentException("Errors file has incorrect structure")

@@ -79,6 +79,8 @@ class AppConfig @Inject()(
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports fetch notifications URI")
   )
 
+  lazy val responseErrorExplanationMode = loadConfig("microservice.services.features.response-error-explanation-mode")
+
   lazy val languageTranslationEnabled =
     runModeConfiguration
       .getOptional[Boolean]("microservice.services.features.welsh-translation")

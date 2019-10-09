@@ -49,6 +49,7 @@ class AppConfigSpec extends MovementBaseSpec {
         |microservice.services.nrs.apikey=cds-exports
         |microservice.services.features.default=disabled
         |microservice.services.features.welsh-translation=false
+        |microservice.services.features.response-error-explanation-mode=CDS
         |microservice.services.auth.port=9988
         |
         |microservice.services.customs-declare-exports-movements.host=localhost
@@ -103,6 +104,10 @@ class AppConfigSpec extends MovementBaseSpec {
     // what is continue URL - redirect ?
     "have login continue URL" in {
       validConfigService.loginContinueUrl must be("http://localhost:9000/customs-declare-exports-frontend")
+    }
+
+    "have response error explanation mode field" in {
+      validConfigService.responseErrorExplanationMode must be("CDS")
     }
 
     "have language translation enabled field" in {

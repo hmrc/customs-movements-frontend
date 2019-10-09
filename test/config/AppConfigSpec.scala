@@ -49,7 +49,7 @@ class AppConfigSpec extends MovementBaseSpec {
         |microservice.services.nrs.apikey=cds-exports
         |microservice.services.features.default=disabled
         |microservice.services.features.welsh-translation=false
-        |microservice.services.features.response-error-explanation-mode=CDS
+        |microservice.services.features.response-error-explanation-mode=Exports
         |microservice.services.auth.port=9988
         |
         |microservice.services.customs-declare-exports-movements.host=localhost
@@ -107,7 +107,7 @@ class AppConfigSpec extends MovementBaseSpec {
     }
 
     "have response error explanation mode field" in {
-      validConfigService.responseErrorExplanationMode must be("CDS")
+      validConfigService.responseErrorExplanationMode must be("Exports")
     }
 
     "have language translation enabled field" in {

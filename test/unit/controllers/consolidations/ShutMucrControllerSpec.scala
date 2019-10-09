@@ -87,7 +87,7 @@ class ShutMucrControllerSpec extends ControllerSpec with MockSubmissionService w
 
         mockShutMucr()
 
-        val correctForm = Json.toJson(ShutMucr("8GB12345612345612345"))
+        val correctForm = Json.toJson(ShutMucr("MUCR-123456"))
 
         val result = controller.submitForm()(postRequest(correctForm))
 

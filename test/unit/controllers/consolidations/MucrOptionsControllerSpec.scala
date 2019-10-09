@@ -29,6 +29,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import testdata.CommonTestData
+import testdata.ConsolidationTestData.ValidMucr
 import unit.base.ControllerSpec
 import views.html.mucr_options
 
@@ -117,7 +118,7 @@ class MucrOptionsControllerSpec extends ControllerSpec with OptionValues {
         withCaching(MucrOptions.formId, None)
         withCaching(MucrOptions.formId)
 
-        val correctForm = Json.toJson(MucrOptions("8GB12345612345612345", "", Create))
+        val correctForm = Json.toJson(MucrOptions(ValidMucr, "", Create))
 
         val result = controller.save()(postRequest(correctForm))
 

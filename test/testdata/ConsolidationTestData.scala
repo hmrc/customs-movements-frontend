@@ -25,8 +25,8 @@ import testdata.CommonTestData._
 
 object ConsolidationTestData {
 
-  val ValidMucr = "5GB123456789000-123ABC456DEFIIIII"
-  val ValidDucr = "4GB123456789000-123ABC456DEFIIIII"
+  val ValidMucr = "GB1234567890123-MUCR"
+  val ValidDucr = "4GB123456789000-DUCR"
 
   val exampleAssociateDucrRequest: ConsolidationRequest =
     ConsolidationRequest(ASSOCIATE_DUCR, Some(ValidMucr), Some(ValidDucr))

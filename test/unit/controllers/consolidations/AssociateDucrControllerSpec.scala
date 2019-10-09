@@ -18,6 +18,7 @@ package unit.controllers.consolidations
 
 import controllers.consolidations.{routes, AssociateDucrController}
 import controllers.exception.IncompleteApplication
+import controllers.storage.CacheIdGenerator._
 import forms.Choice.AssociateDUCR
 import forms.{AssociateDucr, Choice, MucrOptions}
 import org.mockito.ArgumentCaptor
@@ -27,10 +28,10 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import testdata.ConsolidationTestData.ValidDucr
 import uk.gov.hmrc.http.cache.client.CacheMap
 import unit.base.ControllerSpec
 import views.html.associate_ducr
-import controllers.storage.CacheIdGenerator._
 
 import scala.concurrent.ExecutionContext.global
 
@@ -140,9 +141,9 @@ class AssociateDucrControllerSpec extends ControllerSpec {
 
         withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
 
-        val validMUCR = Json.toJson(AssociateDucr("8GB12345612345612345"))
+        val validDUCR = Json.toJson(AssociateDucr(ValidDucr))
 
-        val result = controller.submit()(postRequest(validMUCR))
+        val result = controller.submit()(postRequest(validDUCR))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(routes.AssociateDucrSummaryController.displayPage().url)

@@ -16,6 +16,7 @@
 
 package forms
 
+import forms.ConsignmentReferences.AllowedReferences.{Ducr, Mucr}
 import forms.Mapping.requiredRadio
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
@@ -38,14 +39,41 @@ object ConsignmentReferences {
 
   val allowedReferenceAnswers: Seq[String] = Seq(Ducr, Mucr)
 
-  val mapping = Forms.mapping(
-    "reference" -> requiredRadio("consignmentReferences.reference.empty")
-      .verifying("consignmentReferences.reference.error", isContainedIn(allowedReferenceAnswers)),
-    "referenceValue" -> text()
-      .verifying("consignmentReferences.reference.value.empty", nonEmpty)
-      .verifying("consignmentReferences.reference.value.error", isEmpty or validDucrOrMucr)
-  )(ConsignmentReferences.apply)(ConsignmentReferences.unapply)
+  val mapping = Forms
+    .mapping(
+      "reference" -> requiredRadio("consignmentReferences.reference.empty")
+        .verifying("consignmentReferences.reference.error", isContainedIn(allowedReferenceAnswers)),
+      "referenceValue" -> text()
+        .verifying("consignmentReferences.reference.value.empty", nonEmpty)
+    )(ConsignmentReferences.apply)(ConsignmentReferences.unapply)
 
   def form(): Form[ConsignmentReferences] = Form(mapping)
 
+}
+
+object ConsignmentReferencesForm {
+
+  def bindFromRequest(implicit request: play.api.mvc.Request[_]) = {
+    val baseForm = ConsignmentReferences.form().bindFromRequest
+
+    if (baseForm.errors.nonEmpty) {
+      baseForm
+    } else {
+      baseForm.value
+        .map(
+          reference =>
+            if (referenceValid(reference)) { baseForm } else {
+              baseForm.withError("referenceValue", "consignmentReferences.reference.value.error")
+          }
+        )
+        .getOrElse(baseForm)
+    }
+  }
+
+  private def referenceValid(ref: ConsignmentReferences): Boolean =
+    ref.reference match {
+      case Ducr => validDucr(ref.referenceValue)
+      case Mucr => validMucr(ref.referenceValue)
+      case _    => false
+    }
 }

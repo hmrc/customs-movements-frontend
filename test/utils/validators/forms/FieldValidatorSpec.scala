@@ -727,4 +727,122 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
+  "FormFieldValidator validMucr" should {
+
+    /*
+    For reference:
+    MUCR (type "M")(Format an..35) - All alphas used must be upper case - First character to be an alpha character.
+    MINIMUM entry allowed must be 1 alpha character.  Post the first alpha character, any character is allowed
+    but any alphas must be upper case.
+     */
+
+    "return false" when {
+      "does not start with alpha" in {
+        validMucr("1MUCR") must be(false)
+      }
+      "longer than 35 characters" in {
+        validMucr("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") must be(false)
+      }
+      "contains lower-case alpha" in {
+        validMucr("INVALId") must be(false)
+      }
+    }
+
+    "return true" when {
+      "is single upper-case alpha" in {
+        validMucr("A") must be(true)
+      }
+      "contains numbers" in {
+        validMucr("VAL1D") must be(true)
+      }
+      "contains dash" in {
+        validMucr("VALID-MUCR") must be(true)
+      }
+      "contains forward-slash" in {
+        validMucr("""VALID/MUCR""") must be(true)
+      }
+      "contains dot" in {
+        validMucr("VALID.MUCR") must be(true)
+      }
+      "contains comma" in {
+        validMucr("VALID,MUCR") must be(true)
+      }
+      "contains parentheses" in {
+        validMucr("VALID(MUCR)") must be(true)
+      }
+      "contains space" in {
+        validMucr("VALID MUCR") must be(true)
+      }
+      "contains apostrophe" in {
+        validMucr("IT'SVALID") must be(true)
+      }
+    }
+  }
+
+  "FormFieldValidator validDucr" should {
+
+    /*
+    For reference:
+    DUCR (type "D")(Format an..35) All alphas used must be upper case
+    - First character to be a number
+    - Second and Third character to be alpha (upper case only)
+    - 4th to 15th characters must be numeric
+    - 16th digit to be a hyphen
+    - Post the hyphen any character is allowed but any alphas must be upper case.
+    The MINIMUM entry allowed must be up to and including the 16th digit hyphen, so an example would be '9GB123456789012-'
+     */
+
+    "return false" when {
+      "first character not a number" in {
+        validDucr("GBR123456789012-") must be(false)
+      }
+      "second character not upper alpha" in {
+        validDucr("91R123456789012-") must be(false)
+        validDucr("9gB123456789012-") must be(false)
+      }
+      "third character not upper alpha" in {
+        validDucr("9G0123456789012-") must be(false)
+        validDucr("9Gb123456789012-") must be(false)
+      }
+      "fourth to fifteenth character not numeric" in {
+        validDucr("9GB123A56789012-") must be(false)
+      }
+      "hyphen is not 16th character" in {
+        validDucr("9GB123456789012INVALID") must be(false)
+      }
+      "post-hyphen contains lower case alpha" in {
+        validDucr("9GB123456789012-INVALiD") must be(false)
+      }
+    }
+
+    "return true" when {
+      "is minimum acceptable example" in {
+        validDucr("9GB123456789012-") must be(true)
+      }
+      "post-hyphen contains numbers" in {
+        validDucr("9GB123456789012-VAL1D") must be(true)
+      }
+      "post-hyphen contains dash" in {
+        validDucr("9GB123456789012-VALID-MUCR") must be(true)
+      }
+      "post-hyphen contains forward-slash" in {
+        validDucr("""9GB123456789012-VALID/MUCR""") must be(true)
+      }
+      "post-hyphen contains dot" in {
+        validDucr("9GB123456789012-VALID.MUCR") must be(true)
+      }
+      "post-hyphen contains comma" in {
+        validDucr("9GB123456789012-VALID,MUCR") must be(true)
+      }
+      "post-hyphen contains parentheses" in {
+        validDucr("9GB123456789012-VALID(MUCR)") must be(true)
+      }
+      "post-hyphen contains space" in {
+        validDucr("9GB123456789012-VALID MUCR") must be(true)
+      }
+      "post-hyphen contains apostrophe" in {
+        validDucr("9GB123456789012-IT'SVALID") must be(true)
+      }
+    }
+  }
 }

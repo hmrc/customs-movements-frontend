@@ -59,7 +59,7 @@ object MucrOptions {
   val form: Form[MucrOptions] = Form(mapping)
 
   def validateForm(form: Form[MucrOptions]): Form[MucrOptions] =
-    if (form.value.exists(op => validDucrOrMucr(op.mucr))) {
+    if (form.value.exists(op => validMucr(op.mucr))) {
       form
     } else {
       val errorField = form.value.map(_.createOrAdd) match {

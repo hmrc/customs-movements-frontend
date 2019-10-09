@@ -20,7 +20,7 @@ import unit.base.UnitSpec
 
 class CHIEFErrorSpec extends UnitSpec {
 
-  val expectedCHIEFError = CHIEFError("E408", "error.chief.UcrNotExist.CDS")
+  val expectedCHIEFError = CHIEFError("E408", "error.chief.UcrNotExist")
 
   "CHIEF Error" should {
 

@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
 import models.notifications.NotificationFrontendModel
-import models.viewmodels.decoder.{CodeWithMessageKey, Decoder}
+import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.{NotificationsPageSingleElement, ResponseErrorExplanationSuffixProvider}
 import play.api.Logger
 import play.api.i18n.Messages
@@ -68,12 +68,12 @@ class ControlResponseRejectedConverter @Inject()(
 
   // TODO move logging for missing error codes to backend
   private def getErrorExplanationText(errorCode: String)(implicit messages: Messages): Option[String] =
-    decoder.error(errorCode).map(getExplanationFromMessages).orElse {
-      logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $errorCode")
-      None
-    }
-
-  private def getExplanationFromMessages(code: CodeWithMessageKey)(implicit messages: Messages): String =
-    messages(code.messageKey + suffixProvider.suffix)
+    decoder
+      .error(errorCode)
+      .map(code => messages(suffixProvider.addSuffixTo(code.messageKey)))
+      .orElse {
+        logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $errorCode")
+        None
+      }
 
 }

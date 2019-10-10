@@ -28,16 +28,14 @@ class ResponseErrorExplanationSuffixProvider @Inject()(appConfig: AppConfig) {
   private val AllowedConfigValues = Set("CDS", "Exports")
   private val DefaultSuffix = "Exports"
 
-  lazy val suffix: String = {
+  def addSuffixTo(key: String): String = {
     val mode = appConfig.responseErrorExplanationMode
 
     AllowedConfigValues.find(_ == mode) match {
-      case Some(configValue) => s".$configValue"
+      case Some(configValue) => s"$key.$configValue"
       case None =>
-        logger.info(
-          s"Unknown value for configuration key 'microservice.services.features.response-error-explanation-mode': $mode"
-        )
-        s".$DefaultSuffix"
+        logger.info(s"Unknown value for configuration key 'microservice.services.features.response-error-explanation-mode': $mode")
+        s"$key.$DefaultSuffix"
     }
   }
 

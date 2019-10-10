@@ -33,22 +33,25 @@ class ResponseErrorExplanationSuffixProviderSpec extends BaseSpec with MockitoSu
     "return CDS when response-error-explanation-mode is set to CDS in config" in new Test {
 
       when(appConfig.responseErrorExplanationMode).thenReturn("CDS")
+      val key = "messages.key"
 
-      provider.suffix mustBe ".CDS"
+      provider.addSuffixTo(key) mustBe "messages.key.CDS"
     }
 
     "return Exports when response-error-explanation-mode is set to Exports in config" in new Test {
 
       when(appConfig.responseErrorExplanationMode).thenReturn("Exports")
+      val key = "messages.key"
 
-      provider.suffix mustBe ".Exports"
+      provider.addSuffixTo(key) mustBe "messages.key.Exports"
     }
 
     "return Exports for any other value" in new Test {
 
       when(appConfig.responseErrorExplanationMode).thenReturn("OtherValue")
+      val key = "messages.key"
 
-      provider.suffix mustBe ".Exports"
+      provider.addSuffixTo(key) mustBe "messages.key.Exports"
     }
   }
 

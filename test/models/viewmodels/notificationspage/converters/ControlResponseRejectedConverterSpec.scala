@@ -21,7 +21,7 @@ import models.notifications.ResponseType
 import models.viewmodels.decoder.{ActionCode, Decoder, ILEError}
 import models.viewmodels.notificationspage.ResponseErrorExplanationSuffixProvider
 import modules.DateTimeFormatterModule.NotificationsPageFormatter
-import org.mockito.ArgumentMatchers.{anyString, eq => meq}
+import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
@@ -41,7 +41,7 @@ class ControlResponseRejectedConverterSpec extends BaseSpec with MockitoSugar {
     when(decoder.error(anyString)).thenReturn(Some(ILEError("CODE", "Messages.Key")))
 
     val suffixProvider = mock[ResponseErrorExplanationSuffixProvider]
-    when(suffixProvider.suffix).thenReturn(".Suffix")
+    when(suffixProvider.addSuffixTo(any())).thenReturn("Messages.Key.Suffix")
 
     val converter = new ControlResponseRejectedConverter(decoder, NotificationsPageFormatter, suffixProvider)
   }
@@ -97,7 +97,7 @@ class ControlResponseRejectedConverterSpec extends BaseSpec with MockitoSugar {
 
         converter.convert(input)
 
-        verify(suffixProvider).suffix
+        verify(suffixProvider).addSuffixTo(anyString())
       }
 
       "return NotificationsPageSingleElement with correct content" in new Test {
@@ -135,7 +135,7 @@ class ControlResponseRejectedConverterSpec extends BaseSpec with MockitoSugar {
         converter.convert(input)
 
         val expectedCallsAmount = input.errorCodes.length
-        verify(suffixProvider, times(expectedCallsAmount)).suffix
+        verify(suffixProvider, times(expectedCallsAmount)).addSuffixTo(anyString())
       }
 
       "return NotificationsPageSingleElement with correct content" in new Test {

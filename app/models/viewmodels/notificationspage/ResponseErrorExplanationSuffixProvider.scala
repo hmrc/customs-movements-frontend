@@ -17,15 +17,28 @@
 package models.viewmodels.notificationspage
 
 import config.AppConfig
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
+import play.api.Logger
 
+@Singleton
 class ResponseErrorExplanationSuffixProvider @Inject()(appConfig: AppConfig) {
 
-  private val DefaultSuffix = ".Exports"
+  private val logger = Logger(this.getClass)
 
-  lazy val suffix: String = appConfig.responseErrorExplanationMode match {
-    case "CDS"     => ".CDS"
-    case "Exports" => ".Exports"
-    case _         => DefaultSuffix
+  private val AllowedConfigValues = Set("CDS", "Exports")
+  private val DefaultSuffix = "Exports"
+
+  lazy val suffix: String = {
+    val mode = appConfig.responseErrorExplanationMode
+
+    AllowedConfigValues.find(_ == mode) match {
+      case Some(configValue) => s".$configValue"
+      case None =>
+        logger.info(
+          s"Unknown value for configuration key 'microservice.services.features.response-error-explanation-mode': $mode"
+        )
+        s".$DefaultSuffix"
+    }
   }
+
 }

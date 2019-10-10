@@ -18,7 +18,7 @@ package models.viewmodels.notificationspage
 
 import base.BaseSpec
 import config.AppConfig
-import org.mockito.Mockito
+import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 
 class ResponseErrorExplanationSuffixProviderSpec extends BaseSpec with MockitoSugar {
@@ -32,21 +32,21 @@ class ResponseErrorExplanationSuffixProviderSpec extends BaseSpec with MockitoSu
 
     "return CDS when response-error-explanation-mode is set to CDS in config" in new Test {
 
-      Mockito.when(appConfig.responseErrorExplanationMode).thenReturn("CDS")
+      when(appConfig.responseErrorExplanationMode).thenReturn("CDS")
 
       provider.suffix mustBe ".CDS"
     }
 
     "return Exports when response-error-explanation-mode is set to Exports in config" in new Test {
 
-      Mockito.when(appConfig.responseErrorExplanationMode).thenReturn("Exports")
+      when(appConfig.responseErrorExplanationMode).thenReturn("Exports")
 
       provider.suffix mustBe ".Exports"
     }
 
     "return Exports for any other value" in new Test {
 
-      Mockito.when(appConfig.responseErrorExplanationMode).thenReturn("OtherValue")
+      when(appConfig.responseErrorExplanationMode).thenReturn("OtherValue")
 
       provider.suffix mustBe ".Exports"
     }

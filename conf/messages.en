@@ -509,7 +509,6 @@ error.chief.InvalidCharacterInMessage.Exports = Message contains invalid charact
 error.chief.DeclarationFinalised.Exports = Action not permitted; Declaration is finalised
 error.chief.CancelledEntry.Exports = Declaration cancelled/terminated
 error.chief.TooManyAnticipatedArrivals.Exports = Number of Anticipated Arrivals for UCR has been exceeded
-
 error.chief.AlreadyArrived.Exports = Already arrived by a consolidation
 error.chief.MucrAlreadyInUseWithImports.Exports = MUCR used on an imports consolidation
 error.chief.ArrivalAlreadyNotified.Exports = Anticipated arrival not allowed - Arrival already notified

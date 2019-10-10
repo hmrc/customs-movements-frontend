@@ -34,7 +34,10 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(messages("consignmentReferences.question"), messages(s"consignmentReferences.${request.choice.value}.heading"))
+        @components.heading(
+            title = messages("consignmentReferences.question"),
+            sectionHeader = messages(s"consignmentReferences.${request.choice.value}.heading")
+        )
 
         @components.input_radio(
           field = form("reference"),

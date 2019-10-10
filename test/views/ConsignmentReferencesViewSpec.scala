@@ -31,7 +31,6 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
   private val arrivalView: Html = consignmentReferencesPage(form)(fakeJourneyRequest(Arrival), messages)
 
-
   "Consignment References View" should {
 
     "have a proper labels for messages" in {

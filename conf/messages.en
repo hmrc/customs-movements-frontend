@@ -128,12 +128,12 @@ movement.transportMode = Transport Mode
 movement.transportNationality = Transport Nationality
 
 movement.choice.title = What do you want to do?
-movement.choice.arrival.label = Arrival
-movement.choice.departure.label = Departure
-movement.choice.associate.label = Associate
-movement.choice.disassociateDucr.label = Disassociate
+movement.choice.arrival.label = Arrive a consignment
+movement.choice.departure.label = Depart a consignment
+movement.choice.associate.label = Add DUCRs or MUCRs
+movement.choice.disassociateDucr.label = Remove DUCRs or MUCRs
 movement.choice.shutMucr.label = Shut a MUCR
-movement.choice.submissions.label = Inspect my Movements
+movement.choice.submissions.label = View all submissions
 movement.role.dec = I am declaring for the company I work for or own
 movement.arrival = Arrive goods
 movement.departure = Depart goods

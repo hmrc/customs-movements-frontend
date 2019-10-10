@@ -19,9 +19,10 @@ package models.viewmodels.notificationspage.converters
 import base.BaseSpec
 import models.notifications.ResponseType
 import models.viewmodels.decoder.{ActionCode, Decoder, ILEError}
+import models.viewmodels.notificationspage.ResponseErrorExplanationSuffixProvider
 import modules.DateTimeFormatterModule.NotificationsPageFormatter
-import org.mockito.ArgumentMatchers.{anyString, eq => meq}
-import org.mockito.Mockito.{verify, when}
+import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
@@ -39,7 +40,10 @@ class ControlResponseRejectedConverterSpec extends BaseSpec with MockitoSugar {
     when(decoder.actionCode(anyString)).thenReturn(Some(ActionCode.Rejected))
     when(decoder.error(anyString)).thenReturn(Some(ILEError("CODE", "Messages.Key")))
 
-    val converter = new ControlResponseRejectedConverter(decoder, NotificationsPageFormatter)
+    val suffixProvider = mock[ResponseErrorExplanationSuffixProvider]
+    when(suffixProvider.addSuffixTo(any())).thenReturn("Messages.Key.Suffix")
+
+    val converter = new ControlResponseRejectedConverter(decoder, NotificationsPageFormatter, suffixProvider)
   }
 
   "ControlResponseRejectedConverter on convert" should {
@@ -87,12 +91,21 @@ class ControlResponseRejectedConverterSpec extends BaseSpec with MockitoSugar {
         verify(decoder).error(meq(input.errorCodes.head))
       }
 
+      "call suffix provider once" in new Test {
+
+        val input = RejectedControlResponseSingleError
+
+        converter.convert(input)
+
+        verify(suffixProvider).addSuffixTo(anyString())
+      }
+
       "return NotificationsPageSingleElement with correct content" in new Test {
 
         val input = RejectedControlResponseSingleError
         val expectedContentHeader =
           messages("notifications.elem.content.inventoryLinkingControlResponse.Rejected.singleError")
-        val expectedErrorExplanation = messages("Messages.Key")
+        val expectedErrorExplanation = messages("Messages.Key.Suffix")
 
         val result = converter.convert(input)
 
@@ -115,12 +128,22 @@ class ControlResponseRejectedConverterSpec extends BaseSpec with MockitoSugar {
         }
       }
 
+      "call suffix provider for every Error" in new Test {
+
+        val input = RejectedControlResponseMultipleErrors
+
+        converter.convert(input)
+
+        val expectedCallsAmount = input.errorCodes.length
+        verify(suffixProvider, times(expectedCallsAmount)).addSuffixTo(anyString())
+      }
+
       "return NotificationsPageSingleElement with correct content" in new Test {
 
         val input = RejectedControlResponseMultipleErrors
         val expectedContentHeader =
           messages("notifications.elem.content.inventoryLinkingControlResponse.Rejected.multiError")
-        val expectedErrorExplanations = List.fill(input.errorCodes.length)(messages("Messages.Key"))
+        val expectedErrorExplanations = List.fill(input.errorCodes.length)(messages("Messages.Key.Suffix"))
 
         val result = converter.convert(input)
 

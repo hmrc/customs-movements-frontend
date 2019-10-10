@@ -17,8 +17,11 @@
 package models.viewmodels.decoder
 
 import org.scalatest.{MustMatchers, WordSpec}
+import play.api.test.FakeRequest
+import utils.FakeRequestCSRFSupport.CSRFFakeRequest
+import views.spec.{UnitViewSpec, ViewMatchers}
 
-class ILEErrorSpec extends WordSpec with MustMatchers {
+class ILEErrorSpec extends WordSpec with MustMatchers with ViewMatchers {
 
   "ILE Error" should {
 
@@ -36,12 +39,44 @@ class ILEErrorSpec extends WordSpec with MustMatchers {
       }
     }
 
-    "contain correct prefix for all message keys" in {
+    "have translations for all errors" in {
+      val messages = UnitViewSpec.realMessagesApi.preferred(FakeRequest().withCSRFToken)
 
-      val expectedPrefix = "error.ile."
+      val ileErrorsNames = Seq(
+        "InvalidUcrFormat",
+        "ClientIdValidationFailed",
+        "UcrNotAtTopOfConsolidation",
+        "MucrNotShutConsolidation",
+        "ParentMucrInSameConsolidation",
+        "ConsolidationNotFound",
+        "ConsolidationAlreadyShut",
+        "UcrTypeNotMatchingUcrFormat",
+        "DeclarationNotExist",
+        "UcrAlreadyAssociated",
+        "PriorMovementLocationDifferentThanOnDeparture",
+        "NoPriorArrivalFoundAtDepartureLocation",
+        "DeclarationsMissingP2P",
+        "DeclarationCancelledOrTerminated",
+        "UnknownDeclarationIdentifier",
+        "ConsolidationLevelLimitReached",
+        "InvalidGoodsDateTime",
+        "MucrNotShutDeparture",
+        "FutureDateTimeOverExceeded",
+        "UcrIsNotMucr",
+        "UcrNotExist",
+        "UcrAlreadyDisassociated",
+        "UcrFieldCompletionNotMatchingEacAction",
+        "EmptyMucr",
+        "InvalidExitMessage",
+        "LocationBasedPermissionFailed",
+        "InvalidGoodsLocation",
+        "MucrAlreadyDeparted",
+        "UcrRejectedUponArrival"
+      )
 
-      ILEError.allErrors.foreach { error =>
-        error.messageKey must include(expectedPrefix)
+      ileErrorsNames.foreach { errorName =>
+        messages must haveTranslationFor(s"error.ile.$errorName.CDS")
+        messages must haveTranslationFor(s"error.ile.$errorName.Exports")
       }
     }
   }

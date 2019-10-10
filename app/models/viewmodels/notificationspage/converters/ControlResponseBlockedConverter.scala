@@ -21,15 +21,18 @@ import java.time.format.DateTimeFormatter
 import javax.inject.{Inject, Singleton}
 import models.notifications.NotificationFrontendModel
 import models.viewmodels.decoder.Decoder
-import models.viewmodels.notificationspage.NotificationsPageSingleElement
+import models.viewmodels.notificationspage.{NotificationsPageSingleElement, ResponseErrorExplanationSuffixProvider}
 import play.api.Logger
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import views.html.components.{notification_errors, paragraph}
 
 @Singleton
-class ControlResponseBlockedConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
-    extends NotificationPageSingleElementConverter {
+class ControlResponseBlockedConverter @Inject()(
+  decoder: Decoder,
+  dateTimeFormatter: DateTimeFormatter,
+  suffixProvider: ResponseErrorExplanationSuffixProvider
+) extends NotificationPageSingleElementConverter {
 
   private val logger = Logger(this.getClass)
 
@@ -66,9 +69,12 @@ class ControlResponseBlockedConverter @Inject()(decoder: Decoder, dateTimeFormat
 
   // TODO move logging for missing error codes to backend
   private def getErrorExplanationText(errorCode: String)(implicit messages: Messages): Option[String] =
-    decoder.error(errorCode).map(code => messages(code.messageKey)).orElse {
-      logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $errorCode")
-      None
-    }
+    decoder
+      .error(errorCode)
+      .map(code => messages(suffixProvider.addSuffixTo(code.messageKey)))
+      .orElse {
+        logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $errorCode")
+        None
+      }
 
 }

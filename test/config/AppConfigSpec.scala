@@ -97,9 +97,7 @@ class AppConfigSpec extends MovementBaseSpec {
     }
 
     "have serviceAvailability URL" in {
-      validConfigService.serviceAvailabilityUrl must be(
-        "https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
-      )
+      validConfigService.serviceAvailabilityUrl must be("https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues")
     }
 
     // what is continue URL - redirect ?
@@ -158,15 +156,11 @@ class AppConfigSpec extends MovementBaseSpec {
   }
 
   "throw an exception when google-analytics.host is missing" in {
-    intercept[Exception](emptyConfigService.analyticsHost).getMessage must be(
-      "Missing configuration key: google-analytics.host"
-    )
+    intercept[Exception](emptyConfigService.analyticsHost).getMessage must be("Missing configuration key: google-analytics.host")
   }
 
   "throw an exception when google-analytics.token is missing" in {
-    intercept[Exception](emptyConfigService.analyticsToken).getMessage must be(
-      "Missing configuration key: google-analytics.token"
-    )
+    intercept[Exception](emptyConfigService.analyticsToken).getMessage must be("Missing configuration key: google-analytics.token")
   }
 
   "throw an exception when auth.host is missing" in {
@@ -178,9 +172,7 @@ class AppConfigSpec extends MovementBaseSpec {
   }
 
   "throw an exception when urls.loginContinue is missing" in {
-    intercept[Exception](emptyConfigService.loginContinueUrl).getMessage must be(
-      "Missing configuration key: urls.loginContinue"
-    )
+    intercept[Exception](emptyConfigService.loginContinueUrl).getMessage must be("Missing configuration key: urls.loginContinue")
   }
 
   "throw an exception when microservice.services.features.default is missing" in {

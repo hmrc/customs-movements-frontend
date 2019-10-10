@@ -28,8 +28,7 @@ object ICSCode {
 
   val codes: Set[ICSCode] = Set(InvalidationAtTraderRequest, InvalidationByCustoms)
 
-  case object InvalidationAtTraderRequest
-      extends ICSCode(code = "3", messageKey = "decoder.icsCode.InvalidationAtTraderRequest")
+  case object InvalidationAtTraderRequest extends ICSCode(code = "3", messageKey = "decoder.icsCode.InvalidationAtTraderRequest")
   case object InvalidationByCustoms extends ICSCode(code = "6", messageKey = "decoder.icsCode.InvalidationByCustoms")
 
 }

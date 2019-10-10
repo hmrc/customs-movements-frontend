@@ -26,12 +26,9 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 
 @Singleton
-class MovementResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
-    extends NotificationPageSingleElementConverter {
+class MovementResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter) extends NotificationPageSingleElementConverter {
 
-  override def convert(
-    notification: NotificationFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement = {
+  override def convert(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement = {
 
     val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation)
 

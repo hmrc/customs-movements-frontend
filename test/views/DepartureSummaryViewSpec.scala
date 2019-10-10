@@ -32,9 +32,7 @@ import views.html.summary.departure_summary_page
 class DepartureSummaryViewSpec extends UnitViewSpec {
 
   val cachedDataOutOfUk = cacheMapData(Departure)
-  val cachedDataBackIntoUk = cacheMapData(Departure) + (GoodsDeparted.formId -> Json.toJson(
-    GoodsDeparted(AllowedPlaces.backIntoTheUk)
-  ))
+  val cachedDataBackIntoUk = cacheMapData(Departure) + (GoodsDeparted.formId -> Json.toJson(GoodsDeparted(AllowedPlaces.backIntoTheUk)))
   val departureSummaryPage = new departure_summary_page(mainTemplate)
   val departureSummaryViewOut = departureSummaryPage(CacheMap("id", cachedDataOutOfUk))(request, messages)
   val departureSummaryContentOut = contentAsString(departureSummaryViewOut)

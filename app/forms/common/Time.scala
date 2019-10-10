@@ -47,11 +47,9 @@ object Time {
   val hourKey = "hour"
   val minuteKey = "minute"
 
-  private val correctHour: String => Boolean = (hour: String) =>
-    Try(hour.toInt).map(value => value >= 0 && value <= 23).getOrElse(false)
+  private val correctHour: String => Boolean = (hour: String) => Try(hour.toInt).map(value => value >= 0 && value <= 23).getOrElse(false)
 
-  private val correctMinute: String => Boolean = (minute: String) =>
-    Try(minute.toInt).map(value => value >= 0 && value <= 59).getOrElse(false)
+  private val correctMinute: String => Boolean = (minute: String) => Try(minute.toInt).map(value => value >= 0 && value <= 59).getOrElse(false)
 
   val mapping: Mapping[Time] = Forms
     .mapping(

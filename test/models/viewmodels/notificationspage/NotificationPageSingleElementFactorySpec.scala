@@ -100,11 +100,8 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           conversationId = conversationId,
           actionType = ActionType.DucrAssociation,
           requestTimestamp = testTimestamp,
-          ucrBlocks = Seq(
-            UcrBlock(ucr = correctUcr, ucrType = "M"),
-            UcrBlock(ucr = correctUcr_2, ucrType = "D"),
-            UcrBlock(ucr = correctUcr_3, ucrType = "D")
-          )
+          ucrBlocks =
+            Seq(UcrBlock(ucr = correctUcr, ucrType = "M"), UcrBlock(ucr = correctUcr_2, ucrType = "D"), UcrBlock(ucr = correctUcr_3, ucrType = "D"))
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.DucrAssociation"),
@@ -146,12 +143,8 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
       "provided with ShutMucr SubmissionFrontendModel" in new Test {
 
-        val input: SubmissionFrontendModel = exampleSubmissionFrontendModel(
-          actionType = ActionType.ShutMucr,
-          requestTimestamp = testTimestamp,
-          ucr = correctUcr,
-          ucrType = "M"
-        )
+        val input: SubmissionFrontendModel =
+          exampleSubmissionFrontendModel(actionType = ActionType.ShutMucr, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "M")
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.ShutMucr"),
           timestampInfo = "23 Oct 2019 at 12:34",
@@ -183,11 +176,8 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
       "call converter returned by ResponseConverterProvider" in new Test {
 
-        val exampleNotificationPageElement = NotificationsPageSingleElement(
-          title = "TITLE",
-          timestampInfo = "TIMESTAMP",
-          content = Html("<test>HTML</test>")
-        )
+        val exampleNotificationPageElement =
+          NotificationsPageSingleElement(title = "TITLE", timestampInfo = "TIMESTAMP", content = Html("<test>HTML</test>"))
         val responseConverter = mock[NotificationPageSingleElementConverter]
         when(responseConverter.convert(any[NotificationFrontendModel])(any()))
           .thenReturn(exampleNotificationPageElement)
@@ -204,11 +194,8 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
       "return NotificationsPageSingleElement returned by converter" in new Test {
 
-        val exampleNotificationPageElement = NotificationsPageSingleElement(
-          title = "TITLE",
-          timestampInfo = "TIMESTAMP",
-          content = Html("<test>HTML</test>")
-        )
+        val exampleNotificationPageElement =
+          NotificationsPageSingleElement(title = "TITLE", timestampInfo = "TIMESTAMP", content = Html("<test>HTML</test>"))
         val responseConverter = mock[NotificationPageSingleElementConverter]
         when(responseConverter.convert(any[NotificationFrontendModel])(any()))
           .thenReturn(exampleNotificationPageElement)

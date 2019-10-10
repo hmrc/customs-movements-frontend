@@ -110,10 +110,8 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
         val input = ersResponseMissingCodes
         val expectedTitle = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
         val expectedTimestampInfo = "23 Oct 2019 at 12:34"
-        val expectedContentElements = Seq(
-          messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe"),
-          messages(soeKeyFromDecoder.messageKey)
-        )
+        val expectedContentElements =
+          Seq(messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe"), messages(soeKeyFromDecoder.messageKey))
 
         val result = contentBuilder.convert(input)
 
@@ -177,13 +175,7 @@ object ERSResponseConverterSpec {
     entries = Seq(
       Entry(
         ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "D")),
-        entryStatus = Some(
-          EntryStatus(
-            ics = Some(icsKeyFromDecoder.code),
-            roe = Some(roeKeyFromDecoder.code),
-            soe = Some(soeKeyFromDecoder.code)
-          )
-        )
+        entryStatus = Some(EntryStatus(ics = Some(icsKeyFromDecoder.code), roe = Some(roeKeyFromDecoder.code), soe = Some(soeKeyFromDecoder.code)))
       )
     )
   )
@@ -192,12 +184,8 @@ object ERSResponseConverterSpec {
     responseType = ResponseType.MovementTotalsResponse,
     messageCode = ERS.code,
     timestampReceived = testTimestamp,
-    entries = Seq(
-      Entry(
-        ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "D")),
-        entryStatus = Some(EntryStatus(soe = Some(soeKeyFromDecoder.code)))
-      )
-    )
+    entries =
+      Seq(Entry(ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "D")), entryStatus = Some(EntryStatus(soe = Some(soeKeyFromDecoder.code)))))
   )
 
   val UnknownIcsCode = "123"
@@ -211,8 +199,7 @@ object ERSResponseConverterSpec {
     entries = Seq(
       Entry(
         ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "D")),
-        entryStatus =
-          Some(EntryStatus(ics = Some(UnknownIcsCode), roe = Some(UnknownRoeCode), soe = Some(UnknownSoeCode)))
+        entryStatus = Some(EntryStatus(ics = Some(UnknownIcsCode), roe = Some(UnknownRoeCode), soe = Some(UnknownSoeCode)))
       )
     )
   )

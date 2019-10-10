@@ -38,9 +38,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
   private val mockChoicePage = mock[choice_page]
 
   private val controller =
-    new ChoiceController(mockAuthAction, mockCustomsCacheService, stubMessagesControllerComponents(), mockChoicePage)(
-      global
-    )
+    new ChoiceController(mockAuthAction, mockCustomsCacheService, stubMessagesControllerComponents(), mockChoicePage)(global)
 
   override def beforeEach {
     super.beforeEach()

@@ -19,11 +19,7 @@ package models.notifications
 import models.UcrBlock
 import play.api.libs.json.Json
 
-final case class Entry(
-  ucrBlock: Option[UcrBlock] = None,
-  goodsItem: Seq[GoodsItem] = Seq.empty,
-  entryStatus: Option[EntryStatus] = None
-) {
+final case class Entry(ucrBlock: Option[UcrBlock] = None, goodsItem: Seq[GoodsItem] = Seq.empty, entryStatus: Option[EntryStatus] = None) {
   def ucrType: Option[String] = ucrBlock.map(_.ucrType)
   def ics: Option[String] = entryStatus.flatMap(_.ics)
   def roe: Option[String] = entryStatus.flatMap(_.roe)

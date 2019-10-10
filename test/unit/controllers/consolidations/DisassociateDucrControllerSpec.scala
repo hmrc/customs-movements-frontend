@@ -35,8 +35,7 @@ import views.html.disassociate_ducr
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-class DisassociateDucrControllerSpec
-    extends ControllerSpec with MockSubmissionService with ScalaFutures with OptionValues {
+class DisassociateDucrControllerSpec extends ControllerSpec with MockSubmissionService with ScalaFutures with OptionValues {
 
   private val mockDisassociateDucrPage = mock[disassociate_ducr]
 

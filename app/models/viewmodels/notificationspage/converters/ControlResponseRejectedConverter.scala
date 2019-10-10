@@ -35,13 +35,12 @@ class ControlResponseRejectedConverter @Inject()(decoder: Decoder, dateTimeForma
 
   private val TitleMessagesKey = "notifications.elem.title.inventoryLinkingControlResponse.Rejected"
 
-  override def convert(
-    notification: NotificationFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement = NotificationsPageSingleElement(
-    title = messages(TitleMessagesKey),
-    timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
-    content = buildContent(notification)
-  )
+  override def convert(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
+    NotificationsPageSingleElement(
+      title = messages(TitleMessagesKey),
+      timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
+      content = buildContent(notification)
+    )
 
   private def buildContent(notification: NotificationFrontendModel)(implicit messages: Messages): Html = {
     val contentHeader = buildContentHeader(notification)

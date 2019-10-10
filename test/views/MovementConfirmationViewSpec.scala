@@ -51,9 +51,7 @@ class MovementConfirmationViewSpec extends UnitViewSpec {
 
     "have heading" in {
 
-      arrivalConfirmationView.getElementById("highlight-box-heading").text() mustBe messages(
-        "movement.arrival.confirmation"
-      )
+      arrivalConfirmationView.getElementById("highlight-box-heading").text() mustBe messages("movement.arrival.confirmation")
     }
 
     "have back button" in {
@@ -75,9 +73,7 @@ class MovementConfirmationViewSpec extends UnitViewSpec {
 
     "have heading" in {
 
-      departureConfirmationView.getElementById("highlight-box-heading").text() mustBe messages(
-        "movement.departure.confirmation"
-      )
+      departureConfirmationView.getElementById("highlight-box-heading").text() mustBe messages("movement.departure.confirmation")
     }
 
     "have back button" in {

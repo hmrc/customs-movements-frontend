@@ -30,11 +30,8 @@ class ShutMucrConfirmationControllerSpec extends ControllerSpec {
 
   private val mockShutMucrConfirmationPage = mock[shut_mucr_confirmation]
 
-  private val controller = new ShutMucrConfirmationController(
-    mockAuthAction,
-    stubMessagesControllerComponents(),
-    mockShutMucrConfirmationPage
-  )(global)
+  private val controller =
+    new ShutMucrConfirmationController(mockAuthAction, stubMessagesControllerComponents(), mockShutMucrConfirmationPage)(global)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

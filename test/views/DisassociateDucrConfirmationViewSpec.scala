@@ -24,8 +24,7 @@ import views.spec.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class DisassociateDucrConfirmationViewSpec
-    extends ViewSpec with DisassociateDucrConfirmationMessages with CommonMessages {
+class DisassociateDucrConfirmationViewSpec extends ViewSpec with DisassociateDucrConfirmationMessages with CommonMessages {
 
   private val page = injector.instanceOf[views.html.disassociate_ducr_confirmation]
 

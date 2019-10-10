@@ -29,15 +29,8 @@ object ActionCode {
   val codes: Set[ActionCode] = Set(AcknowledgedAndProcessed, PartiallyAcknowledgedAndProcessed, Rejected)
 
   case object AcknowledgedAndProcessed
-      extends ActionCode(
-        code = "1",
-        messageKey = "notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed"
-      )
+      extends ActionCode(code = "1", messageKey = "notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed")
   case object PartiallyAcknowledgedAndProcessed
-      extends ActionCode(
-        code = "2",
-        messageKey = "notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed"
-      )
-  case object Rejected
-      extends ActionCode(code = "3", messageKey = "notifications.elem.content.inventoryLinkingControlResponse.Rejected")
+      extends ActionCode(code = "2", messageKey = "notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed")
+  case object Rejected extends ActionCode(code = "3", messageKey = "notifications.elem.content.inventoryLinkingControlResponse.Rejected")
 }

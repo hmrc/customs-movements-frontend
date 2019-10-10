@@ -31,14 +31,8 @@ class ROECodeSpec extends UnitSpec {
 
     "have correct list of codes" in {
 
-      val expectedCodes = Set(
-        DocumentaryControl,
-        PhysicalExternalPartyControl,
-        NonBlockingDocumentaryControl,
-        NoControlRequired,
-        RiskingNotPerformed,
-        PrelodgePrefix
-      )
+      val expectedCodes =
+        Set(DocumentaryControl, PhysicalExternalPartyControl, NonBlockingDocumentaryControl, NoControlRequired, RiskingNotPerformed, PrelodgePrefix)
 
       ROECode.codes mustBe expectedCodes
     }

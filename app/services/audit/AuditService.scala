@@ -32,34 +32,22 @@ import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuditService @Inject()(connector: AuditConnector, @Named("appName") appName: String)(
-  implicit ec: ExecutionContext
-) {
+class AuditService @Inject()(connector: AuditConnector, @Named("appName") appName: String)(implicit ec: ExecutionContext) {
   private val logger = Logger(this.getClass)
 
   def auditShutMucr(eori: String, mucr: String, result: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
     audit(
       AuditTypes.AuditShutMucr,
-      Map(
-        EventData.EORI.toString -> eori,
-        EventData.MUCR.toString -> mucr,
-        EventData.SubmissionResult.toString -> result
-      )
+      Map(EventData.EORI.toString -> eori, EventData.MUCR.toString -> mucr, EventData.SubmissionResult.toString -> result)
     )
 
   def auditDisassociate(eori: String, ducr: String, result: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
     audit(
       AuditTypes.AuditDisassociate,
-      Map(
-        EventData.EORI.toString -> eori,
-        EventData.DUCR.toString -> ducr,
-        EventData.SubmissionResult.toString -> result
-      )
+      Map(EventData.EORI.toString -> eori, EventData.DUCR.toString -> ducr, EventData.SubmissionResult.toString -> result)
     )
 
-  def auditAssociate(eori: String, mucr: String, ducr: String, result: String)(
-    implicit hc: HeaderCarrier
-  ): Future[AuditResult] =
+  def auditAssociate(eori: String, mucr: String, ducr: String, result: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
     audit(
       AuditTypes.AuditAssociate,
       Map(
@@ -85,9 +73,7 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
       )
     )
 
-  def audit(auditType: AuditTypes.Audit, auditData: Map[String, String])(
-    implicit hc: HeaderCarrier
-  ): Future[AuditResult] = {
+  def audit(auditType: AuditTypes.Audit, auditData: Map[String, String])(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val event = createAuditEvent(auditType, auditData)
     connector.sendEvent(event).map(handleResponse(_, auditType.toString))
   }
@@ -103,10 +89,7 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
   private def getAuditTags(transactionName: String, path: String)(implicit hc: HeaderCarrier) =
     AuditExtensions
       .auditHeaderCarrier(hc)
-      .toAuditTags(
-        transactionName = s"Export-Declaration-${transactionName}",
-        path = s"customs-declare-exports/${path}"
-      )
+      .toAuditTags(transactionName = s"Export-Declaration-${transactionName}", path = s"customs-declare-exports/${path}")
 
   private def handleResponse(result: AuditResult, auditType: String) = result match {
     case Success =>
@@ -142,9 +125,7 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
       else Json.toJson(cacheMap.getEntry[DepartureDetails](MovementDetails.formId))
 
     val userInput = Map(
-      ConsignmentReferences.formId -> Json.toJson(
-        cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.formId)
-      ),
+      ConsignmentReferences.formId -> Json.toJson(cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.formId)),
       GoodsDeparted.formId -> Json.toJson(cacheMap.getEntry[GoodsDeparted](GoodsDeparted.formId)),
       Location.formId -> Json.toJson(cacheMap.getEntry[Location](Location.formId)),
       MovementDetails.formId -> movementDetails,

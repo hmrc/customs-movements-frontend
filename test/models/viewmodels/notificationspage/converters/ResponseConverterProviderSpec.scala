@@ -87,10 +87,7 @@ class ResponseConverterProviderSpec extends BaseSpec with MockitoSugar {
 
         "is Acknowledged" in new Test {
 
-          val input = exampleNotificationFrontendModel(
-            responseType = ControlResponse,
-            actionCode = Some(ActionCode.AcknowledgedAndProcessed.code)
-          )
+          val input = exampleNotificationFrontendModel(responseType = ControlResponse, actionCode = Some(ActionCode.AcknowledgedAndProcessed.code))
 
           val converter = provider.provideResponseConverter(input)
 
@@ -99,10 +96,8 @@ class ResponseConverterProviderSpec extends BaseSpec with MockitoSugar {
 
         "is Blocked" in new Test {
 
-          val input = exampleNotificationFrontendModel(
-            responseType = ControlResponse,
-            actionCode = Some(ActionCode.PartiallyAcknowledgedAndProcessed.code)
-          )
+          val input =
+            exampleNotificationFrontendModel(responseType = ControlResponse, actionCode = Some(ActionCode.PartiallyAcknowledgedAndProcessed.code))
 
           val converter = provider.provideResponseConverter(input)
 
@@ -111,10 +106,7 @@ class ResponseConverterProviderSpec extends BaseSpec with MockitoSugar {
 
         "is Rejected" in new Test {
 
-          val input = exampleNotificationFrontendModel(
-            responseType = ControlResponse,
-            actionCode = Some(ActionCode.Rejected.code)
-          )
+          val input = exampleNotificationFrontendModel(responseType = ControlResponse, actionCode = Some(ActionCode.Rejected.code))
 
           val converter = provider.provideResponseConverter(input)
 

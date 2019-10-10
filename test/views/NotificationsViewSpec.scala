@@ -64,10 +64,8 @@ class NotificationsViewSpec extends WordSpec with MustMatchers with Stubs with V
       val requestTitle = "REQUEST TITLE"
       val responseTitle_1 = "RESPONSE TITLE 1"
       val responseTitle_2 = "RESPONSE TITLE 2"
-      val elementsToDisplay = Seq(
-        exampleNotificationPageSingleElement(title = responseTitle_1),
-        exampleNotificationPageSingleElement(title = responseTitle_2)
-      )
+      val elementsToDisplay =
+        Seq(exampleNotificationPageSingleElement(title = responseTitle_1), exampleNotificationPageSingleElement(title = responseTitle_2))
 
       val pageWithData: Html =
         page(CommonTestData.correctUcr, exampleNotificationPageSingleElement(title = requestTitle), elementsToDisplay)

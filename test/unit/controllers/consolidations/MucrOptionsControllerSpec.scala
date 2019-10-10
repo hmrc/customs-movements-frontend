@@ -38,13 +38,10 @@ class MucrOptionsControllerSpec extends ControllerSpec with OptionValues {
 
   private val mockMucrOptionsPage = mock[mucr_options]
 
-  private val controller = new MucrOptionsController(
-    mockAuthAction,
-    mockJourneyAction,
-    stubMessagesControllerComponents(),
-    mockCustomsCacheService,
-    mockMucrOptionsPage
-  )(global)
+  private val controller =
+    new MucrOptionsController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), mockCustomsCacheService, mockMucrOptionsPage)(
+      global
+    )
 
   override def beforeEach() {
     super.beforeEach()

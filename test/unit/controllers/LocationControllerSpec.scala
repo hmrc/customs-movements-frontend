@@ -35,13 +35,8 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
   private val mockLocationPage = mock[location]
 
-  private val controller = new LocationController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockCustomsCacheService,
-    stubMessagesControllerComponents(),
-    mockLocationPage
-  )(global)
+  private val controller =
+    new LocationController(mockAuthAction, mockJourneyAction, mockCustomsCacheService, stubMessagesControllerComponents(), mockLocationPage)(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

@@ -92,9 +92,7 @@ class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar {
 
         val input = BlockedControlResponseSingleError
         val expectedContentHeader =
-          messages(
-            "notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed.singleError"
-          )
+          messages("notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed.singleError")
         val expectedErrorExplanation = messages("Messages.Key")
 
         val result = converter.convert(input)
@@ -122,9 +120,7 @@ class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar {
 
         val input = BlockedControlResponseMultipleErrors
         val expectedContentHeader =
-          messages(
-            "notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed.multiError"
-          )
+          messages("notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed.multiError")
         val expectedErrorExplanations = List.fill(input.errorCodes.length)(messages("Messages.Key"))
 
         val result = converter.convert(input)

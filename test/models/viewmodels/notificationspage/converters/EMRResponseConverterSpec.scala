@@ -110,10 +110,8 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
         val input = emrResponseMissingCodes
         val expectedTitle = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
         val expectedTimestampInfo = "23 Oct 2019 at 12:34"
-        val expectedContentElements = Seq(
-          messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe"),
-          messages(roeKeyFromDecoder.messageKey)
-        )
+        val expectedContentElements =
+          Seq(messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe"), messages(roeKeyFromDecoder.messageKey))
 
         val result = contentBuilder.convert(input)
 
@@ -187,12 +185,8 @@ object EMRResponseConverterSpec {
     responseType = ResponseType.MovementTotalsResponse,
     messageCode = EMR.code,
     timestampReceived = testTimestamp,
-    entries = Seq(
-      Entry(
-        ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "M")),
-        entryStatus = Some(EntryStatus(roe = Some(roeKeyFromDecoder.code)))
-      )
-    )
+    entries =
+      Seq(Entry(ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "M")), entryStatus = Some(EntryStatus(roe = Some(roeKeyFromDecoder.code)))))
   )
 
   val UnknownCrcCode = "1234"

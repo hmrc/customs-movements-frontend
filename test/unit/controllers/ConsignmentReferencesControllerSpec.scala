@@ -96,13 +96,8 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
 
         givenAUserOnTheArrivalJourney()
 
-        val incorrectForm: JsValue = JsObject(
-          Map(
-            "eori" -> JsString("GB717572504502811"),
-            "reference" -> JsString("reference"),
-            "referenceValue" -> JsString("")
-          )
-        )
+        val incorrectForm: JsValue =
+          JsObject(Map("eori" -> JsString("GB717572504502811"), "reference" -> JsString("reference"), "referenceValue" -> JsString("")))
 
         val result = controller.saveConsignmentReferences()(postRequest(incorrectForm))
 

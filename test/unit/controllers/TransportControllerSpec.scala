@@ -37,13 +37,8 @@ class TransportControllerSpec extends ControllerSpec with OptionValues {
 
   private val mockTransportPage = mock[transport]
 
-  private val controller = new TransportController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockCustomsCacheService,
-    stubMessagesControllerComponents(),
-    mockTransportPage
-  )(global)
+  private val controller =
+    new TransportController(mockAuthAction, mockJourneyAction, mockCustomsCacheService, stubMessagesControllerComponents(), mockTransportPage)(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -112,13 +107,8 @@ class TransportControllerSpec extends ControllerSpec with OptionValues {
 
         withCaching(Transport.formId)
 
-        val incorrectForm: JsValue = JsObject(
-          Map(
-            "modeOfTransport" -> JsString(Sea),
-            "nationality" -> JsString("PL"),
-            "transportId" -> JsString("someReference")
-          )
-        )
+        val incorrectForm: JsValue =
+          JsObject(Map("modeOfTransport" -> JsString(Sea), "nationality" -> JsString("PL"), "transportId" -> JsString("someReference")))
 
         val result = controller.saveTransport()(postRequest(incorrectForm))
 

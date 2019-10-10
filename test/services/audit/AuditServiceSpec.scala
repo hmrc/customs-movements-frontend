@@ -55,12 +55,7 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustoms
     }
 
     "audit an association" in {
-      val dataToAudit = Map(
-        EORI.toString -> "eori",
-        MUCR.toString -> "mucr",
-        DUCR.toString -> "ducr",
-        SubmissionResult.toString -> "200"
-      )
+      val dataToAudit = Map(EORI.toString -> "eori", MUCR.toString -> "mucr", DUCR.toString -> "ducr", SubmissionResult.toString -> "200")
       spyAuditService.auditAssociate("eori", "mucr", "ducr", "200")
       verify(spyAuditService).audit(AuditTypes.AuditAssociate, dataToAudit)
     }
@@ -76,10 +71,7 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustoms
       val expectedResult = Map(
         Location.formId -> Json.toJson(Location("A", "U", "correct", "PL")),
         MovementDetails.formId -> Json.toJson(
-          ArrivalDetails(
-            dateOfArrival = Date(Some(12), Some(1), Some(2019)),
-            timeOfArrival = Time(Some("10"), Some("10"))
-          )
+          ArrivalDetails(dateOfArrival = Date(Some(12), Some(1), Some(2019)), timeOfArrival = Time(Some("10"), Some("10")))
         ),
         ArrivalReference.formId -> Json.toJson(ArrivalReference(Some("213"))),
         GoodsDeparted.formId -> Json.toJson(GoodsDeparted("Bricks")),

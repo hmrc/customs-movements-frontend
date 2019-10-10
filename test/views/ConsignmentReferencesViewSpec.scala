@@ -35,10 +35,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
       assertMessage(title, "Consignment references")
       assertMessage(eoriQuestion, "What is your EORI number?")
-      assertMessage(
-        eoriHint,
-        "The number starts with a country code, for example, FR for France, and is then followed by up to 15 digits"
-      )
+      assertMessage(eoriHint, "The number starts with a country code, for example, FR for France, and is then followed by up to 15 digits")
       assertMessage(referenceQuestion, "Which reference are you entering to arrive the goods?")
       assertMessage(referenceHint, "This can be a DUCR or MUCR")
       assertMessage(referenceDucr, "DUCR")

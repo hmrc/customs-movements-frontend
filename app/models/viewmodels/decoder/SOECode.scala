@@ -60,22 +60,17 @@ object SOECode {
 
   case object DeclarationRejected extends SOECode(code = "5", messageKey = "decoder.soe.DeclarationRejected")
 
-  case object DeclarationHandledExternally
-      extends SOECode(code = "6", messageKey = "decoder.soe.DeclarationHandledExternally")
+  case object DeclarationHandledExternally extends SOECode(code = "6", messageKey = "decoder.soe.DeclarationHandledExternally")
 
-  case object DeclarationCorrectionValidation
-      extends SOECode(code = "7", messageKey = "decoder.soe.DeclarationCorrectionValidation")
+  case object DeclarationCorrectionValidation extends SOECode(code = "7", messageKey = "decoder.soe.DeclarationCorrectionValidation")
 
-  case object AdvanceDeclarationRegistration
-      extends SOECode(code = "8", messageKey = "decoder.soe.AdvanceDeclarationRegistration")
+  case object AdvanceDeclarationRegistration extends SOECode(code = "8", messageKey = "decoder.soe.AdvanceDeclarationRegistration")
 
   case object DeclarationAcceptance extends SOECode(code = "9", messageKey = "decoder.soe.DeclarationAcceptance")
 
-  case object DeclarationAcceptanceAtGoodsArrival
-      extends SOECode(code = "10", messageKey = "decoder.soe.DeclarationAcceptanceAtGoodsArrival")
+  case object DeclarationAcceptanceAtGoodsArrival extends SOECode(code = "10", messageKey = "decoder.soe.DeclarationAcceptanceAtGoodsArrival")
 
-  case object DeclarationRejectionAtGoodsArrival
-      extends SOECode(code = "11", messageKey = "decoder.soe.DeclarationRejectionAtGoodsArrival")
+  case object DeclarationRejectionAtGoodsArrival extends SOECode(code = "11", messageKey = "decoder.soe.DeclarationRejectionAtGoodsArrival")
 
   case object DeclarationCorrected extends SOECode(code = "12", messageKey = "decoder.soe.DeclarationCorrected")
 
@@ -83,11 +78,9 @@ object SOECode {
 
   case object DeclarationRisked extends SOECode(code = "14", messageKey = "decoder.soe.DeclarationRisked")
 
-  case object CustomsPositionDetermined
-      extends SOECode(code = "15", messageKey = "decoder.soe.CustomsPositionDetermined")
+  case object CustomsPositionDetermined extends SOECode(code = "15", messageKey = "decoder.soe.CustomsPositionDetermined")
 
-  case object DeclarationClearanceAfterGoodsRelease
-      extends SOECode(code = "16", messageKey = "decoder.soe.DeclarationClearanceAfterGoodsRelease")
+  case object DeclarationClearanceAfterGoodsRelease extends SOECode(code = "16", messageKey = "decoder.soe.DeclarationClearanceAfterGoodsRelease")
 
   case object InsufficientGuarantees extends SOECode(code = "17", messageKey = "decoder.soe.InsufficientGuarantees")
 
@@ -97,8 +90,7 @@ object SOECode {
 
   case object ConsolidationOpen extends SOECode(code = "0", messageKey = "decoder.soe.ConsolidationOpen")
 
-  case object ConsolidationClosedWithoutP2P
-      extends SOECode(code = "C", messageKey = "decoder.soe.ConsolidationClosedWithoutP2P")
+  case object ConsolidationClosedWithoutP2P extends SOECode(code = "C", messageKey = "decoder.soe.ConsolidationClosedWithoutP2P")
 
   case object ConsolidationHasP2P extends SOECode(code = "3", messageKey = "decoder.soe.ConsolidationHasP2P")
 

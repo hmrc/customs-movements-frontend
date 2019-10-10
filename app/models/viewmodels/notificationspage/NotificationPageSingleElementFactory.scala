@@ -38,9 +38,7 @@ class NotificationPageSingleElementFactory @Inject()(responseConverterProvider: 
       case DucrAssociation                                     => buildForDucrAssociation(submission)
     }
 
-  private def buildForRequest(
-    submission: SubmissionFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement = {
+  private def buildForRequest(submission: SubmissionFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement = {
 
     val ucrMessage = if (submission.hasMucr) "MUCR" else "DUCR"
 
@@ -56,9 +54,7 @@ class NotificationPageSingleElementFactory @Inject()(responseConverterProvider: 
     )
   }
 
-  private def buildForDucrAssociation(
-    submission: SubmissionFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement = {
+  private def buildForDucrAssociation(submission: SubmissionFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement = {
 
     val ducrs = submission.ucrBlocks.filter(_.ucrType == "D")
     val content = Html(

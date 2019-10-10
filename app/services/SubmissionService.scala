@@ -85,9 +85,7 @@ class SubmissionService @Inject()(
       }
   }
 
-  def submitDucrDisassociation(disassociateDucr: DisassociateDucr, eori: String)(
-    implicit hc: HeaderCarrier
-  ): Future[ConsolidationRequest] = {
+  def submitDucrDisassociation(disassociateDucr: DisassociateDucr, eori: String)(implicit hc: HeaderCarrier): Future[ConsolidationRequest] = {
     val timer = metrics.startTimer(DisassociateDUCR)
     connector
       .sendConsolidationRequest(buildDisassociationRequest(disassociateDucr.ducr))
@@ -99,9 +97,7 @@ class SubmissionService @Inject()(
       }
   }
 
-  def submitShutMucrRequest(shutMucr: ShutMucr, eori: String)(
-    implicit hc: HeaderCarrier
-  ): Future[ConsolidationRequest] = {
+  def submitShutMucrRequest(shutMucr: ShutMucr, eori: String)(implicit hc: HeaderCarrier): Future[ConsolidationRequest] = {
     val timer = metrics.startTimer(ShutMUCR)
     connector.sendConsolidationRequest(buildShutMucrRequest(shutMucr.mucr)).andThen {
       case Success(_) =>

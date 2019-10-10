@@ -68,9 +68,7 @@ class AssociateDucrControllerSpec extends ControllerSpec {
 
       "display page method is invoked and Mucr Options page has data" in {
         val request = getRequest()
-        withCacheMap(
-          Some(CacheMap(movementCacheId()(request), Map(MucrOptions.formId -> Json.toJson(MucrOptions("MUCR")))))
-        )
+        withCacheMap(Some(CacheMap(movementCacheId()(request), Map(MucrOptions.formId -> Json.toJson(MucrOptions("MUCR"))))))
 
         val result = controller.displayPage()(request)
 
@@ -86,10 +84,7 @@ class AssociateDucrControllerSpec extends ControllerSpec {
           Some(
             CacheMap(
               movementCacheId()(request),
-              Map(
-                MucrOptions.formId -> Json.toJson(MucrOptions("MUCR")),
-                AssociateDucr.formId -> Json.toJson(AssociateDucr("DUCR"))
-              )
+              Map(MucrOptions.formId -> Json.toJson(MucrOptions("MUCR")), AssociateDucr.formId -> Json.toJson(AssociateDucr("DUCR")))
             )
           )
         )

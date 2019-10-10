@@ -41,28 +41,24 @@ class ResponseConverterProvider @Inject()(
       case Failure(_)         => unknownResponseConverter
     }
 
-  private def getResponseConverter(
-    notification: NotificationFrontendModel
-  ): Try[NotificationPageSingleElementConverter] =
+  private def getResponseConverter(notification: NotificationFrontendModel): Try[NotificationPageSingleElementConverter] =
     Try(notification.responseType match {
       case MovementTotalsResponse => getMovementTotalsResponseConverter(notification)
       case ControlResponse        => getControlResponseConverter(notification)
       case MovementResponse       => movementResponseConverter
     })
 
-  private def getMovementTotalsResponseConverter(
-    notification: NotificationFrontendModel
-  ): NotificationPageSingleElementConverter = notification.messageCode match {
-    case ERS.code => ersResponseConverter
-    case EMR.code => emrResponseConverter
-  }
+  private def getMovementTotalsResponseConverter(notification: NotificationFrontendModel): NotificationPageSingleElementConverter =
+    notification.messageCode match {
+      case ERS.code => ersResponseConverter
+      case EMR.code => emrResponseConverter
+    }
 
-  private def getControlResponseConverter(
-    notification: NotificationFrontendModel
-  ): NotificationPageSingleElementConverter = notification.actionCode match {
-    case Some(AcknowledgedAndProcessed.code)          => controlResponseAcknowledgedConverter
-    case Some(PartiallyAcknowledgedAndProcessed.code) => controlResponseBlockedConverter
-    case Some(Rejected.code)                          => controlResponseRejectedConverter
-  }
+  private def getControlResponseConverter(notification: NotificationFrontendModel): NotificationPageSingleElementConverter =
+    notification.actionCode match {
+      case Some(AcknowledgedAndProcessed.code)          => controlResponseAcknowledgedConverter
+      case Some(PartiallyAcknowledgedAndProcessed.code) => controlResponseBlockedConverter
+      case Some(Rejected.code)                          => controlResponseRejectedConverter
+    }
 
 }

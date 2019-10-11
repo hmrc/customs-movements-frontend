@@ -29,6 +29,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import testdata.CommonTestData.correctUcr
+import testdata.ConsolidationTestData.ValidDucr
 import unit.base.ControllerSpec
 import views.html.disassociate_ducr
 
@@ -46,7 +47,7 @@ class DisassociateDucrControllerSpec extends ControllerSpec with MockSubmissionS
     stubMessagesControllerComponents(),
     mockDisassociateDucrPage
   )(global)
-  private val correctForm = Json.toJson(DisassociateDucr(correctUcr))
+  private val correctForm = Json.toJson(DisassociateDucr(ValidDucr))
   private val expectedConsolidationRequest = ConsolidationRequest(DISASSOCIATE_DUCR, None, Some(correctUcr))
   private val incorrectForm = Json.toJson(DisassociateDucr("abc"))
 

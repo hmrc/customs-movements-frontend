@@ -16,8 +16,8 @@
 
 package forms
 
-import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
+import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
@@ -32,7 +32,7 @@ object AssociateDucr {
     Forms.mapping(
       "ducr" -> text()
         .verifying("mucrOptions.reference.value.empty", nonEmpty)
-        .verifying("mucrOptions.reference.value.error", isEmpty or validDucrOrMucr)
+        .verifying("mucrOptions.reference.value.error", isEmpty or validDucr)
     )(AssociateDucr.apply)(AssociateDucr.unapply)
 
   val form: Form[AssociateDucr] = Form(mapping)

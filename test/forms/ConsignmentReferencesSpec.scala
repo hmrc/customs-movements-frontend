@@ -51,29 +51,9 @@ class ConsignmentReferencesSpec extends BaseSpec with ConsignmentReferencesMessa
       errors must contain(FormError("referenceValue", referenceValueEmpty))
     }
 
-    "return error for incorrect reference" in {
-      val inputData =
-        ConsignmentReferences("Incorrect reference", "5123456789-000-123ABC45$%^FIIIII")
-      val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
-
-      errors mustBe List(FormError("reference", referenceError), FormError("referenceValue", referenceValueError))
-    }
-
-    "no errors for valid MUCR/DUCRs " in {
-      val mucrFormat1 = ConsignmentReferences("D", "5GB123456789000-123ABC456DEFIIIII")
+    "no errors for complete fields " in {
+      val mucrFormat1 = ConsignmentReferences("M", "MUCR")
       ConsignmentReferences.form().fillAndValidate(mucrFormat1).errors mustBe empty
-
-      val mucrFormat2 = ConsignmentReferences("D", "GB/ABC4-ASIUDYFAHSDJF")
-      ConsignmentReferences.form().fillAndValidate(mucrFormat2).errors mustBe empty
-
-      val mucrFormat3 = ConsignmentReferences("D", "GB/1234SG789-1PWER")
-      ConsignmentReferences.form().fillAndValidate(mucrFormat3).errors mustBe empty
-
-      val mucrFormat4 = ConsignmentReferences("D", "A:A8C12345678")
-      ConsignmentReferences.form().fillAndValidate(mucrFormat4).errors mustBe empty
-
-      val mucrFormat6 = ConsignmentReferences("D", "C:XYZ123")
-      ConsignmentReferences.form().fillAndValidate(mucrFormat6).errors mustBe empty
     }
   }
 }

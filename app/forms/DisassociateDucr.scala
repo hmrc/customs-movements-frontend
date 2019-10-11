@@ -29,7 +29,7 @@ object DisassociateDucr {
   val mapping = Forms.mapping(
     "ducr" -> text()
       .verifying("disassociateDucr.ducr.empty", nonEmpty)
-      .verifying("disassociateDucr.ducr.error", isEmpty or validDucrOrMucr)
+      .verifying("disassociateDucr.ducr.error", isEmpty or validDucr)
   )(DisassociateDucr.apply)(DisassociateDucr.unapply)
 
   val form: Form[DisassociateDucr] = Form(mapping)

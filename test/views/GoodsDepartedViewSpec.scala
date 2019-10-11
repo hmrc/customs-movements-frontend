@@ -34,8 +34,7 @@ class GoodsDepartedViewSpec extends ViewSpec with GoodsDepartedMessages with Com
     "have a proper labels for messages" in {
 
       assertMessage(goodsDepartedTitle, "Goods departed")
-      assertMessage(goodsDepartedQuestion, "Where are your goods being departed to?")
-      assertMessage(goodsDepartedHint, "Goods can be departed out of the UK or back into the UK")
+      assertMessage(goodsDepartedQuestion, "Where are the goods going?")
       assertMessage(goodsDepartedOutOfTheUk, "Out of the UK")
       assertMessage(goodsDepartedBackIntoTheUk, "Back into the UK")
     }
@@ -60,9 +59,8 @@ class GoodsDepartedViewSpec extends ViewSpec with GoodsDepartedMessages with Com
       getElementById(createView(), "title").text() must be(messages(goodsDepartedQuestion))
     }
 
-    "display radio option hint with all options" in {
+    "display radio option with all options" in {
 
-      getElementById(createView(), "departedPlace-hint").text() must be(messages(goodsDepartedHint))
       getElementById(createView(), "outOfTheUk-label").text() must be(messages(goodsDepartedOutOfTheUk))
       getElementById(createView(), "backIntoTheUk-label").text() must be(messages(goodsDepartedBackIntoTheUk))
     }

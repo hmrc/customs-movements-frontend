@@ -255,7 +255,7 @@ shutMucrConfirmation.title = MUCR shut
 shutMucrConfirmation.info = The reference of the MUCR shut:
 shutMucrConfirmation.note = You might want to take a screenshot of this for your records.
 
-mucrOptions.title = MUCR options
+mucrOptions.title = Create or enter a MUCR to add to
 mucrOptions.create = Create a new MUCR
 mucrOptions.add = Add to an existing MUCR
 mucrOptions.create.reference = Enter the alpha numeric refererence
@@ -265,9 +265,10 @@ mucrOptions.reference.value.empty = Please enter a reference
 mucrOptions.reference.value.error = Please enter a valid reference
 
 associateDucr.title = Add a DUCR to {0}
-associateDucr.reference.hint = Make sure you have entered the right MUCR details before adding a DUCR.
+associateDucr.reference.hint = Make sure you have entered the correct MUCR before adding any DUCRs or MUCRs to it. It is also worth keeping a manual record of which DUCRs and MUCRs you have added to this MUCR to avoid missing any or duplication.
 
-associateDucrSummary.title = Add a DUCR to {0}
+associateDucrSummary.title = The following DUCR has been added to {0}
+associateDucrSummary.hint = Make sure the details of the DUCR are correct before continuing.
 
 associateDucrConfirmation.title = Consolidation complete
 associateDucrConfirmation.header = Your MUCR

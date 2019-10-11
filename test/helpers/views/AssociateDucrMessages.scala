@@ -18,9 +18,8 @@ package helpers.views
 
 trait AssociateDucrMessages {
 
-  val prefix = "associateDucr"
-  val title = prefix + ".title"
-  val hint = prefix + ".reference.hint"
+  val title = "associateDucr.title"
+  val hint = "associateDucr.reference.hint"
   val remove = "site.remove"
   val add = "site.add"
 }

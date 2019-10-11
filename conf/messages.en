@@ -114,18 +114,6 @@ movement.arrival.title = Arrival
 movement.arrival.heading = Arrival
 movement.departure.title = Departure
 movement.departure.heading = Departure
-movement.eori = EORI
-movement.ucr = Ucr
-movement.ucrType = Ucr type
-movement.goodsArrivalDateTime = Goods arrival date time
-movement.goodsDepartureDateTime = Goods departure date time
-movement.shedOPID = Shed OPID
-movement.masterUCR = Master UCR
-movement.masterOpt = Master Opt
-movement.movementReference = Movement reference
-movement.transportID = Transport Id
-movement.transportMode = Transport Mode
-movement.transportNationality = Transport Nationality
 
 movement.choice.title = What do you want to do?
 movement.choice.arrival.label = Arrive a consignment
@@ -376,5 +364,5 @@ decoder.icsCode.InvalidationByCustoms = The declaration was invalidated by custo
 
 arrivalReference = Arrival reference
 arrivalReference.question = Give this arrival a unique reference
-arrivalReference.hint = This will be help you quickly identify it in the future. It can be no more than 25 characters. Leave it blank if you don''t want to add a reference.
+arrivalReference.hint = This will be help you quickly identify it in the future. It can be no more than 25 characters.
 arrivalReference.error.format = The reference should be no more than 25 characters.

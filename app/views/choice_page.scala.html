@@ -24,28 +24,28 @@
 
 @(form: Form[Choice])(implicit request: Request[_], messages: Messages)
 
-  @main_template(title = Title("movement.choice.title")) {
+@main_template(title = Title("movement.choice.title")) {
 
     @helper.form(routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
-      @helper.CSRF.formField
+        @helper.CSRF.formField
 
-      @components.back_link(routes.StartController.displayStartPage())
+        @components.back_link(routes.StartController.displayStartPage())
 
-      @components.heading(title = messages("movement.choice.title"))
+        @components.heading(title = messages("movement.choice.title"))
 
-      @components.input_radio(
-        field = form("choice"),
-        legend = "",
-        inputs = Seq(
-            RadioOption("arrival", Arrival.value, messages(s"movement.choice.arrival.label")),
-            RadioOption("departure", Departure.value, messages(s"movement.choice.departure.label")),
-            RadioOption("associate", AssociateDUCR.value, messages(s"movement.choice.associate.label")),
-            RadioOption("disassociate", DisassociateDUCR.value, messages(s"movement.choice.disassociateDucr.label")),
-            RadioOption("shut_mucr", ShutMUCR.value, messages("movement.choice.shutMucr.label")),
-            RadioOption("submissions", Submissions.value, messages("movement.choice.submissions.label"))
+        @components.input_radio(
+            field = form("choice"),
+            legend = "",
+            inputs = Seq(
+                RadioOption("arrival", Arrival.value, messages(s"movement.choice.arrival.label")),
+                RadioOption("associate", AssociateDUCR.value, messages(s"movement.choice.associate.label")),
+                RadioOption("disassociate", DisassociateDUCR.value, messages(s"movement.choice.disassociateDucr.label")),
+                RadioOption("shut_mucr", ShutMUCR.value, messages("movement.choice.shutMucr.label")),
+                RadioOption("departure", Departure.value, messages(s"movement.choice.departure.label")),
+                RadioOption("submissions", Submissions.value, messages("movement.choice.submissions.label"))
+            )
         )
-      )
 
-      @components.submit_button()
+        @components.submit_button("site.continue")
     }
-  }
+}

@@ -35,8 +35,8 @@ class MovementConfirmationViewSpec extends UnitViewSpec {
 
       messages("movement.arrival.confirmation") mustBe "Arrival has been submitted"
       messages("movement.departure.confirmation") mustBe "Departure has been submitted"
-      messages("movement.choice.arrival.label") mustBe "Arrival"
-      messages("movement.choice.departure.label") mustBe "Departure"
+      messages("movement.choice.arrival.label") mustBe "Arrive a consignment"
+      messages("movement.choice.departure.label") mustBe "Depart a consignment"
       messages("site.backToStartPage") mustBe "Back to start page"
     }
   }

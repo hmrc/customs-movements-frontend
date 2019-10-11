@@ -68,7 +68,7 @@ class SummaryController @Inject()(
       .flatMap {
         case ACCEPTED =>
           customsCacheService.remove(movementCacheId).map { _ =>
-            Ok(movementConfirmationPage(request.choice))
+            Ok(movementConfirmationPage())
           }
         case _ =>
           Future.successful {

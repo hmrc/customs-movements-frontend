@@ -24,8 +24,10 @@ import views.spec.UnitViewSpec
 class MovementConfirmationViewSpec extends UnitViewSpec {
 
   val movementConfirmationPage = new movement_confirmation_page(mainTemplate)
-  val arrivalConfirmationView = movementConfirmationPage(Arrival)(request, messages)
-  val departureConfirmationView = movementConfirmationPage(Departure)(request, messages)
+  val arrivalRequest = fakeJourneyRequest(Arrival)
+  val departureRequest = fakeJourneyRequest(Departure)
+  val arrivalConfirmationView = movementConfirmationPage()(arrivalRequest, messages)
+  val departureConfirmationView = movementConfirmationPage()(departureRequest, messages)
 
   "Movement Confirmation Page" should {
 
@@ -45,7 +47,7 @@ class MovementConfirmationViewSpec extends UnitViewSpec {
 
     "display same page title as header" in {
 
-      val view = movementConfirmationPage(Arrival)(request, messagesApi.preferred(request))
+      val view = movementConfirmationPage()(arrivalRequest, messagesApi.preferred(request))
       view.title() must include(view.getElementsByTag("h1").text())
     }
 
@@ -67,7 +69,7 @@ class MovementConfirmationViewSpec extends UnitViewSpec {
 
     "display same page title as header" in {
 
-      val view = movementConfirmationPage(Departure)(request, messagesApi.preferred(request))
+      val view = movementConfirmationPage()(departureRequest, messagesApi.preferred(request))
       view.title() must include(view.getElementsByTag("h1").text())
     }
 

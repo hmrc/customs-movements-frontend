@@ -16,15 +16,16 @@
 
 @import forms.Choice
 @import views.Title
+@import models.requests.JourneyRequest
 
 @this(main_template: views.html.main_template)
 
-@(choice: Choice)(implicit request: Request[_], messages: Messages)
+@()(implicit request: JourneyRequest[_], messages: Messages)
 
-@main_template(title = Title(s"movement.${choice.value}.confirmation")) {
+@main_template(title = Title(s"movement.${request.choice.value}.confirmation")) {
 
   @components.highlight_box_with_reference(
-    headingText = messages(s"movement.${choice.value}.confirmation")
+    headingText = messages(s"movement.${request.choice.value}.confirmation")
   )
 
   @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())

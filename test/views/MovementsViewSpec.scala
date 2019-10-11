@@ -57,10 +57,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
 
     "contain correct submission data" in {
       val dateTime: Instant = ZonedDateTime
-        .of(
-          LocalDate.parse("2019-10-31", DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay(),
-          ZoneId.systemDefault()
-        )
+        .of(LocalDate.parse("2019-10-31", DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay(), ZoneId.systemDefault())
         .toInstant
       val submission = SubmissionFrontendModel(
         requestTimestamp = dateTime,
@@ -95,10 +92,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
         )
       )
 
-      val pageWithData: Html = new movements(mainTemplate)(Seq(exampleAssociateDucrRequestSubmission -> notifications))(
-        FakeRequest(),
-        messages
-      )
+      val pageWithData: Html = new movements(mainTemplate)(Seq(exampleAssociateDucrRequestSubmission -> notifications))(FakeRequest(), messages)
 
       val actualUcrs = getElementById(pageWithData, s"ucr-$conversationId").text()
       actualUcrs must include(ValidMucr)

@@ -34,12 +34,8 @@ class MovementsControllerSpec extends ControllerSpec with MockCustomsExportsMove
 
   private val mockMovementsPage = mock[movements]
 
-  private val controller = new MovementsController(
-    mockAuthAction,
-    mockCustomsExportsMovementConnector,
-    stubMessagesControllerComponents(),
-    mockMovementsPage
-  )(global)
+  private val controller =
+    new MovementsController(mockAuthAction, mockCustomsExportsMovementConnector, stubMessagesControllerComponents(), mockMovementsPage)(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

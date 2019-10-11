@@ -39,8 +39,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class SubmissionServiceSpec
-    extends UnitSpec with ScalaFutures with MovementsMetricsStub with MockCustomsExportsMovement with MetricsMatchers
-    with BeforeAndAfterEach with MockCustomsCacheService {
+    extends UnitSpec with ScalaFutures with MovementsMetricsStub with MockCustomsExportsMovement with MetricsMatchers with BeforeAndAfterEach
+    with MockCustomsCacheService {
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(100, Millis))
@@ -50,12 +50,7 @@ class SubmissionServiceSpec
   val mockAuditService = mock[AuditService]
 
   val submissionService =
-    new SubmissionService(
-      mockCustomsCacheService,
-      mockCustomsExportsMovementConnector,
-      mockAuditService,
-      movementsMetricsStub
-    )
+    new SubmissionService(mockCustomsCacheService, mockCustomsExportsMovementConnector, mockAuditService, movementsMetricsStub)
 
   override def afterEach(): Unit = {
     reset(mockCustomsCacheService, mockCustomsExportsMovementConnector, mockAuditService)
@@ -86,12 +81,8 @@ class SubmissionServiceSpec
         when(mockCustomsExportsMovementConnector.sendArrivalDeclaration(any())(any()))
           .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
-        await(submissionService.submitMovementRequest("arrival-eori1", "eori1", Arrival)) must equal(
-          CustomHttpResponseCode
-        )
-        verify(mockAuditService).auditMovements(any(), any(), any(), ArgumentMatchers.eq(AuditTypes.AuditArrival))(
-          any()
-        )
+        await(submissionService.submitMovementRequest("arrival-eori1", "eori1", Arrival)) must equal(CustomHttpResponseCode)
+        verify(mockAuditService).auditMovements(any(), any(), any(), ArgumentMatchers.eq(AuditTypes.AuditArrival))(any())
         verify(mockAuditService)
           .auditAllPagesUserInput(ArgumentMatchers.eq(Arrival), any())(any())
       }
@@ -104,9 +95,7 @@ class SubmissionServiceSpec
         submissionService.submitMovementRequest("arrival-eori1", "eori1", Arrival).futureValue
 
         verify(mockCustomsExportsMovementConnector).sendArrivalDeclaration(any())(any())
-        verify(mockAuditService).auditMovements(any(), any(), any(), ArgumentMatchers.eq(AuditTypes.AuditArrival))(
-          any()
-        )
+        verify(mockAuditService).auditMovements(any(), any(), any(), ArgumentMatchers.eq(AuditTypes.AuditArrival))(any())
         verify(mockAuditService)
           .auditAllPagesUserInput(ArgumentMatchers.eq(Arrival), any())(any())
       }
@@ -115,9 +104,7 @@ class SubmissionServiceSpec
         when(mockCustomsCacheService.fetch(any())(any(), any()))
           .thenReturn(Future.successful(None))
 
-        submissionService.submitMovementRequest("arrival-eori1", "eori1", Arrival).futureValue must equal(
-          INTERNAL_SERVER_ERROR
-        )
+        submissionService.submitMovementRequest("arrival-eori1", "eori1", Arrival).futureValue must equal(INTERNAL_SERVER_ERROR)
         verifyZeroInteractions(mockAuditService)
       }
     }
@@ -133,12 +120,8 @@ class SubmissionServiceSpec
         when(mockCustomsExportsMovementConnector.sendDepartureDeclaration(any())(any()))
           .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
-        submissionService.submitMovementRequest("departure-eori1", "eori1", Departure).futureValue must equal(
-          CustomHttpResponseCode
-        )
-        verify(mockAuditService).auditMovements(any(), any(), any(), ArgumentMatchers.eq(AuditTypes.AuditDeparture))(
-          any()
-        )
+        submissionService.submitMovementRequest("departure-eori1", "eori1", Departure).futureValue must equal(CustomHttpResponseCode)
+        verify(mockAuditService).auditMovements(any(), any(), any(), ArgumentMatchers.eq(AuditTypes.AuditDeparture))(any())
         verify(mockAuditService)
           .auditAllPagesUserInput(ArgumentMatchers.eq(Departure), any())(any())
       }
@@ -151,9 +134,7 @@ class SubmissionServiceSpec
         submissionService.submitMovementRequest("departure-eori1", "eori1", Departure).futureValue
 
         verify(mockCustomsExportsMovementConnector).sendDepartureDeclaration(any())(any())
-        verify(mockAuditService).auditMovements(any(), any(), any(), ArgumentMatchers.eq(AuditTypes.AuditDeparture))(
-          any()
-        )
+        verify(mockAuditService).auditMovements(any(), any(), any(), ArgumentMatchers.eq(AuditTypes.AuditDeparture))(any())
         verify(mockAuditService)
           .auditAllPagesUserInput(ArgumentMatchers.eq(Departure), any())(any())
       }
@@ -162,9 +143,7 @@ class SubmissionServiceSpec
         when(mockCustomsCacheService.fetch(any())(any(), any()))
           .thenReturn(Future.successful(None))
 
-        submissionService.submitMovementRequest("departure-eori1", "eori1", Departure).futureValue must equal(
-          INTERNAL_SERVER_ERROR
-        )
+        submissionService.submitMovementRequest("departure-eori1", "eori1", Departure).futureValue must equal(INTERNAL_SERVER_ERROR)
         verifyZeroInteractions(mockAuditService)
       }
     }
@@ -204,9 +183,7 @@ class SubmissionServiceSpec
       when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
         .thenReturn(Future.successful(exampleDisassociateDucrRequest))
 
-      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr), "eori").futureValue must equal(
-        exampleDisassociateDucrRequest
-      )
+      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr), "eori").futureValue must equal(exampleDisassociateDucrRequest)
       verify(mockAuditService).auditDisassociate(ArgumentMatchers.eq("eori"), any(), any())(any())
 
     }
@@ -242,9 +219,7 @@ class SubmissionServiceSpec
       when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
         .thenReturn(Future.successful(exampleShutMucrRequest))
 
-      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), "eori").futureValue must equal(
-        exampleShutMucrRequest
-      )
+      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), "eori").futureValue must equal(exampleShutMucrRequest)
       verify(mockAuditService).auditShutMucr(ArgumentMatchers.eq("eori"), any(), any())(any())
     }
 

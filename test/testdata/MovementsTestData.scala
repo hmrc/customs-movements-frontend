@@ -43,9 +43,7 @@ object MovementsTestData {
   val departureDetails = DepartureDetails(date)
   val goodsDeparted = GoodsDeparted(AllowedPlaces.outOfTheUk)
   val location: JsValue = Json.toJson(Location("A", "Y", "correct", "PL"))
-  val correctTransport: JsValue = JsObject(
-    Map("modeOfTransport" -> JsString("2"), "nationality" -> JsString("PL"), "transportId" -> JsString("REF"))
-  )
+  val correctTransport: JsValue = JsObject(Map("modeOfTransport" -> JsString("2"), "nationality" -> JsString("PL"), "transportId" -> JsString("REF")))
 
   def newUser(eori: String): SignedInUser =
     SignedInUser(eori, Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori))))

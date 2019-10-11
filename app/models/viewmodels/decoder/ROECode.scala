@@ -26,20 +26,12 @@ sealed abstract class ROECode(override val code: String, override val messageKey
 
 object ROECode {
 
-  val codes: Set[ROECode] = Set(
-    DocumentaryControl,
-    PhysicalExternalPartyControl,
-    NonBlockingDocumentaryControl,
-    NoControlRequired,
-    RiskingNotPerformed,
-    PrelodgePrefix
-  )
+  val codes: Set[ROECode] =
+    Set(DocumentaryControl, PhysicalExternalPartyControl, NonBlockingDocumentaryControl, NoControlRequired, RiskingNotPerformed, PrelodgePrefix)
 
   case object DocumentaryControl extends ROECode(code = "1", messageKey = "decoder.roe.DocumentaryControl")
-  case object PhysicalExternalPartyControl
-      extends ROECode(code = "2", messageKey = "decoder.roe.PhysicalExternalPartyControl")
-  case object NonBlockingDocumentaryControl
-      extends ROECode(code = "3", messageKey = "decoder.roe.NonBlockingDocumentaryControl")
+  case object PhysicalExternalPartyControl extends ROECode(code = "2", messageKey = "decoder.roe.PhysicalExternalPartyControl")
+  case object NonBlockingDocumentaryControl extends ROECode(code = "3", messageKey = "decoder.roe.NonBlockingDocumentaryControl")
   case object NoControlRequired extends ROECode(code = "6", messageKey = "decoder.roe.NoControlRequired")
   case object RiskingNotPerformed extends ROECode(code = "0", messageKey = "decoder.roe.RiskingNotPerformed")
   case object PrelodgePrefix extends ROECode(code = "H", messageKey = "decoder.roe.PrelodgePrefix")

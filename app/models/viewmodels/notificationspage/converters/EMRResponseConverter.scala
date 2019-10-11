@@ -27,12 +27,9 @@ import play.twirl.api.{Html, HtmlFormat}
 import views.html.components.code_explanation
 
 @Singleton
-class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
-    extends NotificationPageSingleElementConverter {
+class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter) extends NotificationPageSingleElementConverter {
 
-  override def convert(
-    notification: NotificationFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement = {
+  override def convert(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement = {
     val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation).getOrElse(HtmlFormat.empty)
     val roeCodeExplanation =
       findMucrEntry(notification.entries).flatMap(_.roe).flatMap(buildRoeCodeExplanation).getOrElse(HtmlFormat.empty)

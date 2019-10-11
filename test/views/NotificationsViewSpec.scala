@@ -17,19 +17,15 @@
 package views
 
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
 import play.twirl.api.Html
 import testdata.CommonTestData
 import testdata.CommonTestData.exampleNotificationPageSingleElement
-import utils.Stubs
-import views.spec.ViewValidator
 import views.html.notifications
+import views.spec.UnitViewSpec
 
-class NotificationsViewSpec extends WordSpec with MustMatchers with Stubs with ViewValidator {
+class NotificationsViewSpec extends UnitViewSpec {
 
-  private val messages = stubMessages()
   private def page(
     submissionUcr: String = "",
     submissionElement: NotificationsPageSingleElement,
@@ -54,9 +50,9 @@ class NotificationsViewSpec extends WordSpec with MustMatchers with Stubs with V
       val pageWithData: Html =
         page(CommonTestData.correctUcr, NotificationsPageSingleElement(title, timestamp, content))
 
-      pageWithData.getElementById("notifications-request-title").text() mustBe title
-      pageWithData.getElementById("notifications-request-timestamp").text() mustBe timestamp
-      pageWithData.getElementById("notifications-request-content").html() mustBe content.toString()
+      pageWithData.getElementById("notifications-request-title") must containText(title)
+      pageWithData.getElementById("notifications-request-timestamp") must containText(timestamp)
+      pageWithData.getElementById("notifications-request-content") must containHtml(content.toString)
     }
 
     "contain elements for request and all notifications in correct order" in {
@@ -64,19 +60,17 @@ class NotificationsViewSpec extends WordSpec with MustMatchers with Stubs with V
       val requestTitle = "REQUEST TITLE"
       val responseTitle_1 = "RESPONSE TITLE 1"
       val responseTitle_2 = "RESPONSE TITLE 2"
-      val elementsToDisplay = Seq(
-        exampleNotificationPageSingleElement(title = responseTitle_1),
-        exampleNotificationPageSingleElement(title = responseTitle_2)
-      )
+      val elementsToDisplay =
+        Seq(exampleNotificationPageSingleElement(title = responseTitle_1), exampleNotificationPageSingleElement(title = responseTitle_2))
 
       val pageWithData: Html =
         page(CommonTestData.correctUcr, exampleNotificationPageSingleElement(title = requestTitle), elementsToDisplay)
 
-      getElementById(pageWithData, "notifications-request-title").text() must equal(requestTitle)
-      getElementById(pageWithData, "title-1").text() must equal(responseTitle_1)
-      getElementById(pageWithData, "index-1").text() must equal("1")
-      getElementById(pageWithData, "title-2").text() must equal(responseTitle_2)
-      getElementById(pageWithData, "index-2").text() must equal("2")
+      pageWithData.getElementById("notifications-request-title") must containText(requestTitle)
+      pageWithData.getElementById("title-1") must containText(responseTitle_1)
+      pageWithData.getElementById("index-1") must containText("1")
+      pageWithData.getElementById("title-2") must containText(responseTitle_2)
+      pageWithData.getElementById("index-2") must containText("2")
     }
 
   }

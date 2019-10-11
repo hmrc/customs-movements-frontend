@@ -40,10 +40,8 @@ class AppConfig @Inject()(
 
   lazy val keyStoreSource: String = appName
   lazy val keyStoreUrl: String = servicesConfig.baseUrl("keystore")
-  lazy val sessionCacheDomain: String = servicesConfig.getConfString(
-    "cachable.session-cache.domain",
-    throw new Exception(s"Could not find config 'cachable.session-cache.domain'")
-  )
+  lazy val sessionCacheDomain: String =
+    servicesConfig.getConfString("cachable.session-cache.domain", throw new Exception(s"Could not find config 'cachable.session-cache.domain'"))
 
   lazy val analyticsToken = loadConfig(s"google-analytics.token")
   lazy val analyticsHost = loadConfig(s"google-analytics.host")
@@ -80,6 +78,8 @@ class AppConfig @Inject()(
     "customs-declare-exports-movements.fetch-notifications",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports fetch notifications URI")
   )
+
+  lazy val responseErrorExplanationMode = loadConfig("microservice.services.features.response-error-explanation-mode")
 
   lazy val languageTranslationEnabled =
     runModeConfiguration

@@ -29,8 +29,7 @@ object CRCCode {
   val codes: Set[CRCCode] = Set(Success, PrelodgedDeclarationNotArrived, DeclarationNotArrived)
 
   case object Success extends CRCCode(code = "000", messageKey = "decoder.crc.Success")
-  case object PrelodgedDeclarationNotArrived
-      extends CRCCode(code = "101", messageKey = "decoder.crc.PrelodgedDeclarationNotArrived")
+  case object PrelodgedDeclarationNotArrived extends CRCCode(code = "101", messageKey = "decoder.crc.PrelodgedDeclarationNotArrived")
   case object DeclarationNotArrived extends CRCCode(code = "102", messageKey = "decoder.crc.DeclarationNotArrived")
 
 }

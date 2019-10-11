@@ -40,11 +40,7 @@ class UnknownResponseConverterSpec extends BaseSpec {
 
     "return generic NotificationsPageSingleElement" in {
 
-      val input = exampleNotificationFrontendModel(
-        responseType = MovementTotalsResponse,
-        messageCode = "UNKNOWN",
-        timestampReceived = testTimestamp
-      )
+      val input = exampleNotificationFrontendModel(responseType = MovementTotalsResponse, messageCode = "UNKNOWN", timestampReceived = testTimestamp)
 
       val result = converter.convert(input)
 

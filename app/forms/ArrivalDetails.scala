@@ -29,7 +29,5 @@ object ArrivalDetails {
   implicit val format: OFormat[ArrivalDetails] = Json.format[ArrivalDetails]
 
   val mapping: Mapping[ArrivalDetails] =
-    Forms.mapping("dateOfArrival" -> Date.mapping, "timeOfArrival" -> Time.mapping)(ArrivalDetails.apply)(
-      ArrivalDetails.unapply
-    )
+    Forms.mapping("dateOfArrival" -> Date.mapping, "timeOfArrival" -> Time.mapping)(ArrivalDetails.apply)(ArrivalDetails.unapply)
 }

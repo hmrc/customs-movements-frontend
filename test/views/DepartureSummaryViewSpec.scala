@@ -32,9 +32,7 @@ import views.html.summary.departure_summary_page
 class DepartureSummaryViewSpec extends UnitViewSpec {
 
   val cachedDataOutOfUk = cacheMapData(Departure)
-  val cachedDataBackIntoUk = cacheMapData(Departure) + (GoodsDeparted.formId -> Json.toJson(
-    GoodsDeparted(AllowedPlaces.backIntoTheUk)
-  ))
+  val cachedDataBackIntoUk = cacheMapData(Departure) + (GoodsDeparted.formId -> Json.toJson(GoodsDeparted(AllowedPlaces.backIntoTheUk)))
   val departureSummaryPage = new departure_summary_page(mainTemplate)
   val departureSummaryViewOut = departureSummaryPage(CacheMap("id", cachedDataOutOfUk))(request, messages)
   val departureSummaryContentOut = contentAsString(departureSummaryViewOut)
@@ -47,18 +45,18 @@ class DepartureSummaryViewSpec extends UnitViewSpec {
 
       val messages = messagesApi.preferred(request)
 
-      messages("summary.title") mustBe "Check your answers"
-      messages("summary.departure.title") mustBe "Check your answers before departing these goods"
-      messages("summary.referenceType") mustBe "Reference Type"
-      messages("summary.referenceValue") mustBe "Reference Value"
-      messages("summary.departure.date") mustBe "Date of Departure"
-      messages("summary.goodsLocation") mustBe "Goods Location"
-      messages("summary.modeOfTransport") mustBe "Mode of transport"
-      messages("summary.nationality") mustBe "Nationality"
-      messages("summary.nationality") mustBe "Nationality"
+      messages("summary.departure.title") mustBe "Is the information provided for this departure correct?"
+      messages("summary.referenceType") mustBe "Consignment type"
+      messages("summary.referenceValue") mustBe "Consignment reference"
+      messages("summary.departure.date") mustBe "Date of departure"
+      messages("summary.goodsLocation") mustBe "Goods location code"
+      messages("summary.modeOfTransport") mustBe "Transport type"
+      messages("summary.nationality") mustBe "Transport nationality"
       messages("goodsDeparted.departedPlace.outOfTheUk") mustBe "Out of the UK"
       messages("goodsDeparted.departedPlace.backIntoTheUk") mustBe "Back into the UK"
       messages("transport.modeOfTransport.2") mustBe "Rail transport"
+      messages("summary.departure.goodsDeparted.header") mustBe "Where are the goods going?"
+      messages("summary.departure.goodsDeparted") mustBe "Goods departed"
     }
   }
 

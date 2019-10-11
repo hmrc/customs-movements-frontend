@@ -14,23 +14,29 @@
  * limitations under the License.
  */
 
-package test.controllers
+package models.viewmodels.notificationspage
 
 import config.AppConfig
-import features.Feature.Feature
-import features.FeatureStatus.FeatureStatus
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
-
-import scala.concurrent.Future
+import play.api.Logger
 
 @Singleton
-class FeatureSwitchController @Inject()(implicit val appConfig: AppConfig, cc: ControllerComponents) extends BackendController(cc) {
+class ResponseErrorExplanationSuffixProvider @Inject()(appConfig: AppConfig) {
 
-  def set(feature: Feature, status: FeatureStatus): Action[AnyContent] =
-    Action.async { implicit req =>
-      appConfig.setFeatureStatus(feature, status)
-      Future.successful(Ok(s"${feature} ${status}"))
+  private val logger = Logger(this.getClass)
+
+  private val AllowedConfigValues = Set("CDS", "Exports")
+  private val DefaultSuffix = "Exports"
+
+  def addSuffixTo(key: String): String = {
+    val mode = appConfig.responseErrorExplanationMode
+
+    AllowedConfigValues.find(_ == mode) match {
+      case Some(configValue) => s"$key.$configValue"
+      case None =>
+        logger.info(s"Unknown value for configuration key 'microservice.services.features.response-error-explanation-mode': $mode")
+        s"$key.$DefaultSuffix"
     }
+  }
+
 }

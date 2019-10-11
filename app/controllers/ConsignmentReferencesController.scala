@@ -51,8 +51,7 @@ class ConsignmentReferencesController @Inject()(
     ConsignmentReferencesForm
       .bindFromRequest(request)
       .fold(
-        (formWithErrors: Form[ConsignmentReferences]) =>
-          Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
+        (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
         validForm =>
           customsCacheService
             .cache[ConsignmentReferences](movementCacheId(), formId, validForm)

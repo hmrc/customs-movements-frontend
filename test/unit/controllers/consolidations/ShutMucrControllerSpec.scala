@@ -35,13 +35,8 @@ class ShutMucrControllerSpec extends ControllerSpec with MockSubmissionService w
 
   private val mockShutMucrPage = mock[shut_mucr]
 
-  private val controller = new ShutMucrController(
-    mockAuthAction,
-    mockSubmissionService,
-    stubMessagesControllerComponents(),
-    mockErrorHandler,
-    mockShutMucrPage
-  )(global)
+  private val controller =
+    new ShutMucrController(mockAuthAction, mockSubmissionService, stubMessagesControllerComponents(), mockErrorHandler, mockShutMucrPage)(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

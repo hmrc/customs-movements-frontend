@@ -37,9 +37,7 @@ class MovementsController @Inject()(
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     for {
       submissions <- connector.fetchAllSubmissions()
-      notifications <- Future.sequence(
-        submissions.map(submission => connector.fetchNotifications(submission.conversationId))
-      )
+      notifications <- Future.sequence(submissions.map(submission => connector.fetchNotifications(submission.conversationId)))
       submissionsWithNotifications = submissions.zip(notifications.map(_.sorted.reverse))
 
     } yield Ok(movementsPage(submissionsWithNotifications))

@@ -28,9 +28,7 @@ import unit.mocks.{ErrorHandlerMocks, JourneyActionMocks}
 import utils.FakeRequestCSRFSupport._
 import utils.Stubs
 
-trait ControllerSpec
-    extends UnitSpec with Stubs with MockAuthConnector with MockCustomsCacheService with JourneyActionMocks
-    with ErrorHandlerMocks {
+trait ControllerSpec extends UnitSpec with Stubs with MockAuthConnector with MockCustomsCacheService with JourneyActionMocks with ErrorHandlerMocks {
 
   protected val user = newUser("12345")
 

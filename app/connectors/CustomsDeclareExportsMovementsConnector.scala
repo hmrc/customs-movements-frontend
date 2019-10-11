@@ -32,9 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
-class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient)(
-  implicit ec: ExecutionContext
-) {
+class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient)(implicit ec: ExecutionContext) {
 
   private val logger = Logger(this.getClass)
 
@@ -65,22 +63,16 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
           logger.warn(s"CUSTOMS_DECLARE_EXPORTS_MOVEMENTS failure on ${actionType.value}. $exception ")
       }
 
-  def sendConsolidationRequest(
-    consolidation: ConsolidationRequest
-  )(implicit hc: HeaderCarrier): Future[ConsolidationRequest] =
+  def sendConsolidationRequest(consolidation: ConsolidationRequest)(implicit hc: HeaderCarrier): Future[ConsolidationRequest] =
     httpClient.POST[ConsolidationRequest, ConsolidationRequest](
       s"$CustomsDeclareExportsMovementsUrl${appConfig.movementConsolidationUri}",
       consolidation,
       JsonHeaders
     )
 
-  def fetchNotifications(
-    conversationId: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[NotificationFrontendModel]] =
+  def fetchNotifications(conversationId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[NotificationFrontendModel]] =
     httpClient
-      .GET[Seq[NotificationFrontendModel]](
-        s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}/$conversationId"
-      )
+      .GET[Seq[NotificationFrontendModel]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}/$conversationId")
       .andThen {
         case Success(response)  => logger.debug(s"Notifications fetch response. $response")
         case Failure(exception) => logger.warn(s"Notifications fetch failure. $exception")
@@ -94,13 +86,9 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
         case Failure(exception) => logger.warn(s"Submissions fetch failure. $exception")
       }
 
-  def fetchSingleSubmission(
-    conversationId: String
-  )(implicit hc: HeaderCarrier): Future[Option[SubmissionFrontendModel]] =
+  def fetchSingleSubmission(conversationId: String)(implicit hc: HeaderCarrier): Future[Option[SubmissionFrontendModel]] =
     httpClient
-      .GET[Option[SubmissionFrontendModel]](
-        s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchSingleSubmission}/$conversationId"
-      )
+      .GET[Option[SubmissionFrontendModel]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchSingleSubmission}/$conversationId")
       .andThen {
         case Success(response)  => logger.debug(s"Single submission fetch response. $response")
         case Failure(exception) => logger.warn(s"Single submission fetch failure. $exception")

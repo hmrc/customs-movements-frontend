@@ -29,12 +29,9 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(
-  override val authConnector: AuthConnector,
-  eoriWhitelist: EoriWhitelist,
-  bodyParsers: PlayBodyParsers
-)(implicit override val executionContext: ExecutionContext)
-    extends AuthAction with AuthorisedFunctions {
+class AuthActionImpl @Inject()(override val authConnector: AuthConnector, eoriWhitelist: EoriWhitelist, bodyParsers: PlayBodyParsers)(
+  implicit override val executionContext: ExecutionContext
+) extends AuthAction with AuthorisedFunctions {
 
   override val parser: BodyParser[AnyContent] = bodyParsers.anyContent
 
@@ -65,8 +62,7 @@ class AuthActionImpl @Inject()(
 }
 
 @ImplementedBy(classOf[AuthActionImpl])
-trait AuthAction
-    extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
+trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
 class EoriWhitelist @Inject()(configuration: Configuration) {
   private val values = configuration.get[Seq[String]]("whitelist.eori")

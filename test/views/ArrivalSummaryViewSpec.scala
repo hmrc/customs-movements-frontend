@@ -18,13 +18,11 @@ package views
 
 import controllers.routes
 import forms.Choice.Arrival
-import play.api.i18n.MessagesApi
 import play.api.test.Helpers._
 import testdata.MovementsTestData.cacheMapData
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.{Injector, Stubs}
-import views.spec.UnitViewSpec
 import views.html.summary.arrival_summary_page
+import views.spec.UnitViewSpec
 
 class ArrivalSummaryViewSpec extends UnitViewSpec {
 
@@ -39,16 +37,13 @@ class ArrivalSummaryViewSpec extends UnitViewSpec {
 
       val messages = messagesApi.preferred(request)
 
-      messages("summary.title") mustBe "Check your answers"
-      messages("summary.arrival.title") mustBe "Check your answers before arriving these goods"
-      messages("summary.referenceType") mustBe "Reference Type"
-      messages("summary.referenceValue") mustBe "Reference Value"
-      messages("summary.arrivalReference.reference") mustBe "Reference"
-      messages("summary.arrival.date") mustBe "Date of Arrival"
-      messages("summary.arrival.time") mustBe "Time of Arrival"
-      messages("summary.goodsLocation") mustBe "Goods Location"
-      messages("summary.modeOfTransport") mustBe "Mode of transport"
-      messages("summary.nationality") mustBe "Nationality"
+      messages("summary.arrival.title") mustBe "Is the information provided for this arrival correct?"
+      messages("summary.referenceType") mustBe "Consignment type"
+      messages("summary.referenceValue") mustBe "Consignment reference"
+      messages("summary.arrivalReference.reference") mustBe "Unique reference"
+      messages("summary.arrival.date") mustBe "Date of arrival"
+      messages("summary.arrival.time") mustBe "Time of arrival"
+      messages("summary.goodsLocation") mustBe "Goods location code"
     }
   }
 
@@ -73,7 +68,7 @@ class ArrivalSummaryViewSpec extends UnitViewSpec {
     "have correct main buttons" in {
 
       arrivalSummaryContent must include("site.back")
-      arrivalSummaryContent must include("site.acceptAndSend")
+      arrivalSummaryContent must include("site.confirmAndSubmit")
     }
 
     "have correct consignment references part" in {

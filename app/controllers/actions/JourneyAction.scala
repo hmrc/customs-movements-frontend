@@ -29,9 +29,8 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class JourneyAction @Inject()(customsCacheService: CustomsCacheService)(
-  implicit override val executionContext: ExecutionContext
-) extends ActionRefiner[AuthenticatedRequest, JourneyRequest] {
+case class JourneyAction @Inject()(customsCacheService: CustomsCacheService)(implicit override val executionContext: ExecutionContext)
+    extends ActionRefiner[AuthenticatedRequest, JourneyRequest] {
 
   override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
     implicit val hc: HeaderCarrier =

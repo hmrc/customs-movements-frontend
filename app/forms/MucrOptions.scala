@@ -50,11 +50,9 @@ object MucrOptions {
 
   val mapping =
     Forms
-      .mapping(
-        "createOrAdd" -> text().verifying("mucrOptions.createAdd.value.empty", nonEmpty),
-        "newMucr" -> text(),
-        "existingMucr" -> text()
-      )(form2Model)(model2Form)
+      .mapping("createOrAdd" -> text().verifying("mucrOptions.createAdd.value.empty", nonEmpty), "newMucr" -> text(), "existingMucr" -> text())(
+        form2Model
+      )(model2Form)
 
   val form: Form[MucrOptions] = Form(mapping)
 

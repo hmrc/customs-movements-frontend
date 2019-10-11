@@ -37,8 +37,7 @@ class CustomsHttpCaching @Inject()(cfg: AppConfig, httpClient: HttpClient) exten
 }
 
 @Singleton
-class CustomsCacheService @Inject()(caching: CustomsHttpCaching, applicationCrypto: ApplicationCrypto)
-    extends ShortLivedCache {
+class CustomsCacheService @Inject()(caching: CustomsHttpCaching, applicationCrypto: ApplicationCrypto) extends ShortLivedCache {
 
   override implicit val crypto: CompositeSymmetricCrypto =
     applicationCrypto.JsonCrypto

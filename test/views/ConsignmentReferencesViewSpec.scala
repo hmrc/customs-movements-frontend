@@ -16,6 +16,8 @@
 
 package views
 
+import controllers.routes
+import forms.Choice.Arrival
 import forms.ConsignmentReferences
 import helpers.views.{CommonMessages, ConsignmentReferencesMessages}
 import play.api.data.Form
@@ -27,20 +29,15 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
   private val form: Form[ConsignmentReferences] = ConsignmentReferences.form()
   private val consignmentReferencesPage = injector.instanceOf[views.html.consignment_references]
 
-  private def createView(form: Form[ConsignmentReferences] = form): Html = consignmentReferencesPage(form)
+  private val arrivalView: Html = consignmentReferencesPage(form)(fakeJourneyRequest(Arrival), messages)
 
   "Consignment References View" should {
 
     "have a proper labels for messages" in {
 
-      assertMessage(title, "Consignment references")
-      assertMessage(eoriQuestion, "What is your EORI number?")
-      assertMessage(
-        eoriHint,
-        "The number starts with a country code, for example, FR for France, and is then followed by up to 15 digits"
-      )
-      assertMessage(referenceQuestion, "Which reference are you entering to arrive the goods?")
-      assertMessage(referenceHint, "This can be a DUCR or MUCR")
+      assertMessage(arrivalHeading, "Arrive consignment")
+      assertMessage(departureHeading, "Depart consignment")
+      assertMessage(question, "What type of consignment reference do you want to enter?")
       assertMessage(referenceDucr, "DUCR")
       assertMessage(referenceMucr, "MUCR")
       assertMessage(referenceValue, "Enter reference")
@@ -48,7 +45,6 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
     "have a proper labels for error messages" in {
 
-      assertMessage(eoriError, "EORI number is incorrect")
       assertMessage(referenceEmpty, "Please choose reference")
       assertMessage(referenceError, "Incorrect reference")
       assertMessage(referenceValueEmpty, "Please enter reference")
@@ -58,46 +54,39 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
   "Consignment References View on empty page" should {
 
-    "display page title" in {
+    "display page question" in {
 
-      getElementById(createView(), "title").text() must be(messages(title))
+      getElementById(arrivalView, "title").text() mustBe messages(question)
     }
 
-    "display reference question" in {
+    "display page heading" in {
 
-      getElementById(createView(), "reference-label").text() must be(messages(referenceQuestion))
-    }
-
-    "display reference hint" in {
-
-      getElementById(createView(), "reference-hint").text() must be(messages(referenceHint))
+      getElementById(arrivalView, "section-header").text() mustBe messages(arrivalHeading)
     }
 
     "display reference radio options" in {
 
-      getElementById(createView(), "Ducr-label").text() must be(messages(referenceDucr))
-      getElementById(createView(), "Mucr-label").text() must be(messages(referenceMucr))
+      getElementById(arrivalView, "Ducr-label").text() mustBe messages(referenceDucr)
+      getElementById(arrivalView, "Mucr-label").text() mustBe messages(referenceMucr)
     }
 
     "display reference value text input" in {
 
-      getElementById(createView(), "referenceValue-label").text() must be(messages(referenceValue))
+      getElementById(arrivalView, "referenceValue-label").text() mustBe messages(referenceValue)
     }
 
     "display \"Back\" buttion that links to start page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = getElementById(arrivalView, "link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-movements/choice")
+      backButton.text() mustBe messages(backCaption)
+      backButton.attr("href") mustBe routes.ChoiceController.displayChoiceForm().url
     }
 
     "display \"Save and continue\" button on page" in {
 
-      val view = createView()
-
-      val saveButton = getElementById(view, "submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      val saveButton = getElementById(arrivalView, "submit")
+      saveButton.text() mustBe messages(saveAndContinueCaption)
     }
   }
 }

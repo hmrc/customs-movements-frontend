@@ -62,7 +62,7 @@
             ))
         }
 
-        @components.summary_list(Some(messages("goodsDeparted.title"))) {
+        @components.summary_list(Some(messages("summary.departure.goodsDeparted.header"))) {
             @components.table_row_no_change_link(HtmlTableRow(
                 label = messages("summary.departure.goodsDeparted"),
                 value = data.getEntry[GoodsDeparted](GoodsDeparted.formId).map(goodsDeparted => messages(s"goodsDeparted.departedPlace.${goodsDeparted.departedPlace}"))

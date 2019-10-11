@@ -134,9 +134,8 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
     "call HttpClient for Association" in new Test {
 
-      when(
-        httpClientMock.POST[ConsolidationRequest, ConsolidationRequest](any(), any(), any())(any(), any(), any(), any())
-      ).thenReturn(Future.successful(exampleAssociateDucrRequest))
+      when(httpClientMock.POST[ConsolidationRequest, ConsolidationRequest](any(), any(), any())(any(), any(), any(), any()))
+        .thenReturn(Future.successful(exampleAssociateDucrRequest))
 
       val result = connector.sendConsolidationRequest(exampleAssociateDucrRequest).futureValue
 
@@ -145,18 +144,18 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
       result must equal(exampleAssociateDucrRequest)
 
-      verify(httpClientMock).POST(
-        meq(expectedUrl),
-        meq(exampleAssociateDucrRequest),
-        meq(validConsolidationRequestHeaders)
-      )(any(), any(), any(), any())
+      verify(httpClientMock).POST(meq(expectedUrl), meq(exampleAssociateDucrRequest), meq(validConsolidationRequestHeaders))(
+        any(),
+        any(),
+        any(),
+        any()
+      )
     }
 
     "call HttpClient for Disassociation" in new Test {
 
-      when(
-        httpClientMock.POST[ConsolidationRequest, ConsolidationRequest](any(), any(), any())(any(), any(), any(), any())
-      ).thenReturn(Future.successful(exampleDisassociateDucrRequest))
+      when(httpClientMock.POST[ConsolidationRequest, ConsolidationRequest](any(), any(), any())(any(), any(), any(), any()))
+        .thenReturn(Future.successful(exampleDisassociateDucrRequest))
 
       val result = connector.sendConsolidationRequest(exampleDisassociateDucrRequest).futureValue
 
@@ -165,18 +164,18 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
       result must equal(exampleDisassociateDucrRequest)
 
-      verify(httpClientMock).POST(
-        meq(expectedUrl),
-        meq(exampleDisassociateDucrRequest),
-        meq(validConsolidationRequestHeaders)
-      )(any(), any(), any(), any())
+      verify(httpClientMock).POST(meq(expectedUrl), meq(exampleDisassociateDucrRequest), meq(validConsolidationRequestHeaders))(
+        any(),
+        any(),
+        any(),
+        any()
+      )
     }
 
     "call HttpClient for Shut Mucr " in new Test {
 
-      when(
-        httpClientMock.POST[ConsolidationRequest, ConsolidationRequest](any(), any(), any())(any(), any(), any(), any())
-      ).thenReturn(Future.successful(exampleShutMucrRequest))
+      when(httpClientMock.POST[ConsolidationRequest, ConsolidationRequest](any(), any(), any())(any(), any(), any(), any()))
+        .thenReturn(Future.successful(exampleShutMucrRequest))
 
       val result = connector.sendConsolidationRequest(exampleShutMucrRequest).futureValue
 
@@ -185,12 +184,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
       result must equal(exampleShutMucrRequest)
 
-      verify(httpClientMock).POST(meq(expectedUrl), meq(exampleShutMucrRequest), meq(validConsolidationRequestHeaders))(
-        any(),
-        any(),
-        any(),
-        any()
-      )
+      verify(httpClientMock).POST(meq(expectedUrl), meq(exampleShutMucrRequest), meq(validConsolidationRequestHeaders))(any(), any(), any(), any())
     }
   }
 

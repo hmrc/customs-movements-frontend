@@ -122,9 +122,7 @@ class StartViewSpec extends UnitViewSpec {
 
     "display problems with service notice" in {
       view.getElementById("problems-with-service-notice").text() must include("startPage.problemsWithServiceNotice")
-      view.getElementById("problems-with-service-notice").text() must include(
-        "startPage.problemsWithServiceNotice.link"
-      )
+      view.getElementById("problems-with-service-notice").text() must include("startPage.problemsWithServiceNotice.link")
     }
 
     "contain link to service availability in 'Report your arrival and departure' section" in {

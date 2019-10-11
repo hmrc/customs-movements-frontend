@@ -37,8 +37,8 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
     "have proper labels for messages" in {
 
       assertMessage(title, "What do you want to do?")
-      assertMessage(arrivalDecLabel, "Arrival")
-      assertMessage(departureDecLabel, "Departure")
+      assertMessage(arrivalDecLabel, "Arrive a consignment")
+      assertMessage(departureDecLabel, "Depart a consignment")
       assertMessage(shutMucrLabel, "Shut a MUCR")
     }
 
@@ -75,10 +75,10 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       val view = createView(Choice.form())
 
       getElementByCss(view, "#choice>div:nth-child(2)>label").text() must be(messages(arrivalDecLabel))
-      getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(departureDecLabel))
-      getElementByCss(view, "#choice>div:nth-child(4)>label").text() must be(messages(associateDecLabel))
-      getElementByCss(view, "#choice>div:nth-child(5)>label").text() must be(messages(disassociateDecLabel))
-      getElementByCss(view, "#choice>div:nth-child(6)>label").text() must be(messages(shutMucrLabel))
+      getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(associateDecLabel))
+      getElementByCss(view, "#choice>div:nth-child(4)>label").text() must be(messages(disassociateDecLabel))
+      getElementByCss(view, "#choice>div:nth-child(5)>label").text() must be(messages(shutMucrLabel))
+      getElementByCss(view, "#choice>div:nth-child(6)>label").text() must be(messages(departureDecLabel))
     }
 
     "display 4 unchecked radio buttons" in {
@@ -96,7 +96,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       val view = createView()
 
       val saveButton = getElementByCss(view, "#submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      saveButton.text() must be(messages(continueCaption))
     }
   }
 

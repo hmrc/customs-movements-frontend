@@ -25,14 +25,12 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 
 @Singleton
-class UnknownResponseConverter @Inject()(dateTimeFormatter: DateTimeFormatter)
-    extends NotificationPageSingleElementConverter {
+class UnknownResponseConverter @Inject()(dateTimeFormatter: DateTimeFormatter) extends NotificationPageSingleElementConverter {
 
-  override def convert(
-    notification: NotificationFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement = NotificationsPageSingleElement(
-    title = messages("notifications.elem.title.unknown"),
-    timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
-    content = HtmlFormat.empty
-  )
+  override def convert(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
+    NotificationsPageSingleElement(
+      title = messages("notifications.elem.title.unknown"),
+      timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
+      content = HtmlFormat.empty
+    )
 }

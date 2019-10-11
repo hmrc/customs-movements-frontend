@@ -53,10 +53,7 @@ object Transport {
       .verifying("transport.nationality.error", isEmpty or isValidCountryCode),
     "transportId" -> text()
       .verifying("transport.transportId.empty", nonEmpty)
-      .verifying(
-        "transport.transportId.error",
-        isEmpty or (noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)
-      )
+      .verifying("transport.transportId.error", isEmpty or (noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters))
   )(Transport.apply)(Transport.unapply)
 
   def form: Form[Transport] =

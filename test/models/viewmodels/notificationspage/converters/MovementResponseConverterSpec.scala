@@ -55,10 +55,7 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
 
       "call Decoder" in new Test {
 
-        val input = exampleNotificationFrontendModel(
-          responseType = ResponseType.MovementResponse,
-          crcCode = Some(crcCodeKeyFromDecoder.code)
-        )
+        val input = exampleNotificationFrontendModel(responseType = ResponseType.MovementResponse, crcCode = Some(crcCodeKeyFromDecoder.code))
 
         converter.convert(input)
 
@@ -75,9 +72,7 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
           timestampInfo = "23 Oct 2019 at 12:34",
-          content = Html(
-            s"<p>${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} ${crcCodeKeyFromDecoder.messageKey}</p>"
-          )
+          content = Html(s"<p>${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} ${crcCodeKeyFromDecoder.messageKey}</p>")
         )
 
         converter.convert(input) mustBe expectedResult
@@ -97,10 +92,7 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
 
       "return NotificationsPageSingleElement without content for missing codes" in new Test {
 
-        val input = exampleNotificationFrontendModel(
-          responseType = ResponseType.MovementResponse,
-          timestampReceived = testTimestamp
-        )
+        val input = exampleNotificationFrontendModel(responseType = ResponseType.MovementResponse, timestampReceived = testTimestamp)
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
           timestampInfo = "23 Oct 2019 at 12:34",
@@ -129,11 +121,8 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
         val crcCode = "123456"
         when(decoderMock.crc(meq(crcCode))).thenReturn(None)
 
-        val input = exampleNotificationFrontendModel(
-          responseType = ResponseType.MovementResponse,
-          timestampReceived = testTimestamp,
-          crcCode = Some(crcCode)
-        )
+        val input =
+          exampleNotificationFrontendModel(responseType = ResponseType.MovementResponse, timestampReceived = testTimestamp, crcCode = Some(crcCode))
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
           timestampInfo = "23 Oct 2019 at 12:34",

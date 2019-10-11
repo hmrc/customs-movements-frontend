@@ -36,7 +36,7 @@ class ShutMucrViewSpec extends ViewSpec with ShutMucrMessages with CommonMessage
     "have proper labels for messages" in {
 
       assertMessage(tabTitle, "Shut a MUCR")
-      assertMessage(title, "What MUCR do you want to shut?")
+      assertMessage(title, "Which MUCR do you want to shut?")
     }
 
     "have proper labels for error messages" in {

@@ -32,13 +32,12 @@ class ControlResponseAcknowledgedConverter @Inject()(decoder: Decoder, dateTimeF
 
   private val TitleMessagesKey = "notifications.elem.title.inventoryLinkingControlResponse.AcknowledgedAndProcessed"
 
-  override def convert(
-    notification: NotificationFrontendModel
-  )(implicit messages: Messages): NotificationsPageSingleElement = NotificationsPageSingleElement(
-    title = messages(TitleMessagesKey),
-    timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
-    content = buildContent(notification)
-  )
+  override def convert(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
+    NotificationsPageSingleElement(
+      title = messages(TitleMessagesKey),
+      timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
+      content = buildContent(notification)
+    )
 
   private def buildContent(notification: NotificationFrontendModel)(implicit messages: Messages): Html =
     notification.actionCode

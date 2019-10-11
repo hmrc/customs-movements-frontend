@@ -137,11 +137,7 @@ trait ViewMatchers {
 
   class ElementHasAttributeMatcher(key: String) extends Matcher[Element] {
     override def apply(left: Element): MatchResult =
-      MatchResult(
-        left != null && left.hasAttr(key),
-        s"Element didnt have attribute {$key}",
-        s"Element had attribute {$key}"
-      )
+      MatchResult(left != null && left.hasAttr(key), s"Element didnt have attribute {$key}", s"Element had attribute {$key}")
   }
 
   class ElementHasChildCountMatcher(count: Int) extends Matcher[Element] {
@@ -155,20 +151,12 @@ trait ViewMatchers {
 
   class ElementsHasSizeMatcher(size: Int) extends Matcher[Elements] {
     override def apply(left: Elements): MatchResult =
-      MatchResult(
-        left != null && left.size() == size,
-        s"Elements had size {${left.size()}}, expected {$size}",
-        s"Elements had size {$size}"
-      )
+      MatchResult(left != null && left.size() == size, s"Elements had size {${left.size()}}, expected {$size}", s"Elements had size {$size}")
   }
 
   class ElementTagMatcher(tag: String) extends Matcher[Element] {
     override def apply(left: Element): MatchResult =
-      MatchResult(
-        left != null && left.tagName() == tag,
-        s"Elements had tag {${left.tagName()}}, expected {$tag}",
-        s"Elements had tag {$tag}"
-      )
+      MatchResult(left != null && left.tagName() == tag, s"Elements had tag {${left.tagName()}}, expected {$tag}", s"Elements had tag {$tag}")
   }
 
   class ElementContainsFieldError(fieldName: String, content: String = "") extends Matcher[Element] {
@@ -212,10 +200,7 @@ trait ViewMatchers {
   def haveChild(tag: String) = new ChildMatcherBuilder(tag)
 
   def haveFieldError(fieldName: String, content: String): Matcher[Element] =
-    new ContainElementWithIDMatcher(s"error-message-$fieldName-input") and new ElementContainsFieldError(
-      fieldName,
-      content
-    )
+    new ContainElementWithIDMatcher(s"error-message-$fieldName-input") and new ElementContainsFieldError(fieldName, content)
   def haveGlobalErrorSummary: Matcher[Element] = new ContainElementWithIDMatcher("error-summary-heading")
 
   def haveHref(value: Call): Matcher[Element] = new ElementHasAttributeValueMatcher("href", value.url)

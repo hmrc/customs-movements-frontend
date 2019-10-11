@@ -29,11 +29,7 @@ class ShutMucrConfirmationViewSpec extends ViewSpec with ShutMucrConfirmationMes
 
   private val shutMucrConformationPage = injector.instanceOf[shut_mucr_confirmation]
   private def createView(mucrOpt: Option[String] = None): Html =
-    shutMucrConformationPage()(
-      fakeRequest,
-      Flash(mucrOpt.map(mucr => Map(FlashKeys.MUCR -> mucr)).getOrElse(Map.empty)),
-      messages
-    )
+    shutMucrConformationPage()(fakeRequest, Flash(mucrOpt.map(mucr => Map(FlashKeys.MUCR -> mucr)).getOrElse(Map.empty)), messages)
 
   "Shut Mucr Confirmation View" should {
 

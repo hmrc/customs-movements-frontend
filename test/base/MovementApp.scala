@@ -46,8 +46,8 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait MovementApp
-    extends PlaySpec with GuiceOneAppPerSuite with MockAuthConnector with MockCustomsCacheService
-    with MockSubmissionService with MockCustomsExportsMovement with MockMovementsMetrics with ScalaFutures {
+    extends PlaySpec with GuiceOneAppPerSuite with MockAuthConnector with MockCustomsCacheService with MockSubmissionService
+    with MockCustomsExportsMovement with MockMovementsMetrics with ScalaFutures {
 
   override def fakeApplication(): Application = {
     SharedMetricRegistries.clear()
@@ -81,21 +81,13 @@ trait MovementApp
 
   protected def theDataCached: Object = {
     val captor = ArgumentCaptor.forClass(classOf[Object])
-    verify(mockCustomsCacheService).cache(anyString, anyString, captor.capture())(
-      any[HeaderCarrier],
-      any(),
-      any[ExecutionContext]
-    )
+    verify(mockCustomsCacheService).cache(anyString, anyString, captor.capture())(any[HeaderCarrier], any(), any[ExecutionContext])
     captor.getValue
   }
 
   protected def theFormIDCached: String = {
     val captor = ArgumentCaptor.forClass(classOf[String])
-    verify(mockCustomsCacheService).cache(anyString, captor.capture(), any())(
-      any[HeaderCarrier],
-      any(),
-      any[ExecutionContext]
-    )
+    verify(mockCustomsCacheService).cache(anyString, captor.capture(), any())(any[HeaderCarrier], any(), any[ExecutionContext])
     captor.getValue
   }
 
@@ -108,11 +100,7 @@ trait MovementApp
       .withCSRFToken
   }
 
-  protected def postRequest(
-    uri: String,
-    body: JsValue,
-    headers: Map[String, String] = Map.empty
-  ): Request[AnyContentAsJson] = {
+  protected def postRequest(uri: String, body: JsValue, headers: Map[String, String] = Map.empty): Request[AnyContentAsJson] = {
     val session: Map[String, String] = Map(SessionKeys.sessionId -> s"session-${UUID.randomUUID()}")
 
     FakeRequest("POST", uri)

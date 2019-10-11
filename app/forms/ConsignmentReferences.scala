@@ -21,6 +21,7 @@ import forms.Mapping.requiredRadio
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContent, Request}
 import utils.validators.forms.FieldValidator._
 
 case class ConsignmentReferences(reference: String, referenceValue: String)
@@ -53,7 +54,7 @@ object ConsignmentReferences {
 
 object ConsignmentReferencesForm {
 
-  def bindFromRequest(implicit request: play.api.mvc.Request[_]) = {
+  def bindFromRequest(implicit request: Request[AnyContent]): Form[ConsignmentReferences] = {
     val baseForm = ConsignmentReferences.form().bindFromRequest
 
     if (baseForm.errors.nonEmpty) {
@@ -62,9 +63,7 @@ object ConsignmentReferencesForm {
       baseForm.value
         .map(
           reference =>
-            if (referenceValid(reference)) { baseForm } else {
-              baseForm.withError("referenceValue", "consignmentReferences.reference.value.error")
-          }
+            if (referenceValid(reference)) baseForm else baseForm.withError("referenceValue", "consignmentReferences.reference.value.error")
         )
         .getOrElse(baseForm)
     }

@@ -54,6 +54,7 @@ site.yes = Yes
 site.save_and_continue = Save and continue
 site.continue = Continue
 site.acceptAndSend = Accept and send
+site.confirmAndSubmit = Confirm and submit
 site.save_and_come_back_later = Save and come back later
 site.service_name = Declare an Export
 site.textarea.char_limit = (Limit is {0} characters)
@@ -221,24 +222,23 @@ transport.nationality.hint = This is a 2 digit country code. For example FR for 
 transport.nationality.empty = You need to provide the transport nationality
 transport.nationality.error = Nationality of transport is incorrect
 
-summary.title = Check your answers
-summary.eori = Eori
-summary.referenceType = Reference Type
-summary.referenceValue = Reference Value
-summary.goodsLocation = Goods Location
-summary.modeOfTransport = Mode of transport
-summary.transportId = Reference
-summary.nationality = Nationality
+summary.referenceType = Consignment type
+summary.referenceValue = Consignment reference
+summary.goodsLocation = Goods location code
+summary.modeOfTransport = Transport type
+summary.transportId = Transport ID
+summary.nationality = Transport nationality
 
-summary.arrival.title = Check your answers before arriving these goods
-summary.arrival.date = Date of Arrival
-summary.arrival.time = Time of Arrival
+summary.arrival.title = Is the information provided for this arrival correct?
+summary.arrival.date = Date of arrival
+summary.arrival.time = Time of arrival
 
-summary.departure.title = Check your answers before departing these goods
-summary.departure.goodsDeparted = Goods Departed
-summary.departure.date = Date of Departure
+summary.departure.title = Is the information provided for this departure correct?
+summary.departure.goodsDeparted.header = Where are the goods going?
+summary.departure.goodsDeparted = Goods departed
+summary.departure.date = Date of departure
 
-summary.arrivalReference.reference = Reference
+summary.arrivalReference.reference = Unique reference
 
 disassociateDucr.title = Which DUCR do you want to disassociate?
 disassociateDucr.ducr.empty = Please enter DUCR

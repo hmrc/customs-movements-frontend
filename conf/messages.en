@@ -249,7 +249,7 @@ disassociateDucrConfirmation.header = The reference of the DUCR disassociated:
 disassociateDucrConfirmation.note = You might want to take a screenshot of this for your records.
 
 shutMucr.tabTitle = Shut a MUCR
-shutMucr.title = What MUCR do you want to shut?
+shutMucr.title = Which MUCR do you want to shut?
 
 shutMucrConfirmation.title = MUCR shut
 shutMucrConfirmation.info = The reference of the MUCR shut:

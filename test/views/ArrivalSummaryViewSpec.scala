@@ -18,13 +18,11 @@ package views
 
 import controllers.routes
 import forms.Choice.Arrival
-import play.api.i18n.MessagesApi
 import play.api.test.Helpers._
 import testdata.MovementsTestData.cacheMapData
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.{Injector, Stubs}
-import views.spec.UnitViewSpec
 import views.html.summary.arrival_summary_page
+import views.spec.UnitViewSpec
 
 class ArrivalSummaryViewSpec extends UnitViewSpec {
 

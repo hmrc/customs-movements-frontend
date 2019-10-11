@@ -27,35 +27,35 @@ class MucrOptionsViewSpec extends ViewSpec with CommonMessages {
   private val form: Form[MucrOptions] = MucrOptions.form
   private val page = injector.instanceOf[views.html.mucr_options]
 
-  private def createView(form: Form[MucrOptions] = form): Html = page(form)
+  private val view: Html = page(form)
 
   "MUCR options" should {
 
     "have the correct title" in {
-      getElementById(createView(), "title").text() must be("MUCR options")
+      getElementById(view, "title").text() mustBe "Create or enter a MUCR to add to"
     }
 
     "have the correct label for create new" in {
-      getElementById(createView(), "mucrOptions.create-label").text() must be("Create a new MUCR")
+      getElementById(view, "mucrOptions.create-label").text() mustBe "Create a new MUCR"
     }
 
     "have the correct label for add to existing" in {
-      getElementById(createView(), "mucrOptions.add-label").text() must be("Add to an existing MUCR")
+      getElementById(view, "mucrOptions.add-label").text() mustBe "Add to an existing MUCR"
     }
 
     "have no options selected on initial display" in {
-      verifyUnchecked(createView(), "mucrOptions.create")
-      verifyUnchecked(createView(), "mucrOptions.add")
+      verifyUnchecked(view, "mucrOptions.create")
+      verifyUnchecked(view, "mucrOptions.add")
     }
 
     "display 'Back' button that links to start page" in {
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = getElementById(view, "link-back")
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be(controllers.routes.ChoiceController.displayChoiceForm().url)
+      backButton.attr("href") mustBe controllers.routes.ChoiceController.displayChoiceForm().url
     }
 
     "display 'Save and continue' button on page" in {
-      getElementById(createView(), "submit").text() must be(messages(saveAndContinueCaption))
+      getElementById(view, "submit").text() mustBe messages(saveAndContinueCaption)
     }
   }
 }

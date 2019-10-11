@@ -29,7 +29,10 @@
 
       @components.back_link(consolidations.routes.AssociateDucrController.displayPage())
 
-      @components.page_title(Some(messages("associateDucrSummary.title", mucr)))
+      @components.page_title(
+            title = Some(messages("associateDucrSummary.title", mucr)),
+            subtitle = Some(messages("associateDucrSummary.hint"))
+        )
 
       <table>
         <tbody>

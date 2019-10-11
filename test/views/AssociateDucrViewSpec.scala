@@ -21,11 +21,11 @@ import helpers.views.{AssociateDucrMessages, CommonMessages}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
-import views.spec.UnitViewSpec
+import views.spec.{UnitViewSpec, ViewMatchers}
 import views.tags.ViewTest
 
 @ViewTest
-class AssociateDucrViewSpec extends UnitViewSpec with AssociateDucrMessages with CommonMessages {
+class AssociateDucrViewSpec extends UnitViewSpec with AssociateDucrMessages with CommonMessages with ViewMatchers {
 
   private val page = new views.html.associate_ducr(mainTemplate)
 
@@ -38,8 +38,8 @@ class AssociateDucrViewSpec extends UnitViewSpec with AssociateDucrMessages with
 
     "have a proper labels for messages" in {
       val messages = messagesApi.preferred(request)
-      messages(title, "{MUCR}") mustBe "Add a DUCR to {MUCR}"
-      messages(hint) mustBe "Make sure you have entered the right MUCR details before adding a DUCR."
+      messages must haveTranslationFor(title)
+      messages must haveTranslationFor(hint)
     }
 
     "display 'Add' button on page" in {

@@ -33,7 +33,8 @@ class AssociateDucrSummaryViewSpec extends ViewSpec with AssociateDucrSummaryMes
   "Disassociate Ducr Confirmation View" should {
 
     "have a proper labels for messages" in {
-      messages(title, "{MUCR}") mustBe "Add a DUCR to {MUCR}"
+      messages(title, "{MUCR}") mustBe "The following DUCR has been added to {MUCR}"
+      messages(hint) mustBe "Make sure the details of the DUCR are correct before continuing."
     }
 
     "display 'Save and continue' button on page" in {

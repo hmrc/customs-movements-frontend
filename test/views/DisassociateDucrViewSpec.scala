@@ -33,7 +33,7 @@ class DisassociateDucrViewSpec extends ViewSpec with DisassociateDucrMessages wi
 
     "have a proper labels for messages" in {
 
-      assertMessage(title, "Which DUCR do you want to disassociate?")
+      assertMessage(title, "Which DUCR do you want to remove?")
     }
 
     "have a proper labels for error messages" in {

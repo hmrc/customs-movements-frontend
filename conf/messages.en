@@ -240,7 +240,7 @@ summary.departure.date = Date of departure
 
 summary.arrivalReference.reference = Unique reference
 
-disassociateDucr.title = Which DUCR do you want to disassociate?
+disassociateDucr.title = Which DUCR do you want to remove?
 disassociateDucr.ducr.empty = Please enter DUCR
 disassociateDucr.ducr.error = Incorrect DUCR
 

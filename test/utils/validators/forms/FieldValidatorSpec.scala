@@ -17,6 +17,7 @@
 package utils.validators.forms
 
 import org.scalatest.{MustMatchers, WordSpec}
+import testdata.ConsolidationTestData
 import utils.validators.forms.FieldValidator._
 
 class FieldValidatorSpec extends WordSpec with MustMatchers {
@@ -731,50 +732,105 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
 
     /*
     For reference:
-    MUCR (type "M")(Format an..35) - All alphas used must be upper case - First character to be an alpha character.
-    MINIMUM entry allowed must be 1 alpha character.  Post the first alpha character, any character is allowed
-    but any alphas must be upper case.
+    GB/[0-9A-Z]{3,4}-[0-9A-Z]{5,28} or
+    GB/[0-9A-Z]{9,12}-[0-9A-Z]{1,23} or
+    A:[0-9A-Z]{3}[0-9]{8} or
+    C:[A-Z]{3}[0-9A-Z]{3,30}
      */
 
     "return false" when {
-      "does not start with alpha" in {
-        validMucr("1MUCR") must be(false)
+      "first format first section too short" in {
+        validMucr("GB/12-ABCDE") must be(false)
       }
-      "longer than 35 characters" in {
-        validMucr("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") must be(false)
+      "first format first section too long" in {
+        validMucr("GB/12345-ABCDE") must be(false)
       }
-      "contains lower-case alpha" in {
-        validMucr("INVALId") must be(false)
+      "first format first section contains illegal character" in {
+        validMucr("GB/12e-ABCDE") must be(false)
+      }
+      "first format second section too short" in {
+        validMucr("GB/123-ABCD") must be(false)
+      }
+      "first format second section too long" in {
+        validMucr("GB/123-ABCDEFGHIJABCDEFGHIJABCDEFGHIJ") must be(false)
+      }
+      "first format second section contains illegal character" in {
+        validMucr("GB/123-ABCDe") must be(false)
+      }
+
+      "second format first section too short" in {
+        validMucr("GB/12345678-A") must be(false)
+      }
+      "second format first section too long" in {
+        validMucr("GB/1234567890123-A") must be(false)
+      }
+      "second format first section contains illegal character" in {
+        validMucr("GB/12345678a-A") must be(false)
+      }
+      "second format second section too short" in {
+        validMucr("GB/123456789-") must be(false)
+      }
+      "second format second section too long" in {
+        validMucr("GB/123456789-ABCDEFGHIJABCDEFGHIJABCDEFGHIJ") must be(false)
+      }
+      "second format second section contains illegal character" in {
+        validMucr("GB/123456789-a") must be(false)
+      }
+
+      "third format first section wrong size" in {
+        validMucr("A:AB12345678") must be(false)
+      }
+      "third format first section contains illegal character" in {
+        validMucr("A:aBC12345678") must be(false)
+      }
+      "third format second section wrong size" in {
+        validMucr("A:ABC123456789") must be(false)
+      }
+      "third format second section contains illegal character" in {
+        validMucr("A:ABC1234567e") must be(false)
+      }
+
+      "fourth format first section wrong size" in {
+        validMucr("C:AB12345") must be(false)
+      }
+      "fourth format first section contains illegal character" in {
+        validMucr("C:ABc123") must be(false)
+      }
+      "fourth format second section too short" in {
+        validMucr("C:ABC12") must be(false)
+      }
+      "fourth format second section too long" in {
+        validMucr("C:ABC1234567890123456789012345678901") must be(false)
+      }
+      "fourth format second section contains illegal character" in {
+        validMucr("C:ABC12e") must be(false)
       }
     }
 
     "return true" when {
-      "is single upper-case alpha" in {
-        validMucr("A") must be(true)
+      "using test constant" in {
+        validMucr(ConsolidationTestData.ValidMucr) must be(true)
       }
-      "contains numbers" in {
-        validMucr("VAL1D") must be(true)
+      "is minimum first format" in {
+        validMucr("GB/123-ABCDE") must be(true)
       }
-      "contains dash" in {
-        validMucr("VALID-MUCR") must be(true)
+      "is minimum second format" in {
+        validMucr("GB/123456789-A") must be(true)
       }
-      "contains forward-slash" in {
-        validMucr("""VALID/MUCR""") must be(true)
+      "is third format" in {
+        validMucr("A:ABC12345678") must be(true)
       }
-      "contains dot" in {
-        validMucr("VALID.MUCR") must be(true)
+      "is minimum fourth format" in {
+        validMucr("C:ABC123") must be(true)
       }
-      "contains comma" in {
-        validMucr("VALID,MUCR") must be(true)
+      "is maximum first format" in {
+        validMucr("GB/ABCD-1234567890123456789012345678") must be(true)
       }
-      "contains parentheses" in {
-        validMucr("VALID(MUCR)") must be(true)
+      "is maximum second format" in {
+        validMucr("GB/ABCDEFGHIJKL-12345678901234567890123") must be(true)
       }
-      "contains space" in {
-        validMucr("VALID MUCR") must be(true)
-      }
-      "contains apostrophe" in {
-        validMucr("IT'SVALID") must be(true)
+      "is maximum fourth format" in {
+        validMucr("C:ABC123456789012345678901234567890") must be(true)
       }
     }
   }
@@ -782,66 +838,53 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
   "FormFieldValidator validDucr" should {
 
     /*
-    For reference:
-    DUCR (type "D")(Format an..35) All alphas used must be upper case
-    - First character to be a number
-    - Second and Third character to be alpha (upper case only)
-    - 4th to 15th characters must be numeric
-    - 16th digit to be a hyphen
-    - Post the hyphen any character is allowed but any alphas must be upper case.
-    The MINIMUM entry allowed must be up to and including the 16th digit hyphen, so an example would be '9GB123456789012-'
+    For reference: [0-9][A-Z][A-Z][0-9A-Z\(\)\-/]{6,32}
      */
 
     "return false" when {
       "first character not a number" in {
-        validDucr("GBR123456789012-") must be(false)
+        validDucr("GB1234567890") must be(false)
       }
       "second character not upper alpha" in {
-        validDucr("91R123456789012-") must be(false)
-        validDucr("9gB123456789012-") must be(false)
+        validDucr("91R123456789012") must be(false)
+        validDucr("9gB123456789012") must be(false)
       }
       "third character not upper alpha" in {
         validDucr("9G0123456789012-") must be(false)
         validDucr("9Gb123456789012-") must be(false)
       }
-      "fourth to fifteenth character not numeric" in {
-        validDucr("9GB123A56789012-") must be(false)
+      "contains less than 6 additional characters" in {
+        validDucr("9GB12345") must be(false)
       }
-      "hyphen is not 16th character" in {
-        validDucr("9GB123456789012INVALID") must be(false)
+      "contains more than 32 additional characters" in {
+        validDucr("9GB123456789012345678901234567890123") must be(false)
       }
-      "post-hyphen contains lower case alpha" in {
-        validDucr("9GB123456789012-INVALiD") must be(false)
+      "contains lower case alpha" in {
+        validDucr("9GB123456a") must be(false)
+      }
+      "contains non-allow special character" in {
+        validDucr("9GB123456_") must be(false)
       }
     }
 
     "return true" when {
+      "using test constant" in {
+        validDucr(ConsolidationTestData.ValidDucr) must be(true)
+      }
       "is minimum acceptable example" in {
-        validDucr("9GB123456789012-") must be(true)
+        validDucr("9GB123456") must be(true)
       }
-      "post-hyphen contains numbers" in {
-        validDucr("9GB123456789012-VAL1D") must be(true)
+      "is maximum acceptable example" in {
+        validDucr("9GB12345678901234567890123456789012") must be(true)
       }
-      "post-hyphen contains dash" in {
-        validDucr("9GB123456789012-VALID-MUCR") must be(true)
+      "contains dash" in {
+        validDucr("9GB123456-VALID-MUCR") must be(true)
       }
       "post-hyphen contains forward-slash" in {
-        validDucr("""9GB123456789012-VALID/MUCR""") must be(true)
-      }
-      "post-hyphen contains dot" in {
-        validDucr("9GB123456789012-VALID.MUCR") must be(true)
-      }
-      "post-hyphen contains comma" in {
-        validDucr("9GB123456789012-VALID,MUCR") must be(true)
+        validDucr("""9GB123456-VALID/MUCR""") must be(true)
       }
       "post-hyphen contains parentheses" in {
-        validDucr("9GB123456789012-VALID(MUCR)") must be(true)
-      }
-      "post-hyphen contains space" in {
-        validDucr("9GB123456789012-VALID MUCR") must be(true)
-      }
-      "post-hyphen contains apostrophe" in {
-        validDucr("9GB123456789012-IT'SVALID") must be(true)
+        validDucr("9GB123456-VALID(MUCR)") must be(true)
       }
     }
   }

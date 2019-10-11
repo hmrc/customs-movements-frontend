@@ -25,6 +25,7 @@ import org.scalatest.OptionValues
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import testdata.ConsolidationTestData.ValidMucr
 import unit.base.ControllerSpec
 import views.html.shut_mucr
 
@@ -87,7 +88,7 @@ class ShutMucrControllerSpec extends ControllerSpec with MockSubmissionService w
 
         mockShutMucr()
 
-        val correctForm = Json.toJson(ShutMucr("MUCR-123456"))
+        val correctForm = Json.toJson(ShutMucr(ValidMucr))
 
         val result = controller.submitForm()(postRequest(correctForm))
 

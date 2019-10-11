@@ -16,36 +16,47 @@
 
 package views
 
+import base.Injector
 import forms.Choice
 import forms.Choice._
 import helpers.views.{ChoiceMessages, CommonMessages}
+import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
+import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import views.html.choice_page
-import views.spec.ViewSpec
+import views.spec.UnitViewSpec
+import views.spec.UnitViewSpec.realMessagesApi
 import views.tags.ViewTest
 
 @ViewTest
-class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
+class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessages with Injector {
 
   private val form: Form[Choice] = Choice.form()
-  private val choicePage = injector.instanceOf[choice_page]
-  private def createView(form: Form[Choice] = form): Html = choicePage(form)
+  private val choicePage = instanceOf[choice_page]
+  private def createView(form: Form[Choice] = form, messages: Messages = stubMessages()): Document =
+    choicePage(form)(request, messages)
 
   "Choice View" should {
 
     "have proper labels for messages" in {
 
-      assertMessage(title, "What do you want to do?")
-      assertMessage(arrivalDecLabel, "Arrive a consignment")
-      assertMessage(departureDecLabel, "Depart a consignment")
-      assertMessage(shutMucrLabel, "Shut a MUCR")
+      val messages = messagesApi.preferred(request)
+
+      messages must haveTranslationFor(title)
+      messages must haveTranslationFor(arrivalDecLabel)
+      messages must haveTranslationFor(departureDecLabel)
+      messages must haveTranslationFor(shutMucrLabel)
+      messages must haveTranslationFor(associateDecLabel)
+      messages must haveTranslationFor(disassociateDecLabel)
     }
 
     "have proper labels for error messages" in {
 
-      assertMessage(choiceEmpty, "Please, choose what do you want to do")
-      assertMessage(choiceError, "Please, choose valid option")
+      val messages = messagesApi.preferred(request)
+
+      messages must haveTranslationFor(choiceEmpty)
+      messages must haveTranslationFor(choiceError)
     }
   }
 
@@ -53,18 +64,18 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
     "display same page title as header" in {
 
-      val view = createView()
-      view.title() must include(view.getElementsByTag("h1").text())
+      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
     "display header with hint" in {
 
-      getElementById(createView(), "title").text() must be(messages(title))
+      createView().getElementById("title").text() must be(messages(title))
     }
 
     "display 'Back' button that links to 'Make an export declaration' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be(controllers.routes.StartController.displayStartPage().url)
@@ -74,28 +85,28 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
       val view = createView(Choice.form())
 
-      getElementByCss(view, "#choice>div:nth-child(2)>label").text() must be(messages(arrivalDecLabel))
-      getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(associateDecLabel))
-      getElementByCss(view, "#choice>div:nth-child(4)>label").text() must be(messages(disassociateDecLabel))
-      getElementByCss(view, "#choice>div:nth-child(5)>label").text() must be(messages(shutMucrLabel))
-      getElementByCss(view, "#choice>div:nth-child(6)>label").text() must be(messages(departureDecLabel))
+      view.select("#choice>div:nth-child(2)>label").text() must be(messages(arrivalDecLabel))
+      view.select("#choice>div:nth-child(3)>label").text() must be(messages(associateDecLabel))
+      view.select("#choice>div:nth-child(4)>label").text() must be(messages(disassociateDecLabel))
+      view.select("#choice>div:nth-child(5)>label").text() must be(messages(shutMucrLabel))
+      view.select("#choice>div:nth-child(6)>label").text() must be(messages(departureDecLabel))
     }
 
     "display 4 unchecked radio buttons" in {
 
       val view = createView(Choice.form())
 
-      verifyUnchecked(view, "arrival")
-      verifyUnchecked(view, "departure")
-      verifyUnchecked(view, "disassociate")
-      verifyUnchecked(view, "shut_mucr")
+      ensureRadioIsUnChecked(view, "arrival")
+      ensureRadioIsUnChecked(view, "departure")
+      ensureRadioIsUnChecked(view, "disassociate")
+      ensureRadioIsUnChecked(view, "shut_mucr")
     }
 
     "display 'Save and continue' button on page" in {
 
       val view = createView()
 
-      val saveButton = getElementByCss(view, "#submit")
+      val saveButton = view.select("#submit")
       saveButton.text() must be(messages(continueCaption))
     }
   }
@@ -106,14 +117,20 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
       val view = createView(Choice.form().bind(Map[String, String]()))
 
-      getElementByCss(view, "#error-message-choice-input").text() must be(messages(choiceEmpty))
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("choice", "#choice")
+
+      view.select("#error-message-choice-input").text() must be(messages(choiceEmpty))
     }
 
     "display error when choice is incorrect" in {
 
       val view = createView(Choice.form().bind(Map("choice" -> "incorrect")))
 
-      getElementByCss(view, "#error-message-choice-input").text() must be(messages(choiceError))
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("choice", "#choice")
+
+      view.select("#error-message-choice-input").text() must be(messages(choiceError))
     }
   }
 
@@ -123,40 +140,50 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
       val view = createView(Choice.form().fill(Arrival))
 
-      verifyChecked(view, "arrival")
-      verifyUnchecked(view, "departure")
-      verifyUnchecked(view, "disassociate")
-      verifyUnchecked(view, "shut_mucr")
+      ensureRadioIsChecked(view, "arrival")
+      ensureRadioIsUnChecked(view, "departure")
+      ensureRadioIsUnChecked(view, "disassociate")
+      ensureRadioIsUnChecked(view, "shut_mucr")
     }
 
     "display selected 2nd radio button - Departure (EDL)" in {
 
       val view = createView(Choice.form().fill(Departure))
 
-      verifyUnchecked(view, "arrival")
-      verifyChecked(view, "departure")
-      verifyUnchecked(view, "disassociate")
-      verifyUnchecked(view, "shut_mucr")
+      ensureRadioIsUnChecked(view, "arrival")
+      ensureRadioIsChecked(view, "departure")
+      ensureRadioIsUnChecked(view, "disassociate")
+      ensureRadioIsUnChecked(view, "shut_mucr")
     }
 
     "display selected 3rd radio button - Disassociate (EAC)" in {
 
       val view = createView(Choice.form().fill(DisassociateDUCR))
 
-      verifyUnchecked(view, "arrival")
-      verifyUnchecked(view, "departure")
-      verifyChecked(view, "disassociate")
-      verifyUnchecked(view, "shut_mucr")
+      ensureRadioIsUnChecked(view, "arrival")
+      ensureRadioIsUnChecked(view, "departure")
+      ensureRadioIsChecked(view, "disassociate")
+      ensureRadioIsUnChecked(view, "shut_mucr")
     }
 
     "display selected 4th radio button - Shut a MUCR (CST)" in {
 
       val view = createView(Choice.form().fill(ShutMUCR))
 
-      verifyUnchecked(view, "arrival")
-      verifyUnchecked(view, "departure")
-      verifyUnchecked(view, "disassociate")
-      verifyChecked(view, "shut_mucr")
+      ensureRadioIsUnChecked(view, "arrival")
+      ensureRadioIsUnChecked(view, "departure")
+      ensureRadioIsUnChecked(view, "disassociate")
+      ensureRadioIsChecked(view, "shut_mucr")
     }
+  }
+
+  private def ensureRadioIsChecked(view: Document, elementId: String): Unit = {
+    val option = view.getElementById(elementId)
+    option.attr("checked") mustBe "checked"
+  }
+
+  private def ensureRadioIsUnChecked(view: Document, elementId: String): Unit = {
+    val option = view.getElementById(elementId)
+    option.attr("checked") mustBe empty
   }
 }

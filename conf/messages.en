@@ -119,7 +119,9 @@ movement.confirmation.statusInfo = To check the status of this consignment, view
 movement.confirmation.whatNext = What do you want to do next?
 associateDucr.confirmation.tab.heading = Add DUCR request submitted
 associateDucr.confirmation.title = Addition of DUCR {0} has been submitted
-associateDucr.confirmation.addOrShut = Add another DUCR or MUCR, or shut a MUCR.
+disassociateDucr.confirmation.tab.heading = Remove DUCR request submitted
+disassociateDucr.confirmation.title = Removal of DUCR {0} has been submitted
+consolidation.confirmation.addOrShut = Add another DUCR or MUCR, or shut a MUCR.
 
 movement.arrival.title = Arrival
 movement.arrival.heading = Arrival
@@ -252,10 +254,6 @@ summary.arrivalReference.reference = Unique reference
 disassociateDucr.title = Which DUCR do you want to remove?
 disassociateDucr.ducr.empty = Please enter DUCR
 disassociateDucr.ducr.error = Incorrect DUCR
-
-disassociateDucrConfirmation.title = Disassociation complete
-disassociateDucrConfirmation.header = The reference of the DUCR disassociated:
-disassociateDucrConfirmation.note = You might want to take a screenshot of this for your records.
 
 shutMucr.tabTitle = Shut a MUCR
 shutMucr.title = Which MUCR do you want to shut?

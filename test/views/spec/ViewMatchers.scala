@@ -171,6 +171,13 @@ trait ViewMatchers {
     }
   }
 
+  class ElementContainsFieldErrorLink(fieldName: String, link: String) extends Matcher[Element] {
+    override def apply(left: Element): MatchResult = {
+      val element = left.getElementById(s"$fieldName-error")
+      MatchResult(element != null && element.attr("href") == link, s"View not contains $fieldName with $link", s"View contains $fieldName with $link")
+    }
+  }
+
   class TranslationKeyMatcher(key: String) extends Matcher[Messages] {
     override def apply(left: Messages): MatchResult = MatchResult(
       matches = left.isDefinedAt(key),
@@ -201,6 +208,8 @@ trait ViewMatchers {
 
   def haveFieldError(fieldName: String, content: String): Matcher[Element] =
     new ContainElementWithIDMatcher(s"error-message-$fieldName-input") and new ElementContainsFieldError(fieldName, content)
+  def haveFieldErrorLink(fieldName: String, link: String): Matcher[Element] = new ElementContainsFieldErrorLink(fieldName, link)
+
   def haveGlobalErrorSummary: Matcher[Element] = new ContainElementWithIDMatcher("error-summary-heading")
 
   def haveHref(value: Call): Matcher[Element] = new ElementHasAttributeValueMatcher("href", value.url)

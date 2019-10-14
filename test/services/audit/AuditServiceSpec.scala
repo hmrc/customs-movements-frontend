@@ -49,19 +49,19 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustoms
 
   "AuditService" should {
     "audit Shut a Mucr data" in {
-      val dataToAudit = Map(EORI.toString -> "eori", MUCR.toString -> "mucr", SubmissionResult.toString -> "200")
+      val dataToAudit = Map(eori.toString -> "eori", mucr.toString -> "mucr", submissionResult.toString -> "200")
       spyAuditService.auditShutMucr("eori", "mucr", "200")
       verify(spyAuditService).audit(AuditTypes.AuditShutMucr, dataToAudit)
     }
 
     "audit an association" in {
-      val dataToAudit = Map(EORI.toString -> "eori", MUCR.toString -> "mucr", DUCR.toString -> "ducr", SubmissionResult.toString -> "200")
+      val dataToAudit = Map(eori.toString -> "eori", mucr.toString -> "mucr", ducr.toString -> "ducr", submissionResult.toString -> "200")
       spyAuditService.auditAssociate("eori", "mucr", "ducr", "200")
       verify(spyAuditService).audit(AuditTypes.AuditAssociate, dataToAudit)
     }
 
     "audit a disassociation" in {
-      val dataToAudit = Map(EORI.toString -> "eori", DUCR.toString -> "ducr", SubmissionResult.toString -> "200")
+      val dataToAudit = Map(eori.toString -> "eori", ducr.toString -> "ducr", submissionResult.toString -> "200")
       spyAuditService.auditDisassociate("eori", "ducr", "200")
       verify(spyAuditService).audit(AuditTypes.AuditDisassociate, dataToAudit)
     }
@@ -85,12 +85,12 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustoms
 
     "audit a movement" in {
       val dataToAudit = Map(
-        MovementReference.toString -> "",
-        EORI.toString -> "eori",
-        MessageCode.toString -> "EAL",
-        UCR.toString -> "UCR",
-        UCRType.toString -> "D",
-        SubmissionResult.toString -> "200"
+        EventData.movementReference.toString -> "",
+        EventData.eori.toString -> "eori",
+        EventData.messageCode.toString -> "EAL",
+        EventData.ucr.toString -> "UCR",
+        EventData.ucrType.toString -> "D",
+        EventData.submissionResult.toString -> "200"
       )
       val data =
         MovementRequest(

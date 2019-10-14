@@ -19,11 +19,12 @@ package views
 import controllers.routes
 import forms.Choice.{Arrival, Departure}
 import forms.ConsignmentReferences
+import helpers.views.CommonMessages
 import testdata.CommonTestData.correctUcr
 import views.html.movement_confirmation_page
 import views.spec.{UnitViewSpec, ViewMatchers}
 
-class MovementConfirmationViewSpec extends UnitViewSpec {
+class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
   val movementConfirmationPage = new movement_confirmation_page(mainTemplate)
   val consignmentReferences = ConsignmentReferences(ConsignmentReferences.AllowedReferences.Ducr, correctUcr)
@@ -81,7 +82,7 @@ class MovementConfirmationViewSpec extends UnitViewSpec {
       val backButton = arrivalConfirmationView.getElementsByClass("button")
 
       backButton.text() mustBe messages("site.backToStartPage")
-      backButton.attr("href") mustBe routes.StartController.displayStartPage().url
+      backButton.first() must haveHref(routes.StartController.displayStartPage())
     }
   }
 
@@ -114,10 +115,10 @@ class MovementConfirmationViewSpec extends UnitViewSpec {
 
     "have back button" in {
 
-      val backButton = departureConfirmationView.getElementsByClass("button")
+      val backButton = arrivalConfirmationView.getElementsByClass("button")
 
       backButton.text() mustBe messages("site.backToStartPage")
-      backButton.attr("href") mustBe routes.StartController.displayStartPage().url
+      backButton.first() must haveHref(routes.StartController.displayStartPage())
     }
   }
 }

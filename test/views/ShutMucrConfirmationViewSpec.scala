@@ -65,10 +65,10 @@ class ShutMucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
     "display 'Back to start page' button on page" in {
 
-      val button = view.getElementsByClass("button")
+      val backButton = view.getElementsByClass("button")
 
-      button.text() mustBe messages(backToStartPageCaption)
-      button.attr("href") must equal(routes.StartController.displayStartPage().url)
+      backButton.text() mustBe messages("site.backToStartPage")
+      backButton.first() must haveHref(routes.StartController.displayStartPage())
     }
   }
 

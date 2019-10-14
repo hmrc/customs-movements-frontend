@@ -18,9 +18,8 @@ package helpers.views
 
 trait AssociateDucrConfirmationMessages {
 
-  val associateDucrConfirmation = "associateDucrConfirmation"
-  val title = associateDucrConfirmation + ".title"
-  val heading = associateDucrConfirmation + ".header"
-  val footNote = associateDucrConfirmation + ".note"
+  val title = "associateDucr.confirmation.title"
+  val tabTitle = "associateDucr.confirmation.tab.heading"
+  val addOrShut = "associateDucr.confirmation.addOrShut"
   val continue = "site.backToStartPage"
 }

@@ -117,6 +117,9 @@ movement.departure.confirmation.heading = Departure of {0} {1} has been submitte
 movement.departure.confirmation.departOrArrive = You can depart another consignment or arrive a new consignment
 movement.confirmation.statusInfo = To check the status of this consignment, view all submissions.
 movement.confirmation.whatNext = What do you want to do next?
+associateDucr.confirmation.tab.heading = Add DUCR request submitted
+associateDucr.confirmation.title = Addition of DUCR {0} has been submitted
+associateDucr.confirmation.addOrShut = Add another DUCR or MUCR, or shut a MUCR.
 
 movement.arrival.title = Arrival
 movement.arrival.heading = Arrival
@@ -275,10 +278,6 @@ associateDucr.reference.hint = Make sure you have entered the correct MUCR befor
 
 associateDucrSummary.title = The following DUCR has been added to {0}
 associateDucrSummary.hint = Make sure the details of the DUCR are correct before continuing.
-
-associateDucrConfirmation.title = Consolidation complete
-associateDucrConfirmation.header = Your MUCR
-associateDucrConfirmation.note = You might want to take a screenshot of this for your records.
 
 submissions.title = Requests
 submissions.summary = This page shows your submitted requests and allows you to view any notifications relating to them.

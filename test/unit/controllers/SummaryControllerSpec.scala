@@ -57,7 +57,7 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
     setupErrorHandler()
     when(mockArrivalSummaryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockDepartureSummaryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockMovementConfirmationPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockMovementConfirmationPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -101,7 +101,7 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
         val result = controller.submitMovementRequest()(postRequest(emptyForm))
 
         status(result) must be(OK)
-        verify(mockMovementConfirmationPage).apply()(any(), any())
+        verify(mockMovementConfirmationPage).apply(any())(any(), any())
       }
     }
 

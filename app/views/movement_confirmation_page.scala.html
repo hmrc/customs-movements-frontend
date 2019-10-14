@@ -14,19 +14,35 @@
  * limitations under the License.
  *@
 
-@import forms.Choice
+@import forms.{Choice, ConsignmentReferences}
 @import views.Title
 @import models.requests.JourneyRequest
 
 @this(main_template: views.html.main_template)
 
-@()(implicit request: JourneyRequest[_], messages: Messages)
+@(consignmentReferences: ConsignmentReferences)(implicit request: JourneyRequest[_], messages: Messages)
 
-@main_template(title = Title(s"movement.${request.choice.value}.confirmation")) {
+@main_template(
+    title = Title(s"movement.${request.choice.value}.confirmation.tab.heading")
+) {
 
-  @components.highlight_box_with_reference(
-    headingText = messages(s"movement.${request.choice.value}.confirmation")
-  )
+    @components.highlight_box_with_reference(
+        headingText = messages(
+            s"movement.${request.choice.value}.confirmation.heading",
+            if(consignmentReferences.reference == "D") "DUCR" else "MUCR",
+            consignmentReferences.referenceValue
+        )
+    )
 
-  @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
+    @components.paragraph(messages("movement.confirmation.statusInfo"), Some("status-info"))
+
+    <h2 id="what-next">@messages("movement.confirmation.whatNext")</h2>
+
+    @if(request.choice.value == "arrival") {
+        @components.paragraph(messages(s"movement.arrival.confirmation.consolidateOrDepart"), Some("next-steps"))
+    } else if(request.choice.value == "departure") {
+        @components.paragraph(messages(s"movement.departure.confirmation.departOrArrive"), Some("next-steps"))
+    }
+
+    @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
 }

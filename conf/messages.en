@@ -109,8 +109,15 @@ arrivals.title = Arrivals
 arrivals.heading = Arrivals
 arrivals.ducr = DUCR
 
-movement.arrival.confirmation = Arrival has been submitted
-movement.departure.confirmation = Departure has been submitted
+movement.arrival.confirmation.tab.heading = Arrival request submitted
+movement.arrival.confirmation.heading = Arrival of {0} {1} has been submitted
+movement.arrival.confirmation.consolidateOrDepart = Consolidate a DUCR or MUCR, or depart a consignment.
+movement.departure.confirmation.tab.heading = Departure request submitted
+movement.departure.confirmation.heading = Departure of {0} {1} has been submitted
+movement.departure.confirmation.departOrArrive = You can depart another consignment or arrive a new consignment
+movement.confirmation.statusInfo = To check the status of this consignment, view all submissions.
+movement.confirmation.whatNext = What do you want to do next?
+
 movement.arrival.title = Arrival
 movement.arrival.heading = Arrival
 movement.departure.title = Departure

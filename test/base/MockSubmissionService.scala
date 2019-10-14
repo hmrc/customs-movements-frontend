@@ -16,6 +16,7 @@
 
 package base
 
+import forms.ConsignmentReferences
 import models.external.requests.ConsolidationRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -32,9 +33,9 @@ trait MockSubmissionService extends MockitoSugar with BeforeAndAfterEach { self:
 
   val mockSubmissionService: SubmissionService = mock[SubmissionService]
 
-  def mockSubmission(status: Int = ACCEPTED): OngoingStubbing[Future[Int]] =
+  def mockSubmission(status: Int = ACCEPTED): OngoingStubbing[Future[(Option[ConsignmentReferences], Int)]] =
     when(mockSubmissionService.submitMovementRequest(any(), any(), any())(any()))
-      .thenReturn(Future.successful(status))
+      .thenReturn(Future.successful((Some(ConsignmentReferences("D", "5GB123456789000-123ABC456DEFIIII")), status)))
 
   def mockShutMucr(shutMucrRequest: ConsolidationRequest = exampleShutMucrRequest): OngoingStubbing[Future[ConsolidationRequest]] =
     when(mockSubmissionService.submitShutMucrRequest(any(), any())(any()))

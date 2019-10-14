@@ -38,23 +38,23 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
   def auditShutMucr(eori: String, mucr: String, result: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
     audit(
       AuditTypes.AuditShutMucr,
-      Map(EventData.EORI.toString -> eori, EventData.MUCR.toString -> mucr, EventData.SubmissionResult.toString -> result)
+      Map(EventData.eori.toString -> eori, EventData.mucr.toString -> mucr, EventData.submissionResult.toString -> result)
     )
 
   def auditDisassociate(eori: String, ducr: String, result: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
     audit(
       AuditTypes.AuditDisassociate,
-      Map(EventData.EORI.toString -> eori, EventData.DUCR.toString -> ducr, EventData.SubmissionResult.toString -> result)
+      Map(EventData.eori.toString -> eori, EventData.ducr.toString -> ducr, EventData.submissionResult.toString -> result)
     )
 
   def auditAssociate(eori: String, mucr: String, ducr: String, result: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
     audit(
       AuditTypes.AuditAssociate,
       Map(
-        EventData.EORI.toString -> eori,
-        EventData.MUCR.toString -> mucr,
-        EventData.DUCR.toString -> ducr,
-        EventData.SubmissionResult.toString -> result
+        EventData.eori.toString -> eori,
+        EventData.mucr.toString -> mucr,
+        EventData.ducr.toString -> ducr,
+        EventData.submissionResult.toString -> result
       )
     )
 
@@ -64,12 +64,12 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
     audit(
       movementAuditType,
       Map(
-        EventData.EORI.toString -> eori,
-        EventData.MessageCode.toString -> data.choice.toString,
-        EventData.UCRType.toString -> data.consignmentReference.referenceValue,
-        EventData.UCR.toString -> data.consignmentReference.reference,
-        EventData.MovementReference.toString -> data.arrivalReference.flatMap(_.reference).getOrElse(""),
-        EventData.SubmissionResult.toString -> result
+        EventData.eori.toString -> eori,
+        EventData.messageCode.toString -> data.choice.toString,
+        EventData.ucrType.toString -> data.consignmentReference.referenceValue,
+        EventData.ucr.toString -> data.consignmentReference.reference,
+        EventData.movementReference.toString -> data.arrivalReference.flatMap(_.reference).getOrElse(""),
+        EventData.submissionResult.toString -> result
       )
     )
 
@@ -151,5 +151,5 @@ object AuditTypes extends Enumeration {
 }
 object EventData extends Enumeration {
   type Data = Value
-  val EORI, MUCR, DUCR, UCR, UCRType, MessageCode, MovementReference, SubmissionResult, Success, Failure = Value
+  val eori, mucr, ducr, ucr, ucrType, messageCode, movementReference, submissionResult, Success, Failure = Value
 }

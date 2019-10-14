@@ -85,11 +85,12 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
       val view = createView(Choice.form())
 
-      view.select("#choice>div:nth-child(2)>label").text() must be(messages(arrivalDecLabel))
-      view.select("#choice>div:nth-child(3)>label").text() must be(messages(associateDecLabel))
-      view.select("#choice>div:nth-child(4)>label").text() must be(messages(disassociateDecLabel))
-      view.select("#choice>div:nth-child(5)>label").text() must be(messages(shutMucrLabel))
-      view.select("#choice>div:nth-child(6)>label").text() must be(messages(departureDecLabel))
+      view.select("div.multiple-choice:nth-child(2)").text() must be(messages(arrivalDecLabel))
+      view.select("div.multiple-choice:nth-child(3)").text() must be(messages(associateDecLabel))
+      view.select("div.multiple-choice:nth-child(4)").text() must be(messages(disassociateDecLabel))
+      view.select("div.multiple-choice:nth-child(5)").text() must be(messages(shutMucrLabel))
+      view.select("div.multiple-choice:nth-child(6)").text() must be(messages(departureDecLabel))
+      view.select("div.multiple-choice:nth-child(7)").text() must be(messages(viewSubmissionsLabel))
     }
 
     "display 4 unchecked radio buttons" in {
@@ -106,7 +107,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
       val view = createView()
 
-      val saveButton = view.select("#submit")
+      val saveButton = view.getElementById("submit")
       saveButton.text() must be(messages(continueCaption))
     }
   }
@@ -120,7 +121,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("choice", "#choice")
 
-      view.select("#error-message-choice-input").text() must be(messages(choiceEmpty))
+      view.getElementById("error-message-choice-input").text() must be(messages(choiceEmpty))
     }
 
     "display error when choice is incorrect" in {
@@ -130,7 +131,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("choice", "#choice")
 
-      view.select("#error-message-choice-input").text() must be(messages(choiceError))
+      view.getElementById("error-message-choice-input").text() must be(messages(choiceError))
     }
   }
 

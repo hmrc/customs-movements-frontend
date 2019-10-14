@@ -25,6 +25,8 @@ trait ChoiceMessages {
   val associateDecLabel: String = "movement.choice.associate.label"
   val disassociateDecLabel: String = "movement.choice.disassociateDucr.label"
   val shutMucrLabel: String = "movement.choice.shutMucr.label"
+  val viewSubmissionsLabel: String = "movement.choice.submissions.label"
+
   val choiceEmpty: String = "choicePage.input.error.empty"
   val choiceError: String = "choicePage.input.error.incorrectValue"
 }

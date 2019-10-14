@@ -38,13 +38,13 @@ class ShutMucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
       val messages = messagesApi.preferred(request)
 
       messages must haveTranslationFor("shutMucr.confirmation.tab.heading")
-      messages must haveTranslationFor("shutMucr.confirmation.title")
+      messages must haveTranslationFor("shutMucr.confirmation.heading")
       messages must haveTranslationFor("shutMucr.confirmation.shutOrDepart")
     }
 
     "display page reference" in {
 
-      view.getElementById("highlight-box-heading").text() mustBe messages("shutMucr.confirmation.title")
+      view.getElementById("highlight-box-heading").text() mustBe messages("shutMucr.confirmation.heading")
     }
 
     "have status information" in {

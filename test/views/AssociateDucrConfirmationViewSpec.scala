@@ -20,13 +20,14 @@ import controllers.storage.FlashKeys
 import helpers.views.CommonMessages
 import play.api.mvc.Flash
 import play.twirl.api.Html
-import views.spec.{UnitViewSpec, ViewMatchers, ViewSpec}
+import views.html.associate_ducr_confirmation
+import views.spec.{UnitViewSpec, ViewMatchers}
 import views.tags.ViewTest
 
 @ViewTest
 class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages with ViewMatchers {
 
-  private val page = new views.html.associate_ducr_confirmation(mainTemplate)
+  private val page = new associate_ducr_confirmation(mainTemplate)
   private val exampleDucr = "5GB123456789000-123ABC456DEFIIIII"
 
   private val view: Html = page()(request, new Flash(Map(FlashKeys.DUCR -> exampleDucr)), messages)
@@ -38,13 +39,13 @@ class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages
       val messages = messagesApi.preferred(request)
 
       messages must haveTranslationFor("associateDucr.confirmation.tab.heading")
-      messages must haveTranslationFor("associateDucr.confirmation.title")
+      messages must haveTranslationFor("associateDucr.confirmation.heading")
       messages must haveTranslationFor("consolidation.confirmation.addOrShut")
     }
 
     "display page reference" in {
 
-      view.getElementById("highlight-box-heading").text() mustBe messages("associateDucr.confirmation.title")
+      view.getElementById("highlight-box-heading").text() mustBe messages("associateDucr.confirmation.heading")
     }
 
     "have status information" in {

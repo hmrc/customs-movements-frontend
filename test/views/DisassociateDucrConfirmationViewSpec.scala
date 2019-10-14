@@ -20,13 +20,14 @@ import controllers.storage.FlashKeys
 import helpers.views.CommonMessages
 import play.api.mvc.Flash
 import play.twirl.api.Html
+import views.html.disassociate_ducr_confirmation
 import views.spec.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest
 class DisassociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
-  private val page = new views.html.disassociate_ducr_confirmation(mainTemplate)
+  private val page = new disassociate_ducr_confirmation(mainTemplate)
   private val exampleDucr = "5GB123456789000-123ABC456DEFIIIII"
   private val view: Html = page()(request, new Flash(Map(FlashKeys.DUCR -> exampleDucr)), messages)
 
@@ -37,13 +38,13 @@ class DisassociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessa
       val messages = messagesApi.preferred(request)
 
       messages must haveTranslationFor("disassociateDucr.confirmation.tab.heading")
-      messages must haveTranslationFor("disassociateDucr.confirmation.title")
+      messages must haveTranslationFor("disassociateDucr.confirmation.heading")
       messages must haveTranslationFor("consolidation.confirmation.addOrShut")
     }
 
     "display page reference" in {
 
-      view.getElementById("highlight-box-heading").text() mustBe messages("disassociateDucr.confirmation.title")
+      view.getElementById("highlight-box-heading").text() mustBe messages("disassociateDucr.confirmation.heading")
     }
 
     "have status information" in {

@@ -16,10 +16,12 @@
 
 package views
 
+import controllers.routes
 import controllers.storage.FlashKeys
 import helpers.views.CommonMessages
 import play.api.mvc.Flash
 import play.twirl.api.Html
+import testdata.CommonTestData.correctUcr
 import views.html.shut_mucr_confirmation
 import views.spec.UnitViewSpec
 import views.tags.ViewTest
@@ -28,8 +30,7 @@ import views.tags.ViewTest
 class ShutMucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
   private val shutMucrConformationPage = new shut_mucr_confirmation(mainTemplate)
-  private val exampleMucr = "GB/12SD-123455ASD"
-  private val view: Html = shutMucrConformationPage()(request, Flash(Map(FlashKeys.MUCR -> exampleMucr)), messages)
+  private val view: Html = shutMucrConformationPage()(request, Flash(Map(FlashKeys.MUCR -> correctUcr)), messages)
 
   "Shut Mucr Confirmation View" should {
 
@@ -64,7 +65,10 @@ class ShutMucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
     "display 'Back to start page' button on page" in {
 
-      view.getElementsByClass("button").text() mustBe messages(backToStartPageCaption)
+      val button = view.getElementsByClass("button")
+
+      button.text() mustBe messages(backToStartPageCaption)
+      button.attr("href") must equal(routes.StartController.displayStartPage().url)
     }
   }
 

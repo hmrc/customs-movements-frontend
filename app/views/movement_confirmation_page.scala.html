@@ -38,11 +38,7 @@
 
     <h2 id="what-next">@messages("movement.confirmation.whatNext")</h2>
 
-    @if(request.choice.value == "arrival") {
-        @components.paragraph(messages(s"movement.arrival.confirmation.consolidateOrDepart"), Some("next-steps"))
-    } else if(request.choice.value == "departure") {
-        @components.paragraph(messages(s"movement.departure.confirmation.departOrArrive"), Some("next-steps"))
-    }
+    @components.paragraph(messages(s"movement.${request.choice.value}.confirmation.nextSteps"), Some("next-steps"))
 
     @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
 }

@@ -32,10 +32,11 @@ import scala.concurrent.Future
 trait MockSubmissionService extends MockitoSugar with BeforeAndAfterEach { self: Suite =>
 
   val mockSubmissionService: SubmissionService = mock[SubmissionService]
+  private val ucr = "5GB123456789000-123ABC456DEFIIII"
 
   def mockSubmission(status: Int = ACCEPTED): OngoingStubbing[Future[(Option[ConsignmentReferences], Int)]] =
     when(mockSubmissionService.submitMovementRequest(any(), any(), any())(any()))
-      .thenReturn(Future.successful((Some(ConsignmentReferences("D", "5GB123456789000-123ABC456DEFIIII")), status)))
+      .thenReturn(Future.successful((Some(ConsignmentReferences("D", ucr)), status)))
 
   def mockShutMucr(shutMucrRequest: ConsolidationRequest = exampleShutMucrRequest): OngoingStubbing[Future[ConsolidationRequest]] =
     when(mockSubmissionService.submitShutMucrRequest(any(), any())(any()))

@@ -16,10 +16,12 @@
 
 package views
 
+import controllers.routes
 import controllers.storage.FlashKeys
 import helpers.views.CommonMessages
 import play.api.mvc.Flash
 import play.twirl.api.Html
+import testdata.CommonTestData.correctUcr
 import views.html.disassociate_ducr_confirmation
 import views.spec.UnitViewSpec
 import views.tags.ViewTest
@@ -28,8 +30,7 @@ import views.tags.ViewTest
 class DisassociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
   private val page = new disassociate_ducr_confirmation(mainTemplate)
-  private val exampleDucr = "5GB123456789000-123ABC456DEFIIIII"
-  private val view: Html = page()(request, new Flash(Map(FlashKeys.DUCR -> exampleDucr)), messages)
+  private val view: Html = page()(request, new Flash(Map(FlashKeys.DUCR -> correctUcr)), messages)
 
   "Disassociate Ducr Confirmation View" should {
 
@@ -64,7 +65,10 @@ class DisassociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessa
 
     "display 'Back to start page' button on page" in {
 
-      view.getElementsByClass("button").text() mustBe messages(backToStartPageCaption)
+      val button = view.getElementsByClass("button")
+
+      button.text() mustBe messages(backToStartPageCaption)
+      button.attr("href") must equal(routes.StartController.displayStartPage().url)
     }
   }
 

@@ -19,13 +19,14 @@ package views
 import controllers.routes
 import forms.Choice.{Arrival, Departure}
 import forms.ConsignmentReferences
+import testdata.CommonTestData.correctUcr
 import views.html.movement_confirmation_page
 import views.spec.{UnitViewSpec, ViewMatchers}
 
-class MovementConfirmationViewSpec extends UnitViewSpec with ViewMatchers {
+class MovementConfirmationViewSpec extends UnitViewSpec {
 
   val movementConfirmationPage = new movement_confirmation_page(mainTemplate)
-  val consignmentReferences = ConsignmentReferences("D", "5GB123456789000-123ABC456DEFIIII")
+  val consignmentReferences = ConsignmentReferences(ConsignmentReferences.AllowedReferences.Ducr, correctUcr)
   val arrivalRequest = fakeJourneyRequest(Arrival)
   val departureRequest = fakeJourneyRequest(Departure)
   val arrivalConfirmationView = movementConfirmationPage(consignmentReferences)(arrivalRequest, messages)
@@ -39,10 +40,10 @@ class MovementConfirmationViewSpec extends UnitViewSpec with ViewMatchers {
 
       messages must haveTranslationFor("movement.arrival.confirmation.tab.heading")
       messages must haveTranslationFor("movement.arrival.confirmation.heading")
-      messages must haveTranslationFor("movement.arrival.confirmation.consolidateOrDepart")
+      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps")
       messages must haveTranslationFor("movement.departure.confirmation.tab.heading")
       messages must haveTranslationFor("movement.departure.confirmation.heading")
-      messages must haveTranslationFor("movement.departure.confirmation.departOrArrive")
+      messages must haveTranslationFor("movement.departure.confirmation.nextSteps")
       messages must haveTranslationFor("movement.confirmation.statusInfo")
       messages must haveTranslationFor("movement.confirmation.whatNext")
     }
@@ -72,7 +73,7 @@ class MovementConfirmationViewSpec extends UnitViewSpec with ViewMatchers {
 
     "have next steps section" in {
 
-      arrivalConfirmationView.getElementById("next-steps").text() mustBe messages("movement.arrival.confirmation.consolidateOrDepart")
+      arrivalConfirmationView.getElementById("next-steps").text() mustBe messages("movement.arrival.confirmation.nextSteps")
     }
 
     "have back button" in {
@@ -108,7 +109,7 @@ class MovementConfirmationViewSpec extends UnitViewSpec with ViewMatchers {
 
     "have next steps section" in {
 
-      departureConfirmationView.getElementById("next-steps").text() mustBe messages("movement.departure.confirmation.departOrArrive")
+      departureConfirmationView.getElementById("next-steps").text() mustBe messages("movement.departure.confirmation.nextSteps")
     }
 
     "have back button" in {

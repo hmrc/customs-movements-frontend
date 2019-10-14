@@ -122,6 +122,9 @@ associateDucr.confirmation.title = Addition of DUCR {0} has been submitted
 disassociateDucr.confirmation.tab.heading = Remove DUCR request submitted
 disassociateDucr.confirmation.title = Removal of DUCR {0} has been submitted
 consolidation.confirmation.addOrShut = Add another DUCR or MUCR, or shut a MUCR.
+shutMucr.confirmation.tab.heading = Shut MUCR request submitted
+shutMucr.confirmation.title = MUCR {0} has been shut
+shutMucr.confirmation.shutOrDepart = Shut another MUCR. Depart a consignment.
 
 movement.arrival.title = Arrival
 movement.arrival.heading = Arrival
@@ -257,10 +260,6 @@ disassociateDucr.ducr.error = Incorrect DUCR
 
 shutMucr.tabTitle = Shut a MUCR
 shutMucr.title = Which MUCR do you want to shut?
-
-shutMucrConfirmation.title = MUCR shut
-shutMucrConfirmation.info = The reference of the MUCR shut:
-shutMucrConfirmation.note = You might want to take a screenshot of this for your records.
 
 mucrOptions.title = Create or enter a MUCR to add to
 mucrOptions.create = Create a new MUCR

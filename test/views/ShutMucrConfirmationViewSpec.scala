@@ -17,75 +17,54 @@
 package views
 
 import controllers.storage.FlashKeys
-import helpers.views.{CommonMessages, ShutMucrConfirmationMessages}
+import helpers.views.CommonMessages
 import play.api.mvc.Flash
 import play.twirl.api.Html
-import views.spec.ViewSpec
 import views.html.shut_mucr_confirmation
+import views.spec.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class ShutMucrConfirmationViewSpec extends ViewSpec with ShutMucrConfirmationMessages with CommonMessages {
+class ShutMucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
-  private val shutMucrConformationPage = injector.instanceOf[shut_mucr_confirmation]
-  private def createView(mucrOpt: Option[String] = None): Html =
-    shutMucrConformationPage()(fakeRequest, Flash(mucrOpt.map(mucr => Map(FlashKeys.MUCR -> mucr)).getOrElse(Map.empty)), messages)
+  private val shutMucrConformationPage = new shut_mucr_confirmation(mainTemplate)
+  private val exampleMucr = "GB/12SD-123455ASD"
+  private val view: Html = shutMucrConformationPage()(request, Flash(Map(FlashKeys.MUCR -> exampleMucr)), messages)
 
   "Shut Mucr Confirmation View" should {
 
     "have proper labels for messages" in {
 
-      assertMessage(title, "MUCR shut")
-      assertMessage(confirmationInfo, "The reference of the MUCR shut:")
-      assertMessage(additionalNote, "You might want to take a screenshot of this for your records.")
+      val messages = messagesApi.preferred(request)
+
+      messages must haveTranslationFor("shutMucr.confirmation.tab.heading")
+      messages must haveTranslationFor("shutMucr.confirmation.title")
+      messages must haveTranslationFor("shutMucr.confirmation.shutOrDepart")
     }
 
-    "display same page title as header" in {
+    "display page reference" in {
 
-      val view = createView()
-      view.title() must include(view.getElementsByTag("h1").text())
+      view.getElementById("highlight-box-heading").text() mustBe messages("shutMucr.confirmation.title")
     }
 
-    "display page heading inside highlight box" in {
+    "have status information" in {
 
-      val view = createView()
-
-      getElementById(view, "highlight-box-heading").text() must equal(messages(title))
-      getElementByCss(view, ".govuk-box-highlight").text() must include(messages(title))
+      view.getElementById("status-info").text() mustBe messages("movement.confirmation.statusInfo")
     }
 
-    "display confirmation information with MUCR inside highlight box" in {
+    "have what next section" in {
 
-      val view = createView()
-
-      getElementById(view, "highlight-box-info").text() must equal(messages(confirmationInfo))
-      getElementByCss(view, ".govuk-box-highlight").text() must include(messages(confirmationInfo))
+      view.getElementById("what-next").text() mustBe messages("movement.confirmation.whatNext")
     }
 
-    "display reference MUCR inside highlight box" in {
+    "have next steps section" in {
 
-      val mucr = "MUCR1234567890"
-      val view = createView(Some(mucr))
-
-      getElementById(view, "highlight-box-reference").text() must equal(mucr)
-      getElementByCss(view, ".govuk-box-highlight").text() must include(mucr)
+      view.getElementById("next-steps").text() mustBe messages("shutMucr.confirmation.shutOrDepart")
     }
 
-    "display '-' as reference MUCR when no value provided in flash" in {
+    "display 'Back to start page' button on page" in {
 
-      getElementById(createView(), "highlight-box-reference").text() must equal("-")
-    }
-
-    "display additional note" in {
-
-      getElementById(createView(), "additional-note").text() must equal(messages(additionalNote))
-    }
-
-    "display 'Back to start page' button that links to Start Page" in {
-
-      val button = getElementByCss(createView(), ".button")
-      button.text() must equal(messages(backToStartPageCaption))
-      button.attr("href") must equal("/customs-movements/start")
+      view.getElementsByClass("button").text() mustBe messages(backToStartPageCaption)
     }
   }
 

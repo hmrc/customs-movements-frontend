@@ -22,16 +22,17 @@
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
-@main_template(title = Title("shutMucrConfirmation.title")) {
+@main_template(title = Title("shutMucr.confirmation.tab.heading")) {
 
-  @components.highlight_box_with_reference(
-    headingText = messages("shutMucrConfirmation.title"),
-    informationText = Some(messages("shutMucrConfirmation.info")),
-    reference = Some(flash.get(FlashKeys.MUCR).getOrElse("-"))
-  )
+    @components.highlight_box_with_reference(
+        headingText = messages("shutMucr.confirmation.title", flash.get(FlashKeys.MUCR).getOrElse("-"))
+    )
 
-  <p id="additional-note">@messages("shutMucrConfirmation.note")</p>
+    @components.paragraph(messages("movement.confirmation.statusInfo"), Some("status-info"))
 
-  @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
+    <h2 id="what-next">@messages("movement.confirmation.whatNext")</h2>
 
+    @components.paragraph(messages(s"shutMucr.confirmation.shutOrDepart"), Some("next-steps"))
+
+    @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
 }

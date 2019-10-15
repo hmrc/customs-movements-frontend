@@ -20,14 +20,11 @@ import controllers.routes
 import forms.Transport
 import helpers.views.{CommonMessages, TransportMessages}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import utils.Injector
 import views.html.transport
 import views.spec.UnitViewSpec
-import views.spec.UnitViewSpec.instanceOf
 
-class TransportViewSpec extends UnitViewSpec with TransportMessages with CommonMessages with Injector {
+class TransportViewSpec extends UnitViewSpec with TransportMessages with CommonMessages {
 
   private val form: Form[Transport] = Transport.form
   private val transportPage = new transport(mainTemplate)
@@ -36,7 +33,7 @@ class TransportViewSpec extends UnitViewSpec with TransportMessages with CommonM
 
   "Transport View" should {
 
-    val messages = instanceOf[MessagesApi].preferred(request)
+    val messages = messagesApi.preferred(request)
 
     "have a proper labels for messages" in {
 

@@ -16,39 +16,52 @@
 
 package forms
 
-import forms.Mapping.requiredRadio
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.Countries.allCountries
 import utils.validators.forms.FieldValidator._
 
-case class Location(locationType: String, qualifierCode: String, locationCode: String, country: String) {
-
-  def asString: String = country + locationType + qualifierCode + locationCode
-}
+case class Location(code: String)
 
 object Location {
-  implicit val format = Json.format[Location]
+
+  implicit val format: OFormat[Location] = Json.format[Location]
 
   val formId = "Location"
 
   val correctLocationType: Set[String] = Set("A", "B", "C", "D")
-
   val correctQualifierCode: Set[String] = Set("U", "Y")
 
   val mapping = Forms.mapping(
-    "locationType" -> requiredRadio("locationType.empty")
-      .verifying("locationType.error", isContainedIn(correctLocationType)),
-    "qualifierCode" -> requiredRadio("qualifierCode.empty")
-      .verifying("qualifierCode.error", isContainedIn(correctQualifierCode)),
-    "locationCode" -> text()
-      .verifying("locationCode.error", isEmpty or isAlphanumeric and noShorterThan(6) and noLongerThan(13)),
-    "country" -> text()
-      .verifying("location.country.empty", nonEmpty)
-      .verifying("location.country.error", isEmpty or (input => allCountries.exists(_.countryCode == input)))
+    "code" -> text()
+      .verifying("location.code.empty", nonEmpty)
+      .verifying(
+        "location.code.error",
+        isEmpty or (
+          validateCountry and validateLocationType and validateQualifierCode and noShorterThan(10) and noLongerThan(17)
+        )
+      )
   )(Location.apply)(Location.unapply)
 
   def form(): Form[Location] = Form(mapping)
 
+  /**
+   * Country is in two first characters in Location Code
+   */
+  private def validateCountry: String => Boolean =
+    (input: String) => allCountries.exists(_.countryCode == input.take(2))
+
+  /**
+   * Location Type is defined as third character in Location Code
+   */
+  private def validateLocationType: String => Boolean =
+    (input: String) => input.drop(2).headOption.map(_.toString).map(isContainedIn(correctLocationType)).getOrElse(false)
+
+  /**
+   * Qualifier Code is defined in fourth characted in Location Code
+   */
+  private def validateQualifierCode: String => Boolean =
+    (input: String) =>
+      input.drop(3).headOption.map(_.toString).map(isContainedIn(correctQualifierCode)).getOrElse(false)
 }

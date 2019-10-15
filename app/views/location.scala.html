@@ -37,39 +37,10 @@
 
         @components.page_title(Some("location.question"))
 
-        @components.input_radio(
-          field = form("locationType"),
-            legend = messages("locationType"),
-            inputs = Seq(
-              RadioOption("A", "A", "locationType.A"),
-              RadioOption("B", "B", "locationType.B"),
-              RadioOption("C", "C", "locationType.C"),
-              RadioOption("D", "D", "locationType.D")
-            )
-        )
-
-        @components.input_radio(
-            field = form("qualifierCode"),
-            legend = messages("qualifierCode"),
-            inputs = Seq(
-                RadioOption("U", "U", "qualifierCode.U"),
-                RadioOption("Y", "Y", "qualifierCode.Y")
-            )
-        )
-
         @components.input_text(
-            field = form("locationCode"),
-            label = messages("locationCode"),
-            hint = None,
-            labelClass = Some("bold-small")
-        )
-
-        @components.field_autocomplete(
-            form("country"),
-            "location.country",
-            None,
-            "",
-            items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
+            field = form("code"),
+            label = "",
+            hint = Some(messages("location.hint"))
         )
 
         @components.submit_button()

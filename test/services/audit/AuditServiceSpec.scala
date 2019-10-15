@@ -69,7 +69,7 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustoms
     "get movements data in a Json format" in {
 
       val expectedResult = Map(
-        Location.formId -> Json.toJson(Location("A", "U", "correct", "PL")),
+        Location.formId -> Json.toJson(Location("PLAUcorrect")),
         MovementDetails.formId -> Json.toJson(
           ArrivalDetails(dateOfArrival = Date(Some(12), Some(1), Some(2019)), timeOfArrival = Time(Some("10"), Some("10")))
         ),

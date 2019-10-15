@@ -17,6 +17,7 @@
 package forms
 
 import base.BaseSpec
+import play.api.data.FormError
 
 class LocationSpec extends BaseSpec {
 
@@ -30,22 +31,54 @@ class LocationSpec extends BaseSpec {
 
   "Location mapping" should {
 
-    "contains error for every field" when {
+    "contains error" when {
 
-      "all fields are empty" in {
+      "location is empty" in {
 
-        val inputData = Location("", "", "", "")
+        val inputData = Location("")
         val errors = Location.form().fillAndValidate(inputData).errors
 
-        errors.length must be(4)
+        errors mustBe Seq(FormError("code", "location.code.empty"))
       }
 
-      "all fields are incorrect" in {
+      "location has incorrect country" in {
 
-        val inputData = Location("incorrect", "incorrect", "!@#$incorrect", "incorrect")
+        val inputData = Location("XXAUcorrect")
         val errors = Location.form().fillAndValidate(inputData).errors
 
-        errors.length must be(4)
+        errors mustBe Seq(FormError("code", "location.code.error"))
+      }
+
+      "location has incorrect type" in {
+
+        val inputData = Location("GBEUcorrect")
+        val errors = Location.form().fillAndValidate(inputData).errors
+
+        errors mustBe Seq(FormError("code", "location.code.error"))
+      }
+
+      "location has incorrect qualifier code" in {
+
+        val inputData = Location("GBAZcorrect")
+        val errors = Location.form().fillAndValidate(inputData).errors
+
+        errors mustBe Seq(FormError("code", "location.code.error"))
+      }
+
+      "location is shorter than 10 characters" in {
+
+        val inputData = Location("GBAZ123")
+        val errors = Location.form().fillAndValidate(inputData).errors
+
+        errors mustBe Seq(FormError("code", "location.code.error"))
+      }
+
+      "location is longer than 17 characters" in {
+
+        val inputData = Location("GBAU12345678912345")
+        val errors = Location.form().fillAndValidate(inputData).errors
+
+        errors mustBe Seq(FormError("code", "location.code.error"))
       }
     }
 
@@ -53,7 +86,7 @@ class LocationSpec extends BaseSpec {
 
       "data is correct" in {
 
-        val inputData = Location("A", "U", "correct", "PL")
+        val inputData = Location("PLAUcorrect")
         val errors = Location.form().fillAndValidate(inputData).errors
 
         errors.length must be(0)

@@ -60,7 +60,9 @@ class GoodsDepartedController @Inject()(
         (formWithErrors: Form[GoodsDeparted]) => Future.successful(BadRequest(goodsDepartedPage(formWithErrors))),
         validForm =>
           customsCacheService.cache[GoodsDeparted](movementCacheId, formId, validForm).map { _ =>
-            Redirect(controllers.routes.MovementDetailsController.displayPage())
+            if (validForm.departedPlace == AllowedPlaces.outOfTheUk)
+              Redirect(controllers.routes.TransportController.displayPage())
+            else Redirect(controllers.routes.SummaryController.displayPage())
         }
       )
   }

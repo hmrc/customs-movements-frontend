@@ -16,6 +16,7 @@
 
 package views
 
+import controllers.routes
 import forms.{DepartureDetails, MovementDetails}
 import helpers.views.{CommonMessages, DepartureDetailsMessages}
 import play.api.data.Form
@@ -50,8 +51,8 @@ class DepartureDetailsViewSpec extends ViewSpec with DepartureDetailsMessages wi
 
     "display input with hint for date" in {
 
-      getElementById(createView(), "dateOfDeparture-label").text() must be(messages(departureQuestion))
-      getElementById(createView(), "dateOfDeparture-hint").text() must be(messages(departureHint))
+      getElementById(createView(), "dateOfDeparture-label").text() mustBe messages(departureQuestion)
+      getElementById(createView(), "dateOfDeparture-hint").text() mustBe messages(departureHint)
     }
 
     "display \"Back\" button that links to Consignment References" in {
@@ -59,14 +60,14 @@ class DepartureDetailsViewSpec extends ViewSpec with DepartureDetailsMessages wi
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-movements/goods-departed")
+      backButton.attr("href") mustBe routes.ConsignmentReferencesController.displayPage().url
     }
 
     "display \"Save and continue\" button on page" in {
 
       val saveButton = getElementById(createView(), "submit")
 
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      saveButton.text() mustBe messages(saveAndContinueCaption)
     }
   }
 }

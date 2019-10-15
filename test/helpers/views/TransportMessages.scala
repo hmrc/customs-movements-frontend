@@ -18,30 +18,25 @@ package helpers.views
 
 trait TransportMessages {
 
-  val transport = "transport"
+  val title = "transport.title"
 
-  val title = transport + ".title"
+  val modeOfTransportQuestion = "transport.modeOfTransport.question"
+  val modeOfTransportHint = "transport.modeOfTransport.hint"
+  val modeOfTransportSea = "transport.modeOfTransport.1"
+  val modeOfTransportRail = "transport.modeOfTransport.2"
+  val modeOfTransportRoad = "transport.modeOfTransport.3"
+  val modeOfTransportAir = "transport.modeOfTransport.4"
+  val modeOfTransportPostalOrMail = "transport.modeOfTransport.5"
+  val modeOfTransportFixed = "transport.modeOfTransport.6"
+  val modeOfTransportInland = "transport.modeOfTransport.7"
+  val modeOfTransportOther = "transport.modeOfTransport.8"
 
-  val modeOfTransport = transport + ".modeOfTransport"
-  val modeOfTransportQuestion = modeOfTransport + ".question"
-  val modeOfTransportHint = modeOfTransport + ".hint"
-  val modeOfTransportSea = modeOfTransport + ".1"
-  val modeOfTransportRail = modeOfTransport + ".2"
-  val modeOfTransportRoad = modeOfTransport + ".3"
-  val modeOfTransportAir = modeOfTransport + ".4"
-  val modeOfTransportPostalOrMail = modeOfTransport + ".5"
-  val modeOfTransportFixed = modeOfTransport + ".6"
-  val modeOfTransportInland = modeOfTransport + ".7"
-  val modeOfTransportOther = modeOfTransport + ".8"
+  val modeOfTransportEmpty = "transport.modeOfTransport.empty"
+  val modeOfTransportError = "transport.modeOfTransport.error"
 
-  val modeOfTransportEmpty = modeOfTransport + ".empty"
-  val modeOfTransportError = modeOfTransport + ".error"
+  val nationalityQuestion = "transport.nationality.question"
+  val nationalityHint = "transport.nationality.hint"
 
-  val nationality = transport + ".nationality"
-
-  val nationalityQuestion = nationality + ".question"
-  val nationalityHint = nationality + ".hint"
-
-  val nationalityEmpty = nationality + ".empty"
-  val nationalityError = nationality + ".error"
+  val nationalityEmpty = "transport.nationality.empty"
+  val nationalityError = "transport.nationality.error"
 }

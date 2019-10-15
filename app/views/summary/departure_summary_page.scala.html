@@ -33,7 +33,7 @@
         @if(data.getEntry[GoodsDeparted](GoodsDeparted.formId).map(_.departedPlace).contains(GoodsDeparted.AllowedPlaces.outOfTheUk)){
             @components.back_link(routes.TransportController.displayPage())
         } else {
-            @components.back_link(routes.MovementDetailsController.displayPage())
+            @components.back_link(routes.GoodsDepartedController.displayPage())
         }
 
         @components.page_title(Some("summary.departure.title"))

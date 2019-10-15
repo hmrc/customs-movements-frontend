@@ -60,7 +60,7 @@ class ConsignmentReferencesController @Inject()(
                 case Arrival =>
                   Redirect(controllers.routes.ArrivalReferenceController.displayPage())
                 case Departure =>
-                  Redirect(controllers.routes.LocationController.displayPage())
+                  Redirect(controllers.routes.MovementDetailsController.displayPage())
               }
           }
       )

@@ -128,7 +128,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to location page" when {
+    "return 303 (SEE_OTHER) and redirect to movement details page" when {
 
       "form is correct during departure journey" in {
 
@@ -147,7 +147,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
         val result = controller.saveConsignmentReferences()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.LocationController.displayPage().url
+        redirectLocation(result).value mustBe routes.MovementDetailsController.displayPage().url
       }
     }
   }

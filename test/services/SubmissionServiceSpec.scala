@@ -81,7 +81,7 @@ class SubmissionServiceSpec
         when(mockCustomsExportsMovementConnector.sendArrivalDeclaration(any())(any()))
           .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
-        await(submissionService.submitMovementRequest("arrival-eori1", "eori1", Arrival)) must equal(CustomHttpResponseCode)
+        await(submissionService.submitMovementRequest("arrival-eori1", "eori1", Arrival).map(_._2)) must equal(CustomHttpResponseCode)
         verify(mockAuditService).auditMovements(any(), any(), any(), ArgumentMatchers.eq(AuditTypes.AuditArrival))(any())
         verify(mockAuditService)
           .auditAllPagesUserInput(ArgumentMatchers.eq(Arrival), any())(any())
@@ -104,7 +104,7 @@ class SubmissionServiceSpec
         when(mockCustomsCacheService.fetch(any())(any(), any()))
           .thenReturn(Future.successful(None))
 
-        submissionService.submitMovementRequest("arrival-eori1", "eori1", Arrival).futureValue must equal(INTERNAL_SERVER_ERROR)
+        submissionService.submitMovementRequest("arrival-eori1", "eori1", Arrival).map(_._2).futureValue must equal(INTERNAL_SERVER_ERROR)
         verifyZeroInteractions(mockAuditService)
       }
     }
@@ -120,7 +120,7 @@ class SubmissionServiceSpec
         when(mockCustomsExportsMovementConnector.sendDepartureDeclaration(any())(any()))
           .thenReturn(Future.successful(HttpResponse(CustomHttpResponseCode)))
 
-        submissionService.submitMovementRequest("departure-eori1", "eori1", Departure).futureValue must equal(CustomHttpResponseCode)
+        submissionService.submitMovementRequest("departure-eori1", "eori1", Departure).map(_._2).futureValue must equal(CustomHttpResponseCode)
         verify(mockAuditService).auditMovements(any(), any(), any(), ArgumentMatchers.eq(AuditTypes.AuditDeparture))(any())
         verify(mockAuditService)
           .auditAllPagesUserInput(ArgumentMatchers.eq(Departure), any())(any())
@@ -143,7 +143,7 @@ class SubmissionServiceSpec
         when(mockCustomsCacheService.fetch(any())(any(), any()))
           .thenReturn(Future.successful(None))
 
-        submissionService.submitMovementRequest("departure-eori1", "eori1", Departure).futureValue must equal(INTERNAL_SERVER_ERROR)
+        submissionService.submitMovementRequest("departure-eori1", "eori1", Departure).map(_._2).futureValue must equal(INTERNAL_SERVER_ERROR)
         verifyZeroInteractions(mockAuditService)
       }
     }

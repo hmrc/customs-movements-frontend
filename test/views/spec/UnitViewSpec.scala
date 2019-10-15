@@ -19,13 +19,16 @@ package views.spec
 import akka.util.Timeout
 import base.Injector
 import config.AppConfig
+import forms.Choice
+import models.requests.{AuthenticatedRequest, JourneyRequest}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request, Result}
 import play.api.test.Helpers.contentAsString
 import play.api.test.{FakeRequest, Helpers}
 import play.twirl.api.Html
+import testdata.MovementsTestData
 import unit.base.UnitSpec
 import utils.Stubs
 import views.html.main_template
@@ -37,6 +40,9 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
   import utils.FakeRequestCSRFSupport._
 
   implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
+
+  def fakeJourneyRequest(choice: Choice): JourneyRequest[AnyContentAsEmpty.type] =
+    JourneyRequest(AuthenticatedRequest(FakeRequest("", "").withCSRFToken, MovementsTestData.newUser("")), choice)
 
   implicit val messages: Messages = Helpers.stubMessages()
 

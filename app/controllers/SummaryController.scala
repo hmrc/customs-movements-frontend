@@ -66,9 +66,9 @@ class SummaryController @Inject()(
     submissionService
       .submitMovementRequest(movementCacheId, request.authenticatedRequest.user.eori, request.choice)
       .flatMap {
-        case ACCEPTED =>
+        case (Some(consignmentReferences), ACCEPTED) =>
           customsCacheService.remove(movementCacheId).map { _ =>
-            Ok(movementConfirmationPage(request.choice))
+            Ok(movementConfirmationPage(consignmentReferences))
           }
         case _ =>
           Future.successful {

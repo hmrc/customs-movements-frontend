@@ -23,8 +23,6 @@ import controllers.storage.FlashKeys
 import forms.{AssociateDucr, MucrOptions}
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
-import org.slf4j.MDC
-import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.{CustomsCacheService, SubmissionService}
@@ -44,8 +42,6 @@ class AssociateDucrSummaryController @Inject()(
   associateDucrSummaryPage: associate_ducr_summary
 )(implicit executionContext: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
-
-  private val logger = Logger(this.getClass)
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     for {
@@ -75,6 +71,6 @@ class AssociateDucrSummaryController @Inject()(
 
     } yield
       Redirect(routes.AssociateDucrConfirmationController.displayPage())
-        .flashing(FlashKeys.MUCR -> mucrOptions.mucr)
+        .flashing(FlashKeys.DUCR -> associateDucr.ducr)
   }
 }

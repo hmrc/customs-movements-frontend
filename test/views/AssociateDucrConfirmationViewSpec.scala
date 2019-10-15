@@ -16,39 +16,60 @@
 
 package views
 
+import controllers.routes
 import controllers.storage.FlashKeys
-import helpers.views.{AssociateDucrConfirmationMessages, CommonMessages}
+import helpers.views.CommonMessages
 import play.api.mvc.Flash
 import play.twirl.api.Html
-import views.spec.ViewSpec
+import testdata.CommonTestData.correctUcr
+import views.html.associate_ducr_confirmation
+import views.spec.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class AssociateDucrConfirmationViewSpec extends ViewSpec with AssociateDucrConfirmationMessages with CommonMessages {
+class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
-  private val page = injector.instanceOf[views.html.associate_ducr_confirmation]
+  private val page = new associate_ducr_confirmation(mainTemplate)
 
-  private def createView(mucr: String): Html =
-    page()(fakeRequest, new Flash(Map(FlashKeys.MUCR -> mucr)), messages)
+  private val view: Html = page()(request, new Flash(Map(FlashKeys.DUCR -> correctUcr)), messages)
 
   "Associate Ducr Confirmation View" should {
 
     "have a proper labels for messages" in {
-      assertMessage(title, "Consolidation complete")
-      assertMessage(heading, "Your MUCR")
-      assertMessage(footNote, "You might want to take a screenshot of this for your records.")
+
+      val messages = messagesApi.preferred(request)
+
+      messages must haveTranslationFor("associateDucr.confirmation.tab.heading")
+      messages must haveTranslationFor("associateDucr.confirmation.heading")
+      messages must haveTranslationFor("consolidation.confirmation.addOrShut")
     }
 
     "display page reference" in {
-      val document = createView("GB123")
 
-      document.getElementById("highlight-box-reference") must containText("GB123")
+      view.getElementById("highlight-box-heading").text() mustBe messages("associateDucr.confirmation.heading")
+    }
+
+    "have status information" in {
+
+      view.getElementById("status-info").text() mustBe messages("movement.confirmation.statusInfo")
+    }
+
+    "have what next section" in {
+
+      view.getElementById("what-next").text() mustBe messages("movement.confirmation.whatNext")
+    }
+
+    "have next steps section" in {
+
+      view.getElementById("next-steps").text() mustBe messages("consolidation.confirmation.addOrShut")
     }
 
     "display 'Back to start page' button on page" in {
-      val view = createView("DUCR")
 
-      view.getElementsByClass("button").text() mustBe messages(continue)
+      val backButton = view.getElementsByClass("button")
+
+      backButton.text() mustBe messages("site.backToStartPage")
+      backButton.first() must haveHref(routes.StartController.displayStartPage())
     }
   }
 

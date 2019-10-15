@@ -39,7 +39,7 @@ class SubmissionService @Inject()(
   metrics: MovementsMetrics
 )(implicit ec: ExecutionContext) {
 
-  def submitMovementRequest(cacheId: String, eori: String, choice: Choice)(implicit hc: HeaderCarrier): Future[Int] =
+  def submitMovementRequest(cacheId: String, eori: String, choice: Choice)(implicit hc: HeaderCarrier): Future[(Option[ConsignmentReferences], Int)] =
     cacheService.fetch(cacheId).flatMap {
       case Some(cacheMap) => {
         val data = Movement.createMovementRequest(cacheMap, eori, choice)
@@ -55,11 +55,11 @@ class SubmissionService @Inject()(
           auditService
             .auditMovements(eori, data, submitResponse.status.toString, movementAuditType)
           timer.stop()
-          submitResponse.status
+          (Some(data.consignmentReference), submitResponse.status)
         }
       }
       case _ =>
-        Future.successful(INTERNAL_SERVER_ERROR)
+        Future.successful((None, INTERNAL_SERVER_ERROR))
     }
 
   private def sendMovementRequest(

@@ -141,7 +141,8 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
         val result = controller.submit()(postRequest(Json.obj()))
 
         status(result) mustBe SEE_OTHER
-        flash(result).get("MUCR").value mustBe "MUCR"
+        flash(result).get("MUCR") mustBe None
+        flash(result).get("DUCR").value mustBe "DUCR"
       }
     }
   }

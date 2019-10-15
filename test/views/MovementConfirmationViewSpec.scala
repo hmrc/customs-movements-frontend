@@ -18,14 +18,20 @@ package views
 
 import controllers.routes
 import forms.Choice.{Arrival, Departure}
+import forms.ConsignmentReferences
+import helpers.views.CommonMessages
+import testdata.CommonTestData.correctUcr
 import views.html.movement_confirmation_page
-import views.spec.UnitViewSpec
+import views.spec.{UnitViewSpec, ViewMatchers}
 
-class MovementConfirmationViewSpec extends UnitViewSpec {
+class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
   val movementConfirmationPage = new movement_confirmation_page(mainTemplate)
-  val arrivalConfirmationView = movementConfirmationPage(Arrival)(request, messages)
-  val departureConfirmationView = movementConfirmationPage(Departure)(request, messages)
+  val consignmentReferences = ConsignmentReferences(ConsignmentReferences.AllowedReferences.Ducr, correctUcr)
+  val arrivalRequest = fakeJourneyRequest(Arrival)
+  val departureRequest = fakeJourneyRequest(Departure)
+  val arrivalConfirmationView = movementConfirmationPage(consignmentReferences)(arrivalRequest, messages)
+  val departureConfirmationView = movementConfirmationPage(consignmentReferences)(departureRequest, messages)
 
   "Movement Confirmation Page" should {
 
@@ -33,25 +39,42 @@ class MovementConfirmationViewSpec extends UnitViewSpec {
 
       val messages = messagesApi.preferred(request)
 
-      messages("movement.arrival.confirmation") mustBe "Arrival has been submitted"
-      messages("movement.departure.confirmation") mustBe "Departure has been submitted"
-      messages("movement.choice.arrival.label") mustBe "Arrive a consignment"
-      messages("movement.choice.departure.label") mustBe "Depart a consignment"
-      messages("site.backToStartPage") mustBe "Back to start page"
+      messages must haveTranslationFor("movement.arrival.confirmation.tab.heading")
+      messages must haveTranslationFor("movement.arrival.confirmation.heading")
+      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps")
+      messages must haveTranslationFor("movement.departure.confirmation.tab.heading")
+      messages must haveTranslationFor("movement.departure.confirmation.heading")
+      messages must haveTranslationFor("movement.departure.confirmation.nextSteps")
+      messages must haveTranslationFor("movement.confirmation.statusInfo")
+      messages must haveTranslationFor("movement.confirmation.whatNext")
     }
   }
 
   "Arrival Confirmation Page" should {
 
-    "display same page title as header" in {
+    "have title" in {
 
-      val view = movementConfirmationPage(Arrival)(request, messagesApi.preferred(request))
-      view.title() must include(view.getElementsByTag("h1").text())
+      arrivalConfirmationView.getElementsByTag("title").first().text() must include(messages("title.format"))
     }
 
     "have heading" in {
 
-      arrivalConfirmationView.getElementById("highlight-box-heading").text() mustBe messages("movement.arrival.confirmation")
+      arrivalConfirmationView.getElementById("highlight-box-heading").text() mustBe messages("movement.arrival.confirmation.heading")
+    }
+
+    "have status information" in {
+
+      arrivalConfirmationView.getElementById("status-info").text() mustBe messages("movement.confirmation.statusInfo")
+    }
+
+    "have what next section" in {
+
+      arrivalConfirmationView.getElementById("what-next").text() mustBe messages("movement.confirmation.whatNext")
+    }
+
+    "have next steps section" in {
+
+      arrivalConfirmationView.getElementById("next-steps").text() mustBe messages("movement.arrival.confirmation.nextSteps")
     }
 
     "have back button" in {
@@ -59,29 +82,43 @@ class MovementConfirmationViewSpec extends UnitViewSpec {
       val backButton = arrivalConfirmationView.getElementsByClass("button")
 
       backButton.text() mustBe messages("site.backToStartPage")
-      backButton.attr("href") mustBe routes.StartController.displayStartPage().url
+      backButton.first() must haveHref(routes.StartController.displayStartPage())
     }
   }
 
   "Departure Confirmation Page" should {
 
-    "display same page title as header" in {
+    "have title" in {
 
-      val view = movementConfirmationPage(Departure)(request, messagesApi.preferred(request))
-      view.title() must include(view.getElementsByTag("h1").text())
+      departureConfirmationView.getElementsByTag("title").first().text() must include(messages("title.format"))
     }
 
     "have heading" in {
 
-      departureConfirmationView.getElementById("highlight-box-heading").text() mustBe messages("movement.departure.confirmation")
+      departureConfirmationView.getElementById("highlight-box-heading").text() mustBe messages("movement.departure.confirmation.heading")
+    }
+
+    "have status information" in {
+
+      departureConfirmationView.getElementById("status-info").text() mustBe messages("movement.confirmation.statusInfo")
+    }
+
+    "have what next section" in {
+
+      departureConfirmationView.getElementById("what-next").text() mustBe messages("movement.confirmation.whatNext")
+    }
+
+    "have next steps section" in {
+
+      departureConfirmationView.getElementById("next-steps").text() mustBe messages("movement.departure.confirmation.nextSteps")
     }
 
     "have back button" in {
 
-      val backButton = departureConfirmationView.getElementsByClass("button")
+      val backButton = arrivalConfirmationView.getElementsByClass("button")
 
       backButton.text() mustBe messages("site.backToStartPage")
-      backButton.attr("href") mustBe routes.StartController.displayStartPage().url
+      backButton.first() must haveHref(routes.StartController.displayStartPage())
     }
   }
 }

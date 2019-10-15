@@ -23,15 +23,17 @@
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
- @main_template(title = Title("associateDucrConfirmation.title")) {
+@main_template(title = Title("associateDucr.confirmation.tab.heading")) {
 
-  @components.highlight_box_with_reference(
-   headingText = messages("associateDucrConfirmation.title"),
-   informationText = Some(messages("associateDucrConfirmation.header")),
-   reference = Some(flash.get(FlashKeys.MUCR).getOrElse("-"))
-  )
+    @components.highlight_box_with_reference(
+        headingText = messages("associateDucr.confirmation.heading", flash.get(FlashKeys.DUCR).getOrElse("-"))
+    )
 
-  <p>@messages("associateDucrConfirmation.note")</p>
+    @components.paragraph(messages("movement.confirmation.statusInfo"), Some("status-info"))
 
-  @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
- }
+    <h2 id="what-next">@messages("movement.confirmation.whatNext")</h2>
+
+    @components.paragraph(messages(s"consolidation.confirmation.addOrShut"), Some("next-steps"))
+
+    @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
+}

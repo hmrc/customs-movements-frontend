@@ -109,8 +109,23 @@ arrivals.title = Arrivals
 arrivals.heading = Arrivals
 arrivals.ducr = DUCR
 
-movement.arrival.confirmation = Arrival has been submitted
-movement.departure.confirmation = Departure has been submitted
+movement.arrival.confirmation.tab.heading = Arrival request submitted
+movement.arrival.confirmation.heading = Arrival of {0} {1} has been submitted
+movement.arrival.confirmation.nextSteps = Consolidate a DUCR or MUCR, or depart a consignment.
+movement.departure.confirmation.tab.heading = Departure request submitted
+movement.departure.confirmation.heading = Departure of {0} {1} has been submitted
+movement.departure.confirmation.nextSteps = You can depart another consignment or arrive a new consignment
+movement.confirmation.statusInfo = To check the status of this consignment, view all submissions.
+movement.confirmation.whatNext = What do you want to do next?
+associateDucr.confirmation.tab.heading = Add DUCR request submitted
+associateDucr.confirmation.heading = Addition of DUCR {0} has been submitted
+disassociateDucr.confirmation.tab.heading = Remove DUCR request submitted
+disassociateDucr.confirmation.heading = Removal of DUCR {0} has been submitted
+consolidation.confirmation.addOrShut = Add another DUCR or MUCR, or shut a MUCR.
+shutMucr.confirmation.tab.heading = Shut MUCR request submitted
+shutMucr.confirmation.heading = MUCR {0} has been shut
+shutMucr.confirmation.shutOrDepart = Shut another MUCR. Depart a consignment.
+
 movement.arrival.title = Arrival
 movement.arrival.heading = Arrival
 movement.departure.title = Departure
@@ -243,16 +258,8 @@ disassociateDucr.title = Which DUCR do you want to remove?
 disassociateDucr.ducr.empty = Please enter DUCR
 disassociateDucr.ducr.error = Incorrect DUCR
 
-disassociateDucrConfirmation.title = Disassociation complete
-disassociateDucrConfirmation.header = The reference of the DUCR disassociated:
-disassociateDucrConfirmation.note = You might want to take a screenshot of this for your records.
-
 shutMucr.tabTitle = Shut a MUCR
 shutMucr.title = Which MUCR do you want to shut?
-
-shutMucrConfirmation.title = MUCR shut
-shutMucrConfirmation.info = The reference of the MUCR shut:
-shutMucrConfirmation.note = You might want to take a screenshot of this for your records.
 
 mucrOptions.title = Create or enter a MUCR to add to
 mucrOptions.create = Create a new MUCR
@@ -268,10 +275,6 @@ associateDucr.reference.hint = Make sure you have entered the correct MUCR befor
 
 associateDucrSummary.title = The following DUCR has been added to {0}
 associateDucrSummary.hint = Make sure the details of the DUCR are correct before continuing.
-
-associateDucrConfirmation.title = Consolidation complete
-associateDucrConfirmation.header = Your MUCR
-associateDucrConfirmation.note = You might want to take a screenshot of this for your records.
 
 submissions.title = Requests
 submissions.summary = This page shows your submitted requests and allows you to view any notifications relating to them.

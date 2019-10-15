@@ -22,7 +22,7 @@
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
-@main_template(title = Title("disassociateDucr.confirmation.heading")) {
+@main_template(title = Title("disassociateDucr.confirmation.tab.heading")) {
 
     @components.highlight_box_with_reference(
         headingText = messages("disassociateDucr.confirmation.heading", flash.get(FlashKeys.DUCR).getOrElse("-"))

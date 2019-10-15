@@ -36,22 +36,12 @@ class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar {
     implicit val messages: Messages = stubMessages()
 
     val decoder: Decoder = mock[Decoder]
-    when(decoder.actionCode(anyString)).thenReturn(Some(ActionCode.PartiallyAcknowledgedAndProcessed))
     when(decoder.error(anyString)).thenReturn(Some(ILEError("CODE", "Messages.Key")))
 
     val converter = new ControlResponseBlockedConverter(decoder, NotificationsPageFormatter)
   }
 
   "ControlResponseBlockedConverter on convert" should {
-
-    "call Decoder for ActionCode" in new Test {
-
-      val input = BlockedControlResponseSingleError
-
-      converter.convert(input)
-
-      verify(decoder).actionCode(meq(input.actionCode.get))
-    }
 
     "return NotificationsPageSingleElement with correct title" in new Test {
 

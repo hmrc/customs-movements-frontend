@@ -24,7 +24,7 @@ import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.Logger
 import play.api.i18n.Messages
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.Html
 import views.html.components.{notification_errors, paragraph}
 
 @Singleton
@@ -33,8 +33,8 @@ class ControlResponseBlockedConverter @Inject()(decoder: Decoder, dateTimeFormat
 
   private val logger = Logger(this.getClass)
 
-  private val TitleMessagesKey =
-    "notifications.elem.title.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed"
+  private val TitleMessagesKey = "notifications.elem.title.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed"
+  private val ContentHeaderMessagesKey = "notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed"
 
   override def convert(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
@@ -44,17 +44,11 @@ class ControlResponseBlockedConverter @Inject()(decoder: Decoder, dateTimeFormat
     )
 
   private def buildContent(notification: NotificationFrontendModel)(implicit messages: Messages): Html = {
-    val contentHeader = buildContentHeader(notification)
+    val contentHeader = paragraph(messages(ContentHeaderMessagesKey + contentHeaderSuffix(notification)))
     val errorsExplanations = buildErrorsExplanations(notification.errorCodes)
 
     new Html(List(contentHeader, errorsExplanations))
   }
-
-  private def buildContentHeader(notification: NotificationFrontendModel)(implicit messages: Messages): Html =
-    notification.actionCode
-      .flatMap(decoder.actionCode)
-      .map(actionCode => paragraph(messages(actionCode.messageKey + contentHeaderSuffix(notification))))
-      .getOrElse(HtmlFormat.empty)
 
   private def contentHeaderSuffix(notification: NotificationFrontendModel): String =
     if (notification.errorCodes.length < 2) ".singleError" else ".multiError"

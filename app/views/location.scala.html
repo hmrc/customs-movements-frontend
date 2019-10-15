@@ -31,11 +31,7 @@
     @helper.form(routes.LocationController.saveLocation(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @if(choice == Arrival) {
-            @components.back_link(routes.MovementDetailsController.displayPage())
-        } else {
-            @components.back_link(routes.ConsignmentReferencesController.displayPage())
-        }
+        @components.back_link(routes.MovementDetailsController.displayPage())
 
         @components.error_summary(form.errors)
 

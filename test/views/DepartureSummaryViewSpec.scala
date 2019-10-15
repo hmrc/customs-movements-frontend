@@ -80,7 +80,7 @@ class DepartureSummaryViewSpec extends UnitViewSpec {
 
     "have correct back link for depart into of uk" in {
 
-      departureSummaryViewIn.getElementById("link-back") must haveHref(routes.MovementDetailsController.displayPage())
+      departureSummaryViewIn.getElementById("link-back") must haveHref(routes.GoodsDepartedController.displayPage())
     }
 
     "have correct main buttons" in {

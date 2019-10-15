@@ -90,12 +90,8 @@ class MovementDetailsController @Inject()(
       .fold(
         (formWithErrors: Form[DepartureDetails]) => Future.successful(Left(departureDetailsPage(formWithErrors))),
         validForm =>
-          customsCacheService.cache[DepartureDetails](movementCacheId, formId, validForm).map { cacheMap: CacheMap =>
-            cacheMap.getEntry[GoodsDeparted](GoodsDeparted.formId) match {
-              case Some(goodsDeparted) if (goodsDeparted.departedPlace == AllowedPlaces.outOfTheUk) =>
-                Right(controllers.routes.TransportController.displayPage())
-              case _ => Right(controllers.routes.SummaryController.displayPage())
-            }
+          customsCacheService.cache[DepartureDetails](movementCacheId, formId, validForm).map { _ =>
+            Right(controllers.routes.LocationController.displayPage())
         }
       )
 }

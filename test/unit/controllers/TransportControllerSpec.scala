@@ -45,7 +45,7 @@ class TransportControllerSpec extends ControllerSpec with OptionValues {
 
     authorizedUser()
     withCaching(Choice.choiceId, Some(Arrival))
-    when(mockTransportPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockTransportPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -56,7 +56,7 @@ class TransportControllerSpec extends ControllerSpec with OptionValues {
 
   private def theResponseForm: Form[Transport] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Transport]])
-    verify(mockTransportPage).apply(captor.capture(), any())(any(), any())
+    verify(mockTransportPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 

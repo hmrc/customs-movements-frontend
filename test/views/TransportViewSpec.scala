@@ -16,102 +16,90 @@
 
 package views
 
-import forms.Choice.{Arrival, Departure}
+import controllers.routes
 import forms.Transport
 import helpers.views.{CommonMessages, TransportMessages}
 import play.api.data.Form
+import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import views.spec.ViewSpec
+import utils.Injector
+import views.html.transport
+import views.spec.UnitViewSpec
+import views.spec.UnitViewSpec.instanceOf
 
-class TransportViewSpec extends ViewSpec with TransportMessages with CommonMessages {
+class TransportViewSpec extends UnitViewSpec with TransportMessages with CommonMessages with Injector {
 
   private val form: Form[Transport] = Transport.form
-  private val transportPage = injector.instanceOf[views.html.transport]
+  private val transportPage = new transport(mainTemplate)
 
-  private def createArrivalView(form: Form[Transport] = form): Html =
-    transportPage(form, Arrival)
-
-  private def createDepartureView(form: Form[Transport] = form): Html =
-    transportPage(form, Departure)
+  private val view: Html = transportPage(form)
 
   "Transport View" should {
 
+    val messages = instanceOf[MessagesApi].preferred(request)
+
     "have a proper labels for messages" in {
 
-      assertMessage(title, "Transport")
-      assertMessage(modeOfTransportQuestion, "What transport type took the goods across the border?")
-      assertMessage(modeOfTransportSea, "Sea transport")
-      assertMessage(modeOfTransportRail, "Rail transport")
-      assertMessage(modeOfTransportRoad, "Road transport")
-      assertMessage(modeOfTransportAir, "Air transport")
-      assertMessage(modeOfTransportPostalOrMail, "Postal or mail")
-      assertMessage(modeOfTransportFixed, "Fixed transport installations")
-      assertMessage(modeOfTransportInland, "Inland waterway transport")
-      assertMessage(modeOfTransportOther, "Other, for example own propulsion")
-      assertMessage(nationalityQuestion, "What is the nationality of the transport type?")
-      assertMessage(nationalityHint, "This is a 2 digit country code. For example FR for France.")
+      messages must haveTranslationFor(title)
+      messages must haveTranslationFor(modeOfTransportQuestion)
+      messages must haveTranslationFor(modeOfTransportSea)
+      messages must haveTranslationFor(modeOfTransportRail)
+      messages must haveTranslationFor(modeOfTransportRoad)
+      messages must haveTranslationFor(modeOfTransportAir)
+      messages must haveTranslationFor(modeOfTransportPostalOrMail)
+      messages must haveTranslationFor(modeOfTransportFixed)
+      messages must haveTranslationFor(modeOfTransportInland)
+      messages must haveTranslationFor(modeOfTransportOther)
+      messages must haveTranslationFor(nationalityQuestion)
+      messages must haveTranslationFor(nationalityHint)
     }
 
     "have a proper labels for errors" in {
 
-      assertMessage(modeOfTransportEmpty, "You need to choose mode of transport")
-      assertMessage(modeOfTransportError, "Mode of transport is incorrect")
-      assertMessage(nationalityEmpty, "You need to provide the transport nationality")
-      assertMessage(nationalityError, "Nationality of transport is incorrect")
+      messages must haveTranslationFor(modeOfTransportEmpty)
+      messages must haveTranslationFor(modeOfTransportError)
+      messages must haveTranslationFor(nationalityEmpty)
+      messages must haveTranslationFor(nationalityError)
     }
   }
 
   "Transport View on empty page" should {
 
-    "display same page title as header" in {
-
-      val view = createArrivalView()
-      view.title() must include(view.getElementsByTag("h1").text())
-    }
-
     "display page header" in {
 
-      getElementById(createArrivalView(), "title").text() must be(messages(title))
+      view.getElementById("title").text() mustBe messages(title)
     }
 
     "display input for mode of transport with all possible answers" in {
 
-      getElementById(createArrivalView(), "modeOfTransport-label").text() must be(messages(modeOfTransportQuestion))
-      getElementById(createArrivalView(), "1-label").text() must be(messages(modeOfTransportSea))
-      getElementById(createArrivalView(), "2-label").text() must be(messages(modeOfTransportRail))
-      getElementById(createArrivalView(), "3-label").text() must be(messages(modeOfTransportRoad))
-      getElementById(createArrivalView(), "4-label").text() must be(messages(modeOfTransportAir))
-      getElementById(createArrivalView(), "5-label").text() must be(messages(modeOfTransportPostalOrMail))
-      getElementById(createArrivalView(), "6-label").text() must be(messages(modeOfTransportFixed))
-      getElementById(createArrivalView(), "7-label").text() must be(messages(modeOfTransportInland))
-      getElementById(createArrivalView(), "8-label").text() must be(messages(modeOfTransportOther))
+      view.getElementById("modeOfTransport-label").text() mustBe messages(modeOfTransportQuestion)
+      view.getElementById("1-label").text() mustBe messages(modeOfTransportSea)
+      view.getElementById("2-label").text() mustBe messages(modeOfTransportRail)
+      view.getElementById("3-label").text() mustBe messages(modeOfTransportRoad)
+      view.getElementById("4-label").text() mustBe messages(modeOfTransportAir)
+      view.getElementById("5-label").text() mustBe messages(modeOfTransportPostalOrMail)
+      view.getElementById("6-label").text() mustBe messages(modeOfTransportFixed)
+      view.getElementById("7-label").text() mustBe messages(modeOfTransportInland)
+      view.getElementById("8-label").text() mustBe messages(modeOfTransportOther)
     }
 
     "display input for nationality" in {
 
-      getElementById(createArrivalView(), "nationality-label").text() must be(messages(nationalityQuestion))
-      getElementById(createArrivalView(), "nationality-hint").text() must be(messages(nationalityHint))
+      view.getElementById("nationality-label").text() mustBe messages(nationalityQuestion)
+      view.getElementById("nationality-hint").text() mustBe messages(nationalityHint)
     }
 
-    "display \"Back\" button that links to Location for arrival" in {
+    "display \"Back\" button that links to Goods Departed" in {
 
-      val backButton = getElementById(createArrivalView(), "link-back")
-
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-movements/location")
-    }
-
-    "display \"Back\" button that links to Date of Departure for departure" in {
-
-      val backButton = getElementById(createDepartureView(), "link-back")
+      val backButton = view.getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-movements/movement-details")
+      backButton.attr("href") mustBe routes.GoodsDepartedController.displayPage().url
     }
 
     "display \"Save and continue\" button on page" in {
 
-      val saveButton = getElementById(createArrivalView(), "submit")
+      val saveButton = view.getElementById("submit")
 
       saveButton.text() must be(messages(saveAndContinueCaption))
     }

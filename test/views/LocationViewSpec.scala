@@ -16,7 +16,8 @@
 
 package views
 
-import forms.Choice.{Arrival, Departure}
+import controllers.routes
+import forms.Choice.Arrival
 import forms.Location
 import helpers.views.{CommonMessages, LocationMessages}
 import play.api.data.Form
@@ -28,11 +29,7 @@ class LocationViewSpec extends ViewSpec with LocationMessages with CommonMessage
   private val form: Form[Location] = Location.form()
   private val locationPage = injector.instanceOf[views.html.location]
 
-  private def createArrivalView(form: Form[Location] = form): Html =
-    locationPage(form, Arrival)
-
-  private def createDepartureView(form: Form[Location] = form): Html =
-    locationPage(form, Departure)
+  private val view: Html = locationPage(form, Arrival)
 
   "Location View" should {
 
@@ -68,38 +65,30 @@ class LocationViewSpec extends ViewSpec with LocationMessages with CommonMessage
 
     "display page title" in {
 
-      getElementById(createArrivalView(), "title").text() must be(messages(question))
+      getElementById(view, "title").text() mustBe messages(question)
     }
 
     "display text input for all fields" in {
 
-      getElementById(createArrivalView(), "locationType-label").text() must be(messages(locationType))
-      getElementById(createArrivalView(), "qualifierCode-label").text() must be(messages(qualifierCode))
-      getElementById(createArrivalView(), "locationCode-label").text() must be(messages(locationCode))
-      getElementById(createArrivalView(), "country-label").text() must be(messages(country))
+      getElementById(view, "locationType-label").text() mustBe messages(locationType)
+      getElementById(view, "qualifierCode-label").text() mustBe messages(qualifierCode)
+      getElementById(view, "locationCode-label").text() mustBe messages(locationCode)
+      getElementById(view, "country-label").text() mustBe messages(country)
     }
 
-    "display \"Back\" button that links to Goods Date for arrival" in {
+    "display \"Back\" button that links to Movement Details" in {
 
-      val backButton = getElementById(createArrivalView(), "link-back")
-
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-movements/movement-details")
-    }
-
-    "display \"Back\" button that links to Consignment References for departure" in {
-
-      val backButton = getElementById(createDepartureView(), "link-back")
+      val backButton = getElementById(view, "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-movements/consignment-references")
+      backButton.attr("href") mustBe routes.MovementDetailsController.displayPage().url
     }
 
     "display \"Save and continue\" button on page" in {
 
-      val saveButton = getElementById(createArrivalView(), "submit")
+      val saveButton = getElementById(view, "submit")
 
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      saveButton.text() mustBe messages(saveAndContinueCaption)
     }
   }
 }

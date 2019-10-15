@@ -75,8 +75,7 @@ class ILEErrorSpec extends WordSpec with MustMatchers with ViewMatchers {
       )
 
       ileErrorsNames.foreach { errorName =>
-        messages must haveTranslationFor(s"error.ile.$errorName.CDS")
-        messages must haveTranslationFor(s"error.ile.$errorName.Exports")
+        messages must haveTranslationFor(s"error.ile.$errorName")
       }
     }
   }

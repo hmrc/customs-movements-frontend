@@ -47,21 +47,20 @@ object Location {
   def form(): Form[Location] = Form(mapping)
 
   /**
-   * Country is in two first characters in Location Code
-   */
+    * Country is in two first characters in Location Code
+    */
   private def validateCountry: String => Boolean =
     (input: String) => allCountries.exists(_.countryCode == input.take(2))
 
   /**
-   * Location Type is defined as third character in Location Code
-   */
+    * Location Type is defined as third character in Location Code
+    */
   private def validateLocationType: String => Boolean =
     (input: String) => input.drop(2).headOption.map(_.toString).map(isContainedIn(correctLocationType)).getOrElse(false)
 
   /**
-   * Qualifier Code is defined in fourth characted in Location Code
-   */
+    * Qualifier Code is defined in fourth characted in Location Code
+    */
   private def validateQualifierCode: String => Boolean =
-    (input: String) =>
-      input.drop(3).headOption.map(_.toString).map(isContainedIn(correctQualifierCode)).getOrElse(false)
+    (input: String) => input.drop(3).headOption.map(_.toString).map(isContainedIn(correctQualifierCode)).getOrElse(false)
 }

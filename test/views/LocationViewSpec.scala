@@ -17,7 +17,6 @@
 package views
 
 import controllers.routes
-import forms.Choice.Arrival
 import forms.Location
 import helpers.views.CommonMessages
 import play.api.data.Form
@@ -30,7 +29,7 @@ class LocationViewSpec extends UnitViewSpec with CommonMessages {
   private val form: Form[Location] = Location.form()
   private val locationPage = new location(mainTemplate)
 
-  private val view: Html = locationPage(form, Arrival)
+  private val view: Html = locationPage(form)
 
   "Location View" should {
 

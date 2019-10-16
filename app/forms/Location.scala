@@ -30,9 +30,6 @@ object Location {
 
   val formId = "Location"
 
-  val correctLocationType: Set[String] = Set("A", "B", "C", "D")
-  val correctQualifierCode: Set[String] = Set("U", "Y")
-
   /**
     * Country is in two first characters in Location Code
     */
@@ -45,6 +42,7 @@ object Location {
     * Location Type is defined as third character in Location Code
     */
   private val validateLocationType: String => Boolean = (input: String) => {
+    val correctLocationType: Set[String] = Set("A", "B", "C", "D")
     val predicate = isContainedIn(correctLocationType)
     input.drop(2).headOption.map(_.toString).exists(predicate)
   }
@@ -53,6 +51,7 @@ object Location {
     * Qualifier Code is defined in fourth characted in Location Code
     */
   private val validateQualifierCode: String => Boolean = (input: String) => {
+    val correctQualifierCode: Set[String] = Set("U", "Y")
     val predicate = isContainedIn(correctQualifierCode)
     input.drop(3).headOption.map(_.toString).exists(predicate)
   }

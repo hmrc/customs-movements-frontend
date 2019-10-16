@@ -18,44 +18,44 @@ package views
 
 import forms.MucrOptions
 import helpers.views.CommonMessages
+import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
-import views.spec.ViewSpec
+import views.spec.UnitViewSpec
 
-class MucrOptionsViewSpec extends ViewSpec with CommonMessages {
+class MucrOptionsViewSpec extends UnitViewSpec with CommonMessages {
 
   private val form: Form[MucrOptions] = MucrOptions.form
-  private val page = injector.instanceOf[views.html.mucr_options]
+  private val page = new views.html.mucr_options(mainTemplate)
 
-  private val view: Html = page(form)
+  private val view: Document = page(form)
 
   "MUCR options" should {
 
     "have the correct title" in {
-      getElementById(view, "title").text() mustBe "Create or enter a MUCR to add to"
+      view.getElementById("title").text() mustBe "mucrOptions.title"
     }
 
     "have the correct label for create new" in {
-      getElementById(view, "mucrOptions.create-label").text() mustBe "Create a new MUCR"
+      view.getElementById("mucrOptions.create-label").text() mustBe "mucrOptions.create"
     }
 
     "have the correct label for add to existing" in {
-      getElementById(view, "mucrOptions.add-label").text() mustBe "Add to an existing MUCR"
+      view.getElementById("mucrOptions.add-label").text() mustBe "mucrOptions.add"
     }
 
     "have no options selected on initial display" in {
-      verifyUnchecked(view, "mucrOptions.create")
-      verifyUnchecked(view, "mucrOptions.add")
+      view.getElementById("mucrOptions.create") mustBe unchecked
+      view.getElementById("mucrOptions.add") mustBe unchecked
     }
 
     "display 'Back' button that links to start page" in {
-      val backButton = getElementById(view, "link-back")
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") mustBe controllers.routes.ChoiceController.displayChoiceForm().url
+      val backButton = view.getElementById("link-back")
+      backButton.text() must be(backCaption)
+      backButton must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
     }
 
     "display 'Save and continue' button on page" in {
-      getElementById(view, "submit").text() mustBe messages(saveAndContinueCaption)
+      view.getElementById("submit").text() mustBe saveAndContinueCaption
     }
   }
 }

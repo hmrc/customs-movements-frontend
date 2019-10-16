@@ -18,14 +18,15 @@ package views.spec
 
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
-import org.scalatest.matchers.{MatchResult, Matcher}
+import org.scalatest.MustMatchers
+import org.scalatest.matchers.{BeMatcher, MatchResult, Matcher}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
 import scala.collection.JavaConverters._
 
 //noinspection ScalaStyle
-trait ViewMatchers {
+trait ViewMatchers { self: MustMatchers =>
 
   implicit private def elements2Scala(elements: Elements): Iterator[Element] = elements.iterator().asScala
 
@@ -216,4 +217,15 @@ trait ViewMatchers {
   def haveHref(url: String): Matcher[Element] = new ElementHasAttributeValueMatcher("href", url)
 
   def haveTranslationFor(key: String): Matcher[Messages] = new TranslationKeyMatcher(key)
+
+  val checked: BeMatcher[Element] = new BeMatcher[Element]{
+    override def apply(left: Element): MatchResult = {
+      MatchResult(
+        left.attr("checked") == "checked",
+        "Element is not checked",
+        "Element is checked")
+    }
+  }
+
+  val unchecked: BeMatcher[Element] = not(checked)
 }

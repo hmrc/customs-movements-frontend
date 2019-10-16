@@ -33,6 +33,30 @@ object Location {
   val correctLocationType: Set[String] = Set("A", "B", "C", "D")
   val correctQualifierCode: Set[String] = Set("U", "Y")
 
+  /**
+    * Country is in two first characters in Location Code
+    */
+  private val validateCountry: String => Boolean = (input: String) => {
+    val countryCode = input.take(2)
+    allCountries.exists(_.countryCode == countryCode)
+  }
+
+  /**
+    * Location Type is defined as third character in Location Code
+    */
+  private val validateLocationType: String => Boolean = (input: String) => {
+    val predicate = isContainedIn(correctLocationType)
+    input.drop(2).headOption.map(_.toString).exists(predicate)
+  }
+
+  /**
+    * Qualifier Code is defined in fourth characted in Location Code
+    */
+  private val validateQualifierCode: String => Boolean = (input: String) => {
+    val predicate = isContainedIn(correctQualifierCode)
+    input.drop(3).headOption.map(_.toString).exists(predicate)
+  }
+
   val mapping = Forms.mapping(
     "code" -> text()
       .verifying("location.code.empty", nonEmpty)
@@ -46,21 +70,4 @@ object Location {
 
   def form(): Form[Location] = Form(mapping)
 
-  /**
-    * Country is in two first characters in Location Code
-    */
-  private def validateCountry: String => Boolean =
-    (input: String) => allCountries.exists(_.countryCode == input.take(2))
-
-  /**
-    * Location Type is defined as third character in Location Code
-    */
-  private def validateLocationType: String => Boolean =
-    (input: String) => input.drop(2).headOption.map(_.toString).map(isContainedIn(correctLocationType)).getOrElse(false)
-
-  /**
-    * Qualifier Code is defined in fourth characted in Location Code
-    */
-  private def validateQualifierCode: String => Boolean =
-    (input: String) => input.drop(3).headOption.map(_.toString).map(isContainedIn(correctQualifierCode)).getOrElse(false)
 }

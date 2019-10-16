@@ -53,7 +53,7 @@ class MovementTypeSpec extends UnitSpec {
     }
 
     "throw an exception when there is incorrect movement value" in {
-      intercept[IllegalArgumentException]{
+      intercept[IllegalArgumentException] {
         MovementType("incorrect")
       }
     }

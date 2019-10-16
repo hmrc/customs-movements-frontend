@@ -17,47 +17,34 @@
 package views
 
 import controllers.routes
-import forms.Choice.Arrival
 import forms.Location
-import helpers.views.{CommonMessages, LocationMessages}
+import helpers.views.CommonMessages
 import play.api.data.Form
 import play.twirl.api.Html
-import views.spec.ViewSpec
+import views.html.location
+import views.spec.UnitViewSpec
 
-class LocationViewSpec extends ViewSpec with LocationMessages with CommonMessages {
+class LocationViewSpec extends UnitViewSpec with CommonMessages {
 
   private val form: Form[Location] = Location.form()
-  private val locationPage = injector.instanceOf[views.html.location]
+  private val locationPage = new location(mainTemplate)
 
-  private val view: Html = locationPage(form, Arrival)
+  private val view: Html = locationPage(form)
 
   "Location View" should {
 
+    val messages = messagesApi.preferred(request)
+
     "have a proper labels for messages" in {
 
-      assertMessage(title, "Location")
-      assertMessage(question, "Where are the goods located?")
-      assertMessage(locationType, "Location Type")
-      assertMessage(locationTypeA, "A - Designated location (denotes Frontier or Frontier linked - Airports, ITSFs etc)")
-      assertMessage(locationTypeB, "B - Authorised place (identifies inland locations such as customs warehouses)")
-      assertMessage(locationTypeC, "C - Approved place (only used for certificate of Agreement AirFields)")
-      assertMessage(locationTypeD, "D - Other (such as pipelines, continental shelf, sind farms, etc)")
-      assertMessage(qualifierCode, "Qualifier Code")
-      assertMessage(qualifierCodeU, "U - UN/LOCODE")
-      assertMessage(qualifierCodeY, "Y - Authorisation number")
-      assertMessage(locationCode, "Location Code and Additional Qualifier")
-      assertMessage(country, "Country")
+      messages must haveTranslationFor("location.title")
+      messages must haveTranslationFor("location.question")
+      messages must haveTranslationFor("location.hint")
     }
 
     "have a proper labels for errors" in {
 
-      assertMessage(locationTypeEmpty, "Location Type cannot be empty")
-      assertMessage(locationTypeError, "Location Type is incorrect")
-      assertMessage(qualifierCodeEmpty, "Qualifier Code cannot be empty")
-      assertMessage(qualifierCodeError, "Qualifier Code is incorrect")
-      assertMessage(locationCodeError, "Location Code and Additional Qualifier must be between 6 and 13 characters")
-      assertMessage(countryEmpty, "Country cannot be empty")
-      assertMessage(countryError, "Country is incorrect")
+      messages must haveTranslationFor("location.code.error")
     }
   }
 
@@ -65,28 +52,25 @@ class LocationViewSpec extends ViewSpec with LocationMessages with CommonMessage
 
     "display page title" in {
 
-      getElementById(view, "title").text() mustBe messages(question)
+      view.getElementById("title").text() mustBe messages("location.question")
     }
 
-    "display text input for all fields" in {
+    "display input hint" in {
 
-      getElementById(view, "locationType-label").text() mustBe messages(locationType)
-      getElementById(view, "qualifierCode-label").text() mustBe messages(qualifierCode)
-      getElementById(view, "locationCode-label").text() mustBe messages(locationCode)
-      getElementById(view, "country-label").text() mustBe messages(country)
+      view.getElementById("code-hint").text() mustBe messages("location.hint")
     }
 
     "display \"Back\" button that links to Movement Details" in {
 
-      val backButton = getElementById(view, "link-back")
+      val backButton = view.getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") mustBe routes.MovementDetailsController.displayPage().url
+      backButton must haveHref(routes.MovementDetailsController.displayPage())
     }
 
     "display \"Save and continue\" button on page" in {
 
-      val saveButton = getElementById(view, "submit")
+      val saveButton = view.getElementById("submit")
 
       saveButton.text() mustBe messages(saveAndContinueCaption)
     }

@@ -189,24 +189,9 @@ departureDetails.question = Date of departure
 departureDetails.hint = For example, 01 08 2007
 
 location.title = Location
-location.question = Where are the goods located?
-locationType = Location Type
-locationType.empty = Location Type cannot be empty
-locationType.error = Location Type is incorrect
-locationType.A = A - Designated location (denotes Frontier or Frontier linked - Airports, ITSFs etc)
-locationType.B = B - Authorised place (identifies inland locations such as customs warehouses)
-locationType.C = C - Approved place (only used for certificate of Agreement AirFields)
-locationType.D = D - Other (such as pipelines, continental shelf, sind farms, etc)
-qualifierCode = Qualifier Code
-qualifierCode.empty = Qualifier Code cannot be empty
-qualifierCode.error = Qualifier Code is incorrect
-qualifierCode.U = U - UN/LOCODE
-qualifierCode.Y = Y - Authorisation number
-locationCode = Location Code and Additional Qualifier
-locationCode.error = Location Code and Additional Qualifier must be between 6 and 13 characters
-location.country = Country
-location.country.empty = Country cannot be empty
-location.country.error = Country is incorrect
+location.question = What is the goods location code?
+location.hint = The is an alphanumeric code.For example, GBAUEMAEMAEMA
+location.code.error = Goods location code is incorrect
 
 goodsDeparted.title = Goods departed
 goodsDeparted.departedPlace.question = Where are the goods going?

@@ -42,7 +42,7 @@ object MovementsTestData {
   val date = Date(Some(10), Some(8), Some(2018))
   val departureDetails = DepartureDetails(date)
   val goodsDeparted = GoodsDeparted(AllowedPlaces.outOfTheUk)
-  val location: JsValue = Json.toJson(Location("A", "Y", "correct", "PL"))
+  val location: JsValue = Json.toJson(Location("PLAYcorrect"))
   val correctTransport: JsValue = JsObject(Map("modeOfTransport" -> JsString("2"), "nationality" -> JsString("PL"), "transportId" -> JsString("REF")))
 
   def newUser(eori: String): SignedInUser =

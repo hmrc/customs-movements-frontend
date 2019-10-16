@@ -44,14 +44,14 @@ class LocationController @Inject()(
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
       .fetchAndGetEntry[Location](movementCacheId, formId)
-      .map(data => Ok(locationPage(data.fold(form)(form.fill(_)), request.choice)))
+      .map(data => Ok(locationPage(data.fold(form)(form.fill(_)))))
   }
 
   def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Location]) => Future.successful(BadRequest(locationPage(formWithErrors, request.choice))),
+        (formWithErrors: Form[Location]) => Future.successful(BadRequest(locationPage(formWithErrors))),
         validForm =>
           customsCacheService
             .cache[Location](movementCacheId(), formId, validForm)

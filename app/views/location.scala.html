@@ -16,16 +16,12 @@
 
 @import controllers.routes
 @import uk.gov.hmrc.play.views.html._
-@import forms.Choice
-@import forms.Choice.Arrival
 @import forms.Location
-@import services.Countries
-@import views.components.fields.{AutoCompleteItem, RadioOption}
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[Location], choice: Choice)(implicit request: Request[_], messages: Messages)
+@(form: Form[Location])(implicit request: Request[_], messages: Messages)
 
 @main_template(title = Title("location.question")) {
     @helper.form(routes.LocationController.saveLocation(), 'autoComplete -> "off") {
@@ -37,39 +33,10 @@
 
         @components.page_title(Some("location.question"))
 
-        @components.input_radio(
-          field = form("locationType"),
-            legend = messages("locationType"),
-            inputs = Seq(
-              RadioOption("A", "A", "locationType.A"),
-              RadioOption("B", "B", "locationType.B"),
-              RadioOption("C", "C", "locationType.C"),
-              RadioOption("D", "D", "locationType.D")
-            )
-        )
-
-        @components.input_radio(
-            field = form("qualifierCode"),
-            legend = messages("qualifierCode"),
-            inputs = Seq(
-                RadioOption("U", "U", "qualifierCode.U"),
-                RadioOption("Y", "Y", "qualifierCode.Y")
-            )
-        )
-
         @components.input_text(
-            field = form("locationCode"),
-            label = messages("locationCode"),
-            hint = None,
-            labelClass = Some("bold-small")
-        )
-
-        @components.field_autocomplete(
-            form("country"),
-            "location.country",
-            None,
-            "",
-            items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
+            field = form("code"),
+            label = "",
+            hint = Some(messages("location.hint"))
         )
 
         @components.submit_button()

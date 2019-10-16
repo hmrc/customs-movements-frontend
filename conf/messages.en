@@ -193,24 +193,9 @@ departureDetails.question = Date of departure
 departureDetails.hint = For example, 01 08 2007
 
 location.title = Location
-location.question = Where are the goods located?
-locationType = Location Type
-locationType.empty = Location Type cannot be empty
-locationType.error = Location Type is incorrect
-locationType.A = A - Designated location (denotes Frontier or Frontier linked - Airports, ITSFs etc)
-locationType.B = B - Authorised place (identifies inland locations such as customs warehouses)
-locationType.C = C - Approved place (only used for certificate of Agreement AirFields)
-locationType.D = D - Other (such as pipelines, continental shelf, sind farms, etc)
-qualifierCode = Qualifier Code
-qualifierCode.empty = Qualifier Code cannot be empty
-qualifierCode.error = Qualifier Code is incorrect
-qualifierCode.U = U - UN/LOCODE
-qualifierCode.Y = Y - Authorisation number
-locationCode = Location Code and Additional Qualifier
-locationCode.error = Location Code and Additional Qualifier must be between 6 and 13 characters
-location.country = Country
-location.country.empty = Country cannot be empty
-location.country.error = Country is incorrect
+location.question = What is the goods location code?
+location.hint = The is an alphanumeric code.For example, GBAUEMAEMAEMA
+location.code.error = Goods location code is incorrect
 
 goodsDeparted.title = Goods departed
 goodsDeparted.departedPlace.question = Where are the goods going?
@@ -331,43 +316,6 @@ notifications.elem.content.inventoryLinkingMovementResponse.crc = CRC:
 
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Route of entry is:
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Status of entry is:
-
-decoder.crc.Success = Success
-decoder.crc.PrelodgedDeclarationNotArrived = Pre-lodged Declaration has not arrived
-decoder.crc.DeclarationNotArrived = Declaration has not arrived
-
-decoder.roe.DocumentaryControl = you need to provide additional documents before your goods can be released
-decoder.roe.PhysicalExternalPartyControl = we''re reviewing your declaration
-decoder.roe.NonBlockingDocumentaryControl = you need to provide additional documents after your goods have been released
-decoder.roe.NoControlRequired = the goods have passed risking
-decoder.roe.RiskingNotPerformed = your goods need to be risked
-decoder.roe.PrelodgePrefix = provisional routing only
-
-decoder.soe.DeclarationValidation = declaration validation
-decoder.soe.DeclarationGoodsRelease = declaration goods release
-decoder.soe.DeclarationClearance = declaration clearance
-decoder.soe.DeclarationInvalidated = declaration invalidated
-decoder.soe.DeclarationRejected = declaration rejected
-decoder.soe.DeclarationHandledExternally = declaration handled externally
-decoder.soe.DeclarationCorrectionValidation = declaration correction validation
-decoder.soe.AdvanceDeclarationRegistration = advance declaration registration
-decoder.soe.DeclarationAcceptance = declaration acceptance
-decoder.soe.DeclarationAcceptanceAtGoodsArrival = declaration acceptance at goods arrival
-decoder.soe.DeclarationRejectionAtGoodsArrival = declaration rejection at goods arrival
-decoder.soe.DeclarationCorrected = declaration corrected
-decoder.soe.DeclarationSupplemented = declaration supplemented
-decoder.soe.DeclarationRisked = declaration risked
-decoder.soe.CustomsPositionDetermined = customs position determined
-decoder.soe.DeclarationClearanceAfterGoodsRelease = declaration clearance after goods release
-decoder.soe.InsufficientGuarantees = insufficient Guarantees
-decoder.soe.Departed = departed
-decoder.soe.Frustrated = frustrated
-decoder.soe.ConsolidationOpen = the MUCR is still open, or contains no declarations.
-decoder.soe.ConsolidationClosedWithoutP2P = the consolidation is closed, but there are underlying declarations that do not have P2P.
-decoder.soe.ConsolidationHasP2P = the consolidation is closed and all underlying declarations have P2P or have departed.
-
-decoder.icsCode.InvalidationAtTraderRequest = The declaration was invalidated at the trader''s request
-decoder.icsCode.InvalidationByCustoms = The declaration was invalidated by customs due to major discrepancies
 
 arrivalReference = Arrival reference
 arrivalReference.question = Give this arrival a unique reference

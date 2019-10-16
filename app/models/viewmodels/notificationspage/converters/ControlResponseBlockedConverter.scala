@@ -21,23 +21,20 @@ import java.time.format.DateTimeFormatter
 import javax.inject.{Inject, Singleton}
 import models.notifications.NotificationFrontendModel
 import models.viewmodels.decoder.Decoder
-import models.viewmodels.notificationspage.{NotificationsPageSingleElement, ResponseErrorExplanationSuffixProvider}
+import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.Logger
 import play.api.i18n.Messages
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.Html
 import views.html.components.{notification_errors, paragraph}
 
 @Singleton
-class ControlResponseBlockedConverter @Inject()(
-  decoder: Decoder,
-  dateTimeFormatter: DateTimeFormatter,
-  suffixProvider: ResponseErrorExplanationSuffixProvider
-) extends NotificationPageSingleElementConverter {
+class ControlResponseBlockedConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
+    extends NotificationPageSingleElementConverter {
 
   private val logger = Logger(this.getClass)
 
-  private val TitleMessagesKey =
-    "notifications.elem.title.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed"
+  private val TitleMessagesKey = "notifications.elem.title.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed"
+  private val ContentHeaderMessagesKey = "notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed"
 
   override def convert(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
@@ -47,17 +44,11 @@ class ControlResponseBlockedConverter @Inject()(
     )
 
   private def buildContent(notification: NotificationFrontendModel)(implicit messages: Messages): Html = {
-    val contentHeader = buildContentHeader(notification)
+    val contentHeader = paragraph(messages(ContentHeaderMessagesKey + contentHeaderSuffix(notification)))
     val errorsExplanations = buildErrorsExplanations(notification.errorCodes)
 
     new Html(List(contentHeader, errorsExplanations))
   }
-
-  private def buildContentHeader(notification: NotificationFrontendModel)(implicit messages: Messages): Html =
-    notification.actionCode
-      .flatMap(decoder.actionCode)
-      .map(actionCode => paragraph(messages(actionCode.messageKey + contentHeaderSuffix(notification))))
-      .getOrElse(HtmlFormat.empty)
 
   private def contentHeaderSuffix(notification: NotificationFrontendModel): String =
     if (notification.errorCodes.length < 2) ".singleError" else ".multiError"
@@ -71,7 +62,7 @@ class ControlResponseBlockedConverter @Inject()(
   private def getErrorExplanationText(errorCode: String)(implicit messages: Messages): Option[String] =
     decoder
       .error(errorCode)
-      .map(code => messages(suffixProvider.addSuffixTo(code.messageKey)))
+      .map(code => messages(code.messageKey))
       .orElse {
         logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $errorCode")
         None

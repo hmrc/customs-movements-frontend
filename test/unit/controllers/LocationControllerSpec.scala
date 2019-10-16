@@ -42,7 +42,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
     super.beforeEach()
 
     authorizedUser()
-    when(mockLocationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockLocationPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -53,7 +53,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
   private def theResponseForm: Form[Location] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Location]])
-    verify(mockLocationPage).apply(captor.capture(), any())(any(), any())
+    verify(mockLocationPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -75,7 +75,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
       "display page method is invoked and cache contains data" in {
 
         givenAUserOnTheArrivalJourney()
-        val cachedData = Location("A", "Y", "locationCode", "PL")
+        val cachedData = Location("PLAYlocationCode")
         withCaching(Location.formId, Some(cachedData))
 
         val result = controller.displayPage()(getRequest())
@@ -92,7 +92,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
         givenAUserOnTheArrivalJourney()
         withCaching(Location.formId)
 
-        val incorrectForm: JsValue = Json.toJson(Location("incorrectValue", "Y", "locationCode", "PL"))
+        val incorrectForm: JsValue = Json.toJson(Location("PLincorrectYlocationCode"))
 
         val result = controller.saveLocation()(postRequest(incorrectForm))
 
@@ -107,7 +107,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
         givenAUserOnTheArrivalJourney()
         withCaching(Location.formId)
 
-        val correctForm: JsValue = Json.toJson(Location("A", "Y", "locationCode", "PL"))
+        val correctForm: JsValue = Json.toJson(Location("PLAYlocationCode"))
 
         val result = controller.saveLocation()(postRequest(correctForm))
 
@@ -123,7 +123,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
         givenAUserOnTheDepartureJourney()
         withCaching(Location.formId)
 
-        val correctForm: JsValue = Json.toJson(Location("A", "Y", "locationCode", "PL"))
+        val correctForm: JsValue = Json.toJson(Location("PLAYlocationCode"))
 
         val result = controller.saveLocation()(postRequest(correctForm))
 

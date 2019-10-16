@@ -328,43 +328,6 @@ notifications.elem.content.inventoryLinkingMovementResponse.crc = CRC:
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Route of entry is:
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Status of entry is:
 
-decoder.crc.Success = Success
-decoder.crc.PrelodgedDeclarationNotArrived = Pre-lodged Declaration has not arrived
-decoder.crc.DeclarationNotArrived = Declaration has not arrived
-
-decoder.roe.DocumentaryControl = you need to provide additional documents before your goods can be released
-decoder.roe.PhysicalExternalPartyControl = we''re reviewing your declaration
-decoder.roe.NonBlockingDocumentaryControl = you need to provide additional documents after your goods have been released
-decoder.roe.NoControlRequired = the goods have passed risking
-decoder.roe.RiskingNotPerformed = your goods need to be risked
-decoder.roe.PrelodgePrefix = provisional routing only
-
-decoder.soe.DeclarationValidation = declaration validation
-decoder.soe.DeclarationGoodsRelease = declaration goods release
-decoder.soe.DeclarationClearance = declaration clearance
-decoder.soe.DeclarationInvalidated = declaration invalidated
-decoder.soe.DeclarationRejected = declaration rejected
-decoder.soe.DeclarationHandledExternally = declaration handled externally
-decoder.soe.DeclarationCorrectionValidation = declaration correction validation
-decoder.soe.AdvanceDeclarationRegistration = advance declaration registration
-decoder.soe.DeclarationAcceptance = declaration acceptance
-decoder.soe.DeclarationAcceptanceAtGoodsArrival = declaration acceptance at goods arrival
-decoder.soe.DeclarationRejectionAtGoodsArrival = declaration rejection at goods arrival
-decoder.soe.DeclarationCorrected = declaration corrected
-decoder.soe.DeclarationSupplemented = declaration supplemented
-decoder.soe.DeclarationRisked = declaration risked
-decoder.soe.CustomsPositionDetermined = customs position determined
-decoder.soe.DeclarationClearanceAfterGoodsRelease = declaration clearance after goods release
-decoder.soe.InsufficientGuarantees = insufficient Guarantees
-decoder.soe.Departed = departed
-decoder.soe.Frustrated = frustrated
-decoder.soe.ConsolidationOpen = the MUCR is still open, or contains no declarations.
-decoder.soe.ConsolidationClosedWithoutP2P = the consolidation is closed, but there are underlying declarations that do not have P2P.
-decoder.soe.ConsolidationHasP2P = the consolidation is closed and all underlying declarations have P2P or have departed.
-
-decoder.icsCode.InvalidationAtTraderRequest = The declaration was invalidated at the trader''s request
-decoder.icsCode.InvalidationByCustoms = The declaration was invalidated by customs due to major discrepancies
-
 arrivalReference = Arrival reference
 arrivalReference.question = Give this arrival a unique reference
 arrivalReference.hint = This will be help you quickly identify it in the future. It can be no more than 25 characters.

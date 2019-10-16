@@ -23,3 +23,6 @@ E607,error.chief.NotSuitableEntryReference
 E3464,error.chief.Refused
 E3480,error.chief.MucrNotShutForAssociation
 E1264,error.chief.CannotShutMovingConsolidation
+E518,error.chief.ShedOperatorNotExist
+E10334,error.chief.ServiceSegmentInvalid
+E10003,error.chief.ErrorsOnDocument

@@ -18,10 +18,8 @@ package models.viewmodels.notificationspage.converters
 
 import base.BaseSpec
 import models.notifications.ResponseType
-import models.viewmodels.decoder.{ActionCode, Decoder}
+import models.viewmodels.decoder.ActionCode
 import modules.DateTimeFormatterModule.NotificationsPageFormatter
-import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
-import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
@@ -34,32 +32,10 @@ class ControlResponseAcknowledgedConverterSpec extends BaseSpec with MockitoSuga
 
   private trait Test {
     implicit val messages: Messages = stubMessages()
-
-    val decoder: Decoder = mock[Decoder]
-    when(decoder.actionCode(anyString)).thenReturn(Some(ActionCode.AcknowledgedAndProcessed))
-
-    val converter = new ControlResponseAcknowledgedConverter(decoder, NotificationsPageFormatter)
+    val converter = new ControlResponseAcknowledgedConverter(NotificationsPageFormatter)
   }
 
   "ControlResponseAcknowledgedConverter on convert" should {
-
-    "call Decoder for ActionCode" in new Test {
-
-      val input = AcknowledgedControlResponse
-
-      converter.convert(input)
-
-      verify(decoder).actionCode(meq(input.actionCode.get))
-    }
-
-    "not call Decoder for ErrorCodes" in new Test {
-
-      val input = AcknowledgedControlResponse
-
-      converter.convert(input)
-
-      verify(decoder, times(0)).error(any())
-    }
 
     "return NotificationsPageSingleElement with correct title" in new Test {
 

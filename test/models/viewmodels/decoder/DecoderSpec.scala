@@ -16,7 +16,6 @@
 
 package models.viewmodels.decoder
 
-import models.viewmodels.decoder.ActionCode.Rejected
 import models.viewmodels.decoder.CRCCode.Success
 import models.viewmodels.decoder.ICSCode.InvalidationAtTraderRequest
 import models.viewmodels.decoder.ROECode.DocumentaryControl
@@ -62,11 +61,6 @@ class DecoderSpec extends UnitSpec {
     "not find DUCR soe code when provided with MUCR soe code" in {
 
       decoder.ducrSoe(ConsolidationOpen.code) mustBe None
-    }
-
-    "find correct action code" in {
-
-      decoder.actionCode(Rejected.code) mustBe Some(Rejected)
     }
 
     "find correct ILE error" in {

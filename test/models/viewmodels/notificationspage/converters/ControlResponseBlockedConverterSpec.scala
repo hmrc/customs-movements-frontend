@@ -19,10 +19,9 @@ package models.viewmodels.notificationspage.converters
 import base.BaseSpec
 import models.notifications.ResponseType
 import models.viewmodels.decoder.{ActionCode, Decoder, ILEError}
-import models.viewmodels.notificationspage.ResponseErrorExplanationSuffixProvider
 import modules.DateTimeFormatterModule.NotificationsPageFormatter
-import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.ArgumentMatchers.{anyString, eq => meq}
+import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
@@ -37,25 +36,12 @@ class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar {
     implicit val messages: Messages = stubMessages()
 
     val decoder: Decoder = mock[Decoder]
-    when(decoder.actionCode(anyString)).thenReturn(Some(ActionCode.PartiallyAcknowledgedAndProcessed))
     when(decoder.error(anyString)).thenReturn(Some(ILEError("CODE", "Messages.Key")))
 
-    val suffixProvider = mock[ResponseErrorExplanationSuffixProvider]
-    when(suffixProvider.addSuffixTo(any())).thenReturn("Messages.Key.Suffix")
-
-    val converter = new ControlResponseBlockedConverter(decoder, NotificationsPageFormatter, suffixProvider)
+    val converter = new ControlResponseBlockedConverter(decoder, NotificationsPageFormatter)
   }
 
   "ControlResponseBlockedConverter on convert" should {
-
-    "call Decoder for ActionCode" in new Test {
-
-      val input = BlockedControlResponseSingleError
-
-      converter.convert(input)
-
-      verify(decoder).actionCode(meq(input.actionCode.get))
-    }
 
     "return NotificationsPageSingleElement with correct title" in new Test {
 
@@ -92,21 +78,12 @@ class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar {
         verify(decoder).error(meq(input.errorCodes.head))
       }
 
-      "call suffix provider once" in new Test {
-
-        val input = BlockedControlResponseSingleError
-
-        converter.convert(input)
-
-        verify(suffixProvider).addSuffixTo(anyString())
-      }
-
       "return NotificationsPageSingleElement with correct content" in new Test {
 
         val input = BlockedControlResponseSingleError
         val expectedContentHeader =
           messages("notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed.singleError")
-        val expectedErrorExplanation = messages("Messages.Key.Suffix")
+        val expectedErrorExplanation = messages("Messages.Key")
 
         val result = converter.convert(input)
 
@@ -129,22 +106,12 @@ class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar {
         }
       }
 
-      "call suffix provider for every Error" in new Test {
-
-        val input = BlockedControlResponseMultipleErrors
-
-        converter.convert(input)
-
-        val expectedCallsAmount = input.errorCodes.length
-        verify(suffixProvider, times(expectedCallsAmount)).addSuffixTo(anyString())
-      }
-
       "return NotificationsPageSingleElement with correct content" in new Test {
 
         val input = BlockedControlResponseMultipleErrors
         val expectedContentHeader =
           messages("notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed.multiError")
-        val expectedErrorExplanations = List.fill(input.errorCodes.length)(messages("Messages.Key.Suffix"))
+        val expectedErrorExplanations = List.fill(input.errorCodes.length)(messages("Messages.Key"))
 
         val result = converter.convert(input)
 

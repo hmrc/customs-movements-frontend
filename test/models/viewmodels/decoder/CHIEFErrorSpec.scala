@@ -29,7 +29,7 @@ class CHIEFErrorSpec extends UnitSpec with ViewMatchers {
 
     "have correct amount of codes" in {
 
-      val expectedCodesAmount = 25
+      val expectedCodesAmount = 28
       CHIEFError.allErrors.size mustBe expectedCodesAmount
     }
 
@@ -68,12 +68,14 @@ class CHIEFErrorSpec extends UnitSpec with ViewMatchers {
         "CannotDepartContainedMucr",
         "NotSuitableEntryReference",
         "MucrNotShutForAssociation",
-        "CannotShutMovingConsolidation"
+        "CannotShutMovingConsolidation",
+        "ShedOperatorNotExist",
+        "ServiceSegmentInvalid",
+        "ErrorsOnDocument"
       )
 
       chiefErrorsNames.foreach { errorName =>
-        messages must haveTranslationFor(s"error.chief.$errorName.CDS")
-        messages must haveTranslationFor(s"error.chief.$errorName.Exports")
+        messages must haveTranslationFor(s"error.chief.$errorName")
       }
     }
   }

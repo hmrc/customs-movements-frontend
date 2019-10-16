@@ -35,7 +35,7 @@
         @components.error_summary(form.errors)
 
         @components.heading(
-            title = messages("consignmentReferences.question"),
+            title = messages(s"consignmentReferences.${request.choice.value}.question"),
             sectionHeader = messages(s"consignmentReferences.${request.choice.value}.heading")
         )
 
@@ -43,15 +43,27 @@
           field = form("reference"),
             legend = "",
             inputs = Seq(
-              RadioOption("Ducr", Ducr, "consignmentReferences.reference.ducr"),
-              RadioOption("Mucr", Mucr, "consignmentReferences.reference.mucr")
+              RadioOption(
+                  id = "Ducr",
+                  value = Ducr,
+                  messageKey = "consignmentReferences.reference.ducr",
+                  revealComponent = Some(components.input_text(
+                      field = form("ducrValue"),
+                      label = messages("consignmentReferences.reference.ducrValue"),
+                      labelClass = Some("bold-small")
+                  ))
+              ),
+              RadioOption(
+                  id = "Mucr",
+                  value = Mucr,
+                  messageKey = "consignmentReferences.reference.mucr",
+                  revealComponent = Some(components.input_text(
+                      field = form("mucrValue"),
+                      label = messages("consignmentReferences.reference.mucrValue"),
+                      labelClass = Some("bold-small")
+                  ))
+              )
             )
-        )
-
-        @components.input_text(
-            field = form("referenceValue"),
-            label = messages("consignmentReferences.reference.value"),
-            labelClass = Some("bold-small")
         )
 
         @components.submit_button()

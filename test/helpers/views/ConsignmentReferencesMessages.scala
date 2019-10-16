@@ -18,15 +18,19 @@ package helpers.views
 
 trait ConsignmentReferencesMessages {
 
-  val question = "consignmentReferences.question"
+  val arrivalQuestion = "consignmentReferences.arrival.question"
+  val departureQuestion = "consignmentReferences.departure.question"
   val arrivalHeading = "consignmentReferences.arrival.heading"
   val departureHeading = "consignmentReferences.departure.heading"
   val referenceQuestion = "consignmentReferences.reference.question"
-  val referenceDucr = "consignmentReferences.reference.ducr"
-  val referenceMucr = "consignmentReferences.reference.mucr"
   val referenceEmpty = "consignmentReferences.reference.empty"
   val referenceError = "consignmentReferences.reference.error"
-  val referenceValue = "consignmentReferences.reference.value"
-  val referenceValueEmpty = "consignmentReferences.reference.value.empty"
-  val referenceValueError = "consignmentReferences.reference.value.error"
+  val referenceDucr = "consignmentReferences.reference.ducr"
+  val referenceMucr = "consignmentReferences.reference.mucr"
+  val referenceDucrEmpty = "consignmentReferences.reference.ducrValue.empty"
+  val referenceMucrEmpty = "consignmentReferences.reference.mucrValue.empty"
+  val referenceDucrError = "consignmentReferences.reference.ducrValue.error"
+  val referenceMucrError = "consignmentReferences.reference.mucrValue.error"
+  val referenceDucrValue = "consignmentReferences.reference.ducrValue"
+  val referenceMucrValue = "consignmentReferences.reference.mucrValue"
 }

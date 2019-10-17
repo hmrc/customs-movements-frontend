@@ -74,7 +74,6 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustoms
           ArrivalDetails(dateOfArrival = Date(Some(12), Some(1), Some(2019)), timeOfArrival = Time(Some("10"), Some("10")))
         ),
         ArrivalReference.formId -> Json.toJson(ArrivalReference(Some("213"))),
-        GoodsDeparted.formId -> Json.toJson(GoodsDeparted("Bricks")),
         ConsignmentReferences.formId -> Json.toJson(ConsignmentReferences("reference", "value")),
         Transport.formId -> Json.toJson(Transport("1", "GB", "SHIP-123"))
       )

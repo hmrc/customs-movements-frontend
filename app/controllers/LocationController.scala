@@ -60,7 +60,7 @@ class LocationController @Inject()(
                 case Arrival =>
                   Redirect(controllers.routes.SummaryController.displayPage())
                 case Departure =>
-                  Redirect(controllers.routes.GoodsDepartedController.displayPage())
+                  Redirect(controllers.routes.TransportController.displayPage())
               }
           }
       )

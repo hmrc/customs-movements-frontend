@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports Movements AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.7
 // @description  Customs Declare Exports Movements
 // @author       You
 // @match        http*://*/customs-movements*
@@ -91,20 +91,13 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-movements/location")){
-        selectRadioOption(document.getElementById("locationType"), 0);
-        selectRadioOption(document.getElementById("qualifierCode"), 0);
-        document.getElementById('locationCode').value = 'AAC123';
-        selectFromAutoPredict(document.getElementById('country-container'), "GB");
+        document.getElementById('code').value = 'GBAUEMAEMAEMA';
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-movements/transport")){
         selectRadioOption(document.getElementById("modeOfTransport"), 0);
         document.getElementById('nationality').value = 'GB';
         document.getElementById('transportId').value = 'TransportReference';
-        document.getElementsByClassName('button')[0].click()
-    }
-    if(currentPageIs("/customs-movements/goods-departed")){
-        selectRadioOption(document.getElementById("departedPlace"), 0);
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-movements/summary")){

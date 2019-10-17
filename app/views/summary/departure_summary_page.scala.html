@@ -30,11 +30,7 @@
 
     @main_template(title = Title("summary.departure.title")) {
 
-        @if(data.getEntry[GoodsDeparted](GoodsDeparted.formId).map(_.departedPlace).contains(GoodsDeparted.AllowedPlaces.outOfTheUk)){
-            @components.back_link(routes.TransportController.displayPage())
-        } else {
-            @components.back_link(routes.GoodsDepartedController.displayPage())
-        }
+        @components.back_link(routes.TransportController.displayPage())
 
         @components.page_title(Some("summary.departure.title"))
 
@@ -62,13 +58,6 @@
             ))
         }
 
-        @components.summary_list(Some(messages("summary.departure.goodsDeparted.header"))) {
-            @components.table_row_no_change_link(HtmlTableRow(
-                label = messages("summary.departure.goodsDeparted"),
-                value = data.getEntry[GoodsDeparted](GoodsDeparted.formId).map(goodsDeparted => messages(s"goodsDeparted.departedPlace.${goodsDeparted.departedPlace}"))
-            ))
-        }
-
         @components.summary_list(Some(messages("departureDetails.title"))) {
             @components.table_row_no_change_link(HtmlTableRow(
                 label = messages("summary.departure.date"),
@@ -76,21 +65,19 @@
             ))
         }
 
-        @if(data.getEntry[GoodsDeparted](GoodsDeparted.formId).map(_.departedPlace).contains(GoodsDeparted.AllowedPlaces.outOfTheUk)) {
-            @components.summary_list(Some(messages("transport.title"))) {
-                @components.table_row_no_change_link(HtmlTableRow(
-                    label = messages("summary.modeOfTransport"),
-                    value = data.getEntry[Transport](Transport.formId).map(transport => messages(s"transport.modeOfTransport.${transport.modeOfTransport}"))
-                ))
-                @components.table_row_no_change_link(HtmlTableRow(
-                    label = messages("summary.transportId"),
-                    value = data.getEntry[Transport](Transport.formId).map(_.transportId)
-                ))
-                @components.table_row_no_change_link(HtmlTableRow(
-                    label = messages("summary.nationality"),
-                    value = data.getEntry[Transport](Transport.formId).map(_.nationality)
-                ))
-            }
+        @components.summary_list(Some(messages("transport.title"))) {
+            @components.table_row_no_change_link(HtmlTableRow(
+                label = messages("summary.modeOfTransport"),
+                value = data.getEntry[Transport](Transport.formId).map(transport => messages(s"transport.modeOfTransport.${transport.modeOfTransport}"))
+            ))
+            @components.table_row_no_change_link(HtmlTableRow(
+                label = messages("summary.transportId"),
+                value = data.getEntry[Transport](Transport.formId).map(_.transportId)
+            ))
+            @components.table_row_no_change_link(HtmlTableRow(
+                label = messages("summary.nationality"),
+                value = data.getEntry[Transport](Transport.formId).map(_.nationality)
+            ))
         }
 
         @helper.form(action = routes.SummaryController.submitMovementRequest()) {

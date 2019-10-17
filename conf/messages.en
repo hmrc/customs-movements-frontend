@@ -198,13 +198,6 @@ location.hint = The is an alphanumeric code. For example, GBAUEMAEMAEMA
 location.code.empty = Goods location code cannot be empty
 location.code.error = Goods location code is incorrect
 
-goodsDeparted.title = Goods departed
-goodsDeparted.departedPlace.question = Where are the goods going?
-goodsDeparted.departedPlace.outOfTheUk = Out of the UK
-goodsDeparted.departedPlace.backIntoTheUk = Back into the UK
-goodsDeparted.departedPlace.empty = Please select where your goods being departed to
-goodsDeparted.departedPlace.error = Please select a valid option
-
 transport.title = Transport
 transport.modeOfTransport.question = What transport type took the goods across the border?
 transport.modeOfTransport.empty = You need to choose mode of transport
@@ -238,8 +231,6 @@ summary.arrival.date = Date of arrival
 summary.arrival.time = Time of arrival
 
 summary.departure.title = Is the information provided for this departure correct?
-summary.departure.goodsDeparted.header = Where are the goods going?
-summary.departure.goodsDeparted = Goods departed
 summary.departure.date = Date of departure
 
 summary.arrivalReference.reference = Unique reference

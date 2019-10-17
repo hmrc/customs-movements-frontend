@@ -40,10 +40,6 @@ POST        /consignment-references                controllers.ConsignmentRefere
 GET         /arrival-reference                     controllers.ArrivalReferenceController.displayPage()
 POST        /arrival-reference                     controllers.ArrivalReferenceController.submit()
 
-# Goods departed page
-GET         /goods-departed                        controllers.GoodsDepartedController.displayPage()
-POST        /goods-departed                        controllers.GoodsDepartedController.saveGoodsDeparted()
-
 # Movement details page
 GET         /movement-details                      controllers.MovementDetailsController.displayPage()
 POST        /movement-details                      controllers.MovementDetailsController.saveMovementDetails()

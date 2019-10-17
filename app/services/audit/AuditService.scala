@@ -126,7 +126,6 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
 
     val userInput = Map(
       ConsignmentReferences.formId -> Json.toJson(cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.formId)),
-      GoodsDeparted.formId -> Json.toJson(cacheMap.getEntry[GoodsDeparted](GoodsDeparted.formId)),
       Location.formId -> Json.toJson(cacheMap.getEntry[Location](Location.formId)),
       MovementDetails.formId -> movementDetails,
       Transport.formId -> Json.toJson(cacheMap.getEntry[Transport](Transport.formId)),

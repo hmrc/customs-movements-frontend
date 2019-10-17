@@ -194,7 +194,7 @@ departureDetails.hint = For example, 01 08 2007
 
 location.title = Location
 location.question = What is the goods location code?
-location.hint = The is an alphanumeric code.For example, GBAUEMAEMAEMA
+location.hint = The is an alphanumeric code. For example, GBAUEMAEMAEMA
 location.code.empty = Goods location code cannot be empty
 location.code.error = Goods location code is incorrect
 

@@ -25,7 +25,6 @@ case class MovementRequest(
   movementDetails: MovementDetailsRequest,
   location: Option[Location] = None,
   arrivalReference: Option[ArrivalReference] = None,
-  goodsDeparted: Option[GoodsDeparted] = None,
   transport: Option[Transport] = None
 )
 

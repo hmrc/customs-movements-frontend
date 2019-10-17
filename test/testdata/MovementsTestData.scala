@@ -19,7 +19,6 @@ package testdata
 import java.time.Instant
 
 import forms.Choice.Arrival
-import forms.GoodsDeparted.AllowedPlaces
 import forms._
 import forms.common.{Date, Time}
 import models.requests.MovementRequest
@@ -41,7 +40,6 @@ object MovementsTestData {
   )
   val date = Date(Some(10), Some(8), Some(2018))
   val departureDetails = DepartureDetails(date)
-  val goodsDeparted = GoodsDeparted(AllowedPlaces.outOfTheUk)
   val location: JsValue = Json.toJson(Location("PLAYcorrect"))
   val correctTransport: JsValue = JsObject(Map("modeOfTransport" -> JsString("2"), "nationality" -> JsString("PL"), "transportId" -> JsString("REF")))
 
@@ -56,7 +54,6 @@ object MovementsTestData {
       Choice.choiceId -> Json.toJson(movementType),
       ConsignmentReferences.formId -> Json.toJson(consignmentReferences(refType)),
       MovementDetails.formId -> arrivalDepartureTimes(movementType),
-      GoodsDeparted.formId -> Json.toJson(goodsDeparted),
       Location.formId -> location,
       Transport.formId -> correctTransport,
       ArrivalReference.formId -> Json.toJson(arrivalReference(movementType))

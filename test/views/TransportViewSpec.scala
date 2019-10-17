@@ -86,12 +86,12 @@ class TransportViewSpec extends UnitViewSpec with TransportMessages with CommonM
       view.getElementById("nationality-hint").text() mustBe messages(nationalityHint)
     }
 
-    "display \"Back\" button that links to Goods Departed" in {
+    "display \"Back\" button that links to Location" in {
 
       val backButton = view.getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") mustBe routes.GoodsDepartedController.displayPage().url
+      backButton.attr("href") mustBe routes.LocationController.displayPage().url
     }
 
     "display \"Save and continue\" button on page" in {

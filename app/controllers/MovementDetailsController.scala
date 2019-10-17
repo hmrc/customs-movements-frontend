@@ -19,9 +19,8 @@ package controllers
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.Choice.{Arrival, Departure}
-import forms.GoodsDeparted.AllowedPlaces
 import forms.MovementDetails._
-import forms.{ArrivalDetails, DepartureDetails, GoodsDeparted}
+import forms.{ArrivalDetails, DepartureDetails}
 import javax.inject.{Inject, Singleton}
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -29,7 +28,6 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import play.twirl.api.Html
 import services.CustomsCacheService
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.{arrival_details, departure_details}
 

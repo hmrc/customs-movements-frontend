@@ -46,9 +46,7 @@ class ConsignmentReferencesSpec extends BaseSpec with ConsignmentReferencesMessa
       val inputData = ConsignmentReferences("", "")
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
-      errors.length must be(2)
-      errors must contain(FormError("reference", referenceError))
-      errors must contain(FormError("referenceValue", referenceValueEmpty))
+      errors must be(Seq(FormError("reference", referenceError)))
     }
 
     "no errors for complete fields " in {

@@ -37,18 +37,22 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
       assertMessage(arrivalHeading, "Arrive consignment")
       assertMessage(departureHeading, "Depart consignment")
-      assertMessage(question, "What type of consignment reference do you want to enter?")
+      assertMessage(arrivalQuestion, "What consignment do you want to arrive?")
+      assertMessage(departureQuestion, "What consignment do you want to depart?")
       assertMessage(referenceDucr, "DUCR")
       assertMessage(referenceMucr, "MUCR")
-      assertMessage(referenceValue, "Enter reference")
+      assertMessage(referenceDucrValue, "Declaration Unique Consignment Reference")
+      assertMessage(referenceMucrValue, "Master Unique Consignment Reference")
     }
 
     "have a proper labels for error messages" in {
 
+      assertMessage(referenceDucrEmpty, "Enter a Declaration Unique Consignment Reference")
+      assertMessage(referenceMucrEmpty, "Enter a Master Unique Consignment Reference")
+      assertMessage(referenceDucrError, "Declaration Unique Consignment Reference is incorrect")
+      assertMessage(referenceMucrError, "Master Unique Consignment Reference is incorrect")
       assertMessage(referenceEmpty, "Please choose reference")
       assertMessage(referenceError, "Incorrect reference")
-      assertMessage(referenceValueEmpty, "Please enter reference")
-      assertMessage(referenceValueError, "Please enter a valid reference")
     }
   }
 
@@ -56,7 +60,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
     "display page question" in {
 
-      getElementById(arrivalView, "title").text() mustBe messages(question)
+      getElementById(arrivalView, "title").text() mustBe messages(arrivalQuestion)
     }
 
     "display page heading" in {
@@ -72,7 +76,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
     "display reference value text input" in {
 
-      getElementById(arrivalView, "referenceValue-label").text() mustBe messages(referenceValue)
+      getElementById(arrivalView, "mucrValue-label").text() mustBe messages(referenceMucrValue)
     }
 
     "display \"Back\" buttion that links to start page" in {

@@ -41,7 +41,7 @@ class ArrivalReferenceViewSpec extends UnitViewSpec {
       messages("arrivalReference") mustBe "Arrival reference"
       messages("arrivalReference.question") mustBe "Give this arrival a unique reference"
       messages("arrivalReference.hint") mustBe "This will be help you quickly identify it in the future. It can be no more than 25 characters."
-      messages("arrivalReference.error.format") mustBe "The reference should be no more than 25 characters."
+      messages("arrivalReference.error") mustBe "The reference should be no more than 25 characters."
     }
   }
 

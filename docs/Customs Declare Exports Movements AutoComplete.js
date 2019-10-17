@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports Movements AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  Customs Declare Exports Movements
 // @author       You
 // @match        http*://*/customs-movements*
@@ -67,7 +67,11 @@ function completePage() {
 
     if(currentPageIs("/customs-movements/consignment-references")){
         selectRadioOption(document.getElementById("reference"), 0);
-        document.getElementById('referenceValue').value = '8GB12345' + Math.floor(Math.random() * 8999) + 100 + '-101SHIP1';
+        document.getElementById('ducrValue').value = '8GB12345' + Math.floor(Math.random() * 8999) + 100 + '-101SHIP1';
+        document.getElementsByClassName('button')[0].click()
+    }
+    if(currentPageIs("/customs-movements/arrival-reference")){
+        document.getElementById("reference").value = "REF" + Math.floor(Math.random() * 8999) + 100;
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-movements/movement-details")){
@@ -108,7 +112,7 @@ function completePage() {
     }
     if(currentPageIs("/customs-movements/mucr-options")){
         document.getElementById("mucrOptions.create").checked = true;
-        document.getElementById("newMucr").value = "5GB123456789000-123ABC456DEFIIIII"
+        document.getElementById("newMucr").value = "GB/1234-123ABC456DEFIIIII"
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-movements/associate-ducr$")){

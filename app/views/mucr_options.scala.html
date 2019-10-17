@@ -31,7 +31,7 @@
 
             @components.error_summary(form.errors)
 
-            @components.page_title(Some("mucrOptions.title"))
+            @components.heading(title = messages("mucrOptions.title"))
 
             @components.input_radio(
                 field = form("createOrAdd"),

@@ -117,7 +117,8 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
             Map(
               "eori" -> JsString("GB717572504502811"),
               "reference" -> JsString("D"),
-              "referenceValue" -> JsString("5GB123456789000-123ABC456DEFIIIII")
+              "mucrValue" -> JsString(""),
+              "ducrValue" -> JsString("5GB123456789000-123ABC456DEFIIIII")
             )
           )
 
@@ -140,7 +141,8 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
             Map(
               "eori" -> JsString("GB717572504502811"),
               "reference" -> JsString("D"),
-              "referenceValue" -> JsString("5GB123456789000-123ABC456DEFIIIII")
+              "mucrValue" -> JsString(""),
+              "ducrValue" -> JsString("5GB123456789000-123ABC456DEFIIIII")
             )
           )
 

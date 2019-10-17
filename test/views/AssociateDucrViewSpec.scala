@@ -45,7 +45,7 @@ class AssociateDucrViewSpec extends UnitViewSpec with AssociateDucrMessages with
     "display 'Add' button on page" in {
       val view: Document = createView(mucrOptions, AssociateDucr.form)
 
-      view.getElementsByClass("button").text() mustBe add
+      view.getElementsByClass("button").text() mustBe saveAndContinueCaption
     }
 
     "display DUCR Form errors" in {

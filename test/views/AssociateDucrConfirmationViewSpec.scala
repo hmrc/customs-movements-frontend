@@ -69,7 +69,7 @@ class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages
       val backButton = view.getElementsByClass("button")
 
       backButton.text() mustBe messages("site.backToStartPage")
-      backButton.first() must haveHref(routes.StartController.displayStartPage())
+      backButton.first() must haveHref(routes.ChoiceController.displayChoiceForm())
     }
   }
 

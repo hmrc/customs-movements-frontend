@@ -86,7 +86,7 @@ class DepartureSummaryViewSpec extends UnitViewSpec {
     "have correct main buttons" in {
 
       departureSummaryContentOut must include("site.back")
-      departureSummaryContentOut must include("site.acceptAndSend")
+      departureSummaryContentOut must include("site.confirmAndSubmit")
     }
 
     "have correct consignment references part" in {

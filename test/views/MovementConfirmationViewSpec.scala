@@ -82,7 +82,7 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
       val backButton = arrivalConfirmationView.getElementsByClass("button")
 
       backButton.text() mustBe messages("site.backToStartPage")
-      backButton.first() must haveHref(routes.StartController.displayStartPage())
+      backButton.first() must haveHref(routes.ChoiceController.displayChoiceForm())
     }
   }
 
@@ -118,7 +118,7 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
       val backButton = arrivalConfirmationView.getElementsByClass("button")
 
       backButton.text() mustBe messages("site.backToStartPage")
-      backButton.first() must haveHref(routes.StartController.displayStartPage())
+      backButton.first() must haveHref(routes.ChoiceController.displayChoiceForm())
     }
   }
 }

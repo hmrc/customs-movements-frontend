@@ -195,6 +195,7 @@ departureDetails.hint = For example, 01 08 2007
 location.title = Location
 location.question = What is the goods location code?
 location.hint = The is an alphanumeric code.For example, GBAUEMAEMAEMA
+location.code.empty = Goods location code cannot be empty
 location.code.error = Goods location code is incorrect
 
 goodsDeparted.title = Goods departed
@@ -265,8 +266,8 @@ associateDucr.reference.hint = Make sure you have entered the correct MUCR befor
 associateDucrSummary.title = The following DUCR has been added to {0}
 associateDucrSummary.hint = Make sure the details of the DUCR are correct before continuing.
 
-submissions.title = Requests
-submissions.summary = This page shows your submitted requests and allows you to view any notifications relating to them.
+submissions.title = All submissions
+submissions.summary = This page displays all submitted requests and any notifications related to them.
 submissions.submissionType = Type
 submissions.submissionAction = Type of request
 submissions.eori = Eori
@@ -319,5 +320,6 @@ notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Status o
 
 arrivalReference = Arrival reference
 arrivalReference.question = Give this arrival a unique reference
-arrivalReference.hint = This will be help you quickly identify it in the future. It can be no more than 25 characters.
+
+arrivalReference.hint = This will help you identify it if you need to find it in the future. It can be up to 25 characters.
 arrivalReference.error = The reference should be no more than 25 characters.

@@ -77,7 +77,7 @@ class ShutMucrViewSpec extends ViewSpec with ShutMucrMessages with CommonMessage
 
     "display 'Continue' button on page" in {
 
-      getElementById(createView(), "submit").text() must equal(messages(continueCaption))
+      getElementById(createView(), "submit").text() must equal(messages(saveAndContinueCaption))
     }
   }
 

@@ -96,6 +96,6 @@
         @helper.form(action = routes.SummaryController.submitMovementRequest()) {
             @helper.CSRF.formField
 
-            @components.submit_button(messages("site.acceptAndSend"))
+            @components.submit_button(messages("site.confirmAndSubmit"))
         }
     }

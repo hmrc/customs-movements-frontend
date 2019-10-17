@@ -40,5 +40,5 @@
 
     @components.paragraph(messages(s"movement.${request.choice.value}.confirmation.nextSteps"), Some("next-steps"))
 
-    @components.button_link("site.backToStartPage", routes.StartController.displayStartPage())
+    @components.button_link("site.backToStartPage", routes.ChoiceController.displayChoiceForm())
 }

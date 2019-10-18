@@ -41,9 +41,9 @@ class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages
 
       messages must haveTranslationFor("associateDucr.confirmation.tab.heading")
       messages must haveTranslationFor("associateDucr.confirmation.heading")
-      messages must haveTranslationFor("consolidation.confirmation.addOrShut.part1")
-      messages must haveTranslationFor("consolidation.confirmation.addOrShut.part2")
-      messages must haveTranslationFor("consolidation.confirmation.addOrShut.part3")
+      messages must haveTranslationFor("consolidation.confirmation.addOrShut")
+      messages must haveTranslationFor("consolidation.confirmation.addOrShut.add")
+      messages must haveTranslationFor("consolidation.confirmation.addOrShut.shutMucr")
     }
 
     "display page reference" in {
@@ -53,9 +53,7 @@ class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages
 
     "have status information" in {
 
-      val expectedMessage = "movement.confirmation.statusInfo.part1 movement.confirmation.statusInfo.part2."
-
-      view.getElementById("status-info").text() mustBe expectedMessage
+      view.getElementById("status-info").text() mustBe messages("movement.confirmation.statusInfo")
     }
 
     "have what next section" in {
@@ -65,10 +63,7 @@ class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages
 
     "have next steps section" in {
 
-      val expectedMessage =
-        "consolidation.confirmation.addOrShut.part1 consolidation.confirmation.addOrShut.part2 consolidation.confirmation.addOrShut.part3."
-
-      view.getElementById("next-steps").text() mustBe expectedMessage
+      view.getElementById("next-steps").text() mustBe messages("consolidation.confirmation.addOrShut")
     }
 
     "display 'Back to start page' button on page" in {

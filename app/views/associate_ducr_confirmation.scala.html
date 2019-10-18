@@ -23,6 +23,9 @@
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
+@associateLink = {<a href="@routes.ChoiceController.startSpecificJourney("associateDUCR")">@messages("consolidation.confirmation.addOrShut.add")</a>}
+@shutMucrLink = {<a href="@routes.ChoiceController.startSpecificJourney("shutMUCR")">@messages("consolidation.confirmation.addOrShut.shutMucr")</a>}
+
 @main_template(title = Title("associateDucr.confirmation.tab.heading")) {
 
     @components.highlight_box_with_reference(
@@ -34,8 +37,7 @@
     <h2 id="what-next">@messages("movement.confirmation.whatNext")</h2>
 
     <div id="next-steps">
-        <a href="@routes.ChoiceController.startSpecificJourney("associateDUCR")">@messages("consolidation.confirmation.addOrShut.part1")</a> @messages("consolidation.confirmation.addOrShut.part2")
-        <a href="@routes.ChoiceController.startSpecificJourney("shutMUCR")">@messages("consolidation.confirmation.addOrShut.part3")</a>.
+        @Html(messages("consolidation.confirmation.addOrShut", associateLink, shutMucrLink))
     </div>
 
     @components.button_link("site.backToStartPage", routes.ChoiceController.displayChoiceForm())

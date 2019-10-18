@@ -41,18 +41,16 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
       messages must haveTranslationFor("movement.arrival.confirmation.tab.heading")
       messages must haveTranslationFor("movement.arrival.confirmation.heading")
-      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps.part1")
-      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps.part2")
-      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps.part3")
-      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps.part4")
+      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps")
+      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps.consolidation")
+      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps.depart")
       messages must haveTranslationFor("movement.departure.confirmation.tab.heading")
       messages must haveTranslationFor("movement.departure.confirmation.heading")
-      messages must haveTranslationFor("movement.departure.confirmation.nextSteps.part1")
-      messages must haveTranslationFor("movement.departure.confirmation.nextSteps.part2")
-      messages must haveTranslationFor("movement.departure.confirmation.nextSteps.part3")
-      messages must haveTranslationFor("movement.departure.confirmation.nextSteps.part4")
-      messages must haveTranslationFor("movement.confirmation.statusInfo.part1")
-      messages must haveTranslationFor("movement.confirmation.statusInfo.part2")
+      messages must haveTranslationFor("movement.departure.confirmation.nextSteps")
+      messages must haveTranslationFor("movement.departure.confirmation.nextSteps.departure")
+      messages must haveTranslationFor("movement.departure.confirmation.nextSteps.consignment")
+      messages must haveTranslationFor("movement.confirmation.statusInfo")
+      messages must haveTranslationFor("movement.confirmation.statusInfo.submissions")
       messages must haveTranslationFor("movement.confirmation.whatNext")
     }
   }
@@ -72,9 +70,7 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
     "have status information" in {
 
-      val expectedMessage = "movement.confirmation.statusInfo.part1 movement.confirmation.statusInfo.part2."
-
-      arrivalConfirmationView.getElementById("status-info").text() mustBe expectedMessage
+      arrivalConfirmationView.getElementById("status-info").text() mustBe messages("movement.confirmation.statusInfo")
     }
 
     "have what next section" in {
@@ -84,10 +80,7 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
     "have next steps section" in {
 
-      val expectedMessage = "movement.arrival.confirmation.nextSteps.part1 movement.arrival.confirmation.nextSteps.part2 " +
-        "movement.arrival.confirmation.nextSteps.part3 movement.arrival.confirmation.nextSteps.part4"
-
-      arrivalConfirmationView.getElementById("next-steps").text() mustBe expectedMessage
+      arrivalConfirmationView.getElementById("next-steps").text() mustBe messages("movement.arrival.confirmation.nextSteps")
     }
 
     "have back button" in {
@@ -114,9 +107,7 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
     "have status information" in {
 
-      val expectedMessage = "movement.confirmation.statusInfo.part1 movement.confirmation.statusInfo.part2."
-
-      departureConfirmationView.getElementById("status-info").text() mustBe expectedMessage
+      departureConfirmationView.getElementById("status-info").text() mustBe messages("movement.confirmation.statusInfo")
     }
 
     "have what next section" in {
@@ -126,11 +117,7 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
     "have next steps section" in {
 
-      val expectedMessage = "movement.departure.confirmation.nextSteps.part1 " +
-        "movement.departure.confirmation.nextSteps.part2 movement.departure.confirmation.nextSteps.part3 " +
-        "movement.departure.confirmation.nextSteps.part4."
-
-      departureConfirmationView.getElementById("next-steps").text() mustBe expectedMessage
+      departureConfirmationView.getElementById("next-steps").text() mustBe messages("movement.departure.confirmation.nextSteps")
     }
 
     "have back button" in {

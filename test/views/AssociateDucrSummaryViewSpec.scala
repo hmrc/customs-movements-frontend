@@ -16,7 +16,7 @@
 
 package views
 
-import forms.AssociateDucr
+import forms.AssociateUcr
 import helpers.views.{AssociateDucrSummaryMessages, CommonMessages}
 import play.twirl.api.Html
 import views.spec.ViewSpec
@@ -28,7 +28,7 @@ class AssociateDucrSummaryViewSpec extends ViewSpec with AssociateDucrSummaryMes
   private val page = injector.instanceOf[views.html.associate_ducr_summary]
 
   private def createView(mucr: String, ducr: String): Html =
-    page(AssociateDucr(ducr), mucr)(fakeRequest, messages)
+    page(AssociateUcr(ducr), mucr)(fakeRequest, messages)
 
   "Disassociate Ducr Confirmation View" should {
 

@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.exception.IncompleteApplication
 import controllers.storage.CacheIdGenerator.movementCacheId
 import controllers.storage.FlashKeys
-import forms.{AssociateDucr, MucrOptions}
+import forms.{AssociateUcr, MucrOptions}
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
@@ -50,7 +50,7 @@ class AssociateDucrSummaryController @Inject()(
         .map(_.getOrElse(throw IncompleteApplication))
 
       associateDucr <- cacheService
-        .fetchAndGetEntry[AssociateDucr](movementCacheId(), AssociateDucr.formId)
+        .fetchAndGetEntry[AssociateUcr](movementCacheId(), AssociateUcr.formId)
         .map(_.getOrElse(throw IncompleteApplication))
     } yield Ok(associateDucrSummaryPage(associateDucr, mucrOptions.mucr))
   }
@@ -62,15 +62,15 @@ class AssociateDucrSummaryController @Inject()(
         .map(_.getOrElse(throw IncompleteApplication))
 
       associateDucr <- cacheService
-        .fetchAndGetEntry[AssociateDucr](movementCacheId(), AssociateDucr.formId)
+        .fetchAndGetEntry[AssociateUcr](movementCacheId(), AssociateUcr.formId)
         .map(_.getOrElse(throw IncompleteApplication))
 
       _ <- submissionService
-        .submitDucrAssociation(mucrOptions, associateDucr, request.authenticatedRequest.user.eori)
+        .submitUcrAssociation(mucrOptions, associateDucr, request.authenticatedRequest.user.eori)
       _ <- cacheService.remove(movementCacheId())
 
     } yield
       Redirect(routes.AssociateDucrConfirmationController.displayPage())
-        .flashing(FlashKeys.DUCR -> associateDucr.ducr)
+        .flashing(FlashKeys.UCR -> associateDucr.ucr)
   }
 }

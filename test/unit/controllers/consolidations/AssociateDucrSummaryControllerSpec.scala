@@ -20,7 +20,7 @@ import base.MockSubmissionService
 import controllers.consolidations.AssociateDucrSummaryController
 import controllers.exception.IncompleteApplication
 import forms.Choice.AssociateDUCR
-import forms.{AssociateDucr, Choice, MucrOptions}
+import forms.{AssociateUcr, Choice, MucrOptions}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -62,8 +62,8 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
     super.afterEach()
   }
 
-  private def theResponseData: (AssociateDucr, String) = {
-    val associateDucrCaptor = ArgumentCaptor.forClass(classOf[AssociateDucr])
+  private def theResponseData: (AssociateUcr, String) = {
+    val associateDucrCaptor = ArgumentCaptor.forClass(classOf[AssociateUcr])
     val mucrOptionsCaptor = ArgumentCaptor.forClass(classOf[String])
     verify(mockAssociateDucrSummaryPage).apply(associateDucrCaptor.capture(), mucrOptionsCaptor.capture())(any(), any())
     (associateDucrCaptor.getValue, mucrOptionsCaptor.getValue)
@@ -75,7 +75,7 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
 
       "display page is invoked with data in cache" in {
         withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
-        withCaching(AssociateDucr.formId, Some(AssociateDucr("DUCR")))
+        withCaching(AssociateUcr.formId, Some(AssociateUcr("DUCR")))
 
         val result = controller.displayPage()(getRequest())
 
@@ -102,7 +102,7 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
       "Associate Ducr is missing during displaying page" in {
 
         withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
-        withCaching(AssociateDucr.formId, None)
+        withCaching(AssociateUcr.formId, None)
 
         assertThrows[IncompleteApplication] {
           await(controller.displayPage()(getRequest()))
@@ -121,7 +121,7 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
       "Associate Ducr is missing during submitting page" in {
 
         withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
-        withCaching(AssociateDucr.formId, None)
+        withCaching(AssociateUcr.formId, None)
 
         assertThrows[IncompleteApplication] {
           await(controller.submit()(postRequest(Json.obj())))
@@ -134,7 +134,7 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
       "all mandatory data is in cache and submission service returned ACCEPTED" in {
 
         withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
-        withCaching(AssociateDucr.formId, Some(AssociateDucr("DUCR")))
+        withCaching(AssociateUcr.formId, Some(AssociateUcr("DUCR")))
         mockCustomsCacheServiceClearedSuccessfully()
         mockDucrAssociation()
 

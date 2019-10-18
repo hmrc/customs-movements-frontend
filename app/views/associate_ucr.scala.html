@@ -1,0 +1,58 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.AssociateUcr
+@import forms.MucrOptions
+@import views.components.fields.RadioOption
+@import views.Title
+@import forms.AssociateKind
+
+@this(main_template: views.html.main_template)
+
+@(form: Form[AssociateUcr], mucrOptions: MucrOptions)(implicit request: Request[_], messages: Messages)
+
+
+@main_template(title = Title(messages("associate.ucr.title", mucrOptions.mucr))) {
+    @helper.form(consolidations.routes.AssociateDucrController.submit(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        @components.back_link(consolidations.routes.MucrOptionsController.displayPage())
+
+        @components.error_summary(form.errors)
+
+        @components.page_title(Some(messages("associate.ucr.title", mucrOptions.mucr)))
+
+        @components.input_radio(
+            field = form("type"),
+            legend = "",
+            hint = Some(messages("associate.ucr.hint")),
+            inputs = Seq(
+                RadioOption(
+                    keyPrefix = "associate.ucr",
+                    option = AssociateKind.Ducr.formValue,
+                    revealComponent = components.input_text(form("ducr"), "") // FIXME accessability
+                ),
+                RadioOption(
+                    keyPrefix = "associate.ucr",
+                    option = AssociateKind.Mucr.formValue,
+                    revealComponent = components.input_text(form("mucr"), "") // FIXME accessability
+                )
+            )
+        )
+
+        @components.submit_button(messages("site.save_and_continue"))
+    }
+}

@@ -14,12 +14,12 @@
  * limitations under the License.
  *@
 
-@import forms.AssociateDucr
+@import forms.AssociateUcr
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
-@(associateDucr: AssociateDucr, mucr: String)(implicit request: Request[_], messages: Messages)
+@(associateDucr: AssociateUcr, mucr: String)(implicit request: Request[_], messages: Messages)
 
 
   @main_template(title = Title(messages("associateDucrSummary.title", mucr)),

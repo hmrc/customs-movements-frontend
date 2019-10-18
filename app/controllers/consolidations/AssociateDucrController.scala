@@ -19,24 +19,24 @@ package controllers.consolidations
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.exception.IncompleteApplication
 import controllers.storage.CacheIdGenerator.movementCacheId
-import forms.AssociateDucr.form
-import forms.{AssociateDucr, MucrOptions}
+import forms.AssociateUcr.form
+import forms.{AssociateUcr, MucrOptions}
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.associate_ducr
+import views.html.associate_ucr
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class AssociateDucrController @Inject()(
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  mcc: MessagesControllerComponents,
-  cacheService: CustomsCacheService,
-  associateDucrPage: associate_ducr
+                                         authenticate: AuthAction,
+                                         journeyType: JourneyAction,
+                                         mcc: MessagesControllerComponents,
+                                         cacheService: CustomsCacheService,
+                                         associateUcrPage: associate_ucr
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -45,8 +45,8 @@ class AssociateDucrController @Inject()(
       case Some(cache) =>
         cache.getEntry[MucrOptions](MucrOptions.formId) match {
           case Some(mucr) =>
-            val savedDucr = cache.getEntry[AssociateDucr](AssociateDucr.formId)
-            Ok(associateDucrPage(savedDucr.fold(form)(form.fill), mucr))
+            val savedDucr = cache.getEntry[AssociateUcr](AssociateUcr.formId)
+            Ok(associateUcrPage(savedDucr.fold(form)(form.fill), mucr))
           case None => throw IncompleteApplication
         }
       case None => throw IncompleteApplication
@@ -59,11 +59,11 @@ class AssociateDucrController @Inject()(
       .fold(
         formWithErrors =>
           cacheService.fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId).map {
-            case Some(options) => BadRequest(associateDucrPage(formWithErrors, options))
+            case Some(options) => BadRequest(associateUcrPage(formWithErrors, options))
             case None          => throw IncompleteApplication
         },
         formData =>
-          cacheService.cache(movementCacheId(), AssociateDucr.formId, formData).map { _ =>
+          cacheService.cache(movementCacheId(), AssociateUcr.formId, formData).map { _ =>
             Redirect(routes.AssociateDucrSummaryController.displayPage())
         }
       )

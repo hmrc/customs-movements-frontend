@@ -157,7 +157,7 @@ class SubmissionServiceSpec
         .thenReturn(Future.successful(exampleAssociateDucrRequest))
 
       submissionService
-        .submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr), "eori")
+        .submitUcrAssociation(MucrOptions(ValidMucr), AssociateUcr(ValidDucr), "eori")
         .futureValue must equal(exampleAssociateDucrRequest)
       verify(mockAuditService)
         .auditAssociate(ArgumentMatchers.eq("eori"), any(), any(), any())(any())
@@ -165,7 +165,7 @@ class SubmissionServiceSpec
 
     "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in requestAcceptedTest {
 
-      submissionService.submitDucrAssociation(MucrOptions(ValidMucr), AssociateDucr(ValidDucr), "eori").futureValue
+      submissionService.submitUcrAssociation(MucrOptions(ValidMucr), AssociateUcr(ValidDucr), "eori").futureValue
 
       val requestCaptor: ArgumentCaptor[ConsolidationRequest] = ArgumentCaptor.forClass(classOf[ConsolidationRequest])
       verify(mockCustomsExportsMovementConnector).sendConsolidationRequest(requestCaptor.capture())(any())

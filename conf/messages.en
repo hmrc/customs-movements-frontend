@@ -260,8 +260,10 @@ mucrOptions.createAdd.value.empty = Please select an option
 mucrOptions.reference.value.empty = Please enter a reference
 mucrOptions.reference.value.error = Please enter a valid reference
 
-associateDucr.title = What type of unique consignment do you want to add to {0}
-associateDucr.reference.hint = Check the MUCR is correct before adding consignments to it. You may want to keep a note of what consignments you have added to this MUCR.
+associate.ucr.title = What type of unique consignment do you want to add to {0}
+associate.ucr.ducr = Add a DUCR
+associate.ucr.mucr = Add a MUCR
+associate.ucr.hint = Check the MUCR is correct before adding consignments to it. You may want to keep a note of what consignments you have added to this MUCR.
 
 associateDucrSummary.title = The following DUCR has been added to {0}
 associateDucrSummary.hint = Make sure the details of the DUCR are correct before continuing.

@@ -16,9 +16,13 @@
 
 package controllers
 
+import java.time.Instant
+
 import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
+import models.notifications.NotificationFrontendModel
+import models.submissions.SubmissionFrontendModel
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -34,12 +38,16 @@ class MovementsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
+  private def sort(submissionsWithNotifications: Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])]) =
+    submissionsWithNotifications.sortBy(_._1.requestTimestamp)(Ordering[Instant].reverse)
+
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     for {
       submissions <- connector.fetchAllSubmissions()
       notifications <- Future.sequence(submissions.map(submission => connector.fetchNotifications(submission.conversationId)))
       submissionsWithNotifications = submissions.zip(notifications.map(_.sorted.reverse))
 
-    } yield Ok(movementsPage(submissionsWithNotifications))
+    } yield Ok(movementsPage(sort(submissionsWithNotifications)))
   }
+
 }

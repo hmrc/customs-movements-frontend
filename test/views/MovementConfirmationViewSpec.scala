@@ -41,11 +41,18 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
       messages must haveTranslationFor("movement.arrival.confirmation.tab.heading")
       messages must haveTranslationFor("movement.arrival.confirmation.heading")
-      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps")
+      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps.part1")
+      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps.part2")
+      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps.part3")
+      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps.part4")
       messages must haveTranslationFor("movement.departure.confirmation.tab.heading")
       messages must haveTranslationFor("movement.departure.confirmation.heading")
-      messages must haveTranslationFor("movement.departure.confirmation.nextSteps")
-      messages must haveTranslationFor("movement.confirmation.statusInfo")
+      messages must haveTranslationFor("movement.departure.confirmation.nextSteps.part1")
+      messages must haveTranslationFor("movement.departure.confirmation.nextSteps.part2")
+      messages must haveTranslationFor("movement.departure.confirmation.nextSteps.part3")
+      messages must haveTranslationFor("movement.departure.confirmation.nextSteps.part4")
+      messages must haveTranslationFor("movement.confirmation.statusInfo.part1")
+      messages must haveTranslationFor("movement.confirmation.statusInfo.part2")
       messages must haveTranslationFor("movement.confirmation.whatNext")
     }
   }
@@ -59,12 +66,15 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
     "have heading" in {
 
-      arrivalConfirmationView.getElementById("highlight-box-heading").text() mustBe messages("movement.arrival.confirmation.heading")
+      arrivalConfirmationView.getElementById("highlight-box-heading").text() mustBe
+        messages("movement.arrival.confirmation.heading")
     }
 
     "have status information" in {
 
-      arrivalConfirmationView.getElementById("status-info").text() mustBe messages("movement.confirmation.statusInfo")
+      val expectedMessage = "movement.confirmation.statusInfo.part1 movement.confirmation.statusInfo.part2."
+
+      arrivalConfirmationView.getElementById("status-info").text() mustBe expectedMessage
     }
 
     "have what next section" in {
@@ -74,7 +84,10 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
     "have next steps section" in {
 
-      arrivalConfirmationView.getElementById("next-steps").text() mustBe messages("movement.arrival.confirmation.nextSteps")
+      val expectedMessage = "movement.arrival.confirmation.nextSteps.part1 movement.arrival.confirmation.nextSteps.part2 " +
+        "movement.arrival.confirmation.nextSteps.part3 movement.arrival.confirmation.nextSteps.part4"
+
+      arrivalConfirmationView.getElementById("next-steps").text() mustBe expectedMessage
     }
 
     "have back button" in {
@@ -95,12 +108,15 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
     "have heading" in {
 
-      departureConfirmationView.getElementById("highlight-box-heading").text() mustBe messages("movement.departure.confirmation.heading")
+      departureConfirmationView.getElementById("highlight-box-heading").text() mustBe
+        messages("movement.departure.confirmation.heading")
     }
 
     "have status information" in {
 
-      departureConfirmationView.getElementById("status-info").text() mustBe messages("movement.confirmation.statusInfo")
+      val expectedMessage = "movement.confirmation.statusInfo.part1 movement.confirmation.statusInfo.part2."
+
+      departureConfirmationView.getElementById("status-info").text() mustBe expectedMessage
     }
 
     "have what next section" in {
@@ -110,7 +126,11 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
     "have next steps section" in {
 
-      departureConfirmationView.getElementById("next-steps").text() mustBe messages("movement.departure.confirmation.nextSteps")
+      val expectedMessage = "movement.departure.confirmation.nextSteps.part1 " +
+        "movement.departure.confirmation.nextSteps.part2 movement.departure.confirmation.nextSteps.part3 " +
+        "movement.departure.confirmation.nextSteps.part4."
+
+      departureConfirmationView.getElementById("next-steps").text() mustBe expectedMessage
     }
 
     "have back button" in {

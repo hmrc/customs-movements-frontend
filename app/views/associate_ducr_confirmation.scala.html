@@ -29,11 +29,14 @@
         headingText = messages("associateDucr.confirmation.heading", flash.get(FlashKeys.DUCR).getOrElse("-"))
     )
 
-    @components.paragraph(messages("movement.confirmation.statusInfo"), Some("status-info"))
+    @components.confirmation_status_info()
 
     <h2 id="what-next">@messages("movement.confirmation.whatNext")</h2>
 
-    @components.paragraph(messages(s"consolidation.confirmation.addOrShut"), Some("next-steps"))
+    <div id="next-steps">
+        <a href="@routes.ChoiceController.startSpecificJourney("associateDUCR")">@messages("consolidation.confirmation.addOrShut.part1")</a> @messages("consolidation.confirmation.addOrShut.part2")
+        <a href="@routes.ChoiceController.startSpecificJourney("shutMUCR")">@messages("consolidation.confirmation.addOrShut.part3")</a>.
+    </div>
 
     @components.button_link("site.backToStartPage", routes.ChoiceController.displayChoiceForm())
 }

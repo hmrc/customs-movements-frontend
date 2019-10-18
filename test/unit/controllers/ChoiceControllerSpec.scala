@@ -160,4 +160,70 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
       }
     }
   }
+
+  "Choice controller on startSpecificJourney method" should {
+
+    "redirect to Consignment References page" when {
+
+      "choice is arrival" in {
+
+        val result = controller.startSpecificJourney(Arrival.value)(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.ConsignmentReferencesController.displayPage().url
+      }
+
+      "choice is departure" in {
+
+        val result = controller.startSpecificJourney(Departure.value)(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.ConsignmentReferencesController.displayPage().url
+      }
+    }
+
+    "redirect to Mucr Options page" when {
+
+      "choice is association" in {
+
+        val result = controller.startSpecificJourney(AssociateDUCR.value)(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe consolidationRoutes.MucrOptionsController.displayPage().url
+      }
+    }
+
+    "redirect to Disassociate Ducr page" when {
+
+      "choice is disassocitation" in {
+
+        val result = controller.startSpecificJourney(DisassociateDUCR.value)(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe consolidationRoutes.DisassociateDucrController.displayPage().url
+      }
+    }
+
+    "redirect to Shut Mucr page" when {
+
+      "choice is shut mucr" in {
+
+        val result = controller.startSpecificJourney(ShutMUCR.value)(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe consolidationRoutes.ShutMucrController.displayPage().url
+      }
+    }
+
+    "redirect to Submissions page" when {
+
+      "choice is submissions" in {
+
+        val result = controller.startSpecificJourney(Submissions.value)(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.MovementsController.displayPage().url
+      }
+    }
+  }
 }

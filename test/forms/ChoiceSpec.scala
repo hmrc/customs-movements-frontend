@@ -16,11 +16,11 @@
 
 package forms
 
-import forms.Choice.Arrival
-import org.scalatest.{MustMatchers, WordSpec}
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import forms.Choice.{Arrival, ChoiceValueFormat, Departure}
+import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import play.api.libs.json.{JsError, JsNumber, JsObject, JsString, JsSuccess, JsValue}
 
-class ChoiceSpec extends WordSpec with MustMatchers {
+class ChoiceSpec extends WordSpec with MustMatchers with OptionValues {
   import ChoiceSpec._
 
   "Validation defined in Choice mapping" should {
@@ -29,7 +29,7 @@ class ChoiceSpec extends WordSpec with MustMatchers {
       "provided with empty input" in {
         val form = Choice.form().bind(emptyChoiceJSON)
 
-        form.hasErrors must be(true)
+        form.hasErrors mustBe true
         form.errors.length must equal(1)
         form.errors.head.message must equal("choicePage.input.error.empty")
       }
@@ -37,7 +37,7 @@ class ChoiceSpec extends WordSpec with MustMatchers {
       "provided with an incorrect value" in {
         val form = Choice.form().bind(incorrectChoiceJSON)
 
-        form.hasErrors must be(true)
+        form.hasErrors mustBe true
         form.errors.length must equal(1)
         form.errors.head.message must equal("choicePage.input.error.incorrectValue")
       }
@@ -47,8 +47,70 @@ class ChoiceSpec extends WordSpec with MustMatchers {
       "provided with valid input" in {
         val form = Choice.form().bind(correctChoiceJSON)
 
-        form.hasErrors must be(false)
+        form.hasErrors mustBe false
       }
+    }
+  }
+
+  "Choice model for apply and unapply" should {
+
+    "have correctly prepared unapply method" in {
+
+      Choice.unapply(Arrival).value mustBe "arrival"
+    }
+
+    "correctly map input to choice" in {
+
+      Choice.apply("arrival") mustBe Arrival
+    }
+
+    "throw an exception during apply method when choice is incorrect" in {
+
+      val exception = intercept[IllegalArgumentException] {
+        Choice.apply("incorrect")
+      }
+
+      exception.getMessage mustBe "Incorrect choice"
+    }
+  }
+
+  "ChoiceValueFormat" should {
+
+    "return JsSuccess" when {
+
+      "the choice is JsString and has correct value" in {
+
+        ChoiceValueFormat.reads(JsString("arrival")) mustBe JsSuccess(Arrival)
+      }
+    }
+
+    "return JsError" when {
+
+      "the choice is JsString, but has incorrect value" in {
+
+        ChoiceValueFormat.reads(JsString("incorrect")) mustBe JsError("Incorrect choice")
+      }
+
+      "the choice is different than JsString" in {
+
+        ChoiceValueFormat.reads(JsNumber(10)) mustBe JsError("Incorrect choice")
+      }
+    }
+
+    "correctly write object as JsValue" in {
+
+      ChoiceValueFormat.writes(Arrival) mustBe JsString("arrival")
+    }
+  }
+
+  "Choice" should {
+
+    "return correct information about itself" in {
+
+      Arrival.isArrival mustBe true
+      Arrival.isDeparture mustBe false
+      Departure.isArrival mustBe false
+      Departure.isDeparture mustBe true
     }
   }
 }

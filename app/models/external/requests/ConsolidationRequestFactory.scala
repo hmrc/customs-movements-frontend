@@ -31,7 +31,7 @@ object ConsolidationRequestFactory {
     ConsolidationRequest(SHUT_MUCR, Some(mucr), None)
 }
 
-case class ConsolidationRequest(consolidationType: ConsolidationType, mucr: Option[String], ducr: Option[String])
+case class ConsolidationRequest(consolidationType: ConsolidationType, mucr: Option[String], ucr: Option[String])
 
 object ConsolidationRequest {
   implicit val format = Json.format[ConsolidationRequest]

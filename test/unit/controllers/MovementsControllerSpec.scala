@@ -16,10 +16,15 @@
 
 package unit.controllers
 
+import java.time.Instant
+
 import base.MockCustomsExportsMovement
 import controllers.MovementsController
+import models.notifications.NotificationFrontendModel
+import models.submissions.SubmissionFrontendModel
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import testdata.MovementsTestData.exampleSubmissionFrontendModel
@@ -54,16 +59,28 @@ class MovementsControllerSpec extends ControllerSpec with MockCustomsExportsMove
 
     "return 200 (OK)" when {
 
-      "display page is invoked and cache is empty" in {
+      "display page is invoked with submissions in descending order" in {
+
+        val submission1 = exampleSubmissionFrontendModel(requestTimestamp = Instant.now().minusSeconds(60))
+        val submission2 = exampleSubmissionFrontendModel(requestTimestamp = Instant.now().minusSeconds(30))
+        val submission3 = exampleSubmissionFrontendModel(requestTimestamp = Instant.now())
 
         when(mockCustomsExportsMovementConnector.fetchAllSubmissions()(any()))
-          .thenReturn(Future.successful(Seq(exampleSubmissionFrontendModel())))
+          .thenReturn(Future.successful(Seq(submission1, submission2, submission3)))
         when(mockCustomsExportsMovementConnector.fetchNotifications(anyString())(any(), any()))
           .thenReturn(Future.successful(Seq(exampleNotificationFrontendModel())))
 
         val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
+
+        val captor: ArgumentCaptor[Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])]] =
+          ArgumentCaptor.forClass(classOf[Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])]])
+        verify(mockMovementsPage).apply(captor.capture())(any(), any())
+
+        val submissions: Seq[SubmissionFrontendModel] = captor.getValue.map(value => value._1)
+
+        submissions must be(Seq(submission3, submission2, submission1))
       }
     }
   }

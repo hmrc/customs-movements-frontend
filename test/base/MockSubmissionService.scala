@@ -43,7 +43,7 @@ trait MockSubmissionService extends MockitoSugar with BeforeAndAfterEach { self:
       .thenReturn(Future.successful(shutMucrRequest))
 
   def mockDucrAssociation(consolidationRequest: ConsolidationRequest = exampleAssociateDucrRequest): OngoingStubbing[Future[ConsolidationRequest]] =
-    when(mockSubmissionService.submitDucrAssociation(any(), any(), any())(any()))
+    when(mockSubmissionService.submitUcrAssociation(any(), any(), any())(any()))
       .thenReturn(Future.successful(consolidationRequest))
 
   override protected def afterEach(): Unit = {

@@ -30,7 +30,7 @@ import views.tags.ViewTest
 class DisassociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
   private val page = new disassociate_ducr_confirmation(mainTemplate)
-  private val view: Html = page()(request, new Flash(Map(FlashKeys.DUCR -> correctUcr)), messages)
+  private val view: Html = page()(request, new Flash(Map(FlashKeys.UCR -> correctUcr)), messages)
 
   "Disassociate Ducr Confirmation View" should {
 

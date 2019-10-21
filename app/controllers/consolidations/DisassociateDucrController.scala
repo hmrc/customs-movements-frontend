@@ -55,7 +55,7 @@ class DisassociateDucrController @Inject()(
         formData =>
           submissionService.submitDucrDisassociation(formData, request.user.eori).map { _ =>
             Redirect(routes.DisassociateDucrConfirmationController.displayPage())
-              .flashing(FlashKeys.DUCR -> formData.ducr)
+              .flashing(FlashKeys.UCR -> formData.ducr)
         }
       )
   }

@@ -14,37 +14,37 @@
  * limitations under the License.
  *@
 
-@import forms.AssociateDucr
+@import forms.AssociateUcr
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
-@(associateDucr: AssociateDucr, mucr: String)(implicit request: Request[_], messages: Messages)
+@(associateUcr: AssociateUcr, mucr: String)(implicit request: Request[_], messages: Messages)
 
+@main_template(title = Title(messages("associate.ucr.summary.title", mucr)),fullWidth = true) {
 
-  @main_template(title = Title(messages("associateDucrSummary.title", mucr)),
-    fullWidth = true) {
     @helper.form(consolidations.routes.AssociateDucrSummaryController.submit(), 'autoComplete -> "off") {
-      @helper.CSRF.formField
+        @helper.CSRF.formField
 
-      @components.back_link(consolidations.routes.AssociateDucrController.displayPage())
+        @components.back_link(consolidations.routes.AssociateDucrController.displayPage())
 
-      @components.page_title(
-            title = Some(messages("associateDucrSummary.title", mucr)),
-            subtitle = Some(messages("associateDucrSummary.hint"))
+        @components.page_title(
+            title = Some(messages("associate.ucr.summary.title", mucr)),
+            subtitle = Some(messages("associate.ucr.summary.hint"))
         )
 
-      <table>
-        <tbody>
-          <tr>
-            <td id="associate_ducr-reference">@associateDucr.ducr</td>
-            <td class="text-right">
-              <a id="associate_ducr-remove" href="@consolidations.routes.AssociateDucrController.displayPage()">@messages("site.remove")</a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <table>
+            <tbody>
+                <tr>
+                    <td id="associate_ucr-type">@messages(s"associate.ucr.summary.kind.${associateUcr.kind.formValue}")</td>
+                    <td id="associate_ucr-reference">@associateUcr.ucr</td>
+                    <td class="text-right">
+                        <a id="associate_ducr-remove" href="@consolidations.routes.AssociateDucrController.displayPage()">@messages("site.remove")</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-      @components.submit_button()
+        @components.submit_button()
     }
-  }
+}

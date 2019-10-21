@@ -17,6 +17,7 @@
 package controllers.storage
 
 object FlashKeys {
-  val DUCR = "DUCR"
+  val UCR = "UCR"
+  val CONSOLIDATION_KIND = "CONSOLIDATION_KIND"
   val MUCR = "MUCR"
 }

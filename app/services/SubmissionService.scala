@@ -71,15 +71,15 @@ class SubmissionService @Inject()(
       case Departure => connector.sendDepartureDeclaration(movementRequest)
     }
 
-  def submitDucrAssociation(mucrOptions: MucrOptions, associateDucr: AssociateDucr, eori: String)(
+  def submitUcrAssociation(mucrOptions: MucrOptions, associateDucr: AssociateUcr, eori: String)(
     implicit hc: HeaderCarrier
   ): Future[ConsolidationRequest] = {
     val timer = metrics.startTimer(AssociateDUCR)
     connector
-      .sendConsolidationRequest(buildAssociationRequest(mucrOptions.mucr, associateDucr.ducr))
+      .sendConsolidationRequest(buildAssociationRequest(mucrOptions.mucr, associateDucr))
       .andThen {
         case Success(_) =>
-          auditService.auditAssociate(eori, mucrOptions.mucr, associateDucr.ducr, ACCEPTED.toString)
+          auditService.auditAssociate(eori, mucrOptions.mucr, associateDucr.ucr, ACCEPTED.toString)
           timer.stop()
           metrics.incrementCounter(AssociateDUCR)
       }

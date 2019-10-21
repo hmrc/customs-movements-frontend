@@ -122,8 +122,10 @@ movement.departure.confirmation.nextSteps.consignment = consignment
 movement.confirmation.statusInfo = To check the status of the consignment, {0}.
 movement.confirmation.statusInfo.submissions = view all submissions
 movement.confirmation.whatNext = What do you want to do next?
-associateDucr.confirmation.tab.heading = Add DUCR request submitted
-associateDucr.confirmation.heading = Addition of DUCR {0} has been submitted
+associate.ducr.confirmation.tab.heading = Add DUCR request submitted
+associate.ducr.confirmation.heading = Addition of DUCR {0} has been submitted
+associate.mucr.confirmation.tab.heading = Add MUCR request submitted
+associate.mucr.confirmation.heading = Addition of MUCR {0} has been submitted
 disassociateDucr.confirmation.tab.heading = Remove DUCR request submitted
 disassociateDucr.confirmation.heading = Removal of DUCR {0} has been submitted
 consolidation.confirmation.addOrShut = {0} another DUCR or MUCR, or {1}.
@@ -251,7 +253,7 @@ disassociateDucr.ducr.error = Incorrect DUCR
 shutMucr.tabTitle = Shut a MUCR
 shutMucr.title = Which MUCR do you want to shut?
 
-mucrOptions.title = Create or enter a MUCR to add to
+mucrOptions.title = Create or enter a MUCR to associate with
 mucrOptions.create = Create a new MUCR
 mucrOptions.add = Add to an existing MUCR
 mucrOptions.create.reference = Enter the alpha numeric refererence
@@ -260,11 +262,18 @@ mucrOptions.createAdd.value.empty = Please select an option
 mucrOptions.reference.value.empty = Please enter a reference
 mucrOptions.reference.value.error = Please enter a valid reference
 
-associateDucr.title = Add a DUCR to {0}
-associateDucr.reference.hint = Make sure you have entered the correct MUCR before adding any DUCRs or MUCRs to it. It is also worth keeping a manual record of which DUCRs and MUCRs you have added to this MUCR to avoid missing any or duplication.
+associate.ucr.title = What type of unique consignment do you want to add to {0}
+associate.ucr.ducr = Add a DUCR
+associate.ucr.ducr.label = Declaration Unique Consignment Reference
+associate.ucr.mucr = Add a MUCR
+associate.ucr.mucr.label = Master Unique Consignment Reference
 
-associateDucrSummary.title = The following DUCR has been added to {0}
-associateDucrSummary.hint = Make sure the details of the DUCR are correct before continuing.
+associate.ucr.hint = Check the MUCR is correct before adding consignments to it. You may want to keep a note of what consignments you have added to this MUCR.
+
+associate.ucr.summary.title = The following UCR has been added to {0}
+associate.ucr.summary.hint = Make sure the details of the UCR are correct before continuing.
+associate.ucr.summary.kind.mucr = MUCR
+associate.ucr.summary.kind.ducr = DUCR
 
 submissions.title = All submissions
 submissions.summary = This page displays all submitted requests and any notifications related to them.

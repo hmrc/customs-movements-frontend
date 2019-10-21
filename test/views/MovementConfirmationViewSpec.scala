@@ -42,10 +42,15 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
       messages must haveTranslationFor("movement.arrival.confirmation.tab.heading")
       messages must haveTranslationFor("movement.arrival.confirmation.heading")
       messages must haveTranslationFor("movement.arrival.confirmation.nextSteps")
+      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps.consolidation")
+      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps.depart")
       messages must haveTranslationFor("movement.departure.confirmation.tab.heading")
       messages must haveTranslationFor("movement.departure.confirmation.heading")
       messages must haveTranslationFor("movement.departure.confirmation.nextSteps")
+      messages must haveTranslationFor("movement.departure.confirmation.nextSteps.departure")
+      messages must haveTranslationFor("movement.departure.confirmation.nextSteps.consignment")
       messages must haveTranslationFor("movement.confirmation.statusInfo")
+      messages must haveTranslationFor("movement.confirmation.statusInfo.submissions")
       messages must haveTranslationFor("movement.confirmation.whatNext")
     }
   }
@@ -59,7 +64,8 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
     "have heading" in {
 
-      arrivalConfirmationView.getElementById("highlight-box-heading").text() mustBe messages("movement.arrival.confirmation.heading")
+      arrivalConfirmationView.getElementById("highlight-box-heading").text() mustBe
+        messages("movement.arrival.confirmation.heading")
     }
 
     "have status information" in {
@@ -95,7 +101,8 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
     "have heading" in {
 
-      departureConfirmationView.getElementById("highlight-box-heading").text() mustBe messages("movement.departure.confirmation.heading")
+      departureConfirmationView.getElementById("highlight-box-heading").text() mustBe
+        messages("movement.departure.confirmation.heading")
     }
 
     "have status information" in {

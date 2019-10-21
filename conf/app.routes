@@ -8,6 +8,7 @@ GET         /start                                 controllers.StartController.d
 
 # Declaration choice page
 GET         /choice                                controllers.ChoiceController.displayChoiceForm()
+GET         /choice/:journey                       controllers.ChoiceController.startSpecificJourney(journey)
 POST        /choice                                controllers.ChoiceController.submitChoice()
 
 # MUCR Options

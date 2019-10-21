@@ -218,13 +218,9 @@ trait ViewMatchers { self: MustMatchers =>
 
   def haveTranslationFor(key: String): Matcher[Messages] = new TranslationKeyMatcher(key)
 
-  val checked: BeMatcher[Element] = new BeMatcher[Element]{
-    override def apply(left: Element): MatchResult = {
-      MatchResult(
-        left.attr("checked") == "checked",
-        "Element is not checked",
-        "Element is checked")
-    }
+  val checked: BeMatcher[Element] = new BeMatcher[Element] {
+    override def apply(left: Element): MatchResult =
+      MatchResult(left.attr("checked") == "checked", "Element is not checked", "Element is checked")
   }
 
   val unchecked: BeMatcher[Element] = not(checked)

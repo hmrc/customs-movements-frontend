@@ -32,11 +32,11 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class AssociateDucrController @Inject()(
-                                         authenticate: AuthAction,
-                                         journeyType: JourneyAction,
-                                         mcc: MessagesControllerComponents,
-                                         cacheService: CustomsCacheService,
-                                         associateUcrPage: associate_ucr
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
+  mcc: MessagesControllerComponents,
+  cacheService: CustomsCacheService,
+  associateUcrPage: associate_ucr
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -62,7 +62,8 @@ class AssociateDucrController @Inject()(
           cacheService.fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId).map {
             case Some(options) => BadRequest(associateUcrPage(formWithErrors, options))
             case None          => throw IncompleteApplication
-        }},
+          }
+        },
         formData =>
           cacheService.cache(movementCacheId(), AssociateUcr.formId, formData).map { _ =>
             Redirect(routes.AssociateDucrSummaryController.displayPage())

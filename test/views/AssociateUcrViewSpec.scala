@@ -76,14 +76,16 @@ class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with 
     }
 
     "form contains 'MUCR' with value" should {
+      val mucrView = createView(mucrOptions, AssociateUcr.form.fill(AssociateUcr(Mucr, ducr = None, mucr = Some("1234"))))
       "display value" in {
-        ???
+        mucrView.getElementById("mucr").`val`() mustBe "1234"
       }
     }
 
     "form contains 'DUCR' with value" should {
+      val ducrView = createView(mucrOptions, AssociateUcr.form.fill(AssociateUcr(Ducr, ducr = Some("1234"), mucr = None)))
       "display value" in {
-        ???
+        ducrView.getElementById("ducr").`val`() mustBe "1234"
       }
     }
 

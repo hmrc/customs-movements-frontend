@@ -29,7 +29,7 @@ object AssociateKind {
   case object Mucr extends AssociateKind("mucr")
   case object Ducr extends AssociateKind("ducr")
 
-  private val lookup = PartialFunction[String, AssociateKind]{
+  private val lookup = PartialFunction[String, AssociateKind] {
     case Mucr.formValue => Mucr
     case Ducr.formValue => Ducr
   }
@@ -44,10 +44,8 @@ object AssociateKind {
     override def unbind(key: String, value: AssociateKind): Map[String, String] = Map(key -> value.formValue)
   }
 
-  implicit val format = Format[AssociateKind](
-    Reads.StringReads.collect(JsonValidationError("error.unknown"))(lookup),
-    Writes(kind => JsString(kind.formValue))
-  )
+  implicit val format =
+    Format[AssociateKind](Reads.StringReads.collect(JsonValidationError("error.unknown"))(lookup), Writes(kind => JsString(kind.formValue)))
 }
 
 case class AssociateUcr(kind: AssociateKind, ducr: Option[String], mucr: Option[String]) {
@@ -67,9 +65,10 @@ object AssociateUcr {
           .verifying("associate.ducr.empty", nonEmpty)
           .verifying("associate.ducr.error", isEmpty or validDucr)
       ),
-      "mucr" -> optional(text()
-        .verifying("associate.mucr.empty", nonEmpty)
-        .verifying("associate.mucr.error", isEmpty or validMucr)
+      "mucr" -> optional(
+        text()
+          .verifying("associate.mucr.empty", nonEmpty)
+          .verifying("associate.mucr.error", isEmpty or validMucr)
       )
     )(AssociateUcr.apply)(AssociateUcr.unapply)
 

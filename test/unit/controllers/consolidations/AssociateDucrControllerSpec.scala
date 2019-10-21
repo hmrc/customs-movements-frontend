@@ -86,7 +86,10 @@ class AssociateDucrControllerSpec extends ControllerSpec {
           Some(
             CacheMap(
               movementCacheId()(request),
-              Map(MucrOptions.formId -> Json.toJson(MucrOptions("MUCR")), AssociateUcr.formId -> Json.toJson(AssociateUcr(Ducr, ducr = Some("DUCR"), mucr = None)))
+              Map(
+                MucrOptions.formId -> Json.toJson(MucrOptions("MUCR")),
+                AssociateUcr.formId -> Json.toJson(AssociateUcr(Ducr, ducr = Some("DUCR"), mucr = None))
+              )
             )
           )
         )

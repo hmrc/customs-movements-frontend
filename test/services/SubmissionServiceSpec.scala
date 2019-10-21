@@ -152,7 +152,7 @@ class SubmissionServiceSpec
 
   "SubmissionService on submitDucrAssociation" should {
 
-    val validDucrAssociation = AssociateUcr(Ducr,  ducr = Some(ValidDucr), mucr = None)
+    val validDucrAssociation = AssociateUcr(Ducr, ducr = Some(ValidDucr), mucr = None)
 
     "return response from CustomsDeclareExportsMovementsConnector" in {
 

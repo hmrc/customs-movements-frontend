@@ -19,6 +19,7 @@ package unit.controllers.consolidations
 import base.MockSubmissionService
 import controllers.consolidations.AssociateDucrSummaryController
 import controllers.exception.IncompleteApplication
+import controllers.storage.FlashKeys
 import forms.Choice.AssociateDUCR
 import forms.{AssociateUcr, Choice, MucrOptions}
 import org.mockito.ArgumentCaptor
@@ -30,6 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.associate_ducr_summary
+import forms.AssociateKind._
 
 import scala.concurrent.ExecutionContext.global
 
@@ -75,7 +77,7 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
 
       "display page is invoked with data in cache" in {
         withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
-        withCaching(AssociateUcr.formId, Some(AssociateUcr("DUCR")))
+        withCaching(AssociateUcr.formId, Some(AssociateUcr(Ducr, ducr = Some("DUCR"), mucr = None)))
 
         val result = controller.displayPage()(getRequest())
 
@@ -83,7 +85,7 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
         verify(mockAssociateDucrSummaryPage).apply(any(), any())(any(), any())
 
         val (associateDucr, mucrOptions) = theResponseData
-        associateDucr.ducr mustBe "DUCR"
+        associateDucr.ducr.value mustBe "DUCR"
         mucrOptions mustBe "MUCR"
       }
     }
@@ -134,15 +136,16 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
       "all mandatory data is in cache and submission service returned ACCEPTED" in {
 
         withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
-        withCaching(AssociateUcr.formId, Some(AssociateUcr("DUCR")))
+        withCaching(AssociateUcr.formId, Some(AssociateUcr(Ducr, ducr = Some("DUCR"), mucr = None)))
         mockCustomsCacheServiceClearedSuccessfully()
         mockDucrAssociation()
 
         val result = controller.submit()(postRequest(Json.obj()))
 
         status(result) mustBe SEE_OTHER
-        flash(result).get("MUCR") mustBe None
-        flash(result).get("DUCR").value mustBe "DUCR"
+        flash(result).get(FlashKeys.MUCR) mustBe None
+        flash(result).get(FlashKeys.UCR).value mustBe "DUCR"
+        flash(result).get(FlashKeys.CONSOLIDATION_KIND).value mustBe Ducr.formValue
       }
     }
   }

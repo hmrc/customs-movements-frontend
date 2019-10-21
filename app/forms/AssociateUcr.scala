@@ -61,7 +61,7 @@ object AssociateUcr {
 
   val mapping =
     Forms.mapping(
-      "type" -> of[AssociateKind],
+      "kind" -> of[AssociateKind],
       "ducr" -> optional(
         text()
           .verifying("associate.ducr.empty", nonEmpty)

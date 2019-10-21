@@ -57,11 +57,12 @@ class AssociateDucrController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        formWithErrors =>
+        formWithErrors => {
+          println(formWithErrors)
           cacheService.fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId).map {
             case Some(options) => BadRequest(associateUcrPage(formWithErrors, options))
             case None          => throw IncompleteApplication
-        },
+        }},
         formData =>
           cacheService.cache(movementCacheId(), AssociateUcr.formId, formData).map { _ =>
             Redirect(routes.AssociateDucrSummaryController.displayPage())

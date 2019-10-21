@@ -31,7 +31,7 @@ class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages
 
   private val page = new associate_ducr_confirmation(mainTemplate)
 
-  private val view: Html = page()(request, new Flash(Map(FlashKeys.UCR -> correctUcr)), messages)
+  private val view: Html = page()(request, new Flash(Map(FlashKeys.CONSOLIDATION_KIND -> "ducr", FlashKeys.UCR -> correctUcr)), messages)
 
   "Associate Ducr Confirmation View" should {
 
@@ -39,8 +39,10 @@ class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages
 
       val messages = messagesApi.preferred(request)
 
-      messages must haveTranslationFor("associateDucr.confirmation.tab.heading")
-      messages must haveTranslationFor("associateDucr.confirmation.heading")
+      messages must haveTranslationFor("associate.ducr.confirmation.tab.heading")
+      messages must haveTranslationFor("associate.ducr.confirmation.heading")
+      messages must haveTranslationFor("associate.mucr.confirmation.tab.heading")
+      messages must haveTranslationFor("associate.mucr.confirmation.heading")
       messages must haveTranslationFor("consolidation.confirmation.addOrShut")
       messages must haveTranslationFor("consolidation.confirmation.addOrShut.add")
       messages must haveTranslationFor("consolidation.confirmation.addOrShut.shutMucr")
@@ -48,7 +50,7 @@ class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages
 
     "display page reference" in {
 
-      view.getElementById("highlight-box-heading").text() mustBe messages("associateDucr.confirmation.heading")
+      view.getElementById("highlight-box-heading").text() mustBe messages("associate.ducr.confirmation.heading")
     }
 
     "have status information" in {

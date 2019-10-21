@@ -32,6 +32,7 @@ import testdata.ConsolidationTestData.ValidDucr
 import uk.gov.hmrc.http.cache.client.CacheMap
 import unit.base.ControllerSpec
 import views.html.associate_ucr
+import forms.AssociateKind._
 
 import scala.concurrent.ExecutionContext.global
 
@@ -85,7 +86,7 @@ class AssociateDucrControllerSpec extends ControllerSpec {
           Some(
             CacheMap(
               movementCacheId()(request),
-              Map(MucrOptions.formId -> Json.toJson(MucrOptions("MUCR")), AssociateUcr.formId -> Json.toJson(AssociateUcr("DUCR")))
+              Map(MucrOptions.formId -> Json.toJson(MucrOptions("MUCR")), AssociateUcr.formId -> Json.toJson(AssociateUcr(Ducr, ducr = Some("DUCR"), mucr = None)))
             )
           )
         )
@@ -94,7 +95,7 @@ class AssociateDucrControllerSpec extends ControllerSpec {
 
         status(result) must be(OK)
         verify(mockAssociateDucrPage).apply(formCaptor.capture(), any())(any(), any())
-        formCaptor.getValue.value.get mustBe AssociateUcr("DUCR")
+        formCaptor.getValue.value.get mustBe AssociateUcr(Ducr, ducr = Some("DUCR"), mucr = None)
       }
     }
 
@@ -136,10 +137,10 @@ class AssociateDucrControllerSpec extends ControllerSpec {
 
         withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
 
-        val validDUCR = Json.toJson(AssociateUcr(ValidDucr))
+        val validDUCR = Json.toJson(AssociateUcr(Ducr, ducr = Some(ValidDucr), mucr = None))
 
         val result = controller.submit()(postRequest(validDUCR))
-
+        await(result)
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(routes.AssociateDucrSummaryController.displayPage().url)
       }

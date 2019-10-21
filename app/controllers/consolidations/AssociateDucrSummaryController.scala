@@ -71,6 +71,6 @@ class AssociateDucrSummaryController @Inject()(
 
     } yield
       Redirect(routes.AssociateDucrConfirmationController.displayPage())
-        .flashing(FlashKeys.UCR -> associateUcr.ucr, FlashKeys.ASSOCIATION_KIND -> associateUcr.kind.formValue)
+        .flashing(FlashKeys.UCR -> associateUcr.ucr, FlashKeys.CONSOLIDATION_KIND -> associateUcr.kind.formValue)
   }
 }

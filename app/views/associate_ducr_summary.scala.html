@@ -21,8 +21,8 @@
 
 @(associateUcr: AssociateUcr, mucr: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title(messages("associate.ucr.summary.title", mucr)),
-    fullWidth = true) {
+@main_template(title = Title(messages("associate.ucr.summary.title", mucr)),fullWidth = true) {
+
     @helper.form(consolidations.routes.AssociateDucrSummaryController.submit(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 

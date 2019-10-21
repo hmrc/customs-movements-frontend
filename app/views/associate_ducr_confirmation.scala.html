@@ -23,10 +23,9 @@
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
+@prefix = @{ s"associate.${flash(FlashKeys.CONSOLIDATION_KIND)}.confirmation" }
 @associateLink = {<a href="@routes.ChoiceController.startSpecificJourney("associateDUCR")">@messages("consolidation.confirmation.addOrShut.add")</a>}
 @shutMucrLink = {<a href="@routes.ChoiceController.startSpecificJourney("shutMUCR")">@messages("consolidation.confirmation.addOrShut.shutMucr")</a>}
-
-@prefix = @{ s"associate.${flash(FlashKeys.ASSOCIATION_KIND)}.confirmation" }
 
 @main_template(title = Title(s"${prefix}.tab.heading")) {
 

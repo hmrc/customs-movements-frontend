@@ -23,6 +23,7 @@ import play.api.data.Form
 import play.twirl.api.Html
 import views.spec.{UnitViewSpec, ViewMatchers}
 import views.tags.ViewTest
+import forms.AssociateKind._
 
 @ViewTest
 class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with CommonMessages with ViewMatchers {
@@ -69,24 +70,28 @@ class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with 
         }
       }
 
-      "display 'Add' button on page" in {
-        emptyView.getElementsByClass("button").text() mustBe add
+      "display 'Save and Continue' button on page" in {
+        emptyView.getElementsByClass("button").text() mustBe saveAndContinueCaption
       }
     }
 
     "form contains 'MUCR' with value" should {
-
+      "display value" in {
+        ???
+      }
     }
 
     "form contains 'DUCR' with value" should {
-
+      "display value" in {
+        ???
+      }
     }
 
     "display DUCR Form errors" in {
-      val view: Document = createView(mucrOptions, AssociateUcr.form.fillAndValidate(AssociateUcr("")))
+      val view: Document = createView(mucrOptions, AssociateUcr.form.fillAndValidate(AssociateUcr(Ducr, ducr = Some(""), mucr = None)))
 
       view must haveGlobalErrorSummary
-      view must haveFieldError("ducr", "mucrOptions.reference.value.empty")
+      view must haveFieldError("ducr", "associate.ducr.empty")
     }
   }
 

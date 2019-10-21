@@ -58,7 +58,6 @@ class AssociateDucrController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          println(formWithErrors)
           cacheService.fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId).map {
             case Some(options) => BadRequest(associateUcrPage(formWithErrors, options))
             case None          => throw IncompleteApplication

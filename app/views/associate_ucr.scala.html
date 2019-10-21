@@ -43,12 +43,20 @@
                 RadioOption(
                     keyPrefix = "associate.ucr",
                     option = AssociateKind.Ducr.formValue,
-                    revealComponent = components.input_text(form("ducr"), "") // FIXME accessability
+                    revealComponent = components.input_text(
+                        form("ducr"),
+                        messages("associate.ucr.ducr.label"),
+                        labelClass=Some("visuallyhidden")
+                    )
                 ),
                 RadioOption(
                     keyPrefix = "associate.ucr",
                     option = AssociateKind.Mucr.formValue,
-                    revealComponent = components.input_text(form("mucr"), "") // FIXME accessability
+                    revealComponent = components.input_text(
+                        form("mucr"),
+                        messages("associate.ucr.mucr.label"),
+                        labelClass=Some("visuallyhidden")
+                    )
                 )
             )
         )

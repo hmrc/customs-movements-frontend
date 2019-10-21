@@ -264,7 +264,10 @@ mucrOptions.reference.value.error = Please enter a valid reference
 
 associate.ucr.title = What type of unique consignment do you want to add to {0}
 associate.ucr.ducr = Add a DUCR
+associate.ucr.ducr.label = Declaration Unique Consignment Reference value
 associate.ucr.mucr = Add a MUCR
+associate.ucr.mucr.label = Master Unique Consignment Reference value
+
 associate.ucr.hint = Check the MUCR is correct before adding consignments to it. You may want to keep a note of what consignments you have added to this MUCR.
 
 associate.ucr.summary.title = The following UCR has been added to {0}

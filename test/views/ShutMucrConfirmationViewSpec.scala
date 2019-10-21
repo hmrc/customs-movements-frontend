@@ -40,7 +40,9 @@ class ShutMucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
       messages must haveTranslationFor("shutMucr.confirmation.tab.heading")
       messages must haveTranslationFor("shutMucr.confirmation.heading")
-      messages must haveTranslationFor("shutMucr.confirmation.shutOrDepart")
+      messages must haveTranslationFor("shutMucr.confirmation.nextSteps")
+      messages must haveTranslationFor("shutMucr.confirmation.nextSteps.shutMucr")
+      messages must haveTranslationFor("shutMucr.confirmation.nextSteps.depart")
     }
 
     "display page reference" in {
@@ -60,7 +62,7 @@ class ShutMucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
     "have next steps section" in {
 
-      view.getElementById("next-steps").text() mustBe messages("shutMucr.confirmation.shutOrDepart")
+      view.getElementById("next-steps").text() mustBe messages("shutMucr.confirmation.nextSteps")
     }
 
     "display 'Back to start page' button on page" in {

@@ -42,6 +42,8 @@ class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages
       messages must haveTranslationFor("associateDucr.confirmation.tab.heading")
       messages must haveTranslationFor("associateDucr.confirmation.heading")
       messages must haveTranslationFor("consolidation.confirmation.addOrShut")
+      messages must haveTranslationFor("consolidation.confirmation.addOrShut.add")
+      messages must haveTranslationFor("consolidation.confirmation.addOrShut.shutMucr")
     }
 
     "display page reference" in {

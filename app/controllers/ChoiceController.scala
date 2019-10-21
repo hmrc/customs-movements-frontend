@@ -44,6 +44,20 @@ class ChoiceController @Inject()(
       .map(data => Ok(choicePage(data.fold(form())(form().fill(_)))))
   }
 
+  def startSpecificJourney(choice: String): Action[AnyContent] = authenticate.async { implicit request =>
+    val correctChoice = Choice(choice)
+
+    customsCacheService.cache[Choice](cacheId, choiceId, correctChoice).map { _ =>
+      correctChoice match {
+        case Arrival | Departure => Redirect(controllers.routes.ConsignmentReferencesController.displayPage())
+        case AssociateDUCR       => Redirect(controllers.consolidations.routes.MucrOptionsController.displayPage())
+        case DisassociateDUCR    => Redirect(controllers.consolidations.routes.DisassociateDucrController.displayPage())
+        case ShutMUCR            => Redirect(controllers.consolidations.routes.ShutMucrController.displayPage())
+        case Submissions         => Redirect(controllers.routes.MovementsController.displayPage())
+      }
+    }
+  }
+
   def submitChoice(): Action[AnyContent] = authenticate.async { implicit request =>
     form()
       .bindFromRequest()

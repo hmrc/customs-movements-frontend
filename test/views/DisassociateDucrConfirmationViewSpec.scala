@@ -41,6 +41,8 @@ class DisassociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessa
       messages must haveTranslationFor("disassociateDucr.confirmation.tab.heading")
       messages must haveTranslationFor("disassociateDucr.confirmation.heading")
       messages must haveTranslationFor("consolidation.confirmation.addOrShut")
+      messages must haveTranslationFor("consolidation.confirmation.addOrShut.add")
+      messages must haveTranslationFor("consolidation.confirmation.addOrShut.shutMucr")
     }
 
     "display page reference" in {

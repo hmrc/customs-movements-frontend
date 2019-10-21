@@ -21,7 +21,11 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Format, JsError, JsResult, JsString, JsSuccess, JsValue}
 import utils.validators.forms.FieldValidator.isContainedIn
 
-sealed abstract class Choice(val value: String)
+sealed abstract class Choice(val value: String) {
+
+  def isArrival: Boolean = value == Choice.Arrival.value
+  def isDeparture: Boolean = value == Choice.Departure.value
+}
 
 object Choice {
 

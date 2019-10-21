@@ -22,17 +22,22 @@
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
+@shutMucrLink = {<a href="@routes.ChoiceController.startSpecificJourney("shutMUCR")">@messages("shutMucr.confirmation.nextSteps.shutMucr")</a>}
+@departureLink = {<a href="@routes.ChoiceController.startSpecificJourney("departure")">@messages("shutMucr.confirmation.nextSteps.depart")</a>}
+
 @main_template(title = Title("shutMucr.confirmation.tab.heading")) {
 
     @components.highlight_box_with_reference(
         headingText = messages("shutMucr.confirmation.heading", flash.get(FlashKeys.MUCR).getOrElse("-"))
     )
 
-    @components.paragraph(messages("movement.confirmation.statusInfo"), Some("status-info"))
+    @components.confirmation_status_info()
 
     <h2 id="what-next">@messages("movement.confirmation.whatNext")</h2>
 
-    @components.paragraph(messages(s"shutMucr.confirmation.shutOrDepart"), Some("next-steps"))
+    <div id="next-steps">
+        @Html(messages("shutMucr.confirmation.nextSteps", shutMucrLink, departureLink))
+    </div>
 
     @components.button_link("site.backToStartPage", routes.ChoiceController.displayChoiceForm())
 }

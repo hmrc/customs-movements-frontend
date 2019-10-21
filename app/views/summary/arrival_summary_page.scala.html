@@ -31,7 +31,7 @@
 
     @components.page_title(Some("summary.arrival.title"))
 
-    @components.summary_list(Some(messages("consignmentReferences.title"))){
+    @components.summary_list(Some(messages("summary.consignmentDetails"))){
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("summary.referenceType"),
             value = data.getEntry[ConsignmentReferences](ConsignmentReferences.formId).map(ref =>

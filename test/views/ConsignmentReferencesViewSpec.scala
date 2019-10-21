@@ -39,8 +39,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       assertMessage(departureHeading, "Depart consignment")
       assertMessage(arrivalQuestion, "What consignment do you want to arrive?")
       assertMessage(departureQuestion, "What consignment do you want to depart?")
-      assertMessage(referenceDucr, "DUCR")
-      assertMessage(referenceMucr, "MUCR")
+      assertMessage(referenceDucr, "Declaration Consignment Reference (DUCR)")
+      assertMessage(referenceMucr, "Master Consignment Reference (MUCR)")
       assertMessage(referenceDucrValue, "Declaration Unique Consignment Reference")
       assertMessage(referenceMucrValue, "Master Unique Consignment Reference")
     }

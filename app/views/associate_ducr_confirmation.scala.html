@@ -24,8 +24,8 @@
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
 @prefix = @{ s"associate.${flash(FlashKeys.CONSOLIDATION_KIND)}.confirmation" }
-@associateLink = {<a href="@routes.ChoiceController.startSpecificJourney("associateDUCR")">@messages("consolidation.confirmation.addOrShut.add")</a>}
-@shutMucrLink = {<a href="@routes.ChoiceController.startSpecificJourney("shutMUCR")">@messages("consolidation.confirmation.addOrShut.shutMucr")</a>}
+@associateLink = {<a href="@routes.ChoiceController.startSpecificJourney("associateDUCR")">@messages("association.confirmation.associateOrDepart.associate")</a>}
+@shutMucrLink = {<a href="@routes.ChoiceController.startSpecificJourney("departure")">@messages("association.confirmation.associateOrDepart.depart")</a>}
 
 @main_template(title = Title(s"${prefix}.tab.heading")) {
 
@@ -38,7 +38,7 @@
     <h2 id="what-next">@messages("movement.confirmation.whatNext")</h2>
 
     <div id="next-steps">
-        @Html(messages("consolidation.confirmation.addOrShut", associateLink, shutMucrLink))
+        @Html(messages("association.confirmation.associateOrDepart", associateLink, shutMucrLink))
     </div>
 
     @components.button_link("site.backToStartPage", routes.ChoiceController.displayChoiceForm())

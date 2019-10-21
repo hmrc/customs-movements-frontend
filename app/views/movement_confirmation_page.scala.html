@@ -22,9 +22,9 @@
 
 @(consignmentReferences: ConsignmentReferences)(implicit request: JourneyRequest[_], messages: Messages)
 
-@associateLink = {<a href="@routes.ChoiceController.startSpecificJourney("associateDUCR")">@messages("movement.arrival.confirmation.nextSteps.consolidation")</a>}
+@associateLink = {<a href="@routes.ChoiceController.startSpecificJourney("associateDUCR")">@messages("movement.arrival.confirmation.nextSteps.associate")</a>}
 @departureLink = {<a href="@routes.ChoiceController.startSpecificJourney("departure")">@messages("movement.arrival.confirmation.nextSteps.depart")</a>}
-@arrivalLink = {<a href="@routes.ChoiceController.startSpecificJourney("arrival")">@messages("movement.departure.confirmation.nextSteps.consignment")</a>}
+@arrivalLink = {<a href="@routes.ChoiceController.startSpecificJourney("arrival")">@messages("movement.departure.confirmation.nextSteps.arrive")</a>}
 
 @main_template(
     title = Title(s"movement.${request.choice.value}.confirmation.tab.heading")

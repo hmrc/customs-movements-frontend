@@ -146,7 +146,15 @@ class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
         when(customsExportsMovementsConnectorMock.fetchSingleSubmission(any(), any())(any()))
           .thenReturn(
             Future.successful(
-              Some(SubmissionFrontendModel(eori = validEori, conversationId = conversationId, ucrBlocks = Seq.empty, actionType = ActionType.Arrival))
+              Some(
+                SubmissionFrontendModel(
+                  eori = validEori,
+                  providerId = None,
+                  conversationId = conversationId,
+                  ucrBlocks = Seq.empty,
+                  actionType = ActionType.Arrival
+                )
+              )
             )
           )
 

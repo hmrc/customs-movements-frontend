@@ -28,6 +28,7 @@ class SubmissionFrontendModelSpec extends UnitSpec with OptionValues {
 
   val submissionFrontendModel = SubmissionFrontendModel(
     eori = validEori,
+    providerId = None,
     conversationId = conversationId,
     ucrBlocks = Seq(UcrBlock(ucr = correctUcr, ucrType = "M")),
     actionType = ActionType.Arrival,

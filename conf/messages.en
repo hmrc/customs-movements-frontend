@@ -289,8 +289,10 @@ submissions.status = Status
 submissions.shutmucr = Shut
 submissions.arrival = Arrive
 submissions.departure = Depart
-submissions.ducrassociation = Associate
-submissions.ducrdisassociation = Disassociate
+submissions.ducrassociation = Associate DUCR
+submissions.mucrassociation = Associate MUCR
+submissions.ducrdisassociation = Disassociate DUCR
+submissions.mucrdisassociation = Disassociate MUCR
 
 # This part uses ActionType instances' values to differentiate between messages
 

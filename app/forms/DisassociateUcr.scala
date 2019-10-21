@@ -52,22 +52,22 @@ case class DisassociateUcr(kind: DisassociateKind, ducr: Option[String], mucr: O
 }
 
 object DisassociateUcr {
-  val formId: String = "ConsolidateUcr"
+  val formId: String = "DisassociateUcr"
 
   implicit val format = Json.format[DisassociateUcr]
 
   val mapping =
     Forms.mapping(
-      "type" -> of[DisassociateKind],
+      "kind" -> of[DisassociateKind],
       "ducr" -> optional(
         text()
-          .verifying("consolidate.ucr.empty", nonEmpty)
-          .verifying("consolidate.ucr.error", isEmpty or validDucr)
+          .verifying("disassociate.ucr.empty", nonEmpty)
+          .verifying("disassociate.ucr.error", isEmpty or validDucr)
       ),
       "mucr" -> optional(
         text()
-          .verifying("consolidate.ucr.empty", nonEmpty)
-          .verifying("consolidate.ucr.error", isEmpty or validMucr)
+          .verifying("disassociate.ucr.empty", nonEmpty)
+          .verifying("disassociate.ucr.error", isEmpty or validMucr)
       )
     )(DisassociateUcr.apply)(DisassociateUcr.unapply)
 

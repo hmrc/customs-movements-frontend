@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.exception.IncompleteApplication
 import controllers.storage.CacheIdGenerator.movementCacheId
 import controllers.storage.FlashKeys
-import forms.{AssociateDucr, MucrOptions}
+import forms.{AssociateUcr, MucrOptions}
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
@@ -49,10 +49,10 @@ class AssociateDucrSummaryController @Inject()(
         .fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId)
         .map(_.getOrElse(throw IncompleteApplication))
 
-      associateDucr <- cacheService
-        .fetchAndGetEntry[AssociateDucr](movementCacheId(), AssociateDucr.formId)
+      associateUcr <- cacheService
+        .fetchAndGetEntry[AssociateUcr](movementCacheId(), AssociateUcr.formId)
         .map(_.getOrElse(throw IncompleteApplication))
-    } yield Ok(associateDucrSummaryPage(associateDucr, mucrOptions.mucr))
+    } yield Ok(associateDucrSummaryPage(associateUcr, mucrOptions.mucr))
   }
 
   def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -61,16 +61,16 @@ class AssociateDucrSummaryController @Inject()(
         .fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId)
         .map(_.getOrElse(throw IncompleteApplication))
 
-      associateDucr <- cacheService
-        .fetchAndGetEntry[AssociateDucr](movementCacheId(), AssociateDucr.formId)
+      associateUcr <- cacheService
+        .fetchAndGetEntry[AssociateUcr](movementCacheId(), AssociateUcr.formId)
         .map(_.getOrElse(throw IncompleteApplication))
 
       _ <- submissionService
-        .submitDucrAssociation(mucrOptions, associateDucr, request.authenticatedRequest.user.eori)
+        .submitUcrAssociation(mucrOptions, associateUcr, request.authenticatedRequest.user.eori)
       _ <- cacheService.remove(movementCacheId())
 
     } yield
       Redirect(routes.AssociateDucrConfirmationController.displayPage())
-        .flashing(FlashKeys.DUCR -> associateDucr.ducr)
+        .flashing(FlashKeys.UCR -> associateUcr.ucr, FlashKeys.CONSOLIDATION_KIND -> associateUcr.kind.formValue)
   }
 }

@@ -20,7 +20,7 @@ import controllers.consolidations.{routes, AssociateDucrController}
 import controllers.exception.IncompleteApplication
 import controllers.storage.CacheIdGenerator._
 import forms.Choice.AssociateDUCR
-import forms.{AssociateDucr, Choice, MucrOptions}
+import forms.{AssociateUcr, Choice, MucrOptions}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -31,13 +31,14 @@ import play.twirl.api.HtmlFormat
 import testdata.ConsolidationTestData.ValidDucr
 import uk.gov.hmrc.http.cache.client.CacheMap
 import unit.base.ControllerSpec
-import views.html.associate_ducr
+import views.html.associate_ucr
+import forms.AssociateKind._
 
 import scala.concurrent.ExecutionContext.global
 
 class AssociateDucrControllerSpec extends ControllerSpec {
 
-  private val mockAssociateDucrPage = mock[associate_ducr]
+  private val mockAssociateDucrPage = mock[associate_ucr]
 
   private val controller = new AssociateDucrController(
     mockAuthAction,
@@ -52,7 +53,7 @@ class AssociateDucrControllerSpec extends ControllerSpec {
 
     authorizedUser()
     withCaching(Choice.choiceId, Some(AssociateDUCR))
-    withCaching(AssociateDucr.formId)
+    withCaching(AssociateUcr.formId)
     when(mockAssociateDucrPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -61,7 +62,7 @@ class AssociateDucrControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
-  val formCaptor: ArgumentCaptor[Form[AssociateDucr]] = ArgumentCaptor.forClass(classOf[Form[AssociateDucr]])
+  val formCaptor: ArgumentCaptor[Form[AssociateUcr]] = ArgumentCaptor.forClass(classOf[Form[AssociateUcr]])
 
   "Associate Ducr controller" should {
 
@@ -85,7 +86,10 @@ class AssociateDucrControllerSpec extends ControllerSpec {
           Some(
             CacheMap(
               movementCacheId()(request),
-              Map(MucrOptions.formId -> Json.toJson(MucrOptions("MUCR")), AssociateDucr.formId -> Json.toJson(AssociateDucr("DUCR")))
+              Map(
+                MucrOptions.formId -> Json.toJson(MucrOptions("MUCR")),
+                AssociateUcr.formId -> Json.toJson(AssociateUcr(Ducr, ducr = Some("DUCR"), mucr = None))
+              )
             )
           )
         )
@@ -94,7 +98,7 @@ class AssociateDucrControllerSpec extends ControllerSpec {
 
         status(result) must be(OK)
         verify(mockAssociateDucrPage).apply(formCaptor.capture(), any())(any(), any())
-        formCaptor.getValue.value.get mustBe AssociateDucr("DUCR")
+        formCaptor.getValue.value.get mustBe AssociateUcr(Ducr, ducr = Some("DUCR"), mucr = None)
       }
     }
 
@@ -136,10 +140,10 @@ class AssociateDucrControllerSpec extends ControllerSpec {
 
         withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
 
-        val validDUCR = Json.toJson(AssociateDucr(ValidDucr))
+        val validDUCR = Json.toJson(AssociateUcr(Ducr, ducr = Some(ValidDucr), mucr = None))
 
         val result = controller.submit()(postRequest(validDUCR))
-
+        await(result)
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(routes.AssociateDucrSummaryController.displayPage().url)
       }

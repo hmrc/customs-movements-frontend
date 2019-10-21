@@ -16,14 +16,18 @@
 
 package unit.models.external.requests
 
+import forms.AssociateUcr
 import models.external.requests.ConsolidationRequest
 import models.external.requests.ConsolidationType._
 import models.external.requests.ConsolidationRequestFactory._
 import unit.base.UnitSpec
+import forms.AssociateKind._
 
 class ConsolidationRequestFactorySpec extends UnitSpec {
 
   val mucr = "mucr"
+  val associateDucr = AssociateUcr(Ducr, ducr = Some("ducr"), mucr = None)
+
   val ducr = "ducr"
 
   "Consolidation Request Factory" should {
@@ -32,7 +36,7 @@ class ConsolidationRequestFactorySpec extends UnitSpec {
 
       val expectedAssociationRequest = ConsolidationRequest(ASSOCIATE_DUCR, Some(mucr), Some(ducr))
 
-      buildAssociationRequest(mucr, ducr) mustBe expectedAssociationRequest
+      buildAssociationRequest(mucr, associateDucr) mustBe expectedAssociationRequest
     }
 
     "build correct Disassociation request" in {

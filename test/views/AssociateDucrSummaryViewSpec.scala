@@ -16,36 +16,37 @@
 
 package views
 
-import forms.AssociateDucr
+import forms.AssociateUcr
 import helpers.views.{AssociateDucrSummaryMessages, CommonMessages}
 import play.twirl.api.Html
-import views.spec.ViewSpec
+import views.spec.UnitViewSpec
 import views.tags.ViewTest
+import forms.AssociateKind._
+import forms.AssociateUcr
 
 @ViewTest
-class AssociateDucrSummaryViewSpec extends ViewSpec with AssociateDucrSummaryMessages with CommonMessages {
+class AssociateDucrSummaryViewSpec extends UnitViewSpec with AssociateDucrSummaryMessages with CommonMessages {
 
-  private val page = injector.instanceOf[views.html.associate_ducr_summary]
+  private val page = new views.html.associate_ducr_summary(mainTemplate)
 
   private def createView(mucr: String, ducr: String): Html =
-    page(AssociateDucr(ducr), mucr)(fakeRequest, messages)
+    page(AssociateUcr(Ducr, ducr = Some(ducr), mucr = None), mucr)(request, messages)
 
-  "Disassociate Ducr Confirmation View" should {
+  "Associate Ducr Confirmation View" should {
 
     "have a proper labels for messages" in {
-      messages(title, "{MUCR}") mustBe "The following DUCR has been added to {MUCR}"
-      messages(hint) mustBe "Make sure the details of the DUCR are correct before continuing."
+      val realMessages = messagesApi.preferred(request)
+      realMessages(title, "{MUCR}") mustBe "The following UCR has been added to {MUCR}"
+      realMessages(hint) mustBe "Make sure the details of the UCR are correct before continuing."
     }
 
-    "display 'Save and continue' button on page" in {
-      val view = createView("MUCR", "DUCR")
+    val view = createView("MUCR", "DUCR")
 
+    "display 'Save and continue' button on page" in {
       view.getElementsByClass("button").text() must be(messages(continue))
     }
 
     "display 'Remove' link on page" in {
-      val view = createView("MUCR", "DUCR")
-
       view.getElementById("associate_ducr-remove") must containText(messages(remove))
       view.getElementById("associate_ducr-remove") must haveAttribute(
         "href",
@@ -54,10 +55,9 @@ class AssociateDucrSummaryViewSpec extends ViewSpec with AssociateDucrSummaryMes
     }
 
     "display 'Reference' link on page" in {
-      val view = createView("MUCR", "DUCR")
-
-      view.getElementById("associate_ducr-reference") must containText("DUCR")
+      view.getElementById("associate_ucr-reference") must containText("DUCR")
     }
+
   }
 
 }

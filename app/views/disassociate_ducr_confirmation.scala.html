@@ -28,7 +28,7 @@
 @main_template(title = Title("disassociateDucr.confirmation.tab.heading")) {
 
     @components.highlight_box_with_reference(
-        headingText = messages("disassociateDucr.confirmation.heading", flash.get(FlashKeys.DUCR).getOrElse("-"))
+        headingText = messages("disassociateDucr.confirmation.heading", flash.get(FlashKeys.UCR).getOrElse("-"))
     )
 
     @components.confirmation_status_info()

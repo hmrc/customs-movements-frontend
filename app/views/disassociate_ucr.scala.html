@@ -24,7 +24,7 @@
 
 @(form: Form[DisassociateUcr])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("disassociateUcr.title")) {
+@main_template(title = Title("disassociate.ucr.title")) {
     @helper.form(consolidations.routes.DisassociateUcrController.submit(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
@@ -33,8 +33,8 @@
         @components.error_summary(form.errors)
 
         @components.heading(
-            title = messages("disassociateUcr.title"),
-            sectionHeader = messages("disassociateUcr.heading")
+            title = messages("disassociate.ucr.title"),
+            sectionHeader = messages("disassociate.ucr.heading")
         )
 
         @components.input_radio(

@@ -16,26 +16,33 @@
 
 package models.external.requests
 
+import forms.AssociateKind.{Ducr, Mucr}
+import forms.{AssociateKind, AssociateUcr, DisassociateKind, DisassociateUcr}
 import forms.DisassociateKind.{Ducr, Mucr}
-import forms.DisassociateUcr
 import models.external.requests.ConsolidationType.{ConsolidationType, _}
 import play.api.libs.json.Json
 
 object ConsolidationRequestFactory {
 
-  def buildAssociationRequest(mucr: String, ducr: String): ConsolidationRequest =
-    ConsolidationRequest(ASSOCIATE_DUCR, Some(mucr), Some(ducr))
-
-  def buildDisassociationRequest(ducr: String): ConsolidationRequest =
-    ConsolidationRequest(DISASSOCIATE_DUCR, None, Some(ducr))
+  def buildAssociationRequest(mucr: String, associateUcr: AssociateUcr): ConsolidationRequest = {
+    val kind = associateUcr.kind match {
+      case AssociateKind.Mucr => ASSOCIATE_MUCR
+      case AssociateKind.Ducr => ASSOCIATE_DUCR
+    }
+    ConsolidationRequest(kind, Some(mucr), Some(associateUcr.ucr))
+  }
 
   def buildDisassociationRequest(consolidateUcr: DisassociateUcr): ConsolidationRequest = {
     val kind = consolidateUcr.kind match {
-      case Mucr => DISASSOCIATE_MUCR
-      case Ducr => DISASSOCIATE_DUCR
+      case DisassociateKind.Mucr => DISASSOCIATE_MUCR
+      case DisassociateKind.Ducr => DISASSOCIATE_DUCR
     }
     ConsolidationRequest(kind, None, Some(consolidateUcr.ucr))
   }
+
+  // TODO - delete
+  def buildDisassociationRequest(ducr: String): ConsolidationRequest =
+    ConsolidationRequest(DISASSOCIATE_DUCR, None, Some(ducr))
 
   def buildShutMucrRequest(mucr: String): ConsolidationRequest =
     ConsolidationRequest(SHUT_MUCR, Some(mucr), None)

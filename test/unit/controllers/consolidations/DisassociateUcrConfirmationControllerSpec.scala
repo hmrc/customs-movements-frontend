@@ -16,7 +16,7 @@
 
 package unit.controllers.consolidations
 
-import controllers.consolidations.DisassociateDucrConfirmationController
+import controllers.consolidations.DisassociateUcrConfirmationController
 import forms.Choice
 import forms.Choice.DisassociateDUCR
 import org.mockito.ArgumentMatchers.any
@@ -24,15 +24,15 @@ import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.disassociate_ducr_confirmation
+import views.html.disassociate_ucr_confirmation
 
 import scala.concurrent.ExecutionContext.global
 
-class DisassociateDucrConfirmationControllerSpec extends ControllerSpec {
+class DisassociateUcrConfirmationControllerSpec extends ControllerSpec {
 
-  private val mockDisassociateDucrConfirmationPage = mock[disassociate_ducr_confirmation]
+  private val mockDisassociateDucrConfirmationPage = mock[disassociate_ucr_confirmation]
 
-  private val controller = new DisassociateDucrConfirmationController(
+  private val controller = new DisassociateUcrConfirmationController(
     mockAuthAction,
     mockJourneyAction,
     stubMessagesControllerComponents(),

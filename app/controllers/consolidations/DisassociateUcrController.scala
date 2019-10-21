@@ -20,12 +20,10 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.DisassociateUcr
 import forms.DisassociateUcr._
-import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
-import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.{CustomsCacheService, SubmissionService}
+import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.disassociate_ucr
 
@@ -35,14 +33,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class DisassociateUcrController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   cacheService: CustomsCacheService,
   disassociateUcrPage: disassociate_ucr
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
-
-  private val logger = Logger(this.getClass)
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     cacheService

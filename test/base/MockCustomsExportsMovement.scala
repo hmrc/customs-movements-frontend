@@ -45,7 +45,7 @@ trait MockCustomsExportsMovement extends MockitoSugar with BeforeAndAfterEach { 
     ).thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
   def listOfSubmissions(submissions: Seq[SubmissionFrontendModel]): OngoingStubbing[Future[Seq[SubmissionFrontendModel]]] =
-    when(mockCustomsExportsMovementConnector.fetchAllSubmissions()(any()))
+    when(mockCustomsExportsMovementConnector.fetchAllSubmissions(any())(any()))
       .thenReturn(Future.successful(submissions))
 
   override protected def afterEach(): Unit = {

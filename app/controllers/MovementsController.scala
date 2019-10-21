@@ -42,9 +42,11 @@ class MovementsController @Inject()(
     submissionsWithNotifications.sortBy(_._1.requestTimestamp)(Ordering[Instant].reverse)
 
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
+    val eori = request.user.eori
+
     for {
-      submissions <- connector.fetchAllSubmissions()
-      notifications <- Future.sequence(submissions.map(submission => connector.fetchNotifications(submission.conversationId)))
+      submissions <- connector.fetchAllSubmissions(eori)
+      notifications <- Future.sequence(submissions.map(submission => connector.fetchNotifications(submission.conversationId, eori)))
       submissionsWithNotifications = submissions.zip(notifications.map(_.sorted.reverse))
 
     } yield Ok(movementsPage(sort(submissionsWithNotifications)))

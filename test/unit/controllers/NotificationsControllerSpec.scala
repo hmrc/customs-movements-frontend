@@ -66,9 +66,9 @@ class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
     super.beforeEach()
 
     authorizedUser()
-    when(customsExportsMovementsConnectorMock.fetchSingleSubmission(any())(any()))
+    when(customsExportsMovementsConnectorMock.fetchSingleSubmission(any(), any())(any()))
       .thenReturn(Future.successful(Some(expectedSubmission)))
-    when(customsExportsMovementsConnectorMock.fetchNotifications(any())(any(), any()))
+    when(customsExportsMovementsConnectorMock.fetchNotifications(any(), any())(any(), any()))
       .thenReturn(Future.successful(expectedNotifications))
     when(notificationPageSingleElementFactoryMock.build(any[SubmissionFrontendModel])(any()))
       .thenReturn(singleElementForSubmission)
@@ -87,18 +87,18 @@ class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
 
     "everything works correctly" should {
 
-      "call CustomsExportsMovementsConnector.fetchSingleSubmission, passing conversation ID provided" in {
+      "call CustomsExportsMovementsConnector.fetchSingleSubmission, passing conversation ID and EORI provided" in {
 
         controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
 
-        verify(customsExportsMovementsConnectorMock).fetchSingleSubmission(meq(conversationId))(any())
+        verify(customsExportsMovementsConnectorMock).fetchSingleSubmission(meq(conversationId), meq(validEori))(any())
       }
 
-      "call CustomsExportsMovementsConnector.fetchNotifications, passing conversation ID provided" in {
+      "call CustomsExportsMovementsConnector.fetchNotifications, passing conversation ID and EORI provided" in {
 
         controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
 
-        verify(customsExportsMovementsConnectorMock).fetchNotifications(meq(conversationId))(any(), any())
+        verify(customsExportsMovementsConnectorMock).fetchNotifications(meq(conversationId), meq(validEori))(any(), any())
       }
 
       "call NotificationPageSingleElementFactory, passing models returned by Connector" in {
@@ -143,7 +143,7 @@ class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
 
       "redirect back to movements" in {
 
-        when(customsExportsMovementsConnectorMock.fetchSingleSubmission(any())(any()))
+        when(customsExportsMovementsConnectorMock.fetchSingleSubmission(any(), any())(any()))
           .thenReturn(
             Future.successful(
               Some(SubmissionFrontendModel(eori = validEori, conversationId = conversationId, ucrBlocks = Seq.empty, actionType = ActionType.Arrival))

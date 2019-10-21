@@ -23,7 +23,7 @@ import models.notifications.NotificationFrontendModel
 import models.submissions.SubmissionFrontendModel
 import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.notifications
 
@@ -39,11 +39,13 @@ class NotificationsController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   def listOfNotifications(conversationId: String): Action[AnyContent] = authenticate.async { implicit request =>
+    val eori = request.user.eori
+
     val params = for {
-      submission: Option[SubmissionFrontendModel] <- connector.fetchSingleSubmission(conversationId)
+      submission: Option[SubmissionFrontendModel] <- connector.fetchSingleSubmission(conversationId, eori)
       submissionElement: Option[NotificationsPageSingleElement] = submission.map(factory.build)
 
-      submissionNotifications: Seq[NotificationFrontendModel] <- connector.fetchNotifications(conversationId)
+      submissionNotifications: Seq[NotificationFrontendModel] <- connector.fetchNotifications(conversationId, eori)
       notificationElements: Seq[NotificationsPageSingleElement] = submissionNotifications.sorted.map(factory.build)
 
       submissionUcr: Option[String] = submission.flatMap(extractUcr)

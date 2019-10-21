@@ -97,6 +97,18 @@ class SubmissionService @Inject()(
       }
   }
 
+  def submitUcrDisassociation(disassociateUcr: DisassociateUcr, eori: String)(implicit hc: HeaderCarrier): Future[ConsolidationRequest] = {
+    val timer = metrics.startTimer(DisassociateDUCR)
+    connector
+      .sendConsolidationRequest(buildDisassociationRequest(disassociateUcr))
+      .andThen {
+        case Success(_) =>
+          auditService.auditDisassociate(eori, disassociateUcr.ucr, ACCEPTED.toString)
+          timer.stop()
+          metrics.incrementCounter(DisassociateDUCR)
+      }
+  }
+
   def submitShutMucrRequest(shutMucr: ShutMucr, eori: String)(implicit hc: HeaderCarrier): Future[ConsolidationRequest] = {
     val timer = metrics.startTimer(ShutMUCR)
     connector.sendConsolidationRequest(buildShutMucrRequest(shutMucr.mucr)).andThen {

@@ -51,7 +51,7 @@ class ChoiceController @Inject()(
       correctChoice match {
         case Arrival | Departure => Redirect(controllers.routes.ConsignmentReferencesController.displayPage())
         case AssociateDUCR       => Redirect(controllers.consolidations.routes.MucrOptionsController.displayPage())
-        case DisassociateDUCR    => Redirect(controllers.consolidations.routes.DisassociateDucrController.displayPage())
+        case DisassociateDUCR    => Redirect(controllers.consolidations.routes.DisassociateUcrController.displayPage())
         case ShutMUCR            => Redirect(controllers.consolidations.routes.ShutMucrController.displayPage())
         case Submissions         => Redirect(controllers.routes.MovementsController.displayPage())
       }
@@ -72,7 +72,7 @@ class ChoiceController @Inject()(
                 case AssociateDUCR =>
                   Redirect(consolidations.routes.MucrOptionsController.displayPage())
                 case DisassociateDUCR =>
-                  Redirect(consolidations.routes.DisassociateDucrController.displayPage())
+                  Redirect(consolidations.routes.DisassociateUcrController.displayPage())
                 case ShutMUCR    => Redirect(consolidations.routes.ShutMucrController.displayPage())
                 case Submissions => Redirect(controllers.routes.MovementsController.displayPage())
               }

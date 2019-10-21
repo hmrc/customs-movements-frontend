@@ -21,7 +21,7 @@ import play.api.libs.json.{Format, Reads, Writes}
 object ConsolidationType extends Enumeration {
   type ConsolidationType = Value
 
-  val ASSOCIATE_DUCR, DISASSOCIATE_DUCR, SHUT_MUCR = Value
+  val ASSOCIATE_DUCR, ASSOCIATE_MUCR, DISASSOCIATE_DUCR, DISASSOCIATE_MUCR, SHUT_MUCR = Value
 
   implicit val format = Format(Reads.enumNameReads(ConsolidationType), Writes.enumNameWrites)
 }

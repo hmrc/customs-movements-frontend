@@ -17,8 +17,9 @@
 package unit.controllers.consolidations
 
 import base.MockSubmissionService
-import controllers.consolidations.{routes, DisassociateDucrController}
-import forms.DisassociateDucr
+import controllers.consolidations.{DisassociateUcrController, routes}
+import forms.Choice.{AssociateDUCR, DisassociateDUCR}
+import forms._
 import models.external.requests.ConsolidationRequest
 import models.external.requests.ConsolidationType.DISASSOCIATE_DUCR
 import org.mockito.ArgumentMatchers.any
@@ -31,41 +32,44 @@ import play.twirl.api.HtmlFormat
 import testdata.CommonTestData.correctUcr
 import testdata.ConsolidationTestData.ValidDucr
 import unit.base.ControllerSpec
-import views.html.disassociate_ducr
+import views.html.disassociate_ucr
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-class DisassociateDucrControllerSpec extends ControllerSpec with MockSubmissionService with ScalaFutures with OptionValues {
+class DisassociateUcrControllerSpec extends ControllerSpec with MockSubmissionService with ScalaFutures with OptionValues {
 
-  private val mockDisassociateDucrPage = mock[disassociate_ducr]
+  private val mockDisassociateUcrPage = mock[disassociate_ucr]
 
-  private val controller = new DisassociateDucrController(
+  private val controller = new DisassociateUcrController(
     mockAuthAction,
-    mockSubmissionService,
+    mockJourneyAction,
     mockErrorHandler,
     stubMessagesControllerComponents(),
-    mockDisassociateDucrPage
+    mockCustomsCacheService,
+    mockDisassociateUcrPage
   )(global)
-  private val correctForm = Json.toJson(DisassociateDucr(ValidDucr))
+  private val correctForm = Json.toJson(DisassociateUcr(DisassociateKind.Ducr, Some(ValidDucr), None))
   private val expectedConsolidationRequest = ConsolidationRequest(DISASSOCIATE_DUCR, None, Some(correctUcr))
-  private val incorrectForm = Json.toJson(DisassociateDucr("abc"))
+  private val incorrectForm = Json.toJson(DisassociateUcr(DisassociateKind.Ducr, Some("abc"), None))
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
     authorizedUser()
     setupErrorHandler()
-    when(mockDisassociateDucrPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    withCaching(Choice.choiceId, Some(DisassociateDUCR))
+    withCaching(DisassociateUcr.formId)
+    when(mockDisassociateUcrPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockDisassociateDucrPage)
+    reset(mockDisassociateUcrPage)
 
     super.afterEach()
   }
 
-  "Disassociate Ducr Controller" should {
+  "Disassociate Ucr Controller" should {
 
     "return 200 (OK)" when {
 
@@ -89,15 +93,12 @@ class DisassociateDucrControllerSpec extends ControllerSpec with MockSubmissionS
 
     "return 303 (SEE_OTHER)" when {
 
-      "form is correct and submission service return ACCEPTED status" in {
-
-        when(mockSubmissionService.submitDucrDisassociation(any(), any())(any()))
-          .thenReturn(Future.successful(expectedConsolidationRequest))
+      "form is correct" in {
 
         val result = controller.submit()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.DisassociateDucrConfirmationController.displayPage().url
+        redirectLocation(result).value mustBe routes.DisassociateUcrSummaryController.displayPage().url
       }
     }
   }

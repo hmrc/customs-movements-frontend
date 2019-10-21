@@ -16,6 +16,8 @@
 
 package models.external.requests
 
+import forms.DisassociateKind.{Ducr, Mucr}
+import forms.DisassociateUcr
 import models.external.requests.ConsolidationType.{ConsolidationType, _}
 import play.api.libs.json.Json
 
@@ -26,6 +28,14 @@ object ConsolidationRequestFactory {
 
   def buildDisassociationRequest(ducr: String): ConsolidationRequest =
     ConsolidationRequest(DISASSOCIATE_DUCR, None, Some(ducr))
+
+  def buildDisassociationRequest(consolidateUcr: DisassociateUcr): ConsolidationRequest = {
+    val kind = consolidateUcr.kind match {
+      case Mucr => DISASSOCIATE_MUCR
+      case Ducr => DISASSOCIATE_DUCR
+    }
+    ConsolidationRequest(kind, None, Some(consolidateUcr.ucr))
+  }
 
   def buildShutMucrRequest(mucr: String): ConsolidationRequest =
     ConsolidationRequest(SHUT_MUCR, Some(mucr), None)

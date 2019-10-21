@@ -49,10 +49,10 @@ class AssociateDucrSummaryController @Inject()(
         .fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId)
         .map(_.getOrElse(throw IncompleteApplication))
 
-      associateDucr <- cacheService
+      associateUcr <- cacheService
         .fetchAndGetEntry[AssociateUcr](movementCacheId(), AssociateUcr.formId)
         .map(_.getOrElse(throw IncompleteApplication))
-    } yield Ok(associateDucrSummaryPage(associateDucr, mucrOptions.mucr))
+    } yield Ok(associateDucrSummaryPage(associateUcr, mucrOptions.mucr))
   }
 
   def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -61,16 +61,16 @@ class AssociateDucrSummaryController @Inject()(
         .fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId)
         .map(_.getOrElse(throw IncompleteApplication))
 
-      associateDucr <- cacheService
+      associateUcr <- cacheService
         .fetchAndGetEntry[AssociateUcr](movementCacheId(), AssociateUcr.formId)
         .map(_.getOrElse(throw IncompleteApplication))
 
       _ <- submissionService
-        .submitUcrAssociation(mucrOptions, associateDucr, request.authenticatedRequest.user.eori)
+        .submitUcrAssociation(mucrOptions, associateUcr, request.authenticatedRequest.user.eori)
       _ <- cacheService.remove(movementCacheId())
 
     } yield
       Redirect(routes.AssociateDucrConfirmationController.displayPage())
-        .flashing(FlashKeys.UCR -> associateDucr.ucr)
+        .flashing(FlashKeys.UCR -> associateUcr.ucr, FlashKeys.ASSOCIATION_KIND -> associateUcr.kind.formValue)
   }
 }

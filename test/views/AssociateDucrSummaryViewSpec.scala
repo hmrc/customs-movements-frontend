@@ -58,6 +58,7 @@ class AssociateDucrSummaryViewSpec extends ViewSpec with AssociateDucrSummaryMes
 
       view.getElementById("associate_ducr-reference") must containText("DUCR")
     }
+
   }
 
 }

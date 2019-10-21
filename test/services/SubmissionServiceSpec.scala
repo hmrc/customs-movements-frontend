@@ -17,6 +17,7 @@
 package services
 
 import base.{MetricsMatchers, MockCustomsCacheService, MockCustomsExportsMovement, MovementsMetricsStub}
+import forms.AssociateKind.Ducr
 import forms.Choice.{Arrival, Departure}
 import forms._
 import models.external.requests.ConsolidationRequest
@@ -151,13 +152,15 @@ class SubmissionServiceSpec
 
   "SubmissionService on submitDucrAssociation" should {
 
+    val validDucrAssociation = AssociateUcr(Ducr,  ducr = Some(ValidDucr), mucr = None)
+
     "return response from CustomsDeclareExportsMovementsConnector" in {
 
       when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
         .thenReturn(Future.successful(exampleAssociateDucrRequest))
 
       submissionService
-        .submitUcrAssociation(MucrOptions(ValidMucr), AssociateUcr(ValidDucr), "eori")
+        .submitUcrAssociation(MucrOptions(ValidMucr), validDucrAssociation, "eori")
         .futureValue must equal(exampleAssociateDucrRequest)
       verify(mockAuditService)
         .auditAssociate(ArgumentMatchers.eq("eori"), any(), any(), any())(any())
@@ -165,7 +168,7 @@ class SubmissionServiceSpec
 
     "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in requestAcceptedTest {
 
-      submissionService.submitUcrAssociation(MucrOptions(ValidMucr), AssociateUcr(ValidDucr), "eori").futureValue
+      submissionService.submitUcrAssociation(MucrOptions(ValidMucr), validDucrAssociation, "eori").futureValue
 
       val requestCaptor: ArgumentCaptor[ConsolidationRequest] = ArgumentCaptor.forClass(classOf[ConsolidationRequest])
       verify(mockCustomsExportsMovementConnector).sendConsolidationRequest(requestCaptor.capture())(any())

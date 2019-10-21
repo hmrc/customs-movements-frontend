@@ -18,5 +18,6 @@ package controllers.storage
 
 object FlashKeys {
   val UCR = "UCR"
+  val ASSOCIATION_KIND = "ASSOCIATION_KIND"
   val MUCR = "MUCR"
 }

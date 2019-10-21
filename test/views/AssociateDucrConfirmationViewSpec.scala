@@ -73,6 +73,18 @@ class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages
       backButton.text() mustBe messages("site.backToStartPage")
       backButton.first() must haveHref(routes.ChoiceController.displayChoiceForm())
     }
+
+    "link to list of submissions" in {
+      view.getElementsByAttributeValue("href", routes.MovementsController.displayPage().url) mustNot be(empty)
+    }
+
+    "link to start another association" in {
+      ???
+    }
+
+    "link to shut mucr" in {
+      ???
+    }
   }
 
 }

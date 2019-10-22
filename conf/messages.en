@@ -276,6 +276,11 @@ mucrOptions.createAdd.value.empty = Please select an option
 mucrOptions.reference.value.empty = Please enter a reference
 mucrOptions.reference.value.error = Please enter a valid reference
 
+ducr.error.empty = Please provide Declaration Unique Consignment Reference
+ducr.error.format = Declaration Unique Consignment Reference is in incorrect format
+mucr.error.empty = Please provide Master Unique Consignment Reference
+mucr.error.format = Master Unique Consignment Reference is in incorrect format
+
 associate.ucr.title = What type of unique consignment do you want to add to {0}
 associate.ucr.ducr = Add a DUCR
 associate.ucr.ducr.label = Declaration Unique Consignment Reference

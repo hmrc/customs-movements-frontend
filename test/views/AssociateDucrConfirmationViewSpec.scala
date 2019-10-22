@@ -43,9 +43,9 @@ class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages
       messages must haveTranslationFor("associate.ducr.confirmation.heading")
       messages must haveTranslationFor("associate.mucr.confirmation.tab.heading")
       messages must haveTranslationFor("associate.mucr.confirmation.heading")
-      messages must haveTranslationFor("consolidation.confirmation.addOrShut")
-      messages must haveTranslationFor("consolidation.confirmation.addOrShut.add")
-      messages must haveTranslationFor("consolidation.confirmation.addOrShut.shutMucr")
+      messages must haveTranslationFor("association.confirmation.associateOrDepart")
+      messages must haveTranslationFor("association.confirmation.associateOrDepart.associate")
+      messages must haveTranslationFor("association.confirmation.associateOrDepart.depart")
     }
 
     "display page reference" in {
@@ -65,7 +65,7 @@ class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages
 
     "have next steps section" in {
 
-      view.getElementById("next-steps").text() mustBe messages("consolidation.confirmation.addOrShut")
+      view.getElementById("next-steps").text() mustBe messages("association.confirmation.associateOrDepart")
     }
 
     "display 'Back to start page' button on page" in {

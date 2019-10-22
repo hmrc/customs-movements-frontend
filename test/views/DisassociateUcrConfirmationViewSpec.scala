@@ -40,8 +40,8 @@ class DisassociateUcrConfirmationViewSpec extends UnitViewSpec with CommonMessag
 
       val messages = messagesApi.preferred(request)
 
-      messages must haveTranslationFor("disassociateDucr.confirmation.tab.heading")
-      messages must haveTranslationFor("disassociateDucr.confirmation.heading")
+      messages must haveTranslationFor("disassociate.ucr.confirmation.tab.heading")
+      messages must haveTranslationFor("disassociate.ucr.confirmation.heading")
       messages must haveTranslationFor("disassociation.confirmation.associateOrShut")
       messages must haveTranslationFor("disassociation.confirmation.associateOrShut.associate")
       messages must haveTranslationFor("disassociation.confirmation.associateOrShut.shut")
@@ -49,7 +49,7 @@ class DisassociateUcrConfirmationViewSpec extends UnitViewSpec with CommonMessag
 
     "display page reference" in {
 
-      view.getElementById("highlight-box-heading").text() mustBe messages("disassociateDucr.confirmation.heading")
+      view.getElementById("highlight-box-heading").text() mustBe messages("disassociate.ucr.confirmation.heading")
       viewMessage.getElementById("highlight-box-heading").text() must include(s"dissociate KIND $correctUcr")
     }
 

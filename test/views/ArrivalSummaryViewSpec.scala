@@ -38,6 +38,7 @@ class ArrivalSummaryViewSpec extends UnitViewSpec {
       val messages = messagesApi.preferred(request)
 
       messages("summary.arrival.title") mustBe "Is the information provided for this arrival correct?"
+      messages("summary.consignmentDetails") mustBe "Consignment details"
       messages("summary.referenceType") mustBe "Consignment type"
       messages("summary.referenceValue") mustBe "Consignment reference"
       messages("summary.arrivalReference.reference") mustBe "Unique reference"
@@ -73,7 +74,7 @@ class ArrivalSummaryViewSpec extends UnitViewSpec {
 
     "have correct consignment references part" in {
 
-      arrivalSummaryContent must include("consignmentReferences.title")
+      arrivalSummaryContent must include("summary.consignmentDetails")
       arrivalSummaryContent must include("summary.referenceType")
       arrivalSummaryContent must include("consignmentReferences.reference.mucr")
       arrivalSummaryContent must include("summary.referenceValue")

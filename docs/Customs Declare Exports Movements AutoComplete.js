@@ -116,6 +116,9 @@ function completePage() {
     if(currentPageIs("/customs-movements/associate-ducr-summary")){
         document.getElementsByClassName('button')[0].click()
     }
+    if(currentPageIs("/customs-movements/disassociate-ucr-summary")){
+        document.getElementsByClassName('button')[0].click()
+    }
     if(currentPageIs("/customs-movements/disassociate-ucr")){
         selectRadioOption(document.getElementById("kind"), 0);
         const now = new Date()

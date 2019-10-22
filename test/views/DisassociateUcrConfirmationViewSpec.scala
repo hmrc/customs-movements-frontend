@@ -40,16 +40,16 @@ class DisassociateUcrConfirmationViewSpec extends UnitViewSpec with CommonMessag
 
       val messages = messagesApi.preferred(request)
 
-      messages must haveTranslationFor("disassociate.ucr.confirmation.tab.heading")
-      messages must haveTranslationFor("disassociate.ucr.confirmation.heading")
-      messages must haveTranslationFor("consolidation.confirmation.addOrShut")
-      messages must haveTranslationFor("consolidation.confirmation.addOrShut.add")
-      messages must haveTranslationFor("consolidation.confirmation.addOrShut.shutMucr")
+      messages must haveTranslationFor("disassociateDucr.confirmation.tab.heading")
+      messages must haveTranslationFor("disassociateDucr.confirmation.heading")
+      messages must haveTranslationFor("disassociation.confirmation.associateOrShut")
+      messages must haveTranslationFor("disassociation.confirmation.associateOrShut.associate")
+      messages must haveTranslationFor("disassociation.confirmation.associateOrShut.shut")
     }
 
     "display page reference" in {
 
-      view.getElementById("highlight-box-heading").text() mustBe messages("disassociate.ucr.confirmation.heading")
+      view.getElementById("highlight-box-heading").text() mustBe messages("disassociateDucr.confirmation.heading")
       viewMessage.getElementById("highlight-box-heading").text() must include(s"dissociate KIND $correctUcr")
     }
 
@@ -65,7 +65,7 @@ class DisassociateUcrConfirmationViewSpec extends UnitViewSpec with CommonMessag
 
     "have next steps section" in {
 
-      view.getElementById("next-steps").text() mustBe messages("consolidation.confirmation.addOrShut")
+      view.getElementById("next-steps").text() mustBe messages("disassociation.confirmation.associateOrShut")
     }
 
     "display 'Back to start page' button on page" in {

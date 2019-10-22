@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports Movements AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.7
+// @version      0.8
 // @description  Customs Declare Exports Movements
 // @author       You
 // @match        http*://*/customs-movements*
@@ -116,7 +116,8 @@ function completePage() {
     if(currentPageIs("/customs-movements/associate-ducr-summary")){
         document.getElementsByClassName('button')[0].click()
     }
-    if(currentPageIs("/customs-movements/disassociate-ducr")){
+    if(currentPageIs("/customs-movements/disassociate-ucr")){
+        selectRadioOption(document.getElementById("kind"), 0);
         const now = new Date()
         document.getElementById("ducr").value = `5GB123456789000-${now.valueOf()}IIIII`
         document.getElementsByClassName('button')[0].click()

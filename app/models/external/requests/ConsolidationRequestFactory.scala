@@ -40,10 +40,6 @@ object ConsolidationRequestFactory {
     ConsolidationRequest(kind, None, Some(consolidateUcr.ucr))
   }
 
-  // TODO - delete
-  def buildDisassociationRequest(ducr: String): ConsolidationRequest =
-    ConsolidationRequest(DISASSOCIATE_DUCR, None, Some(ducr))
-
   def buildShutMucrRequest(mucr: String): ConsolidationRequest =
     ConsolidationRequest(SHUT_MUCR, Some(mucr), None)
 }

@@ -179,21 +179,23 @@ class SubmissionServiceSpec
     }
   }
 
-  "SubmissionService on submitDucrDisassociation" should {
+  "SubmissionService on submitUcrDisassociation" should {
 
     "return response from CustomsDeclareExportsMovementsConnector" in {
 
       when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
         .thenReturn(Future.successful(exampleDisassociateDucrRequest))
 
-      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr), "eori").futureValue must equal(exampleDisassociateDucrRequest)
+      submissionService.submitUcrDisassociation(DisassociateUcr(DisassociateKind.Ducr, Some(ValidDucr), None), "eori").futureValue must equal(
+        exampleDisassociateDucrRequest
+      )
       verify(mockAuditService).auditDisassociate(ArgumentMatchers.eq("eori"), any(), any())(any())
 
     }
 
     "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in requestAcceptedTest {
 
-      submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr), "eori").futureValue
+      submissionService.submitUcrDisassociation(DisassociateUcr(DisassociateKind.Ducr, Some(ValidDucr), None), "eori").futureValue
 
       val requestCaptor: ArgumentCaptor[ConsolidationRequest] = ArgumentCaptor.forClass(classOf[ConsolidationRequest])
       verify(mockCustomsExportsMovementConnector).sendConsolidationRequest(requestCaptor.capture())(any())
@@ -204,13 +206,13 @@ class SubmissionServiceSpec
 
     "increase counter for successful submissions" in requestAcceptedTest {
       counter("disassociation.counter") must changeOn {
-        submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr), "eori").futureValue
+        submissionService.submitUcrDisassociation(DisassociateUcr(DisassociateKind.Ducr, Some(ValidDucr), None), "eori").futureValue
       }
     }
 
     "use timer to measure execution of successful disassociate request" in requestAcceptedTest {
       timer("disassociation.timer") must changeOn {
-        submissionService.submitDucrDisassociation(DisassociateDucr(ValidDucr), "eori").futureValue
+        submissionService.submitUcrDisassociation(DisassociateUcr(DisassociateKind.Ducr, Some(ValidDucr), None), "eori").futureValue
       }
     }
   }

@@ -22,24 +22,26 @@ import helpers.views.CommonMessages
 import play.api.mvc.Flash
 import play.twirl.api.Html
 import testdata.CommonTestData.correctUcr
-import views.html.disassociate_ducr_confirmation
+import views.html.disassociate_ucr_confirmation
 import views.spec.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class DisassociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
+class DisassociateUcrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
-  private val page = new disassociate_ducr_confirmation(mainTemplate)
-  private val view: Html = page()(request, new Flash(Map(FlashKeys.UCR -> correctUcr)), messages)
+  private val page = new disassociate_ucr_confirmation(mainTemplate)
+  private val view: Html = page()(request, new Flash(), messages)
+  private val viewMessage: Html =
+    page()(request, new Flash(Map(FlashKeys.UCR -> correctUcr, FlashKeys.CONSOLIDATION_KIND -> "KIND")), messagesApi.preferred(request))
 
-  "Disassociate Ducr Confirmation View" should {
+  "Disassociate Ucr Confirmation View" should {
 
     "have a proper labels for messages" in {
 
       val messages = messagesApi.preferred(request)
 
-      messages must haveTranslationFor("disassociateDucr.confirmation.tab.heading")
-      messages must haveTranslationFor("disassociateDucr.confirmation.heading")
+      messages must haveTranslationFor("disassociate.ucr.confirmation.tab.heading")
+      messages must haveTranslationFor("disassociate.ucr.confirmation.heading")
       messages must haveTranslationFor("consolidation.confirmation.addOrShut")
       messages must haveTranslationFor("consolidation.confirmation.addOrShut.add")
       messages must haveTranslationFor("consolidation.confirmation.addOrShut.shutMucr")
@@ -47,7 +49,8 @@ class DisassociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessa
 
     "display page reference" in {
 
-      view.getElementById("highlight-box-heading").text() mustBe messages("disassociateDucr.confirmation.heading")
+      view.getElementById("highlight-box-heading").text() mustBe messages("disassociate.ucr.confirmation.heading")
+      viewMessage.getElementById("highlight-box-heading").text() must include(s"dissociate KIND $correctUcr")
     }
 
     "have status information" in {

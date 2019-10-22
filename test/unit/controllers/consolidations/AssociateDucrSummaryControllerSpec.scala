@@ -77,7 +77,7 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
 
       "display page is invoked with data in cache" in {
         withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
-        withCaching(AssociateUcr.formId, Some(AssociateUcr(Ducr, ducr = Some("DUCR"), mucr = None)))
+        withCaching(AssociateUcr.formId, Some(AssociateUcr(Ducr, "DUCR")))
 
         val result = controller.displayPage()(getRequest())
 
@@ -85,7 +85,7 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
         verify(mockAssociateDucrSummaryPage).apply(any(), any())(any(), any())
 
         val (associateDucr, mucrOptions) = theResponseData
-        associateDucr.ducr.value mustBe "DUCR"
+        associateDucr.ucr mustBe "DUCR"
         mucrOptions mustBe "MUCR"
       }
     }
@@ -136,7 +136,7 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
       "all mandatory data is in cache and submission service returned ACCEPTED" in {
 
         withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
-        withCaching(AssociateUcr.formId, Some(AssociateUcr(Ducr, ducr = Some("DUCR"), mucr = None)))
+        withCaching(AssociateUcr.formId, Some(AssociateUcr(Ducr, "DUCR")))
         mockCustomsCacheServiceClearedSuccessfully()
         mockUcrAssociation()
 

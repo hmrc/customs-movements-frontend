@@ -58,41 +58,36 @@ object AssociateUcr {
   implicit val format = Json.format[AssociateUcr]
 
   val mapping: Mapping[AssociateUcr] = {
-    def bind(associateKind: AssociateKind, ducr: String, mucr: String): AssociateUcr = {
+    def bind(associateKind: AssociateKind, ducr: String, mucr: String): AssociateUcr =
       associateKind match {
         case Ducr => AssociateUcr(Ducr, ducr)
         case Mucr => AssociateUcr(Mucr, ducr)
       }
-    }
 
-    def unbind(value: AssociateUcr): (AssociateKind, String, String) = {
+    def unbind(value: AssociateUcr): (AssociateKind, String, String) =
       value.kind match {
         case Ducr => (value.kind, value.ucr, "")
         case Mucr => (value.kind, "", value.ucr)
       }
-    }
 
-    val nonEmptySelected = Constraint[(AssociateKind, String, String)]("ucr.present"){
+    val nonEmptySelected = Constraint[(AssociateKind, String, String)]("ucr.present") {
       case (associateKind: AssociateKind, ducr: String, mucr: String) =>
         associateKind match {
           case Ducr =>
-            if(ducr.isEmpty) Invalid("ducr.error.empty") else {
-              if(validDucr(ducr)) Valid else Invalid("ducr.error.format")
+            if (ducr.isEmpty) Invalid("ducr.error.empty")
+            else {
+              if (validDucr(ducr)) Valid else Invalid("ducr.error.format")
             }
           case Mucr =>
-            if(mucr.isEmpty) Invalid("mucr.error.empty") else {
-              if(validMucr(mucr)) Valid else Invalid("mucr.error.format")
+            if (mucr.isEmpty) Invalid("mucr.error.empty")
+            else {
+              if (validMucr(mucr)) Valid else Invalid("mucr.error.format")
             }
         }
     }
 
-    Forms.tuple(
-      "kind" -> of[AssociateKind],
-      "ducr" -> text(),
-      "mucr" -> text()
-    ).verifying(nonEmptySelected).transform((bind _).tupled, unbind)
+    Forms.tuple("kind" -> of[AssociateKind], "ducr" -> text(), "mucr" -> text()).verifying(nonEmptySelected).transform((bind _).tupled, unbind)
   }
-
 
   val form: Form[AssociateUcr] = Form(ContextErrorMapping(mapping))
 }

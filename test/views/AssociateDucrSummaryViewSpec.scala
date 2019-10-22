@@ -30,7 +30,7 @@ class AssociateDucrSummaryViewSpec extends UnitViewSpec with AssociateDucrSummar
   private val page = new views.html.associate_ducr_summary(mainTemplate)
 
   private def createView(mucr: String, ducr: String): Html =
-    page(AssociateUcr(Ducr, ducr = Some(ducr), mucr = None), mucr)(request, messages)
+    page(AssociateUcr(Ducr, ducr), mucr)(request, messages)
 
   "Associate Ducr Confirmation View" should {
 

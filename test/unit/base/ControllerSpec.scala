@@ -22,7 +22,7 @@ import forms.Choice
 import forms.Choice._
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.libs.json.JsValue
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson, Request}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, AnyContentAsJson, Request}
 import play.api.test.FakeRequest
 import unit.mocks.{ErrorHandlerMocks, JourneyActionMocks}
 import utils.FakeRequestCSRFSupport._
@@ -36,6 +36,11 @@ trait ControllerSpec extends UnitSpec with Stubs with MockAuthConnector with Moc
 
   protected def getRequest(): JourneyRequest[AnyContentAsEmpty.type] =
     JourneyRequest(authenticatedRequest, Arrival)
+
+  protected def postRequest(body: Map[String, String]): Request[AnyContent] =
+    FakeRequest("POST", "")
+      .withFormUrlEncodedBody(body.toSeq: _*)
+      .withCSRFToken
 
   protected def postRequest(body: JsValue): Request[AnyContentAsJson] =
     FakeRequest("POST", "")

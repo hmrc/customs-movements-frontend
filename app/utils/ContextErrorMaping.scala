@@ -24,7 +24,7 @@ case class ContextErrorMapping[T](origin: Mapping[T]) extends Mapping[T] {
   override val mappings: Seq[Mapping[_]] = origin.mappings
   override val constraints: Seq[Constraint[T]] = origin.constraints
 
-  private def fixErrors(errors: Seq[FormError]): Seq[FormError] = {
+  private def fixErrors(errors: Seq[FormError]): Seq[FormError] =
     errors.map {
       case formError if formError.key.nonEmpty =>
         formError
@@ -34,16 +34,14 @@ case class ContextErrorMapping[T](origin: Mapping[T]) extends Mapping[T] {
             formError.copy(mappingForTest.key)
         }.getOrElse(formError)
     }
-  }
 
-  override def bind(data: Map[String, String]): Either[Seq[FormError], T] = {
+  override def bind(data: Map[String, String]): Either[Seq[FormError], T] =
     origin.bind(data).left.map(fixErrors)
-  }
 
   override def unbind(value: T): Map[String, String] = origin.unbind(value)
 
   override def unbindAndValidate(value: T): (Map[String, String], Seq[FormError]) = {
-    val (originMap , originErrors) = origin.unbindAndValidate(value)
+    val (originMap, originErrors) = origin.unbindAndValidate(value)
     (originMap, fixErrors(originErrors))
   }
 

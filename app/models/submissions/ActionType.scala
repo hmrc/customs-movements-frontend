@@ -38,7 +38,7 @@ object ActionType {
       case JsString("DucrAssociation")    => JsSuccess(DucrAssociation)
       case JsString("MucrAssociation")    => JsSuccess(MucrAssociation)
       case JsString("DucrDisassociation") => JsSuccess(DucrDisassociation)
-      case JsString("MucrDisassociation") => JsSuccess(DucrDisassociation)
+      case JsString("MucrDisassociation") => JsSuccess(MucrDisassociation)
       case JsString("ShutMucr")           => JsSuccess(ShutMucr)
       case _                              => JsError("Unknown ActionType")
     }

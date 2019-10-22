@@ -42,8 +42,14 @@ trait MockSubmissionService extends MockitoSugar with BeforeAndAfterEach { self:
     when(mockSubmissionService.submitShutMucrRequest(any(), any())(any()))
       .thenReturn(Future.successful(shutMucrRequest))
 
-  def mockDucrAssociation(consolidationRequest: ConsolidationRequest = exampleAssociateDucrRequest): OngoingStubbing[Future[ConsolidationRequest]] =
+  def mockUcrAssociation(consolidationRequest: ConsolidationRequest = exampleAssociateDucrRequest): OngoingStubbing[Future[ConsolidationRequest]] =
     when(mockSubmissionService.submitUcrAssociation(any(), any(), any())(any()))
+      .thenReturn(Future.successful(consolidationRequest))
+
+  def mockUcrDisassociation(
+    consolidationRequest: ConsolidationRequest = exampleDisassociateDucrRequest
+  ): OngoingStubbing[Future[ConsolidationRequest]] =
+    when(mockSubmissionService.submitUcrDisassociation(any(), any())(any()))
       .thenReturn(Future.successful(consolidationRequest))
 
   override protected def afterEach(): Unit = {

@@ -1,0 +1,49 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.DisassociateUcr
+@import views.Title
+
+@this(main_template: views.html.main_template)
+
+@(disassociateUcr: DisassociateUcr)(implicit request: Request[_], messages: Messages)
+
+
+  @main_template(title = Title(messages("disassociate.ucr.summary.title")),
+    fullWidth = true) {
+    @helper.form(consolidations.routes.DisassociateUcrSummaryController.submit(), 'autoComplete -> "off") {
+      @helper.CSRF.formField
+
+      @components.back_link(consolidations.routes.DisassociateUcrController.displayPage())
+
+      @components.page_title(title = Some(messages("disassociate.ucr.summary.title")))
+
+      <table>
+          <caption class="heading-medium">@messages("disassociate.ucr.summary.table.caption")</caption>
+          <tbody>
+              <tr>
+                  <td id="disassociate_ucr-type">@disassociateUcr.kind.toString.toUpperCase</td>
+                  <td id="disassociate_ucr-reference">@disassociateUcr.ucr</td>
+                  <td class="text-right">
+                      <a id="disassociate_ucr-remove" href="@consolidations.routes.DisassociateUcrController.displayPage()">@messages("site.change")</a>
+                  </td>
+              </tr>
+          </tbody>
+      </table>
+
+      @components.submit_button()
+    }
+  }

@@ -16,46 +16,43 @@
 
 package controllers.consolidations
 
-import controllers.actions.AuthAction
-import controllers.storage.FlashKeys
-import forms.DisassociateDucr._
-import handlers.ErrorHandler
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.storage.CacheIdGenerator.movementCacheId
+import forms.DisassociateUcr
+import forms.DisassociateUcr._
 import javax.inject.{Inject, Singleton}
-import org.slf4j.MDC
-import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.SubmissionService
+import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.disassociate_ducr
+import views.html.disassociate_ucr
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DisassociateDucrController @Inject()(
+class DisassociateUcrController @Inject()(
   authenticate: AuthAction,
-  submissionService: SubmissionService,
-  errorHandler: ErrorHandler,
+  journeyType: JourneyAction,
   mcc: MessagesControllerComponents,
-  disassociateDucrPage: disassociate_ducr
+  cacheService: CustomsCacheService,
+  disassociateUcrPage: disassociate_ucr
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  private val logger = Logger(this.getClass)
-
-  def displayPage(): Action[AnyContent] = authenticate { implicit request =>
-    Ok(disassociateDucrPage(form))
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    cacheService
+      .fetchAndGetEntry[DisassociateUcr](movementCacheId(), formId)
+      .map(data => Ok(disassociateUcrPage(data.fold(form)(form.fill))))
   }
 
-  def submit(): Action[AnyContent] = authenticate.async { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(disassociateDucrPage(formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(disassociateUcrPage(formWithErrors))),
         formData =>
-          submissionService.submitDucrDisassociation(formData, request.user.eori).map { _ =>
-            Redirect(routes.DisassociateDucrConfirmationController.displayPage())
-              .flashing(FlashKeys.UCR -> formData.ducr)
+          cacheService.cache(movementCacheId(), formId, formData).map { _ =>
+            Redirect(routes.DisassociateUcrSummaryController.displayPage())
         }
       )
   }

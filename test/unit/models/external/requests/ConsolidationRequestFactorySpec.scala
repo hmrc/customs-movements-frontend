@@ -16,34 +16,41 @@
 
 package unit.models.external.requests
 
-import forms.AssociateUcr
+import forms.{AssociateKind, AssociateUcr, DisassociateKind, DisassociateUcr}
 import models.external.requests.ConsolidationRequest
-import models.external.requests.ConsolidationType._
 import models.external.requests.ConsolidationRequestFactory._
+import models.external.requests.ConsolidationType._
 import unit.base.UnitSpec
-import forms.AssociateKind._
 
 class ConsolidationRequestFactorySpec extends UnitSpec {
 
   val mucr = "mucr"
-  val associateDucr = AssociateUcr(Ducr, ducr = Some("ducr"), mucr = None)
-
+  val mucrParent = "mucrParent"
   val ducr = "ducr"
+  val associateDucr = AssociateUcr(AssociateKind.Ducr, ducr = Some(ducr), mucr = None)
+  val associateMucr = AssociateUcr(AssociateKind.Mucr, ducr = None, mucr = Some(mucr))
+  val disassociateDucr = DisassociateUcr(DisassociateKind.Ducr, ducr = Some(ducr), mucr = None)
+  val disassociateMucr = DisassociateUcr(DisassociateKind.Mucr, ducr = None, mucr = Some(mucr))
 
   "Consolidation Request Factory" should {
 
-    "build correct Association request" in {
+    "build correct Association Ducr request" in {
 
-      val expectedAssociationRequest = ConsolidationRequest(ASSOCIATE_DUCR, Some(mucr), Some(ducr))
-
-      buildAssociationRequest(mucr, associateDucr) mustBe expectedAssociationRequest
+      buildAssociationRequest(mucrParent, associateDucr) mustBe ConsolidationRequest(ASSOCIATE_DUCR, Some(mucrParent), Some(ducr))
     }
 
-    "build correct Disassociation request" in {
+    "build correct Association Mucr request" in {
 
-      val expectedDisassociateRequest = ConsolidationRequest(DISASSOCIATE_DUCR, None, Some(ducr))
+      buildAssociationRequest(mucrParent, associateMucr) mustBe ConsolidationRequest(ASSOCIATE_MUCR, Some(mucrParent), Some(mucr))
+    }
 
-      buildDisassociationRequest(ducr) mustBe expectedDisassociateRequest
+    "build correct Disassociation Ducr request" in {
+
+      buildDisassociationRequest(disassociateDucr) mustBe ConsolidationRequest(DISASSOCIATE_DUCR, None, Some(ducr))
+    }
+    "build correct Disassociation Mucr request" in {
+
+      buildDisassociationRequest(disassociateMucr) mustBe ConsolidationRequest(DISASSOCIATE_MUCR, None, Some(mucr))
     }
 
     "build correct Shut Mucr request" in {

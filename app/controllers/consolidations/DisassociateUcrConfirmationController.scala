@@ -21,20 +21,20 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.disassociate_ducr_confirmation
+import views.html.disassociate_ucr_confirmation
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class DisassociateDucrConfirmationController @Inject()(
+class DisassociateUcrConfirmationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   mcc: MessagesControllerComponents,
-  disassociateDucrConfirmationPage: disassociate_ducr_confirmation
+  disassociateUcrConfirmationPage: disassociate_ucr_confirmation
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(disassociateDucrConfirmationPage())
+    Ok(disassociateUcrConfirmationPage())
   }
 }

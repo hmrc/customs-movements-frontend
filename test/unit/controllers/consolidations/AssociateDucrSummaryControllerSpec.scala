@@ -138,7 +138,7 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
         withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
         withCaching(AssociateUcr.formId, Some(AssociateUcr(Ducr, ducr = Some("DUCR"), mucr = None)))
         mockCustomsCacheServiceClearedSuccessfully()
-        mockDucrAssociation()
+        mockUcrAssociation()
 
         val result = controller.submit()(postRequest(Json.obj()))
 

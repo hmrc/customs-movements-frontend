@@ -17,6 +17,7 @@
 @import controllers.routes
 @import controllers.storage.FlashKeys
 @import views.Title
+@import forms.DisassociateUcr
 
 @this(main_template: views.html.main_template)
 
@@ -24,11 +25,12 @@
 
 @associateLink = {<a href="@routes.ChoiceController.startSpecificJourney("associateDUCR")">@messages("disassociation.confirmation.associateOrShut.associate")</a>}
 @shutMucrLink = {<a href="@routes.ChoiceController.startSpecificJourney("shutMUCR")">@messages("disassociation.confirmation.associateOrShut.shut")</a>}
+@kind = @{flash.get(FlashKeys.CONSOLIDATION_KIND).getOrElse("")}
 
-@main_template(title = Title("disassociateDucr.confirmation.tab.heading")) {
+@main_template(title = Title(messages("disassociate.ucr.confirmation.tab.heading", kind))) {
 
     @components.highlight_box_with_reference(
-        headingText = messages("disassociateDucr.confirmation.heading", flash.get(FlashKeys.UCR).getOrElse("-"))
+        headingText = messages("disassociate.ucr.confirmation.heading", kind, flash.get(FlashKeys.UCR).getOrElse("-"))
     )
 
     @components.confirmation_status_info()

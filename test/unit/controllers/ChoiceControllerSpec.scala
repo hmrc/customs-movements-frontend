@@ -136,7 +136,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
         val result = controller.submitChoice()(postRequest(disassociateDUCRForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe consolidationRoutes.DisassociateDucrController.displayPage().url
+        redirectLocation(result).value mustBe consolidationRoutes.DisassociateUcrController.displayPage().url
       }
 
       "choice is Shut Mucr" in {
@@ -200,7 +200,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
         val result = controller.startSpecificJourney(DisassociateDUCR.value)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe consolidationRoutes.DisassociateDucrController.displayPage().url
+        redirectLocation(result).value mustBe consolidationRoutes.DisassociateUcrController.displayPage().url
       }
     }
 

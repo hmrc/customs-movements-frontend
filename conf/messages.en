@@ -62,6 +62,7 @@ site.submit = Submit
 site.backToStartPage = Back to start page
 site.add = Add
 site.remove = Remove
+site.change = Change
 site.add.item= Add item
 
 general.inquiries.help.link = General enquires help
@@ -127,7 +128,7 @@ associate.ducr.confirmation.heading = Request to associate DUCR {0} has been sub
 associate.mucr.confirmation.tab.heading = Add MUCR request submitted
 associate.mucr.confirmation.heading = Request to associate MUCR {0} has been submitted
 disassociateDucr.confirmation.tab.heading = Remove DUCR request submitted
-disassociateDucr.confirmation.heading = Request to disassociate DUCR {0} has been submitted
+disassociateDucr.confirmation.heading = Request to dissociate DUCR {0} has been submitted
 association.confirmation.associateOrDepart = {0} another consignment, or {1} a consignment.
 association.confirmation.associateOrDepart.associate = Associate
 association.confirmation.associateOrDepart.depart = depart
@@ -249,6 +250,15 @@ summary.departure.title = Is the information provided for this departure correct
 summary.departure.date = Date of departure
 
 summary.arrivalReference.reference = Unique reference
+
+disassociate.ucr.title = Which consignment do you want to remove?
+disassociate.ucr.heading = Remove from MUCR
+disassociate.ucr.ducr = Declaration Consignment Reference (DUCR)
+disassociate.ucr.mucr = Master Consignment Reference (MUCR)
+disassociate.ucr.summary.title = Is the information provided for this dissociation request correct?
+disassociate.ucr.summary.table.caption = Remove consignment
+disassociate.ucr.confirmation.tab.heading = Request to dissociate {0} submitted
+disassociate.ucr.confirmation.heading = Request to dissociate {0} {1} has been submitted
 
 disassociateDucr.title = Which DUCR do you want to remove?
 disassociateDucr.ducr.empty = Please enter DUCR

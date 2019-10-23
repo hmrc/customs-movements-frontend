@@ -72,7 +72,7 @@ class ShutMucrSummaryViewSpec extends UnitViewSpec with CommonMessages {
 
       val submitButton = view.getElementById("submit")
 
-      submitButton.text() mustBe messages(saveAndContinueCaption)
+      submitButton.text() mustBe messages("site.confirmAndSubmit")
     }
   }
 }

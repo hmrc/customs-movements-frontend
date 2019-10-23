@@ -69,7 +69,7 @@ class ShutMucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
       val backButton = view.getElementsByClass("button")
 
-      backButton.text() mustBe messages("site.backToStartPage")
+      backButton.text() mustBe messages("site.backToStart")
       backButton.first() must haveHref(routes.ChoiceController.displayChoiceForm())
     }
   }

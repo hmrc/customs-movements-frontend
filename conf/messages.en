@@ -138,9 +138,9 @@ disassociation.confirmation.associateOrShut.associate = Associate
 disassociation.confirmation.associateOrShut.shut = shut a master consignment
 shutMucr.confirmation.tab.heading = Shut MUCR request submitted
 shutMucr.confirmation.heading = Request to shut MUCR {0} has been submitted
-shutMucr.confirmation.nextSteps = {0} another master consignment. {1} a consignment.
+shutMucr.confirmation.nextSteps = {0} another master consignment. {1}.
 shutMucr.confirmation.nextSteps.shutMucr = Shut
-shutMucr.confirmation.nextSteps.depart = Depart
+shutMucr.confirmation.nextSteps.depart = Depart a consignment
 
 movement.arrival.title = Arrival
 movement.arrival.heading = Arrival

@@ -86,10 +86,7 @@ class AssociateDucrControllerSpec extends ControllerSpec {
           Some(
             CacheMap(
               movementCacheId()(request),
-              Map(
-                MucrOptions.formId -> Json.toJson(MucrOptions("MUCR")),
-                AssociateUcr.formId -> Json.toJson(AssociateUcr(Ducr, ducr = Some("DUCR"), mucr = None))
-              )
+              Map(MucrOptions.formId -> Json.toJson(MucrOptions("MUCR")), AssociateUcr.formId -> Json.toJson(AssociateUcr(Ducr, "DUCR")))
             )
           )
         )
@@ -98,7 +95,7 @@ class AssociateDucrControllerSpec extends ControllerSpec {
 
         status(result) must be(OK)
         verify(mockAssociateDucrPage).apply(formCaptor.capture(), any())(any(), any())
-        formCaptor.getValue.value.get mustBe AssociateUcr(Ducr, ducr = Some("DUCR"), mucr = None)
+        formCaptor.getValue.value.get mustBe AssociateUcr(Ducr, "DUCR")
       }
     }
 
@@ -140,7 +137,7 @@ class AssociateDucrControllerSpec extends ControllerSpec {
 
         withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
 
-        val validDUCR = Json.toJson(AssociateUcr(Ducr, ducr = Some(ValidDucr), mucr = None))
+        val validDUCR = AssociateUcr.mapping.unbind(AssociateUcr(Ducr, ValidDucr))
 
         val result = controller.submit()(postRequest(validDUCR))
         await(result)

@@ -19,7 +19,7 @@ package views
 import forms.{AssociateUcr, MucrOptions}
 import helpers.views.{AssociateDucrMessages, CommonMessages}
 import org.jsoup.nodes.Document
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.twirl.api.Html
 import views.spec.{UnitViewSpec, ViewMatchers}
 import views.tags.ViewTest
@@ -76,24 +76,26 @@ class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with 
     }
 
     "form contains 'MUCR' with value" should {
-      val mucrView = createView(mucrOptions, AssociateUcr.form.fill(AssociateUcr(Mucr, ducr = None, mucr = Some("1234"))))
+      val mucrView = createView(mucrOptions, AssociateUcr.form.fill(AssociateUcr(Mucr, "1234")))
       "display value" in {
         mucrView.getElementById("mucr").`val`() mustBe "1234"
       }
     }
 
     "form contains 'DUCR' with value" should {
-      val ducrView = createView(mucrOptions, AssociateUcr.form.fill(AssociateUcr(Ducr, ducr = Some("1234"), mucr = None)))
+      val ducrView = createView(mucrOptions, AssociateUcr.form.fill(AssociateUcr(Ducr, "1234")))
       "display value" in {
         ducrView.getElementById("ducr").`val`() mustBe "1234"
       }
     }
 
     "display DUCR Form errors" in {
-      val view: Document = createView(mucrOptions, AssociateUcr.form.fillAndValidate(AssociateUcr(Ducr, ducr = Some(""), mucr = None)))
+      val value = AssociateUcr.form.withError(FormError("ducr", "ducr.error.empty"))
+
+      val view: Document = createView(mucrOptions, value)
 
       view must haveGlobalErrorSummary
-      view must haveFieldError("ducr", "associate.ducr.empty")
+      view must haveFieldError("ducr", "ducr.error.empty")
     }
   }
 

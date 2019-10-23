@@ -48,6 +48,7 @@
                     @messages(input.messageKey)
                     </label>
                 </div>
+
                 @input.revealComponent.map{ hiddenHtml =>
                     <div id="@{target}-hidden" class="panel panel-border-narrow js-hidden" aria-hidden="false">
                     @hiddenHtml

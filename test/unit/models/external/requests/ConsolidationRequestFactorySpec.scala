@@ -27,8 +27,8 @@ class ConsolidationRequestFactorySpec extends UnitSpec {
   val mucr = "mucr"
   val mucrParent = "mucrParent"
   val ducr = "ducr"
-  val associateDucr = AssociateUcr(AssociateKind.Ducr, ducr = Some(ducr), mucr = None)
-  val associateMucr = AssociateUcr(AssociateKind.Mucr, ducr = None, mucr = Some(mucr))
+  val associateDucr = AssociateUcr(AssociateKind.Ducr, ducr)
+  val associateMucr = AssociateUcr(AssociateKind.Mucr, mucr)
   val disassociateDucr = DisassociateUcr(DisassociateKind.Ducr, ducr = Some(ducr), mucr = None)
   val disassociateMucr = DisassociateUcr(DisassociateKind.Mucr, ducr = None, mucr = Some(mucr))
 

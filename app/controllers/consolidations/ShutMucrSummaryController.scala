@@ -20,55 +20,47 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.exception.IncompleteApplication
 import controllers.storage.CacheIdGenerator.movementCacheId
 import controllers.storage.FlashKeys
-import forms.{AssociateUcr, MucrOptions}
-import javax.inject.{Inject, Singleton}
+import forms.ShutMucr
+import javax.inject.Inject
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.associate_ducr_summary
+import views.html.shut_mucr_summary
 
 import scala.concurrent.ExecutionContext
+import scala.util.Success
 
-@Singleton
-class AssociateDucrSummaryController @Inject()(
+class ShutMucrSummaryController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   mcc: MessagesControllerComponents,
   cacheService: CustomsCacheService,
   submissionService: SubmissionService,
-  associateDucrSummaryPage: associate_ducr_summary
-)(implicit executionContext: ExecutionContext)
+  shutMucrSummaryPage: shut_mucr_summary
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    for {
-      mucrOptions <- cacheService
-        .fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId)
-        .map(_.getOrElse(throw IncompleteApplication))
-
-      associateUcr <- cacheService
-        .fetchAndGetEntry[AssociateUcr](movementCacheId(), AssociateUcr.formId)
-        .map(_.getOrElse(throw IncompleteApplication))
-    } yield Ok(associateDucrSummaryPage(associateUcr, mucrOptions.mucr))
+    cacheService.fetchAndGetEntry[ShutMucr](movementCacheId(), ShutMucr.formId).map {
+      case Some(data) => Ok(shutMucrSummaryPage(data))
+      case None       => throw IncompleteApplication
+    }
   }
 
   def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    for {
-      mucrOptions <- cacheService
-        .fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId)
-        .map(_.getOrElse(throw IncompleteApplication))
-
-      associateUcr <- cacheService
-        .fetchAndGetEntry[AssociateUcr](movementCacheId(), AssociateUcr.formId)
-        .map(_.getOrElse(throw IncompleteApplication))
-
-      _ <- submissionService
-        .submitUcrAssociation(mucrOptions, associateUcr, request.authenticatedRequest.user.eori)
-      _ <- cacheService.remove(movementCacheId())
-
-    } yield
-      Redirect(routes.AssociateDucrConfirmationController.displayPage())
-        .flashing(FlashKeys.UCR -> associateUcr.ucr, FlashKeys.CONSOLIDATION_KIND -> associateUcr.kind.formValue)
+    cacheService.fetchAndGetEntry[ShutMucr](movementCacheId(), ShutMucr.formId).flatMap {
+      case Some(shutMucr) =>
+        submissionService
+          .submitShutMucrRequest(shutMucr, request.eori)
+          .map { _ =>
+            Redirect(routes.ShutMucrConfirmationController.displayPage())
+              .flashing(FlashKeys.MUCR -> shutMucr.mucr)
+          }
+          .andThen {
+            case Success(_) => cacheService.remove(movementCacheId())
+          }
+      case None => throw IncompleteApplication
+    }
   }
 }

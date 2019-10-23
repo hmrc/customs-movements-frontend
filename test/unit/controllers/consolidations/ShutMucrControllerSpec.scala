@@ -16,9 +16,9 @@
 
 package unit.controllers.consolidations
 
-import base.MockSubmissionService
 import controllers.consolidations.{routes, ShutMucrController}
-import forms.ShutMucr
+import forms.Choice.ShutMUCR
+import forms.{Choice, ShutMucr}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.OptionValues
@@ -31,18 +31,18 @@ import views.html.shut_mucr
 
 import scala.concurrent.ExecutionContext.global
 
-class ShutMucrControllerSpec extends ControllerSpec with MockSubmissionService with OptionValues {
+class ShutMucrControllerSpec extends ControllerSpec with OptionValues {
 
   private val mockShutMucrPage = mock[shut_mucr]
 
   private val controller =
-    new ShutMucrController(mockAuthAction, mockSubmissionService, stubMessagesControllerComponents(), mockErrorHandler, mockShutMucrPage)(global)
+    new ShutMucrController(mockAuthAction, mockJourneyAction, mockCustomsCacheService, stubMessagesControllerComponents(), mockShutMucrPage)(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
     authorizedUser()
-    setupErrorHandler()
+    withCaching(Choice.choiceId, Some(ShutMUCR))
     when(mockShutMucrPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -54,9 +54,21 @@ class ShutMucrControllerSpec extends ControllerSpec with MockSubmissionService w
 
   "Shut Mucr Controller" should {
 
-    "return 200 (OK)" when {
+    "return 200 (OK) on displayPage method" when {
 
-      "display page method is invoked" in {
+      "cache contains shut mucr data" in {
+
+        withCaching(ShutMucr.formId, Some(ShutMucr("Mucr")))
+
+        val result = controller.displayPage()(getRequest())
+
+        status(result) mustBe OK
+        verify(mockShutMucrPage).apply(any())(any(), any())
+      }
+
+      "cache is empty" in {
+
+        withCaching(ShutMucr.formId, None)
 
         val result = controller.displayPage()(getRequest())
 
@@ -81,14 +93,14 @@ class ShutMucrControllerSpec extends ControllerSpec with MockSubmissionService w
 
       "form is correct and submission service returned ACCEPTED" in {
 
-        mockShutMucr()
+        withCaching(ShutMucr.formId)
 
         val correctForm = Json.toJson(ShutMucr(ValidMucr))
 
         val result = controller.submitForm()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.ShutMucrConfirmationController.displayPage().url
+        redirectLocation(result).value mustBe routes.ShutMucrSummaryController.displayPage().url
       }
     }
   }

@@ -270,6 +270,10 @@ disassociateDucr.ducr.error = Incorrect DUCR
 shutMucr.tabTitle = Shut a MUCR
 shutMucr.title = Which MUCR do you want to shut?
 
+shutMucr.summary.title = Is the information provided for this shut request correct?
+shutMucr.summary.header = Shut master consignment
+shutMucr.summary.type = MUCR
+
 mucrOptions.title = Create or enter a Master Consignment Reference (MUCR) to associate with
 mucrOptions.create = Create a new Master Consignment Reference (MUCR)
 mucrOptions.add = Add to an existing Master Consignment Reference (MUCR)
@@ -297,7 +301,7 @@ associate.ucr.summary.hint = Make sure the details of the UCR are correct before
 associate.ucr.summary.kind.mucr = MUCR
 associate.ucr.summary.kind.ducr = DUCR
 
-submissions.title = All submissions
+submissions.title = All requests
 submissions.summary = This page displays all submitted requests and any notifications related to them.
 submissions.submissionType = Type
 submissions.submissionAction = Type of request

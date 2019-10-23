@@ -149,7 +149,6 @@ class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
               Some(
                 SubmissionFrontendModel(
                   eori = validEori,
-                  providerId = None,
                   conversationId = conversationId,
                   ucrBlocks = Seq.empty,
                   actionType = ActionType.Arrival

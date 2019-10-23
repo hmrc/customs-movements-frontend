@@ -19,11 +19,8 @@ package forms
 import forms.AssociateKind.{Ducr, Mucr}
 import play.api.data.Forms._
 import play.api.data.format.Formatter
-import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.{Form, FormError, Forms, Mapping}
 import play.api.libs.json._
-import utils.ContextErrorMapping
-import utils.validators.forms.FieldValidator._
 
 sealed abstract class AssociateKind(val formValue: String)
 
@@ -58,36 +55,27 @@ object AssociateUcr {
   implicit val format = Json.format[AssociateUcr]
 
   val mapping: Mapping[AssociateUcr] = {
-    def bind(associateKind: AssociateKind, ducr: String, mucr: String): AssociateUcr =
+    import uk.gov.voa.play.form.ConditionalMappings._
+    import utils.validators.forms.FieldValidator._
+    def bind(associateKind: AssociateKind, ducr: Option[String], mucr: Option[String]): AssociateUcr =
       associateKind match {
-        case Ducr => AssociateUcr(Ducr, ducr)
-        case Mucr => AssociateUcr(Mucr, ducr)
+        case Ducr => AssociateUcr(Ducr, ducr.get)
+        case Mucr => AssociateUcr(Mucr, mucr.get)
       }
 
-    def unbind(value: AssociateUcr): (AssociateKind, String, String) =
+    def unbind(value: AssociateUcr): Option[(AssociateKind, Option[String], Option[String])] =
       value.kind match {
-        case Ducr => (value.kind, value.ucr, "")
-        case Mucr => (value.kind, "", value.ucr)
+        case Ducr => Some((value.kind, Some(value.ucr), None))
+        case Mucr => Some((value.kind, None, Some(value.ucr)))
+        case _    => None
       }
 
-    val nonEmptySelected = Constraint[(AssociateKind, String, String)]("ucr.present") {
-      case (associateKind: AssociateKind, ducr: String, mucr: String) =>
-        associateKind match {
-          case Ducr =>
-            if (ducr.isEmpty) Invalid("ducr.error.empty")
-            else {
-              if (validDucr(ducr)) Valid else Invalid("ducr.error.format")
-            }
-          case Mucr =>
-            if (mucr.isEmpty) Invalid("mucr.error.empty")
-            else {
-              if (validMucr(mucr)) Valid else Invalid("mucr.error.format")
-            }
-        }
-    }
-
-    Forms.tuple("kind" -> of[AssociateKind], "ducr" -> text(), "mucr" -> text()).verifying(nonEmptySelected).transform((bind _).tupled, unbind)
+    Forms.mapping(
+      "kind" -> of[AssociateKind],
+      "ducr" -> mandatoryIfEqual("kind", Ducr.formValue, text().verifying("ducr.error.format", validDucr)),
+      "mucr" -> mandatoryIfEqual("kind", Mucr.formValue, text().verifying("mucr.error.format", validMucr))
+    )(bind)(unbind)
   }
 
-  val form: Form[AssociateUcr] = Form(ContextErrorMapping(mapping))
+  val form: Form[AssociateUcr] = Form(mapping)
 }

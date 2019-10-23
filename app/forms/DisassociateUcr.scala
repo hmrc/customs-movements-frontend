@@ -61,8 +61,16 @@ object DisassociateUcr {
   val mapping =
     Forms.mapping(
       "kind" -> of[DisassociateKind],
-      "ducr" -> mandatoryIfEqual("kind", "ducr", text().verifying("disassociate.ucr.ducr.error", validDucr)),
-      "mucr" -> mandatoryIfEqual("kind", "mucr", text().verifying("disassociate.ucr.mucr.error", validMucr))
+      "ducr" -> mandatoryIfEqual(
+        "kind",
+        "ducr",
+        text().verifying("disassociate.ucr.ducr.empty", nonEmpty).verifying("disassociate.ucr.ducr.error", validDucr)
+      ),
+      "mucr" -> mandatoryIfEqual(
+        "kind",
+        "mucr",
+        text().verifying("disassociate.ucr.mucr.empty", nonEmpty).verifying("disassociate.ucr.mucr.error", validMucr)
+      )
     )(DisassociateUcr.apply)(DisassociateUcr.unapply)
 
   val form: Form[DisassociateUcr] = Form(mapping)

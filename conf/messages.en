@@ -59,6 +59,7 @@ site.save_and_come_back_later = Save and come back later
 site.service_name = Declare an Export
 site.textarea.char_limit = (Limit is {0} characters)
 site.submit = Submit
+site.backToStart = Back to start
 site.backToStartPage = Back to start page
 site.add = Add
 site.remove = Remove
@@ -114,12 +115,13 @@ movement.arrival.confirmation.tab.heading = Arrival request submitted
 movement.arrival.confirmation.heading = Request to arrive {0} {1} has been submitted
 movement.arrival.confirmation.nextSteps = {0} a consignment, or {1} a consignment.
 movement.arrival.confirmation.nextSteps.associate = Associate
+movement.arrival.confirmation.nextSteps.depart = depart
 movement.departure.confirmation.tab.heading = Departure request submitted
 movement.departure.confirmation.heading = Request to depart {0} {1} has been submitted
 movement.departure.confirmation.nextSteps = {0} another consignment. {1} a new consignment.
 movement.departure.confirmation.nextSteps.depart = Depart
 movement.departure.confirmation.nextSteps.arrive = Arrive
-movement.confirmation.statusInfo = To check the status of this, {0}.
+movement.confirmation.statusInfo = To check the status of this consignment, {0}.
 movement.confirmation.statusInfo.submissions = view requests
 movement.confirmation.whatNext = What do you want to do next?
 associate.ducr.confirmation.tab.heading = Add DUCR request submitted
@@ -136,9 +138,9 @@ disassociation.confirmation.associateOrShut.associate = Associate
 disassociation.confirmation.associateOrShut.shut = shut a master consignment
 shutMucr.confirmation.tab.heading = Shut MUCR request submitted
 shutMucr.confirmation.heading = Request to shut MUCR {0} has been submitted
-shutMucr.confirmation.nextSteps = {0} another master consignment. {1} a consignment.
+shutMucr.confirmation.nextSteps = {0} another master consignment. {1}.
 shutMucr.confirmation.nextSteps.shutMucr = Shut
-shutMucr.confirmation.nextSteps.depart = Depart
+shutMucr.confirmation.nextSteps.depart = Depart a consignment
 
 movement.arrival.title = Arrival
 movement.arrival.heading = Arrival
@@ -194,14 +196,14 @@ consignmentReferences.reference.ducrValue.empty = Enter a Declaration Unique Con
 consignmentReferences.reference.mucrValue.error = Master Unique Consignment Reference is incorrect
 consignmentReferences.reference.ducrValue.error = Declaration Unique Consignment Reference is incorrect
 
-arrivalDetails.title = Arrival time and date
+arrivalDetails.title = Arrival date and time
 arrivalDetails.header = Enter date and time of arrival
 arrivalDetails.date.question = Date of Arrival
 arrivalDetails.date.hint = For example, 01 08 2007
 arrivalDetails.time.question = Time of Arrival
 arrivalDetails.time.hint = Enter the time in 24 hour format. For example, 13 30
 
-departureDetails.title = Departure time and date
+departureDetails.title = Departure date
 departureDetails.header = Enter departure details
 departureDetails.question = Date of departure
 departureDetails.hint = For example, 01 08 2007
@@ -274,6 +276,7 @@ shutMucr.summary.title = Is the information provided for this shut request corre
 shutMucr.summary.header = Shut master consignment
 shutMucr.summary.type = MUCR
 
+associate.heading = Add to MUCR {0}
 mucrOptions.title = Create or enter a Master Consignment Reference (MUCR) to associate with
 mucrOptions.create = Create a new Master Consignment Reference (MUCR)
 mucrOptions.add = Add to an existing Master Consignment Reference (MUCR)
@@ -288,18 +291,19 @@ ducr.error.format = Declaration Unique Consignment Reference is in incorrect for
 mucr.error.empty = Please provide Master Unique Consignment Reference
 mucr.error.format = Master Unique Consignment Reference is in incorrect format
 
-associate.ucr.title = What type of unique consignment do you want to add to {0}
-associate.ucr.ducr = Add a DUCR
+associate.ucr.title = Which consignment do you want to add?
+associate.ucr.ducr = Declaration Consignment Reference (DUCR)
 associate.ucr.ducr.label = Declaration Unique Consignment Reference
-associate.ucr.mucr = Add a MUCR
+associate.ucr.mucr = Master Consignment Reference (MUCR)
 associate.ucr.mucr.label = Master Unique Consignment Reference
 
-associate.ucr.hint = Check the MUCR is correct before adding consignments to it. You may want to keep a note of what consignments you have added to this MUCR.
+associate.ucr.hint = You may want to keep a record of which consignments you have added to this MUCR.
 
-associate.ucr.summary.title = The following UCR has been added to {0}
-associate.ucr.summary.hint = Make sure the details of the UCR are correct before continuing.
+associate.ucr.summary.title = Is the information provided for this association request correct?
 associate.ucr.summary.kind.mucr = MUCR
 associate.ucr.summary.kind.ducr = DUCR
+associate.ucr.summary.addConsignment = Add consignment
+associate.ucr.summary.masterConsignment = To master consignment
 
 submissions.title = All requests
 submissions.summary = This page displays all submitted requests and any notifications related to them.

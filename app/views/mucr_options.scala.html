@@ -31,7 +31,7 @@
 
             @components.error_summary(form.errors)
 
-            @components.heading(title = messages("mucrOptions.title"))
+            @components.heading(title = messages("mucrOptions.title"), sectionHeader = messages("associate.heading", ""))
 
             @components.input_radio(
                 field = form("createOrAdd"),
@@ -46,12 +46,12 @@
                     RadioOption(
                         keyPrefix = "mucrOptions",
                         option = Add,
-                        revealComponent = components.input_text(form("existingMucr"), messages("mucrOptions.add.reference"))
+                        revealComponent = components.input_text(form("existingMucr"), messages("mucrOptions.add.reference"), labelClass=Some("visuallyhidden"))
                     )
                 )
             )
 
-            @components.submit_button()
+            @components.submit_button("site.continue")
         }
     }
     

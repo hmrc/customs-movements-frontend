@@ -18,13 +18,13 @@ package views
 
 import forms.DisassociateKind._
 import forms.DisassociateUcr
-import helpers.views.{AssociateDucrSummaryMessages, CommonMessages}
+import helpers.views.CommonMessages
 import play.twirl.api.Html
 import views.spec.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class DisassociateUcrSummaryViewSpec extends UnitViewSpec with AssociateDucrSummaryMessages with CommonMessages {
+class DisassociateUcrSummaryViewSpec extends UnitViewSpec with CommonMessages {
 
   private val page = new views.html.disassociate_ucr_summary(mainTemplate)
 
@@ -35,18 +35,19 @@ class DisassociateUcrSummaryViewSpec extends UnitViewSpec with AssociateDucrSumm
 
     "have a proper labels for messages" in {
       val realMessages = messagesApi.preferred(request)
-      realMessages("disassociate.ucr.summary.title") mustBe "Is the information provided for this dissociation request correct?"
-      realMessages("disassociate.ucr.summary.table.caption") mustBe "Remove consignment"
+
+      realMessages must haveTranslationFor("disassociate.ucr.summary.title")
+      realMessages must haveTranslationFor("disassociate.ucr.summary.table.caption")
     }
 
     val view = createView("SOME-DUCR")
 
-    "display 'Save and continue' button on page" in {
-      view.getElementsByClass("button").text() must be(messages(continue))
+    "display 'Confirm and submit' button on page" in {
+      view.getElementsByClass("button").text() must be(messages(confirmAndSubmitCaption))
     }
 
     "display 'Change' link on page" in {
-      view.getElementById("disassociate_ucr-remove") must containText(messages("site.change"))
+      view.getElementById("disassociate_ucr-remove") must containText(messages(changeCaption))
       view.getElementById("disassociate_ucr-remove") must haveAttribute(
         "href",
         controllers.consolidations.routes.DisassociateUcrController.displayPage().url

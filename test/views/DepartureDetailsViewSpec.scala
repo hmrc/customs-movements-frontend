@@ -34,7 +34,7 @@ class DepartureDetailsViewSpec extends ViewSpec with DepartureDetailsMessages wi
 
     "have a proper labels for messages" in {
 
-      assertMessage(departureTitle, "Departure time and date")
+      assertMessage(departureTitle, "Departure date")
       assertMessage(departureHeader, "Enter departure details")
       assertMessage(departureQuestion, "Date of departure")
       assertMessage(departureHint, "For example, 01 08 2007")

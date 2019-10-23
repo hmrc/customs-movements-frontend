@@ -33,7 +33,10 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title(Some(messages("associate.ucr.title", mucrOptions.mucr)))
+        @components.heading(
+            title = messages("associate.ucr.title"),
+            sectionHeader = messages("associate.heading", mucrOptions.mucr)
+        )
 
         @components.input_radio(
             field = form("kind"),
@@ -61,6 +64,6 @@
             )
         )
 
-        @components.submit_button(messages("site.save_and_continue"))
+        @components.submit_button(messages("site.continue"))
     }
 }

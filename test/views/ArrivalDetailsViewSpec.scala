@@ -34,7 +34,7 @@ class ArrivalDetailsViewSpec extends ViewSpec with ArrivalDetailsMessages with C
 
     "have a proper labels for messages" in {
 
-      assertMessage(arrivalTitle, "Arrival time and date")
+      assertMessage(arrivalTitle, "Arrival date and time")
       assertMessage(arrivalHeader, "Enter date and time of arrival")
       assertMessage(arrivalDateQuestion, "Date of Arrival")
       assertMessage(arrivalDateHint, "For example, 01 08 2007")

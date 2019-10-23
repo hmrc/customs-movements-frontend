@@ -69,7 +69,7 @@ class DisassociateUcrViewSpec extends UnitViewSpec with CommonMessages with View
       }
 
       "display 'Save and Continue' button on page" in {
-        emptyView.getElementsByClass("button").text() mustBe saveAndContinueCaption
+        emptyView.getElementsByClass("button").text() mustBe continueCaption
       }
     }
 

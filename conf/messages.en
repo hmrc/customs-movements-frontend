@@ -203,7 +203,7 @@ arrivalDetails.date.hint = For example, 01 08 2007
 arrivalDetails.time.question = Time of Arrival
 arrivalDetails.time.hint = Enter the time in 24 hour format. For example, 13 30
 
-departureDetails.title = Departure time and date
+departureDetails.title = Departure date
 departureDetails.header = Enter departure details
 departureDetails.question = Date of departure
 departureDetails.hint = For example, 01 08 2007

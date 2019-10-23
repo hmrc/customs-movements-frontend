@@ -42,6 +42,7 @@ object Movement {
     }
 
     MovementRequest(
+      eori = eori,
       choice = extractChoice(choice),
       consignmentReference = consignmentReference,
       movementDetails = MovementDetailsRequest(movementDateTime),

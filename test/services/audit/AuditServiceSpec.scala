@@ -27,6 +27,7 @@ import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
 import services.audit.EventData._
+import testdata.CommonTestData.validEori
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
@@ -93,6 +94,7 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustoms
       )
       val data =
         MovementRequest(
+          eori = validEori,
           choice = MovementType.Arrival,
           consignmentReference = ConsignmentReferences("UCR", "D"),
           movementDetails = MovementDetailsRequest("dateTime")

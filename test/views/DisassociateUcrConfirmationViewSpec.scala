@@ -72,7 +72,7 @@ class DisassociateUcrConfirmationViewSpec extends UnitViewSpec with CommonMessag
 
       val backButton = view.getElementsByClass("button")
 
-      backButton.text() mustBe messages("site.backToStartPage")
+      backButton.text() mustBe messages("site.backToStart")
       backButton.first() must haveHref(routes.ChoiceController.displayChoiceForm())
     }
   }

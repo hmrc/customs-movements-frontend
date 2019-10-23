@@ -22,4 +22,5 @@ trait AssociateDucrSummaryMessages {
   val hint = "associate.ucr.summary.hint"
   val remove = "site.remove"
   val continue = "site.save_and_continue"
+  val confirmAndSubmit = "site.confirmAndSubmit"
 }

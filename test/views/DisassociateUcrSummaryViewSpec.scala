@@ -41,8 +41,8 @@ class DisassociateUcrSummaryViewSpec extends UnitViewSpec with AssociateDucrSumm
 
     val view = createView("SOME-DUCR")
 
-    "display 'Save and continue' button on page" in {
-      view.getElementsByClass("button").text() must be(messages(continue))
+    "display 'Confirm and submit' button on page" in {
+      view.getElementsByClass("button").text() must be(messages(confirmAndSubmit))
     }
 
     "display 'Change' link on page" in {

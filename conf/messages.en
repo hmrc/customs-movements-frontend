@@ -258,6 +258,8 @@ disassociate.ucr.summary.title = Is the information provided for this dissociati
 disassociate.ucr.summary.table.caption = Remove consignment
 disassociate.ucr.confirmation.tab.heading = Request to dissociate {0} submitted
 disassociate.ucr.confirmation.heading = Request to dissociate {0} {1} has been submitted
+disassociate.ucr.ducr.error = Declaration Consignment Reference is invalid
+disassociate.ucr.mucr.error = Master Consignment Reference is invalid
 
 disassociateDucr.title = Which DUCR do you want to remove?
 disassociateDucr.ducr.empty = Please enter DUCR

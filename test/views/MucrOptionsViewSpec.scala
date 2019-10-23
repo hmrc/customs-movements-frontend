@@ -35,6 +35,10 @@ class MucrOptionsViewSpec extends UnitViewSpec with CommonMessages {
       view.getElementById("title").text() mustBe "mucrOptions.title"
     }
 
+    "have the correct heading" in {
+      view.getElementById("section-header").text() mustBe "associate.heading"
+    }
+
     "have the correct label for create new" in {
       view.getElementById("mucrOptions.create-label").text() mustBe "mucrOptions.create"
     }
@@ -54,8 +58,8 @@ class MucrOptionsViewSpec extends UnitViewSpec with CommonMessages {
       backButton must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
     }
 
-    "display 'Save and continue' button on page" in {
-      view.getElementById("submit").text() mustBe saveAndContinueCaption
+    "display 'Continue' button on page" in {
+      view.getElementById("submit").text() mustBe continueCaption
     }
   }
 }

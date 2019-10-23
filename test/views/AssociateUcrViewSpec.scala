@@ -70,8 +70,8 @@ class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with 
         }
       }
 
-      "display 'Save and Continue' button on page" in {
-        emptyView.getElementsByClass("button").text() mustBe saveAndContinueCaption
+      "display 'Continue' button on page" in {
+        emptyView.getElementsByClass("button").text() mustBe continueCaption
       }
     }
 

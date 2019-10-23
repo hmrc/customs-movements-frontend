@@ -121,7 +121,7 @@ movement.departure.confirmation.heading = Request to depart {0} {1} has been sub
 movement.departure.confirmation.nextSteps = {0} another consignment. {1} a new consignment.
 movement.departure.confirmation.nextSteps.depart = Depart
 movement.departure.confirmation.nextSteps.arrive = Arrive
-movement.confirmation.statusInfo = To check the status of this consignment, {0}.
+movement.confirmation.statusInfo = To check the status of this, {0}.
 movement.confirmation.statusInfo.submissions = view requests
 movement.confirmation.whatNext = What do you want to do next?
 associate.ducr.confirmation.tab.heading = Add DUCR request submitted
@@ -276,6 +276,7 @@ shutMucr.summary.title = Is the information provided for this shut request corre
 shutMucr.summary.header = Shut master consignment
 shutMucr.summary.type = MUCR
 
+associate.heading = Add to MUCR {0}
 mucrOptions.title = Create or enter a Master Consignment Reference (MUCR) to associate with
 mucrOptions.create = Create a new Master Consignment Reference (MUCR)
 mucrOptions.add = Add to an existing Master Consignment Reference (MUCR)
@@ -290,13 +291,13 @@ ducr.error.format = Declaration Unique Consignment Reference is in incorrect for
 mucr.error.empty = Please provide Master Unique Consignment Reference
 mucr.error.format = Master Unique Consignment Reference is in incorrect format
 
-associate.ucr.title = What type of unique consignment do you want to add to {0}
-associate.ucr.ducr = Add a DUCR
+associate.ucr.title = Which consignment do you want to add?
+associate.ucr.ducr = Declaration Consignment Reference (DUCR)
 associate.ucr.ducr.label = Declaration Unique Consignment Reference
-associate.ucr.mucr = Add a MUCR
+associate.ucr.mucr = Master Consignment Reference (MUCR)
 associate.ucr.mucr.label = Master Unique Consignment Reference
 
-associate.ucr.hint = Check the MUCR is correct before adding consignments to it. You may want to keep a note of what consignments you have added to this MUCR.
+associate.ucr.hint = You may want to keep a record of which consignments you have added to this MUCR.
 
 associate.ucr.summary.title = The following UCR has been added to {0}
 associate.ucr.summary.hint = Make sure the details of the UCR are correct before continuing.

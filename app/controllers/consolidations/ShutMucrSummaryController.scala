@@ -29,6 +29,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.shut_mucr_summary
 
 import scala.concurrent.ExecutionContext
+import scala.util.Success
 
 class ShutMucrSummaryController @Inject()(
   authenticate: AuthAction,
@@ -50,12 +51,15 @@ class ShutMucrSummaryController @Inject()(
   def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     cacheService.fetchAndGetEntry[ShutMucr](movementCacheId(), ShutMucr.formId).flatMap {
       case Some(shutMucr) =>
-        submissionService.submitShutMucrRequest(shutMucr, request.eori).flatMap { _ =>
-          cacheService.remove(movementCacheId()).map { _ =>
+        submissionService
+          .submitShutMucrRequest(shutMucr, request.eori)
+          .map { _ =>
             Redirect(routes.ShutMucrConfirmationController.displayPage())
               .flashing(FlashKeys.MUCR -> shutMucr.mucr)
           }
-        }
+          .andThen {
+            case Success(_) => cacheService.remove(movementCacheId())
+          }
       case None => throw IncompleteApplication
     }
   }

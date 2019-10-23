@@ -64,12 +64,12 @@ object DisassociateUcr {
       "ducr" -> mandatoryIfEqual(
         "kind",
         "ducr",
-        text().verifying("disassociate.ucr.ducr.empty", nonEmpty).verifying("disassociate.ucr.ducr.error", validDucr)
+        text().verifying("disassociate.ucr.ducr.empty", nonEmpty).verifying("disassociate.ucr.ducr.error", isEmpty or validDucr)
       ),
       "mucr" -> mandatoryIfEqual(
         "kind",
         "mucr",
-        text().verifying("disassociate.ucr.mucr.empty", nonEmpty).verifying("disassociate.ucr.mucr.error", validMucr)
+        text().verifying("disassociate.ucr.mucr.empty", nonEmpty).verifying("disassociate.ucr.mucr.error", isEmpty or validMucr)
       )
     )(DisassociateUcr.apply)(DisassociateUcr.unapply)
 

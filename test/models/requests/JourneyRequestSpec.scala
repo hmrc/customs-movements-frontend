@@ -16,10 +16,24 @@
 
 package models.requests
 
-import forms.Choice
-import play.api.mvc.WrappedRequest
+import forms.Choice.Arrival
+import models.SignedInUser
+import play.api.test.FakeRequest
+import uk.gov.hmrc.auth.core.Enrolments
+import unit.base.UnitSpec
 
-case class JourneyRequest[A](authenticatedRequest: AuthenticatedRequest[A], choice: Choice) extends WrappedRequest[A](authenticatedRequest) {
+class JourneyRequestSpec extends UnitSpec {
 
-  val eori = authenticatedRequest.user.eori
+  "Journey Request" should {
+
+    "return correct eori" in {
+
+      val eori = "eori1234"
+      val user = SignedInUser(eori, Enrolments(Set.empty))
+      val authenticatedRequest = AuthenticatedRequest(FakeRequest(), user)
+      val journeyRequest = JourneyRequest(authenticatedRequest, Arrival)
+
+      journeyRequest.eori mustBe eori
+    }
+  }
 }

@@ -65,6 +65,10 @@ POST        /summary                               controllers.SummaryController
 GET         /shut-mucr                             controllers.consolidations.ShutMucrController.displayPage()
 POST        /shut-mucr                             controllers.consolidations.ShutMucrController.submitForm()
 
+# Shut a MUCR summary page
+GET         /shut-mucr-summary                     controllers.consolidations.ShutMucrSummaryController.displayPage()
+POST        /shut-mucr-summary                     controllers.consolidations.ShutMucrSummaryController.submit()
+
 # Shut a MUCR confirmation page
 GET         /shut-mucr-confirmation                controllers.consolidations.ShutMucrConfirmationController.displayPage()
 

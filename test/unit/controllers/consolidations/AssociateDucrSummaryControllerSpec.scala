@@ -42,7 +42,6 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
   private val controller = new AssociateDucrSummaryController(
     mockAuthAction,
     mockJourneyAction,
-    mockErrorHandler,
     stubMessagesControllerComponents(),
     mockCustomsCacheService,
     mockSubmissionService,
@@ -53,7 +52,6 @@ class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmiss
     super.beforeEach()
 
     authorizedUser()
-    setupErrorHandler()
     when(mockAssociateDucrSummaryPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     withCaching(Choice.choiceId, Some(AssociateDUCR))
   }

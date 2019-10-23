@@ -32,8 +32,8 @@ import testdata.ConsolidationTestData
 import testdata.ConsolidationTestData._
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import utils.Stubs
-import views.spec.ViewValidator
 import views.html.movements
+import views.spec.ViewValidator
 
 class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewValidator {
 
@@ -62,6 +62,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
       val submission = SubmissionFrontendModel(
         requestTimestamp = dateTime,
         eori = "",
+        providerId = None,
         conversationId = conversationId,
         ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M")),
         actionType = ActionType.ShutMucr

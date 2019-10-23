@@ -190,16 +190,17 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
   "CustomsDeclareExportsMovementsConnector on fetchNotifications" should {
 
-    "call HttpClient, passing URL for fetch Notifications endpoint" in new Test {
+    "call HttpClient, passing EORI and URL and query params for fetch Notifications endpoint" in new Test {
 
-      when(httpClientMock.GET[Seq[NotificationFrontendModel]](any())(any(), any(), any()))
+      when(httpClientMock.GET[Seq[NotificationFrontendModel]](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(Seq.empty))
 
-      connector.fetchNotifications(conversationId).futureValue
+      connector.fetchNotifications(conversationId, validEori).futureValue
 
       val expectedUrl =
         s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.fetchNotifications}/$conversationId"
-      verify(httpClientMock).GET(meq(expectedUrl))(any(), any(), any())
+      val expectedQueryParameters = Seq("eori" -> validEori)
+      verify(httpClientMock).GET(meq(expectedUrl), meq(expectedQueryParameters))(any(), any(), any())
     }
 
     "return response from HttpClient" in new Test {
@@ -209,10 +210,10 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
         exampleNotificationFrontendModel(conversationId = conversationId),
         exampleNotificationFrontendModel(conversationId = conversationId)
       )
-      when(httpClientMock.GET[Seq[NotificationFrontendModel]](any())(any(), any(), any()))
+      when(httpClientMock.GET[Seq[NotificationFrontendModel]](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(expectedResponseContent))
 
-      val result: Seq[NotificationFrontendModel] = connector.fetchNotifications(conversationId).futureValue
+      val result: Seq[NotificationFrontendModel] = connector.fetchNotifications(conversationId, validEori).futureValue
 
       result.length must equal(expectedResponseContent.length)
       result must equal(expectedResponseContent)
@@ -221,15 +222,16 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
   "CustomsDeclareExportsMovementsConnector on fetchAllSubmissions" should {
 
-    "call HttpClient, passing URL for fetch all Submissions endpoint" in new Test {
+    "call HttpClient, passing EORI and URL and query params for fetch all Submissions endpoint" in new Test {
 
-      when(httpClientMock.GET[Seq[SubmissionFrontendModel]](any())(any(), any(), any()))
+      when(httpClientMock.GET[Seq[SubmissionFrontendModel]](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(Seq.empty))
 
-      connector.fetchAllSubmissions().futureValue
+      connector.fetchAllSubmissions(validEori).futureValue
 
       val expectedUrl = s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.fetchAllSubmissions}"
-      verify(httpClientMock).GET(meq(expectedUrl))(any(), any(), any())
+      val expectedQueryParameters = Seq("eori" -> validEori)
+      verify(httpClientMock).GET(meq(expectedUrl), meq(expectedQueryParameters))(any(), any(), any())
     }
 
     "return response from HttpClient" in new Test {
@@ -239,10 +241,10 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
         exampleSubmissionFrontendModel(conversationId = conversationId_2),
         exampleSubmissionFrontendModel(conversationId = conversationId_3)
       )
-      when(httpClientMock.GET[Seq[SubmissionFrontendModel]](any())(any(), any(), any()))
+      when(httpClientMock.GET[Seq[SubmissionFrontendModel]](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(expectedResponseContent))
 
-      val result: Seq[SubmissionFrontendModel] = connector.fetchAllSubmissions().futureValue
+      val result: Seq[SubmissionFrontendModel] = connector.fetchAllSubmissions(validEori).futureValue
 
       result.length must equal(expectedResponseContent.length)
       result must equal(expectedResponseContent)
@@ -251,25 +253,26 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
   "CustomsDeclareExportsMovementsConnector on fetchSingleSubmission" should {
 
-    "call HttpClient, passing URL for fetch single Submission endpoint" in new Test {
+    "call HttpClient, passing EORI and URL for fetch single Submission endpoint" in new Test {
 
-      when(httpClientMock.GET[Option[SubmissionFrontendModel]](any())(any(), any(), any()))
+      when(httpClientMock.GET[Option[SubmissionFrontendModel]](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(None))
 
-      connector.fetchSingleSubmission(conversationId).futureValue
+      connector.fetchSingleSubmission(conversationId, validEori).futureValue
 
       val expectedUrl =
         s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.fetchSingleSubmission}/$conversationId"
-      verify(httpClientMock).GET(meq(expectedUrl))(any(), any(), any())
+      val expectedQueryParameters = Seq("eori" -> validEori)
+      verify(httpClientMock).GET(meq(expectedUrl), meq(expectedQueryParameters))(any(), any(), any())
     }
 
     "return response from HttpClient" in new Test {
 
       val expectedResponseContent = Some(exampleSubmissionFrontendModel(conversationId = conversationId))
-      when(httpClientMock.GET[Option[SubmissionFrontendModel]](any())(any(), any(), any()))
+      when(httpClientMock.GET[Option[SubmissionFrontendModel]](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(expectedResponseContent))
 
-      val result: Option[SubmissionFrontendModel] = connector.fetchSingleSubmission(conversationId).futureValue
+      val result: Option[SubmissionFrontendModel] = connector.fetchSingleSubmission(conversationId, validEori).futureValue
 
       result must equal(expectedResponseContent)
     }

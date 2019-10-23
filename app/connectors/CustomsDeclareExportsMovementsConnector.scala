@@ -70,27 +70,38 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
       JsonHeaders
     )
 
-  def fetchNotifications(conversationId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[NotificationFrontendModel]] =
+  def fetchNotifications(
+    conversationId: String,
+    eori: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[NotificationFrontendModel]] =
     httpClient
-      .GET[Seq[NotificationFrontendModel]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}/$conversationId")
+      .GET[Seq[NotificationFrontendModel]](
+        s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}/$conversationId",
+        eoriQueryParam(eori)
+      )
       .andThen {
         case Success(response)  => logger.debug(s"Notifications fetch response. $response")
         case Failure(exception) => logger.warn(s"Notifications fetch failure. $exception")
       }
 
-  def fetchAllSubmissions()(implicit hc: HeaderCarrier): Future[Seq[SubmissionFrontendModel]] =
+  def fetchAllSubmissions(eori: String)(implicit hc: HeaderCarrier): Future[Seq[SubmissionFrontendModel]] =
     httpClient
-      .GET[Seq[SubmissionFrontendModel]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchAllSubmissions}")
+      .GET[Seq[SubmissionFrontendModel]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchAllSubmissions}", eoriQueryParam(eori))
       .andThen {
         case Success(response)  => logger.debug(s"Submissions fetch response. $response")
         case Failure(exception) => logger.warn(s"Submissions fetch failure. $exception")
       }
 
-  def fetchSingleSubmission(conversationId: String)(implicit hc: HeaderCarrier): Future[Option[SubmissionFrontendModel]] =
+  def fetchSingleSubmission(conversationId: String, eori: String)(implicit hc: HeaderCarrier): Future[Option[SubmissionFrontendModel]] =
     httpClient
-      .GET[Option[SubmissionFrontendModel]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchSingleSubmission}/$conversationId")
+      .GET[Option[SubmissionFrontendModel]](
+        s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchSingleSubmission}/$conversationId",
+        eoriQueryParam(eori)
+      )
       .andThen {
         case Success(response)  => logger.debug(s"Single submission fetch response. $response")
         case Failure(exception) => logger.warn(s"Single submission fetch failure. $exception")
       }
+
+  private def eoriQueryParam(eori: String): Seq[(String, String)] = Seq("eori" -> eori)
 }

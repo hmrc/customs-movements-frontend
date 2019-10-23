@@ -25,8 +25,8 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers.NO_CONTENT
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.http.HttpResponse
 import testdata.ConsolidationTestData.exampleShutMucrRequest
+import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
@@ -42,11 +42,11 @@ object MockFactory extends MockitoSugar {
     when(customsDeclareExportsMovementsConnector.sendConsolidationRequest(any())(any()))
       .thenReturn(Future.successful(exampleShutMucrRequest))
 
-    when(customsDeclareExportsMovementsConnector.fetchNotifications(any())(any(), any()))
+    when(customsDeclareExportsMovementsConnector.fetchNotifications(any(), any())(any(), any()))
       .thenReturn(Future.successful(Seq.empty))
-    when(customsDeclareExportsMovementsConnector.fetchAllSubmissions()(any()))
+    when(customsDeclareExportsMovementsConnector.fetchAllSubmissions(any())(any()))
       .thenReturn(Future.successful(Seq.empty))
-    when(customsDeclareExportsMovementsConnector.fetchSingleSubmission(any())(any()))
+    when(customsDeclareExportsMovementsConnector.fetchSingleSubmission(any(), any())(any()))
       .thenReturn(Future.successful(None))
 
     customsDeclareExportsMovementsConnector

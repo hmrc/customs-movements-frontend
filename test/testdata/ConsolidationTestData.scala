@@ -33,6 +33,7 @@ object ConsolidationTestData {
 
   val exampleAssociateDucrRequestSubmission: SubmissionFrontendModel = SubmissionFrontendModel(
     eori = validEori,
+    providerId = None,
     conversationId = conversationId,
     actionType = ActionType.DucrAssociation,
     ucrBlocks = Seq(UcrBlock(ucr = ValidMucr, ucrType = "M"), UcrBlock(ucr = ValidDucr, ucrType = "D"))

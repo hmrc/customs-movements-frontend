@@ -25,6 +25,7 @@ import play.api.libs.json._
 case class SubmissionFrontendModel(
   uuid: String = UUID.randomUUID().toString,
   eori: String,
+  providerId: Option[String],
   conversationId: String,
   ucrBlocks: Seq[UcrBlock],
   actionType: ActionType,

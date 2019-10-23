@@ -24,6 +24,7 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.PlayBodyParsers
 import play.api.test.NoMaterializer
+import testdata.CommonTestData.validEori
 import testdata.MovementsTestData._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
@@ -41,7 +42,7 @@ trait MockAuthConnector extends MockitoSugar with Stubs {
   val mockAuthAction =
     new AuthActionImpl(authConnectorMock, eoriWhitelistMock, PlayBodyParsers()(NoMaterializer))(global)
 
-  def authorizedUser(user: SignedInUser = newUser("12345")): Unit = {
+  def authorizedUser(user: SignedInUser = newUser(validEori)): Unit = {
     when(authConnectorMock.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any()))
       .thenReturn(Future.successful(user.enrolments))
     when(eoriWhitelistMock.contains(any())).thenReturn(true)

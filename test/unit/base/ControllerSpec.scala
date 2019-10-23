@@ -17,20 +17,21 @@
 package unit.base
 
 import base.{MockAuthConnector, MockCustomsCacheService}
-import testdata.MovementsTestData.newUser
 import forms.Choice
 import forms.Choice._
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson, Request}
 import play.api.test.FakeRequest
+import testdata.CommonTestData.validEori
+import testdata.MovementsTestData.newUser
 import unit.mocks.{ErrorHandlerMocks, JourneyActionMocks}
 import utils.FakeRequestCSRFSupport._
 import utils.Stubs
 
 trait ControllerSpec extends UnitSpec with Stubs with MockAuthConnector with MockCustomsCacheService with JourneyActionMocks with ErrorHandlerMocks {
 
-  protected val user = newUser("12345")
+  protected val user = newUser(validEori)
 
   private val authenticatedRequest = AuthenticatedRequest(FakeRequest("GET", "").withCSRFToken, user)
 

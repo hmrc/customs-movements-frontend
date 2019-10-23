@@ -16,8 +16,7 @@
 
 package views
 
-import forms.AssociateUcr
-import helpers.views.{AssociateDucrSummaryMessages, CommonMessages}
+import helpers.views.CommonMessages
 import play.twirl.api.Html
 import views.spec.UnitViewSpec
 import views.tags.ViewTest
@@ -25,7 +24,7 @@ import forms.AssociateKind._
 import forms.AssociateUcr
 
 @ViewTest
-class AssociateDucrSummaryViewSpec extends UnitViewSpec with AssociateDucrSummaryMessages with CommonMessages {
+class AssociateDucrSummaryViewSpec extends UnitViewSpec with CommonMessages {
 
   private val page = new views.html.associate_ducr_summary(mainTemplate)
 
@@ -36,28 +35,38 @@ class AssociateDucrSummaryViewSpec extends UnitViewSpec with AssociateDucrSummar
 
     "have a proper labels for messages" in {
       val realMessages = messagesApi.preferred(request)
-      realMessages(title, "{MUCR}") mustBe "The following UCR has been added to {MUCR}"
-      realMessages(hint) mustBe "Make sure the details of the UCR are correct before continuing."
+
+      realMessages must haveTranslationFor("associate.ucr.summary.title")
+      realMessages must haveTranslationFor("associate.ucr.summary.kind.mucr")
+      realMessages must haveTranslationFor("associate.ucr.summary.kind.ducr")
+      realMessages must haveTranslationFor("associate.ucr.summary.addConsignment")
+      realMessages must haveTranslationFor("associate.ucr.summary.masterConsignment")
     }
 
     val view = createView("MUCR", "DUCR")
 
-    "display 'Save and continue' button on page" in {
-      view.getElementsByClass("button").text() must be(messages(continue))
+    "display 'Confirm and submit' button on page" in {
+      view.getElementsByClass("button").text() mustBe messages(confirmAndSubmitCaption)
     }
 
-    "display 'Remove' link on page" in {
-      view.getElementById("associate_ducr-remove") must containText(messages(remove))
-      view.getElementById("associate_ducr-remove") must haveAttribute(
-        "href",
-        controllers.consolidations.routes.AssociateDucrController.displayPage().url
-      )
+    "display 'Change' link on page for associate ucr" in {
+      view.getElementById("associate_ducr-change") must containText(messages(changeCaption))
+      view.getElementById("associate_ducr-change") must haveHref(controllers.consolidations.routes.AssociateDucrController.displayPage())
+    }
+
+    "display 'Change' link on the page for mucr" in {
+
+      view.getElementById("mucr-change") must containText(messages(changeCaption))
+      view.getElementById("mucr-change") must haveHref(controllers.consolidations.routes.MucrOptionsController.displayPage())
     }
 
     "display 'Reference' link on page" in {
       view.getElementById("associate_ucr-reference") must containText("DUCR")
     }
 
-  }
+    "display mucr type on the page" in {
 
+      view.getElementById("mucr-type") must containText("associate.ucr.summary.kind.mucr")
+    }
+  }
 }

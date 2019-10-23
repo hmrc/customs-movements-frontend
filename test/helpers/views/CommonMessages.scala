@@ -29,6 +29,8 @@ trait CommonMessages {
   val saveAndContinueCaption: String = "site.save_and_continue"
   val continueCaption: String = "site.continue"
   val backToStartPageCaption: String = "site.backToStartPage"
+  val confirmAndSubmitCaption: String = "site.confirmAndSubmit"
+  val changeCaption: String = "site.change"
 
   val globalError: String = "global.error"
   val globalErrorTitle: String = globalError + ".title"

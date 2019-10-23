@@ -299,10 +299,11 @@ associate.ucr.mucr.label = Master Unique Consignment Reference
 
 associate.ucr.hint = You may want to keep a record of which consignments you have added to this MUCR.
 
-associate.ucr.summary.title = The following UCR has been added to {0}
-associate.ucr.summary.hint = Make sure the details of the UCR are correct before continuing.
+associate.ucr.summary.title = Is the information provided for this association request correct?
 associate.ucr.summary.kind.mucr = MUCR
 associate.ucr.summary.kind.ducr = DUCR
+associate.ucr.summary.addConsignment = Add consignment
+associate.ucr.summary.masterConsignment = To master consignment
 
 submissions.title = All requests
 submissions.summary = This page displays all submitted requests and any notifications related to them.

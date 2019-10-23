@@ -87,11 +87,32 @@ class DisassociateUcrViewSpec extends UnitViewSpec with CommonMessages with View
       }
     }
 
-    "display DUCR Form errors" in {
+    "display DUCR empty" in {
       val view: Document = createView(DisassociateUcr.form.fillAndValidate(DisassociateUcr(Ducr, ducr = Some(""), mucr = None)))
 
       view must haveGlobalErrorSummary
-      view must haveFieldError("ducr", "disassociate.ucr.empty")
+      view must haveFieldError("ducr", "disassociate.ucr.ducr.empty")
+    }
+
+    "display DUCR invalid" in {
+      val view: Document = createView(DisassociateUcr.form.fillAndValidate(DisassociateUcr(Ducr, ducr = Some("DUCR"), mucr = None)))
+
+      view must haveGlobalErrorSummary
+      view must haveFieldError("ducr", "disassociate.ucr.ducr.error")
+    }
+
+    "display MUCR empty" in {
+      val view: Document = createView(DisassociateUcr.form.fillAndValidate(DisassociateUcr(Mucr, ducr = None, mucr = Some(""))))
+
+      view must haveGlobalErrorSummary
+      view must haveFieldError("mucr", "disassociate.ucr.mucr.empty")
+    }
+
+    "display MUCR invalid" in {
+      val view: Document = createView(DisassociateUcr.form.fillAndValidate(DisassociateUcr(Mucr, ducr = None, mucr = Some("MUCR"))))
+
+      view must haveGlobalErrorSummary
+      view must haveFieldError("mucr", "disassociate.ucr.mucr.error")
     }
   }
 

@@ -52,6 +52,8 @@ case class DisassociateUcr(kind: DisassociateKind, ducr: Option[String], mucr: O
 }
 
 object DisassociateUcr {
+  import uk.gov.voa.play.form.ConditionalMappings._
+
   val formId: String = "DisassociateUcr"
 
   implicit val format = Json.format[DisassociateUcr]
@@ -59,15 +61,15 @@ object DisassociateUcr {
   val mapping =
     Forms.mapping(
       "kind" -> of[DisassociateKind],
-      "ducr" -> optional(
-        text()
-          .verifying("disassociate.ucr.empty", nonEmpty)
-          .verifying("disassociate.ucr.error", isEmpty or validDucr)
+      "ducr" -> mandatoryIfEqual(
+        "kind",
+        "ducr",
+        text().verifying("disassociate.ucr.ducr.empty", nonEmpty).verifying("disassociate.ucr.ducr.error", isEmpty or validDucr)
       ),
-      "mucr" -> optional(
-        text()
-          .verifying("disassociate.ucr.empty", nonEmpty)
-          .verifying("disassociate.ucr.error", isEmpty or validMucr)
+      "mucr" -> mandatoryIfEqual(
+        "kind",
+        "mucr",
+        text().verifying("disassociate.ucr.mucr.empty", nonEmpty).verifying("disassociate.ucr.mucr.error", isEmpty or validMucr)
       )
     )(DisassociateUcr.apply)(DisassociateUcr.unapply)
 

@@ -23,7 +23,8 @@
 @(consignmentReferences: ConsignmentReferences)(implicit request: JourneyRequest[_], messages: Messages)
 
 @associateLink = {<a href="@routes.ChoiceController.startSpecificJourney("associateDUCR")">@messages("movement.arrival.confirmation.nextSteps.associate")</a>}
-@departureLink = {<a href="@routes.ChoiceController.startSpecificJourney("departure")">@messages("movement.departure.confirmation.nextSteps.depart")</a>}
+@departureLinkForArrival = {<a href="@routes.ChoiceController.startSpecificJourney("departure")">@messages("movement.arrival.confirmation.nextSteps.depart")</a>}
+@departureLinkForDeparture = {<a href="@routes.ChoiceController.startSpecificJourney("departure")">@messages("movement.departure.confirmation.nextSteps.depart")</a>}
 @arrivalLink = {<a href="@routes.ChoiceController.startSpecificJourney("arrival")">@messages("movement.departure.confirmation.nextSteps.arrive")</a>}
 
 @main_template(
@@ -44,14 +45,14 @@
 
     @if(request.choice.isArrival) {
         <div id="next-steps">
-            @Html(messages("movement.arrival.confirmation.nextSteps", associateLink, departureLink))
+            @Html(messages("movement.arrival.confirmation.nextSteps", associateLink, departureLinkForArrival))
         </div>
     }
     @if(request.choice.isDeparture) {
         <div id="next-steps">
-            @Html(messages("movement.departure.confirmation.nextSteps", departureLink, arrivalLink))
+            @Html(messages("movement.departure.confirmation.nextSteps", departureLinkForDeparture, arrivalLink))
         </div>
     }
 
-    @components.button_link("site.backToStartPage", routes.ChoiceController.displayChoiceForm())
+    @components.button_link("site.backToStart", routes.ChoiceController.displayChoiceForm())
 }

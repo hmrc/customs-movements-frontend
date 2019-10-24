@@ -16,11 +16,16 @@
 
 package forms
 
+import java.time.{LocalDateTime, LocalTime}
+
 import forms.common.Date
-import play.api.data.Forms
+import play.api.data.Forms._
+import play.api.data._
 import play.api.libs.json.{Json, OFormat}
 
-case class DepartureDetails(dateOfDeparture: Date) {
+case class DepartureDetails(dateOfDeparture: Date, timeOfDeparture: LocalTime) {
+
+  def moment: LocalDateTime = LocalDateTime.of(dateOfDeparture.asLocalDate, timeOfDeparture)
 
   override def toString: String = dateOfDeparture.to304Format
 }
@@ -28,6 +33,21 @@ case class DepartureDetails(dateOfDeparture: Date) {
 object DepartureDetails {
   implicit val format: OFormat[DepartureDetails] = Json.format[DepartureDetails]
 
-  val mapping =
-    Forms.mapping("dateOfDeparture" -> Date.mapping)(DepartureDetails.apply)(DepartureDetails.unapply)
+  val time = {
+    def bind(hours: Int, minutes: Int):  LocalTime = LocalTime.of(hours, minutes)
+
+    def unbind(time: LocalTime): Option[(Int, Int)] = Some((time.getHour, time.getMinute))
+
+    Forms.mapping(
+      "hour" -> number(),
+      "minute" -> number()
+    )(bind)(unbind)
+  }
+
+  val mapping = Forms.mapping(
+    "dateOfDeparture" -> Date.mapping,
+    "timeOfDeparture" -> time
+  )(DepartureDetails.apply)(DepartureDetails.unapply)
+    .verifying("departure.details.error.overdue", _.moment.isAfter(LocalDateTime.now().minusDays(60)))
+    .verifying("departure.details.error.future", _.moment.isBefore(LocalDateTime.now()) )
 }

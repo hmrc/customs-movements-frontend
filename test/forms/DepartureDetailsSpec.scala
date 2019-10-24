@@ -16,17 +16,20 @@
 
 package forms
 
+import java.time.{LocalDate, LocalTime}
+
 import base.BaseSpec
 import forms.common.Date
+import helpers.FormMatchers
 
-class DepartureDetailsSpec extends BaseSpec {
+class DepartureDetailsSpec extends BaseSpec with FormMatchers {
 
   "Departure mapping" should {
 
     "format the date correctly" when {
 
       "date is in ISO 8601 format " in {
-        val inputData = DepartureDetails(Date(Some(1), Some(1), Some(2019)))
+        val inputData = DepartureDetails(Date(LocalDate.of(2019, 1,1 )), LocalTime.of(0,0))
         inputData.toString must be("2019-01-01T00:00:00")
       }
 
@@ -34,23 +37,31 @@ class DepartureDetailsSpec extends BaseSpec {
 
     "return errors" when {
 
+      "there is no data" in {
+        val inputData = Map.empty[String, String]
+        val errors = MovementDetails.departureForm().bind(inputData).errors
+        errors must have length 5
+      }
+
+      "time is missing" in {
+        val inputData = Date.mapping.withPrefix("dateOfDeparture").unbind(Date(LocalDate.now()))
+        val errors = MovementDetails.departureForm().bind(inputData).errors
+        errors must have length 2
+      }
+
       "date is missing" in {
-
-        val inputData = DepartureDetails(Date(None, None, None))
-        val errors = MovementDetails.departureForm().fillAndValidate(inputData).errors
-
-        errors.length must be(3)
+        val inputData = DepartureDetails.time.withPrefix("timeOfDeparture").unbind(LocalTime.now())
+        val errors = MovementDetails.departureForm().bind(inputData).errors
+        errors must have length 3
       }
     }
 
     "return no errors" when {
 
       "date is correct" in {
-
-        val inputData = DepartureDetails(Date(Some(1), Some(1), Some(2019)))
-        val errors = MovementDetails.departureForm().fillAndValidate(inputData).errors
-
-        errors.length must be(0)
+        val inputData = Date.mapping.withPrefix("dateOfDeparture").unbind(Date(LocalDate.now())) ++ Map("timeOfDeparture.hours" -> "13", "timeOfDeparture.minutes" -> "0")
+        val form = MovementDetails.departureForm().bind(inputData)
+        form mustBe errorless
       }
     }
   }

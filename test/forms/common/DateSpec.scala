@@ -16,6 +16,8 @@
 
 package forms.common
 
+import java.time.LocalDate
+
 import base.BaseSpec
 import play.api.data.{Form, FormError}
 
@@ -27,14 +29,14 @@ class DateSpec extends BaseSpec {
 
     "correct convert date to 102 format" in {
 
-      val dateInput = Date(Some(1), Some(1), Some(2019))
+      val dateInput = Date(LocalDate.of(2019, 1, 1))
 
       dateInput.to102Format must be("20190101")
     }
 
     "return string in uuuu-MM-dd format for toString method" in {
 
-      val dateInput = Date(Some(3), Some(3), Some(2020))
+      val dateInput = Date(LocalDate.of(2020, 3, 3))
 
       dateInput.toString must be("2020-03-03")
     }
@@ -56,8 +58,7 @@ class DateSpec extends BaseSpec {
 
       "day, month and year are empty" in {
 
-        val dateInput = Date(None, None, None)
-        val errors = form.fillAndValidate(dateInput).errors
+        val errors = form.bind(Map.empty[String, String]).errors
 
         errors.length must be(3)
         errors(0) must be(FormError("day", "dateTime.date.day.empty"))
@@ -67,8 +68,8 @@ class DateSpec extends BaseSpec {
 
       "day, month and year are incorrect" in {
 
-        val dateInput = Date(Some(35), Some(15), Some(1900))
-        val errors = form.fillAndValidate(dateInput).errors
+        val inputs = Map("year" -> "1990", "month" -> "15", "day" -> "35")
+        val errors = form.bind(inputs).errors
 
         errors.length must be(3)
         errors(0) must be(FormError("day", "dateTime.date.day.error"))
@@ -78,8 +79,8 @@ class DateSpec extends BaseSpec {
 
       "date in under the limit" in {
 
-        val dateInput = Date(Some(0), Some(0), Some(1999))
-        val errors = form.fillAndValidate(dateInput).errors
+        val inputs = Map("year" -> "1999", "month" -> "0", "day" -> "0")
+        val errors = form.bind(inputs).errors
 
         errors.length must be(3)
         errors(0) must be(FormError("day", "dateTime.date.day.error"))
@@ -88,9 +89,8 @@ class DateSpec extends BaseSpec {
       }
 
       "date is above the limit" in {
-
-        val dateInput = Date(Some(32), Some(13), Some(2100))
-        val errors = form.fillAndValidate(dateInput).errors
+        val inputs = Map("year" -> "2100", "month" -> "13", "day" -> "32")
+        val errors = form.bind(inputs).errors
 
         errors.length must be(3)
         errors(0) must be(FormError("day", "dateTime.date.day.error"))
@@ -110,8 +110,8 @@ class DateSpec extends BaseSpec {
 
     "return no error for correct date" in {
 
-      val dateInput = Date(Some(15), Some(1), Some(2020))
-      val errors = form.fillAndValidate(dateInput).errors
+      val dateInput = Map("day" -> "15", "month" -> "1", "year" -> "2020")
+      val errors = form.bind(dateInput).errors
 
       errors.length must be(0)
     }

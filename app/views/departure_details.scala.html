@@ -36,8 +36,15 @@
         @components.input_date(
             field = form("dateOfDeparture"),
             form = form,
-            label = messages("departureDetails.question"),
-            hint = Some(messages("departureDetails.hint"))
+            label = messages("departureDetails.date.question"),
+            hint = Some(messages("departureDetails.date.hint"))
+        )
+
+        @components.input_time(
+            field = form("timeOfDeparture"),
+            form = form,
+            label = messages("departureDetails.time.question"),
+            hint = Some(messages("departureDetails.time.hint"))
         )
 
         @components.submit_button()

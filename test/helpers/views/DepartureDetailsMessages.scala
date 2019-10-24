@@ -21,6 +21,8 @@ trait DepartureDetailsMessages {
   val departureDetails = "departureDetails"
   val departureTitle = departureDetails + ".title"
   val departureHeader = departureDetails + ".header"
-  val departureQuestion = departureDetails + ".question"
-  val departureHint = departureDetails + ".hint"
+  val departureDateQuestion = departureDetails + ".date.question"
+  val departureDateHint = departureDetails + ".date.hint"
+  val departureTimeQuestion = departureDetails + ".time.question"
+  val departureTimeHint = departureDetails + ".time.hint"
 }

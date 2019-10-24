@@ -16,10 +16,18 @@
 
 package forms
 
+import java.time.LocalDate
+
 import base.BaseSpec
 import forms.common.{Date, Time}
 
 class ArrivalDetailsSpec extends BaseSpec {
+
+  private val date = LocalDate.of(2019, 1, 1)
+
+  private val timeInputData = Time.mapping.withPrefix("timeOfArrival").unbind(Time(Some("1"), Some("1")))
+
+  private val dateInputData = Date.mapping.withPrefix("dateOfArrival").unbind(Date(date))
 
   "Arrival mapping" should {
 
@@ -27,16 +35,14 @@ class ArrivalDetailsSpec extends BaseSpec {
 
       "date is missing" in {
 
-        val inputData = ArrivalDetails(Date(None, None, None), Time(Some("1"), Some("1")))
-        val errors = MovementDetails.arrivalForm().fillAndValidate(inputData).errors
+        val errors = MovementDetails.arrivalForm().bind(timeInputData).errors
 
         errors.length must be(3)
       }
 
       "time is missing" in {
 
-        val inputData = ArrivalDetails(Date(Some(1), Some(1), Some(2019)), Time(None, None))
-        val errors = MovementDetails.arrivalForm().fillAndValidate(inputData).errors
+        val errors = MovementDetails.arrivalForm().bind(dateInputData).errors
 
         errors.length must be(2)
       }
@@ -45,9 +51,8 @@ class ArrivalDetailsSpec extends BaseSpec {
     "return no errors" when {
 
       "date and time are provided" in {
-
-        val inputData = ArrivalDetails(Date(Some(1), Some(1), Some(2019)), Time(Some("1"), Some("1")))
-        val errors = MovementDetails.arrivalForm().fillAndValidate(inputData).errors
+        val inputData = timeInputData ++ dateInputData
+        val errors = MovementDetails.arrivalForm().bind(inputData).errors
 
         errors.length must be(0)
       }

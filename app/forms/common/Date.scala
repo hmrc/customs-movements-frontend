@@ -25,25 +25,25 @@ import play.api.libs.json.{Json, OFormat}
 
 import scala.util.Try
 
-case class Date(day: Option[Int], month: Option[Int], year: Option[Int]) {
+case class Date(date: LocalDate) {
 
   private val format102 = DateTimeFormatter.ofPattern("yyyyMMdd")
 
   private val inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
-  def to102Format: String = LocalDate.parse(this.toString).format(format102)
+  def to102Format: String = date.format(format102)
 
   def to304Format: String = {
     import java.time.{LocalDate, LocalTime}
-    val dateTime = LocalDate.parse(this.toString, inputFormat)
-
-    dateTime.atTime(LocalTime.of(0, 0, 0)).format(DateTimeFormatter.ISO_DATE_TIME)
+    date.atTime(LocalTime.of(0, 0, 0)).format(DateTimeFormatter.ISO_DATE_TIME)
 
   }
 
-  override def toString: String = LocalDate.of(year.getOrElse(0), month.getOrElse(0), day.getOrElse(0)).toString
+  override def toString: String = date.toString
   def toLocalDateTimeString: String =
-    LocalDate.of(year.getOrElse(0), month.getOrElse(0), day.getOrElse(0)).atStartOfDay().toString + ":00"
+    date.atStartOfDay().toString + ":00"
+
+  def asLocalDate: LocalDate = date
 }
 
 object Date {
@@ -57,16 +57,35 @@ object Date {
   private val correctMonth: Int => Boolean = (month: Int) => month >= 1 && month <= 12
   private val correctYear: Int => Boolean = (year: Int) => year >= 2000 && year <= 2099
 
-  private val isDateFormatValid: Date => Boolean = date => Try(LocalDate.parse(date.toString)).isSuccess
+  val mapping: Mapping[Date] = {
 
-  val mapping: Mapping[Date] = Forms
-    .mapping(
-      dayKey -> optional(number().verifying("dateTime.date.day.error", correctDay))
-        .verifying("dateTime.date.day.empty", _.nonEmpty),
-      monthKey -> optional(number().verifying("dateTime.date.month.error", correctMonth))
-        .verifying("dateTime.date.month.empty", _.nonEmpty),
-      yearKey -> optional(number().verifying("dateTime.date.year.error", correctYear))
-        .verifying("dateTime.date.year.empty", _.nonEmpty)
-    )(Date.apply)(Date.unapply)
-    .verifying("dateTime.date.error.format", isDateFormatValid)
+    def validate(day: Option[Int], month : Option[Int], year: Option[Int]): Boolean = {
+      (day, month, year) match {
+        case (Some(d), Some(m), Some(y)) => Try(LocalDate.of(y, m, d)).isSuccess
+        case _ => false
+      }
+    }
+
+    def bind(day: Option[Int], month : Option[Int], year: Option[Int]): Date = {
+      (day, month, year) match {
+        case (Some(d), Some(m), Some(y)) => Date(LocalDate.of(y, m, d))
+        case _ => throw new IllegalArgumentException("Could not bind local date when any is empty")
+      }
+    }
+
+    def unbind(date: Date): (Option[Int], Option[Int], Option[Int])= {
+      val value = date.date
+      (Some(value.getDayOfMonth), Some(value.getMonthValue), Some(value.getYear))
+    }
+
+    Forms
+      .tuple(
+        dayKey -> optional(number().verifying("dateTime.date.day.error", correctDay))
+          .verifying("dateTime.date.day.empty", _.nonEmpty),
+        monthKey -> optional(number().verifying("dateTime.date.month.error", correctMonth))
+          .verifying("dateTime.date.month.empty", _.nonEmpty),
+        yearKey -> optional(number().verifying("dateTime.date.year.error", correctYear))
+          .verifying("dateTime.date.year.empty", _.nonEmpty)
+      ).verifying("dateTime.date.error.format", (validate _).tupled).transform((bind _).tupled, unbind)
+  }
 }

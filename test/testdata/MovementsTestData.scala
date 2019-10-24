@@ -79,7 +79,6 @@ object MovementsTestData {
   ): SubmissionFrontendModel =
     SubmissionFrontendModel(
       eori = eori,
-      providerId = None,
       conversationId = conversationId,
       ucrBlocks = Seq(UcrBlock(ucr = ucr, ucrType = ucrType)),
       actionType = actionType,

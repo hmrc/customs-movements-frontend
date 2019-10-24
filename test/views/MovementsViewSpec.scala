@@ -62,7 +62,6 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
       val submission = SubmissionFrontendModel(
         requestTimestamp = dateTime,
         eori = "",
-        providerId = None,
         conversationId = conversationId,
         ucrBlocks = Seq(UcrBlock(ucr = "4444", ucrType = "M")),
         actionType = ActionType.ShutMucr

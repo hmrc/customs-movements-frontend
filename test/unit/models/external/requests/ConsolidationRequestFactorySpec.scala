@@ -20,10 +20,12 @@ import forms.{AssociateKind, AssociateUcr, DisassociateKind, DisassociateUcr}
 import models.external.requests.ConsolidationRequest
 import models.external.requests.ConsolidationRequestFactory._
 import models.external.requests.ConsolidationType._
+import testdata.CommonTestData._
 import unit.base.UnitSpec
 
 class ConsolidationRequestFactorySpec extends UnitSpec {
 
+  val eori = validEori
   val mucr = "mucr"
   val mucrParent = "mucrParent"
   val ducr = "ducr"
@@ -36,28 +38,48 @@ class ConsolidationRequestFactorySpec extends UnitSpec {
 
     "build correct Association Ducr request" in {
 
-      buildAssociationRequest(mucrParent, associateDucr) mustBe ConsolidationRequest(ASSOCIATE_DUCR, Some(mucrParent), Some(ducr))
+      buildAssociationRequest(eori, mucrParent, associateDucr) mustBe ConsolidationRequest(
+        consolidationType = ASSOCIATE_DUCR,
+        eori = eori,
+        mucr = Some(mucrParent),
+        ucr = Some(ducr)
+      )
     }
 
     "build correct Association Mucr request" in {
 
-      buildAssociationRequest(mucrParent, associateMucr) mustBe ConsolidationRequest(ASSOCIATE_MUCR, Some(mucrParent), Some(mucr))
+      buildAssociationRequest(eori, mucrParent, associateMucr) mustBe ConsolidationRequest(
+        consolidationType = ASSOCIATE_MUCR,
+        eori = eori,
+        mucr = Some(mucrParent),
+        ucr = Some(mucr)
+      )
     }
 
     "build correct Disassociation Ducr request" in {
 
-      buildDisassociationRequest(disassociateDucr) mustBe ConsolidationRequest(DISASSOCIATE_DUCR, None, Some(ducr))
+      buildDisassociationRequest(eori, disassociateDucr) mustBe ConsolidationRequest(
+        consolidationType = DISASSOCIATE_DUCR,
+        eori = eori,
+        mucr = None,
+        ucr = Some(ducr)
+      )
     }
     "build correct Disassociation Mucr request" in {
 
-      buildDisassociationRequest(disassociateMucr) mustBe ConsolidationRequest(DISASSOCIATE_MUCR, None, Some(mucr))
+      buildDisassociationRequest(eori, disassociateMucr) mustBe ConsolidationRequest(
+        consolidationType = DISASSOCIATE_MUCR,
+        eori = eori,
+        mucr = None,
+        ucr = Some(mucr)
+      )
     }
 
     "build correct Shut Mucr request" in {
 
-      val expectedShutMucrRequest = ConsolidationRequest(SHUT_MUCR, Some(mucr), None)
+      val expectedShutMucrRequest = ConsolidationRequest(consolidationType = SHUT_MUCR, eori = eori, mucr = Some(mucr), ucr = None)
 
-      buildShutMucrRequest(mucr) mustBe expectedShutMucrRequest
+      buildShutMucrRequest(eori, mucr) mustBe expectedShutMucrRequest
     }
   }
 }

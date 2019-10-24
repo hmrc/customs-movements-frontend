@@ -76,7 +76,7 @@ class SubmissionService @Inject()(
   ): Future[ConsolidationRequest] = {
     val timer = metrics.startTimer(AssociateDUCR)
     connector
-      .sendConsolidationRequest(buildAssociationRequest(mucrOptions.mucr, associateDucr))
+      .sendConsolidationRequest(buildAssociationRequest(eori, mucrOptions.mucr, associateDucr))
       .andThen {
         case Success(_) =>
           auditService.auditAssociate(eori, mucrOptions.mucr, associateDucr.ucr, ACCEPTED.toString)
@@ -88,7 +88,7 @@ class SubmissionService @Inject()(
   def submitUcrDisassociation(disassociateUcr: DisassociateUcr, eori: String)(implicit hc: HeaderCarrier): Future[ConsolidationRequest] = {
     val timer = metrics.startTimer(DisassociateDUCR)
     connector
-      .sendConsolidationRequest(buildDisassociationRequest(disassociateUcr))
+      .sendConsolidationRequest(buildDisassociationRequest(eori, disassociateUcr))
       .andThen {
         case Success(_) =>
           auditService.auditDisassociate(eori, disassociateUcr.ucr, ACCEPTED.toString)
@@ -99,7 +99,7 @@ class SubmissionService @Inject()(
 
   def submitShutMucrRequest(shutMucr: ShutMucr, eori: String)(implicit hc: HeaderCarrier): Future[ConsolidationRequest] = {
     val timer = metrics.startTimer(ShutMUCR)
-    connector.sendConsolidationRequest(buildShutMucrRequest(shutMucr.mucr)).andThen {
+    connector.sendConsolidationRequest(buildShutMucrRequest(eori, shutMucr.mucr)).andThen {
       case Success(_) =>
         auditService.auditShutMucr(eori, shutMucr.mucr, ACCEPTED.toString)
         timer.stop()

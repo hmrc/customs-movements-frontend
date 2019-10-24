@@ -29,7 +29,7 @@ object ConsolidationTestData {
   val ValidDucr = "4GB123456789000-DUCR"
 
   val exampleAssociateDucrRequest: ConsolidationRequest =
-    ConsolidationRequest(ASSOCIATE_DUCR, Some(ValidMucr), Some(ValidDucr))
+    ConsolidationRequest(consolidationType = ASSOCIATE_DUCR, eori = validEori, mucr = Some(ValidMucr), ucr = Some(ValidDucr))
 
   val exampleAssociateDucrRequestSubmission: SubmissionFrontendModel = SubmissionFrontendModel(
     eori = validEori,
@@ -39,9 +39,10 @@ object ConsolidationTestData {
   )
 
   val exampleDisassociateDucrRequest: ConsolidationRequest =
-    ConsolidationRequest(DISASSOCIATE_DUCR, None, Some(ValidDucr))
+    ConsolidationRequest(consolidationType = DISASSOCIATE_DUCR, eori = validEori, mucr = None, ucr = Some(ValidDucr))
 
-  val exampleShutMucrRequest: ConsolidationRequest = ConsolidationRequest(SHUT_MUCR, Some(ValidMucr), None)
+  val exampleShutMucrRequest: ConsolidationRequest =
+    ConsolidationRequest(consolidationType = SHUT_MUCR, eori = validEori, mucr = Some(ValidMucr), ucr = None)
 
   val validConsolidationRequestHeaders: Seq[(String, String)] =
     Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.JSON, HeaderNames.ACCEPT -> ContentTypes.JSON)

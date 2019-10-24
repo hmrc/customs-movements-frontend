@@ -30,6 +30,7 @@ import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers._
 import services.audit.{AuditService, AuditTypes}
+import testdata.CommonTestData.validEori
 import testdata.ConsolidationTestData._
 import testdata.MovementsTestData._
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -159,21 +160,18 @@ class SubmissionServiceSpec
       when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
         .thenReturn(Future.successful(exampleAssociateDucrRequest))
 
-      submissionService
-        .submitUcrAssociation(MucrOptions(ValidMucr), validDucrAssociation, "eori")
-        .futureValue must equal(exampleAssociateDucrRequest)
-      verify(mockAuditService)
-        .auditAssociate(ArgumentMatchers.eq("eori"), any(), any(), any())(any())
+      submissionService.submitUcrAssociation(MucrOptions(ValidMucr), validDucrAssociation, validEori).futureValue must equal(exampleAssociateDucrRequest)
+
+      verify(mockAuditService).auditAssociate(ArgumentMatchers.eq(validEori), any(), any(), any())(any())
     }
 
     "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in requestAcceptedTest {
 
-      submissionService.submitUcrAssociation(MucrOptions(ValidMucr), validDucrAssociation, "eori").futureValue
+      submissionService.submitUcrAssociation(MucrOptions(ValidMucr), validDucrAssociation, validEori).futureValue
 
       val requestCaptor: ArgumentCaptor[ConsolidationRequest] = ArgumentCaptor.forClass(classOf[ConsolidationRequest])
       verify(mockCustomsExportsMovementConnector).sendConsolidationRequest(requestCaptor.capture())(any())
-      verify(mockAuditService)
-        .auditAssociate(ArgumentMatchers.eq("eori"), any(), any(), any())(any())
+      verify(mockAuditService).auditAssociate(ArgumentMatchers.eq(validEori), any(), any(), any())(any())
 
       requestCaptor.getValue mustBe exampleAssociateDucrRequest
     }
@@ -186,33 +184,33 @@ class SubmissionServiceSpec
       when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
         .thenReturn(Future.successful(exampleDisassociateDucrRequest))
 
-      submissionService.submitUcrDisassociation(DisassociateUcr(DisassociateKind.Ducr, Some(ValidDucr), None), "eori").futureValue must equal(
+      submissionService.submitUcrDisassociation(DisassociateUcr(DisassociateKind.Ducr, Some(ValidDucr), None), validEori).futureValue must equal(
         exampleDisassociateDucrRequest
       )
-      verify(mockAuditService).auditDisassociate(ArgumentMatchers.eq("eori"), any(), any())(any())
+      verify(mockAuditService).auditDisassociate(ArgumentMatchers.eq(validEori), any(), any())(any())
 
     }
 
     "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in requestAcceptedTest {
 
-      submissionService.submitUcrDisassociation(DisassociateUcr(DisassociateKind.Ducr, Some(ValidDucr), None), "eori").futureValue
+      submissionService.submitUcrDisassociation(DisassociateUcr(DisassociateKind.Ducr, Some(ValidDucr), None), validEori).futureValue
 
       val requestCaptor: ArgumentCaptor[ConsolidationRequest] = ArgumentCaptor.forClass(classOf[ConsolidationRequest])
       verify(mockCustomsExportsMovementConnector).sendConsolidationRequest(requestCaptor.capture())(any())
-      verify(mockAuditService).auditDisassociate(ArgumentMatchers.eq("eori"), any(), any())(any())
+      verify(mockAuditService).auditDisassociate(ArgumentMatchers.eq(validEori), any(), any())(any())
 
       requestCaptor.getValue mustBe exampleDisassociateDucrRequest
     }
 
     "increase counter for successful submissions" in requestAcceptedTest {
       counter("disassociation.counter") must changeOn {
-        submissionService.submitUcrDisassociation(DisassociateUcr(DisassociateKind.Ducr, Some(ValidDucr), None), "eori").futureValue
+        submissionService.submitUcrDisassociation(DisassociateUcr(DisassociateKind.Ducr, Some(ValidDucr), None), validEori).futureValue
       }
     }
 
     "use timer to measure execution of successful disassociate request" in requestAcceptedTest {
       timer("disassociation.timer") must changeOn {
-        submissionService.submitUcrDisassociation(DisassociateUcr(DisassociateKind.Ducr, Some(ValidDucr), None), "eori").futureValue
+        submissionService.submitUcrDisassociation(DisassociateUcr(DisassociateKind.Ducr, Some(ValidDucr), None), validEori).futureValue
       }
     }
   }
@@ -224,30 +222,30 @@ class SubmissionServiceSpec
       when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
         .thenReturn(Future.successful(exampleShutMucrRequest))
 
-      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), "eori").futureValue must equal(exampleShutMucrRequest)
-      verify(mockAuditService).auditShutMucr(ArgumentMatchers.eq("eori"), any(), any())(any())
+      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), validEori).futureValue must equal(exampleShutMucrRequest)
+      verify(mockAuditService).auditShutMucr(ArgumentMatchers.eq(validEori), any(), any())(any())
     }
 
     "call CustomsDeclareExportsMovementsConnector, passing correctly built request" in requestAcceptedTest {
 
-      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), "eori").futureValue
+      submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), validEori).futureValue
 
       val requestCaptor: ArgumentCaptor[ConsolidationRequest] = ArgumentCaptor.forClass(classOf[ConsolidationRequest])
       verify(mockCustomsExportsMovementConnector).sendConsolidationRequest(requestCaptor.capture())(any())
-      verify(mockAuditService).auditShutMucr(ArgumentMatchers.eq("eori"), any(), any())(any())
+      verify(mockAuditService).auditShutMucr(ArgumentMatchers.eq(validEori), any(), any())(any())
 
       requestCaptor.getValue mustBe exampleShutMucrRequest
     }
 
     "increase counter of successful shut request" in requestAcceptedTest {
       counter("shut.counter") must changeOn {
-        submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), "eori").futureValue
+        submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), validEori).futureValue
       }
     }
 
     "use timer to measure execution of successful shut request" in requestAcceptedTest {
       timer("shut.timer") must changeOn {
-        submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), "eori").futureValue
+        submissionService.submitShutMucrRequest(ShutMucr(ValidMucr), validEori).futureValue
       }
     }
   }

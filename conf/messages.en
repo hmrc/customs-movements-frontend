@@ -118,10 +118,10 @@ movement.arrival.confirmation.nextSteps.associate = Associate
 movement.arrival.confirmation.nextSteps.depart = depart
 movement.departure.confirmation.tab.heading = Departure request submitted
 movement.departure.confirmation.heading = Request to depart {0} {1} has been submitted
-movement.departure.confirmation.nextSteps = {0} another consignment. {1} a new consignment.
-movement.departure.confirmation.nextSteps.depart = Depart
+movement.departure.confirmation.nextSteps = {0}. {1} a new consignment.
+movement.departure.confirmation.nextSteps.depart = Depart another consignment
 movement.departure.confirmation.nextSteps.arrive = Arrive
-movement.confirmation.statusInfo = To check the status of this consignment, {0}.
+movement.confirmation.statusInfo = To check the status of this, {0}.
 movement.confirmation.statusInfo.submissions = view requests
 movement.confirmation.whatNext = What do you want to do next?
 associate.ducr.confirmation.tab.heading = Add DUCR request submitted
@@ -203,7 +203,7 @@ arrivalDetails.date.hint = For example, 01 08 2007
 arrivalDetails.time.question = Time of Arrival
 arrivalDetails.time.hint = Enter the time in 24 hour format. For example, 13 30
 
-departureDetails.title = Departure date
+departureDetails.title = Departure date and time
 departureDetails.header = Enter departure details
 departureDetails.date.question = Date of departure
 departureDetails.date.hint = For example, 01 08 2007
@@ -254,6 +254,7 @@ summary.arrival.time = Time of arrival
 
 summary.departure.title = Is the information provided for this departure correct?
 summary.departure.date = Date of departure
+summary.departure.time = Time of departure
 
 summary.arrivalReference.reference = Unique reference
 

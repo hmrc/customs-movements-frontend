@@ -18,8 +18,8 @@ package forms.common
 
 import java.time.LocalTime
 
-import play.api.data.{Forms, Mapping}
 import play.api.data.Forms.{optional, text}
+import play.api.data.{Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 
 import scala.util.Try

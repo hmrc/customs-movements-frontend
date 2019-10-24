@@ -64,7 +64,7 @@ class DepartureDetailsSpec extends BaseSpec with FormMatchers {
           "timeOfDeparture.minute" -> "00"
         )
         val form = MovementDetails.departureForm().bind(inputData)
-        form mustBe errorless
+        form mustBe withoutErrors
       }
     }
   }

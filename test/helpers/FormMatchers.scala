@@ -20,7 +20,7 @@ import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.data.{Form, FormError}
 
 trait FormMatchers {
-  val errorless: BeMatcher[Form[_]] = new BeMatcher[Form[_]] {
+  val withoutErrors: BeMatcher[Form[_]] = new BeMatcher[Form[_]] {
     def fieldErrors(errors: Seq[FormError]): String =
       errors
         .groupBy(_.key)

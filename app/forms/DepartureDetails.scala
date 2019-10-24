@@ -16,16 +16,15 @@
 
 package forms
 
-import java.time.{LocalDateTime, LocalTime}
+import java.time.LocalDateTime
 
 import forms.common.{Date, Time}
-import play.api.data.Forms._
 import play.api.data._
 import play.api.libs.json.{Json, OFormat}
 
 case class DepartureDetails(dateOfDeparture: Date, timeOfDeparture: Time) {
 
-  def moment: LocalDateTime = LocalDateTime.of(dateOfDeparture.asLocalDate, timeOfDeparture.time)
+  def goodsDepartureMoment: LocalDateTime = LocalDateTime.of(dateOfDeparture.asLocalDate, timeOfDeparture.time)
 
   override def toString: String = dateOfDeparture.to304Format
 }
@@ -35,6 +34,6 @@ object DepartureDetails {
 
   val mapping = Forms
     .mapping("dateOfDeparture" -> Date.mapping, "timeOfDeparture" -> Time.mapping)(DepartureDetails.apply)(DepartureDetails.unapply)
-    .verifying("departure.details.error.overdue", _.moment.isAfter(LocalDateTime.now().minusDays(60)))
-    .verifying("departure.details.error.future", _.moment.isBefore(LocalDateTime.now()))
+    .verifying("departure.details.error.overdue", _.goodsDepartureMoment.isAfter(LocalDateTime.now().minusDays(60)))
+    .verifying("departure.details.error.future", _.goodsDepartureMoment.isBefore(LocalDateTime.now()))
 }

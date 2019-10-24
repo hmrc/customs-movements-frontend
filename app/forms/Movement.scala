@@ -37,7 +37,7 @@ object Movement {
       case Departure =>
         cacheMap
           .getEntry[DepartureDetails](MovementDetails.formId)
-          .map(departure => departureDateTimeFormatter.format(departure.moment.atZone(ZoneId.systemDefault())))
+          .map(departure => departureDateTimeFormatter.format(departure.goodsDepartureMoment.atZone(ZoneId.systemDefault())))
           .getOrElse("")
       case Arrival =>
         cacheMap

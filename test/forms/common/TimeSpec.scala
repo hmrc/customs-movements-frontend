@@ -80,9 +80,9 @@ class TimeSpec extends BaseSpec with FormMatchers {
       "time has correct values" in {
 
         val inputTime = Map("hour" -> "10", "minute" -> "10")
-        val errors = form.bind(inputTime)
+        val forms = form.bind(inputTime)
 
-        errors mustBe errorless
+        forms mustBe withoutErrors
       }
     }
   }

@@ -120,6 +120,30 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         assertEquality(result, expectedResult)
       }
 
+      "provided with MucrAssociation SubmissionFrontendModel" in new Test {
+
+        val input: SubmissionFrontendModel = SubmissionFrontendModel(
+          eori = validEori,
+          providerId = None,
+          conversationId = conversationId,
+          actionType = ActionType.MucrAssociation,
+          requestTimestamp = testTimestamp,
+          ucrBlocks = Seq(UcrBlock(ucr = correctUcr, ucrType = "M"), UcrBlock(ucr = correctUcr_2, ucrType = "M"))
+        )
+        val expectedResult = NotificationsPageSingleElement(
+          title = messages("notifications.elem.title.MucrAssociation"),
+          timestampInfo = "23 Oct 2019 at 12:34",
+          content = Html(
+            s"<p>${messages("notifications.elem.content.MucrAssociation")}</p>" +
+              s"<p>${messages("notifications.elem.content.footer")}</p>"
+          )
+        )
+
+        val result = factory.build(input)
+
+        assertEquality(result, expectedResult)
+      }
+
       "provided with DucrDisassociation SubmissionFrontendModel" in new Test {
 
         val input: SubmissionFrontendModel = exampleSubmissionFrontendModel(
@@ -133,6 +157,28 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           timestampInfo = "23 Oct 2019 at 12:34",
           content = Html(
             s"<p>${messages("notifications.elem.content.DucrDisassociation")}</p>" +
+              s"<p>${messages("notifications.elem.content.footer")}</p>"
+          )
+        )
+
+        val result = factory.build(input)
+
+        assertEquality(result, expectedResult)
+      }
+
+      "provided with MucrDisassociation SubmissionFrontendModel" in new Test {
+
+        val input: SubmissionFrontendModel = exampleSubmissionFrontendModel(
+          actionType = ActionType.MucrDisassociation,
+          requestTimestamp = testTimestamp,
+          ucr = correctUcr,
+          ucrType = "M"
+        )
+        val expectedResult = NotificationsPageSingleElement(
+          title = messages("notifications.elem.title.MucrDisassociation"),
+          timestampInfo = "23 Oct 2019 at 12:34",
+          content = Html(
+            s"<p>${messages("notifications.elem.content.MucrDisassociation")}</p>" +
               s"<p>${messages("notifications.elem.content.footer")}</p>"
           )
         )

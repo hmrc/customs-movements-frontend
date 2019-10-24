@@ -344,7 +344,9 @@ notifications.elem.title.unknown = Update message
 notifications.elem.content.Arrival = Your request to arrive this {0} has been received.
 notifications.elem.content.Departure = Your request to depart this {0} has been received.
 notifications.elem.content.DucrAssociation = Your request to consolidate these DUCRs into this MUCR has been received:
+notifications.elem.content.MucrAssociation = Your request to consolidate MUCR into this MUCR has been received.
 notifications.elem.content.DucrDisassociation = Your request to disassociate this DUCR has been received.
+notifications.elem.content.MucrDisassociation = Your request to disassociate this MUCR has been received.
 notifications.elem.content.ShutMucr = Your request to shut this MUCR has been received.
 notifications.elem.content.footer = We will notify you when it has been successful.
 

@@ -19,8 +19,8 @@ package controllers
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.Choice.{Arrival, Departure}
+import forms.ConsignmentReferences
 import forms.ConsignmentReferences._
-import forms.{ConsignmentReferences, ConsignmentReferencesForm}
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -48,8 +48,8 @@ class ConsignmentReferencesController @Inject()(
   }
 
   def saveConsignmentReferences(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    ConsignmentReferencesForm
-      .bindFromRequest(request)
+    form
+      .bindFromRequest()
       .fold(
         (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
         validForm =>

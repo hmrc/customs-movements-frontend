@@ -40,8 +40,6 @@ case class Date(date: LocalDate) {
   }
 
   override def toString: String = date.toString
-  def toLocalDateTimeString: String =
-    date.atStartOfDay().toString + ":00"
 
   def asLocalDate: LocalDate = date
 }

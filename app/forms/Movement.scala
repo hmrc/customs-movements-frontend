@@ -16,11 +16,16 @@
 
 package forms
 
+import java.time.{ZoneId, ZoneOffset}
+import java.time.format.DateTimeFormatter
+
 import forms.Choice._
 import models.requests.{MovementDetailsRequest, MovementRequest, MovementType}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 object Movement {
+
+  private val departureDateTimeFormatter = DateTimeFormatter.ISO_INSTANT
 
   def createMovementRequest(cacheMap: CacheMap, eori: String, choice: Choice): MovementRequest = {
     val consignmentReference =
@@ -32,7 +37,7 @@ object Movement {
       case Departure =>
         cacheMap
           .getEntry[DepartureDetails](MovementDetails.formId)
-          .map(_.dateOfDeparture.toLocalDateTimeString)
+          .map(departure => departureDateTimeFormatter.format(departure.moment.atZone(ZoneId.systemDefault())))
           .getOrElse("")
       case Arrival =>
         cacheMap

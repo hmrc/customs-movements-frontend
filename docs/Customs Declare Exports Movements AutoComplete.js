@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports Movements AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.9
+// @version      0.10
 // @description  Customs Declare Exports Movements
 // @author       You
 // @match        http*://*/customs-movements*
@@ -76,10 +76,14 @@ function completePage() {
     }
     if(currentPageIs("/customs-movements/movement-details")){
         let title = document.title.toLowerCase();
+        const departure = new Date();
+        departure.setDate(departure.getDate() - 1); // One day before
         if(title.indexOf('departure') != -1) {
-            document.getElementById('dateOfDeparture_day').value = '31';
-            document.getElementById('dateOfDeparture_month').value = '10';
-            document.getElementById('dateOfDeparture_year').value = '2019';
+            document.getElementById('dateOfDeparture_day').value = now.getDay();
+            document.getElementById('dateOfDeparture_month').value = now.getMonth();
+            document.getElementById('dateOfDeparture_year').value = now.getFullYear();
+            document.getElementById('timeOfDeparture_hour').value = '21';
+            document.getElementById('timeOfDeparture_minute').value = '37';
         }
         if(title.indexOf('arrival') != -1) {
             document.getElementById('dateOfArrival_day').value = '05';

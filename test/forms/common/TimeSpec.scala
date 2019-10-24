@@ -16,10 +16,13 @@
 
 package forms.common
 
+import java.time.LocalTime
+
 import base.BaseSpec
+import helpers.FormMatchers
 import play.api.data.{Form, FormError}
 
-class TimeSpec extends BaseSpec {
+class TimeSpec extends BaseSpec with FormMatchers {
 
   val form: Form[Time] = Form(Time.mapping)
 
@@ -27,25 +30,17 @@ class TimeSpec extends BaseSpec {
 
     "return string in HH:mm format" in {
 
-      val time = Time(Some("10"), Some("10"))
+      val time = Time(LocalTime.of(10, 10))
 
       time.toString must be("10:10")
     }
 
     "format time when user use values like 1, 2, 3, etc..." in {
 
-      val time = Time(Some("1"), Some("1"))
-      val formattedTime = time.formatTime()
+      val time = Time(LocalTime.of(1, 1))
+      val formattedTime = time.toString
 
-      formattedTime must be(Time(Some("01"), Some("01")))
-    }
-
-    "format time when values contain more than two digits (started with 0)" in {
-
-      val time = Time(Some("00001"), Some("000001"))
-      val formattedTime = time.formatTime()
-
-      formattedTime must be(Time(Some("01"), Some("01")))
+      formattedTime mustEqual "01:01"
     }
   }
 
@@ -64,8 +59,7 @@ class TimeSpec extends BaseSpec {
 
       "hour and minute is empty" in {
 
-        val inputTime = Time(None, None)
-        val errors = form.fillAndValidate(inputTime).errors
+        val errors = form.bind(Map.empty[String, String]).errors
 
         errors.length must be(2)
         errors(0) must be(FormError("hour", "dateTime.time.hour.empty"))
@@ -73,9 +67,7 @@ class TimeSpec extends BaseSpec {
       }
 
       "hour and minute is incorrect" in {
-
-        val inputTime = Time(Some("24"), Some("60"))
-        val errors = form.fillAndValidate(inputTime).errors
+        val errors = form.bind(Map("hour" -> "24", "minute" -> "60")).errors
 
         errors.length must be(2)
         errors(0) must be(FormError("hour", "dateTime.time.hour.error"))
@@ -87,10 +79,10 @@ class TimeSpec extends BaseSpec {
 
       "time has correct values" in {
 
-        val inputTime = Time(Some("10"), Some("10"))
-        val errors = form.fillAndValidate(inputTime).errors
+        val inputTime = Map("hour" -> "10", "minute" -> "10")
+        val forms = form.bind(inputTime)
 
-        errors.length must be(0)
+        forms mustBe withoutErrors
       }
     }
   }

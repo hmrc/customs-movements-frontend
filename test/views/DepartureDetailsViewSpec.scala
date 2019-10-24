@@ -19,55 +19,70 @@ package views
 import controllers.routes
 import forms.{DepartureDetails, MovementDetails}
 import helpers.views.{CommonMessages, DepartureDetailsMessages}
+import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
-import views.spec.ViewSpec
+import views.spec.UnitViewSpec
 
-class DepartureDetailsViewSpec extends ViewSpec with DepartureDetailsMessages with CommonMessages {
+class DepartureDetailsViewSpec extends UnitViewSpec with DepartureDetailsMessages with CommonMessages {
 
   val form: Form[DepartureDetails] = MovementDetails.departureForm()
-  val departureDetailsPage = injector.instanceOf[views.html.departure_details]
+  val departureDetailsPage = new views.html.departure_details(mainTemplate)
 
-  private def createView(form: Form[DepartureDetails] = form): Html = departureDetailsPage(form)
+  private def createView(form: Form[DepartureDetails] = form): Document = departureDetailsPage(form)
 
   "Arrival Details View" should {
 
     "have a proper labels for messages" in {
-
-      assertMessage(departureTitle, "Departure date")
-      assertMessage(departureHeader, "Enter departure details")
-      assertMessage(departureQuestion, "Date of departure")
-      assertMessage(departureHint, "For example, 01 08 2007")
+      val messages = messagesApi.preferred(request)
+      messages must haveTranslationFor(departureTitle)
+      messages must haveTranslationFor(departureHeader)
+      messages must haveTranslationFor(departureDateQuestion)
+      messages must haveTranslationFor(departureDateHint)
+      messages must haveTranslationFor(departureTimeQuestion)
+      messages must haveTranslationFor(departureTimeHint)
     }
   }
 
   "Arrival Details View on empty page" should {
 
-    "display same page title as header" in {
+    val view = createView()
 
-      val view = createView()
-      view.title() must include(view.getElementsByTag("h1").text())
+    "display same page title as header" in {
+      val fullRender = departureDetailsPage(form)(request, messagesApi.preferred(request))
+      fullRender.title() must include(fullRender.getElementsByTag("h1").text())
     }
 
-    "display input with hint for date" in {
+    "have date section" that {
+      "got label" in {
+        view.getElementById("dateOfDeparture-label").text() mustBe departureDateQuestion
+      }
+      "got hint" in {
+        view.getElementById("dateOfDeparture-hint").text() mustBe departureDateHint
+      }
+    }
 
-      getElementById(createView(), "dateOfDeparture-label").text() mustBe messages(departureQuestion)
-      getElementById(createView(), "dateOfDeparture-hint").text() mustBe messages(departureHint)
+    "have time input" that {
+      "got legend" in {
+        view.getElementById("timeOfDeparture-label").text() mustBe departureTimeQuestion
+      }
+      "got lable" in {
+        view.getElementById("timeOfDeparture-hint").text() mustBe departureTimeHint
+      }
     }
 
     "display \"Back\" button that links to Consignment References" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = view.getElementById("link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") mustBe routes.ConsignmentReferencesController.displayPage().url
+      backButton.text() must be(backCaption)
+      backButton must haveHref(routes.ConsignmentReferencesController.displayPage())
     }
 
     "display \"Save and continue\" button on page" in {
 
-      val saveButton = getElementById(createView(), "submit")
+      val saveButton = view.getElementById("submit")
 
-      saveButton.text() mustBe messages(saveAndContinueCaption)
+      saveButton.text() mustBe saveAndContinueCaption
     }
   }
 }

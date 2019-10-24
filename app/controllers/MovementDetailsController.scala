@@ -77,7 +77,7 @@ class MovementDetailsController @Inject()(
       .fold(
         (formWithErrors: Form[ArrivalDetails]) => Future.successful(Left(arrivalDetailsPage(formWithErrors))),
         validForm =>
-          customsCacheService.cache[ArrivalDetails](movementCacheId, formId, validForm.formatTime()).map { _ =>
+          customsCacheService.cache[ArrivalDetails](movementCacheId, formId, validForm).map { _ =>
             Right(controllers.routes.LocationController.displayPage())
         }
       )

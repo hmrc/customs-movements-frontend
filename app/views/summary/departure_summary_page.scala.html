@@ -63,6 +63,10 @@
                 label = messages("summary.departure.date"),
                 value = data.getEntry[DepartureDetails](MovementDetails.formId).map(_.dateOfDeparture.toString)
             ))
+            @components.table_row_no_change_link(HtmlTableRow(
+                label = messages("summary.departure.time"),
+                value = data.getEntry[DepartureDetails](MovementDetails.formId).map(_.timeOfDeparture.toString)
+            ))
         }
 
         @components.summary_list(Some(messages("transport.title"))) {

@@ -16,6 +16,8 @@
 
 package unit.controllers
 
+import java.time.{LocalDate, LocalTime}
+
 import controllers.{routes, MovementDetailsController}
 import forms.common.{Date, Time}
 import forms.{ArrivalDetails, DepartureDetails, MovementDetails}
@@ -24,7 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
-import play.api.libs.json.{JsNumber, JsObject, JsString, JsValue}
+import play.api.libs.json.{JsNumber, JsObject, JsString, JsValue, Json}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -90,7 +92,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
       "display page method is invoked and cache contains data" in {
 
         givenAUserOnTheArrivalJourney()
-        val cachedData = ArrivalDetails(Date(Some(10), Some(2), Some(2019)), Time(Some("10"), Some("10")))
+        val cachedData = ArrivalDetails(Date(LocalDate.of(2019, 2, 10)), Time(LocalTime.of(10, 10)))
         withCaching(MovementDetails.formId, Some(cachedData))
 
         val result = controller.displayPage()(getRequest())
@@ -153,7 +155,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
       "display page method is invoked and cache contains data" in {
 
         givenAUserOnTheDepartureJourney()
-        val cachedData = DepartureDetails(Date(Some(10), Some(2), Some(2019)))
+        val cachedData = DepartureDetails(Date(LocalDate.of(2019, 2, 10)), Time(LocalTime.now()))
         withCaching(MovementDetails.formId, Some(cachedData))
 
         val result = controller.displayPage()(getRequest())
@@ -184,12 +186,12 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
         givenAUserOnTheDepartureJourney()
         withCaching(MovementDetails.formId)
 
-        val correctDate: JsValue =
-          JsObject(Map("day" -> JsNumber(10), "month" -> JsNumber(10), "year" -> JsNumber(2019)))
+        val form = Json.obj(
+          "dateOfDeparture" -> Json.obj("day" -> 10, "month" -> 10, "year" -> 2019),
+          "timeOfDeparture" -> Json.obj("hour" -> 12, "minute" -> 34)
+        )
 
-        val correctForm: JsValue = JsObject(Map("dateOfDeparture" -> correctDate))
-
-        val result = controller.saveMovementDetails()(postRequest(correctForm))
+        val result = controller.saveMovementDetails()(postRequest(form))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.LocationController.displayPage().url

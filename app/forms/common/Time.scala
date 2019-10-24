@@ -18,27 +18,16 @@ package forms.common
 
 import java.time.LocalTime
 
-import play.api.data.{Forms, Mapping}
 import play.api.data.Forms.{optional, text}
+import play.api.data.{Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 
 import scala.util.Try
 
-case class Time(hour: Option[String], minute: Option[String]) {
+case class Time(time: LocalTime) {
 
-  override def toString: String =
-    LocalTime.of(hour.map(_.toInt).getOrElse(0), minute.map(_.toInt).getOrElse(0)).toString
+  override def toString: String = time.toString
 
-  def formatTime(): Time = {
-    import java.text.DecimalFormat
-
-    val formatter = new DecimalFormat("00")
-
-    val formattedHour = hour.map(value => formatter.format(value.toInt))
-    val formattedMinute = minute.map(value => formatter.format(value.toInt))
-
-    Time(formattedHour, formattedMinute)
-  }
 }
 
 object Time {
@@ -51,11 +40,22 @@ object Time {
 
   private val correctMinute: String => Boolean = (minute: String) => Try(minute.toInt).map(value => value >= 0 && value <= 59).getOrElse(false)
 
-  val mapping: Mapping[Time] = Forms
-    .mapping(
-      hourKey -> optional(text().verifying("dateTime.time.hour.error", correctHour))
-        .verifying("dateTime.time.hour.empty", _.nonEmpty),
-      minuteKey -> optional(text().verifying("dateTime.time.minute.error", correctMinute))
-        .verifying("dateTime.time.minute.empty", _.nonEmpty)
-    )(Time.apply)(Time.unapply)
+  val mapping: Mapping[Time] = {
+    def bind(hour: Option[String], minutes: Option[String]): Time =
+      (hour, minutes) match {
+        case (Some(h), Some(m)) => Time(LocalTime.of(h.toInt, m.toInt))
+        case _                  => throw new IllegalArgumentException("Could not build time - missing one of parameters")
+      }
+
+    def unbind(time: Time): Option[(Option[String], Option[String])] =
+      Some((Some(time.time.getHour.toString), Some(time.time.getMinute.toString)))
+
+    Forms
+      .mapping(
+        hourKey -> optional(text().verifying("dateTime.time.hour.error", correctHour))
+          .verifying("dateTime.time.hour.empty", _.nonEmpty),
+        minuteKey -> optional(text().verifying("dateTime.time.minute.error", correctMinute))
+          .verifying("dateTime.time.minute.empty", _.nonEmpty)
+      )(bind)(unbind)
+  }
 }

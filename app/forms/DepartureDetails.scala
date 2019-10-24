@@ -33,10 +33,8 @@ case class DepartureDetails(dateOfDeparture: Date, timeOfDeparture: Time) {
 object DepartureDetails {
   implicit val format: OFormat[DepartureDetails] = Json.format[DepartureDetails]
 
-  val mapping = Forms.mapping(
-    "dateOfDeparture" -> Date.mapping,
-    "timeOfDeparture" -> Time.mapping
-  )(DepartureDetails.apply)(DepartureDetails.unapply)
+  val mapping = Forms
+    .mapping("dateOfDeparture" -> Date.mapping, "timeOfDeparture" -> Time.mapping)(DepartureDetails.apply)(DepartureDetails.unapply)
     .verifying("departure.details.error.overdue", _.moment.isAfter(LocalDateTime.now().minusDays(60)))
-    .verifying("departure.details.error.future", _.moment.isBefore(LocalDateTime.now()) )
+    .verifying("departure.details.error.future", _.moment.isBefore(LocalDateTime.now()))
 }

@@ -42,14 +42,6 @@ class TimeSpec extends BaseSpec with FormMatchers {
 
       formattedTime mustEqual "01:01"
     }
-
-//    "format time when values contain more than two digits (started with 0)" in {
-//
-//      val time = Time(Some("00001"), Some("000001"))
-//      val formattedTime = time.formatTime()
-//
-//      formattedTime must be(Time(Some("01"), Some("01")))
-//    }
   }
 
   "Time object" should {

@@ -57,21 +57,19 @@ object Date {
 
   val mapping: Mapping[Date] = {
 
-    def validate(day: Option[Int], month : Option[Int], year: Option[Int]): Boolean = {
+    def validate(day: Option[Int], month: Option[Int], year: Option[Int]): Boolean =
       (day, month, year) match {
         case (Some(d), Some(m), Some(y)) => Try(LocalDate.of(y, m, d)).isSuccess
-        case _ => false
+        case _                           => false
       }
-    }
 
-    def bind(day: Option[Int], month : Option[Int], year: Option[Int]): Date = {
+    def bind(day: Option[Int], month: Option[Int], year: Option[Int]): Date =
       (day, month, year) match {
         case (Some(d), Some(m), Some(y)) => Date(LocalDate.of(y, m, d))
-        case _ => throw new IllegalArgumentException("Could not bind local date when any is empty")
+        case _                           => throw new IllegalArgumentException("Could not bind local date when any is empty")
       }
-    }
 
-    def unbind(date: Date): (Option[Int], Option[Int], Option[Int])= {
+    def unbind(date: Date): (Option[Int], Option[Int], Option[Int]) = {
       val value = date.date
       (Some(value.getDayOfMonth), Some(value.getMonthValue), Some(value.getYear))
     }
@@ -84,6 +82,8 @@ object Date {
           .verifying("dateTime.date.month.empty", _.nonEmpty),
         yearKey -> optional(number().verifying("dateTime.date.year.error", correctYear))
           .verifying("dateTime.date.year.empty", _.nonEmpty)
-      ).verifying("dateTime.date.error.format", (validate _).tupled).transform((bind _).tupled, unbind)
+      )
+      .verifying("dateTime.date.error.format", (validate _).tupled)
+      .transform((bind _).tupled, unbind)
   }
 }

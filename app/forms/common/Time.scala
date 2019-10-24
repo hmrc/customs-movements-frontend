@@ -41,12 +41,11 @@ object Time {
   private val correctMinute: String => Boolean = (minute: String) => Try(minute.toInt).map(value => value >= 0 && value <= 59).getOrElse(false)
 
   val mapping: Mapping[Time] = {
-    def bind(hour: Option[String], minutes: Option[String]): Time = {
+    def bind(hour: Option[String], minutes: Option[String]): Time =
       (hour, minutes) match {
         case (Some(h), Some(m)) => Time(LocalTime.of(h.toInt, m.toInt))
-        case _ => throw new IllegalArgumentException("Could not build time - missing one of parameters")
+        case _                  => throw new IllegalArgumentException("Could not build time - missing one of parameters")
       }
-    }
 
     def unbind(time: Time): Option[(Option[String], Option[String])] =
       Some((Some(time.time.getHour.toString), Some(time.time.getMinute.toString)))

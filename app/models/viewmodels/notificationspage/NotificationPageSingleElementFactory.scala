@@ -34,8 +34,8 @@ class NotificationPageSingleElementFactory @Inject()(responseConverterProvider: 
 
   def build(submission: SubmissionFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
     submission.actionType match {
-      case Arrival | Departure | DucrDisassociation | MucrAssociation | ShutMucr => buildForRequest(submission)
-      case DucrAssociation | MucrAssociation                                     => buildForDucrAssociation(submission)
+      case Arrival | Departure | DucrDisassociation | MucrAssociation | MucrDisassociation | ShutMucr => buildForRequest(submission)
+      case DucrAssociation                                                                            => buildForDucrAssociation(submission)
     }
 
   private def buildForRequest(submission: SubmissionFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement = {
@@ -55,14 +55,12 @@ class NotificationPageSingleElementFactory @Inject()(responseConverterProvider: 
   }
 
   private def buildForDucrAssociation(submission: SubmissionFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement = {
-
     val ducrs = submission.ucrBlocks.filter(_.ucrType == "D")
     val content = Html(
       s"<p>${messages(s"notifications.elem.content.${submission.actionType.value}")}</p>" +
         ducrs.map(block => s"<p>${block.ucr}</p>").mkString +
         s"<p>${messages("notifications.elem.content.footer")}</p>"
     )
-
     buildForRequest(submission).copy(content = content)
   }
 

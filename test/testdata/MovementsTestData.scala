@@ -39,7 +39,7 @@ object MovementsTestData {
     )
   )
   val date = Date(LocalDate.of(2018, 8, 10))
-  val departureDetails = DepartureDetails(date, LocalTime.now())
+  val departureDetails = DepartureDetails(date, Time(LocalTime.now()))
   val location: JsValue = Json.toJson(Location("PLAYcorrect"))
   val correctTransport: JsValue = JsObject(Map("modeOfTransport" -> JsString("2"), "nationality" -> JsString("PL"), "transportId" -> JsString("REF")))
 
@@ -62,8 +62,8 @@ object MovementsTestData {
   def consignmentReferences(refType: String) = ConsignmentReferences(refType, CommonTestData.correctUcr)
 
   def arrivalDepartureTimes(movementType: Choice): JsValue = movementType match {
-    case Arrival => Json.toJson(ArrivalDetails(date, Time(Some("13"), Some("34"))))
-    case _       => Json.toJson(DepartureDetails(date, LocalTime.now())) // FIXME
+    case Arrival => Json.toJson(ArrivalDetails(date, Time(LocalTime.of(13, 34))))
+    case _       => Json.toJson(DepartureDetails(date, Time(LocalTime.now())))
   }
 
   def arrivalReference(movementType: Choice): ArrivalReference =

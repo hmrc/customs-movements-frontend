@@ -18,7 +18,7 @@ package unit.controllers
 
 import java.time.{LocalDate, LocalTime}
 
-import controllers.{MovementDetailsController, routes}
+import controllers.{routes, MovementDetailsController}
 import forms.common.{Date, Time}
 import forms.{ArrivalDetails, DepartureDetails, MovementDetails}
 import org.mockito.ArgumentCaptor
@@ -92,7 +92,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
       "display page method is invoked and cache contains data" in {
 
         givenAUserOnTheArrivalJourney()
-        val cachedData = ArrivalDetails(Date(LocalDate.of(2019, 2, 10)), Time(Some("10"), Some("10"))) // FIXME
+        val cachedData = ArrivalDetails(Date(LocalDate.of(2019, 2, 10)), Time(LocalTime.of(10, 10)))
         withCaching(MovementDetails.formId, Some(cachedData))
 
         val result = controller.displayPage()(getRequest())
@@ -155,7 +155,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
       "display page method is invoked and cache contains data" in {
 
         givenAUserOnTheDepartureJourney()
-        val cachedData = DepartureDetails(Date(LocalDate.of(2019, 2, 10)), LocalTime.now()) // FIXME
+        val cachedData = DepartureDetails(Date(LocalDate.of(2019, 2, 10)), Time(LocalTime.now()))
         withCaching(MovementDetails.formId, Some(cachedData))
 
         val result = controller.displayPage()(getRequest())
@@ -187,15 +187,8 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
         withCaching(MovementDetails.formId)
 
         val form = Json.obj(
-          "dateOfDeparture" -> Json.obj(
-            "day" -> 10,
-            "month" -> 10,
-            "year" -> 2019
-          ),
-          "timeOfDeparture" -> Json.obj(
-            "hours" -> 12,
-            "minutes" -> 34
-          )
+          "dateOfDeparture" -> Json.obj("day" -> 10, "month" -> 10, "year" -> 2019),
+          "timeOfDeparture" -> Json.obj("hour" -> 12, "minute" -> 34)
         )
 
         val result = controller.saveMovementDetails()(postRequest(form))

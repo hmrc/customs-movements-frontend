@@ -20,20 +20,18 @@ import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.data.{Form, FormError}
 
 trait FormMatchers {
-  val errorless: BeMatcher[Form[_]] = new BeMatcher[Form[_]]{
-    def fieldErrors(errors: Seq[FormError]): String = {
-      errors.groupBy(_.key).map {
-        case (key, keyError) => s"$key => ${keyError.map(_.message).mkString("["," ,", "]")}"
-      }.mkString("\n")
-    }
+  val errorless: BeMatcher[Form[_]] = new BeMatcher[Form[_]] {
+    def fieldErrors(errors: Seq[FormError]): String =
+      errors
+        .groupBy(_.key)
+        .map {
+          case (key, keyError) => s"$key => ${keyError.map(_.message).mkString("[", " ,", "]")}"
+        }
+        .mkString("\n")
 
     override def apply(left: Form[_]): MatchResult = {
       val errors = left.errors
-      MatchResult(
-        errors.isEmpty,
-        s"Form has errors. Errors ${fieldErrors(errors)}",
-        "Form does not have errors"
-      )
+      MatchResult(errors.isEmpty, s"Form has errors. Errors ${fieldErrors(errors)}", "Form does not have errors")
     }
   }
 }

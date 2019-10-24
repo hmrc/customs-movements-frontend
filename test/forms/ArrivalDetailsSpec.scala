@@ -16,7 +16,7 @@
 
 package forms
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalTime}
 
 import base.BaseSpec
 import forms.common.{Date, Time}
@@ -25,7 +25,7 @@ class ArrivalDetailsSpec extends BaseSpec {
 
   private val date = LocalDate.of(2019, 1, 1)
 
-  private val timeInputData = Time.mapping.withPrefix("timeOfArrival").unbind(Time(Some("1"), Some("1")))
+  private val timeInputData = Time.mapping.withPrefix("timeOfArrival").unbind(Time(LocalTime.of(1, 1)))
 
   private val dateInputData = Date.mapping.withPrefix("dateOfArrival").unbind(Date(date))
 

@@ -71,9 +71,11 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
     "call HttpClient, passing body provided" in new Test {
 
-      connector.sendArrivalDeclaration(movementSubmissionRequest(Arrival)).futureValue
+      private val request: MovementRequest = movementSubmissionRequest(Arrival)
 
-      verify(httpClientMock).POST(any(), meq(movementSubmissionRequest(Arrival)), any())(any(), any(), any(), any())
+      connector.sendArrivalDeclaration(request).futureValue
+
+      verify(httpClientMock).POST(any(), meq(request), any())(any(), any(), any(), any())
     }
 
     "call HttpClient, passing correct headers" in new Test {
@@ -104,11 +106,12 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
     "call HttpClient, passing body provided" in new Test {
 
+      private val request: MovementRequest = movementSubmissionRequest(Departure)
       connector
-        .sendDepartureDeclaration(movementSubmissionRequest(Departure))
+        .sendDepartureDeclaration(request)
         .futureValue
 
-      verify(httpClientMock).POST(any(), meq(movementSubmissionRequest(Departure)), any())(any(), any(), any(), any())
+      verify(httpClientMock).POST(any(), meq(request), any())(any(), any(), any(), any())
     }
 
     "call HttpClient, passing correct headers" in new Test {

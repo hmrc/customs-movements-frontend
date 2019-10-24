@@ -16,7 +16,7 @@
 
 package services.audit
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalTime}
 
 import base.{BaseSpec, MockCustomsCacheService}
 import forms.Choice.Arrival
@@ -73,7 +73,7 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustoms
       val expectedResult = Map(
         Location.formId -> Json.toJson(Location("PLAUcorrect")),
         MovementDetails.formId -> Json.toJson(
-          ArrivalDetails(dateOfArrival = Date(LocalDate.of(2019, 1, 12)), timeOfArrival = Time(Some("10"), Some("10")))
+          ArrivalDetails(dateOfArrival = Date(LocalDate.of(2019, 1, 12)), timeOfArrival = Time(LocalTime.of(10, 10)))
         ),
         ArrivalReference.formId -> Json.toJson(ArrivalReference(Some("213"))),
         ConsignmentReferences.formId -> Json.toJson(ConsignmentReferences("reference", "value")),

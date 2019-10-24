@@ -128,8 +128,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           conversationId = conversationId,
           actionType = ActionType.MucrAssociation,
           requestTimestamp = testTimestamp,
-          ucrBlocks =
-            Seq(UcrBlock(ucr = correctUcr, ucrType = "M"), UcrBlock(ucr = correctUcr_2, ucrType = "M"))
+          ucrBlocks = Seq(UcrBlock(ucr = correctUcr, ucrType = "M"), UcrBlock(ucr = correctUcr_2, ucrType = "M"))
         )
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.MucrAssociation"),

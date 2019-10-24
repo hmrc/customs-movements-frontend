@@ -123,7 +123,6 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
         val input: SubmissionFrontendModel = SubmissionFrontendModel(
           eori = validEori,
-          providerId = None,
           conversationId = conversationId,
           actionType = ActionType.MucrAssociation,
           requestTimestamp = testTimestamp,

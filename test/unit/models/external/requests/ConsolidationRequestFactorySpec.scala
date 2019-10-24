@@ -38,21 +38,41 @@ class ConsolidationRequestFactorySpec extends UnitSpec {
 
     "build correct Association Ducr request" in {
 
-      buildAssociationRequest(eori, mucrParent, associateDucr) mustBe ConsolidationRequest(consolidationType = ASSOCIATE_DUCR, eori = eori, mucr = Some(mucrParent), ucr = Some(ducr))
+      buildAssociationRequest(eori, mucrParent, associateDucr) mustBe ConsolidationRequest(
+        consolidationType = ASSOCIATE_DUCR,
+        eori = eori,
+        mucr = Some(mucrParent),
+        ucr = Some(ducr)
+      )
     }
 
     "build correct Association Mucr request" in {
 
-      buildAssociationRequest(eori, mucrParent, associateMucr) mustBe ConsolidationRequest(consolidationType = ASSOCIATE_MUCR, eori = eori, mucr = Some(mucrParent), ucr = Some(mucr))
+      buildAssociationRequest(eori, mucrParent, associateMucr) mustBe ConsolidationRequest(
+        consolidationType = ASSOCIATE_MUCR,
+        eori = eori,
+        mucr = Some(mucrParent),
+        ucr = Some(mucr)
+      )
     }
 
     "build correct Disassociation Ducr request" in {
 
-      buildDisassociationRequest(eori, disassociateDucr) mustBe ConsolidationRequest(consolidationType = DISASSOCIATE_DUCR, eori = eori, mucr = None, ucr = Some(ducr))
+      buildDisassociationRequest(eori, disassociateDucr) mustBe ConsolidationRequest(
+        consolidationType = DISASSOCIATE_DUCR,
+        eori = eori,
+        mucr = None,
+        ucr = Some(ducr)
+      )
     }
     "build correct Disassociation Mucr request" in {
 
-      buildDisassociationRequest(eori, disassociateMucr) mustBe ConsolidationRequest(consolidationType = DISASSOCIATE_MUCR, eori= eori, mucr = None, ucr = Some(mucr))
+      buildDisassociationRequest(eori, disassociateMucr) mustBe ConsolidationRequest(
+        consolidationType = DISASSOCIATE_MUCR,
+        eori = eori,
+        mucr = None,
+        ucr = Some(mucr)
+      )
     }
 
     "build correct Shut Mucr request" in {

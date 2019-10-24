@@ -160,7 +160,9 @@ class SubmissionServiceSpec
       when(mockCustomsExportsMovementConnector.sendConsolidationRequest(any())(any()))
         .thenReturn(Future.successful(exampleAssociateDucrRequest))
 
-      submissionService.submitUcrAssociation(MucrOptions(ValidMucr), validDucrAssociation, validEori).futureValue must equal(exampleAssociateDucrRequest)
+      submissionService.submitUcrAssociation(MucrOptions(ValidMucr), validDucrAssociation, validEori).futureValue must equal(
+        exampleAssociateDucrRequest
+      )
 
       verify(mockAuditService).auditAssociate(ArgumentMatchers.eq(validEori), any(), any(), any())(any())
     }

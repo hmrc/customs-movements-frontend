@@ -24,7 +24,7 @@ import javax.inject.Inject
 import models.requests.{MovementDetailsRequest, MovementRequest, MovementType}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-class MovementBuilder @Inject()(zoneId: ZoneId) {
+class MovementBuilder @Inject()(details: MovementDetails, zoneId: ZoneId) {
 
   private val departureDateTimeFormatter = DateTimeFormatter.ISO_INSTANT
 
@@ -38,7 +38,7 @@ class MovementBuilder @Inject()(zoneId: ZoneId) {
       case Departure =>
         cacheMap
           .getEntry[DepartureDetails](MovementDetails.formId)
-          .map(departure => departureDateTimeFormatter.format(departure.goodsDepartureMoment.atZone(zoneId)))
+          .map(departure => departureDateTimeFormatter.format(departure.goodsDepartureMoment(zoneId)))
           .getOrElse("")
       case Arrival =>
         cacheMap

@@ -18,7 +18,7 @@ package unit.controllers
 
 import java.time.{LocalDate, LocalTime}
 
-import controllers.{routes, MovementDetailsController}
+import controllers.{MovementDetailsController, routes}
 import forms.common.{Date, Time}
 import forms.{ArrivalDetails, DepartureDetails, MovementDetails}
 import org.mockito.ArgumentCaptor
@@ -29,6 +29,7 @@ import play.api.data.Form
 import play.api.libs.json.{JsNumber, JsObject, JsString, JsValue, Json}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import testdata.MovementsTestData
 import unit.base.ControllerSpec
 import views.html.{arrival_details, departure_details}
 
@@ -44,6 +45,7 @@ class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
     mockJourneyAction,
     mockCustomsCacheService,
     stubMessagesControllerComponents(),
+    MovementsTestData.movementDetails,
     mockArrivalDetailsPage,
     mockDepartureDetailsPage
   )(global)

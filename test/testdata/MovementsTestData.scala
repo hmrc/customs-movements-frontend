@@ -43,7 +43,11 @@ object MovementsTestData {
   val location: JsValue = Json.toJson(Location("PLAYcorrect"))
   val correctTransport: JsValue = JsObject(Map("modeOfTransport" -> JsString("2"), "nationality" -> JsString("PL"), "transportId" -> JsString("REF")))
 
-  val movementBuilder = new MovementBuilder(ZoneId.of("Europe/London"))
+  private val zoneId: ZoneId = ZoneId.of("Europe/London")
+
+  val movementDetails = new MovementDetails(zoneId)
+
+  val movementBuilder = new MovementBuilder(movementDetails, zoneId)
 
   def newUser(eori: String): SignedInUser =
     SignedInUser(eori, Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori))))

@@ -20,12 +20,13 @@ import java.time.format.DateTimeFormatter
 import java.time.{ZoneId, ZonedDateTime}
 
 import base.BaseSpec
+import com.google.inject.{AbstractModule, Guice}
 import models.UcrBlock
 import models.notifications.{Entry, EntryStatus, ResponseType}
 import models.viewmodels.decoder.{CRCCode, Decoder, ROECode, SOECode}
 import models.viewmodels.notificationspage.MovementTotalsResponseType.EMR
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
-import modules.DateTimeFormatterModule.NotificationsPageFormatter
+import modules.DateTimeModule
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -42,12 +43,16 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
   private trait Test {
     implicit val messages: Messages = stubMessages()
 
-    val decoderMock: Decoder = mock[Decoder]
-    when(decoderMock.crc(any[String])).thenReturn(Some(crcKeyFromDecoder))
-    when(decoderMock.roe(any[String])).thenReturn(Some(roeKeyFromDecoder))
-    when(decoderMock.mucrSoe(any[String])).thenReturn(Some(mucrSoeKeyFromDecoder))
+    val decoder: Decoder = mock[Decoder]
+    when(decoder.crc(any[String])).thenReturn(Some(crcKeyFromDecoder))
+    when(decoder.roe(any[String])).thenReturn(Some(roeKeyFromDecoder))
+    when(decoder.mucrSoe(any[String])).thenReturn(Some(mucrSoeKeyFromDecoder))
 
-    val contentBuilder = new EMRResponseConverter(decoderMock, NotificationsPageFormatter)
+    private val injector = Guice.createInjector(new DateTimeModule(), new AbstractModule {
+      override def configure(): Unit = bind(classOf[Decoder]).toInstance(decoder)
+    })
+
+    val contentBuilder = injector.getInstance(classOf[EMRResponseConverter])
   }
 
   "EMRResponseConverter on convert" when {
@@ -60,11 +65,11 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
 
         contentBuilder.convert(input)
 
-        verify(decoderMock).crc(meq(crcKeyFromDecoder.code))
-        verify(decoderMock).roe(meq(roeKeyFromDecoder.code))
-        verify(decoderMock).mucrSoe(meq(mucrSoeKeyFromDecoder.code))
-        verify(decoderMock, times(0)).ics(any())
-        verify(decoderMock, times(0)).ducrSoe(any())
+        verify(decoder).crc(meq(crcKeyFromDecoder.code))
+        verify(decoder).roe(meq(roeKeyFromDecoder.code))
+        verify(decoder).mucrSoe(meq(mucrSoeKeyFromDecoder.code))
+        verify(decoder, times(0)).ics(any())
+        verify(decoder, times(0)).ducrSoe(any())
       }
 
       "return NotificationsPageSingleElement with values returned by Messages" in new Test {
@@ -100,9 +105,9 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
 
         contentBuilder.convert(input)
 
-        verify(decoderMock).roe(meq(roeKeyFromDecoder.code))
-        verify(decoderMock, times(0)).crc(any())
-        verify(decoderMock, times(0)).mucrSoe(any())
+        verify(decoder).roe(meq(roeKeyFromDecoder.code))
+        verify(decoder, times(0)).crc(any())
+        verify(decoder, times(0)).mucrSoe(any())
       }
 
       "return NotificationsPageSingleElement without content for missing codes" in new Test {
@@ -133,16 +138,16 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
 
         contentBuilder.convert(input)
 
-        verify(decoderMock).crc(meq(UnknownCrcCode))
-        verify(decoderMock).roe(meq(UnknownRoeCode))
-        verify(decoderMock).mucrSoe(meq(UnknownMucrSoeCode))
+        verify(decoder).crc(meq(UnknownCrcCode))
+        verify(decoder).roe(meq(UnknownRoeCode))
+        verify(decoder).mucrSoe(meq(UnknownMucrSoeCode))
       }
 
       "return NotificationsPageSingleElement without content for unknown codes" in new Test {
 
-        when(decoderMock.crc(meq(UnknownCrcCode))).thenReturn(None)
-        when(decoderMock.roe(meq(UnknownRoeCode))).thenReturn(None)
-        when(decoderMock.mucrSoe(meq(UnknownMucrSoeCode))).thenReturn(None)
+        when(decoder.crc(meq(UnknownCrcCode))).thenReturn(None)
+        when(decoder.roe(meq(UnknownRoeCode))).thenReturn(None)
+        when(decoder.mucrSoe(meq(UnknownMucrSoeCode))).thenReturn(None)
 
         val input = emrResponseUnknownCodes
         val expectedResult = NotificationsPageSingleElement(

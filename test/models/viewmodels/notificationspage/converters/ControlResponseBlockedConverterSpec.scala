@@ -17,9 +17,10 @@
 package models.viewmodels.notificationspage.converters
 
 import base.BaseSpec
+import com.google.inject.{AbstractModule, Guice}
 import models.notifications.ResponseType
 import models.viewmodels.decoder.{ActionCode, Decoder, ILEError}
-import modules.DateTimeFormatterModule.NotificationsPageFormatter
+import modules.DateTimeModule
 import org.mockito.ArgumentMatchers.{anyString, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -32,13 +33,19 @@ class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar {
 
   import ControlResponseBlockedConverterSpec._
 
+
+
   private trait Test {
     implicit val messages: Messages = stubMessages()
 
     val decoder: Decoder = mock[Decoder]
     when(decoder.error(anyString)).thenReturn(Some(ILEError("CODE", "Messages.Key")))
 
-    val converter = new ControlResponseBlockedConverter(decoder, NotificationsPageFormatter)
+    private val injector = Guice.createInjector(new DateTimeModule(), new AbstractModule {
+      override def configure(): Unit = bind(classOf[Decoder]).toInstance(decoder)
+    })
+
+    val converter = injector.getInstance(classOf[ControlResponseBlockedConverter])
   }
 
   "ControlResponseBlockedConverter on convert" should {

@@ -19,16 +19,17 @@ package modules
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-import com.google.inject.AbstractModule
-import modules.DateTimeFormatterModule.NotificationsPageFormatter
+import com.google.inject.{AbstractModule, Provides}
+import javax.inject.Singleton
 
-class DateTimeFormatterModule extends AbstractModule {
-  override def configure(): Unit =
-    bind(classOf[DateTimeFormatter]).toInstance(NotificationsPageFormatter)
-}
+class DateTimeModule extends AbstractModule {
 
-object DateTimeFormatterModule {
-  lazy val NotificationsPageFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
+  @Provides
+  @Singleton
+  def formatter(zoneId: ZoneId): DateTimeFormatter =
+    DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(zoneId)
 
+  override def configure(): Unit = {
+    bind(classOf[ZoneId]).toInstance(ZoneId.of("Europe/London"))
+  }
 }

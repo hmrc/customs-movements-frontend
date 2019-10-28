@@ -16,7 +16,7 @@
 
 package testdata
 
-import java.time.{Instant, LocalDate, LocalTime}
+import java.time.{Instant, LocalDate, LocalTime, ZoneId}
 
 import forms.Choice.Arrival
 import forms._
@@ -43,11 +43,17 @@ object MovementsTestData {
   val location: JsValue = Json.toJson(Location("PLAYcorrect"))
   val correctTransport: JsValue = JsObject(Map("modeOfTransport" -> JsString("2"), "nationality" -> JsString("PL"), "transportId" -> JsString("REF")))
 
+  private val zoneId: ZoneId = ZoneId.of("Europe/London")
+
+  val movementDetails = new MovementDetails(zoneId)
+
+  val movementBuilder = new MovementBuilder(movementDetails, zoneId)
+
   def newUser(eori: String): SignedInUser =
     SignedInUser(eori, Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori))))
 
   def validMovementRequest(movementType: Choice): MovementRequest =
-    Movement.createMovementRequest(CacheMap(movementType.toString, cacheMapData(movementType)), "eori1", movementType)
+    movementBuilder.createMovementRequest(CacheMap(movementType.toString, cacheMapData(movementType)), "eori1", movementType)
 
   def cacheMapData(movementType: Choice, refType: String = "DUCR"): Map[String, JsValue] =
     Map(

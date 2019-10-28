@@ -16,14 +16,13 @@
 
 package models.viewmodels.notificationspage.converters
 
-import java.time.format.DateTimeFormatter
-import java.time.{ZoneId, ZonedDateTime}
+import java.time.ZonedDateTime
 
 import base.BaseSpec
+import com.google.inject.{AbstractModule, Guice}
 import models.notifications.ResponseType
 import models.viewmodels.decoder.{CRCCode, Decoder}
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
-import modules.DateTimeFormatterModule.NotificationsPageFormatter
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -31,22 +30,26 @@ import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import testdata.NotificationTestData.exampleNotificationFrontendModel
+import utils.DateTimeTestModule
 
 class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
 
   private val testTimestampString = "2019-10-23T12:34+00:00"
-  private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault())
-  private val testTimestamp = ZonedDateTime.parse(testTimestampString, formatter).toInstant
+  private val testTimestamp = ZonedDateTime.parse(testTimestampString).toInstant
 
   private val crcCodeKeyFromDecoder = CRCCode.Success
 
   private trait Test {
     implicit val messages: Messages = stubMessages()
 
-    val decoderMock: Decoder = mock[Decoder]
-    when(decoderMock.crc(any[String])).thenReturn(Some(crcCodeKeyFromDecoder))
+    val decoder: Decoder = mock[Decoder]
+    when(decoder.crc(any[String])).thenReturn(Some(crcCodeKeyFromDecoder))
 
-    val converter = new MovementResponseConverter(decoderMock, NotificationsPageFormatter)
+    private val injector = Guice.createInjector(new DateTimeTestModule(), new AbstractModule {
+      override def configure(): Unit = bind(classOf[Decoder]).toInstance(decoder)
+    })
+
+    val converter = injector.getInstance(classOf[MovementResponseConverter])
   }
 
   "MovementResponseConverter on build" when {
@@ -59,7 +62,7 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
 
         converter.convert(input)
 
-        verify(decoderMock).crc(meq(crcCodeKeyFromDecoder.code))
+        verify(decoder).crc(meq(crcCodeKeyFromDecoder.code))
       }
 
       "return NotificationsPageSingleElement with values returned by Messages" in new Test {
@@ -87,7 +90,7 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
 
         converter.convert(input)
 
-        verify(decoderMock, times(0)).crc(any[String])
+        verify(decoder, times(0)).crc(any[String])
       }
 
       "return NotificationsPageSingleElement without content for missing codes" in new Test {
@@ -113,13 +116,13 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
 
         converter.convert(input)
 
-        verify(decoderMock).crc(meq(crcCode))
+        verify(decoder).crc(meq(crcCode))
       }
 
       "return NotificationsPageSingleElement without content for unknown codes" in new Test {
 
         val crcCode = "123456"
-        when(decoderMock.crc(meq(crcCode))).thenReturn(None)
+        when(decoder.crc(meq(crcCode))).thenReturn(None)
 
         val input =
           exampleNotificationFrontendModel(responseType = ResponseType.MovementResponse, timestampReceived = testTimestamp, crcCode = Some(crcCode))

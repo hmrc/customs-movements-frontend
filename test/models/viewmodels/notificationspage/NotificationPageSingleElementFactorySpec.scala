@@ -19,11 +19,12 @@ package models.viewmodels.notificationspage
 import java.time.format.DateTimeFormatter
 import java.time.{ZoneId, ZonedDateTime}
 
+import com.google.inject.Guice
 import models.UcrBlock
 import models.notifications.NotificationFrontendModel
 import models.submissions.{ActionType, SubmissionFrontendModel}
 import models.viewmodels.notificationspage.converters._
-import modules.DateTimeFormatterModule.NotificationsPageFormatter
+import modules.DateTimeModule
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
@@ -41,10 +42,12 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
   private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault())
   private val testTimestamp = ZonedDateTime.parse(testTimestampString, formatter).toInstant
 
+  private val injector = Guice.createInjector(new DateTimeModule())
+
   private trait Test {
     implicit val messages: Messages = stubMessages()
 
-    val unknownResponseConverter = new UnknownResponseConverter(NotificationsPageFormatter)
+    val unknownResponseConverter = injector.getInstance(classOf[UnknownResponseConverter])
 
     val responseConverterProvider = mock[ResponseConverterProvider]
     when(responseConverterProvider.provideResponseConverter(any[NotificationFrontendModel]))

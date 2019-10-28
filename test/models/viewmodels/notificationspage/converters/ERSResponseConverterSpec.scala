@@ -16,16 +16,15 @@
 
 package models.viewmodels.notificationspage.converters
 
-import java.time.format.DateTimeFormatter
-import java.time.{Instant, ZoneId, ZonedDateTime}
+import java.time.{Instant, ZonedDateTime}
 
 import base.BaseSpec
+import com.google.inject.{AbstractModule, Guice}
 import models.UcrBlock
 import models.notifications.{Entry, EntryStatus, ResponseType}
 import models.viewmodels.decoder.{Decoder, ICSCode, ROECode, SOECode}
 import models.viewmodels.notificationspage.MovementTotalsResponseType.ERS
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
-import modules.DateTimeFormatterModule.NotificationsPageFormatter
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -34,6 +33,7 @@ import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import testdata.CommonTestData._
 import testdata.NotificationTestData.exampleNotificationFrontendModel
+import utils.DateTimeTestModule
 
 class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
 
@@ -42,12 +42,16 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
   private trait Test {
     implicit val messages: Messages = stubMessages()
 
-    val decoderMock: Decoder = mock[Decoder]
-    when(decoderMock.ics(any[String])).thenReturn(Some(icsKeyFromDecoder))
-    when(decoderMock.roe(any[String])).thenReturn(Some(roeKeyFromDecoder))
-    when(decoderMock.ducrSoe(any[String])).thenReturn(Some(soeKeyFromDecoder))
+    val decoder: Decoder = mock[Decoder]
+    when(decoder.ics(any[String])).thenReturn(Some(icsKeyFromDecoder))
+    when(decoder.roe(any[String])).thenReturn(Some(roeKeyFromDecoder))
+    when(decoder.ducrSoe(any[String])).thenReturn(Some(soeKeyFromDecoder))
 
-    val contentBuilder = new ERSResponseConverter(decoderMock, NotificationsPageFormatter)
+    private val injector = Guice.createInjector(new DateTimeTestModule(), new AbstractModule {
+      override def configure(): Unit = bind(classOf[Decoder]).toInstance(decoder)
+    })
+
+    val contentBuilder = injector.getInstance(classOf[ERSResponseConverter])
   }
 
   "ERSResponseConverter on convert" when {
@@ -60,11 +64,11 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
 
         contentBuilder.convert(input)
 
-        verify(decoderMock).ics(meq(icsKeyFromDecoder.code))
-        verify(decoderMock).roe(meq(roeKeyFromDecoder.code))
-        verify(decoderMock).ducrSoe(meq(soeKeyFromDecoder.code))
-        verify(decoderMock, times(0)).crc(any())
-        verify(decoderMock, times(0)).mucrSoe(any())
+        verify(decoder).ics(meq(icsKeyFromDecoder.code))
+        verify(decoder).roe(meq(roeKeyFromDecoder.code))
+        verify(decoder).ducrSoe(meq(soeKeyFromDecoder.code))
+        verify(decoder, times(0)).crc(any())
+        verify(decoder, times(0)).mucrSoe(any())
       }
 
       "return NotificationsPageSingleElement with values returned by Messages" in new Test {
@@ -100,9 +104,9 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
 
         contentBuilder.convert(input)
 
-        verify(decoderMock, times(0)).ics(any())
-        verify(decoderMock, times(0)).roe(any())
-        verify(decoderMock).ducrSoe(meq(soeKeyFromDecoder.code))
+        verify(decoder, times(0)).ics(any())
+        verify(decoder, times(0)).roe(any())
+        verify(decoder).ducrSoe(meq(soeKeyFromDecoder.code))
       }
 
       "return NotificationsPageSingleElement without content for missing codes" in new Test {
@@ -133,16 +137,16 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
 
         contentBuilder.convert(input)
 
-        verify(decoderMock).ics(meq(UnknownIcsCode))
-        verify(decoderMock).roe(meq(UnknownRoeCode))
-        verify(decoderMock).ducrSoe(meq(UnknownSoeCode))
+        verify(decoder).ics(meq(UnknownIcsCode))
+        verify(decoder).roe(meq(UnknownRoeCode))
+        verify(decoder).ducrSoe(meq(UnknownSoeCode))
       }
 
       "return NotificationsPageSingleElement without content for unknown codes" in new Test {
 
-        when(decoderMock.ics(meq(UnknownIcsCode))).thenReturn(None)
-        when(decoderMock.roe(meq(UnknownRoeCode))).thenReturn(None)
-        when(decoderMock.ducrSoe(meq(UnknownSoeCode))).thenReturn(None)
+        when(decoder.ics(meq(UnknownIcsCode))).thenReturn(None)
+        when(decoder.roe(meq(UnknownRoeCode))).thenReturn(None)
+        when(decoder.ducrSoe(meq(UnknownSoeCode))).thenReturn(None)
 
         val input = ersResponseUnknownCodes
         val expectedResult = NotificationsPageSingleElement(
@@ -161,8 +165,7 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
 object ERSResponseConverterSpec {
 
   private val testTimestampString = "2019-10-23T12:34+00:00"
-  private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault())
-  val testTimestamp: Instant = ZonedDateTime.parse(testTimestampString, formatter).toInstant
+  val testTimestamp: Instant = ZonedDateTime.parse(testTimestampString).toInstant
 
   val icsKeyFromDecoder = ICSCode.InvalidationByCustoms
   val roeKeyFromDecoder = ROECode.DocumentaryControl

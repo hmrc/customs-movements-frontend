@@ -21,11 +21,12 @@ import forms.{DepartureDetails, MovementDetails}
 import helpers.views.{CommonMessages, DepartureDetailsMessages}
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import testdata.MovementsTestData
 import views.spec.UnitViewSpec
 
 class DepartureDetailsViewSpec extends UnitViewSpec with DepartureDetailsMessages with CommonMessages {
 
-  val form: Form[DepartureDetails] = MovementDetails.departureForm()
+  val form: Form[DepartureDetails] = MovementsTestData.movementDetails.departureForm()
   val departureDetailsPage = new views.html.departure_details(mainTemplate)
 
   private def createView(form: Form[DepartureDetails] = form): Document = departureDetailsPage(form)

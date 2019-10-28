@@ -25,9 +25,8 @@ import testdata.CommonTestData._
 
 object NotificationTestData {
 
-  private val testTimestampString = "2019-10-23T12:34+00:00"
-  private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault())
-  val testTimestamp = ZonedDateTime.parse(testTimestampString, formatter).toInstant
+  private val testTimestampString = "2019-10-23T12:34:18Z"
+  val testTimestamp = ZonedDateTime.parse(testTimestampString).toInstant
 
   def exampleNotificationFrontendModel(
     conversationId: String = conversationId,

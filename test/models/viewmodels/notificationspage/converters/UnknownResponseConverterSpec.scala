@@ -16,25 +16,27 @@
 
 package models.viewmodels.notificationspage.converters
 
-import java.time.format.DateTimeFormatter
-import java.time.{ZoneId, ZonedDateTime}
+import java.time.ZonedDateTime
 
 import base.BaseSpec
+import com.google.inject.Guice
 import models.notifications.ResponseType.MovementTotalsResponse
-import modules.DateTimeFormatterModule.NotificationsPageFormatter
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
 import testdata.NotificationTestData.exampleNotificationFrontendModel
+import utils.DateTimeTestModule
 
 class UnknownResponseConverterSpec extends BaseSpec {
 
   private val testTimestampString = "2019-10-23T12:34+00:00"
-  private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault())
-  private val testTimestamp = ZonedDateTime.parse(testTimestampString, formatter).toInstant
+  private val testTimestamp = ZonedDateTime.parse(testTimestampString).toInstant
 
   private implicit val messages: Messages = stubMessages()
-  private val converter = new UnknownResponseConverter(NotificationsPageFormatter)
+
+  private val injector = Guice.createInjector(new DateTimeTestModule())
+
+  private val converter = injector.getInstance(classOf[UnknownResponseConverter])
 
   "UnknownResponseConverter on convert" should {
 

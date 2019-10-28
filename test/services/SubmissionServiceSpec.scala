@@ -16,6 +16,8 @@
 
 package services
 
+import java.time.ZoneId
+
 import base.{MetricsMatchers, MockCustomsCacheService, MockCustomsExportsMovement, MovementsMetricsStub}
 import forms.AssociateKind.Ducr
 import forms.Choice.{Arrival, Departure}
@@ -32,6 +34,7 @@ import play.api.test.Helpers._
 import services.audit.{AuditService, AuditTypes}
 import testdata.CommonTestData.validEori
 import testdata.ConsolidationTestData._
+import testdata.MovementsTestData
 import testdata.MovementsTestData._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -52,7 +55,13 @@ class SubmissionServiceSpec
   val mockAuditService = mock[AuditService]
 
   val submissionService =
-    new SubmissionService(mockCustomsCacheService, mockCustomsExportsMovementConnector, mockAuditService, movementsMetricsStub)
+    new SubmissionService(
+      mockCustomsCacheService,
+      mockCustomsExportsMovementConnector,
+      mockAuditService,
+      movementsMetricsStub,
+      MovementsTestData.movementBuilder
+    )
 
   override def afterEach(): Unit = {
     reset(mockCustomsCacheService, mockCustomsExportsMovementConnector, mockAuditService)

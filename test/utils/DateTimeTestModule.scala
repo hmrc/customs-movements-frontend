@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package forms
+package utils
 
 import java.time.ZoneId
 
-import javax.inject.Inject
-import play.api.data.Form
+import modules.DateTimeModule
 
-class MovementDetails @Inject()(zoneId: ZoneId) {
-
-  def arrivalForm(): Form[ArrivalDetails] = Form(ArrivalDetails.mapping(zoneId))
-
-  def departureForm(): Form[DepartureDetails] = Form(DepartureDetails.mapping(zoneId))
-}
-
-object MovementDetails {
-  val formId = "MovementDetails"
+class DateTimeTestModule extends DateTimeModule {
+  override def timezone: ZoneId = ZoneId.of("UTC")
 }

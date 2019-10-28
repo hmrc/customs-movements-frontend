@@ -16,7 +16,7 @@
 
 package forms
 
-import java.time.{LocalDate, LocalTime}
+import java.time.{LocalDate, LocalTime, ZoneId}
 
 import base.BaseSpec
 import forms.common.{Date, Time}
@@ -29,20 +29,22 @@ class ArrivalDetailsSpec extends BaseSpec {
 
   private val dateInputData = Date.mapping.withPrefix("dateOfArrival").unbind(Date(date))
 
+  val movementDetails = new MovementDetails(ZoneId.of("UTC"))
+
   "Arrival mapping" should {
 
     "return errors" when {
 
       "date is missing" in {
 
-        val errors = MovementDetails.arrivalForm().bind(timeInputData).errors
+        val errors = movementDetails.arrivalForm().bind(timeInputData).errors
 
         errors.length must be(3)
       }
 
       "time is missing" in {
 
-        val errors = MovementDetails.arrivalForm().bind(dateInputData).errors
+        val errors = movementDetails.arrivalForm().bind(dateInputData).errors
 
         errors.length must be(2)
       }
@@ -52,7 +54,7 @@ class ArrivalDetailsSpec extends BaseSpec {
 
       "date and time are provided" in {
         val inputData = timeInputData ++ dateInputData
-        val errors = MovementDetails.arrivalForm().bind(inputData).errors
+        val errors = movementDetails.arrivalForm().bind(inputData).errors
 
         errors.length must be(0)
       }

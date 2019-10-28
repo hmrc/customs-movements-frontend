@@ -17,22 +17,25 @@
 package models.viewmodels.notificationspage.converters
 
 import base.BaseSpec
+import com.google.inject.Guice
 import models.notifications.ResponseType
 import models.viewmodels.decoder.ActionCode
-import modules.DateTimeFormatterModule.NotificationsPageFormatter
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import testdata.NotificationTestData
 import testdata.NotificationTestData.exampleNotificationFrontendModel
+import utils.DateTimeTestModule
 
 class ControlResponseAcknowledgedConverterSpec extends BaseSpec with MockitoSugar {
 
   import ControlResponseAcknowledgedConverterSpec._
 
+  private val injector = Guice.createInjector(new DateTimeTestModule())
+
   private trait Test {
     implicit val messages: Messages = stubMessages()
-    val converter = new ControlResponseAcknowledgedConverter(NotificationsPageFormatter)
+    val converter = injector.getInstance(classOf[ControlResponseAcknowledgedConverter])
   }
 
   "ControlResponseAcknowledgedConverter on convert" should {

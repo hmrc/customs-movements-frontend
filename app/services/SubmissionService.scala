@@ -36,13 +36,14 @@ class SubmissionService @Inject()(
   cacheService: CustomsCacheService,
   connector: CustomsDeclareExportsMovementsConnector,
   auditService: AuditService,
-  metrics: MovementsMetrics
+  metrics: MovementsMetrics,
+  movementBuilder: MovementBuilder
 )(implicit ec: ExecutionContext) {
 
   def submitMovementRequest(cacheId: String, eori: String, choice: Choice)(implicit hc: HeaderCarrier): Future[(Option[ConsignmentReferences], Int)] =
     cacheService.fetch(cacheId).flatMap {
       case Some(cacheMap) => {
-        val data = Movement.createMovementRequest(cacheMap, eori, choice)
+        val data = movementBuilder.createMovementRequest(cacheMap, eori, choice)
         val timer = metrics.startTimer(choice)
 
         auditService.auditAllPagesUserInput(choice, cacheMap)

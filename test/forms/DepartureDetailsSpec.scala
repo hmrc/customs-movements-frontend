@@ -21,8 +21,11 @@ import java.time.{LocalDate, LocalTime}
 import base.BaseSpec
 import forms.common.{Date, Time}
 import helpers.FormMatchers
+import testdata.MovementsTestData
 
 class DepartureDetailsSpec extends BaseSpec with FormMatchers {
+
+  val movementDetails = MovementsTestData.movementDetails
 
   "Departure mapping" should {
 
@@ -39,19 +42,19 @@ class DepartureDetailsSpec extends BaseSpec with FormMatchers {
 
       "there is no data" in {
         val inputData = Map.empty[String, String]
-        val errors = MovementDetails.departureForm().bind(inputData).errors
+        val errors = movementDetails.departureForm().bind(inputData).errors
         errors must have length 5
       }
 
       "time is missing" in {
         val inputData = Date.mapping.withPrefix("dateOfDeparture").unbind(Date(LocalDate.now()))
-        val errors = MovementDetails.departureForm().bind(inputData).errors
+        val errors = movementDetails.departureForm().bind(inputData).errors
         errors must have length 2
       }
 
       "date is missing" in {
         val inputData = Time.mapping.withPrefix("timeOfDeparture").unbind(Time(LocalTime.now()))
-        val errors = MovementDetails.departureForm().bind(inputData).errors
+        val errors = movementDetails.departureForm().bind(inputData).errors
         errors must have length 3
       }
     }
@@ -61,7 +64,7 @@ class DepartureDetailsSpec extends BaseSpec with FormMatchers {
       "date is correct" in {
         val inputData = Date.mapping.withPrefix("dateOfDeparture").unbind(Date(LocalDate.now().minusDays(1))) ++
           Time.mapping.withPrefix("timeOfDeparture").unbind(Time(LocalTime.now()))
-        val form = MovementDetails.departureForm().bind(inputData)
+        val form = movementDetails.departureForm().bind(inputData)
         form mustBe withoutErrors
       }
     }

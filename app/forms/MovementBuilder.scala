@@ -16,14 +16,15 @@
 
 package forms
 
-import java.time.{ZoneId, ZoneOffset}
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 import forms.Choice._
+import javax.inject.Inject
 import models.requests.{MovementDetailsRequest, MovementRequest, MovementType}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-object Movement {
+class MovementBuilder @Inject()(details: MovementDetails, zoneId: ZoneId) {
 
   private val departureDateTimeFormatter = DateTimeFormatter.ISO_INSTANT
 
@@ -37,7 +38,7 @@ object Movement {
       case Departure =>
         cacheMap
           .getEntry[DepartureDetails](MovementDetails.formId)
-          .map(departure => departureDateTimeFormatter.format(departure.goodsDepartureMoment.atZone(ZoneId.systemDefault())))
+          .map(departure => departureDateTimeFormatter.format(departure.goodsDepartureMoment(zoneId)))
           .getOrElse("")
       case Arrival =>
         cacheMap

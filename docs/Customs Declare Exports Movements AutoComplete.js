@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         Customs Declare Exports Movements AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.10
+// @version      0.11
 // @description  Customs Declare Exports Movements
 // @author       You
-// @match        http*://*/customs-movements*
+// @include      http*://*/customs-movements*
+// @include      http*://*/customs-exports-internal*
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/hmrc/customs-movements-frontend/master/docs/Customs%20Declare%20Exports%20Movements%20AutoComplete.js
 // ==/UserScript==
@@ -52,29 +53,28 @@ function selectRadioOption(element, index){
 }
 
 function currentPageIs(path) {
-    let matches = window.location.pathname.match(path);
-    return matches && matches.length > 0
+    return window.location.pathname.indexOf(path)>0
 }
 
 function completePage() {
-    if (currentPageIs('/customs-movements/start')) {
+    if (currentPageIs('/start')) {
         document.getElementsByClassName('button')[0].click()
     }
-    if(currentPageIs("/customs-movements/choice")){
+    if(currentPageIs("/choice")){
         selectRadioOption(document.getElementById("choice"), 0);
         document.getElementsByClassName('button')[0].click()
     }
 
-    if(currentPageIs("/customs-movements/consignment-references")){
+    if(currentPageIs("/consignment-references")){
         selectRadioOption(document.getElementById("reference"), 0);
         document.getElementById('ducrValue').value = '8GB12345' + Math.floor(Math.random() * 8999) + 100 + '-101SHIP1';
         document.getElementsByClassName('button')[0].click()
     }
-    if(currentPageIs("/customs-movements/arrival-reference")){
+    if(currentPageIs("/arrival-reference")){
         document.getElementById("reference").value = "REF" + Math.floor(Math.random() * 8999) + 100;
         document.getElementsByClassName('button')[0].click()
     }
-    if(currentPageIs("/customs-movements/movement-details")){
+    if(currentPageIs("/movement-details")){
         let title = document.title.toLowerCase();
         const departure = new Date();
         departure.setDate(departure.getDate() - 1); // One day before
@@ -94,43 +94,43 @@ function completePage() {
         }
         document.getElementsByClassName('button')[0].click()
     }
-    if(currentPageIs("/customs-movements/location")){
+    if(currentPageIs("/location")){
         document.getElementById('code').value = 'GBAUEMAEMAEMA';
         document.getElementsByClassName('button')[0].click()
     }
-    if(currentPageIs("/customs-movements/transport")){
+    if(currentPageIs("/transport")){
         selectRadioOption(document.getElementById("modeOfTransport"), 0);
         document.getElementById('nationality').value = 'GB';
         document.getElementById('transportId').value = 'TransportReference';
         document.getElementsByClassName('button')[0].click()
     }
-    if(currentPageIs("/customs-movements/summary")){
+    if(currentPageIs("/summary")){
         document.getElementsByClassName('button')[0].click()
     }
-    if(currentPageIs("/customs-movements/mucr-options")){
+    if(currentPageIs("/mucr-options")){
         document.getElementById("mucrOptions.create").checked = true;
         document.getElementById("newMucr").value = "GB/1234-123ABC456DEFIIIII"
         document.getElementsByClassName('button')[0].click()
     }
-    if(currentPageIs("/customs-movements/associate-ducr$")){
+    if(currentPageIs("/associate-ducr$")){
         selectRadioOption(document.getElementById("kind"), 0);
         const now = new Date()
         document.getElementById("ducr").value = `5GB123456789000-${now.valueOf()}IIIII`
         document.getElementsByClassName('button')[0].click()
     }
-    if(currentPageIs("/customs-movements/associate-ducr-summary")){
+    if(currentPageIs("/associate-ducr-summary")){
         document.getElementsByClassName('button')[0].click()
     }
-    if(currentPageIs("/customs-movements/disassociate-ucr-summary")){
+    if(currentPageIs("/disassociate-ucr-summary")){
         document.getElementsByClassName('button')[0].click()
     }
-    if(currentPageIs("/customs-movements/disassociate-ucr")){
+    if(currentPageIs("/disassociate-ucr")){
         selectRadioOption(document.getElementById("kind"), 0);
         const now = new Date()
         document.getElementById("ducr").value = `5GB123456789000-${now.valueOf()}IIIII`
         document.getElementsByClassName('button')[0].click()
     }
-    if(currentPageIs("customs-movements/shut-mucr")){
+    if(currentPageIs("/shut-mucr")){
         const now = new Date()
         document.getElementById("mucr").value = `GB/ABCDE1234-${now.valueOf()}IIIII`
         document.getElementsByClassName('button')[0].click()

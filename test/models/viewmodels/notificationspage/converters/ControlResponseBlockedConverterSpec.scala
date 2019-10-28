@@ -33,8 +33,6 @@ class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar {
 
   import ControlResponseBlockedConverterSpec._
 
-
-
   private trait Test {
     implicit val messages: Messages = stubMessages()
 

@@ -29,7 +29,6 @@ class DateTimeModule extends AbstractModule {
   def formatter(zoneId: ZoneId): DateTimeFormatter =
     DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(zoneId)
 
-  override def configure(): Unit = {
+  override def configure(): Unit =
     bind(classOf[ZoneId]).toInstance(ZoneId.of("Europe/London"))
-  }
 }

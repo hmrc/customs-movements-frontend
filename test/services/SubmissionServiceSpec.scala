@@ -55,7 +55,13 @@ class SubmissionServiceSpec
   val mockAuditService = mock[AuditService]
 
   val submissionService =
-    new SubmissionService(mockCustomsCacheService, mockCustomsExportsMovementConnector, mockAuditService, movementsMetricsStub, MovementsTestData.movementBuilder)
+    new SubmissionService(
+      mockCustomsCacheService,
+      mockCustomsExportsMovementConnector,
+      mockAuditService,
+      movementsMetricsStub,
+      MovementsTestData.movementBuilder
+    )
 
   override def afterEach(): Unit = {
     reset(mockCustomsCacheService, mockCustomsExportsMovementConnector, mockAuditService)

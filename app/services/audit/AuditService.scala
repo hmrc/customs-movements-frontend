@@ -89,7 +89,7 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
   private def getAuditTags(transactionName: String, path: String)(implicit hc: HeaderCarrier) =
     AuditExtensions
       .auditHeaderCarrier(hc)
-      .toAuditTags(transactionName = s"Export-Declaration-${transactionName}", path = s"customs-declare-exports/${path}")
+      .toAuditTags(transactionName = s"export-declaration-${transactionName.toLowerCase}", path = s"customs-declare-exports/${path}")
 
   private def handleResponse(result: AuditResult, auditType: String) = result match {
     case Success =>

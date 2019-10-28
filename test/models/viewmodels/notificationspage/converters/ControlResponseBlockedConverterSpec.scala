@@ -20,7 +20,6 @@ import base.BaseSpec
 import com.google.inject.{AbstractModule, Guice}
 import models.notifications.ResponseType
 import models.viewmodels.decoder.{ActionCode, Decoder, ILEError}
-import modules.DateTimeModule
 import org.mockito.ArgumentMatchers.{anyString, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -28,6 +27,7 @@ import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import testdata.NotificationTestData
 import testdata.NotificationTestData.exampleNotificationFrontendModel
+import utils.DateTimeTestModule
 
 class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar {
 
@@ -39,7 +39,7 @@ class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar {
     val decoder: Decoder = mock[Decoder]
     when(decoder.error(anyString)).thenReturn(Some(ILEError("CODE", "Messages.Key")))
 
-    private val injector = Guice.createInjector(new DateTimeModule(), new AbstractModule {
+    private val injector = Guice.createInjector(new DateTimeTestModule(), new AbstractModule {
       override def configure(): Unit = bind(classOf[Decoder]).toInstance(decoder)
     })
 

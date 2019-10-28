@@ -16,15 +16,13 @@
 
 package models.viewmodels.notificationspage.converters
 
-import java.time.format.DateTimeFormatter
-import java.time.{ZoneId, ZonedDateTime}
+import java.time.ZonedDateTime
 
 import base.BaseSpec
 import com.google.inject.{AbstractModule, Guice}
 import models.notifications.ResponseType
 import models.viewmodels.decoder.{CRCCode, Decoder}
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
-import modules.DateTimeModule
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -32,12 +30,12 @@ import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import testdata.NotificationTestData.exampleNotificationFrontendModel
+import utils.DateTimeTestModule
 
 class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
 
   private val testTimestampString = "2019-10-23T12:34+00:00"
-  private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault())
-  private val testTimestamp = ZonedDateTime.parse(testTimestampString, formatter).toInstant
+  private val testTimestamp = ZonedDateTime.parse(testTimestampString).toInstant
 
   private val crcCodeKeyFromDecoder = CRCCode.Success
 
@@ -47,7 +45,7 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar {
     val decoder: Decoder = mock[Decoder]
     when(decoder.crc(any[String])).thenReturn(Some(crcCodeKeyFromDecoder))
 
-    private val injector = Guice.createInjector(new DateTimeModule(), new AbstractModule {
+    private val injector = Guice.createInjector(new DateTimeTestModule(), new AbstractModule {
       override def configure(): Unit = bind(classOf[Decoder]).toInstance(decoder)
     })
 

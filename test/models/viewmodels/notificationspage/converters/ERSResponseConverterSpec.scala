@@ -16,8 +16,7 @@
 
 package models.viewmodels.notificationspage.converters
 
-import java.time.format.DateTimeFormatter
-import java.time.{Instant, ZoneId, ZonedDateTime}
+import java.time.{Instant, ZonedDateTime}
 
 import base.BaseSpec
 import com.google.inject.{AbstractModule, Guice}
@@ -26,7 +25,6 @@ import models.notifications.{Entry, EntryStatus, ResponseType}
 import models.viewmodels.decoder.{Decoder, ICSCode, ROECode, SOECode}
 import models.viewmodels.notificationspage.MovementTotalsResponseType.ERS
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
-import modules.DateTimeModule
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -35,6 +33,7 @@ import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import testdata.CommonTestData._
 import testdata.NotificationTestData.exampleNotificationFrontendModel
+import utils.DateTimeTestModule
 
 class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
 
@@ -48,7 +47,7 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
     when(decoder.roe(any[String])).thenReturn(Some(roeKeyFromDecoder))
     when(decoder.ducrSoe(any[String])).thenReturn(Some(soeKeyFromDecoder))
 
-    private val injector = Guice.createInjector(new DateTimeModule(), new AbstractModule {
+    private val injector = Guice.createInjector(new DateTimeTestModule(), new AbstractModule {
       override def configure(): Unit = bind(classOf[Decoder]).toInstance(decoder)
     })
 
@@ -166,8 +165,7 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar {
 object ERSResponseConverterSpec {
 
   private val testTimestampString = "2019-10-23T12:34+00:00"
-  private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault())
-  val testTimestamp: Instant = ZonedDateTime.parse(testTimestampString, formatter).toInstant
+  val testTimestamp: Instant = ZonedDateTime.parse(testTimestampString).toInstant
 
   val icsKeyFromDecoder = ICSCode.InvalidationByCustoms
   val roeKeyFromDecoder = ROECode.DocumentaryControl

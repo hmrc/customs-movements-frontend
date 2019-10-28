@@ -26,7 +26,6 @@ import models.notifications.{Entry, EntryStatus, ResponseType}
 import models.viewmodels.decoder.{CRCCode, Decoder, ROECode, SOECode}
 import models.viewmodels.notificationspage.MovementTotalsResponseType.EMR
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
-import modules.DateTimeModule
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -35,6 +34,7 @@ import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import testdata.CommonTestData.correctUcr
 import testdata.NotificationTestData.exampleNotificationFrontendModel
+import utils.DateTimeTestModule
 
 class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
 
@@ -48,7 +48,7 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
     when(decoder.roe(any[String])).thenReturn(Some(roeKeyFromDecoder))
     when(decoder.mucrSoe(any[String])).thenReturn(Some(mucrSoeKeyFromDecoder))
 
-    private val injector = Guice.createInjector(new DateTimeModule(), new AbstractModule {
+    private val injector = Guice.createInjector(new DateTimeTestModule(), new AbstractModule {
       override def configure(): Unit = bind(classOf[Decoder]).toInstance(decoder)
     })
 
@@ -166,8 +166,7 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
 object EMRResponseConverterSpec {
 
   private val testTimestampString = "2019-10-23T12:34+00:00"
-  private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault())
-  val testTimestamp = ZonedDateTime.parse(testTimestampString, formatter).toInstant
+  val testTimestamp = ZonedDateTime.parse(testTimestampString).toInstant
 
   val crcKeyFromDecoder = CRCCode.Success
   val roeKeyFromDecoder = ROECode.DocumentaryControl

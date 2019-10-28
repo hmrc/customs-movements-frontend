@@ -334,11 +334,13 @@ submissions.mucrdisassociation = Disassociate MUCR
 
 notifications.title = Notifications relating to {0}
 
-notifications.elem.title.Arrival = Arrive request
-notifications.elem.title.Departure = Depart request
-notifications.elem.title.DucrAssociation = Consolidation request
-notifications.elem.title.DucrDisassociation = Disassociate request
-notifications.elem.title.ShutMucr = Shut MUCR request
+notifications.elem.title.Arrival = Request to arrive has been received
+notifications.elem.title.Departure = Request to depart has been received
+notifications.elem.title.DucrAssociation = Request to associate this DUCR has been received
+notifications.elem.title.MucrAssociation = Request to associate this MUCR has been received
+notifications.elem.title.DucrDisassociation = Request to dissociate this DUCR has been received
+notifications.elem.title.MucrDisassociation = Request to dissociate this MUCR has been received
+notifications.elem.title.ShutMucr = Shut MUCR request has been received
 
 notifications.elem.title.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Request received
 notifications.elem.title.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed = Request blocked

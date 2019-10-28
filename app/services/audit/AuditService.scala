@@ -32,10 +32,7 @@ import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuditService @Inject()(
-                              connector: AuditConnector,
-                              @Named("appName") appName: String)
-                            (implicit ec: ExecutionContext) {
+class AuditService @Inject()(connector: AuditConnector, @Named("appName") appName: String)(implicit ec: ExecutionContext) {
   private val logger = Logger(this.getClass)
 
   def auditShutMucr(eori: String, mucr: String, result: String)(implicit hc: HeaderCarrier): Future[AuditResult] =

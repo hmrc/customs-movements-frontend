@@ -18,7 +18,7 @@ package unit.controllers
 
 import java.time.{LocalDate, LocalTime}
 
-import controllers.{MovementDetailsController, routes}
+import controllers.{routes, MovementDetailsController}
 import forms.common.{Date, Time}
 import forms.{ArrivalDetails, DepartureDetails, MovementDetails}
 import org.mockito.ArgumentCaptor

@@ -33,8 +33,9 @@ case class DepartureDetails(dateOfDeparture: Date, timeOfDeparture: Time) {
 object DepartureDetails {
   implicit val format: OFormat[DepartureDetails] = Json.format[DepartureDetails]
 
-  def mapping(zoneId: ZoneId) = Forms
-    .mapping("dateOfDeparture" -> Date.mapping, "timeOfDeparture" -> Time.mapping)(DepartureDetails.apply)(DepartureDetails.unapply)
-    .verifying("departure.details.error.overdue", _.goodsDepartureMoment(zoneId).isAfter(ZonedDateTime.now().minusDays(60)))
-    .verifying("departure.details.error.future", _.goodsDepartureMoment(zoneId).isBefore(ZonedDateTime.now()))
+  def mapping(zoneId: ZoneId) =
+    Forms
+      .mapping("dateOfDeparture" -> Date.mapping, "timeOfDeparture" -> Time.mapping)(DepartureDetails.apply)(DepartureDetails.unapply)
+      .verifying("departure.details.error.overdue", _.goodsDepartureMoment(zoneId).isAfter(ZonedDateTime.now().minusDays(60)))
+      .verifying("departure.details.error.future", _.goodsDepartureMoment(zoneId).isBefore(ZonedDateTime.now()))
 }

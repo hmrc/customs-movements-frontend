@@ -42,8 +42,7 @@ object Time {
       for {
         h <- hour
         m <- minutes
-        time <- Try(LocalTime.of(h, m))
-      } yield time
+      } yield Try(LocalTime.of(h, m))
 
     def bind(hour: Try[Int], minutes: Try[Int]): Time =
       build(hour, minutes)

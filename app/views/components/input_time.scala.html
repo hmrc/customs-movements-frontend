@@ -60,7 +60,7 @@
                     type="number"
                     pattern="[0-9]*"
                     value=@{hourField.value}
-                        @if(hourField.hasErrors){ aria-describedby="error-message-@{hourField.id}-input"}
+                    @if(hourField.hasErrors){ aria-describedby="error-message-@{hourField.id}-input"}
                 >
             </div>
             <div class="form-group form-group-month">
@@ -72,7 +72,7 @@
                     type="number"
                     pattern="[0-9]*"
                     value=@{minuteField.value}
-                        @if(minuteField.hasErrors){ aria-describedby="error-message-@{minuteField.id}-input" }
+                    @if(minuteField.hasErrors){ aria-describedby="error-message-@{minuteField.id}-input" }
                 >
             </div>
         </div>

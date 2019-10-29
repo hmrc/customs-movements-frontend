@@ -26,7 +26,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 
 class MovementBuilder @Inject()(details: MovementDetails, zoneId: ZoneId) {
 
-  private val departureDateTimeFormatter = DateTimeFormatter.ISO_INSTANT
+  private val movementDateTimeFormatter = DateTimeFormatter.ISO_INSTANT
 
   def createMovementRequest(cacheMap: CacheMap, eori: String, choice: Choice): MovementRequest = {
     val consignmentReference =
@@ -38,12 +38,12 @@ class MovementBuilder @Inject()(details: MovementDetails, zoneId: ZoneId) {
       case Departure =>
         cacheMap
           .getEntry[DepartureDetails](MovementDetails.formId)
-          .map(departure => departureDateTimeFormatter.format(departure.goodsDepartureMoment(zoneId)))
+          .map(departure => movementDateTimeFormatter.format(departure.goodsDepartureMoment(zoneId)))
           .getOrElse("")
       case Arrival =>
         cacheMap
           .getEntry[ArrivalDetails](MovementDetails.formId)
-          .map(res => s"${res.dateOfArrival.toString}T${res.timeOfArrival.toString}:00")
+          .map(arrival => movementDateTimeFormatter.format(arrival.goodsArrivalMoment(zoneId)))
           .getOrElse("")
     }
 

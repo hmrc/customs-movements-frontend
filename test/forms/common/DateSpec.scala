@@ -56,55 +56,13 @@ class DateSpec extends BaseSpec {
 
     "return error" when {
 
-      "day, month and year are empty" in {
-
-        val errors = form.bind(Map.empty[String, String]).errors
-
-        errors.length must be(3)
-        errors(0) must be(FormError("day", "dateTime.date.day.empty"))
-        errors(1) must be(FormError("month", "dateTime.date.month.empty"))
-        errors(2) must be(FormError("year", "dateTime.date.year.empty"))
-      }
-
-      "day, month and year are incorrect" in {
-
-        val inputs = Map("year" -> "1990", "month" -> "15", "day" -> "35")
-        val errors = form.bind(inputs).errors
-
-        errors.length must be(3)
-        errors(0) must be(FormError("day", "dateTime.date.day.error"))
-        errors(1) must be(FormError("month", "dateTime.date.month.error"))
-        errors(2) must be(FormError("year", "dateTime.date.year.error"))
-      }
-
-      "date in under the limit" in {
-
-        val inputs = Map("year" -> "1999", "month" -> "0", "day" -> "0")
-        val errors = form.bind(inputs).errors
-
-        errors.length must be(3)
-        errors(0) must be(FormError("day", "dateTime.date.day.error"))
-        errors(1) must be(FormError("month", "dateTime.date.month.error"))
-        errors(2) must be(FormError("year", "dateTime.date.year.error"))
-      }
-
-      "date is above the limit" in {
-        val inputs = Map("year" -> "2100", "month" -> "13", "day" -> "32")
-        val errors = form.bind(inputs).errors
-
-        errors.length must be(3)
-        errors(0) must be(FormError("day", "dateTime.date.day.error"))
-        errors(1) must be(FormError("month", "dateTime.date.month.error"))
-        errors(2) must be(FormError("year", "dateTime.date.year.error"))
-      }
-
       "date has incorrect format" in {
 
         val dateInput = Map("day" -> "31", "month" -> "2", "year" -> "2020")
         val errors = form.bind(dateInput).errors
 
         errors.length must be(1)
-        errors.head must be(FormError("", "dateTime.date.error.format"))
+        errors.head must be(FormError("", "date.error.invalid"))
       }
     }
 

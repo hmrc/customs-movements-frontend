@@ -203,6 +203,9 @@ arrivalDetails.date.hint = For example, 01 08 2007
 arrivalDetails.time.question = Time of Arrival
 arrivalDetails.time.hint = Enter the time in 24 hour format. For example, 13 30
 
+arrival.details.error.overdue = Time of Arrival cannot be more than 60 days in the past
+arrival.details.error.future = Time of Arrival cannot be in the future
+
 departureDetails.title = Departure date and time
 departureDetails.header = Enter departure details
 departureDetails.date.question = Date of departure

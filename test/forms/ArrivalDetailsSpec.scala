@@ -20,14 +20,19 @@ import java.time.{LocalDate, LocalTime, ZoneId}
 
 import base.BaseSpec
 import forms.common.{Date, Time}
+import play.api.data.Mapping
 
 class ArrivalDetailsSpec extends BaseSpec {
 
-  private val date = LocalDate.of(2019, 1, 1)
+  private val date = LocalDate.now().minusDays(1)
 
-  private val timeInputData = Time.mapping.withPrefix("timeOfArrival").unbind(Time(LocalTime.of(1, 1)))
+  private val timeMapping = Time.mapping.withPrefix("timeOfArrival")
 
-  private val dateInputData = Date.mapping.withPrefix("dateOfArrival").unbind(Date(date))
+  private val timeInputData = timeMapping.unbind(Time(LocalTime.of(1, 1)))
+
+  private val dateMapping: Mapping[Date] = Date.mapping.withPrefix("dateOfArrival")
+
+  private val dateInputData = dateMapping.unbind(Date(date))
 
   val movementDetails = new MovementDetails(ZoneId.of("UTC"))
 
@@ -47,6 +52,18 @@ class ArrivalDetailsSpec extends BaseSpec {
         val errors = movementDetails.arrivalForm().bind(dateInputData).errors
 
         errors.length must be(2)
+      }
+
+      "moment of arrival is in future" in {
+        val form = movementDetails.arrivalForm().bind(dateMapping.unbind(Date(LocalDate.now().plusDays(1))) ++ timeInputData)
+
+        form.errors.flatMap(_.messages) must contain("arrival.details.error.future")
+      }
+
+      "moment of arrival is more then 60 days in past" in {
+        val form = movementDetails.arrivalForm().bind(dateMapping.unbind(Date(LocalDate.now().minusDays(61))) ++ timeInputData)
+
+        form.errors.flatMap(_.messages) must contain("arrival.details.error.overdue")
       }
     }
 

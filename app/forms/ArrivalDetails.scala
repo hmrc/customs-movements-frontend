@@ -16,17 +16,23 @@
 
 package forms
 
-import java.time.ZoneId
+import java.time.{ZoneId, ZonedDateTime}
 
 import forms.common.{Date, Time}
 import play.api.data.{Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 
-case class ArrivalDetails(dateOfArrival: Date, timeOfArrival: Time)
+case class ArrivalDetails(dateOfArrival: Date, timeOfArrival: Time) {
+  def goodsArrivalMoment(zoneId: ZoneId): ZonedDateTime =
+    ZonedDateTime.of(dateOfArrival.date, timeOfArrival.time, zoneId)
+}
 
 object ArrivalDetails {
   implicit val format: OFormat[ArrivalDetails] = Json.format[ArrivalDetails]
 
   def mapping(zoneId: ZoneId): Mapping[ArrivalDetails] =
-    Forms.mapping("dateOfArrival" -> Date.mapping, "timeOfArrival" -> Time.mapping)(ArrivalDetails.apply)(ArrivalDetails.unapply)
+    Forms
+      .mapping("dateOfArrival" -> Date.mapping, "timeOfArrival" -> Time.mapping)(ArrivalDetails.apply)(ArrivalDetails.unapply)
+      .verifying("arrival.details.error.overdue", _.goodsArrivalMoment(zoneId).isAfter(ZonedDateTime.now(zoneId).minusDays(60)))
+      .verifying("arrival.details.error.future", _.goodsArrivalMoment(zoneId).isBefore(ZonedDateTime.now(zoneId)))
 }

@@ -38,19 +38,17 @@ object Time {
   val minuteKey = "minute"
 
   val mapping: Mapping[Time] = {
-    def build(hour: Try[Int], minutes: Try[Int]): Try[LocalTime] = {
+    def build(hour: Try[Int], minutes: Try[Int]): Try[LocalTime] =
       for {
         h <- hour
         m <- minutes
         time <- Try(LocalTime.of(h, m))
       } yield time
-    }
 
     def bind(hour: Try[Int], minutes: Try[Int]): Time =
       build(hour, minutes)
         .map(apply)
         .getOrElse(throw new IllegalArgumentException("Could not build time - missing one of parameters"))
-
 
     def unbind(time: Time): (Try[Int], Try[Int]) =
       (Try(time.time.getHour), Try(time.time.getMinute))
@@ -60,9 +58,9 @@ object Time {
       text().transform(value => Try(value.toInt), _.map(value => formatter.format(value)).getOrElse(""))
     }
 
-    Forms.tuple(
-        hourKey -> twoDigitFormatter,
-        minuteKey -> twoDigitFormatter
-    ).verifying("time.error.invalid", (build _).tupled.andThen(_.isSuccess)).transform((bind _).tupled, unbind)
+    Forms
+      .tuple(hourKey -> twoDigitFormatter, minuteKey -> twoDigitFormatter)
+      .verifying("time.error.invalid", (build _).tupled.andThen(_.isSuccess))
+      .transform((bind _).tupled, unbind)
   }
 }

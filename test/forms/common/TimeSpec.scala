@@ -61,18 +61,13 @@ class TimeSpec extends BaseSpec with FormMatchers {
 
         val errors = form.bind(Map.empty[String, String]).errors
 
-        errors must contain theSameElementsAs List(
-          FormError("hour", "error.required"),
-          FormError("minute", "error.required")
-        )
+        errors must contain theSameElementsAs List(FormError("hour", "error.required"), FormError("minute", "error.required"))
       }
 
       "hour and minute is incorrect" in {
         val errors = form.bind(Map("hour" -> "24", "minute" -> "60")).errors
 
-        errors must contain theSameElementsAs List(
-          FormError("", "time.error.invalid")
-        )
+        errors must contain theSameElementsAs List(FormError("", "time.error.invalid"))
       }
     }
 

@@ -54,14 +54,14 @@ class ArrivalDetailsSpec extends BaseSpec {
         errors.length must be(2)
       }
 
-      "moment is in future" in {
-        val form  = movementDetails.arrivalForm().bind(dateMapping.unbind(Date(LocalDate.now().plusDays(1))) ++ timeInputData)
+      "moment of arrival is in future" in {
+        val form = movementDetails.arrivalForm().bind(dateMapping.unbind(Date(LocalDate.now().plusDays(1))) ++ timeInputData)
 
         form.errors.flatMap(_.messages) must contain("arrival.details.error.future")
       }
 
-      "moment is is more then 60 days in past" in {
-        val form  = movementDetails.arrivalForm().bind(dateMapping.unbind(Date(LocalDate.now().minusDays(61))) ++ timeInputData)
+      "moment of arrival is more then 60 days in past" in {
+        val form = movementDetails.arrivalForm().bind(dateMapping.unbind(Date(LocalDate.now().minusDays(61))) ++ timeInputData)
 
         form.errors.flatMap(_.messages) must contain("arrival.details.error.overdue")
       }

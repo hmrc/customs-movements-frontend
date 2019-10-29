@@ -37,28 +37,32 @@ object Time {
   val hourKey = "hour"
   val minuteKey = "minute"
 
-  private val correctHour: String => Boolean = (hour: String) => Try(hour.toInt).map(value => value >= 0 && value <= 23).getOrElse(false)
-
-  private val correctMinute: String => Boolean = (minute: String) => Try(minute.toInt).map(value => value >= 0 && value <= 59).getOrElse(false)
-
   val mapping: Mapping[Time] = {
-    val formatter = new DecimalFormat("00")
+    def build(hour: Try[Int], minutes: Try[Int]): Try[LocalTime] = {
+      for {
+        h <- hour
+        m <- minutes
+        time <- Try(LocalTime.of(h, m))
+      } yield time
+    }
 
-    def bind(hour: Option[String], minutes: Option[String]): Time =
-      (hour, minutes) match {
-        case (Some(h), Some(m)) => Time(LocalTime.of(h.toInt, m.toInt))
-        case _                  => throw new IllegalArgumentException("Could not build time - missing one of parameters")
-      }
+    def bind(hour: Try[Int], minutes: Try[Int]): Time =
+      build(hour, minutes)
+        .map(apply)
+        .getOrElse(throw new IllegalArgumentException("Could not build time - missing one of parameters"))
 
-    def unbind(time: Time): Option[(Option[String], Option[String])] =
-      Some((Some(formatter.format(time.time.getHour)), Some(formatter.format(time.time.getMinute))))
 
-    Forms
-      .mapping(
-        hourKey -> optional(text().verifying("dateTime.time.hour.error", correctHour))
-          .verifying("dateTime.time.hour.empty", _.nonEmpty),
-        minuteKey -> optional(text().verifying("dateTime.time.minute.error", correctMinute))
-          .verifying("dateTime.time.minute.empty", _.nonEmpty)
-      )(bind)(unbind)
+    def unbind(time: Time): (Try[Int], Try[Int]) =
+      (Try(time.time.getHour), Try(time.time.getMinute))
+
+    val twoDigitFormatter: Mapping[Try[Int]] = {
+      val formatter = new DecimalFormat("00")
+      text().transform(value => Try(value.toInt), _.map(value => formatter.format(value)).getOrElse(""))
+    }
+
+    Forms.tuple(
+        hourKey -> twoDigitFormatter,
+        minuteKey -> twoDigitFormatter
+    ).verifying("time.error.invalid", (build _).tupled.andThen(_.isSuccess)).transform((bind _).tupled, unbind)
   }
 }

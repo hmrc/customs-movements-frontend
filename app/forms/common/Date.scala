@@ -59,7 +59,8 @@ object Date {
         d <- day
         m <- month
         y <- year
-      } yield Try(LocalDate.of(y, m, d))
+        date <- Try(LocalDate.of(y, m, d))
+      } yield date
 
     def validate(day: Try[Int], month: Try[Int], year: Try[Int]): Boolean = build(day, month, year).isSuccess
 

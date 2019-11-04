@@ -21,8 +21,8 @@ import java.time.{Instant, ZoneId}
 
 object FieldContentFormatter {
 
-  private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy - HH:mm").withZone(ZoneId.systemDefault())
+  private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
 
-  def dateTime(dateTime: Instant): String = dateTimeFormatter.format(dateTime).replace("-", "at")
+  def dateTime(dateTime: Instant): String = dateTimeFormatter.format(dateTime)
 
 }

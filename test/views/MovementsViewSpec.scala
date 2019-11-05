@@ -37,8 +37,9 @@ import views.spec.ViewValidator
 
 class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewValidator {
 
+  private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.of("Europe/London"))
   val messages = stubMessages()
-  val page: Html = new movements(mainTemplate)(Seq.empty)(FakeRequest(), messages)
+  val page: Html = new movements(mainTemplate, dateTimeFormatter)(Seq.empty)(FakeRequest(), messages)
 
   "Movements page" should {
 
@@ -75,7 +76,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
         )
       )
 
-      val pageWithData: Html = new movements(mainTemplate)(Seq(submission -> notifications))(FakeRequest(), messages)
+      val pageWithData: Html = new movements(mainTemplate, dateTimeFormatter)(Seq(submission -> notifications))(FakeRequest(), messages)
 
       getElementById(pageWithData, s"ucr-$conversationId").text() must be("4444")
       getElementById(pageWithData, s"ucrType-$conversationId").text() must be("MUCR")
@@ -92,7 +93,8 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
         )
       )
 
-      val pageWithData: Html = new movements(mainTemplate)(Seq(exampleAssociateDucrRequestSubmission -> notifications))(FakeRequest(), messages)
+      val pageWithData: Html =
+        new movements(mainTemplate, dateTimeFormatter)(Seq(exampleAssociateDucrRequestSubmission -> notifications))(FakeRequest(), messages)
 
       val actualUcrs = getElementById(pageWithData, s"ucr-$conversationId").text()
       actualUcrs must include(ValidMucr)

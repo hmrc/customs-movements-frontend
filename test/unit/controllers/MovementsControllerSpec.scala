@@ -67,7 +67,7 @@ class MovementsControllerSpec extends ControllerSpec with MockCustomsExportsMove
 
         when(mockCustomsExportsMovementConnector.fetchAllSubmissions(anyString())(any()))
           .thenReturn(Future.successful(Seq(submission1, submission2, submission3)))
-        when(mockCustomsExportsMovementConnector.fetchAllNotificationsForUser(anyString())(any()))
+        when(mockCustomsExportsMovementConnector.fetchNotifications(anyString(), anyString())(any(), any()))
           .thenReturn(Future.successful(Seq(exampleNotificationFrontendModel())))
 
         val result = controller.displayPage()(getRequest())

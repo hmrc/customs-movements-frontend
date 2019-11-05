@@ -28,7 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.movements
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class MovementsController @Inject()(
   authenticate: AuthAction,
@@ -38,29 +38,18 @@ class MovementsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
+  private def sort(submissionsWithNotifications: Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])]) =
+    submissionsWithNotifications.sortBy(_._1.requestTimestamp)(Ordering[Instant].reverse)
+
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     val eori = request.user.eori
 
     for {
       submissions <- connector.fetchAllSubmissions(eori)
-      notifications <- connector.fetchAllNotificationsForUser(eori)
-      sortedNotifications = notifications.sorted.reverse
-      submissionsWithNotifications = matchNotificationsAgainstSubmissions(submissions, sortedNotifications)
-    } yield Ok(movementsPage(sortWithOldestLast(submissionsWithNotifications)))
+      notifications <- Future.sequence(submissions.map(submission => connector.fetchNotifications(submission.conversationId, eori)))
+      submissionsWithNotifications = submissions.zip(notifications.map(_.sorted.reverse))
+
+    } yield Ok(movementsPage(sort(submissionsWithNotifications)))
   }
-
-  private def matchNotificationsAgainstSubmissions(
-    submissions: Seq[SubmissionFrontendModel],
-    notifications: Seq[NotificationFrontendModel]
-  ): Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])] =
-    submissions.map { submission =>
-      val matchingNotifications = notifications.filter(_.conversationId == submission.conversationId)
-      (submission, matchingNotifications)
-    }
-
-  private def sortWithOldestLast(
-    submissionsWithNotifications: Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])]
-  ): Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])] =
-    submissionsWithNotifications.sortBy(_._1.requestTimestamp)(Ordering[Instant].reverse)
 
 }

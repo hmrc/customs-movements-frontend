@@ -84,6 +84,17 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
         case Failure(exception) => logger.warn(s"Notifications fetch failure. $exception")
       }
 
+  def fetchAllNotificationsForUser(eori: String)(implicit hc: HeaderCarrier): Future[Seq[NotificationFrontendModel]] =
+    httpClient
+      .GET[Seq[NotificationFrontendModel]](
+        s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}",
+        eoriQueryParam(eori)
+      )
+      .andThen {
+        case Success(response)  => logger.debug(s"Notifications fetch response. $response")
+        case Failure(exception) => logger.warn(s"Notifications fetch failure. $exception")
+      }
+
   def fetchAllSubmissions(eori: String)(implicit hc: HeaderCarrier): Future[Seq[SubmissionFrontendModel]] =
     httpClient
       .GET[Seq[SubmissionFrontendModel]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchAllSubmissions}", eoriQueryParam(eori))

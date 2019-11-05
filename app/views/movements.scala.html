@@ -14,13 +14,13 @@
  * limitations under the License.
  *@
 
+@import java.time.format.DateTimeFormatter
+
 @import models.notifications.NotificationFrontendModel
 @import models.submissions.SubmissionFrontendModel
-@import views.components.fields.FieldContentFormatter
 @import views.Title
-@import java.time.Instant
 
-@this(main_template: views.html.main_template)
+@this(main_template: views.html.main_template, formatter: DateTimeFormatter)
 
 @(submissions: Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])])(implicit request: Request[_], messages: Messages)
 
@@ -57,7 +57,7 @@
                     </td>
                     <td class="govuk-table__cell" id="ucrType-@submission.conversationId">@{components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucrType + "UCR"))}</td>
                     <td class="govuk-table__cell" id="dateOfRequest-@submission.conversationId">
-                        @FieldContentFormatter.dateTime(submission.requestTimestamp)
+                        @formatter.format(submission.requestTimestamp)
                     </td>
                     <td class="govuk-table__cell" id="submissionAction-@submission.conversationId">@messages(s"submissions.${submission.actionType.toString.toLowerCase}")</td>
                 </tr>

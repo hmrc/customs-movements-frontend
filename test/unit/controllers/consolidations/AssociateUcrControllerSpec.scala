@@ -16,7 +16,7 @@
 
 package unit.controllers.consolidations
 
-import controllers.consolidations.{routes, AssociateDucrController}
+import controllers.consolidations.{routes, AssociateUcrController}
 import controllers.exception.IncompleteApplication
 import controllers.storage.CacheIdGenerator._
 import forms.Choice.AssociateDUCR
@@ -36,17 +36,14 @@ import forms.AssociateKind._
 
 import scala.concurrent.ExecutionContext.global
 
-class AssociateDucrControllerSpec extends ControllerSpec {
+class AssociateUcrControllerSpec extends ControllerSpec {
 
   private val mockAssociateDucrPage = mock[associate_ucr]
 
-  private val controller = new AssociateDucrController(
-    mockAuthAction,
-    mockJourneyAction,
-    stubMessagesControllerComponents(),
-    mockCustomsCacheService,
-    mockAssociateDucrPage
-  )(global)
+  private val controller =
+    new AssociateUcrController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), mockCustomsCacheService, mockAssociateDucrPage)(
+      global
+    )
 
   override protected def beforeEach() {
     super.beforeEach()
@@ -142,7 +139,7 @@ class AssociateDucrControllerSpec extends ControllerSpec {
         val result = controller.submit()(postRequest(validDUCR))
         await(result)
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(routes.AssociateDucrSummaryController.displayPage().url)
+        redirectLocation(result) mustBe Some(routes.AssociateUcrSummaryController.displayPage().url)
       }
     }
   }

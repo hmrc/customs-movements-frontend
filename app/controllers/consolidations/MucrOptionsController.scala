@@ -56,7 +56,7 @@ class MucrOptionsController @Inject()(
             Future.successful(BadRequest(mucrOptionsPage(validatedForm)))
           } else {
             cacheService.cache[MucrOptions](movementCacheId(), formId, formData).map { _ =>
-              Redirect(routes.AssociateDucrController.displayPage())
+              Redirect(routes.AssociateUcrController.displayPage())
             }
           }
         }

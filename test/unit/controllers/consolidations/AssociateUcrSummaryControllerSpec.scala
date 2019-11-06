@@ -17,7 +17,7 @@
 package unit.controllers.consolidations
 
 import base.MockSubmissionService
-import controllers.consolidations.AssociateDucrSummaryController
+import controllers.consolidations.AssociateUcrSummaryController
 import controllers.exception.IncompleteApplication
 import controllers.storage.FlashKeys
 import forms.Choice.AssociateDUCR
@@ -30,16 +30,16 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.associate_ducr_summary
+import views.html.associate_ucr_summary
 import forms.AssociateKind._
 
 import scala.concurrent.ExecutionContext.global
 
-class AssociateDucrSummaryControllerSpec extends ControllerSpec with MockSubmissionService with OptionValues {
+class AssociateUcrSummaryControllerSpec extends ControllerSpec with MockSubmissionService with OptionValues {
 
-  private val mockAssociateDucrSummaryPage = mock[associate_ducr_summary]
+  private val mockAssociateDucrSummaryPage = mock[associate_ucr_summary]
 
-  private val controller = new AssociateDucrSummaryController(
+  private val controller = new AssociateUcrSummaryController(
     mockAuthAction,
     mockJourneyAction,
     stubMessagesControllerComponents(),

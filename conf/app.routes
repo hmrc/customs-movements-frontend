@@ -15,16 +15,16 @@ POST        /choice                                controllers.ChoiceController.
 GET         /mucr-options                          controllers.consolidations.MucrOptionsController.displayPage()
 POST        /mucr-options                          controllers.consolidations.MucrOptionsController.save()
 
-#Associate DUCR
-GET         /associate-ducr                        controllers.consolidations.AssociateDucrController.displayPage()
-POST        /associate-ducr                        controllers.consolidations.AssociateDucrController.submit()
+#Associate UCR
+GET         /associate-ucr                        controllers.consolidations.AssociateUcrController.displayPage()
+POST        /associate-ucr                        controllers.consolidations.AssociateUcrController.submit()
 
-#Associate DUCR Summary
-GET         /associate-ducr-summary                controllers.consolidations.AssociateDucrSummaryController.displayPage()
-POST        /associate-ducr-summary                controllers.consolidations.AssociateDucrSummaryController.submit()
+#Associate UCR Summary
+GET         /associate-ucr-summary                controllers.consolidations.AssociateUcrSummaryController.displayPage()
+POST        /associate-ucr-summary                controllers.consolidations.AssociateUcrSummaryController.submit()
 
-# Associate DUCR Confirmation
-GET         /associate-ducr-confirmation           controllers.consolidations.AssociateDucrConfirmationController.displayPage()
+# Associate UCR Confirmation
+GET         /associate-ucr-confirmation           controllers.consolidations.AssociateUcrConfirmationController.displayPage()
 
 # Disassociate UCR page
 GET         /disassociate-ucr                      controllers.consolidations.DisassociateUcrController.displayPage()

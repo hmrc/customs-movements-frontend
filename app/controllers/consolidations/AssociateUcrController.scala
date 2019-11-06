@@ -31,7 +31,7 @@ import views.html.associate_ucr
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AssociateDucrController @Inject()(
+class AssociateUcrController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   mcc: MessagesControllerComponents,
@@ -65,7 +65,7 @@ class AssociateDucrController @Inject()(
         },
         formData =>
           cacheService.cache(movementCacheId(), AssociateUcr.formId, formData).map { _ =>
-            Redirect(routes.AssociateDucrSummaryController.displayPage())
+            Redirect(routes.AssociateUcrSummaryController.displayPage())
         }
       )
   }

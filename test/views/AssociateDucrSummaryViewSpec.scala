@@ -26,7 +26,7 @@ import forms.AssociateUcr
 @ViewTest
 class AssociateDucrSummaryViewSpec extends UnitViewSpec with CommonMessages {
 
-  private val page = new views.html.associate_ducr_summary(mainTemplate)
+  private val page = new views.html.associate_ucr_summary(mainTemplate)
 
   private def createView(mucr: String, ducr: String): Html =
     page(AssociateUcr(Ducr, ducr), mucr)(request, messages)
@@ -51,7 +51,7 @@ class AssociateDucrSummaryViewSpec extends UnitViewSpec with CommonMessages {
 
     "display 'Change' link on page for associate ucr" in {
       view.getElementById("associate_ducr-change") must containText(messages(changeCaption))
-      view.getElementById("associate_ducr-change") must haveHref(controllers.consolidations.routes.AssociateDucrController.displayPage())
+      view.getElementById("associate_ducr-change") must haveHref(controllers.consolidations.routes.AssociateUcrController.displayPage())
     }
 
     "display 'Change' link on the page for mucr" in {

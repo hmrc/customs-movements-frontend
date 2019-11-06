@@ -21,14 +21,14 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.associate_ducr_confirmation
+import views.html.associate_ucr_confirmation
 
 @Singleton
-class AssociateDucrConfirmationController @Inject()(
+class AssociateUcrConfirmationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   mcc: MessagesControllerComponents,
-  associateDucrConfirmPage: associate_ducr_confirmation
+  associateDucrConfirmPage: associate_ucr_confirmation
 ) extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>

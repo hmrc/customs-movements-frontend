@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.associate_ducr_confirmation
 
 @Singleton
-class AssociateDucrConfirmationController @Inject()(
+class AssociateUcrConfirmationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   mcc: MessagesControllerComponents,

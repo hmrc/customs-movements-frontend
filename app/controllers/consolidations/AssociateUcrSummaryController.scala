@@ -31,7 +31,7 @@ import views.html.associate_ducr_summary
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AssociateDucrSummaryController @Inject()(
+class AssociateUcrSummaryController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   mcc: MessagesControllerComponents,

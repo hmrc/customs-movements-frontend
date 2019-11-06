@@ -16,7 +16,7 @@
 
 package unit.controllers.consolidations
 
-import controllers.consolidations.{routes, AssociateDucrController}
+import controllers.consolidations.{routes, AssociateUcrController}
 import controllers.exception.IncompleteApplication
 import controllers.storage.CacheIdGenerator._
 import forms.Choice.AssociateDUCR
@@ -36,11 +36,11 @@ import forms.AssociateKind._
 
 import scala.concurrent.ExecutionContext.global
 
-class AssociateDucrControllerSpec extends ControllerSpec {
+class AssociateUcrControllerSpec extends ControllerSpec {
 
   private val mockAssociateDucrPage = mock[associate_ucr]
 
-  private val controller = new AssociateDucrController(
+  private val controller = new AssociateUcrController(
     mockAuthAction,
     mockJourneyAction,
     stubMessagesControllerComponents(),

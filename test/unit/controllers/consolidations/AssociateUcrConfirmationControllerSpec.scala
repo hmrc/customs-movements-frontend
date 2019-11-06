@@ -16,7 +16,7 @@
 
 package unit.controllers.consolidations
 
-import controllers.consolidations.AssociateDucrConfirmationController
+import controllers.consolidations.AssociateUcrConfirmationController
 import forms.Choice
 import forms.Choice.AssociateDUCR
 import org.mockito.ArgumentMatchers.any
@@ -26,12 +26,12 @@ import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.associate_ducr_confirmation
 
-class AssociateDucrConfirmationControllerSpec extends ControllerSpec {
+class AssociateUcrConfirmationControllerSpec extends ControllerSpec {
 
   private val mockAssociateDucrConfirmPage = mock[associate_ducr_confirmation]
 
   private val controller =
-    new AssociateDucrConfirmationController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), mockAssociateDucrConfirmPage)
+    new AssociateUcrConfirmationController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), mockAssociateDucrConfirmPage)
 
   override def beforeEach() {
     super.beforeEach()

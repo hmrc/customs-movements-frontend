@@ -65,7 +65,7 @@ class AssociateUcrController @Inject()(
         },
         formData =>
           cacheService.cache(movementCacheId(), AssociateUcr.formId, formData).map { _ =>
-            Redirect(routes.AssociateDucrSummaryController.displayPage())
+            Redirect(routes.AssociateUcrSummaryController.displayPage())
         }
       )
   }

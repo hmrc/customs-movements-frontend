@@ -142,7 +142,7 @@ class AssociateUcrControllerSpec extends ControllerSpec {
         val result = controller.submit()(postRequest(validDUCR))
         await(result)
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(routes.AssociateDucrSummaryController.displayPage().url)
+        redirectLocation(result) mustBe Some(routes.AssociateUcrSummaryController.displayPage().url)
       }
     }
   }

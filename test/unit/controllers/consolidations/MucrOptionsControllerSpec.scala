@@ -120,7 +120,7 @@ class MucrOptionsControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.save()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.AssociateDucrController.displayPage().url
+        redirectLocation(result).value mustBe routes.AssociateUcrController.displayPage().url
       }
     }
   }

@@ -68,7 +68,7 @@ class AssociateUcrSummaryController @Inject()(
       _ <- cacheService.remove(movementCacheId())
 
     } yield
-      Redirect(routes.AssociateDucrConfirmationController.displayPage())
+      Redirect(routes.AssociateUcrConfirmationController.displayPage())
         .flashing(FlashKeys.UCR -> associateUcr.ucr, FlashKeys.CONSOLIDATION_KIND -> associateUcr.kind.formValue)
   }
 }

@@ -23,10 +23,10 @@
 
 @main_template(title = Title(messages("associate.ucr.summary.title", mucr)),fullWidth = true) {
 
-    @helper.form(consolidations.routes.AssociateDucrSummaryController.submit(), 'autoComplete -> "off") {
+    @helper.form(consolidations.routes.AssociateUcrSummaryController.submit(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(consolidations.routes.AssociateDucrController.displayPage())
+        @components.back_link(consolidations.routes.AssociateUcrController.displayPage())
 
         @components.page_title(
             title = Some(messages("associate.ucr.summary.title"))
@@ -40,7 +40,7 @@
                     <td id="associate_ucr-type">@messages(s"associate.ucr.summary.kind.${associateUcr.kind.formValue}")</td>
                     <td id="associate_ucr-reference">@associateUcr.ucr</td>
                     <td class="text-right">
-                        <a id="associate_ducr-change" href="@consolidations.routes.AssociateDucrController.displayPage()">@messages("site.change")</a>
+                        <a id="associate_ducr-change" href="@consolidations.routes.AssociateUcrController.displayPage()">@messages("site.change")</a>
                     </td>
                 </tr>
             </tbody>

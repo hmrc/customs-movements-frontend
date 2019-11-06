@@ -26,7 +26,7 @@
 
 
 @main_template(title = Title(messages("associate.ucr.title", mucrOptions.mucr))) {
-    @helper.form(consolidations.routes.AssociateDucrController.submit(), 'autoComplete -> "off") {
+    @helper.form(consolidations.routes.AssociateUcrController.submit(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.back_link(consolidations.routes.MucrOptionsController.displayPage())

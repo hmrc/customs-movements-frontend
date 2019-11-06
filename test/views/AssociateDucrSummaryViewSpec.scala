@@ -51,7 +51,7 @@ class AssociateDucrSummaryViewSpec extends UnitViewSpec with CommonMessages {
 
     "display 'Change' link on page for associate ucr" in {
       view.getElementById("associate_ducr-change") must containText(messages(changeCaption))
-      view.getElementById("associate_ducr-change") must haveHref(controllers.consolidations.routes.AssociateDucrController.displayPage())
+      view.getElementById("associate_ducr-change") must haveHref(controllers.consolidations.routes.AssociateUcrController.displayPage())
     }
 
     "display 'Change' link on the page for mucr" in {

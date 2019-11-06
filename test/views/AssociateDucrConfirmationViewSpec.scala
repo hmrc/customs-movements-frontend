@@ -22,14 +22,14 @@ import helpers.views.CommonMessages
 import play.api.mvc.Flash
 import play.twirl.api.Html
 import testdata.CommonTestData.correctUcr
-import views.html.associate_ducr_confirmation
+import views.html.associate_ucr_confirmation
 import views.spec.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest
 class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
-  private val page = new associate_ducr_confirmation(mainTemplate)
+  private val page = new associate_ucr_confirmation(mainTemplate)
 
   private val view: Html = page()(request, new Flash(Map(FlashKeys.CONSOLIDATION_KIND -> "ducr", FlashKeys.UCR -> correctUcr)), messages)
 

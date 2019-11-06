@@ -40,13 +40,10 @@ class AssociateUcrControllerSpec extends ControllerSpec {
 
   private val mockAssociateDucrPage = mock[associate_ucr]
 
-  private val controller = new AssociateUcrController(
-    mockAuthAction,
-    mockJourneyAction,
-    stubMessagesControllerComponents(),
-    mockCustomsCacheService,
-    mockAssociateDucrPage
-  )(global)
+  private val controller =
+    new AssociateUcrController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), mockCustomsCacheService, mockAssociateDucrPage)(
+      global
+    )
 
   override protected def beforeEach() {
     super.beforeEach()

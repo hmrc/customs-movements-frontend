@@ -15,13 +15,11 @@
  *@
 
 @import controllers.routes
-@import uk.gov.hmrc.http.cache.client.CacheMap
-@import models.viewmodels.HtmlTableRow
-@import forms._
 @import forms.ConsignmentReferences.AllowedReferences
 @import forms.Transport._
-
-@import uk.gov.hmrc.play.views.html._
+@import forms._
+@import models.viewmodels.HtmlTableRow
+@import uk.gov.hmrc.http.cache.client.CacheMap
 @import views.Title
 
 @this(main_template: views.html.main_template)
@@ -32,7 +30,7 @@
 
         @components.back_link(routes.TransportController.displayPage())
 
-        @components.page_title(Some("summary.departure.title"))
+        @components.page_title(Some(messages("summary.departure.title")))
 
         @components.summary_list(Some(messages("summary.consignmentDetails"))) {
             @components.table_row_no_change_link(HtmlTableRow(

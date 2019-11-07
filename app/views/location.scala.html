@@ -15,7 +15,6 @@
  *@
 
 @import controllers.routes
-@import uk.gov.hmrc.play.views.html._
 @import forms.Location
 @import views.Title
 
@@ -31,7 +30,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title(Some("location.question"))
+        @components.page_title(Some(messages("location.question")))
 
         @components.input_text(
             field = form("code"),

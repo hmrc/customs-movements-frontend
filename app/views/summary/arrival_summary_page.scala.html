@@ -15,11 +15,10 @@
  *@
 
 @import controllers.routes
-@import uk.gov.hmrc.http.cache.client.CacheMap
-@import models.viewmodels.HtmlTableRow
-@import forms._
-@import uk.gov.hmrc.play.views.html._
 @import forms.ConsignmentReferences.AllowedReferences
+@import forms._
+@import models.viewmodels.HtmlTableRow
+@import uk.gov.hmrc.http.cache.client.CacheMap
 @import views.Title
 
 @this(main_template: views.html.main_template)
@@ -29,7 +28,7 @@
 @main_template(title = Title("summary.arrival.title")){
     @components.back_link(routes.LocationController.displayPage())
 
-    @components.page_title(Some("summary.arrival.title"))
+    @components.page_title(Some(messages("summary.arrival.title")))
 
     @components.summary_list(Some(messages("summary.consignmentDetails"))){
         @components.table_row_no_change_link(HtmlTableRow(

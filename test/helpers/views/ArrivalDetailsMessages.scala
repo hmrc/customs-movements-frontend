@@ -18,11 +18,10 @@ package helpers.views
 
 trait ArrivalDetailsMessages {
 
-  val arrivalDetails = "arrivalDetails"
-  val arrivalTitle = arrivalDetails + ".title"
-  val arrivalHeader = arrivalDetails + ".header"
-  val arrivalDateQuestion = arrivalDetails + ".date.question"
-  val arrivalDateHint = arrivalDetails + ".date.hint"
-  val arrivalTimeQuestion = arrivalDetails + ".time.question"
-  val arrivalTimeHint = arrivalDetails + ".time.hint"
+  val arrivalTitle = "arrivalDetails.title"
+  val arrivalHeader = "arrivalDetails.header"
+  val arrivalDateQuestion = "arrivalDetails.date.question"
+  val arrivalDateHint = "arrivalDetails.date.hint"
+  val arrivalTimeQuestion = "arrivalDetails.time.question"
+  val arrivalTimeHint = "arrivalDetails.time.hint"
 }

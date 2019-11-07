@@ -19,10 +19,10 @@
 <fieldset>
     <legend class="heading-large" role="heading" aria="" level="1">
         @if(title.nonEmpty) {
-            <h1 id="title" style="margin:0">@messages(title.get)</h1>
+            <h1 id="title" style="margin:0">@{title.get}</h1>
         }
         @if(subtitle.nonEmpty) {
-            <span class="form-hint">@messages(subtitle.get)</span>
+            <span class="form-hint">@{subtitle.get}</span>
         }
     </legend>
 </fieldset>

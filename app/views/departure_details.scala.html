@@ -15,7 +15,6 @@
  *@
 
 @import controllers.routes
-@import uk.gov.hmrc.play.views.html._
 @import forms.DepartureDetails
 @import views.Title
 
@@ -31,7 +30,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title(Some("departureDetails.header"))
+        @components.page_title(Some(messages("departureDetails.header")))
 
         @components.input_date(
             field = form("dateOfDeparture"),

@@ -17,12 +17,12 @@
 @import java.time.format.DateTimeFormatter
 
 @import models.notifications.NotificationFrontendModel
-@import models.submissions.SubmissionFrontendModel
+@import models.submissions.Submission
 @import views.Title
 
 @this(main_template: views.html.main_template, formatter: DateTimeFormatter)
 
-@(submissions: Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])])(implicit request: Request[_], messages: Messages)
+@(submissions: Seq[(Submission, Seq[NotificationFrontendModel])])(implicit request: Request[_], messages: Messages)
 
 @main_template(title = Title("submissions.title"),
     fullWidth = true) {

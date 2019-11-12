@@ -22,7 +22,7 @@ import java.time.{ZoneId, ZonedDateTime}
 import com.google.inject.Guice
 import models.UcrBlock
 import models.notifications.NotificationFrontendModel
-import models.submissions.{ActionType, SubmissionFrontendModel}
+import models.submissions.{ActionType, Submission}
 import models.viewmodels.notificationspage.converters._
 import modules.DateTimeModule
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -33,7 +33,7 @@ import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import testdata.CommonTestData._
-import testdata.MovementsTestData.exampleSubmissionFrontendModel
+import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 
 class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatchers with MockitoSugar {
@@ -60,10 +60,10 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
     "return NotificationsPageSingleElement with values returned by Messages" when {
 
-      "provided with Arrival SubmissionFrontendModel" in new Test {
+      "provided with Arrival Submission" in new Test {
 
-        val input: SubmissionFrontendModel =
-          exampleSubmissionFrontendModel(actionType = ActionType.Arrival, requestTimestamp = testTimestamp)
+        val input: Submission =
+          exampleSubmission(actionType = ActionType.Arrival, requestTimestamp = testTimestamp)
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.Arrival"),
           timestampInfo = "23 Oct 2019 at 12:34",
@@ -78,10 +78,10 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         assertEquality(result, expectedResult)
       }
 
-      "provided with Departure SubmissionFrontendModel" in new Test {
+      "provided with Departure Submission" in new Test {
 
-        val input: SubmissionFrontendModel =
-          exampleSubmissionFrontendModel(actionType = ActionType.Departure, requestTimestamp = testTimestamp)
+        val input: Submission =
+          exampleSubmission(actionType = ActionType.Departure, requestTimestamp = testTimestamp)
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.Departure"),
           timestampInfo = "23 Oct 2019 at 12:34",
@@ -96,9 +96,9 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         assertEquality(result, expectedResult)
       }
 
-      "provided with DucrAssociation SubmissionFrontendModel" in new Test {
+      "provided with DucrAssociation Submission" in new Test {
 
-        val input: SubmissionFrontendModel = SubmissionFrontendModel(
+        val input: Submission = Submission(
           eori = validEori,
           conversationId = conversationId,
           actionType = ActionType.DucrAssociation,
@@ -122,9 +122,9 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         assertEquality(result, expectedResult)
       }
 
-      "provided with MucrAssociation SubmissionFrontendModel" in new Test {
+      "provided with MucrAssociation Submission" in new Test {
 
-        val input: SubmissionFrontendModel = SubmissionFrontendModel(
+        val input: Submission = Submission(
           eori = validEori,
           conversationId = conversationId,
           actionType = ActionType.MucrAssociation,
@@ -145,14 +145,10 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         assertEquality(result, expectedResult)
       }
 
-      "provided with DucrDisassociation SubmissionFrontendModel" in new Test {
+      "provided with DucrDisassociation Submission" in new Test {
 
-        val input: SubmissionFrontendModel = exampleSubmissionFrontendModel(
-          actionType = ActionType.DucrDisassociation,
-          requestTimestamp = testTimestamp,
-          ucr = correctUcr,
-          ucrType = "D"
-        )
+        val input: Submission =
+          exampleSubmission(actionType = ActionType.DucrDisassociation, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "D")
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.DucrDisassociation"),
           timestampInfo = "23 Oct 2019 at 12:34",
@@ -167,14 +163,10 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         assertEquality(result, expectedResult)
       }
 
-      "provided with MucrDisassociation SubmissionFrontendModel" in new Test {
+      "provided with MucrDisassociation Submission" in new Test {
 
-        val input: SubmissionFrontendModel = exampleSubmissionFrontendModel(
-          actionType = ActionType.MucrDisassociation,
-          requestTimestamp = testTimestamp,
-          ucr = correctUcr,
-          ucrType = "M"
-        )
+        val input: Submission =
+          exampleSubmission(actionType = ActionType.MucrDisassociation, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "M")
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.MucrDisassociation"),
           timestampInfo = "23 Oct 2019 at 12:34",
@@ -189,10 +181,10 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         assertEquality(result, expectedResult)
       }
 
-      "provided with ShutMucr SubmissionFrontendModel" in new Test {
+      "provided with ShutMucr Submission" in new Test {
 
-        val input: SubmissionFrontendModel =
-          exampleSubmissionFrontendModel(actionType = ActionType.ShutMucr, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "M")
+        val input: Submission =
+          exampleSubmission(actionType = ActionType.ShutMucr, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "M")
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.ShutMucr"),
           timestampInfo = "23 Oct 2019 at 12:34",

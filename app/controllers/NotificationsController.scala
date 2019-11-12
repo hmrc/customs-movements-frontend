@@ -20,7 +20,7 @@ import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
 import models.notifications.NotificationFrontendModel
-import models.submissions.SubmissionFrontendModel
+import models.submissions.Submission
 import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -42,7 +42,7 @@ class NotificationsController @Inject()(
     val eori = request.user.eori
 
     val params = for {
-      submission: Option[SubmissionFrontendModel] <- connector.fetchSingleSubmission(conversationId, eori)
+      submission: Option[Submission] <- connector.fetchSingleSubmission(conversationId, eori)
       submissionElement: Option[NotificationsPageSingleElement] = submission.map(factory.build)
 
       submissionNotifications: Seq[NotificationFrontendModel] <- connector.fetchNotifications(conversationId, eori)
@@ -59,7 +59,7 @@ class NotificationsController @Inject()(
     }
   }
 
-  private def extractUcr(submission: SubmissionFrontendModel): Option[String] =
+  private def extractUcr(submission: Submission): Option[String] =
     if (submission.hasMucr) submission.extractMucr else submission.extractFirstUcr
 
 }

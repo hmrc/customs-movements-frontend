@@ -19,14 +19,14 @@ package unit.models.submissions
 import java.time.Instant
 
 import models.UcrBlock
-import models.submissions.{ActionType, SubmissionFrontendModel}
+import models.submissions.{ActionType, Submission}
 import org.scalatest.OptionValues
 import testdata.CommonTestData._
 import unit.base.UnitSpec
 
-class SubmissionFrontendModelSpec extends UnitSpec with OptionValues {
+class SubmissionSpec extends UnitSpec with OptionValues {
 
-  val submissionFrontendModel = SubmissionFrontendModel(
+  val submission = Submission(
     eori = validEori,
     conversationId = conversationId,
     ucrBlocks = Seq(UcrBlock(ucr = correctUcr, ucrType = "M")),
@@ -38,17 +38,17 @@ class SubmissionFrontendModelSpec extends UnitSpec with OptionValues {
 
     "return correct value for hasMucr method" in {
 
-      submissionFrontendModel.hasMucr mustBe true
+      submission.hasMucr mustBe true
     }
 
     "extract MUCR correctly" in {
 
-      submissionFrontendModel.extractMucr.value mustBe correctUcr
+      submission.extractMucr.value mustBe correctUcr
     }
 
     "extract first UCR" in {
 
-      submissionFrontendModel.extractFirstUcr.value mustBe correctUcr
+      submission.extractFirstUcr.value mustBe correctUcr
     }
   }
 }

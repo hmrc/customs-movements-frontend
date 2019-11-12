@@ -22,7 +22,7 @@ import java.time.{Instant, LocalDate, ZoneId, ZonedDateTime}
 
 import models.UcrBlock
 import models.notifications.{Entry, ResponseType}
-import models.submissions.{ActionType, SubmissionFrontendModel}
+import models.submissions.{ActionType, Submission}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -60,7 +60,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
       val dateTime: Instant = ZonedDateTime
         .of(LocalDate.parse("2019-10-31", DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay(), ZoneId.systemDefault())
         .toInstant
-      val submission = SubmissionFrontendModel(
+      val submission = Submission(
         requestTimestamp = dateTime,
         eori = "",
         conversationId = conversationId,

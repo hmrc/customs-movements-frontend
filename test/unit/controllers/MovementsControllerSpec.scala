@@ -21,7 +21,7 @@ import java.time.Instant
 import base.MockCustomsExportsMovement
 import controllers.MovementsController
 import models.notifications.NotificationFrontendModel
-import models.submissions.SubmissionFrontendModel
+import models.submissions.Submission
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
@@ -30,7 +30,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import testdata.CommonTestData._
 import testdata.MovementsTestData
-import testdata.MovementsTestData.exampleSubmissionFrontendModel
+import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import unit.base.ControllerSpec
 import views.html.movements
@@ -83,7 +83,7 @@ class MovementsControllerSpec extends ControllerSpec with MockCustomsExportsMove
 
     "call connector for all Notifications" in {
 
-      val submission = MovementsTestData.exampleSubmissionFrontendModel()
+      val submission = MovementsTestData.exampleSubmission()
       when(mockCustomsExportsMovementConnector.fetchAllSubmissions(any[String])(any())).thenReturn(Future.successful(Seq(submission)))
       when(mockCustomsExportsMovementConnector.fetchAllNotificationsForUser(any[String])(any())).thenReturn(Future.successful(Seq.empty))
 
@@ -97,9 +97,9 @@ class MovementsControllerSpec extends ControllerSpec with MockCustomsExportsMove
 
       "there are no Notifications for the Submissions" in {
 
-        val submission1 = exampleSubmissionFrontendModel(requestTimestamp = Instant.now().minusSeconds(60))
-        val submission2 = exampleSubmissionFrontendModel(requestTimestamp = Instant.now().minusSeconds(30))
-        val submission3 = exampleSubmissionFrontendModel(requestTimestamp = Instant.now())
+        val submission1 = exampleSubmission(requestTimestamp = Instant.now().minusSeconds(60))
+        val submission2 = exampleSubmission(requestTimestamp = Instant.now().minusSeconds(30))
+        val submission3 = exampleSubmission(requestTimestamp = Instant.now())
 
         when(mockCustomsExportsMovementConnector.fetchAllSubmissions(any[String])(any()))
           .thenReturn(Future.successful(Seq(submission1, submission2, submission3)))
@@ -107,17 +107,17 @@ class MovementsControllerSpec extends ControllerSpec with MockCustomsExportsMove
 
         controller.displayPage()(getRequest()).futureValue
 
-        val viewArguments: Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])] = captureViewArguments()
+        val viewArguments: Seq[(Submission, Seq[NotificationFrontendModel])] = captureViewArguments()
 
-        val submissions: Seq[SubmissionFrontendModel] = viewArguments.map(_._1)
+        val submissions: Seq[Submission] = viewArguments.map(_._1)
         submissions mustBe Seq(submission3, submission2, submission1)
       }
 
       "there are Notifications for the Submissions" in {
 
-        val submission1 = exampleSubmissionFrontendModel(conversationId = conversationId, requestTimestamp = Instant.now().minusSeconds(60))
-        val submission2 = exampleSubmissionFrontendModel(conversationId = conversationId_2, requestTimestamp = Instant.now().minusSeconds(30))
-        val submission3 = exampleSubmissionFrontendModel(conversationId = conversationId_3, requestTimestamp = Instant.now())
+        val submission1 = exampleSubmission(conversationId = conversationId, requestTimestamp = Instant.now().minusSeconds(60))
+        val submission2 = exampleSubmission(conversationId = conversationId_2, requestTimestamp = Instant.now().minusSeconds(30))
+        val submission3 = exampleSubmission(conversationId = conversationId_3, requestTimestamp = Instant.now())
 
         val notification1 = exampleNotificationFrontendModel(conversationId = conversationId)
         val notification2 = exampleNotificationFrontendModel(conversationId = conversationId_2)
@@ -131,9 +131,9 @@ class MovementsControllerSpec extends ControllerSpec with MockCustomsExportsMove
 
         controller.displayPage()(getRequest()).futureValue
 
-        val viewArguments: Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])] = captureViewArguments()
+        val viewArguments: Seq[(Submission, Seq[NotificationFrontendModel])] = captureViewArguments()
 
-        val submissions: Seq[SubmissionFrontendModel] = viewArguments.map(_._1)
+        val submissions: Seq[Submission] = viewArguments.map(_._1)
         val notifications: Seq[Seq[NotificationFrontendModel]] = viewArguments.map(_._2)
         submissions mustBe Seq(submission3, submission2, submission1)
         notifications mustBe Seq(Seq(notification4, notification3), Seq(notification2), Seq(notification1))
@@ -144,9 +144,9 @@ class MovementsControllerSpec extends ControllerSpec with MockCustomsExportsMove
 
       "display page is invoked with submissions in descending order" in {
 
-        val submission1 = exampleSubmissionFrontendModel(requestTimestamp = Instant.now().minusSeconds(60))
-        val submission2 = exampleSubmissionFrontendModel(requestTimestamp = Instant.now().minusSeconds(30))
-        val submission3 = exampleSubmissionFrontendModel(requestTimestamp = Instant.now())
+        val submission1 = exampleSubmission(requestTimestamp = Instant.now().minusSeconds(60))
+        val submission2 = exampleSubmission(requestTimestamp = Instant.now().minusSeconds(30))
+        val submission3 = exampleSubmission(requestTimestamp = Instant.now())
 
         when(mockCustomsExportsMovementConnector.fetchAllSubmissions(anyString())(any()))
           .thenReturn(Future.successful(Seq(submission1, submission2, submission3)))
@@ -157,20 +157,20 @@ class MovementsControllerSpec extends ControllerSpec with MockCustomsExportsMove
 
         status(result) mustBe OK
 
-        val captor: ArgumentCaptor[Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])]] =
-          ArgumentCaptor.forClass(classOf[Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])]])
+        val captor: ArgumentCaptor[Seq[(Submission, Seq[NotificationFrontendModel])]] =
+          ArgumentCaptor.forClass(classOf[Seq[(Submission, Seq[NotificationFrontendModel])]])
         verify(mockMovementsPage).apply(captor.capture())(any(), any())
 
-        val submissions: Seq[SubmissionFrontendModel] = captor.getValue.map(value => value._1)
+        val submissions: Seq[Submission] = captor.getValue.map(value => value._1)
 
         submissions must be(Seq(submission3, submission2, submission1))
       }
     }
   }
 
-  private def captureViewArguments(): Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])] = {
-    val captor: ArgumentCaptor[Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])]] =
-      ArgumentCaptor.forClass(classOf[Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])]])
+  private def captureViewArguments(): Seq[(Submission, Seq[NotificationFrontendModel])] = {
+    val captor: ArgumentCaptor[Seq[(Submission, Seq[NotificationFrontendModel])]] =
+      ArgumentCaptor.forClass(classOf[Seq[(Submission, Seq[NotificationFrontendModel])]])
     verify(mockMovementsPage).apply(captor.capture())(any(), any())
     captor.getValue
   }

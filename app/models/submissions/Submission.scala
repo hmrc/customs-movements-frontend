@@ -22,7 +22,7 @@ import java.util.UUID
 import models.UcrBlock
 import play.api.libs.json._
 
-case class SubmissionFrontendModel(
+case class Submission(
   uuid: String = UUID.randomUUID().toString,
   eori: String,
   conversationId: String,
@@ -38,6 +38,6 @@ case class SubmissionFrontendModel(
   def extractFirstUcr: Option[String] = ucrBlocks.headOption.map(_.ucr)
 }
 
-object SubmissionFrontendModel {
-  implicit val formats = Json.format[SubmissionFrontendModel]
+object Submission {
+  implicit val formats = Json.format[Submission]
 }

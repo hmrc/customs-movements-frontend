@@ -22,7 +22,7 @@ import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
 import models.notifications.NotificationFrontendModel
-import models.submissions.SubmissionFrontendModel
+import models.submissions.Submission
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -49,9 +49,9 @@ class MovementsController @Inject()(
   }
 
   private def matchNotificationsAgainstSubmissions(
-    submissions: Seq[SubmissionFrontendModel],
+    submissions: Seq[Submission],
     notifications: Seq[NotificationFrontendModel]
-  ): Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])] = {
+  ): Seq[(Submission, Seq[NotificationFrontendModel])] = {
     val groupedNotifications: Map[String, Seq[NotificationFrontendModel]] = notifications.groupBy(_.conversationId).withDefaultValue(Seq.empty)
 
     submissions.map { submission =>
@@ -60,8 +60,8 @@ class MovementsController @Inject()(
   }
 
   private def sortWithOldestLast(
-    submissionsWithNotifications: Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])]
-  ): Seq[(SubmissionFrontendModel, Seq[NotificationFrontendModel])] =
+    submissionsWithNotifications: Seq[(Submission, Seq[NotificationFrontendModel])]
+  ): Seq[(Submission, Seq[NotificationFrontendModel])] =
     submissionsWithNotifications.sortBy(_._1.requestTimestamp)(Ordering[Instant].reverse)
 
 }

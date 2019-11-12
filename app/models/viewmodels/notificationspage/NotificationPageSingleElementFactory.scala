@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter
 import javax.inject.{Inject, Singleton}
 import models.notifications.NotificationFrontendModel
 import models.submissions.ActionType._
-import models.submissions.SubmissionFrontendModel
+import models.submissions.Submission
 import models.viewmodels.notificationspage.converters._
 import play.api.i18n.Messages
 import play.twirl.api.Html
@@ -32,13 +32,13 @@ class NotificationPageSingleElementFactory @Inject()(responseConverterProvider: 
 
   private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
 
-  def build(submission: SubmissionFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
+  def build(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement =
     submission.actionType match {
       case Arrival | Departure | DucrDisassociation | MucrAssociation | MucrDisassociation | ShutMucr => buildForRequest(submission)
       case DucrAssociation                                                                            => buildForDucrAssociation(submission)
     }
 
-  private def buildForRequest(submission: SubmissionFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement = {
+  private def buildForRequest(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement = {
 
     val ucrMessage = if (submission.hasMucr) "MUCR" else "DUCR"
 
@@ -54,7 +54,7 @@ class NotificationPageSingleElementFactory @Inject()(responseConverterProvider: 
     )
   }
 
-  private def buildForDucrAssociation(submission: SubmissionFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement = {
+  private def buildForDucrAssociation(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement = {
     val ducrs = submission.ucrBlocks.filter(_.ucrType == "D")
     val content = Html(
       s"<p>${messages(s"notifications.elem.content.${submission.actionType.value}")}</p>" +

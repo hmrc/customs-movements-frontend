@@ -23,7 +23,7 @@ import forms.Choice.{Arrival, Departure}
 import models.external.requests.ConsolidationRequest
 import models.notifications.NotificationFrontendModel
 import models.requests.MovementRequest
-import models.submissions.SubmissionFrontendModel
+import models.submissions.Submission
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures
@@ -32,7 +32,7 @@ import play.api.test.Helpers.OK
 import testdata.CommonTestData._
 import testdata.ConsolidationTestData._
 import testdata.MovementsTestData
-import testdata.MovementsTestData.exampleSubmissionFrontendModel
+import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -227,7 +227,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
     "call HttpClient, passing EORI and URL and query params for fetch all Submissions endpoint" in new Test {
 
-      when(httpClientMock.GET[Seq[SubmissionFrontendModel]](any(), any())(any(), any(), any()))
+      when(httpClientMock.GET[Seq[Submission]](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(Seq.empty))
 
       connector.fetchAllSubmissions(validEori).futureValue
@@ -240,14 +240,14 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
     "return response from HttpClient" in new Test {
 
       val expectedResponseContent = Seq(
-        exampleSubmissionFrontendModel(conversationId = conversationId),
-        exampleSubmissionFrontendModel(conversationId = conversationId_2),
-        exampleSubmissionFrontendModel(conversationId = conversationId_3)
+        exampleSubmission(conversationId = conversationId),
+        exampleSubmission(conversationId = conversationId_2),
+        exampleSubmission(conversationId = conversationId_3)
       )
-      when(httpClientMock.GET[Seq[SubmissionFrontendModel]](any(), any())(any(), any(), any()))
+      when(httpClientMock.GET[Seq[Submission]](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(expectedResponseContent))
 
-      val result: Seq[SubmissionFrontendModel] = connector.fetchAllSubmissions(validEori).futureValue
+      val result: Seq[Submission] = connector.fetchAllSubmissions(validEori).futureValue
 
       result.length must equal(expectedResponseContent.length)
       result must equal(expectedResponseContent)
@@ -258,7 +258,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
     "call HttpClient, passing EORI and URL for fetch single Submission endpoint" in new Test {
 
-      when(httpClientMock.GET[Option[SubmissionFrontendModel]](any(), any())(any(), any(), any()))
+      when(httpClientMock.GET[Option[Submission]](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(None))
 
       connector.fetchSingleSubmission(conversationId, validEori).futureValue
@@ -271,11 +271,11 @@ class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFut
 
     "return response from HttpClient" in new Test {
 
-      val expectedResponseContent = Some(exampleSubmissionFrontendModel(conversationId = conversationId))
-      when(httpClientMock.GET[Option[SubmissionFrontendModel]](any(), any())(any(), any(), any()))
+      val expectedResponseContent = Some(exampleSubmission(conversationId = conversationId))
+      when(httpClientMock.GET[Option[Submission]](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(expectedResponseContent))
 
-      val result: Option[SubmissionFrontendModel] = connector.fetchSingleSubmission(conversationId, validEori).futureValue
+      val result: Option[Submission] = connector.fetchSingleSubmission(conversationId, validEori).futureValue
 
       result must equal(expectedResponseContent)
     }

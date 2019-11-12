@@ -22,7 +22,7 @@ import models.external.requests.ConsolidationRequest
 import models.notifications.NotificationFrontendModel
 import models.requests.MovementRequest
 import models.submissions.ActionType._
-import models.submissions.{ActionType, SubmissionFrontendModel}
+import models.submissions.{ActionType, Submission}
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -92,20 +92,17 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
         case Failure(exception) => logger.warn(s"Notifications fetch failure. $exception")
       }
 
-  def fetchAllSubmissions(eori: String)(implicit hc: HeaderCarrier): Future[Seq[SubmissionFrontendModel]] =
+  def fetchAllSubmissions(eori: String)(implicit hc: HeaderCarrier): Future[Seq[Submission]] =
     httpClient
-      .GET[Seq[SubmissionFrontendModel]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchAllSubmissions}", eoriQueryParam(eori))
+      .GET[Seq[Submission]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchAllSubmissions}", eoriQueryParam(eori))
       .andThen {
         case Success(response)  => logger.debug(s"Submissions fetch response. $response")
         case Failure(exception) => logger.warn(s"Submissions fetch failure. $exception")
       }
 
-  def fetchSingleSubmission(conversationId: String, eori: String)(implicit hc: HeaderCarrier): Future[Option[SubmissionFrontendModel]] =
+  def fetchSingleSubmission(conversationId: String, eori: String)(implicit hc: HeaderCarrier): Future[Option[Submission]] =
     httpClient
-      .GET[Option[SubmissionFrontendModel]](
-        s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchSingleSubmission}/$conversationId",
-        eoriQueryParam(eori)
-      )
+      .GET[Option[Submission]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchSingleSubmission}/$conversationId", eoriQueryParam(eori))
       .andThen {
         case Success(response)  => logger.debug(s"Single submission fetch response. $response")
         case Failure(exception) => logger.warn(s"Single submission fetch failure. $exception")

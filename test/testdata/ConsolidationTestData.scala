@@ -19,7 +19,7 @@ package testdata
 import models.UcrBlock
 import models.external.requests.ConsolidationRequest
 import models.external.requests.ConsolidationType._
-import models.submissions.{ActionType, SubmissionFrontendModel}
+import models.submissions.{ActionType, Submission}
 import play.api.http.{ContentTypes, HeaderNames}
 import testdata.CommonTestData._
 
@@ -31,7 +31,7 @@ object ConsolidationTestData {
   val exampleAssociateDucrRequest: ConsolidationRequest =
     ConsolidationRequest(consolidationType = ASSOCIATE_DUCR, eori = validEori, mucr = Some(ValidMucr), ucr = Some(ValidDucr))
 
-  val exampleAssociateDucrRequestSubmission: SubmissionFrontendModel = SubmissionFrontendModel(
+  val exampleAssociateDucrRequestSubmission: Submission = Submission(
     eori = validEori,
     conversationId = conversationId,
     actionType = ActionType.DucrAssociation,

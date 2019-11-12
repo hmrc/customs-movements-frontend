@@ -22,7 +22,7 @@ import forms.Choice.Arrival
 import forms._
 import forms.common.{Date, Time}
 import models.requests.MovementRequest
-import models.submissions.{ActionType, SubmissionFrontendModel}
+import models.submissions.{ActionType, Submission}
 import models.{SignedInUser, UcrBlock}
 import play.api.libs.json._
 import testdata.CommonTestData._
@@ -75,15 +75,15 @@ object MovementsTestData {
   def arrivalReference(movementType: Choice): ArrivalReference =
     ArrivalReference(if (movementType == Arrival) Some("1234") else None)
 
-  def exampleSubmissionFrontendModel(
+  def exampleSubmission(
     eori: String = validEori,
     conversationId: String = conversationId,
     ucr: String = correctUcr,
     ucrType: String = "D",
     actionType: ActionType = ActionType.Arrival,
     requestTimestamp: Instant = Instant.now()
-  ): SubmissionFrontendModel =
-    SubmissionFrontendModel(
+  ): Submission =
+    Submission(
       eori = eori,
       conversationId = conversationId,
       ucrBlocks = Seq(UcrBlock(ucr = ucr, ucrType = ucrType)),

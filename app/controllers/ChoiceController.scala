@@ -50,8 +50,8 @@ class ChoiceController @Inject()(
     customsCacheService.cache[Choice](cacheId, choiceId, correctChoice).map { _ =>
       correctChoice match {
         case Arrival | Departure => Redirect(controllers.routes.ConsignmentReferencesController.displayPage())
-        case AssociateUCR       => Redirect(controllers.consolidations.routes.MucrOptionsController.displayPage())
-        case DisassociateUCR    => Redirect(controllers.consolidations.routes.DisassociateUcrController.displayPage())
+        case AssociateUCR        => Redirect(controllers.consolidations.routes.MucrOptionsController.displayPage())
+        case DisassociateUCR     => Redirect(controllers.consolidations.routes.DisassociateUcrController.displayPage())
         case ShutMUCR            => Redirect(controllers.consolidations.routes.ShutMucrController.displayPage())
         case Submissions         => Redirect(controllers.routes.MovementsController.displayPage())
       }

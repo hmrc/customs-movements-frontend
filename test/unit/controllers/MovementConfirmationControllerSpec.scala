@@ -77,9 +77,7 @@ class MovementConfirmationControllerSpec extends ControllerSpec {
       "ucr is missing" in {
         authorizedUser()
         intercept[RuntimeException] {
-          await(
-            controller().display(get.withFlash(FlashKeys.MOVEMENT_TYPE -> Choice.Arrival.value, FlashKeys.UCR_KIND -> "kind"))
-          )
+          await(controller().display(get.withFlash(FlashKeys.MOVEMENT_TYPE -> Choice.Arrival.value, FlashKeys.UCR_KIND -> "kind")))
         } mustBe ReturnToStartException
       }
     }

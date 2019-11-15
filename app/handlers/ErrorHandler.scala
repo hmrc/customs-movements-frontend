@@ -20,6 +20,7 @@ import config.AppConfig
 import controllers.exception.IncompleteApplication
 import controllers.routes
 import javax.inject.{Inject, Singleton}
+import models.ReturnToStartException
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results.{BadRequest, InternalServerError}
 import play.api.mvc.{Request, RequestHeader, Result, Results}
@@ -46,7 +47,7 @@ class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi,
         Results.Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.loginContinueUrl)))
       case _: InsufficientEnrolments =>
         Results.SeeOther(routes.UnauthorisedController.onPageLoad().url)
-      case _: IncompleteApplication =>
+      case _: IncompleteApplication | ReturnToStartException =>
         Results.Redirect(routes.StartController.displayStartPage())
       case _ => super.resolveError(rh, ex)
     }

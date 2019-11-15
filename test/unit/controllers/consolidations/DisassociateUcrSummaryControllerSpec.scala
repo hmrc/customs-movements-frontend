@@ -21,7 +21,7 @@ import controllers.consolidations.DisassociateUcrSummaryController
 import controllers.exception.IncompleteApplication
 import controllers.storage.FlashKeys
 import forms.AssociateKind._
-import forms.Choice.DisassociateDUCR
+import forms.Choice.DisassociateUCR
 import forms.{DisassociateKind, _}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -55,7 +55,7 @@ class DisassociateUcrSummaryControllerSpec extends ControllerSpec with MockSubmi
     authorizedUser()
     setupErrorHandler()
     when(mockDisassociateUcrSummaryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
-    withCaching(Choice.choiceId, Some(DisassociateDUCR))
+    withCaching(Choice.choiceId, Some(DisassociateUCR))
   }
 
   override protected def afterEach(): Unit = {

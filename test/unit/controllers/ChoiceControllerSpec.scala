@@ -121,7 +121,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
 
       "choice is Associate Ducr" in {
 
-        val associateDUCRForm = JsObject(Map("choice" -> JsString(AssociateDUCR.value)))
+        val associateDUCRForm = JsObject(Map("choice" -> JsString(AssociateUCR.value)))
 
         val result = controller.submitChoice()(postRequest(associateDUCRForm))
 
@@ -131,7 +131,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
 
       "choice is Disassociate Ducr" in {
 
-        val disassociateDUCRForm = JsObject(Map("choice" -> JsString(DisassociateDUCR.value)))
+        val disassociateDUCRForm = JsObject(Map("choice" -> JsString(DisassociateUCR.value)))
 
         val result = controller.submitChoice()(postRequest(disassociateDUCRForm))
 
@@ -186,7 +186,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
 
       "choice is association" in {
 
-        val result = controller.startSpecificJourney(AssociateDUCR.value)(getRequest())
+        val result = controller.startSpecificJourney(AssociateUCR.value)(getRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe consolidationRoutes.MucrOptionsController.displayPage().url
@@ -197,7 +197,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
 
       "choice is disassocitation" in {
 
-        val result = controller.startSpecificJourney(DisassociateDUCR.value)(getRequest())
+        val result = controller.startSpecificJourney(DisassociateUCR.value)(getRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe consolidationRoutes.DisassociateUcrController.displayPage().url

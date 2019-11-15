@@ -18,16 +18,16 @@ package unit.controllers
 
 import base.MockSubmissionService
 import controllers.SummaryController
+import controllers.storage.FlashKeys
 import forms.Choice
 import forms.Choice.ShutMUCR
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, when}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.cache.client.CacheMap
 import unit.base.ControllerSpec
-import views.html.movement_confirmation_page
 import views.html.summary.{arrival_summary_page, departure_summary_page}
 
 import scala.concurrent.ExecutionContext.global
@@ -36,7 +36,6 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
 
   private val mockArrivalSummaryPage = mock[arrival_summary_page]
   private val mockDepartureSummaryPage = mock[departure_summary_page]
-  private val mockMovementConfirmationPage = mock[movement_confirmation_page]
 
   private val controller = new SummaryController(
     mockAuthAction,
@@ -46,8 +45,7 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
     mockSubmissionService,
     stubMessagesControllerComponents(),
     mockArrivalSummaryPage,
-    mockDepartureSummaryPage,
-    mockMovementConfirmationPage
+    mockDepartureSummaryPage
   )(global)
 
   override protected def beforeEach(): Unit = {
@@ -57,11 +55,10 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
     setupErrorHandler()
     when(mockArrivalSummaryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockDepartureSummaryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockMovementConfirmationPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockArrivalSummaryPage, mockDepartureSummaryPage, mockMovementConfirmationPage)
+    reset(mockArrivalSummaryPage, mockDepartureSummaryPage)
 
     super.afterEach()
   }
@@ -93,15 +90,17 @@ class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
       }
 
       "submission service return ACCEPTED during submission" in {
-
         givenAUserOnTheArrivalJourney()
         mockSubmission()
         mockCustomsCacheServiceClearedSuccessfully
 
         val result = controller.submitMovementRequest()(postRequest(emptyForm))
 
-        status(result) must be(OK)
-        verify(mockMovementConfirmationPage).apply(any())(any(), any())
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.display().url)
+        flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(Choice.Arrival.value)
+        flash(result).get(FlashKeys.UCR_KIND) mustBe Some("D")
+        flash(result).get(FlashKeys.UCR) mustBe Some("5GB123456789000-123ABC456DEFIIII")
       }
     }
 

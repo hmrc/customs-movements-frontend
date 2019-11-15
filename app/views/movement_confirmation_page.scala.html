@@ -16,24 +16,23 @@
 
 @import forms.{Choice, ConsignmentReferences}
 @import views.Title
-@import models.requests.JourneyRequest
 
 @this(main_template: views.html.main_template)
 
-@(consignmentReferences: ConsignmentReferences)(implicit request: JourneyRequest[_], messages: Messages)
+@(choice: Choice, consignmentReferences: ConsignmentReferences)(implicit request: Request[_], messages: Messages)
 
-@associateLink = {<a href="@routes.ChoiceController.startSpecificJourney("associateDUCR")">@messages("movement.arrival.confirmation.nextSteps.associate")</a>}
-@departureLinkForArrival = {<a href="@routes.ChoiceController.startSpecificJourney("departure")">@messages("movement.arrival.confirmation.nextSteps.depart")</a>}
-@departureLinkForDeparture = {<a href="@routes.ChoiceController.startSpecificJourney("departure")">@messages("movement.departure.confirmation.nextSteps.depart")</a>}
-@arrivalLink = {<a href="@routes.ChoiceController.startSpecificJourney("arrival")">@messages("movement.departure.confirmation.nextSteps.arrive")</a>}
+@associateLink = {<a href="@routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value)">@messages("movement.arrival.confirmation.nextSteps.associate")</a>}
+@departureLinkForArrival = {<a href="@routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value)">@messages("movement.arrival.confirmation.nextSteps.depart")</a>}
+@departureLinkForDeparture = {<a href="@routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value)">@messages("movement.departure.confirmation.nextSteps.depart")</a>}
+@arrivalLink = {<a href="@routes.ChoiceController.startSpecificJourney(forms.Choice.Arrival.value)">@messages("movement.departure.confirmation.nextSteps.arrive")</a>}
 
 @main_template(
-    title = Title(s"movement.${request.choice.value}.confirmation.tab.heading")
+    title = Title(s"movement.${choice.value}.confirmation.tab.heading")
 ) {
 
     @components.highlight_box_with_reference(
         headingText = messages(
-            s"movement.${request.choice.value}.confirmation.heading",
+            s"movement.${choice.value}.confirmation.heading",
             if(consignmentReferences.reference == "D") "DUCR" else "MUCR",
             consignmentReferences.referenceValue
         )
@@ -43,12 +42,12 @@
 
     <h2 id="what-next">@messages("movement.confirmation.whatNext")</h2>
 
-    @if(request.choice.isArrival) {
+    @if(choice.isArrival) {
         <div id="next-steps">
             @Html(messages("movement.arrival.confirmation.nextSteps", associateLink, departureLinkForArrival))
         </div>
     }
-    @if(request.choice.isDeparture) {
+    @if(choice.isDeparture) {
         <div id="next-steps">
             @Html(messages("movement.departure.confirmation.nextSteps", departureLinkForDeparture, arrivalLink))
         </div>

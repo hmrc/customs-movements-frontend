@@ -18,6 +18,7 @@ package controllers
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
+import controllers.storage.FlashKeys
 import forms.Choice._
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -26,7 +27,6 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{CustomsCacheService, SubmissionService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.movement_confirmation_page
 import views.html.summary.{arrival_summary_page, departure_summary_page}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,8 +39,7 @@ class SummaryController @Inject()(
   submissionService: SubmissionService,
   mcc: MessagesControllerComponents,
   arrivalSummaryPage: arrival_summary_page,
-  departureSummaryPage: departure_summary_page,
-  movementConfirmationPage: movement_confirmation_page
+  departureSummaryPage: departure_summary_page
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -68,7 +67,12 @@ class SummaryController @Inject()(
       .flatMap {
         case (Some(consignmentReferences), ACCEPTED) =>
           customsCacheService.remove(movementCacheId).map { _ =>
-            Ok(movementConfirmationPage(consignmentReferences))
+            Redirect(routes.MovementConfirmationController.display())
+              .flashing(
+                FlashKeys.MOVEMENT_TYPE -> request.choice.value,
+                FlashKeys.UCR_KIND -> consignmentReferences.reference,
+                FlashKeys.UCR -> consignmentReferences.referenceValue
+              )
           }
         case _ =>
           Future.successful {

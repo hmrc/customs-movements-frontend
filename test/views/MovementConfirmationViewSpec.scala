@@ -18,11 +18,11 @@ package views
 
 import controllers.routes
 import forms.Choice.{Arrival, Departure}
-import forms.ConsignmentReferences
+import forms.{Choice, ConsignmentReferences}
 import helpers.views.CommonMessages
 import testdata.CommonTestData.correctUcr
 import views.html.movement_confirmation_page
-import views.spec.{UnitViewSpec, ViewMatchers}
+import views.spec.UnitViewSpec
 
 class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
@@ -30,8 +30,8 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
   val consignmentReferences = ConsignmentReferences(ConsignmentReferences.AllowedReferences.Ducr, correctUcr)
   val arrivalRequest = fakeJourneyRequest(Arrival)
   val departureRequest = fakeJourneyRequest(Departure)
-  val arrivalConfirmationView = movementConfirmationPage(consignmentReferences)(arrivalRequest, messages)
-  val departureConfirmationView = movementConfirmationPage(consignmentReferences)(departureRequest, messages)
+  val arrivalConfirmationView = movementConfirmationPage(Choice.Arrival, consignmentReferences)(arrivalRequest, messages)
+  val departureConfirmationView = movementConfirmationPage(Choice.Departure, consignmentReferences)(departureRequest, messages)
 
   "Movement Confirmation Page" should {
 

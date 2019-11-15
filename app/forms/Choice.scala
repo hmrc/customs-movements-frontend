@@ -46,12 +46,12 @@ object Choice {
 
   case object Arrival extends Choice("arrival")
   case object Departure extends Choice("departure")
-  case object AssociateDUCR extends Choice("associateDUCR")
-  case object DisassociateDUCR extends Choice("disassociateDUCR")
+  case object AssociateUCR extends Choice("associateUCR")
+  case object DisassociateUCR extends Choice("disassociateUCR")
   case object ShutMUCR extends Choice("shutMUCR")
   case object Submissions extends Choice("submissions")
 
-  val allChoices = Seq(Arrival, Departure, AssociateDUCR, DisassociateDUCR, ShutMUCR, Submissions)
+  val allChoices = Seq(Arrival, Departure, AssociateUCR, DisassociateUCR, ShutMUCR, Submissions)
 
   val choiceId = "Choice"
 

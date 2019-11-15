@@ -23,8 +23,8 @@
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
-@associateLink = {<a href="@routes.ChoiceController.startSpecificJourney("associateDUCR")">@messages("disassociation.confirmation.associateOrShut.associate")</a>}
-@shutMucrLink = {<a href="@routes.ChoiceController.startSpecificJourney("shutMUCR")">@messages("disassociation.confirmation.associateOrShut.shut")</a>}
+@associateLink = {<a href="@routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value)">@messages("disassociation.confirmation.associateOrShut.associate")</a>}
+@shutMucrLink = {<a href="@routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value)">@messages("disassociation.confirmation.associateOrShut.shut")</a>}
 @kind = @{flash.get(FlashKeys.CONSOLIDATION_KIND).getOrElse("")}
 
 @main_template(title = Title(messages("disassociate.ucr.confirmation.tab.heading", kind))) {

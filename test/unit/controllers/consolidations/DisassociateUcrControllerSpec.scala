@@ -18,7 +18,7 @@ package unit.controllers.consolidations
 
 import base.MockSubmissionService
 import controllers.consolidations.{routes, DisassociateUcrController}
-import forms.Choice.DisassociateDUCR
+import forms.Choice.DisassociateUCR
 import forms._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -52,7 +52,7 @@ class DisassociateUcrControllerSpec extends ControllerSpec with MockSubmissionSe
     super.beforeEach()
 
     authorizedUser()
-    withCaching(Choice.choiceId, Some(DisassociateDUCR))
+    withCaching(Choice.choiceId, Some(DisassociateUCR))
     withCaching(DisassociateUcr.formId, None)
     withCaching(DisassociateUcr.formId)
     when(mockDisassociateUcrPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)

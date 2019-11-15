@@ -78,17 +78,17 @@ class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages
 
     "link to list of submissions" in {
       pending
-      view.getElementsByAttributeValue("href", routes.ChoiceController.startSpecificJourney("submissions").url) mustNot be(empty)
+      view.getElementsByAttributeValue("href", routes.ChoiceController.startSpecificJourney(forms.Choice.Submissions.value).url) mustNot be(empty)
     }
 
     "link to start another association" in {
       pending
-      view.getElementsByAttributeValue("href", routes.ChoiceController.startSpecificJourney("associateDUCR").url).size() mustBe >(0)
+      view.getElementsByAttributeValue("href", routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value).url).size() mustBe >(0)
     }
 
     "link to shut mucr" in {
       pending
-      view.getElementsByAttributeValue("href", routes.ChoiceController.startSpecificJourney("shutMUCR").url).size() mustBe >(0)
+      view.getElementsByAttributeValue("href", routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value).url).size() mustBe >(0)
     }
   }
 

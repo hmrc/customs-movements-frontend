@@ -75,26 +75,26 @@ class SubmissionService @Inject()(
   def submitUcrAssociation(mucrOptions: MucrOptions, associateDucr: AssociateUcr, eori: String)(
     implicit hc: HeaderCarrier
   ): Future[ConsolidationRequest] = {
-    val timer = metrics.startTimer(AssociateDUCR)
+    val timer = metrics.startTimer(AssociateUCR)
     connector
       .sendConsolidationRequest(buildAssociationRequest(eori, mucrOptions.mucr, associateDucr))
       .andThen {
         case Success(_) =>
           auditService.auditAssociate(eori, mucrOptions.mucr, associateDucr.ucr, ACCEPTED.toString)
           timer.stop()
-          metrics.incrementCounter(AssociateDUCR)
+          metrics.incrementCounter(AssociateUCR)
       }
   }
 
   def submitUcrDisassociation(disassociateUcr: DisassociateUcr, eori: String)(implicit hc: HeaderCarrier): Future[ConsolidationRequest] = {
-    val timer = metrics.startTimer(DisassociateDUCR)
+    val timer = metrics.startTimer(DisassociateUCR)
     connector
       .sendConsolidationRequest(buildDisassociationRequest(eori, disassociateUcr))
       .andThen {
         case Success(_) =>
           auditService.auditDisassociate(eori, disassociateUcr.ucr, ACCEPTED.toString)
           timer.stop()
-          metrics.incrementCounter(DisassociateDUCR)
+          metrics.incrementCounter(DisassociateUCR)
       }
   }
 

@@ -159,7 +159,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
     "display selected 3rd radio button - Disassociate (EAC)" in {
 
-      val view = createView(Choice.form().fill(DisassociateDUCR))
+      val view = createView(Choice.form().fill(DisassociateUCR))
 
       ensureRadioIsUnChecked(view, "arrival")
       ensureRadioIsUnChecked(view, "departure")

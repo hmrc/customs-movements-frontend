@@ -20,7 +20,7 @@ import base.MockSubmissionService
 import controllers.consolidations.AssociateUcrSummaryController
 import controllers.exception.IncompleteApplication
 import controllers.storage.FlashKeys
-import forms.Choice.AssociateDUCR
+import forms.Choice.AssociateUCR
 import forms.{AssociateUcr, Choice, MucrOptions}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -53,7 +53,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerSpec with MockSubmissi
 
     authorizedUser()
     when(mockAssociateDucrSummaryPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    withCaching(Choice.choiceId, Some(AssociateDUCR))
+    withCaching(Choice.choiceId, Some(AssociateUCR))
   }
 
   override protected def afterEach(): Unit = {

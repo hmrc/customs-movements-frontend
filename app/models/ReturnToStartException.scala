@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-package controllers.storage
+package models
 
-object FlashKeys {
-  val UCR = "UCR"
-  val UCR_KIND = "UCR_KIND"
-  val MOVEMENT_TYPE = "MOVEMENT_TYPE"
-  val CONSOLIDATION_KIND = "CONSOLIDATION_KIND"
-  val MUCR = "MUCR"
-}
+case object ReturnToStartException extends RuntimeException("Invalid Application State. Returning User to the Start.")

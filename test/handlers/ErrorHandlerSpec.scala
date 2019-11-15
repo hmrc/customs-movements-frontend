@@ -21,6 +21,7 @@ import java.net.URLEncoder
 import base.MovementBaseSpec
 import config.AppConfig
 import controllers.exception.IncompleteApplication
+import models.ReturnToStartException
 import play.api.http.{HeaderNames, Status}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -73,6 +74,12 @@ class ErrorHandlerSpec extends MovementBaseSpec {
 
     "handle incomplete application exception" in {
       val res = errorHandler.resolveError(req, IncompleteApplication)
+      res.header.status must be(Status.SEE_OTHER)
+      res.header.headers.get(HeaderNames.LOCATION) must be(Some(controllers.routes.StartController.displayStartPage().url))
+    }
+
+    "handle return to start exception" in {
+      val res = errorHandler.resolveError(req, ReturnToStartException)
       res.header.status must be(Status.SEE_OTHER)
       res.header.headers.get(HeaderNames.LOCATION) must be(Some(controllers.routes.StartController.displayStartPage().url))
     }

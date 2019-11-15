@@ -19,7 +19,7 @@ package unit.controllers.consolidations
 import controllers.consolidations.{routes, AssociateUcrController}
 import controllers.exception.IncompleteApplication
 import controllers.storage.CacheIdGenerator._
-import forms.Choice.AssociateDUCR
+import forms.Choice.AssociateUCR
 import forms.{AssociateUcr, Choice, MucrOptions}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -49,7 +49,7 @@ class AssociateUcrControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    withCaching(Choice.choiceId, Some(AssociateDUCR))
+    withCaching(Choice.choiceId, Some(AssociateUCR))
     withCaching(AssociateUcr.formId)
     when(mockAssociateDucrPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }

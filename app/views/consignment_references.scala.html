@@ -17,14 +17,14 @@
 @import controllers.routes
 @import forms.ConsignmentReferences
 @import forms.ConsignmentReferences.AllowedReferences._
-@import models.requests.LegacyJourneyRequest
+@import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
 @import views.components.fields.RadioOption
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[ConsignmentReferences])(implicit request: LegacyJourneyRequest[_], messages: Messages)
+@(form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(title = Title("consignmentReferences.title")) {
     @helper.form(routes.ConsignmentReferencesController.saveConsignmentReferences(), 'autoComplete -> "off") {
@@ -35,8 +35,8 @@
         @components.error_summary(form.errors)
 
         @components.heading(
-            title = messages(s"consignmentReferences.${request.choice.value}.question"),
-            sectionHeader = messages(s"consignmentReferences.${request.choice.value}.heading")
+            title = messages(s"consignmentReferences.${request.answers.`type`}.question"),
+            sectionHeader = messages(s"consignmentReferences.${request.answers.`type`}.heading")
         )
 
         @components.input_radio(

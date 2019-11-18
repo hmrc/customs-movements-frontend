@@ -20,8 +20,11 @@ import controllers.routes
 import forms.Choice.Arrival
 import forms.ConsignmentReferences
 import helpers.views.{CommonMessages, ConsignmentReferencesMessages}
+import models.cache.ArrivalAnswers
+import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.data.Form
 import play.twirl.api.Html
+import testdata.MovementsTestData
 import views.spec.ViewSpec
 
 class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesMessages with CommonMessages {
@@ -29,7 +32,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
   private val form: Form[ConsignmentReferences] = ConsignmentReferences.form()
   private val consignmentReferencesPage = injector.instanceOf[views.html.consignment_references]
 
-  private val arrivalView: Html = consignmentReferencesPage(form)(fakeJourneyRequest(Arrival), messages)
+  private val arrivalView: Html = consignmentReferencesPage(form)(JourneyRequest(ArrivalAnswers(), AuthenticatedRequest(fakeRequest, MovementsTestData.newUser(""))), messages)
 
   "Consignment References View" should {
 

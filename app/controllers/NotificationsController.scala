@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.LegacyCustomsDeclareExportsMovementsConnector
+import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
 import models.notifications.Notification
@@ -31,7 +31,7 @@ import scala.concurrent.ExecutionContext
 
 class NotificationsController @Inject()(
                                          authenticate: AuthAction,
-                                         connector: LegacyCustomsDeclareExportsMovementsConnector,
+                                         connector: CustomsDeclareExportsMovementsConnector,
                                          factory: NotificationPageSingleElementFactory,
                                          mcc: MessagesControllerComponents,
                                          notifications: notifications

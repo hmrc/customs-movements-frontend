@@ -17,12 +17,10 @@
 package controllers
 
 import controllers.actions.{AuthAction, JourneyRefiner}
-import controllers.storage.CacheIdGenerator.movementCacheId
-import forms.Choice.{Arrival, Departure}
 import forms.{ArrivalDetails, DepartureDetails, MovementDetails}
 import javax.inject.{Inject, Singleton}
 import models.cache.{ArrivalAnswers, Cache, DepartureAnswers, JourneyType}
-import models.requests.{JourneyRequest, LegacyJourneyRequest}
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}

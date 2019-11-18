@@ -17,7 +17,7 @@
 package unit.controllers
 
 import base.MockFactory._
-import connectors.LegacyCustomsDeclareExportsMovementsConnector
+import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.NotificationsController
 import models.notifications.{Notification, ResponseType}
 import models.submissions.{ActionType, Submission}
@@ -29,22 +29,20 @@ import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import testdata.CommonTestData.{conversationId, validEori}
+import testdata.CommonTestData.conversationId
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
-import unit.base.LegacyControllerSpec
 import views.html.notifications
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NotificationsControllerSpec extends LegacyControllerSpec with ScalaFutures {
+class NotificationsControllerSpec extends ControllerLayerSpec with ScalaFutures {
 
   implicit val messages: Messages = stubMessages()
-  private val customsExportsMovementsConnectorMock: LegacyCustomsDeclareExportsMovementsConnector =
-    buildCustomsDeclareExportsMovementsConnectorMock
-  private val notificationPageSingleElementFactoryMock: NotificationPageSingleElementFactory =
+  private val connector = mock[CustomsDeclareExportsMovementsConnector]
+  private val notificationPageSingleElementFactory: NotificationPageSingleElementFactory =
     buildNotificationPageSingleElementFactoryMock
-  private val notificationsPageMock: notifications = mock[notifications]
+  private val notificationsPage: notifications = mock[notifications]
 
   private val expectedSubmission = exampleSubmission()
   private val expectedNotifications =
@@ -53,32 +51,29 @@ class NotificationsControllerSpec extends LegacyControllerSpec with ScalaFutures
   private val singleElementForNotification = NotificationsPageSingleElement("RESPONSE", "", HtmlFormat.empty)
 
   private val controller = new NotificationsController(
-    mockAuthAction,
-    customsExportsMovementsConnectorMock,
-    notificationPageSingleElementFactoryMock,
+    SuccessfulAuth(),
+    connector,
+    notificationPageSingleElementFactory,
     stubMessagesControllerComponents(),
-    notificationsPageMock
+    notificationsPage
   )(ExecutionContext.global)
-
-  authorizedUser()
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
-    authorizedUser()
-    when(customsExportsMovementsConnectorMock.fetchSingleSubmission(any(), any())(any()))
+    when(connector.fetchSingleSubmission(any(), any())(any()))
       .thenReturn(Future.successful(Some(expectedSubmission)))
-    when(customsExportsMovementsConnectorMock.fetchNotifications(any(), any())(any(), any()))
+    when(connector.fetchNotifications(any(), any())(any()))
       .thenReturn(Future.successful(expectedNotifications))
-    when(notificationPageSingleElementFactoryMock.build(any[Submission])(any()))
+    when(notificationPageSingleElementFactory.build(any[Submission])(any()))
       .thenReturn(singleElementForSubmission)
-    when(notificationPageSingleElementFactoryMock.build(any[Notification])(any()))
+    when(notificationPageSingleElementFactory.build(any[Notification])(any()))
       .thenReturn(singleElementForNotification)
-    when(notificationsPageMock.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(notificationsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(customsExportsMovementsConnectorMock, notificationsPageMock, notificationPageSingleElementFactoryMock)
+    reset(connector, notificationsPage, notificationPageSingleElementFactory)
 
     super.afterEach()
   }
@@ -91,22 +86,22 @@ class NotificationsControllerSpec extends LegacyControllerSpec with ScalaFutures
 
         controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
 
-        verify(customsExportsMovementsConnectorMock).fetchSingleSubmission(meq(conversationId), meq(validEori))(any())
+        verify(connector).fetchSingleSubmission(meq(conversationId), meq(user.eori))(any())
       }
 
       "call CustomsExportsMovementsConnector.fetchNotifications, passing conversation ID and EORI provided" in {
 
         controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
 
-        verify(customsExportsMovementsConnectorMock).fetchNotifications(meq(conversationId), meq(validEori))(any(), any())
+        verify(connector).fetchNotifications(meq(conversationId), meq(user.eori))(any())
       }
 
       "call NotificationPageSingleElementFactory, passing models returned by Connector" in {
 
         controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
 
-        verify(notificationPageSingleElementFactoryMock).build(meq(expectedSubmission))(any())
-        expectedNotifications.foreach(expNotification => verify(notificationPageSingleElementFactoryMock).build(meq(expNotification))(any()))
+        verify(notificationPageSingleElementFactory).build(meq(expectedSubmission))(any())
+        expectedNotifications.foreach(expNotification => verify(notificationPageSingleElementFactory).build(meq(expNotification))(any()))
       }
 
       "call notification view template, passing UCR related to the submission" in {
@@ -115,7 +110,7 @@ class NotificationsControllerSpec extends LegacyControllerSpec with ScalaFutures
 
         val expectedUcr: String = expectedSubmission.ucrBlocks.head.ucr
 
-        verify(notificationsPageMock).apply(meq(expectedUcr), any[NotificationsPageSingleElement], any[Seq[NotificationsPageSingleElement]])(
+        verify(notificationsPage).apply(meq(expectedUcr), any[NotificationsPageSingleElement], any[Seq[NotificationsPageSingleElement]])(
           any(),
           any()
         )
@@ -128,7 +123,7 @@ class NotificationsControllerSpec extends LegacyControllerSpec with ScalaFutures
 
         controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
 
-        verify(notificationsPageMock).apply(any[String], meq(singleElementForSubmission), meq(expectedViewInput))(any(), any())
+        verify(notificationsPage).apply(any[String], meq(singleElementForSubmission), meq(expectedViewInput))(any(), any())
       }
 
       "return 200 (OK)" in {
@@ -143,10 +138,10 @@ class NotificationsControllerSpec extends LegacyControllerSpec with ScalaFutures
 
       "redirect back to movements" in {
 
-        when(customsExportsMovementsConnectorMock.fetchSingleSubmission(any(), any())(any()))
+        when(connector.fetchSingleSubmission(any(), any())(any()))
           .thenReturn(
             Future
-              .successful(Some(Submission(eori = validEori, conversationId = conversationId, ucrBlocks = Seq.empty, actionType = ActionType.Arrival)))
+              .successful(Some(Submission(eori = user.eori, conversationId = conversationId, ucrBlocks = Seq.empty, actionType = ActionType.Arrival)))
           )
 
         val result = controller.listOfNotifications(conversationId)(FakeRequest())

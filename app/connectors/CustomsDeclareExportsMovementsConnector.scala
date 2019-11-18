@@ -66,11 +66,11 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
     httpClient
       .GET[Option[Submission]](s"${appConfig.customsDeclareExportsMovements}$Submissions/$conversationId", eoriQueryParam(eori))
 
-  def fetchNotifications(conversationId: String, providerId: String)(implicit hc: HeaderCarrier): Future[Seq[Notification]] =
+  def fetchNotifications(conversationId: String, eori: String)(implicit hc: HeaderCarrier): Future[Seq[Notification]] =
     httpClient
       .GET[Seq[Notification]](
         s"${appConfig.customsDeclareExportsMovements}$Notifications/$conversationId",
-        eoriQueryParam(providerId)
+        eoriQueryParam(eori)
       )
 
   def fetchAllNotificationsForUser(eori: String)(implicit hc: HeaderCarrier): Future[Seq[Notification]] =

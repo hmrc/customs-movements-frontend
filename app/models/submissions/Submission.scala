@@ -39,5 +39,5 @@ case class Submission(
 }
 
 object Submission {
-  implicit val formats = Json.format[Submission]
+  implicit val format: OFormat[Submission] = Json.format[Submission]
 }

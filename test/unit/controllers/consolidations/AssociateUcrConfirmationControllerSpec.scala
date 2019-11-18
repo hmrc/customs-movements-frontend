@@ -23,10 +23,10 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.associate_ucr_confirmation
 
-class AssociateUcrConfirmationControllerSpec extends ControllerSpec {
+class AssociateUcrConfirmationControllerSpec extends LegacyControllerSpec {
 
   private val mockAssociateDucrConfirmPage = mock[associate_ucr_confirmation]
 

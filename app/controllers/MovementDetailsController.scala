@@ -16,12 +16,12 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, LegacyJourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.Choice.{Arrival, Departure}
 import forms.{ArrivalDetails, DepartureDetails, MovementDetails}
 import javax.inject.{Inject, Singleton}
-import models.requests.JourneyRequest
+import models.requests.LegacyJourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -34,13 +34,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class MovementDetailsController @Inject()(
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
-  mcc: MessagesControllerComponents,
-  details: MovementDetails,
-  arrivalDetailsPage: arrival_details,
-  departureDetailsPage: departure_details
+                                           authenticate: AuthAction,
+                                           journeyType: LegacyJourneyAction,
+                                           customsCacheService: CustomsCacheService,
+                                           mcc: MessagesControllerComponents,
+                                           details: MovementDetails,
+                                           arrivalDetailsPage: arrival_details,
+                                           departureDetailsPage: departure_details
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -51,7 +51,7 @@ class MovementDetailsController @Inject()(
     }
   }
 
-  private def arrivalPage()(implicit request: JourneyRequest[AnyContent]): Future[Html] = {
+  private def arrivalPage()(implicit request: LegacyJourneyRequest[AnyContent]): Future[Html] = {
     val form = details.arrivalForm()
     customsCacheService
       .fetchAndGetEntry[ArrivalDetails](movementCacheId, MovementDetails.formId)
@@ -59,7 +59,7 @@ class MovementDetailsController @Inject()(
 
   }
 
-  private def departurePage()(implicit request: JourneyRequest[AnyContent]): Future[Html] = {
+  private def departurePage()(implicit request: LegacyJourneyRequest[AnyContent]): Future[Html] = {
     val form = details.departureForm()
     customsCacheService
       .fetchAndGetEntry[DepartureDetails](movementCacheId, MovementDetails.formId)
@@ -76,7 +76,7 @@ class MovementDetailsController @Inject()(
     }
   }
 
-  private def handleSavingArrival()(implicit request: JourneyRequest[AnyContent]): Future[Either[Html, Call]] =
+  private def handleSavingArrival()(implicit request: LegacyJourneyRequest[AnyContent]): Future[Either[Html, Call]] =
     details
       .arrivalForm()
       .bindFromRequest()
@@ -88,7 +88,7 @@ class MovementDetailsController @Inject()(
         }
       )
 
-  private def handleSavingDeparture()(implicit request: JourneyRequest[AnyContent]): Future[Either[Html, Call]] =
+  private def handleSavingDeparture()(implicit request: LegacyJourneyRequest[AnyContent]): Future[Either[Html, Call]] =
     details
       .departureForm()
       .bindFromRequest()

@@ -27,12 +27,12 @@ import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.cache.client.CacheMap
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.summary.{arrival_summary_page, departure_summary_page}
 
 import scala.concurrent.ExecutionContext.global
 
-class SummaryControllerSpec extends ControllerSpec with MockSubmissionService {
+class SummaryControllerSpec extends LegacyControllerSpec with MockSubmissionService {
 
   private val mockArrivalSummaryPage = mock[arrival_summary_page]
   private val mockDepartureSummaryPage = mock[departure_summary_page]

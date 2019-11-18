@@ -14,26 +14,14 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.cache
 
-import forms.Choice.Arrival
-import models.SignedInUser
-import play.api.test.FakeRequest
-import uk.gov.hmrc.auth.core.Enrolments
-import unit.base.UnitSpec
+import play.api.libs.json.{Format, Reads, Writes}
 
-class JourneyRequestSpec extends UnitSpec {
+object JourneyType extends Enumeration {
+  type JourneyType = Value
 
-  "Journey Request" should {
+  val ARRIVE, DEPART, ASSOCIATE_UCR, DISSOCIATE_UCR, SHUT_MUCR = Value
 
-    "return correct eori" in {
-
-      val eori = "eori1234"
-      val user = SignedInUser(eori, Enrolments(Set.empty))
-      val authenticatedRequest = AuthenticatedRequest(FakeRequest(), user)
-      val journeyRequest = JourneyRequest(authenticatedRequest, Arrival)
-
-      journeyRequest.eori mustBe eori
-    }
-  }
+  implicit val format: Format[JourneyType] = Format(Reads.enumNameReads(JourneyType), Writes.enumNameWrites)
 }

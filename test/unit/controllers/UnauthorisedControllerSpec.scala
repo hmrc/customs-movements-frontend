@@ -21,12 +21,12 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.unauthorised
 
 import scala.concurrent.ExecutionContext.global
 
-class UnauthorisedControllerSpec extends ControllerSpec {
+class UnauthorisedControllerSpec extends LegacyControllerSpec {
 
   val mockUnauthorisedPage = mock[unauthorised]
   val controller = new UnauthorisedController(stubMessagesControllerComponents(), mockUnauthorisedPage)(global)

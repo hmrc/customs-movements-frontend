@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, LegacyJourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import controllers.storage.FlashKeys
 import forms.Choice._
@@ -25,21 +25,21 @@ import javax.inject.Inject
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{CustomsCacheService, SubmissionService}
+import services.{CustomsCacheService, LegacySubmissionService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.summary.{arrival_summary_page, departure_summary_page}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class SummaryController @Inject()(
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService,
-  submissionService: SubmissionService,
-  mcc: MessagesControllerComponents,
-  arrivalSummaryPage: arrival_summary_page,
-  departureSummaryPage: departure_summary_page
+                                   authenticate: AuthAction,
+                                   journeyType: LegacyJourneyAction,
+                                   errorHandler: ErrorHandler,
+                                   customsCacheService: CustomsCacheService,
+                                   submissionService: LegacySubmissionService,
+                                   mcc: MessagesControllerComponents,
+                                   arrivalSummaryPage: arrival_summary_page,
+                                   departureSummaryPage: departure_summary_page
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

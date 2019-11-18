@@ -18,7 +18,7 @@ package controllers
 
 import java.time.Instant
 
-import connectors.CustomsDeclareExportsMovementsConnector
+import connectors.LegacyCustomsDeclareExportsMovementsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
 import models.notifications.NotificationFrontendModel
@@ -31,10 +31,10 @@ import views.html.movements
 import scala.concurrent.ExecutionContext
 
 class MovementsController @Inject()(
-  authenticate: AuthAction,
-  connector: CustomsDeclareExportsMovementsConnector,
-  mcc: MessagesControllerComponents,
-  movementsPage: movements
+                                     authenticate: AuthAction,
+                                     connector: LegacyCustomsDeclareExportsMovementsConnector,
+                                     mcc: MessagesControllerComponents,
+                                     movementsPage: movements
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

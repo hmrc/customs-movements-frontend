@@ -20,7 +20,7 @@ import testdata.MovementsTestData
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import forms.Choice
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.requests.{AuthenticatedRequest, LegacyJourneyRequest}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
@@ -55,7 +55,7 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator {
   def assertMessage(key: String, expected: String): Unit =
     messages(key) must be(expected)
 
-  def fakeJourneyRequest(choice: Choice): JourneyRequest[AnyContentAsEmpty.type] =
-    JourneyRequest(AuthenticatedRequest(fakeRequest, MovementsTestData.newUser("")), choice)
+  def fakeJourneyRequest(choice: Choice): LegacyJourneyRequest[AnyContentAsEmpty.type] =
+    LegacyJourneyRequest(AuthenticatedRequest(fakeRequest, MovementsTestData.newUser("")), choice)
 
 }

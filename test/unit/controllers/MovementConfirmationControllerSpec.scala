@@ -26,12 +26,12 @@ import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.movement_confirmation_page
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class MovementConfirmationControllerSpec extends ControllerSpec {
+class MovementConfirmationControllerSpec extends LegacyControllerSpec {
 
   private val page = mock[movement_confirmation_page]
 

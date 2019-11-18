@@ -16,7 +16,7 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, LegacyJourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.ShutMucr
 import forms.ShutMucr.{form, formId}
@@ -31,11 +31,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ShutMucrController @Inject()(
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  cacheService: CustomsCacheService,
-  mcc: MessagesControllerComponents,
-  shutMucrPage: shut_mucr
+                                    authenticate: AuthAction,
+                                    journeyType: LegacyJourneyAction,
+                                    cacheService: CustomsCacheService,
+                                    mcc: MessagesControllerComponents,
+                                    shutMucrPage: shut_mucr
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

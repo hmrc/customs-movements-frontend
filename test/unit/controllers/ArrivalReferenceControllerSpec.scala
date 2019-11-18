@@ -27,12 +27,12 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.arrival_reference
 
 import scala.concurrent.ExecutionContext.global
 
-class ArrivalReferenceControllerSpec extends ControllerSpec with OptionValues with ScalaFutures {
+class ArrivalReferenceControllerSpec extends LegacyControllerSpec with OptionValues with ScalaFutures {
 
   private val mockArrivalReferencePage = mock[arrival_reference]
 

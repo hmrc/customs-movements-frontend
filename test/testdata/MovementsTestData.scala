@@ -47,7 +47,7 @@ object MovementsTestData {
 
   val movementDetails = new MovementDetails(zoneId)
 
-  val movementBuilder = new MovementBuilder(movementDetails, zoneId)
+  val movementBuilder = new LegacyMovementBuilder(movementDetails, zoneId)
 
   def newUser(eori: String): SignedInUser =
     SignedInUser(eori, Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori))))

@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import controllers.storage.CacheIdGenerator.cacheId
 import forms.Choice
 import forms.Choice.choiceId
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.requests.{AuthenticatedRequest, LegacyJourneyRequest}
 import play.api.mvc.Results.Conflict
 import play.api.mvc.{ActionRefiner, Result}
 import services.CustomsCacheService
@@ -29,17 +29,18 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class JourneyAction @Inject()(customsCacheService: CustomsCacheService)(implicit override val executionContext: ExecutionContext)
-    extends ActionRefiner[AuthenticatedRequest, JourneyRequest] {
+@Deprecated
+case class LegacyJourneyAction @Inject()(customsCacheService: CustomsCacheService)(implicit override val executionContext: ExecutionContext)
+    extends ActionRefiner[AuthenticatedRequest, LegacyJourneyRequest] {
 
-  override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
+  override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, LegacyJourneyRequest[A]]] = {
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     customsCacheService
       .fetchAndGetEntry[Choice](cacheId()(request), choiceId)
       .map {
-        case Some(choice) => Right(JourneyRequest(request, choice))
+        case Some(choice) => Right(LegacyJourneyRequest(request, choice))
         case _            => Left(Conflict("Could not obtain information about journey type"))
       }
   }

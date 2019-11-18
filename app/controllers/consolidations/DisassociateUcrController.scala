@@ -16,7 +16,7 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, LegacyJourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.DisassociateUcr
 import forms.DisassociateUcr._
@@ -31,11 +31,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DisassociateUcrController @Inject()(
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  mcc: MessagesControllerComponents,
-  cacheService: CustomsCacheService,
-  disassociateUcrPage: disassociate_ucr
+                                           authenticate: AuthAction,
+                                           journeyType: LegacyJourneyAction,
+                                           mcc: MessagesControllerComponents,
+                                           cacheService: CustomsCacheService,
+                                           disassociateUcrPage: disassociate_ucr
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

@@ -16,7 +16,7 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, LegacyJourneyAction}
 import controllers.exception.IncompleteApplication
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.AssociateUcr.form
@@ -32,11 +32,11 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class AssociateUcrController @Inject()(
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  mcc: MessagesControllerComponents,
-  cacheService: CustomsCacheService,
-  associateUcrPage: associate_ucr
+                                        authenticate: AuthAction,
+                                        journeyType: LegacyJourneyAction,
+                                        mcc: MessagesControllerComponents,
+                                        cacheService: CustomsCacheService,
+                                        associateUcrPage: associate_ucr
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

@@ -20,36 +20,33 @@ import controllers.consolidations.{routes => consolidationRoutes}
 import controllers.{routes, ChoiceController}
 import forms.Choice
 import forms.Choice._
+import models.cache.{ArrivalAnswers, Cache}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+import unit.repository.MockCache
 import views.html.choice_page
 
 import scala.concurrent.ExecutionContext.global
 
-class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeAndAfterEach {
+class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
   private val mockChoicePage = mock[choice_page]
 
-  private val controller =
-    new ChoiceController(mockAuthAction, mockCustomsCacheService, stubMessagesControllerComponents(), mockChoicePage)(global)
+  private val controller = new ChoiceController(SuccessfulAuth(), cache, stubMessagesControllerComponents(), mockChoicePage)(global)
 
-  override def beforeEach {
+  override def beforeEach() {
     super.beforeEach()
 
-    authorizedUser()
-    withCaching[Choice](Choice.choiceId, None)
-    withCaching(Choice.choiceId)
     when(mockChoicePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
-  override def afterEach {
+  override def afterEach() {
     reset(mockChoicePage)
 
     super.afterEach()
@@ -62,10 +59,9 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
   }
 
   "Choice Controller" should {
-
     "return 200 (OK)" when {
-
       "display page method is invoked with empty cache" in {
+        givenTheCacheIsEmpty()
 
         val result = controller.displayChoiceForm()(getRequest())
 
@@ -74,21 +70,17 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
       }
 
       "display page method is invoked with data in cache" in {
-
-        val cachedData = Arrival
-        withCaching(Choice.choiceId, Some(cachedData))
+        givenTheCacheContains(Cache("eori", ArrivalAnswers()))
 
         val result = controller.displayChoiceForm()(getRequest())
 
         status(result) mustBe OK
-        theResponseForm.value.value mustBe cachedData
+        theResponseForm.value mustBe Some(Arrival)
       }
     }
 
     "throw an IllegalArgumentException" when {
-
       "form is incorrect" in {
-
         val incorrectForm = JsObject(Map("choice" -> JsString("Incorrect")))
 
         val result = controller.submitChoice()(postRequest(incorrectForm))
@@ -98,131 +90,112 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues with BeforeA
     }
 
     "return 303 (SEE_OTHER)" when {
-
       "choice is Arrival" in {
-
         val arrivalForm = JsObject(Map("choice" -> JsString(Arrival.value)))
 
         val result = controller.submitChoice()(postRequest(arrivalForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.ConsignmentReferencesController.displayPage().url
+        redirectLocation(result) mustBe Some(routes.ConsignmentReferencesController.displayPage().url)
       }
 
       "choice is Departure" in {
-
         val departureForm = JsObject(Map("choice" -> JsString(Departure.value)))
 
         val result = controller.submitChoice()(postRequest(departureForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.ConsignmentReferencesController.displayPage().url
+        redirectLocation(result) mustBe Some(routes.ConsignmentReferencesController.displayPage().url)
       }
 
       "choice is Associate Ducr" in {
-
         val associateDUCRForm = JsObject(Map("choice" -> JsString(AssociateUCR.value)))
 
         val result = controller.submitChoice()(postRequest(associateDUCRForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe consolidationRoutes.MucrOptionsController.displayPage().url
+        redirectLocation(result) mustBe Some(consolidationRoutes.MucrOptionsController.displayPage().url)
       }
 
       "choice is Disassociate Ducr" in {
-
         val disassociateDUCRForm = JsObject(Map("choice" -> JsString(DisassociateUCR.value)))
 
         val result = controller.submitChoice()(postRequest(disassociateDUCRForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe consolidationRoutes.DisassociateUcrController.displayPage().url
+        redirectLocation(result) mustBe Some(consolidationRoutes.DisassociateUcrController.displayPage().url)
       }
 
       "choice is Shut Mucr" in {
-
         val shutMucrForm = JsObject(Map("choice" -> JsString(ShutMUCR.value)))
 
         val result = controller.submitChoice()(postRequest(shutMucrForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe consolidationRoutes.ShutMucrController.displayPage().url
+        redirectLocation(result) mustBe Some(consolidationRoutes.ShutMucrController.displayPage().url)
       }
 
       "choice is Submission" in {
-
         val submissionsForm = JsObject(Map("choice" -> JsString(Submissions.value)))
 
         val result = controller.submitChoice()(postRequest(submissionsForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.MovementsController.displayPage().url
+        redirectLocation(result) mustBe Some(routes.MovementsController.displayPage().url)
       }
     }
   }
 
   "Choice controller on startSpecificJourney method" should {
-
     "redirect to Consignment References page" when {
-
       "choice is arrival" in {
-
         val result = controller.startSpecificJourney(Arrival.value)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.ConsignmentReferencesController.displayPage().url
+        redirectLocation(result) mustBe Some(routes.ConsignmentReferencesController.displayPage().url)
       }
 
       "choice is departure" in {
-
         val result = controller.startSpecificJourney(Departure.value)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.ConsignmentReferencesController.displayPage().url
+        redirectLocation(result) mustBe Some(routes.ConsignmentReferencesController.displayPage().url)
       }
     }
 
     "redirect to Mucr Options page" when {
-
       "choice is association" in {
-
         val result = controller.startSpecificJourney(AssociateUCR.value)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe consolidationRoutes.MucrOptionsController.displayPage().url
+        redirectLocation(result) mustBe Some(consolidationRoutes.MucrOptionsController.displayPage().url)
       }
     }
 
     "redirect to Disassociate Ducr page" when {
-
-      "choice is disassocitation" in {
-
+      "choice is disassociation" in {
         val result = controller.startSpecificJourney(DisassociateUCR.value)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe consolidationRoutes.DisassociateUcrController.displayPage().url
+        redirectLocation(result) mustBe Some(consolidationRoutes.DisassociateUcrController.displayPage().url)
       }
     }
 
     "redirect to Shut Mucr page" when {
-
       "choice is shut mucr" in {
-
         val result = controller.startSpecificJourney(ShutMUCR.value)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe consolidationRoutes.ShutMucrController.displayPage().url
+        redirectLocation(result) mustBe Some(consolidationRoutes.ShutMucrController.displayPage().url)
       }
     }
 
     "redirect to Submissions page" when {
-
       "choice is submissions" in {
-
         val result = controller.startSpecificJourney(Submissions.value)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.MovementsController.displayPage().url
+        redirectLocation(result) mustBe Some(routes.MovementsController.displayPage().url)
       }
     }
   }

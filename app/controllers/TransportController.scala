@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, LegacyJourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.Transport
 import forms.Transport._
@@ -32,11 +32,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TransportController @Inject()(
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
-  mcc: MessagesControllerComponents,
-  transportPage: transport
+                                     authenticate: AuthAction,
+                                     journeyType: LegacyJourneyAction,
+                                     customsCacheService: CustomsCacheService,
+                                     mcc: MessagesControllerComponents,
+                                     transportPage: transport
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

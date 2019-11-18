@@ -19,7 +19,7 @@ package unit.base
 import base.{MockAuthConnector, MockCustomsCacheService}
 import forms.Choice
 import forms.Choice._
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.requests.{AuthenticatedRequest, LegacyJourneyRequest}
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, AnyContentAsJson, Request}
 import play.api.test.FakeRequest
@@ -29,14 +29,15 @@ import unit.mocks.{ErrorHandlerMocks, JourneyActionMocks}
 import utils.FakeRequestCSRFSupport._
 import utils.Stubs
 
-trait ControllerSpec extends UnitSpec with Stubs with MockAuthConnector with MockCustomsCacheService with JourneyActionMocks with ErrorHandlerMocks {
+@Deprecated
+trait LegacyControllerSpec extends UnitSpec with Stubs with MockAuthConnector with MockCustomsCacheService with JourneyActionMocks with ErrorHandlerMocks {
 
   protected val user = newUser(validEori)
 
   private val authenticatedRequest = AuthenticatedRequest(FakeRequest("GET", "").withCSRFToken, user)
 
-  protected def getRequest(): JourneyRequest[AnyContentAsEmpty.type] =
-    JourneyRequest(authenticatedRequest, Arrival)
+  protected def getRequest(): LegacyJourneyRequest[AnyContentAsEmpty.type] =
+    LegacyJourneyRequest(authenticatedRequest, Arrival)
 
   protected def postRequest(body: Map[String, String]): Request[AnyContent] =
     FakeRequest("POST", "")

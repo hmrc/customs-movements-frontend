@@ -36,13 +36,13 @@ import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustomsCacheService {
+class LegacyAuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustomsCacheService {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
   implicit val headerCarrier = HeaderCarrier()
 
   val mockAuditConnector = mock[AuditConnector]
-  val spyAuditService = Mockito.spy(new AuditService(mockAuditConnector, "appName"))
+  val spyAuditService = Mockito.spy(new LegacyAuditService(mockAuditConnector, "appName"))
 
   override def beforeEach(): Unit =
     when(mockAuditConnector.sendEvent(any())(any[HeaderCarrier], any[ExecutionContext]))

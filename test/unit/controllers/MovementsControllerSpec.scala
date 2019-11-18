@@ -32,13 +32,13 @@ import testdata.CommonTestData._
 import testdata.MovementsTestData
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.movements
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-class MovementsControllerSpec extends ControllerSpec with MockCustomsExportsMovement with ScalaFutures {
+class MovementsControllerSpec extends LegacyControllerSpec with MockCustomsExportsMovement with ScalaFutures {
 
   private val mockMovementsPage = mock[movements]
 

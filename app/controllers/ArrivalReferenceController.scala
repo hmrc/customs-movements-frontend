@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, LegacyJourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.ArrivalReference._
 import forms.Choice.Arrival
@@ -34,12 +34,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ArrivalReferenceController @Inject()(
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
-  errorHandler: ErrorHandler,
-  mcc: MessagesControllerComponents,
-  arrivalReferencePage: arrival_reference
+                                            authenticate: AuthAction,
+                                            journeyType: LegacyJourneyAction,
+                                            customsCacheService: CustomsCacheService,
+                                            errorHandler: ErrorHandler,
+                                            mcc: MessagesControllerComponents,
+                                            arrivalReferencePage: arrival_reference
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

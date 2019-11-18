@@ -30,13 +30,13 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import testdata.ConsolidationTestData.ValidDucr
 import uk.gov.hmrc.http.cache.client.CacheMap
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.associate_ucr
 import forms.AssociateKind._
 
 import scala.concurrent.ExecutionContext.global
 
-class AssociateUcrControllerSpec extends ControllerSpec {
+class AssociateUcrControllerSpec extends LegacyControllerSpec {
 
   private val mockAssociateDucrPage = mock[associate_ucr]
 

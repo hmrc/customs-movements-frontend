@@ -16,7 +16,7 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, LegacyJourneyAction}
 import controllers.exception.IncompleteApplication
 import controllers.storage.CacheIdGenerator.movementCacheId
 import controllers.storage.FlashKeys
@@ -24,7 +24,7 @@ import forms.ShutMucr
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{CustomsCacheService, SubmissionService}
+import services.{CustomsCacheService, LegacySubmissionService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.shut_mucr_summary
 
@@ -32,12 +32,12 @@ import scala.concurrent.ExecutionContext
 import scala.util.Success
 
 class ShutMucrSummaryController @Inject()(
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  mcc: MessagesControllerComponents,
-  cacheService: CustomsCacheService,
-  submissionService: SubmissionService,
-  shutMucrSummaryPage: shut_mucr_summary
+                                           authenticate: AuthAction,
+                                           journeyType: LegacyJourneyAction,
+                                           mcc: MessagesControllerComponents,
+                                           cacheService: CustomsCacheService,
+                                           submissionService: LegacySubmissionService,
+                                           shutMucrSummaryPage: shut_mucr_summary
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

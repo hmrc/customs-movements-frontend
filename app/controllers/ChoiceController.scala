@@ -21,62 +21,50 @@ import controllers.storage.CacheIdGenerator.cacheId
 import forms.Choice
 import forms.Choice._
 import javax.inject.{Inject, Singleton}
+import models.cache.{Answers, ArrivalAnswers, AssociateUcrAnswers, Cache, DepartureAnswers, DisassociateUcrAnswers, ShutMucrAnswers}
+import models.requests.AuthenticatedRequest
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.choice_page
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ChoiceController @Inject()(
-  authenticate: AuthAction,
-  customsCacheService: CustomsCacheService,
-  mcc: MessagesControllerComponents,
-  choicePage: choice_page
-)(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+class ChoiceController @Inject()(authenticate: AuthAction, cache: CacheRepository, mcc: MessagesControllerComponents, choicePage: choice_page)(
+  implicit ec: ExecutionContext
+) extends FrontendController(mcc) with I18nSupport {
 
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[Choice](cacheId, choiceId)
-      .map(data => Ok(choicePage(data.fold(form())(form().fill(_)))))
+    cache
+      .findByEori(request.eori)
+      .map(_.map(cache => Choice(cache.answers.`type`)))
+      .map {
+        case Some(choice) => Ok(choicePage(Choice.form().fill(choice)))
+        case None         => Ok(choicePage(Choice.form()))
+      }
   }
 
   def startSpecificJourney(choice: String): Action[AnyContent] = authenticate.async { implicit request =>
-    val correctChoice = Choice(choice)
-
-    customsCacheService.cache[Choice](cacheId, choiceId, correctChoice).map { _ =>
-      correctChoice match {
-        case Arrival | Departure => Redirect(controllers.routes.ConsignmentReferencesController.displayPage())
-        case AssociateUCR        => Redirect(controllers.consolidations.routes.MucrOptionsController.displayPage())
-        case DisassociateUCR     => Redirect(controllers.consolidations.routes.DisassociateUcrController.displayPage())
-        case ShutMUCR            => Redirect(controllers.consolidations.routes.ShutMucrController.displayPage())
-        case Submissions         => Redirect(controllers.routes.MovementsController.displayPage())
-      }
-    }
+    proceed(Choice(choice))
   }
 
   def submitChoice(): Action[AnyContent] = authenticate.async { implicit request =>
     form()
       .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(choicePage(formWithErrors))),
-        validChoice =>
-          customsCacheService
-            .cache[Choice](cacheId, choiceId, validChoice)
-            .map { _ =>
-              validChoice match {
-                case Arrival | Departure => Redirect(routes.ConsignmentReferencesController.displayPage())
-                case AssociateUCR =>
-                  Redirect(consolidations.routes.MucrOptionsController.displayPage())
-                case DisassociateUCR =>
-                  Redirect(consolidations.routes.DisassociateUcrController.displayPage())
-                case ShutMUCR    => Redirect(consolidations.routes.ShutMucrController.displayPage())
-                case Submissions => Redirect(controllers.routes.MovementsController.displayPage())
-              }
-          }
-      )
+      .fold(formWithErrors => Future.successful(BadRequest(choicePage(formWithErrors))), proceed)
   }
+
+  private def proceed(choice: Choice)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = choice match {
+    case Arrival         => saveAndRedirect(ArrivalAnswers(), controllers.routes.ConsignmentReferencesController.displayPage())
+    case Departure       => saveAndRedirect(DepartureAnswers(), controllers.routes.ConsignmentReferencesController.displayPage())
+    case AssociateUCR    => saveAndRedirect(AssociateUcrAnswers(), controllers.consolidations.routes.MucrOptionsController.displayPage())
+    case DisassociateUCR => saveAndRedirect(DisassociateUcrAnswers(), controllers.consolidations.routes.DisassociateUcrController.displayPage())
+    case ShutMUCR        => saveAndRedirect(ShutMucrAnswers(), controllers.consolidations.routes.ShutMucrController.displayPage())
+    case Submissions     => Future.successful(Redirect(controllers.routes.MovementsController.displayPage()))
+  }
+
+  private def saveAndRedirect(answers: Answers, call: Call)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
+    cache.upsert(Cache(request.eori, answers)).map(_ => Redirect(call))
 }

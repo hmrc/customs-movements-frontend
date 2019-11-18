@@ -20,7 +20,7 @@ import java.util.UUID
 
 import akka.stream.Materializer
 import com.codahale.metrics.SharedMetricRegistries
-import connectors.CustomsDeclareExportsMovementsConnector
+import connectors.LegacyCustomsDeclareExportsMovementsConnector
 import metrics.MovementsMetrics
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
@@ -37,7 +37,7 @@ import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson, Request}
 import play.api.test.FakeRequest
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
-import services.{CustomsCacheService, SubmissionService}
+import services.{CustomsCacheService, LegacySubmissionService}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import utils.FakeRequestCSRFSupport._
@@ -55,8 +55,8 @@ trait MovementApp
       .overrides(
         bind[AuthConnector].to(authConnectorMock),
         bind[CustomsCacheService].to(mockCustomsCacheService),
-        bind[CustomsDeclareExportsMovementsConnector].to(mockCustomsExportsMovementConnector),
-        bind[SubmissionService].to(mockSubmissionService)
+        bind[LegacyCustomsDeclareExportsMovementsConnector].to(mockCustomsExportsMovementConnector),
+        bind[LegacySubmissionService].to(mockSubmissionService)
       )
       .build()
   }

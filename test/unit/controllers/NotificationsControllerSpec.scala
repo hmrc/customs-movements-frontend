@@ -17,7 +17,7 @@
 package unit.controllers
 
 import base.MockFactory._
-import connectors.CustomsDeclareExportsMovementsConnector
+import connectors.LegacyCustomsDeclareExportsMovementsConnector
 import controllers.NotificationsController
 import models.notifications.{NotificationFrontendModel, ResponseType}
 import models.submissions.{ActionType, Submission}
@@ -32,15 +32,15 @@ import play.twirl.api.HtmlFormat
 import testdata.CommonTestData.{conversationId, validEori}
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.notifications
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NotificationsControllerSpec extends ControllerSpec with ScalaFutures {
+class NotificationsControllerSpec extends LegacyControllerSpec with ScalaFutures {
 
   implicit val messages: Messages = stubMessages()
-  private val customsExportsMovementsConnectorMock: CustomsDeclareExportsMovementsConnector =
+  private val customsExportsMovementsConnectorMock: LegacyCustomsDeclareExportsMovementsConnector =
     buildCustomsDeclareExportsMovementsConnectorMock
   private val notificationPageSingleElementFactoryMock: NotificationPageSingleElementFactory =
     buildNotificationPageSingleElementFactoryMock

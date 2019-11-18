@@ -26,12 +26,12 @@ import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.consignment_references
 
 import scala.concurrent.ExecutionContext.global
 
-class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValues {
+class ConsignmentReferencesControllerSpec extends LegacyControllerSpec with OptionValues {
 
   private val mockConsignmentReferencePage = mock[consignment_references]
 

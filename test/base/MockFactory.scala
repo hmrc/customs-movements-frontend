@@ -16,7 +16,7 @@
 
 package base
 
-import connectors.CustomsDeclareExportsMovementsConnector
+import connectors.LegacyCustomsDeclareExportsMovementsConnector
 import models.notifications.NotificationFrontendModel
 import models.submissions.Submission
 import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
@@ -32,8 +32,8 @@ import scala.concurrent.Future
 
 object MockFactory extends MockitoSugar {
 
-  def buildCustomsDeclareExportsMovementsConnectorMock: CustomsDeclareExportsMovementsConnector = {
-    val customsDeclareExportsMovementsConnector = mock[CustomsDeclareExportsMovementsConnector]
+  def buildCustomsDeclareExportsMovementsConnectorMock: LegacyCustomsDeclareExportsMovementsConnector = {
+    val customsDeclareExportsMovementsConnector = mock[LegacyCustomsDeclareExportsMovementsConnector]
 
     when(customsDeclareExportsMovementsConnector.sendArrivalDeclaration(any())(any()))
       .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))

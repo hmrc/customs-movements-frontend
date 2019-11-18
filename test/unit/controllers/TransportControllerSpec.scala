@@ -28,12 +28,12 @@ import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.transport
 
 import scala.concurrent.ExecutionContext.global
 
-class TransportControllerSpec extends ControllerSpec with OptionValues {
+class TransportControllerSpec extends LegacyControllerSpec with OptionValues {
 
   private val mockTransportPage = mock[transport]
 

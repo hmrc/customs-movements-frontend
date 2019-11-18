@@ -29,13 +29,13 @@ import org.scalatest.OptionValues
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.associate_ucr_summary
 import forms.AssociateKind._
 
 import scala.concurrent.ExecutionContext.global
 
-class AssociateUcrSummaryControllerSpec extends ControllerSpec with MockSubmissionService with OptionValues {
+class AssociateUcrSummaryControllerSpec extends LegacyControllerSpec with MockSubmissionService with OptionValues {
 
   private val mockAssociateDucrSummaryPage = mock[associate_ucr_summary]
 

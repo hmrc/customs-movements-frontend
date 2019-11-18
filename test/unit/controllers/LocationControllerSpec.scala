@@ -26,12 +26,12 @@ import play.api.data.Form
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.location
 
 import scala.concurrent.ExecutionContext.global
 
-class LocationControllerSpec extends ControllerSpec with OptionValues {
+class LocationControllerSpec extends LegacyControllerSpec with OptionValues {
 
   private val mockLocationPage = mock[location]
 

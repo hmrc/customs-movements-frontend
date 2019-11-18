@@ -21,12 +21,12 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.shut_mucr_confirmation
 
 import scala.concurrent.ExecutionContext.global
 
-class ShutMucrConfirmationControllerSpec extends ControllerSpec {
+class ShutMucrConfirmationControllerSpec extends LegacyControllerSpec {
 
   private val mockShutMucrConfirmationPage = mock[shut_mucr_confirmation]
 

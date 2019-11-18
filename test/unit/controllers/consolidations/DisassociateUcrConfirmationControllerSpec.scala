@@ -23,12 +23,12 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.disassociate_ucr_confirmation
 
 import scala.concurrent.ExecutionContext.global
 
-class DisassociateUcrConfirmationControllerSpec extends ControllerSpec {
+class DisassociateUcrConfirmationControllerSpec extends LegacyControllerSpec {
 
   private val mockDisassociateDucrConfirmationPage = mock[disassociate_ucr_confirmation]
 

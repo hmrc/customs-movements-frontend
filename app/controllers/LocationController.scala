@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, LegacyJourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.Choice.{Arrival, Departure}
 import forms.Location._
@@ -33,11 +33,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class LocationController @Inject()(
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
-  mcc: MessagesControllerComponents,
-  locationPage: location
+                                    authenticate: AuthAction,
+                                    journeyType: LegacyJourneyAction,
+                                    customsCacheService: CustomsCacheService,
+                                    mcc: MessagesControllerComponents,
+                                    locationPage: location
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

@@ -19,4 +19,6 @@ package models.requests
 import models.SignedInUser
 import play.api.mvc.{Request, WrappedRequest}
 
-case class AuthenticatedRequest[A](request: Request[A], user: SignedInUser) extends WrappedRequest[A](request)
+case class AuthenticatedRequest[A](request: Request[A], user: SignedInUser) extends WrappedRequest[A](request) {
+  lazy val eori: String = user.eori
+}

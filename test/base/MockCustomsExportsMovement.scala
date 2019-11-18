@@ -16,7 +16,7 @@
 
 package base
 
-import connectors.CustomsDeclareExportsMovementsConnector
+import connectors.LegacyCustomsDeclareExportsMovementsConnector
 import models.submissions.Submission
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -29,8 +29,8 @@ import uk.gov.hmrc.http.HttpResponse
 import scala.concurrent.Future
 
 trait MockCustomsExportsMovement extends MockitoSugar with BeforeAndAfterEach { self: Suite =>
-  val mockCustomsExportsMovementConnector: CustomsDeclareExportsMovementsConnector =
-    mock[CustomsDeclareExportsMovementsConnector]
+  val mockCustomsExportsMovementConnector: LegacyCustomsDeclareExportsMovementsConnector =
+    mock[LegacyCustomsDeclareExportsMovementsConnector]
 
   def sendMovementRequest202Response(): OngoingStubbing[Future[HttpResponse]] =
     when(

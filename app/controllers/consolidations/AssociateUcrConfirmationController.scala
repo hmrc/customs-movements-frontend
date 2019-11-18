@@ -16,7 +16,7 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, LegacyJourneyAction}
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -25,10 +25,10 @@ import views.html.associate_ucr_confirmation
 
 @Singleton
 class AssociateUcrConfirmationController @Inject()(
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  mcc: MessagesControllerComponents,
-  associateDucrConfirmPage: associate_ucr_confirmation
+                                                    authenticate: AuthAction,
+                                                    journeyType: LegacyJourneyAction,
+                                                    mcc: MessagesControllerComponents,
+                                                    associateDucrConfirmPage: associate_ucr_confirmation
 ) extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>

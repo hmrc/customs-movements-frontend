@@ -30,12 +30,12 @@ import org.scalatest.OptionValues
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.disassociate_ucr_summary
 
 import scala.concurrent.ExecutionContext.global
 
-class DisassociateUcrSummaryControllerSpec extends ControllerSpec with MockSubmissionService with OptionValues {
+class DisassociateUcrSummaryControllerSpec extends LegacyControllerSpec with MockSubmissionService with OptionValues {
 
   private val mockDisassociateUcrSummaryPage = mock[disassociate_ucr_summary]
 

@@ -30,12 +30,12 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import testdata.CommonTestData
 import testdata.ConsolidationTestData.ValidMucr
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.mucr_options
 
 import scala.concurrent.ExecutionContext.global
 
-class MucrOptionsControllerSpec extends ControllerSpec with OptionValues {
+class MucrOptionsControllerSpec extends LegacyControllerSpec with OptionValues {
 
   private val mockMucrOptionsPage = mock[mucr_options]
 

@@ -1,0 +1,111 @@
+/*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package services
+
+import connectors.LegacyCustomsDeclareExportsMovementsConnector
+import forms.Choice._
+import forms._
+import javax.inject.{Inject, Singleton}
+import metrics.MovementsMetrics
+import models.external.requests.ConsolidationRequest
+import models.external.requests.ConsolidationRequestFactory._
+import models.requests.MovementRequest
+import play.api.http.Status.{ACCEPTED, INTERNAL_SERVER_ERROR}
+import services.audit.{AuditService, AuditTypes, LegacyAuditService}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Success
+
+@Deprecated
+@Singleton
+class LegacySubmissionService @Inject()(
+                                         cacheService: CustomsCacheService,
+                                         connector: LegacyCustomsDeclareExportsMovementsConnector,
+                                         auditService: LegacyAuditService,
+                                         metrics: MovementsMetrics,
+                                         movementBuilder: LegacyMovementBuilder
+)(implicit ec: ExecutionContext) {
+
+  def submitMovementRequest(cacheId: String, eori: String, choice: Choice)(implicit hc: HeaderCarrier): Future[(Option[ConsignmentReferences], Int)] =
+    cacheService.fetch(cacheId).flatMap {
+      case Some(cacheMap) => {
+        val data = movementBuilder.createMovementRequest(cacheMap, eori, choice)
+        val timer = metrics.startTimer(choice)
+
+        auditService.auditAllPagesUserInput(choice, cacheMap)
+
+        val movementAuditType =
+          if (choice == Arrival) AuditTypes.AuditArrival else AuditTypes.AuditDeparture
+
+        sendMovementRequest(choice, data).map { submitResponse =>
+          metrics.incrementCounter(choice)
+          auditService
+            .auditMovements(eori, data, submitResponse.status.toString, movementAuditType)
+          timer.stop()
+          (Some(data.consignmentReference), submitResponse.status)
+        }
+      }
+      case _ =>
+        Future.successful((None, INTERNAL_SERVER_ERROR))
+    }
+
+  private def sendMovementRequest(
+    choice: Choice,
+    movementRequest: MovementRequest
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    choice match {
+      case Arrival   => connector.sendArrivalDeclaration(movementRequest)
+      case Departure => connector.sendDepartureDeclaration(movementRequest)
+    }
+
+  def submitUcrAssociation(mucrOptions: MucrOptions, associateDucr: AssociateUcr, eori: String)(
+    implicit hc: HeaderCarrier
+  ): Future[ConsolidationRequest] = {
+    val timer = metrics.startTimer(AssociateUCR)
+    connector
+      .sendConsolidationRequest(buildAssociationRequest(eori, mucrOptions.mucr, associateDucr))
+      .andThen {
+        case Success(_) =>
+          auditService.auditAssociate(eori, mucrOptions.mucr, associateDucr.ucr, ACCEPTED.toString)
+          timer.stop()
+          metrics.incrementCounter(AssociateUCR)
+      }
+  }
+
+  def submitUcrDisassociation(disassociateUcr: DisassociateUcr, eori: String)(implicit hc: HeaderCarrier): Future[ConsolidationRequest] = {
+    val timer = metrics.startTimer(DisassociateUCR)
+    connector
+      .sendConsolidationRequest(buildDisassociationRequest(eori, disassociateUcr))
+      .andThen {
+        case Success(_) =>
+          auditService.auditDisassociate(eori, disassociateUcr.ucr, ACCEPTED.toString)
+          timer.stop()
+          metrics.incrementCounter(DisassociateUCR)
+      }
+  }
+
+  def submitShutMucrRequest(shutMucr: ShutMucr, eori: String)(implicit hc: HeaderCarrier): Future[ConsolidationRequest] = {
+    val timer = metrics.startTimer(ShutMUCR)
+    connector.sendConsolidationRequest(buildShutMucrRequest(eori, shutMucr.mucr)).andThen {
+      case Success(_) =>
+        auditService.auditShutMucr(eori, shutMucr.mucr, ACCEPTED.toString)
+        timer.stop()
+        metrics.incrementCounter(ShutMUCR)
+    }
+  }
+}

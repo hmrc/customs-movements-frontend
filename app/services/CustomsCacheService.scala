@@ -36,6 +36,7 @@ class CustomsHttpCaching @Inject()(cfg: AppConfig, httpClient: HttpClient) exten
   override def http: HttpClient = httpClient
 }
 
+@Deprecated
 @Singleton
 class CustomsCacheService @Inject()(caching: CustomsHttpCaching, applicationCrypto: ApplicationCrypto) extends ShortLivedCache {
 

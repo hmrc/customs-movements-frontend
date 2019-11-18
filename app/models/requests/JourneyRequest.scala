@@ -16,10 +16,18 @@
 
 package models.requests
 
-import forms.Choice
+import models.ReturnToStartException
+import models.cache.Answers
 import play.api.mvc.WrappedRequest
 
-case class JourneyRequest[A](authenticatedRequest: AuthenticatedRequest[A], choice: Choice) extends WrappedRequest[A](authenticatedRequest) {
+case class JourneyRequest[T](answers: Answers, request: AuthenticatedRequest[T]) extends WrappedRequest(request) {
 
-  val eori = authenticatedRequest.user.eori
+  val eori: String = request.user.eori
+
+  def answersAre[J <: Answers]: Boolean = answers.isInstanceOf[J]
+
+  def answersAs[J <: Answers]: J = answers match {
+    case ans: J => ans
+    case _      => throw ReturnToStartException
+  }
 }

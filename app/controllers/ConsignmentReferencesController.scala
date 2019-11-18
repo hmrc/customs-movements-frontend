@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, LegacyJourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.Choice.{Arrival, Departure}
 import forms.ConsignmentReferences
@@ -33,11 +33,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ConsignmentReferencesController @Inject()(
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
-  mcc: MessagesControllerComponents,
-  consignmentReferencesPage: consignment_references
+                                                 authenticate: AuthAction,
+                                                 journeyType: LegacyJourneyAction,
+                                                 customsCacheService: CustomsCacheService,
+                                                 mcc: MessagesControllerComponents,
+                                                 consignmentReferencesPage: consignment_references
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

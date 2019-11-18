@@ -16,7 +16,7 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, LegacyJourneyAction}
 import controllers.exception.IncompleteApplication
 import controllers.storage.CacheIdGenerator.movementCacheId
 import controllers.storage.FlashKeys
@@ -25,7 +25,7 @@ import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.{CustomsCacheService, SubmissionService}
+import services.{CustomsCacheService, LegacySubmissionService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.disassociate_ucr_summary
 
@@ -33,13 +33,13 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class DisassociateUcrSummaryController @Inject()(
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
-  mcc: MessagesControllerComponents,
-  cacheService: CustomsCacheService,
-  submissionService: SubmissionService,
-  disassociateUcrSummaryPage: disassociate_ucr_summary
+                                                  authenticate: AuthAction,
+                                                  journeyType: LegacyJourneyAction,
+                                                  errorHandler: ErrorHandler,
+                                                  mcc: MessagesControllerComponents,
+                                                  cacheService: CustomsCacheService,
+                                                  submissionService: LegacySubmissionService,
+                                                  disassociateUcrSummaryPage: disassociate_ucr_summary
 )(implicit executionContext: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

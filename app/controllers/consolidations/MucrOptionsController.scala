@@ -16,7 +16,7 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, LegacyJourneyAction}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.MucrOptions
 import forms.MucrOptions.{form, formId}
@@ -31,11 +31,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class MucrOptionsController @Inject()(
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  mcc: MessagesControllerComponents,
-  cacheService: CustomsCacheService,
-  mucrOptionsPage: mucr_options
+                                       authenticate: AuthAction,
+                                       journeyType: LegacyJourneyAction,
+                                       mcc: MessagesControllerComponents,
+                                       cacheService: CustomsCacheService,
+                                       mucrOptionsPage: mucr_options
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

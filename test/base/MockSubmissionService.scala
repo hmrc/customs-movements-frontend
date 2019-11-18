@@ -24,14 +24,14 @@ import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers.ACCEPTED
-import services.SubmissionService
+import services.LegacySubmissionService
 import testdata.ConsolidationTestData._
 
 import scala.concurrent.Future
 
 trait MockSubmissionService extends MockitoSugar with BeforeAndAfterEach { self: Suite =>
 
-  val mockSubmissionService: SubmissionService = mock[SubmissionService]
+  val mockSubmissionService: LegacySubmissionService = mock[LegacySubmissionService]
   private val ucr = "5GB123456789000-123ABC456DEFIIII"
 
   def mockSubmission(status: Int = ACCEPTED): OngoingStubbing[Future[(Option[ConsignmentReferences], Int)]] =

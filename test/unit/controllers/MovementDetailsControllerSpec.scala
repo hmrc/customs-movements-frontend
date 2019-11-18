@@ -30,12 +30,12 @@ import play.api.libs.json.{JsNumber, JsObject, JsString, JsValue, Json}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import testdata.MovementsTestData
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.{arrival_details, departure_details}
 
 import scala.concurrent.ExecutionContext.global
 
-class MovementDetailsControllerSpec extends ControllerSpec with OptionValues {
+class MovementDetailsControllerSpec extends LegacyControllerSpec with OptionValues {
 
   private val mockArrivalDetailsPage = mock[arrival_details]
   private val mockDepartureDetailsPage = mock[departure_details]

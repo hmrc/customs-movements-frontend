@@ -23,12 +23,12 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.start_page
 
 import scala.concurrent.ExecutionContext.global
 
-class StartControllerSpec extends ControllerSpec {
+class StartControllerSpec extends LegacyControllerSpec {
 
   private val startPage = mock[start_page]
 

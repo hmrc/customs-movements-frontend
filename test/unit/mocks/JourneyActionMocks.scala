@@ -17,7 +17,7 @@
 package unit.mocks
 
 import base.MockCustomsCacheService
-import controllers.actions.JourneyAction
+import controllers.actions.LegacyJourneyAction
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import utils.Stubs
@@ -27,5 +27,5 @@ import scala.concurrent.ExecutionContext.global
 trait JourneyActionMocks extends MockCustomsCacheService with BeforeAndAfterEach {
   self: MockitoSugar with Suite with Stubs =>
 
-  val mockJourneyAction: JourneyAction = JourneyAction(mockCustomsCacheService)(global)
+  val mockJourneyAction: LegacyJourneyAction = LegacyJourneyAction(mockCustomsCacheService)(global)
 }

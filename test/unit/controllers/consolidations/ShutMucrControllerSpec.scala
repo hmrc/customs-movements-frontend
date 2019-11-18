@@ -26,12 +26,12 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import testdata.ConsolidationTestData.ValidMucr
-import unit.base.ControllerSpec
+import unit.base.LegacyControllerSpec
 import views.html.shut_mucr
 
 import scala.concurrent.ExecutionContext.global
 
-class ShutMucrControllerSpec extends ControllerSpec with OptionValues {
+class ShutMucrControllerSpec extends LegacyControllerSpec with OptionValues {
 
   private val mockShutMucrPage = mock[shut_mucr]
 

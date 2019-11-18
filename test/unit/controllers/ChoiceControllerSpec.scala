@@ -28,7 +28,6 @@ import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import unit.repository.MockCache
 import views.html.choice_page
 

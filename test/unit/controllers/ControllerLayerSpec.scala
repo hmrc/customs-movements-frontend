@@ -30,7 +30,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.CacheRepository
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolments}
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+import uk.gov.hmrc.play.bootstrap.tools.Stubs
 import unit.base.UnitSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,8 +41,8 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
   protected val user = SignedInUser("eori", Enrolments(Set.empty))
   protected def getRequest(): Request[AnyContent] = FakeRequest(GET, "/").withCSRFToken
   protected def postRequest(): Request[AnyContent] = FakeRequest(POST, "/").withCSRFToken
-  protected def postRequest[T](body: T)(implicit wts: Writes[T]): Request[AnyContentAsJson] =
-    FakeRequest("POST", "/").withJsonBody(wts.writes(body)).withCSRFToken
+  protected def postRequest[T](body: T)(implicit wts: Writes[T]): Request[AnyContentAsJson] = FakeRequest("POST", "/").withJsonBody(wts.writes(body)).withCSRFToken
+  protected def stubMessagesControllerComponents(): MessagesControllerComponents = Stubs.stubMessagesControllerComponents()
 
   protected implicit def messages(implicit request: Request[_]): Messages = stubMessagesControllerComponents().messagesApi.preferred(request)
   protected implicit val flashApi: Flash = Flash()

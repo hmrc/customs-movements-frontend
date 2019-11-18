@@ -18,6 +18,7 @@ package unit.controllers
 
 import controllers.ArrivalReferenceController
 import forms.ArrivalReference
+import models.cache.ArrivalAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -27,35 +28,30 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.LegacyControllerSpec
+import unit.repository.MockCache
 import views.html.arrival_reference
 
 import scala.concurrent.ExecutionContext.global
 
-class ArrivalReferenceControllerSpec extends LegacyControllerSpec with OptionValues with ScalaFutures {
+class ArrivalReferenceControllerSpec extends ControllerLayerSpec with MockCache with OptionValues with ScalaFutures {
 
   private val mockArrivalReferencePage = mock[arrival_reference]
 
-  private val controller = new ArrivalReferenceController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockCustomsCacheService,
-    mockErrorHandler,
+  private def controller(answers: ArrivalAnswers = ArrivalAnswers()) = new ArrivalReferenceController(
+    SuccessfulAuth(),
+    ValidJourney(answers),
+    cache,
     stubMessagesControllerComponents(),
     mockArrivalReferencePage
   )(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-
-    authorizedUser()
-    setupErrorHandler()
     when(mockArrivalReferencePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     reset(mockArrivalReferencePage)
-
     super.afterEach()
   }
 
@@ -70,23 +66,17 @@ class ArrivalReferenceControllerSpec extends LegacyControllerSpec with OptionVal
     "return 200 (OK)" when {
 
       "display page is invoked during arrival journey with empty cache" in {
-
-        givenAUserOnTheArrivalJourney()
-        withCaching(ArrivalReference.formId, None)
-
-        val result = controller.displayPage()(getRequest())
+        val result = controller().displayPage()(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value mustBe empty
       }
 
       "display page is invoked during arrival journey with data in cache" in {
-
-        givenAUserOnTheArrivalJourney()
         val reference = "123456"
-        withCaching(ArrivalReference.formId, Some(ArrivalReference(Some(reference))))
 
-        val result = controller.displayPage()(getRequest())
+        val answers = ArrivalAnswers(arrivalReference = Some(ArrivalReference(Some(reference))))
+        val result = controller(answers).displayPage()(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value.value.reference.value mustBe reference
@@ -94,40 +84,20 @@ class ArrivalReferenceControllerSpec extends LegacyControllerSpec with OptionVal
     }
 
     "return 400 (BAD_REQUEST)" when {
-
-      "display page is invoked during departure journey" in {
-
-        givenAUserOnTheDepartureJourney()
-
-        val result = controller.displayPage()(getRequest())
-
-        status(result) mustBe BAD_REQUEST
-      }
-
       "form contains errors during submission" in {
-
-        givenAUserOnTheArrivalJourney()
-        withCaching(ArrivalReference.formId, None)
-
         val incorrectForm = Json.toJson(ArrivalReference(Some("!@#$%")))
 
-        val result = controller.submit()(postRequest(incorrectForm))
+        val result = controller().submit()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
     }
 
     "return 303 (SEE_OTHER) and redirect to Movement Details page" when {
-
       "form is correct" in {
-
-        givenAUserOnTheArrivalJourney()
-        withCaching(ArrivalReference.formId)
-        withCaching(ArrivalReference.formId, None)
-
         val correctForm = Json.toJson(ArrivalReference(Some("123456")))
 
-        val result = controller.submit()(postRequest(correctForm))
+        val result = controller().submit()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
       }

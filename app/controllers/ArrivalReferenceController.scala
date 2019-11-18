@@ -16,17 +16,15 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, LegacyJourneyAction}
-import controllers.storage.CacheIdGenerator.movementCacheId
+import controllers.actions.{AuthAction, JourneyRefiner}
+import forms.ArrivalReference
 import forms.ArrivalReference._
-import forms.Choice.Arrival
-import forms.{ArrivalReference, Choice}
-import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
+import models.cache.{ArrivalAnswers, Cache, JourneyType}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
+import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.arrival_reference
 
@@ -34,33 +32,28 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ArrivalReferenceController @Inject()(
-                                            authenticate: AuthAction,
-                                            journeyType: LegacyJourneyAction,
-                                            customsCacheService: CustomsCacheService,
-                                            errorHandler: ErrorHandler,
-                                            mcc: MessagesControllerComponents,
-                                            arrivalReferencePage: arrival_reference
+  authenticate: AuthAction,
+  getJourney: JourneyRefiner,
+  cache: CacheRepository,
+  mcc: MessagesControllerComponents,
+  arrivalReferencePage: arrival_reference
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    request.choice match {
-      case Arrival =>
-        customsCacheService
-          .fetchAndGetEntry[ArrivalReference](movementCacheId, formId)
-          .map(data => Ok(arrivalReferencePage(data.fold(form)(form.fill(_)))))
-      case _ => Future.successful(errorHandler.getBadRequestPage())
-    }
+  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE)) { implicit request =>
+    Ok(arrivalReferencePage(request.answersAs[ArrivalAnswers].arrivalReference.fold(form)(form.fill)))
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE)).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ArrivalReference]) => Future.successful(BadRequest(arrivalReferencePage(formWithErrors))),
-        validForm =>
-          customsCacheService.cache[ArrivalReference](movementCacheId, formId, validForm).map { _ =>
+        validForm => {
+          val answers = request.answersAs[ArrivalAnswers].copy(arrivalReference = Some(validForm))
+          cache.upsert(Cache(request.eori, answers)).map { _ =>
             Redirect(controllers.routes.MovementDetailsController.displayPage())
+          }
         }
       )
   }

@@ -45,7 +45,7 @@ class ConsignmentReferencesController @Inject()(
     Ok(consignmentReferencesPage(references.fold(form())(form().fill(_))))
   }
 
-  def saveConsignmentReferences(): Action[AnyContent] = (authenticate andThen getJourney).async { implicit request =>
+  def saveConsignmentReferences(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(

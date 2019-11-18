@@ -16,17 +16,16 @@
 
 @import controllers.routes
 @import forms.ConsignmentReferences.AllowedReferences
-@import forms.Transport._
+@import models.cache.DepartureAnswers
 @import forms._
 @import models.viewmodels.HtmlTableRow
-@import uk.gov.hmrc.http.cache.client.CacheMap
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
-@(data: CacheMap)(implicit request: Request[_], messages: Messages)
+@(data: DepartureAnswers)(implicit request: Request[_], messages: Messages)
 
-    @main_template(title = Title("summary.departure.title")) {
+    @main_template(title = Title("summary.departure.title", None)) {
 
         @components.back_link(routes.TransportController.displayPage())
 
@@ -35,7 +34,7 @@
         @components.summary_list(Some(messages("summary.consignmentDetails"))) {
             @components.table_row_no_change_link(HtmlTableRow(
                 label = messages("summary.referenceType"),
-                value = data.getEntry[ConsignmentReferences](ConsignmentReferences.formId).map(ref =>
+                value = data.consignmentReferences.map(ref =>
                     if(ref.reference.equals(AllowedReferences.Ducr)) {
                         messages("consignmentReferences.reference.ducr")
                     } else {
@@ -45,46 +44,46 @@
             ))
             @components.table_row_no_change_link(HtmlTableRow(
                 label = messages("summary.referenceValue"),
-                value = data.getEntry[ConsignmentReferences](ConsignmentReferences.formId).map(_.referenceValue)
+                value = data.consignmentReferences.map(_.referenceValue)
             ))
         }
 
         @components.summary_list(Some(messages("location.title"))) {
             @components.table_row_no_change_link(HtmlTableRow(
                 label = messages("summary.goodsLocation"),
-                value = data.getEntry[Location](Location.formId).map(_.code)
+                value = data.location.map(_.code)
             ))
         }
 
         @components.summary_list(Some(messages("departureDetails.title"))) {
             @components.table_row_no_change_link(HtmlTableRow(
                 label = messages("summary.departure.date"),
-                value = data.getEntry[DepartureDetails](MovementDetails.formId).map(_.dateOfDeparture.toString)
+                value = data.departureDetails.map(_.dateOfDeparture.toString)
             ))
             @components.table_row_no_change_link(HtmlTableRow(
                 label = messages("summary.departure.time"),
-                value = data.getEntry[DepartureDetails](MovementDetails.formId).map(_.timeOfDeparture.toString)
+                value = data.departureDetails.map(_.timeOfDeparture.toString)
             ))
         }
 
         @components.summary_list(Some(messages("transport.title"))) {
             @components.table_row_no_change_link(HtmlTableRow(
                 label = messages("summary.modeOfTransport"),
-                value = data.getEntry[Transport](Transport.formId).map(transport => messages(s"transport.modeOfTransport.${transport.modeOfTransport}"))
+                value = data.transport.map(transport => messages(s"transport.modeOfTransport.${transport.modeOfTransport}"))
             ))
             @components.table_row_no_change_link(HtmlTableRow(
                 label = messages("summary.transportId"),
-                value = data.getEntry[Transport](Transport.formId).map(_.transportId)
+                value = data.transport.map(_.transportId)
             ))
             @components.table_row_no_change_link(HtmlTableRow(
                 label = messages("summary.nationality"),
-                value = data.getEntry[Transport](Transport.formId).map(_.nationality)
+                value = data.transport.map(_.nationality)
             ))
         }
 
         @helper.form(action = routes.SummaryController.submitMovementRequest()) {
             @helper.CSRF.formField
 
-            @components.submit_button(messages("site.confirmAndSubmit"))
+            @components.submit_button("site.confirmAndSubmit")
         }
     }

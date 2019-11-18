@@ -17,98 +17,39 @@
 package views
 
 import forms.ShutMucr
-import helpers.views.{CommonMessages, ShutMucrMessages}
-import play.api.data.Form
-import play.twirl.api.Html
-import views.spec.ViewSpec
+import models.cache.ShutMucrAnswers
 import views.html.shut_mucr
-import views.tags.ViewTest
 
-@ViewTest
-class ShutMucrViewSpec extends ViewSpec with ShutMucrMessages with CommonMessages {
+class ShutMucrViewSpec extends ViewSpec {
 
-  private val form: Form[ShutMucr] = ShutMucr.form()
-  private val shutMucrPage = injector.instanceOf[shut_mucr]
-  private def createView(form: Form[ShutMucr] = form): Html = shutMucrPage(form)
+  private implicit val request = journeyRequest(ShutMucrAnswers())
 
-  "ShutMucr View" should {
+  private val page = new shut_mucr(main_template)
 
-    "have proper labels for messages" in {
-
-      assertMessage(tabTitle, "Shut a MUCR")
-      assertMessage(title, "Which MUCR do you want to shut?")
+  "View" should {
+    "render title" in {
+      page(ShutMucr.form).getTitle must containMessage("shutMucr.title")
     }
 
-    "have proper labels for error messages" in {
-
-      assertMessage(mucrErrorEmpty, "MUCR number cannot be empty")
-      assertMessage(mucrErrorFormat, "MUCR number is in incorrect format")
-    }
-  }
-
-  "ShutMucr View on empty page" should {
-
-    "display same page title as header" in {
-
-      val view = createView()
-      view.title() must include(view.getElementsByTag("h1").text())
+    "render input for mucr" in {
+      page(ShutMucr.form).getElementById("mucr-label") must containMessage("shutMucr.title")
     }
 
-    "display 'Back' button that links to 'Choice' page" in {
+    "render back button" in {
+      val backButton = page(ShutMucr.form).getBackButton
 
-      val backButton = getElementById(createView(), "link-back")
-
-      backButton.text() must equal(messages(backCaption))
-      backButton.attr("href") must be(controllers.routes.ChoiceController.displayChoiceForm().url)
+      backButton mustBe defined
+      backButton.get must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
     }
 
-    "display input field label" in {
-
-      getElementById(createView(), "mucr-label").text() must equal(messages(title))
-    }
-
-    "display empty input field" in {
-
-      val textInput = getElementById(createView(), "mucr")
-
-      textInput.text() must be(empty)
-      textInput.attr("value") must be(empty)
-    }
-
-    "display 'Continue' button on page" in {
-
-      getElementById(createView(), "submit").text() must equal(messages(continueCaption))
-    }
-  }
-
-  "ShutMucr view for invalid input" should {
-
-    "display error" when {
-
-      "provided with empty MUCR" in {
-
-        val view = createView(ShutMucr.form().bind(Map("mucr" -> "")))
-
-        getElementById(view, "error-message-mucr-input").text() must equal(messages(mucrErrorEmpty))
+    "render error summary" when {
+      "no errors" in {
+        page(ShutMucr.form).getErrorSummary mustBe empty
       }
 
-      "provided with incorrect MUCR" in {
-
-        val view = createView(ShutMucr.form().bind(Map("mucr" -> "!@#2@##@%#")))
-
-        getElementById(view, "error-message-mucr-input").text() must equal(messages(mucrErrorFormat))
+      "some errors" in {
+        page(ShutMucr.form.withError("error", "error.required")).getErrorSummary mustBe defined
       }
-    }
-  }
-
-  "ShutMucr View with entered data" should {
-
-    "display data in mucr text input field" in {
-
-      val correctMucr = "GB/44ZKKLA1VD-AWLUD26N35DA"
-      val view = createView(ShutMucr.form().bind(Map("mucr" -> correctMucr)))
-
-      getElementById(view, "mucr").attr("value") must equal(correctMucr)
     }
   }
 

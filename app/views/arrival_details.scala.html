@@ -22,7 +22,7 @@
 
 @(form: Form[ArrivalDetails])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("arrivalDetails.header")) {
+@main_template(title = Title("arrivalDetails.header", None)) {
     @helper.form(routes.MovementDetailsController.saveMovementDetails(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 

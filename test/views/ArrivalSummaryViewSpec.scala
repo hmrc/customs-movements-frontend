@@ -16,87 +16,34 @@
 
 package views
 
-import controllers.routes
-import forms.Choice.Arrival
-import play.api.test.Helpers._
-import testdata.MovementsTestData.cacheMapData
-import uk.gov.hmrc.http.cache.client.CacheMap
+import models.cache.ArrivalAnswers
+import models.requests.JourneyRequest
+import play.api.mvc.AnyContentAsEmpty
 import views.html.summary.arrival_summary_page
-import views.spec.UnitViewSpec
 
-class ArrivalSummaryViewSpec extends UnitViewSpec {
+class ArrivalSummaryViewSpec extends ViewSpec {
 
-  val cachedData = cacheMapData(Arrival)
-  val arrivalSummaryPage = new arrival_summary_page(mainTemplate)
-  val arrivalSummaryView = arrivalSummaryPage(CacheMap("id", cachedData))(request, messages)
-  val arrivalSummaryContent = contentAsString(arrivalSummaryView)
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())
 
-  "Arrival Summary messages" should {
+  private val page = new arrival_summary_page(main_template)
 
-    "have correct content" in {
+  private val answers = ArrivalAnswers()
 
-      val messages = messagesApi.preferred(request)
+  "View" should {
+    "render title" in {
+      page(answers).getTitle must containMessage("summary.arrival.title")
+    }
 
-      messages("summary.arrival.title") mustBe "Is the information provided for this arrival correct?"
-      messages("summary.consignmentDetails") mustBe "Consignment details"
-      messages("summary.referenceType") mustBe "Consignment type"
-      messages("summary.referenceValue") mustBe "Consignment reference"
-      messages("summary.arrivalReference.reference") mustBe "Unique reference"
-      messages("summary.arrival.date") mustBe "Date of arrival"
-      messages("summary.arrival.time") mustBe "Time of arrival"
-      messages("summary.goodsLocation") mustBe "Goods location code"
+    "render heading" in {
+      page(answers).getElementById("title") must containMessage("summary.arrival.title")
+    }
+
+    "render back button" in {
+      val backButton = page(answers).getBackButton
+
+      backButton mustBe defined
+      backButton.get must haveHref(controllers.routes.LocationController.displayPage())
     }
   }
 
-  "Arrival Summary Page" should {
-
-    "display same page title as header" in {
-
-      val view = arrivalSummaryPage(CacheMap("id", cachedData))(request, messagesApi.preferred(request))
-      view.title() must include(view.getElementsByTag("h1").text())
-    }
-
-    "have correct heading" in {
-
-      arrivalSummaryView.getElementById("title").text() mustBe messages("summary.arrival.title")
-    }
-
-    "have correct back link" in {
-
-      arrivalSummaryView.getElementById("link-back") must haveHref(routes.LocationController.displayPage())
-    }
-
-    "have correct main buttons" in {
-
-      arrivalSummaryContent must include("site.back")
-      arrivalSummaryContent must include("site.confirmAndSubmit")
-    }
-
-    "have correct consignment references part" in {
-
-      arrivalSummaryContent must include("summary.consignmentDetails")
-      arrivalSummaryContent must include("summary.referenceType")
-      arrivalSummaryContent must include("consignmentReferences.reference.mucr")
-      arrivalSummaryContent must include("summary.referenceValue")
-    }
-
-    "have correct arrival reference part" in {
-
-      arrivalSummaryContent must include("arrivalReference")
-      arrivalSummaryContent must include("summary.arrivalReference.reference")
-    }
-
-    "have correct arrival details part" in {
-
-      arrivalSummaryContent must include("arrivalDetails.title")
-      arrivalSummaryContent must include("summary.arrival.date")
-      arrivalSummaryContent must include("summary.arrival.time")
-    }
-
-    "have correct location part" in {
-
-      arrivalSummaryContent must include("location.title")
-      arrivalSummaryContent must include("summary.goodsLocation")
-    }
-  }
 }

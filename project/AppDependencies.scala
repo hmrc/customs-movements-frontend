@@ -33,5 +33,5 @@ object AppDependencies {
     "org.mockito" % "mockito-core" % "3.0.0" % "test"
   )
 
-  def apply(): Seq[ModuleID] = compile ++ test
+  def apply(): Seq[ModuleID] = (compile ++ test).map(_.withSources)
 }

@@ -146,7 +146,7 @@ class NotificationsControllerSpec extends ControllerLayerSpec with ScalaFutures 
 
         val result = controller.listOfNotifications(conversationId)(FakeRequest())
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.MovementsController.displayPage().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SubmissionsController.displayPage().url)
       }
     }
   }

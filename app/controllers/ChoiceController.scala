@@ -62,7 +62,7 @@ class ChoiceController @Inject()(authenticate: AuthAction, cache: CacheRepositor
     case AssociateUCR    => saveAndRedirect(AssociateUcrAnswers(), controllers.consolidations.routes.MucrOptionsController.displayPage())
     case DisassociateUCR => saveAndRedirect(DisassociateUcrAnswers(), controllers.consolidations.routes.DisassociateUcrController.displayPage())
     case ShutMUCR        => saveAndRedirect(ShutMucrAnswers(), controllers.consolidations.routes.ShutMucrController.displayPage())
-    case Submissions     => Future.successful(Redirect(controllers.routes.MovementsController.displayPage()))
+    case Submissions     => Future.successful(Redirect(controllers.routes.SubmissionsController.displayPage()))
   }
 
   private def saveAndRedirect(answers: Answers, call: Call)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =

@@ -26,7 +26,7 @@
 
 @(form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_], messages: Messages)
 
-@main_template(title = Title("consignmentReferences.title")) {
+@main_template(title = Title("consignmentReferences.title", None)) {
     @helper.form(routes.ConsignmentReferencesController.saveConsignmentReferences(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 

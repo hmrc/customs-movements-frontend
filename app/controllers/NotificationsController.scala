@@ -55,7 +55,7 @@ class NotificationsController @Inject()(
       case (Some(submissionUcr), Some(submissionElement), notificationElements) =>
         Ok(notifications(submissionUcr, submissionElement, notificationElements))
       case _ =>
-        Redirect(routes.MovementsController.displayPage())
+        Redirect(routes.SubmissionsController.displayPage())
     }
   }
 

@@ -16,10 +16,10 @@
 
 package models.viewmodels.notificationspage.converters
 
-import models.notifications.NotificationFrontendModel
+import models.notifications.Notification
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 
 trait NotificationPageSingleElementConverter {
-  def convert(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement
+  def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement
 }

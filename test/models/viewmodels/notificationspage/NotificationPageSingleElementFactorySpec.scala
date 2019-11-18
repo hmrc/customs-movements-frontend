@@ -21,7 +21,7 @@ import java.time.{ZoneId, ZonedDateTime}
 
 import com.google.inject.Guice
 import models.UcrBlock
-import models.notifications.NotificationFrontendModel
+import models.notifications.Notification
 import models.submissions.{ActionType, Submission}
 import models.viewmodels.notificationspage.converters._
 import modules.DateTimeModule
@@ -50,7 +50,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
     val unknownResponseConverter = injector.getInstance(classOf[UnknownResponseConverter])
 
     val responseConverterProvider = mock[ResponseConverterProvider]
-    when(responseConverterProvider.provideResponseConverter(any[NotificationFrontendModel]))
+    when(responseConverterProvider.provideResponseConverter(any[Notification]))
       .thenReturn(unknownResponseConverter)
 
     val factory = new NotificationPageSingleElementFactory(responseConverterProvider)
@@ -219,10 +219,10 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         val exampleNotificationPageElement =
           NotificationsPageSingleElement(title = "TITLE", timestampInfo = "TIMESTAMP", content = Html("<test>HTML</test>"))
         val responseConverter = mock[NotificationPageSingleElementConverter]
-        when(responseConverter.convert(any[NotificationFrontendModel])(any()))
+        when(responseConverter.convert(any[Notification])(any()))
           .thenReturn(exampleNotificationPageElement)
 
-        when(responseConverterProvider.provideResponseConverter(any[NotificationFrontendModel]))
+        when(responseConverterProvider.provideResponseConverter(any[Notification]))
           .thenReturn(responseConverter)
 
         val input = exampleNotificationFrontendModel()
@@ -237,10 +237,10 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         val exampleNotificationPageElement =
           NotificationsPageSingleElement(title = "TITLE", timestampInfo = "TIMESTAMP", content = Html("<test>HTML</test>"))
         val responseConverter = mock[NotificationPageSingleElementConverter]
-        when(responseConverter.convert(any[NotificationFrontendModel])(any()))
+        when(responseConverter.convert(any[Notification])(any()))
           .thenReturn(exampleNotificationPageElement)
 
-        when(responseConverterProvider.provideResponseConverter(any[NotificationFrontendModel]))
+        when(responseConverterProvider.provideResponseConverter(any[Notification]))
           .thenReturn(responseConverter)
 
         val input = exampleNotificationFrontendModel()

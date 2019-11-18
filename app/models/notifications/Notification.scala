@@ -20,7 +20,7 @@ import java.time.Instant
 
 import play.api.libs.json.Json
 
-final case class NotificationFrontendModel(
+final case class Notification(
   timestampReceived: Instant = Instant.now(),
   conversationId: String,
   responseType: ResponseType,
@@ -29,12 +29,12 @@ final case class NotificationFrontendModel(
   actionCode: Option[String],
   errorCodes: Seq[String],
   messageCode: String
-) extends Ordered[NotificationFrontendModel] {
+) extends Ordered[Notification] {
 
-  override def compare(other: NotificationFrontendModel): Int =
+  override def compare(other: Notification): Int =
     this.timestampReceived.compareTo(other.timestampReceived)
 }
 
-object NotificationFrontendModel {
-  implicit val format = Json.format[NotificationFrontendModel]
+object Notification {
+  implicit val format = Json.format[Notification]
 }

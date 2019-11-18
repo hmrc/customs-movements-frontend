@@ -18,10 +18,10 @@ package controllers
 
 import java.time.Instant
 
-import connectors.LegacyCustomsDeclareExportsMovementsConnector
+import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
-import models.notifications.NotificationFrontendModel
+import models.notifications.Notification
 import models.submissions.Submission
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,9 +30,9 @@ import views.html.movements
 
 import scala.concurrent.ExecutionContext
 
-class MovementsController @Inject()(
+class SubmissionsController @Inject()(
                                      authenticate: AuthAction,
-                                     connector: LegacyCustomsDeclareExportsMovementsConnector,
+                                     connector: CustomsDeclareExportsMovementsConnector,
                                      mcc: MessagesControllerComponents,
                                      movementsPage: movements
 )(implicit ec: ExecutionContext)
@@ -50,9 +50,9 @@ class MovementsController @Inject()(
 
   private def matchNotificationsAgainstSubmissions(
     submissions: Seq[Submission],
-    notifications: Seq[NotificationFrontendModel]
-  ): Seq[(Submission, Seq[NotificationFrontendModel])] = {
-    val groupedNotifications: Map[String, Seq[NotificationFrontendModel]] = notifications.groupBy(_.conversationId).withDefaultValue(Seq.empty)
+    notifications: Seq[Notification]
+  ): Seq[(Submission, Seq[Notification])] = {
+    val groupedNotifications: Map[String, Seq[Notification]] = notifications.groupBy(_.conversationId).withDefaultValue(Seq.empty)
 
     submissions.map { submission =>
       (submission, groupedNotifications(submission.conversationId))
@@ -60,8 +60,8 @@ class MovementsController @Inject()(
   }
 
   private def sortWithOldestLast(
-    submissionsWithNotifications: Seq[(Submission, Seq[NotificationFrontendModel])]
-  ): Seq[(Submission, Seq[NotificationFrontendModel])] =
+    submissionsWithNotifications: Seq[(Submission, Seq[Notification])]
+  ): Seq[(Submission, Seq[Notification])] =
     submissionsWithNotifications.sortBy(_._1.requestTimestamp)(Ordering[Instant].reverse)
 
 }

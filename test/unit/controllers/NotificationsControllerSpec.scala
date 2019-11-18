@@ -19,7 +19,7 @@ package unit.controllers
 import base.MockFactory._
 import connectors.LegacyCustomsDeclareExportsMovementsConnector
 import controllers.NotificationsController
-import models.notifications.{NotificationFrontendModel, ResponseType}
+import models.notifications.{Notification, ResponseType}
 import models.submissions.{ActionType, Submission}
 import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -72,7 +72,7 @@ class NotificationsControllerSpec extends LegacyControllerSpec with ScalaFutures
       .thenReturn(Future.successful(expectedNotifications))
     when(notificationPageSingleElementFactoryMock.build(any[Submission])(any()))
       .thenReturn(singleElementForSubmission)
-    when(notificationPageSingleElementFactoryMock.build(any[NotificationFrontendModel])(any()))
+    when(notificationPageSingleElementFactoryMock.build(any[Notification])(any()))
       .thenReturn(singleElementForNotification)
     when(notificationsPageMock.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }

@@ -19,7 +19,7 @@ package connectors
 import config.AppConfig
 import connectors.exchanges.Consolidation
 import javax.inject.{Inject, Singleton}
-import models.notifications.NotificationFrontendModel
+import models.notifications.Notification
 import models.requests.MovementRequest
 import models.submissions.Submission
 import play.api.Logger
@@ -66,16 +66,16 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
     httpClient
       .GET[Option[Submission]](s"${appConfig.customsDeclareExportsMovements}$Submissions/$conversationId", eoriQueryParam(eori))
 
-  def fetchNotifications(conversationId: String, providerId: String)(implicit hc: HeaderCarrier): Future[Seq[NotificationFrontendModel]] =
+  def fetchNotifications(conversationId: String, providerId: String)(implicit hc: HeaderCarrier): Future[Seq[Notification]] =
     httpClient
-      .GET[Seq[NotificationFrontendModel]](
+      .GET[Seq[Notification]](
         s"${appConfig.customsDeclareExportsMovements}$Notifications/$conversationId",
         eoriQueryParam(providerId)
       )
 
-  def fetchAllNotificationsForUser(eori: String)(implicit hc: HeaderCarrier): Future[Seq[NotificationFrontendModel]] =
+  def fetchAllNotificationsForUser(eori: String)(implicit hc: HeaderCarrier): Future[Seq[Notification]] =
     httpClient
-      .GET[Seq[NotificationFrontendModel]](s"${appConfig.customsDeclareExportsMovements}$Notifications", eoriQueryParam(eori))
+      .GET[Seq[Notification]](s"${appConfig.customsDeclareExportsMovements}$Notifications", eoriQueryParam(eori))
 
   private def eoriQueryParam(eori: String): Seq[(String, String)] = Seq("eori" -> eori)
 

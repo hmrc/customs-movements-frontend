@@ -19,7 +19,7 @@ package connectors
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.external.requests.ConsolidationRequest
-import models.notifications.NotificationFrontendModel
+import models.notifications.Notification
 import models.requests.MovementRequest
 import models.submissions.ActionType._
 import models.submissions.{ActionType, Submission}
@@ -74,9 +74,9 @@ class LegacyCustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConf
   def fetchNotifications(
     conversationId: String,
     eori: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[NotificationFrontendModel]] =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient
-      .GET[Seq[NotificationFrontendModel]](
+      .GET[Seq[Notification]](
         s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}/$conversationId",
         eoriQueryParam(eori)
       )
@@ -85,9 +85,9 @@ class LegacyCustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConf
         case Failure(exception) => logger.warn(s"Notifications fetch failure. $exception")
       }
 
-  def fetchAllNotificationsForUser(eori: String)(implicit hc: HeaderCarrier): Future[Seq[NotificationFrontendModel]] =
+  def fetchAllNotificationsForUser(eori: String)(implicit hc: HeaderCarrier): Future[Seq[Notification]] =
     httpClient
-      .GET[Seq[NotificationFrontendModel]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}", eoriQueryParam(eori))
+      .GET[Seq[Notification]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}", eoriQueryParam(eori))
       .andThen {
         case Success(response)  => logger.debug(s"Notifications fetch response. $response")
         case Failure(exception) => logger.warn(s"Notifications fetch failure. $exception")

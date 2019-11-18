@@ -19,7 +19,7 @@ package models.viewmodels.notificationspage.converters
 import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
-import models.notifications.NotificationFrontendModel
+import models.notifications.Notification
 import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
@@ -28,7 +28,7 @@ import play.twirl.api.Html
 @Singleton
 class MovementResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter) extends NotificationPageSingleElementConverter {
 
-  override def convert(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement = {
+  override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement = {
 
     val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation)
 

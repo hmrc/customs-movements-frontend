@@ -19,7 +19,7 @@ package models.viewmodels.notificationspage.converters
 import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
-import models.notifications.{Entry, NotificationFrontendModel}
+import models.notifications.{Entry, Notification}
 import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
@@ -29,7 +29,7 @@ import views.html.components.code_explanation
 @Singleton
 class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter) extends NotificationPageSingleElementConverter {
 
-  override def convert(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement = {
+  override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement = {
     val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation).getOrElse(HtmlFormat.empty)
     val roeCodeExplanation =
       findMucrEntry(notification.entries).flatMap(_.roe).flatMap(buildRoeCodeExplanation).getOrElse(HtmlFormat.empty)

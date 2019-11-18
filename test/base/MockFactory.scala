@@ -17,7 +17,7 @@
 package base
 
 import connectors.LegacyCustomsDeclareExportsMovementsConnector
-import models.notifications.NotificationFrontendModel
+import models.notifications.Notification
 import models.submissions.Submission
 import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import org.mockito.ArgumentMatchers.any
@@ -57,7 +57,7 @@ object MockFactory extends MockitoSugar {
 
     when(notificationPageSingleElementFactoryMock.build(any[Submission])(any()))
       .thenReturn(NotificationsPageSingleElement("", "", HtmlFormat.empty))
-    when(notificationPageSingleElementFactoryMock.build(any[NotificationFrontendModel])(any()))
+    when(notificationPageSingleElementFactoryMock.build(any[Notification])(any()))
       .thenReturn(NotificationsPageSingleElement("", "", HtmlFormat.empty))
 
     notificationPageSingleElementFactoryMock

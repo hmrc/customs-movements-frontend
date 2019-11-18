@@ -20,7 +20,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
-import models.notifications.NotificationFrontendModel
+import models.notifications.Notification
 import models.submissions.ActionType._
 import models.submissions.Submission
 import models.viewmodels.notificationspage.converters._
@@ -64,7 +64,7 @@ class NotificationPageSingleElementFactory @Inject()(responseConverterProvider: 
     buildForRequest(submission).copy(content = content)
   }
 
-  def build(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement = {
+  def build(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement = {
     val responseConverter = responseConverterProvider.provideResponseConverter(notification)
     responseConverter.convert(notification)
   }

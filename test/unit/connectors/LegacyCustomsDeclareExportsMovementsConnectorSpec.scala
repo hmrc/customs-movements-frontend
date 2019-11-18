@@ -21,7 +21,7 @@ import connectors.LegacyCustomsDeclareExportsMovementsConnector
 import forms.Choice
 import forms.Choice.{Arrival, Departure}
 import models.external.requests.ConsolidationRequest
-import models.notifications.NotificationFrontendModel
+import models.notifications.Notification
 import models.requests.MovementRequest
 import models.submissions.Submission
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -195,7 +195,7 @@ class LegacyCustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with Sc
 
     "call HttpClient, passing EORI and URL and query params for fetch Notifications endpoint" in new Test {
 
-      when(httpClientMock.GET[Seq[NotificationFrontendModel]](any(), any())(any(), any(), any()))
+      when(httpClientMock.GET[Seq[Notification]](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(Seq.empty))
 
       connector.fetchNotifications(conversationId, validEori).futureValue
@@ -213,10 +213,10 @@ class LegacyCustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with Sc
         exampleNotificationFrontendModel(conversationId = conversationId),
         exampleNotificationFrontendModel(conversationId = conversationId)
       )
-      when(httpClientMock.GET[Seq[NotificationFrontendModel]](any(), any())(any(), any(), any()))
+      when(httpClientMock.GET[Seq[Notification]](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(expectedResponseContent))
 
-      val result: Seq[NotificationFrontendModel] = connector.fetchNotifications(conversationId, validEori).futureValue
+      val result: Seq[Notification] = connector.fetchNotifications(conversationId, validEori).futureValue
 
       result.length must equal(expectedResponseContent.length)
       result must equal(expectedResponseContent)

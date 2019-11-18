@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter
 import java.time.{Instant, ZoneId, ZonedDateTime}
 
 import models.UcrBlock
-import models.notifications.{Entry, NotificationFrontendModel, ResponseType}
+import models.notifications.{Entry, Notification, ResponseType}
 import testdata.CommonTestData._
 
 object NotificationTestData {
@@ -37,8 +37,8 @@ object NotificationTestData {
     timestampReceived: Instant = Instant.now(),
     errorCodes: Seq[String] = Seq.empty,
     messageCode: String = ""
-  ): NotificationFrontendModel =
-    NotificationFrontendModel(
+  ): Notification =
+    Notification(
       timestampReceived = timestampReceived,
       conversationId = conversationId,
       responseType = responseType,

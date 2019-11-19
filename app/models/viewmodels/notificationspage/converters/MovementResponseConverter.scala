@@ -23,28 +23,27 @@ import models.notifications.Notification
 import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
-import play.twirl.api.Html
+import play.twirl.api.{Html, HtmlFormat}
+import views.html.components.paragraph
 
 @Singleton
 class MovementResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter) extends NotificationPageSingleElementConverter {
 
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement = {
 
-    val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation)
+    val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation).getOrElse(HtmlFormat.empty)
 
     NotificationsPageSingleElement(
       title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
       timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
-      content = Html(crcCodeExplanation.getOrElse(""))
+      content = crcCodeExplanation
     )
   }
 
-  private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[String] = {
+  private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[Html] = {
     val CrcCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")
 
     decoder.crc(crcCode).map(code => paragraph(s"$CrcCodeHeader ${messages(code.messageKey)}"))
   }
-
-  private val paragraph: String => String = (text: String) => s"<p>$text</p>"
 
 }

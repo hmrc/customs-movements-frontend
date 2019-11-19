@@ -16,6 +16,8 @@
 
 package unit.connectors
 
+import java.time.Instant
+
 import config.AppConfig
 import connectors.CustomsDeclareExportsMovementsConnector
 import connectors.exchanges.DisassociateDUCRRequest
@@ -28,7 +30,10 @@ import play.api.test.Helpers._
 import testdata.CommonTestData._
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
-import com.github.tomakehurst.wiremock.client.WireMock.{post, aResponse, get, verify, postRequestedFor, getRequestedFor, urlEqualTo, equalTo}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalTo, get, getRequestedFor, post, postRequestedFor, urlEqualTo, verify}
+import models.UcrBlock
+import models.requests.MovementType.Arrival
+import models.submissions.{ActionType, Submission}
 
 class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
 
@@ -79,7 +84,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
 
       verify(
         postRequestedFor(urlEqualTo("/consolidation"))
-          .withRequestBody(equalTo("""{"eori":"eori","ucr":"ucr","consolidationType":"DISASSOCIATE_DUCR"}"""))
+          .withRequestBody(equalTo("""{"ucr":"ucr","consolidationType":"DISASSOCIATE_DUCR","eori":"eori"}"""))
       )
     }
   }
@@ -121,21 +126,27 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
 
     "send GET request to the backend" in {
 
-      val expectedSubmission = exampleSubmission()
+      val submission = Submission(
+        eori = "eori",
+        conversationId = conversationId,
+        ucrBlocks = Seq(UcrBlock(ucr = "ucr", ucrType = "type")),
+        actionType = ActionType.Arrival,
+        requestTimestamp = Instant.EPOCH
+      )
       val submissionJson =
         s"""
            |  {
-           |    "uuid":"${expectedSubmission.uuid}",
+           |    "uuid":"${submission.uuid}",
            |    "eori":"eori",
            |    "conversationId":"$conversationId",
            |    "ucrBlocks":[
            |      {
-           |        "ucr":"$correctUcr",
-           |        "ucrType":"D"
+           |        "ucr":"ucr",
+           |        "ucrType":"type"
            |      }
            |    ],
            |    "actionType":"Arrival",
-           |    "requestTimestamp":"${expectedSubmission.requestTimestamp}"
+           |    "requestTimestamp":"${submission.requestTimestamp}"
            |  }
            |""".stripMargin
 
@@ -146,9 +157,9 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
 
       val response = connector.fetchSingleSubmission(conversationId, "eori").futureValue
 
-      verify(getRequestedFor(urlEqualTo("/submissions/$conversationId?eori=eori")))
+      verify(getRequestedFor(urlEqualTo(s"/submissions/$conversationId?eori=eori")))
 
-      response mustBe Some(expectedSubmission)
+      response mustBe Some(submission)
     }
   }
 
@@ -178,7 +189,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
           |]""".stripMargin
 
       stubFor(
-        get("/notifications/$conversationId?eori=eori")
+        get(s"/notifications/$conversationId?eori=eori")
           .willReturn(aResponse().withStatus(OK).withBody(notificationsJson))
       )
 

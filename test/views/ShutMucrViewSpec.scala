@@ -28,15 +28,15 @@ class ShutMucrViewSpec extends ViewSpec {
 
   "View" should {
     "render title" in {
-      page(ShutMucr.form).getTitle must containMessage("shutMucr.title")
+      page(ShutMucr.form()).getTitle must containMessage("shutMucr.title")
     }
 
     "render input for mucr" in {
-      page(ShutMucr.form).getElementById("mucr-label") must containMessage("shutMucr.title")
+      page(ShutMucr.form()).getElementById("mucr-label") must containMessage("shutMucr.title")
     }
 
     "render back button" in {
-      val backButton = page(ShutMucr.form).getBackButton
+      val backButton = page(ShutMucr.form()).getBackButton
 
       backButton mustBe defined
       backButton.get must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
@@ -44,11 +44,11 @@ class ShutMucrViewSpec extends ViewSpec {
 
     "render error summary" when {
       "no errors" in {
-        page(ShutMucr.form).getErrorSummary mustBe empty
+        page(ShutMucr.form()).getErrorSummary mustBe empty
       }
 
       "some errors" in {
-        page(ShutMucr.form.withError("error", "error.required")).getErrorSummary mustBe defined
+        page(ShutMucr.form().withError("error", "error.required")).getErrorSummary mustBe defined
       }
     }
   }

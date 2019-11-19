@@ -18,6 +18,7 @@ package views
 
 import models.cache.{ArrivalAnswers, DepartureAnswers}
 import models.requests.JourneyRequest
+import org.jsoup.nodes.Document
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.Helpers._
 import views.html.summary.departure_summary_page
@@ -48,14 +49,12 @@ class DepartureSummaryViewSpec extends ViewSpec {
     }
 
     "render sub-headers for summary sections" in {
+      val summaryContent: Document = page(answers)
 
-      val summaryContent = contentAsString(page(answers))
-
-      summaryContent must include(messages("summary.consignmentDetails"))
-      summaryContent must include(messages("location.title"))
-      summaryContent must include(messages("departureDetails.title"))
-      summaryContent must include(messages("goodsDeparted.title"))
-      summaryContent must include(messages("transport.title"))
+      summaryContent must containMessage("summary.consignmentDetails")
+      summaryContent must containMessage("location.title")
+      summaryContent must containMessage("departureDetails.title")
+      summaryContent must containMessage("transport.title")
     }
   }
 

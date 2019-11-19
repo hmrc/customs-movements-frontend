@@ -19,7 +19,7 @@ package unit.controllers
 import controllers.SummaryController
 import controllers.storage.FlashKeys
 import forms.{Choice, ConsignmentReferences}
-import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
+import models.cache.{ArrivalAnswers, DepartureAnswers, JourneyType, MovementAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.libs.json.{JsObject, JsString}
@@ -84,7 +84,7 @@ class SummaryControllerSpec extends ControllerLayerSpec with MockCache {
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.display().url)
-        flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(Choice.Arrival.value)
+        flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.ARRIVE.toString)
         flash(result).get(FlashKeys.UCR_KIND) mustBe Some("ref")
         flash(result).get(FlashKeys.UCR) mustBe Some("value")
       }

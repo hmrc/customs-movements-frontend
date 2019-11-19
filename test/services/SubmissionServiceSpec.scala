@@ -137,7 +137,7 @@ class SubmissionServiceSpec extends UnitSpec with BeforeAndAfterEach {
 
       theDisassociationSubmitted mustBe DisassociateDUCRRequest("eori", "ucr")
       verify(repository, never()).removeByEori("eori")
-      verify(audit).auditDisassociate(validEori, "ucr", "Failed")
+      verify(audit).auditDisassociate("eori", "ucr", "Failed")
     }
 
     "handle missing ucr" when {
@@ -204,7 +204,7 @@ class SubmissionServiceSpec extends UnitSpec with BeforeAndAfterEach {
 
       theShutMucrSubmitted mustBe ShutMUCRRequest("eori", "mucr")
       verify(repository, never()).removeByEori("eori")
-      verify(audit).auditShutMucr(validEori, "mucr", "Failed")
+      verify(audit).auditShutMucr("eori", "mucr", "Failed")
     }
 
     def theShutMucrSubmitted: ShutMUCRRequest = {

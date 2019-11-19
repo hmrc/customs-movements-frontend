@@ -16,6 +16,7 @@
 
 package forms
 
+import models.ReturnToStartException
 import play.api.data.Forms._
 import play.api.data.format.Formatter
 import play.api.data.{Form, FormError, Forms}
@@ -48,7 +49,7 @@ object DisassociateKind {
 }
 
 case class DisassociateUcr(kind: DisassociateKind, ducr: Option[String], mucr: Option[String]) {
-  def ucr: String = ducr.orElse(mucr).get
+  def ucr: String = ducr.orElse(mucr).getOrElse(throw ReturnToStartException)
 }
 
 object DisassociateUcr {

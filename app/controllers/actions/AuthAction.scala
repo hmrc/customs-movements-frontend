@@ -41,7 +41,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, eoriWh
 
     authorised(Enrolment("HMRC-CUS-ORG"))
       .retrieve(allEnrolments) {
-        case allEnrolments =>
+        allEnrolments: Enrolments =>
           val eori = allEnrolments
             .getEnrolment("HMRC-CUS-ORG")
             .flatMap(_.getIdentifier("EORINumber"))

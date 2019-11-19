@@ -16,7 +16,6 @@
 
 package models.viewmodels.notificationspage
 
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
@@ -28,9 +27,7 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 
 @Singleton
-class NotificationPageSingleElementFactory @Inject()(responseConverterProvider: ResponseConverterProvider) {
-
-  private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.systemDefault())
+class NotificationPageSingleElementFactory @Inject()(responseConverterProvider: ResponseConverterProvider, dateTimeFormatter: DateTimeFormatter) {
 
   def build(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement =
     submission.actionType match {

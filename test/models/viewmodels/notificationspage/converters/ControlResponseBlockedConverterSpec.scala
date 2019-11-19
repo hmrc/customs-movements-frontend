@@ -21,7 +21,8 @@ import com.google.inject.{AbstractModule, Guice}
 import models.notifications.ResponseType
 import models.viewmodels.decoder.{ActionCode, Decoder, ILEError}
 import org.mockito.ArgumentMatchers.{anyString, eq => meq}
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
@@ -29,26 +30,30 @@ import testdata.NotificationTestData
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import utils.DateTimeTestModule
 
-class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar {
+class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar with BeforeAndAfterEach {
 
   import ControlResponseBlockedConverterSpec._
 
-  private trait Test {
-    implicit val messages: Messages = stubMessages()
+  implicit val messages: Messages = stubMessages()
 
-    val decoder: Decoder = mock[Decoder]
+  val decoder: Decoder = mock[Decoder]
+
+  private val injector = Guice.createInjector(new DateTimeTestModule(), new AbstractModule {
+    override def configure(): Unit = bind(classOf[Decoder]).toInstance(decoder)
+  })
+
+  val converter = injector.getInstance(classOf[ControlResponseBlockedConverter])
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    reset(decoder)
     when(decoder.error(anyString)).thenReturn(Some(ILEError("CODE", "Messages.Key")))
-
-    private val injector = Guice.createInjector(new DateTimeTestModule(), new AbstractModule {
-      override def configure(): Unit = bind(classOf[Decoder]).toInstance(decoder)
-    })
-
-    val converter = injector.getInstance(classOf[ControlResponseBlockedConverter])
   }
 
   "ControlResponseBlockedConverter on convert" should {
 
-    "return NotificationsPageSingleElement with correct title" in new Test {
+    "return NotificationsPageSingleElement with correct title" in {
 
       val input = BlockedControlResponseSingleError
       val expectedTitle =
@@ -59,7 +64,7 @@ class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar {
       result.title mustBe expectedTitle
     }
 
-    "return NotificationsPageSingleElement with correct timestampInfo" in new Test {
+    "return NotificationsPageSingleElement with correct timestampInfo" in {
 
       val input = BlockedControlResponseSingleError
       val expectedTimestampInfo = "23 Oct 2019 at 12:34"
@@ -74,7 +79,7 @@ class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar {
 
     "response contains single error" should {
 
-      "call Decoder for Error once" in new Test {
+      "call Decoder for Error once" in {
 
         val input = BlockedControlResponseSingleError
 
@@ -83,7 +88,7 @@ class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar {
         verify(decoder).error(meq(input.errorCodes.head))
       }
 
-      "return NotificationsPageSingleElement with correct content" in new Test {
+      "return NotificationsPageSingleElement with correct content" in {
 
         val input = BlockedControlResponseSingleError
         val expectedContentHeader =
@@ -100,7 +105,7 @@ class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar {
 
     "response contains multiple errors" should {
 
-      "call Decoder for every Error" in new Test {
+      "call Decoder for every Error" in {
 
         val input = BlockedControlResponseMultipleErrors
 
@@ -111,7 +116,7 @@ class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar {
         }
       }
 
-      "return NotificationsPageSingleElement with correct content" in new Test {
+      "return NotificationsPageSingleElement with correct content" in {
 
         val input = BlockedControlResponseMultipleErrors
         val expectedContentHeader =

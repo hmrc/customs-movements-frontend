@@ -16,9 +16,9 @@
 
 package unit.controllers.consolidations
 
-import controllers.consolidations.{routes, ShutMucrController}
-import forms.Choice.ShutMUCR
-import forms.{Choice, ShutMucr}
+import controllers.consolidations.{ShutMucrController, routes}
+import forms.ShutMucr
+import models.cache.ShutMucrAnswers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.OptionValues
@@ -26,29 +26,26 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import testdata.ConsolidationTestData.ValidMucr
-import unit.base.LegacyControllerSpec
+import unit.controllers.ControllerLayerSpec
+import unit.repository.MockCache
 import views.html.shut_mucr
 
 import scala.concurrent.ExecutionContext.global
 
-class ShutMucrControllerSpec extends LegacyControllerSpec with OptionValues {
+class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with OptionValues {
 
-  private val mockShutMucrPage = mock[shut_mucr]
+  private val page = mock[shut_mucr]
 
-  private val controller =
-    new ShutMucrController(mockAuthAction, mockJourneyAction, mockCustomsCacheService, stubMessagesControllerComponents(), mockShutMucrPage)(global)
+  private def controller(answers: ShutMucrAnswers) =
+    new ShutMucrController(SuccessfulAuth(), ValidJourney(answers), cache, stubMessagesControllerComponents(), page)(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-
-    authorizedUser()
-    withCaching(Choice.choiceId, Some(ShutMUCR))
-    when(mockShutMucrPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(page.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockShutMucrPage)
-
+    reset(page)
     super.afterEach()
   }
 
@@ -57,33 +54,28 @@ class ShutMucrControllerSpec extends LegacyControllerSpec with OptionValues {
     "return 200 (OK) on displayPage method" when {
 
       "cache contains shut mucr data" in {
+        val mucr = ShutMucr("Mucr")
 
-        withCaching(ShutMucr.formId, Some(ShutMucr("Mucr")))
-
-        val result = controller.displayPage()(getRequest())
+        val result = controller(ShutMucrAnswers(Some(mucr))).displayPage()(getRequest())
 
         status(result) mustBe OK
-        verify(mockShutMucrPage).apply(any())(any(), any())
+        verify(page).apply(any())(any(), any())
       }
 
       "cache is empty" in {
-
-        withCaching(ShutMucr.formId, None)
-
-        val result = controller.displayPage()(getRequest())
+        val result = controller(ShutMucrAnswers()).displayPage()(getRequest())
 
         status(result) mustBe OK
-        verify(mockShutMucrPage).apply(any())(any(), any())
+        verify(page).apply(any())(any(), any())
       }
     }
 
     "return 400 (BAD_REQUEST)" when {
 
       "form is incorrect" in {
-
         val incorrectForm = Json.toJson(ShutMucr(""))
 
-        val result = controller.submitForm()(postRequest(incorrectForm))
+        val result = controller(ShutMucrAnswers()).submitForm()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -92,12 +84,9 @@ class ShutMucrControllerSpec extends LegacyControllerSpec with OptionValues {
     "return 303 (SEE_OTHER)" when {
 
       "form is correct and submission service returned ACCEPTED" in {
-
-        withCaching(ShutMucr.formId)
-
         val correctForm = Json.toJson(ShutMucr(ValidMucr))
 
-        val result = controller.submitForm()(postRequest(correctForm))
+        val result = controller(ShutMucrAnswers()).submitForm()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.ShutMucrSummaryController.displayPage().url

@@ -171,10 +171,10 @@ choicePage.input.error.empty = Please, choose what do you want to do
 choicePage.input.error.incorrectValue = Please, choose valid option
 
 consignmentReferences.title = Consignment references
-consignmentReferences.arrival.heading = Arrive consignment
-consignmentReferences.departure.heading = Depart consignment
-consignmentReferences.arrival.question = What consignment do you want to arrive?
-consignmentReferences.departure.question = What consignment do you want to depart?
+consignmentReferences.ARRIVE.heading = Arrive consignment
+consignmentReferences.DEPART.heading = Depart consignment
+consignmentReferences.ARRIVE.question = What consignment do you want to arrive?
+consignmentReferences.DEPART.question = What consignment do you want to depart?
 consignmentReferences.reference.ducr = Declaration Consignment Reference (DUCR)
 consignmentReferences.reference.mucr = Master Consignment Reference (MUCR)
 consignmentReferences.reference.empty = Please choose reference

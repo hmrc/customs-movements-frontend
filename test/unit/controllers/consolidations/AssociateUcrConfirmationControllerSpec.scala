@@ -31,7 +31,7 @@ class AssociateUcrConfirmationControllerSpec extends LegacyControllerSpec {
   private val mockAssociateDucrConfirmPage = mock[associate_ucr_confirmation]
 
   private val controller =
-    new AssociateUcrConfirmationController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), mockAssociateDucrConfirmPage)
+    new AssociateUcrConfirmationController(mockAuthAction, stubMessagesControllerComponents(), mockAssociateDucrConfirmPage)
 
   override def beforeEach() {
     super.beforeEach()

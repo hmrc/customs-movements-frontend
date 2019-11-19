@@ -20,13 +20,12 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit.MINUTES
 import java.time.{Instant, LocalDate, ZoneId, ZoneOffset}
 
+import base.BaseSpec
 import controllers.routes
 import models.UcrBlock
 import models.notifications.{Entry, Notification, ResponseType}
 import models.submissions.{ActionType, Submission}
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
 import play.twirl.api.Html
 import testdata.CommonTestData.conversationId
 import testdata.ConsolidationTestData
@@ -37,12 +36,13 @@ import utils.Stubs
 import views.html.movements
 import views.spec.ViewValidator
 
-class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewValidator {
+class MovementsViewSpec extends BaseSpec with Stubs with ViewValidator with MessagesStub {
+
+  private implicit val implicitFakeRequest = FakeRequest()
 
   private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.of("Europe/London"))
   private val dateTime: Instant = LocalDate.of(2019, 10, 31).atStartOfDay().toInstant(ZoneOffset.UTC)
 
-  private val messages = stubMessages()
   private def createView(submissions: Seq[(Submission, Seq[Notification])] = Seq.empty): Html =
     new movements(mainTemplate, dateTimeFormatter)(submissions)(FakeRequest(), messages)
 
@@ -50,17 +50,17 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
 
     "contain title" in {
 
-      createView().getElementById("title") must containText(messages("submissions.title"))
+      createView().getElementById("title") must containMessage("submissions.title")
     }
 
     "contain correct table headers" in {
 
       val page = createView()
 
-      page.getElementById("ucr") must containText(messages("submissions.ucr"))
-      page.getElementById("ucrType") must containText(messages("submissions.submissionType"))
-      page.getElementById("submissionAction") must containText(messages("submissions.submissionAction"))
-      page.getElementById("dateOfRequest") must containText(messages("submissions.dateOfRequest"))
+      page.getElementById("ucr") must containMessage("submissions.ucr")
+      page.getElementById("ucrType") must containMessage("submissions.submissionType")
+      page.getElementById("submissionAction") must containMessage("submissions.submissionAction")
+      page.getElementById("dateOfRequest") must containMessage("submissions.dateOfRequest")
     }
 
     "contain correct submission data" in {
@@ -84,7 +84,7 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
 
       getElementById(pageWithData, s"ucr-$conversationId").text() must be("4444")
       getElementById(pageWithData, s"ucrType-$conversationId").text() must be("MUCR")
-      getElementById(pageWithData, s"submissionAction-$conversationId").text() must be("submissions.shutmucr")
+      getElementById(pageWithData, s"submissionAction-$conversationId") must containMessage("submissions.shutmucr")
       getElementById(pageWithData, s"dateOfRequest-$conversationId").text() must be("31 Oct 2019 at 00:00")
     }
 

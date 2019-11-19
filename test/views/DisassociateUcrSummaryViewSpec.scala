@@ -47,7 +47,7 @@ class DisassociateUcrSummaryViewSpec extends UnitViewSpec with CommonMessages {
     }
 
     "display 'Change' link on page" in {
-      view.getElementById("disassociate_ucr-remove") must containText(messages(changeCaption))
+      view.getElementById("disassociate_ucr-remove") must containMessage(changeCaption)
       view.getElementById("disassociate_ucr-remove") must haveAttribute(
         "href",
         controllers.consolidations.routes.DisassociateUcrController.displayPage().url

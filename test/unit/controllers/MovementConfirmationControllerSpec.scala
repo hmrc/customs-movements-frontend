@@ -27,23 +27,19 @@ import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.LegacyControllerSpec
 import views.html.movement_confirmation_page
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class MovementConfirmationControllerSpec extends LegacyControllerSpec {
+class MovementConfirmationControllerSpec extends ControllerLayerSpec {
 
   private val page = mock[movement_confirmation_page]
 
   private def controller() =
-    new MovementConfirmationController(mockAuthAction, stubMessagesControllerComponents(), page)
+    new MovementConfirmationController(SuccessfulAuth(), stubMessagesControllerComponents(), page)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-
-    authorizedUser()
-    setupErrorHandler()
     when(page.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -52,8 +48,6 @@ class MovementConfirmationControllerSpec extends LegacyControllerSpec {
 
     "return 200 when authenticated" when {
       "arrival" in {
-        authorizedUser()
-
         val result = controller()
           .display(get.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ARRIVE.toString, FlashKeys.UCR_KIND -> "kind", FlashKeys.UCR -> "123"))
 
@@ -62,8 +56,6 @@ class MovementConfirmationControllerSpec extends LegacyControllerSpec {
       }
 
       "departure" in {
-        authorizedUser()
-
         val result = controller()
           .display(get.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.DEPART.toString, FlashKeys.UCR_KIND -> "kind", FlashKeys.UCR -> "123"))
 
@@ -74,21 +66,18 @@ class MovementConfirmationControllerSpec extends LegacyControllerSpec {
 
     "return to start" when {
       "journey type is missing" in {
-        authorizedUser()
         intercept[RuntimeException] {
           await(controller().display(get.withFlash(FlashKeys.UCR_KIND -> "kind", FlashKeys.UCR -> "123")))
         } mustBe ReturnToStartException
       }
 
       "ucr kind is missing" in {
-        authorizedUser()
         intercept[RuntimeException] {
           await(controller().display(get.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ARRIVE.toString, FlashKeys.UCR -> "123")))
         } mustBe ReturnToStartException
       }
 
       "ucr is missing" in {
-        authorizedUser()
         intercept[RuntimeException] {
           await(controller().display(get.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ARRIVE.toString, FlashKeys.UCR_KIND -> "kind")))
         } mustBe ReturnToStartException

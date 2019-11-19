@@ -17,18 +17,15 @@
 package unit.controllers
 
 import controllers.StartController
-import forms.Choice
-import forms.Choice.Arrival
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.LegacyControllerSpec
 import views.html.start_page
 
 import scala.concurrent.ExecutionContext.global
 
-class StartControllerSpec extends LegacyControllerSpec {
+class StartControllerSpec extends ControllerLayerSpec {
 
   private val startPage = mock[start_page]
 
@@ -36,9 +33,6 @@ class StartControllerSpec extends LegacyControllerSpec {
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-
-    authorizedUser()
-    withCaching(Choice.choiceId, Some(Arrival))
     when(startPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
 

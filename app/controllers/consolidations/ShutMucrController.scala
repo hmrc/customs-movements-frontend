@@ -16,16 +16,13 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyRefiner, LegacyJourneyAction}
-import controllers.storage.CacheIdGenerator.movementCacheId
-import forms.ShutMucr
-import forms.ShutMucr.{form, formId}
+import controllers.actions.{AuthAction, JourneyRefiner}
+import forms.ShutMucr.form
 import javax.inject.{Inject, Singleton}
 import models.cache.{Cache, JourneyType, ShutMucrAnswers}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.CacheRepository
-import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.shut_mucr
 
@@ -33,11 +30,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ShutMucrController @Inject()(
-                                    authenticate: AuthAction,
-                                    getJourney: JourneyRefiner,
-                                    cache: CacheRepository,
-                                    mcc: MessagesControllerComponents,
-                                    shutMucrPage: shut_mucr
+  authenticate: AuthAction,
+  getJourney: JourneyRefiner,
+  cache: CacheRepository,
+  mcc: MessagesControllerComponents,
+  shutMucrPage: shut_mucr
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

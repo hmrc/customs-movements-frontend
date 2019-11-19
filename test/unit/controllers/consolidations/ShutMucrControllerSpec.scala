@@ -16,7 +16,7 @@
 
 package unit.controllers.consolidations
 
-import controllers.consolidations.{ShutMucrController, routes}
+import controllers.consolidations.{routes, ShutMucrController}
 import forms.ShutMucr
 import models.cache.ShutMucrAnswers
 import org.mockito.ArgumentMatchers.any

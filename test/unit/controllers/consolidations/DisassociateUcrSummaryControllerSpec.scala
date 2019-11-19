@@ -42,14 +42,15 @@ class DisassociateUcrSummaryControllerSpec extends ControllerLayerSpec with Mock
   private val service = mock[SubmissionService]
   private val mockDisassociateUcrSummaryPage = mock[disassociate_ucr_summary]
 
-  private def controller(answers: DisassociateUcrAnswers) = new DisassociateUcrSummaryController(
-    SuccessfulAuth(),
-    ValidJourney(answers),
-    stubMessagesControllerComponents(),
-    cache,
-    service,
-    mockDisassociateUcrSummaryPage
-  )(global)
+  private def controller(answers: DisassociateUcrAnswers) =
+    new DisassociateUcrSummaryController(
+      SuccessfulAuth(),
+      ValidJourney(answers),
+      stubMessagesControllerComponents(),
+      cache,
+      service,
+      mockDisassociateUcrSummaryPage
+    )(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

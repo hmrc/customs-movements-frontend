@@ -21,15 +21,14 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.LegacyControllerSpec
 import views.html.unauthorised
 
 import scala.concurrent.ExecutionContext.global
 
-class UnauthorisedControllerSpec extends LegacyControllerSpec {
+class UnauthorisedControllerSpec extends ControllerLayerSpec {
 
-  val mockUnauthorisedPage = mock[unauthorised]
-  val controller = new UnauthorisedController(stubMessagesControllerComponents(), mockUnauthorisedPage)(global)
+  private val mockUnauthorisedPage = mock[unauthorised]
+  private val controller = new UnauthorisedController(stubMessagesControllerComponents(), mockUnauthorisedPage)(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

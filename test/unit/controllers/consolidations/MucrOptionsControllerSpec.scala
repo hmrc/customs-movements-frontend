@@ -16,7 +16,7 @@
 
 package unit.controllers.consolidations
 
-import controllers.consolidations.{MucrOptionsController, routes}
+import controllers.consolidations.{routes, MucrOptionsController}
 import forms.MucrOptions
 import forms.MucrOptions.Create
 import models.cache.AssociateUcrAnswers
@@ -41,9 +41,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
   private val page = mock[mucr_options]
 
   private def controller(answers: AssociateUcrAnswers) =
-    new MucrOptionsController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, page)(
-      global
-    )
+    new MucrOptionsController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, page)(global)
 
   override def beforeEach() {
     super.beforeEach()

@@ -46,7 +46,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait MovementApp
-    extends PlaySpec with GuiceOneAppPerSuite with MockAuthConnector with MockCustomsCacheService with MockSubmissionService
+    extends PlaySpec with GuiceOneAppPerSuite with MockAuthConnector with MockCustomsCacheService
     with MockCustomsExportsMovement with MockMovementsMetrics with ScalaFutures {
 
   override def fakeApplication(): Application = {
@@ -55,8 +55,7 @@ trait MovementApp
       .overrides(
         bind[AuthConnector].to(authConnectorMock),
         bind[CustomsCacheService].to(mockCustomsCacheService),
-        bind[LegacyCustomsDeclareExportsMovementsConnector].to(mockCustomsExportsMovementConnector),
-        bind[LegacySubmissionService].to(mockSubmissionService)
+        bind[LegacyCustomsDeclareExportsMovementsConnector].to(mockCustomsExportsMovementConnector)
       )
       .build()
   }

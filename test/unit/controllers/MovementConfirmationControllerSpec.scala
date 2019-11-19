@@ -20,6 +20,7 @@ import controllers.MovementConfirmationController
 import controllers.storage.FlashKeys
 import forms.{Choice, ConsignmentReferences}
 import models.ReturnToStartException
+import models.cache.JourneyType
 import org.mockito.ArgumentMatchers.{any, _}
 import org.mockito.Mockito.{verify, when}
 import play.api.http.Status
@@ -49,14 +50,26 @@ class MovementConfirmationControllerSpec extends LegacyControllerSpec {
   "GET" should {
     implicit val get = FakeRequest("GET", "/")
 
-    "return 200 when authenticated" in {
-      authorizedUser()
+    "return 200 when authenticated" when {
+      "arrival" in {
+        authorizedUser()
 
-      val result = controller()
-        .display(get.withFlash(FlashKeys.MOVEMENT_TYPE -> Choice.Arrival.value, FlashKeys.UCR_KIND -> "kind", FlashKeys.UCR -> "123"))
+        val result = controller()
+          .display(get.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ARRIVE.toString, FlashKeys.UCR_KIND -> "kind", FlashKeys.UCR -> "123"))
 
-      status(result) mustBe Status.OK
-      verify(page).apply(refEq(Choice.Arrival), refEq(ConsignmentReferences("kind", "123")))(any(), any())
+        status(result) mustBe Status.OK
+        verify(page).apply(refEq(Choice.Arrival), refEq(ConsignmentReferences("kind", "123")))(any(), any())
+      }
+
+      "departure" in {
+        authorizedUser()
+
+        val result = controller()
+          .display(get.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.DEPART.toString, FlashKeys.UCR_KIND -> "kind", FlashKeys.UCR -> "123"))
+
+        status(result) mustBe Status.OK
+        verify(page).apply(refEq(Choice.Departure), refEq(ConsignmentReferences("kind", "123")))(any(), any())
+      }
     }
 
     "return to start" when {
@@ -70,14 +83,14 @@ class MovementConfirmationControllerSpec extends LegacyControllerSpec {
       "ucr kind is missing" in {
         authorizedUser()
         intercept[RuntimeException] {
-          await(controller().display(get.withFlash(FlashKeys.MOVEMENT_TYPE -> Choice.Arrival.value, FlashKeys.UCR -> "123")))
+          await(controller().display(get.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ARRIVE.toString, FlashKeys.UCR -> "123")))
         } mustBe ReturnToStartException
       }
 
       "ucr is missing" in {
         authorizedUser()
         intercept[RuntimeException] {
-          await(controller().display(get.withFlash(FlashKeys.MOVEMENT_TYPE -> Choice.Arrival.value, FlashKeys.UCR_KIND -> "kind")))
+          await(controller().display(get.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ARRIVE.toString, FlashKeys.UCR_KIND -> "kind")))
         } mustBe ReturnToStartException
       }
     }

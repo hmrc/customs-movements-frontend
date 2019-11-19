@@ -33,7 +33,7 @@ object Choice {
   def unapply(status: Choice): Option[String] = Some(status.value)
 
   def apply(input: String): Choice =
-    allChoices.find(_.value == input).getOrElse(throw new IllegalArgumentException("Incorrect choice"))
+    allChoices.find(_.value == input).getOrElse(throw new IllegalArgumentException(s"Incorrect choice [$input]"))
 
   def apply(`type`: JourneyType): Choice = `type` match {
     case ARRIVE         => Arrival
@@ -46,8 +46,8 @@ object Choice {
   implicit object ChoiceValueFormat extends Format[Choice] {
     def reads(status: JsValue): JsResult[Choice] = status match {
       case JsString(choice) =>
-        allChoices.find(_.value == choice).map(JsSuccess(_)).getOrElse(JsError("Incorrect choice"))
-      case _ => JsError("Incorrect choice")
+        allChoices.find(_.value == choice).map(JsSuccess(_)).getOrElse(JsError(s"Incorrect choice [$choice]"))
+      case _ => JsError("Incorrect choice, expected a String")
     }
 
     def writes(choice: Choice): JsValue = JsString(choice.value)

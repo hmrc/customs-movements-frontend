@@ -21,6 +21,7 @@ import controllers.storage.FlashKeys
 import forms.{Choice, ConsignmentReferences}
 import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
+import models.cache.JourneyType
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -34,7 +35,7 @@ class MovementConfirmationController @Inject()(authenticate: AuthAction, mcc: Me
 ) extends FrontendController(mcc) with I18nSupport {
 
   def display: Action[AnyContent] = authenticate { implicit request =>
-    val `type` = request.flash.get(FlashKeys.MOVEMENT_TYPE).map(Choice(_)).getOrElse(throw ReturnToStartException)
+    val `type` = request.flash.get(FlashKeys.MOVEMENT_TYPE).map(JourneyType.withName).map(Choice(_)).getOrElse(throw ReturnToStartException)
     val kind = request.flash.get(FlashKeys.UCR_KIND).getOrElse(throw ReturnToStartException)
     val reference = request.flash.get(FlashKeys.UCR).getOrElse(throw ReturnToStartException)
     Ok(page(`type`, ConsignmentReferences(kind, reference)))

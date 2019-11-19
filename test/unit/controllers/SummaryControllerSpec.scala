@@ -18,7 +18,7 @@ package unit.controllers
 
 import controllers.SummaryController
 import controllers.storage.FlashKeys
-import forms.{Choice, ConsignmentReferences}
+import forms.ConsignmentReferences
 import models.cache.{ArrivalAnswers, DepartureAnswers, JourneyType, MovementAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}

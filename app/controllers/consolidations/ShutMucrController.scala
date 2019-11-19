@@ -16,14 +16,13 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyAction}
-import controllers.storage.CacheIdGenerator.movementCacheId
-import forms.ShutMucr
-import forms.ShutMucr.{form, formId}
+import controllers.actions.{AuthAction, JourneyRefiner}
+import forms.ShutMucr.form
 import javax.inject.{Inject, Singleton}
+import models.cache.{Cache, JourneyType, ShutMucrAnswers}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.CustomsCacheService
+import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.shut_mucr
 
@@ -32,28 +31,28 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ShutMucrController @Inject()(
   authenticate: AuthAction,
-  journeyType: JourneyAction,
-  cacheService: CustomsCacheService,
+  getJourney: JourneyRefiner,
+  cache: CacheRepository,
   mcc: MessagesControllerComponents,
   shutMucrPage: shut_mucr
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    cacheService.fetchAndGetEntry[ShutMucr](movementCacheId(), formId).map {
-      case Some(data) => Ok(shutMucrPage(form().fill(data)))
-      case None       => Ok(shutMucrPage(form()))
-    }
+  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.SHUT_MUCR)) { implicit request =>
+    val shutMucr = request.answersAs[ShutMucrAnswers].shutMucr
+    Ok(shutMucrPage(shutMucr.fold(form())(form().fill)))
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.SHUT_MUCR)).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(shutMucrPage(formWithErrors))),
-        shutMucr =>
-          cacheService.cache[ShutMucr](movementCacheId, formId, shutMucr).map { _ =>
+        validForm => {
+          val updatedCache = request.answersAs[ShutMucrAnswers].copy(shutMucr = Some(validForm))
+          cache.upsert(Cache(request.eori, updatedCache)).map { _ =>
             Redirect(routes.ShutMucrSummaryController.displayPage())
+          }
         }
       )
   }

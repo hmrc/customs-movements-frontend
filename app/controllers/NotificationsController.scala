@@ -19,7 +19,7 @@ package controllers
 import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
-import models.notifications.NotificationFrontendModel
+import models.notifications.Notification
 import models.submissions.Submission
 import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import play.api.i18n.I18nSupport
@@ -45,7 +45,7 @@ class NotificationsController @Inject()(
       submission: Option[Submission] <- connector.fetchSingleSubmission(conversationId, eori)
       submissionElement: Option[NotificationsPageSingleElement] = submission.map(factory.build)
 
-      submissionNotifications: Seq[NotificationFrontendModel] <- connector.fetchNotifications(conversationId, eori)
+      submissionNotifications: Seq[Notification] <- connector.fetchNotifications(conversationId, eori)
       notificationElements: Seq[NotificationsPageSingleElement] = submissionNotifications.sorted.map(factory.build)
 
       submissionUcr: Option[String] = submission.flatMap(extractUcr)
@@ -55,7 +55,7 @@ class NotificationsController @Inject()(
       case (Some(submissionUcr), Some(submissionElement), notificationElements) =>
         Ok(notifications(submissionUcr, submissionElement, notificationElements))
       case _ =>
-        Redirect(routes.MovementsController.displayPage())
+        Redirect(routes.SubmissionsController.displayPage())
     }
   }
 

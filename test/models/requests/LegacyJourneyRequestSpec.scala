@@ -22,7 +22,7 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.Enrolments
 import unit.base.UnitSpec
 
-class JourneyRequestSpec extends UnitSpec {
+class LegacyJourneyRequestSpec extends UnitSpec {
 
   "Journey Request" should {
 
@@ -31,7 +31,7 @@ class JourneyRequestSpec extends UnitSpec {
       val eori = "eori1234"
       val user = SignedInUser(eori, Enrolments(Set.empty))
       val authenticatedRequest = AuthenticatedRequest(FakeRequest(), user)
-      val journeyRequest = JourneyRequest(authenticatedRequest, Arrival)
+      val journeyRequest = LegacyJourneyRequest(authenticatedRequest, Arrival)
 
       journeyRequest.eori mustBe eori
     }

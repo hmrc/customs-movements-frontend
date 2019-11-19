@@ -16,12 +16,12 @@
 
 package views
 
+import forms.AssociateKind._
+import forms.AssociateUcr
 import helpers.views.CommonMessages
 import play.twirl.api.Html
 import views.spec.UnitViewSpec
 import views.tags.ViewTest
-import forms.AssociateKind._
-import forms.AssociateUcr
 
 @ViewTest
 class AssociateDucrSummaryViewSpec extends UnitViewSpec with CommonMessages {
@@ -50,13 +50,13 @@ class AssociateDucrSummaryViewSpec extends UnitViewSpec with CommonMessages {
     }
 
     "display 'Change' link on page for associate ucr" in {
-      view.getElementById("associate_ducr-change") must containText(messages(changeCaption))
+      view.getElementById("associate_ducr-change") must containMessage(changeCaption)
       view.getElementById("associate_ducr-change") must haveHref(controllers.consolidations.routes.AssociateUcrController.displayPage())
     }
 
     "display 'Change' link on the page for mucr" in {
 
-      view.getElementById("mucr-change") must containText(messages(changeCaption))
+      view.getElementById("mucr-change") must containMessage(changeCaption)
       view.getElementById("mucr-change") must haveHref(controllers.consolidations.routes.MucrOptionsController.displayPage())
     }
 
@@ -66,7 +66,7 @@ class AssociateDucrSummaryViewSpec extends UnitViewSpec with CommonMessages {
 
     "display mucr type on the page" in {
 
-      view.getElementById("mucr-type") must containText("associate.ucr.summary.kind.mucr")
+      view.getElementById("mucr-type") must containMessage("associate.ucr.summary.kind.mucr")
     }
   }
 }

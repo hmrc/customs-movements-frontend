@@ -25,7 +25,7 @@
 @shutMucrLink = {<a href="@routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value)">@messages("shutMucr.confirmation.nextSteps.shutMucr")</a>}
 @departureLink = {<a href="@routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value)">@messages("shutMucr.confirmation.nextSteps.depart")</a>}
 
-@main_template(title = Title("shutMucr.confirmation.tab.heading")) {
+@main_template(title = Title("shutMucr.confirmation.tab.heading", None)) {
 
     @components.highlight_box_with_reference(
         headingText = messages("shutMucr.confirmation.heading", flash.get(FlashKeys.MUCR).getOrElse("-"))

@@ -19,12 +19,9 @@ package views
 import controllers.routes
 import forms.ArrivalReference
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.{Injector, Stubs}
-import views.spec.UnitViewSpec
 import views.html.arrival_reference
+import views.spec.UnitViewSpec
 
 class ArrivalReferenceViewSpec extends UnitViewSpec {
 
@@ -72,7 +69,7 @@ class ArrivalReferenceViewSpec extends UnitViewSpec {
 
       val backButton = createView().getElementById("link-back")
 
-      backButton must containText(messages("site.back"))
+      backButton must containMessage("site.back")
       backButton must haveHref(routes.ConsignmentReferencesController.displayPage())
     }
   }

@@ -16,9 +16,6 @@
 
 package utils
 
-import play.api.libs.json.{Json, Writes}
-import uk.gov.hmrc.http.cache.client.CacheMap
-
 import scala.util.Random
 
 object TestDataHelper {
@@ -33,8 +30,5 @@ object TestDataHelper {
   def getDataSeq[A](size: Int, elementBuilder: () => A): Seq[A] = (1 to size).map(_ => elementBuilder())
   def getDataSeq[A](size: Int, elementBuilder: Int => A, builderParam: Int): Seq[A] =
     (1 to size).map(_ => elementBuilder(builderParam))
-
-  def getCacheMap[A](data: A, formId: String)(implicit writes: Writes[A]): CacheMap =
-    CacheMap(formId, Map(formId -> Json.toJson(data)))
 
 }

@@ -16,8 +16,7 @@
 
 package models.viewmodels.notificationspage.converters
 
-import java.time.format.DateTimeFormatter
-import java.time.{ZoneId, ZonedDateTime}
+import java.time.ZonedDateTime
 
 import base.BaseSpec
 import com.google.inject.{AbstractModule, Guice}
@@ -27,7 +26,8 @@ import models.viewmodels.decoder.{CRCCode, Decoder, ROECode, SOECode}
 import models.viewmodels.notificationspage.MovementTotalsResponseType.EMR
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
@@ -36,30 +36,34 @@ import testdata.CommonTestData.correctUcr
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import utils.DateTimeTestModule
 
-class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
+class EMRResponseConverterSpec extends BaseSpec with MockitoSugar with BeforeAndAfterEach {
 
   import EMRResponseConverterSpec._
 
-  private trait Test {
-    implicit val messages: Messages = stubMessages()
+  private implicit val messages: Messages = stubMessages()
 
-    val decoder: Decoder = mock[Decoder]
+  private val decoder: Decoder = mock[Decoder]
+
+  private val injector = Guice.createInjector(new DateTimeTestModule(), new AbstractModule {
+    override def configure(): Unit = bind(classOf[Decoder]).toInstance(decoder)
+  })
+
+  private val contentBuilder = injector.getInstance(classOf[EMRResponseConverter])
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    reset(decoder)
     when(decoder.crc(any[String])).thenReturn(Some(crcKeyFromDecoder))
     when(decoder.roe(any[String])).thenReturn(Some(roeKeyFromDecoder))
     when(decoder.mucrSoe(any[String])).thenReturn(Some(mucrSoeKeyFromDecoder))
-
-    private val injector = Guice.createInjector(new DateTimeTestModule(), new AbstractModule {
-      override def configure(): Unit = bind(classOf[Decoder]).toInstance(decoder)
-    })
-
-    val contentBuilder = injector.getInstance(classOf[EMRResponseConverter])
   }
 
   "EMRResponseConverter on convert" when {
 
     "provided with EMR MovementTotalsResponse with all codes" should {
 
-      "call Decoder" in new Test {
+      "call Decoder" in {
 
         val input = emrResponseAllCodes
 
@@ -72,7 +76,7 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
         verify(decoder, times(0)).ducrSoe(any())
       }
 
-      "return NotificationsPageSingleElement with values returned by Messages" in new Test {
+      "return NotificationsPageSingleElement with values returned by Messages" in {
 
         val input = emrResponseAllCodes
         val expectedTitle = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
@@ -99,7 +103,7 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
 
     "provided with EMR MovementTotalsResponse with empty codes" should {
 
-      "call Decoder only for existing codes" in new Test {
+      "call Decoder only for existing codes" in {
 
         val input = emrResponseMissingCodes
 
@@ -110,7 +114,7 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
         verify(decoder, times(0)).mucrSoe(any())
       }
 
-      "return NotificationsPageSingleElement without content for missing codes" in new Test {
+      "return NotificationsPageSingleElement without content for missing codes" in {
 
         val input = emrResponseMissingCodes
         val expectedTitle = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
@@ -132,7 +136,7 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
 
     "provided with EMR MovementTotalsResponse with unknown codes" should {
 
-      "call Decoder for all codes" in new Test {
+      "call Decoder for all codes" in {
 
         val input = emrResponseUnknownCodes
 
@@ -143,7 +147,7 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar {
         verify(decoder).mucrSoe(meq(UnknownMucrSoeCode))
       }
 
-      "return NotificationsPageSingleElement without content for unknown codes" in new Test {
+      "return NotificationsPageSingleElement without content for unknown codes" in {
 
         when(decoder.crc(meq(UnknownCrcCode))).thenReturn(None)
         when(decoder.roe(meq(UnknownRoeCode))).thenReturn(None)

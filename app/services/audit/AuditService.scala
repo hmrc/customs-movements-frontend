@@ -17,14 +17,13 @@
 package services.audit
 
 import com.google.inject.Inject
-import forms.Choice._
 import forms._
 import javax.inject.Named
+import models.cache.{Answers, ArrivalAnswers, DepartureAnswers, JourneyType}
 import models.requests.MovementRequest
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
@@ -58,13 +57,11 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
       )
     )
 
-  def auditMovements(eori: String, data: MovementRequest, result: String, movementAuditType: AuditTypes.Audit)(
-    implicit hc: HeaderCarrier
-  ): Future[AuditResult] =
+  def auditMovements(data: MovementRequest, result: String, movementAuditType: AuditTypes.Audit)(implicit hc: HeaderCarrier): Future[AuditResult] =
     audit(
       movementAuditType,
       Map(
-        EventData.eori.toString -> eori,
+        EventData.eori.toString -> data.eori,
         EventData.messageCode.toString -> data.choice.toString,
         EventData.ucrType.toString -> data.consignmentReference.referenceValue,
         EventData.ucr.toString -> data.consignmentReference.reference,
@@ -89,7 +86,7 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
   private def getAuditTags(transactionName: String, path: String)(implicit hc: HeaderCarrier) =
     AuditExtensions
       .auditHeaderCarrier(hc)
-      .toAuditTags(transactionName = s"export-declaration-${transactionName.toLowerCase}", path = s"customs-declare-exports/${path}")
+      .toAuditTags(transactionName = s"Export-Declaration-${transactionName}", path = s"customs-declare-exports/${path}")
 
   private def handleResponse(result: AuditResult, auditType: String) = result match {
     case Success =>
@@ -103,9 +100,9 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
       Disabled
   }
 
-  def auditAllPagesUserInput(choice: Choice, cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+  def auditAllPagesUserInput(answers: Answers)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val auditType =
-      if (choice == Arrival)
+      if (answers.`type` == JourneyType.ARRIVE)
         AuditTypes.AuditArrival.toString
       else AuditTypes.AuditDeparture.toString
 
@@ -113,24 +110,31 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
       auditSource = appName,
       auditType = auditType,
       tags = getAuditTags(s"${auditType}-payload-request", s"${auditType}/full-payload"),
-      detail = getAuditDetails(getMovementsData(choice, cacheMap))
+      detail = getAuditDetails(getMovementsData(answers))
     )
     connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType))
   }
 
-  def getMovementsData(choice: Choice, cacheMap: CacheMap): JsObject = {
-    val movementDetails =
-      if (choice == Arrival)
-        Json.toJson(cacheMap.getEntry[ArrivalDetails](MovementDetails.formId))
-      else Json.toJson(cacheMap.getEntry[DepartureDetails](MovementDetails.formId))
+  private def getMovementsData(answers: Answers): JsObject = {
 
-    val userInput = Map(
-      ConsignmentReferences.formId -> Json.toJson(cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.formId)),
-      Location.formId -> Json.toJson(cacheMap.getEntry[Location](Location.formId)),
-      MovementDetails.formId -> movementDetails,
-      Transport.formId -> Json.toJson(cacheMap.getEntry[Transport](Transport.formId)),
-      ArrivalReference.formId -> Json.toJson(cacheMap.getEntry[ArrivalReference](ArrivalReference.formId))
-    )
+    val userInput = answers match {
+      case arrivalAnswers: ArrivalAnswers =>
+        Map(
+          ConsignmentReferences.formId -> Json.toJson(arrivalAnswers.consignmentReferences),
+          Location.formId -> Json.toJson(arrivalAnswers.location),
+          MovementDetails.formId -> Json.toJson(arrivalAnswers.arrivalDetails),
+          ArrivalReference.formId -> Json.toJson(arrivalAnswers.arrivalReference)
+        )
+      case departureAnswers: DepartureAnswers =>
+        Map(
+          ConsignmentReferences.formId -> Json.toJson(departureAnswers.consignmentReferences),
+          Location.formId -> Json.toJson(departureAnswers.location),
+          MovementDetails.formId -> Json.toJson(departureAnswers.departureDetails),
+          Transport.formId -> Json.toJson(departureAnswers.transport),
+          ArrivalReference.formId -> Json.toJson(departureAnswers.arrivalReference)
+        )
+    }
+
     Json.toJson(userInput).as[JsObject]
   }
 

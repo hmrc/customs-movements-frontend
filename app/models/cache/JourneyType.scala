@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package unit.mocks
+package models.cache
 
-import base.MockCustomsCacheService
-import controllers.actions.JourneyAction
-import org.scalatest.{BeforeAndAfterEach, Suite}
-import org.scalatestplus.mockito.MockitoSugar
-import utils.Stubs
+import play.api.libs.json.{Format, Reads, Writes}
 
-import scala.concurrent.ExecutionContext.global
+object JourneyType extends Enumeration {
+  type JourneyType = Value
 
-trait JourneyActionMocks extends MockCustomsCacheService with BeforeAndAfterEach {
-  self: MockitoSugar with Suite with Stubs =>
+  val ARRIVE, DEPART, ASSOCIATE_UCR, DISSOCIATE_UCR, SHUT_MUCR = Value
 
-  val mockJourneyAction: JourneyAction = JourneyAction(mockCustomsCacheService)(global)
+  implicit val format: Format[JourneyType] = Format(Reads.enumNameReads(JourneyType), Writes.enumNameWrites)
 }

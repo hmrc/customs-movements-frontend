@@ -17,10 +17,10 @@
 package unit.controllers.consolidations
 
 import controllers.consolidations.{routes, AssociateUcrController}
-import controllers.exception.IncompleteApplication
-import controllers.storage.CacheIdGenerator._
-import forms.Choice.AssociateUCR
-import forms.{AssociateUcr, Choice, MucrOptions}
+import forms.AssociateKind._
+import forms.{AssociateUcr, MucrOptions}
+import models.ReturnToStartException
+import models.cache.AssociateUcrAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -28,29 +28,22 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import testdata.ConsolidationTestData.ValidDucr
-import uk.gov.hmrc.http.cache.client.CacheMap
-import unit.base.ControllerSpec
+import testdata.ConsolidationTestData.validDucr
+import unit.controllers.ControllerLayerSpec
+import unit.repository.MockCache
 import views.html.associate_ucr
-import forms.AssociateKind._
 
-import scala.concurrent.ExecutionContext.global
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class AssociateUcrControllerSpec extends ControllerSpec {
+class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
 
   private val mockAssociateDucrPage = mock[associate_ucr]
 
-  private val controller =
-    new AssociateUcrController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), mockCustomsCacheService, mockAssociateDucrPage)(
-      global
-    )
+  private def controller(answers: AssociateUcrAnswers) =
+    new AssociateUcrController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, mockAssociateDucrPage)
 
   override protected def beforeEach() {
     super.beforeEach()
-
-    authorizedUser()
-    withCaching(Choice.choiceId, Some(AssociateUCR))
-    withCaching(AssociateUcr.formId)
     when(mockAssociateDucrPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -59,40 +52,34 @@ class AssociateUcrControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
-  val formCaptor: ArgumentCaptor[Form[AssociateUcr]] = ArgumentCaptor.forClass(classOf[Form[AssociateUcr]])
+  def theFormRendered: Form[AssociateUcr] = {
+    val captor: ArgumentCaptor[Form[AssociateUcr]] = ArgumentCaptor.forClass(classOf[Form[AssociateUcr]])
+    verify(mockAssociateDucrPage).apply(captor.capture(), any())(any(), any())
+    captor.getValue
+  }
 
   "Associate Ducr controller" should {
+    val mucrOptions = MucrOptions("MUCR")
+    val associateUcr = AssociateUcr(Ducr, "DUCR")
 
     "return OK (200)" when {
 
       "display page method is invoked and Mucr Options page has data" in {
         val request = getRequest()
-        withCacheMap(Some(CacheMap(movementCacheId()(request), Map(MucrOptions.formId -> Json.toJson(MucrOptions("MUCR"))))))
 
-        val result = controller.displayPage()(request)
+        val result = controller(AssociateUcrAnswers(Some(mucrOptions))).displayPage()(request)
 
         status(result) must be(OK)
-
-        verify(mockAssociateDucrPage).apply(formCaptor.capture(), any())(any(), any())
-        formCaptor.getValue.value mustBe empty
+        theFormRendered.value mustBe empty
       }
 
       "display previously gathered data" in {
         val request = getRequest()
-        withCacheMap(
-          Some(
-            CacheMap(
-              movementCacheId()(request),
-              Map(MucrOptions.formId -> Json.toJson(MucrOptions("MUCR")), AssociateUcr.formId -> Json.toJson(AssociateUcr(Ducr, "DUCR")))
-            )
-          )
-        )
 
-        val result = controller.displayPage()(request)
+        val result = controller(AssociateUcrAnswers(Some(mucrOptions), Some(associateUcr))).displayPage()(request)
 
         status(result) must be(OK)
-        verify(mockAssociateDucrPage).apply(formCaptor.capture(), any())(any(), any())
-        formCaptor.getValue.value.get mustBe AssociateUcr(Ducr, "DUCR")
+        theFormRendered.value.get mustBe AssociateUcr(Ducr, "DUCR")
       }
     }
 
@@ -100,44 +87,32 @@ class AssociateUcrControllerSpec extends ControllerSpec {
 
       "display page method is invoked and Mucr Options page is in cache" in {
         val request = getRequest()
-        withCacheMap(Some(CacheMap(movementCacheId()(request), Map.empty)))
 
-        assertThrows[IncompleteApplication] {
-          await(controller.displayPage()(request))
-        }
+        intercept[RuntimeException] {
+          await(controller(AssociateUcrAnswers(mucrOptions = None)).displayPage()(request))
+        } mustBe ReturnToStartException
       }
 
       "Mucr Options page is not in cache during saving with incorrect form" in {
-        withCaching(MucrOptions.formId, None)
-
-        assertThrows[IncompleteApplication] {
-          await(controller.submit()(postRequest(Json.obj())))
-        }
+        intercept[RuntimeException] {
+          await(controller(AssociateUcrAnswers(mucrOptions = None)).submit()(postRequest(Json.obj())))
+        } mustBe ReturnToStartException
       }
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "form is incorrect and cache contains data from previous page" in {
-
-        withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
-
-        val result = controller.submit()(postRequest(Json.obj()))
+        val result = controller(AssociateUcrAnswers(Some(mucrOptions))).submit()(postRequest(Json.obj()))
 
         status(result) must be(BAD_REQUEST)
       }
     }
 
     "return 303 (SEE_OTHER)" when {
-
       "form is correct" in {
+        val validDUCR = AssociateUcr.mapping.unbind(AssociateUcr(Ducr, validDucr))
 
-        withCaching(MucrOptions.formId, Some(MucrOptions("MUCR")))
-
-        val validDUCR = AssociateUcr.mapping.unbind(AssociateUcr(Ducr, ValidDucr))
-
-        val result = controller.submit()(postRequest(validDUCR))
-        await(result)
+        val result = controller(AssociateUcrAnswers(Some(mucrOptions))).submit()(postRequest(validDUCR))
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(routes.AssociateUcrSummaryController.displayPage().url)
       }

@@ -18,56 +18,76 @@ package handlers
 
 import java.net.URLEncoder
 
-import base.MovementBaseSpec
 import config.AppConfig
 import controllers.exception.IncompleteApplication
 import models.ReturnToStartException
+import org.mockito.ArgumentMatchers._
+import org.mockito.BDDMockito._
+import org.mockito.Mockito._
 import play.api.http.{HeaderNames, Status}
+import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.mvc.RequestHeader
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
+import unit.controllers.ControllerLayerSpec
 
-import scala.concurrent.Future
+import scala.concurrent.Future.successful
 
-class ErrorHandlerSpec extends MovementBaseSpec {
+class ErrorHandlerSpec extends ControllerLayerSpec {
 
-  val appConfig = app.injector.instanceOf[AppConfig]
-  val errorPage = app.injector.instanceOf[views.html.error_template]
+  private implicit val lang: Lang = Lang.defaultLang
+  private val appConfig = mock[AppConfig]
+  private val errorPage = mock[views.html.error_template]
+  private val errorPageHTML = HtmlFormat.empty
+  private val messagesApi = mock[MessagesApi]
+  private val messages = new FakeMessages()
+  private val req = FakeRequest("GET", "/foo")
+  private val errorHandler = new ErrorHandler(appConfig, messagesApi, errorPage)
 
-  val errorHandler = new ErrorHandler(appConfig, messagesApi, errorPage)
-  val req = FakeRequest("GET", "/foo")
+  override def beforeEach(): Unit = {
+    given(errorPage.apply(any(), any(), any())(any(), any())).willReturn(errorPageHTML)
+    given(messagesApi.preferred(any[RequestHeader]())).willReturn(messages)
+  }
+
+  override def afterEach(): Unit =
+    reset(errorPage, messagesApi, appConfig)
 
   "ErrorHandlerSpec" should {
 
     "standardErrorTemplate" in {
+      errorHandler.standardErrorTemplate("Page Title", "Heading", "Message")(FakeRequest()) mustBe errorPageHTML
 
-      val result = errorHandler
-        .standardErrorTemplate("Page Title", "Heading", "Message")(FakeRequest())
-        .body
-
-      result must include("Page Title")
-      result must include("Heading")
-      result must include("Message")
+      verify(errorPage).apply(refEq("Page Title"), refEq("Heading"), refEq("Message"))(any(), any())
     }
 
     "return Bad Request page" in {
+      val result = successful(errorHandler.getBadRequestPage()(FakeRequest()))
 
-      val result = contentAsString(Future.successful(errorHandler.getBadRequestPage()(FakeRequest())))
+      status(result) mustBe BAD_REQUEST
+      contentAsString(result) mustBe errorPageHTML.toString()
 
-      result must include(messages("global.error.title"))
-      result must include(messages("global.error.heading"))
-      result must include(messages("global.error.message"))
+      verify(errorPage).apply(
+        refEq(messages("global.error.title")),
+        refEq(messages("global.error.heading")),
+        refEq(messages("global.error.message"))
+      )(any(), any())
     }
 
     "return Internal Server Error page" in {
+      val result = successful(errorHandler.getInternalServerErrorPage()(FakeRequest()))
 
-      val result = contentAsString(Future.successful(errorHandler.getInternalServerErrorPage()(FakeRequest())))
-
-      result must include(messages("global.error.title"))
-      result must include(messages("global.error.heading"))
-      result must include(messages("global.error.message"))
+      status(result) mustBe INTERNAL_SERVER_ERROR
+      contentAsString(result) mustBe errorPageHTML.toString()
+      verify(errorPage).apply(
+        refEq(messages("global.error.title")),
+        refEq(messages("global.error.heading")),
+        refEq(messages("global.error.message"))
+      )(any(), any())
     }
   }
+
   "resolve error" should {
 
     def urlEncode(value: String): String = URLEncoder.encode(value, "UTF-8")
@@ -85,11 +105,13 @@ class ErrorHandlerSpec extends MovementBaseSpec {
     }
 
     "handle no active session authorisation exception" in {
+      given(appConfig.loginUrl).willReturn("login-url")
+      given(appConfig.loginContinueUrl).willReturn("login-continue-url")
+
       val res = errorHandler.resolveError(req, new NoActiveSession("A user is not logged in") {})
+
       res.header.status must be(Status.SEE_OTHER)
-      res.header.headers.get(HeaderNames.LOCATION) must be(
-        Some(s"http://localhost:9949/auth-login-stub/gg-sign-in?continue=${urlEncode("http://localhost:6796/customs-movements-frontend/start")}")
-      )
+      res.header.headers.get(HeaderNames.LOCATION) must be(Some("login-url?continue=login-continue-url"))
     }
 
     "handle insufficient enrolments authorisation exception" in {
@@ -99,6 +121,14 @@ class ErrorHandlerSpec extends MovementBaseSpec {
       res.header.headers.get(HeaderNames.LOCATION) must be(Some(controllers.routes.UnauthorisedController.onPageLoad().url))
     }
 
+  }
+
+  class FakeMessages extends Messages {
+    def lang: Lang = mock[Lang]
+    def apply(key: String, args: Any*): String = s"messages($key, ${args.mkString(",")})"
+    def apply(keys: Seq[String], args: Any*): String = keys.map(apply(_, args)).mkString(",")
+    def translate(key: String, args: Seq[Any]): Option[String] = None
+    def isDefinedAt(key: String): Boolean = true
   }
 
 }

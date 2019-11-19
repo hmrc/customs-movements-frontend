@@ -16,48 +16,22 @@
 
 package base
 
-import connectors.CustomsDeclareExportsMovementsConnector
-import models.notifications.NotificationFrontendModel
+import models.notifications.Notification
 import models.submissions.Submission
 import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.test.Helpers.NO_CONTENT
 import play.twirl.api.HtmlFormat
-import testdata.ConsolidationTestData.exampleShutMucrRequest
-import uk.gov.hmrc.http.HttpResponse
-
-import scala.concurrent.Future
 
 object MockFactory extends MockitoSugar {
-
-  def buildCustomsDeclareExportsMovementsConnectorMock: CustomsDeclareExportsMovementsConnector = {
-    val customsDeclareExportsMovementsConnector = mock[CustomsDeclareExportsMovementsConnector]
-
-    when(customsDeclareExportsMovementsConnector.sendArrivalDeclaration(any())(any()))
-      .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
-    when(customsDeclareExportsMovementsConnector.sendDepartureDeclaration(any())(any()))
-      .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
-    when(customsDeclareExportsMovementsConnector.sendConsolidationRequest(any())(any()))
-      .thenReturn(Future.successful(exampleShutMucrRequest))
-
-    when(customsDeclareExportsMovementsConnector.fetchNotifications(any(), any())(any(), any()))
-      .thenReturn(Future.successful(Seq.empty))
-    when(customsDeclareExportsMovementsConnector.fetchAllSubmissions(any())(any()))
-      .thenReturn(Future.successful(Seq.empty))
-    when(customsDeclareExportsMovementsConnector.fetchSingleSubmission(any(), any())(any()))
-      .thenReturn(Future.successful(None))
-
-    customsDeclareExportsMovementsConnector
-  }
 
   def buildNotificationPageSingleElementFactoryMock = {
     val notificationPageSingleElementFactoryMock = mock[NotificationPageSingleElementFactory]
 
     when(notificationPageSingleElementFactoryMock.build(any[Submission])(any()))
       .thenReturn(NotificationsPageSingleElement("", "", HtmlFormat.empty))
-    when(notificationPageSingleElementFactoryMock.build(any[NotificationFrontendModel])(any()))
+    when(notificationPageSingleElementFactoryMock.build(any[Notification])(any()))
       .thenReturn(NotificationsPageSingleElement("", "", HtmlFormat.empty))
 
     notificationPageSingleElementFactoryMock

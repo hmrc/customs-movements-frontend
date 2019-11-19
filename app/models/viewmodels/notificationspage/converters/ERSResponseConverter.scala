@@ -19,17 +19,17 @@ package models.viewmodels.notificationspage.converters
 import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
-import models.notifications.{Entry, NotificationFrontendModel}
+import models.notifications.{Entry, Notification}
 import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import views.html.components.code_explanation
+import views.html.components.{code_explanation, paragraph}
 
 @Singleton
 class ERSResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter) extends NotificationPageSingleElementConverter {
 
-  override def convert(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement = {
+  override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement = {
 
     val roeCodeExplanation =
       findDucrEntry(notification.entries).flatMap(_.roe).flatMap(buildRoeCodeExplanation).getOrElse(HtmlFormat.empty)
@@ -64,9 +64,7 @@ class ERSResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTi
   private def buildIcsCodeExplanation(icsCode: String)(implicit messages: Messages): Option[Html] = {
     val icsCodeExplanationText = decoder.ics(icsCode).map(code => messages(code.messageKey))
 
-    icsCodeExplanationText.map(explanation => Html(paragraph(explanation)))
+    icsCodeExplanationText.map(explanation => paragraph(explanation))
   }
-
-  private val paragraph: String => String = (text: String) => s"<p>$text</p>"
 
 }

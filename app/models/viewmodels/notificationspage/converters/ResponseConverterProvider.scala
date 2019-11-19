@@ -17,7 +17,7 @@
 package models.viewmodels.notificationspage.converters
 
 import javax.inject.{Inject, Singleton}
-import models.notifications.NotificationFrontendModel
+import models.notifications.Notification
 import models.notifications.ResponseType._
 import models.viewmodels.decoder.ActionCode._
 import models.viewmodels.notificationspage.MovementTotalsResponseType.{EMR, ERS}
@@ -35,26 +35,26 @@ class ResponseConverterProvider @Inject()(
   unknownResponseConverter: UnknownResponseConverter
 ) {
 
-  def provideResponseConverter(notification: NotificationFrontendModel): NotificationPageSingleElementConverter =
+  def provideResponseConverter(notification: Notification): NotificationPageSingleElementConverter =
     getResponseConverter(notification) match {
       case Success(converter) => converter
       case Failure(_)         => unknownResponseConverter
     }
 
-  private def getResponseConverter(notification: NotificationFrontendModel): Try[NotificationPageSingleElementConverter] =
+  private def getResponseConverter(notification: Notification): Try[NotificationPageSingleElementConverter] =
     Try(notification.responseType match {
       case MovementTotalsResponse => getMovementTotalsResponseConverter(notification)
       case ControlResponse        => getControlResponseConverter(notification)
       case MovementResponse       => movementResponseConverter
     })
 
-  private def getMovementTotalsResponseConverter(notification: NotificationFrontendModel): NotificationPageSingleElementConverter =
+  private def getMovementTotalsResponseConverter(notification: Notification): NotificationPageSingleElementConverter =
     notification.messageCode match {
       case ERS.code => ersResponseConverter
       case EMR.code => emrResponseConverter
     }
 
-  private def getControlResponseConverter(notification: NotificationFrontendModel): NotificationPageSingleElementConverter =
+  private def getControlResponseConverter(notification: Notification): NotificationPageSingleElementConverter =
     notification.actionCode match {
       case Some(AcknowledgedAndProcessed.code)          => controlResponseAcknowledgedConverter
       case Some(PartiallyAcknowledgedAndProcessed.code) => controlResponseBlockedConverter

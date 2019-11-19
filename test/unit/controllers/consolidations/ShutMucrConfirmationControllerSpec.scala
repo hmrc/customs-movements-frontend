@@ -21,22 +21,20 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.controllers.ControllerLayerSpec
 import views.html.shut_mucr_confirmation
 
 import scala.concurrent.ExecutionContext.global
 
-class ShutMucrConfirmationControllerSpec extends ControllerSpec {
+class ShutMucrConfirmationControllerSpec extends ControllerLayerSpec {
 
   private val mockShutMucrConfirmationPage = mock[shut_mucr_confirmation]
 
   private val controller =
-    new ShutMucrConfirmationController(mockAuthAction, stubMessagesControllerComponents(), mockShutMucrConfirmationPage)(global)
+    new ShutMucrConfirmationController(SuccessfulAuth(), stubMessagesControllerComponents(), mockShutMucrConfirmationPage)(global)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-
-    authorizedUser()
     when(mockShutMucrConfirmationPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
   }
 

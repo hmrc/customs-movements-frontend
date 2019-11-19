@@ -16,17 +16,16 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, JourneyAction}
-import controllers.storage.CacheIdGenerator.movementCacheId
-import forms.Choice.{Arrival, Departure}
+import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.{ArrivalDetails, DepartureDetails, MovementDetails}
 import javax.inject.{Inject, Singleton}
+import models.cache.{ArrivalAnswers, Cache, DepartureAnswers, JourneyType}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import play.twirl.api.Html
-import services.CustomsCacheService
+import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.{arrival_details, departure_details}
 
@@ -35,8 +34,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class MovementDetailsController @Inject()(
   authenticate: AuthAction,
-  journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
+  getJourney: JourneyRefiner,
+  cache: CacheRepository,
   mcc: MessagesControllerComponents,
   details: MovementDetails,
   arrivalDetailsPage: arrival_details,
@@ -44,58 +43,50 @@ class MovementDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    request.choice match {
-      case Arrival   => arrivalPage().map(Ok(_))
-      case Departure => departurePage().map(Ok(_))
+  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)) { implicit request =>
+    request.answers match {
+      case arrivalAnswers: ArrivalAnswers     => Ok(arrivalPage(arrivalAnswers.arrivalDetails))
+      case departureAnswers: DepartureAnswers => Ok(departurePage(departureAnswers.departureDetails))
     }
   }
 
-  private def arrivalPage()(implicit request: JourneyRequest[AnyContent]): Future[Html] = {
-    val form = details.arrivalForm()
-    customsCacheService
-      .fetchAndGetEntry[ArrivalDetails](movementCacheId, MovementDetails.formId)
-      .map(data => arrivalDetailsPage(data.fold(form)(form.fill)))
+  private def arrivalPage(arrivalDetails: Option[ArrivalDetails])(implicit request: JourneyRequest[AnyContent]): Html =
+    arrivalDetailsPage(arrivalDetails.fold(details.arrivalForm())(details.arrivalForm().fill(_)))
 
+  private def departurePage(departureDetails: Option[DepartureDetails])(implicit request: JourneyRequest[AnyContent]): Html =
+    departureDetailsPage(departureDetails.fold(details.departureForm())(details.departureForm().fill(_)))
+
+  def saveMovementDetails(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)).async {
+    implicit request =>
+      (request.answers match {
+        case arrivalAnswers: ArrivalAnswers     => handleSavingArrival(arrivalAnswers)
+        case departureAnswers: DepartureAnswers => handleSavingDeparture(departureAnswers)
+      }).flatMap {
+        case Left(resultView) => Future.successful(BadRequest(resultView))
+        case Right(call)      => Future.successful(Redirect(call))
+      }
   }
 
-  private def departurePage()(implicit request: JourneyRequest[AnyContent]): Future[Html] = {
-    val form = details.departureForm()
-    customsCacheService
-      .fetchAndGetEntry[DepartureDetails](movementCacheId, MovementDetails.formId)
-      .map(data => departureDetailsPage(data.fold(form)(form.fill)))
-  }
-
-  def saveMovementDetails(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    (request.choice match {
-      case Arrival   => handleSavingArrival()
-      case Departure => handleSavingDeparture()
-    }).flatMap {
-      case Left(resultView) => Future.successful(BadRequest(resultView))
-      case Right(call)      => Future.successful(Redirect(call))
-    }
-  }
-
-  private def handleSavingArrival()(implicit request: JourneyRequest[AnyContent]): Future[Either[Html, Call]] =
+  private def handleSavingArrival(arrivalAnswers: ArrivalAnswers)(implicit request: JourneyRequest[AnyContent]): Future[Either[Html, Call]] =
     details
       .arrivalForm()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ArrivalDetails]) => Future.successful(Left(arrivalDetailsPage(formWithErrors))),
         validForm =>
-          customsCacheService.cache[ArrivalDetails](movementCacheId, MovementDetails.formId, validForm).map { _ =>
+          cache.upsert(Cache(request.eori, arrivalAnswers.copy(arrivalDetails = Some(validForm)))).map { _ =>
             Right(controllers.routes.LocationController.displayPage())
         }
       )
 
-  private def handleSavingDeparture()(implicit request: JourneyRequest[AnyContent]): Future[Either[Html, Call]] =
+  private def handleSavingDeparture(departureAnswers: DepartureAnswers)(implicit request: JourneyRequest[AnyContent]): Future[Either[Html, Call]] =
     details
       .departureForm()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[DepartureDetails]) => Future.successful(Left(departureDetailsPage(formWithErrors))),
         validForm =>
-          customsCacheService.cache[DepartureDetails](movementCacheId, MovementDetails.formId, validForm).map { _ =>
+          cache.upsert(Cache(request.eori, departureAnswers.copy(departureDetails = Some(validForm)))).map { _ =>
             Right(controllers.routes.LocationController.displayPage())
         }
       )

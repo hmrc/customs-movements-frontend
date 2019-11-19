@@ -16,14 +16,13 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyAction}
-import controllers.storage.CacheIdGenerator.movementCacheId
+import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.DisassociateUcr
-import forms.DisassociateUcr._
 import javax.inject.{Inject, Singleton}
+import models.cache.{Cache, DisassociateUcrAnswers, JourneyType}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.CustomsCacheService
+import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.disassociate_ucr
 
@@ -32,27 +31,28 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DisassociateUcrController @Inject()(
   authenticate: AuthAction,
-  journeyType: JourneyAction,
+  getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
-  cacheService: CustomsCacheService,
-  disassociateUcrPage: disassociate_ucr
+  cache: CacheRepository,
+  page: disassociate_ucr
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    cacheService
-      .fetchAndGetEntry[DisassociateUcr](movementCacheId(), formId)
-      .map(data => Ok(disassociateUcrPage(data.fold(form)(form.fill))))
+  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DISSOCIATE_UCR)) { implicit request =>
+    request.answersAs[DisassociateUcrAnswers].ucr match {
+      case Some(ucr) => Ok(page(DisassociateUcr.form.fill(ucr)))
+      case _         => Ok(page(DisassociateUcr.form))
+    }
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form
+  def submit(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DISSOCIATE_UCR)).async { implicit request =>
+    DisassociateUcr.form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(disassociateUcrPage(formWithErrors))),
-        formData =>
-          cacheService.cache(movementCacheId(), formId, formData).map { _ =>
-            Redirect(routes.DisassociateUcrSummaryController.displayPage())
+        formWithErrors => Future.successful(BadRequest(page(formWithErrors))),
+        answers =>
+          cache.upsert(Cache(request.eori, request.answersAs[DisassociateUcrAnswers].copy(ucr = Some(answers)))).map { _ =>
+            Redirect(controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage())
         }
       )
   }

@@ -16,16 +16,15 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, JourneyAction}
-import controllers.storage.CacheIdGenerator.movementCacheId
-import forms.Choice.{Arrival, Departure}
+import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.ConsignmentReferences
 import forms.ConsignmentReferences._
 import javax.inject.{Inject, Singleton}
+import models.cache._
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
+import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.consignment_references
 
@@ -34,35 +33,36 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ConsignmentReferencesController @Inject()(
   authenticate: AuthAction,
-  journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
+  getJourney: JourneyRefiner,
+  cache: CacheRepository,
   mcc: MessagesControllerComponents,
   consignmentReferencesPage: consignment_references
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[ConsignmentReferences](movementCacheId, formId)
-      .map(data => Ok(consignmentReferencesPage(data.fold(form)(form.fill(_)))))
+  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)) { implicit request =>
+    val references = request.answersAs[MovementAnswers].consignmentReferences
+    Ok(consignmentReferencesPage(references.fold(form())(form().fill(_))))
   }
 
-  def saveConsignmentReferences(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
-        validForm =>
-          customsCacheService
-            .cache[ConsignmentReferences](movementCacheId(), formId, validForm)
-            .map { _ =>
-              request.choice match {
-                case Arrival =>
+  def saveConsignmentReferences(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)).async {
+    implicit request =>
+      form()
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
+          validForm => {
+            request.answers match {
+              case arrivalAnswers: ArrivalAnswers =>
+                cache.upsert(Cache(request.eori, arrivalAnswers.copy(consignmentReferences = Some(validForm)))).map { _ =>
                   Redirect(controllers.routes.ArrivalReferenceController.displayPage())
-                case Departure =>
+                }
+              case departureAnswers: DepartureAnswers =>
+                cache.upsert(Cache(request.eori, departureAnswers.copy(consignmentReferences = Some(validForm)))).map { _ =>
                   Redirect(controllers.routes.MovementDetailsController.displayPage())
-              }
+                }
+            }
           }
-      )
+        )
   }
 }

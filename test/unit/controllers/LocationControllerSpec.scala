@@ -18,6 +18,7 @@ package unit.controllers
 
 import controllers.{routes, LocationController}
 import forms.Location
+import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -26,28 +27,25 @@ import play.api.data.Form
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.repository.MockCache
 import views.html.location
 
 import scala.concurrent.ExecutionContext.global
 
-class LocationControllerSpec extends ControllerSpec with OptionValues {
+class LocationControllerSpec extends ControllerLayerSpec with MockCache with OptionValues {
 
   private val mockLocationPage = mock[location]
 
-  private val controller =
-    new LocationController(mockAuthAction, mockJourneyAction, mockCustomsCacheService, stubMessagesControllerComponents(), mockLocationPage)(global)
+  private def controller(answers: MovementAnswers = ArrivalAnswers()) =
+    new LocationController(SuccessfulAuth(), ValidJourney(answers), cache, stubMessagesControllerComponents(), mockLocationPage)(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-
-    authorizedUser()
     when(mockLocationPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     reset(mockLocationPage)
-
     super.afterEach()
   }
 
@@ -58,27 +56,19 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
   }
 
   "Location Controller" should {
-
     "return 200 (OK)" when {
-
       "display page method is invoked and cache is empty" in {
-
-        givenAUserOnTheArrivalJourney()
-        withCaching(Location.formId, None)
-
-        val result = controller.displayPage()(getRequest())
+        val result = controller().displayPage()(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value mustBe empty
       }
 
       "display page method is invoked and cache contains data" in {
-
-        givenAUserOnTheArrivalJourney()
         val cachedData = Location("PLAYlocationCode")
-        withCaching(Location.formId, Some(cachedData))
 
-        val result = controller.displayPage()(getRequest())
+        val answers = ArrivalAnswers(location = Some(cachedData))
+        val result = controller(answers).displayPage()(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value.value mustBe cachedData
@@ -86,15 +76,10 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "form is incorrect" in {
-
-        givenAUserOnTheArrivalJourney()
-        withCaching(Location.formId)
-
         val incorrectForm: JsValue = Json.toJson(Location("PLincorrectYlocationCode"))
 
-        val result = controller.saveLocation()(postRequest(incorrectForm))
+        val result = controller().saveLocation()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -103,13 +88,9 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
     "return 303 (SEE_OTHER) and redirect to summary page" when {
 
       "form is correct and user is during arrival journey" in {
-
-        givenAUserOnTheArrivalJourney()
-        withCaching(Location.formId)
-
         val correctForm: JsValue = Json.toJson(Location("PLAYlocationCode"))
 
-        val result = controller.saveLocation()(postRequest(correctForm))
+        val result = controller(ArrivalAnswers()).saveLocation()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.SummaryController.displayPage().url
@@ -119,13 +100,9 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
     "return 303 (SEE_OTHER) and redirect to transport page" when {
 
       "form is correct and user is during departure journey" in {
-
-        givenAUserOnTheDepartureJourney()
-        withCaching(Location.formId)
-
         val correctForm: JsValue = Json.toJson(Location("PLAYlocationCode"))
 
-        val result = controller.saveLocation()(postRequest(correctForm))
+        val result = controller(DepartureAnswers()).saveLocation()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.TransportController.displayPage().url

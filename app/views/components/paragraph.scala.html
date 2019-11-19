@@ -14,5 +14,5 @@
  * limitations under the License.
  *@
 
-@(text: String, id: Option[String] = None)
-<p @if(id.isDefined) {id=@id.get}>@text</p>
+@(text: String, id: String = "")
+<p@if(id.nonEmpty){ id=@id }>@text</p>

@@ -18,6 +18,7 @@ package unit.controllers
 
 import controllers.{routes, ConsignmentReferencesController}
 import forms.ConsignmentReferences
+import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -26,33 +27,31 @@ import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.repository.MockCache
 import views.html.consignment_references
 
 import scala.concurrent.ExecutionContext.global
 
-class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValues {
+class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockCache with OptionValues {
 
   private val mockConsignmentReferencePage = mock[consignment_references]
 
-  private val controller = new ConsignmentReferencesController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockCustomsCacheService,
-    stubMessagesControllerComponents(),
-    mockConsignmentReferencePage
-  )(global)
+  private def controller(answers: MovementAnswers = ArrivalAnswers()) =
+    new ConsignmentReferencesController(
+      SuccessfulAuth(),
+      ValidJourney(answers),
+      cache,
+      stubMessagesControllerComponents(),
+      mockConsignmentReferencePage
+    )(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-
-    authorizedUser()
     when(mockConsignmentReferencePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     reset(mockConsignmentReferencePage)
-
     super.afterEach()
   }
 
@@ -63,55 +62,50 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
   }
 
   "Consignment Reference Controller" should {
-
     "return 200 (OK)" when {
-
       "display page method is invoked and cache is empty" in {
-
-        givenAUserOnTheArrivalJourney()
-        withCaching(ConsignmentReferences.formId, None)
-
-        val result = controller.displayPage()(getRequest())
+        val result = controller(ArrivalAnswers()).displayPage()(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value mustBe empty
       }
 
-      "display page method is invoked and cache contains data" in {
+      "display page method is invoked and cache contains data" when {
+        "on arrival journey" in {
+          val cachedData = ConsignmentReferences("D", "123456")
 
-        givenAUserOnTheArrivalJourney()
-        val cachedData = ConsignmentReferences("D", "123456")
-        withCaching(ConsignmentReferences.formId, Some(cachedData))
+          val answers = ArrivalAnswers(Some(cachedData))
+          val result = controller(answers).displayPage()(getRequest())
 
-        val result = controller.displayPage()(getRequest())
+          status(result) mustBe OK
+          theResponseForm.value.value mustBe cachedData
+        }
 
-        status(result) mustBe OK
-        theResponseForm.value.value mustBe cachedData
+        "on departure journey" in {
+          val cachedData = ConsignmentReferences("D", "123456")
+
+          val answers = DepartureAnswers(Some(cachedData))
+          val result = controller(answers).displayPage()(getRequest())
+
+          status(result) mustBe OK
+          theResponseForm.value.value mustBe cachedData
+        }
       }
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "form is incorrect" in {
-
-        givenAUserOnTheArrivalJourney()
-
         val incorrectForm: JsValue =
           JsObject(Map("eori" -> JsString("GB717572504502811"), "reference" -> JsString("reference"), "referenceValue" -> JsString("")))
 
-        val result = controller.saveConsignmentReferences()(postRequest(incorrectForm))
+        val result = controller().saveConsignmentReferences()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
     }
 
     "return 303 (SEE_OTHER) and redirect to goods date page" when {
-
       "form is correct during arrival journey" in {
-
-        givenAUserOnTheArrivalJourney()
-        withCaching(ConsignmentReferences.formId)
-
         val correctForm: JsValue =
           JsObject(
             Map(
@@ -122,7 +116,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
             )
           )
 
-        val result = controller.saveConsignmentReferences()(postRequest(correctForm))
+        val result = controller(ArrivalAnswers()).saveConsignmentReferences()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.ArrivalReferenceController.displayPage().url
@@ -130,12 +124,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
     }
 
     "return 303 (SEE_OTHER) and redirect to movement details page" when {
-
       "form is correct during departure journey" in {
-
-        givenAUserOnTheDepartureJourney()
-        withCaching(ConsignmentReferences.formId)
-
         val correctForm: JsValue =
           JsObject(
             Map(
@@ -146,7 +135,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with OptionValu
             )
           )
 
-        val result = controller.saveConsignmentReferences()(postRequest(correctForm))
+        val result = controller(DepartureAnswers()).saveConsignmentReferences()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.MovementDetailsController.displayPage().url

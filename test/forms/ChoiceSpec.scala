@@ -70,7 +70,7 @@ class ChoiceSpec extends WordSpec with MustMatchers with OptionValues {
         Choice.apply("incorrect")
       }
 
-      exception.getMessage mustBe "Incorrect choice"
+      exception.getMessage mustBe "Incorrect choice [incorrect]"
     }
   }
 
@@ -88,12 +88,12 @@ class ChoiceSpec extends WordSpec with MustMatchers with OptionValues {
 
       "the choice is JsString, but has incorrect value" in {
 
-        ChoiceValueFormat.reads(JsString("incorrect")) mustBe JsError("Incorrect choice")
+        ChoiceValueFormat.reads(JsString("incorrect")) mustBe JsError("Incorrect choice [incorrect]")
       }
 
       "the choice is different than JsString" in {
 
-        ChoiceValueFormat.reads(JsNumber(10)) mustBe JsError("Incorrect choice")
+        ChoiceValueFormat.reads(JsNumber(10)) mustBe JsError("Incorrect choice, expected a String")
       }
     }
 

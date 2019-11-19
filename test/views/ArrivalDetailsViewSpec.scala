@@ -16,72 +16,48 @@
 
 package views
 
-import forms.{ArrivalDetails, MovementDetails}
-import helpers.views.{ArrivalDetailsMessages, CommonMessages}
-import play.api.data.Form
-import play.twirl.api.Html
+import models.cache.ArrivalAnswers
 import testdata.MovementsTestData
-import views.spec.ViewSpec
 import views.html.arrival_details
 
-class ArrivalDetailsViewSpec extends ViewSpec with ArrivalDetailsMessages with CommonMessages {
+class ArrivalDetailsViewSpec extends ViewSpec {
 
-  val form: Form[ArrivalDetails] = MovementsTestData.movementDetails.arrivalForm()
-  val arrivalDetailsPage = injector.instanceOf[arrival_details]
+  private implicit val request = journeyRequest(ArrivalAnswers())
 
-  private def createView(form: Form[ArrivalDetails] = form): Html = arrivalDetailsPage(form)
+  private val movementDetails = MovementsTestData.movementDetails
 
-  "Arrival Details View" should {
+  private val page = new arrival_details(main_template)
 
-    "have a proper labels for messages" in {
-
-      assertMessage(arrivalTitle, "Arrival date and time")
-      assertMessage(arrivalHeader, "Enter date and time of arrival")
-      assertMessage(arrivalDateQuestion, "Date of Arrival")
-      assertMessage(arrivalDateHint, "For example, 01 08 2007")
-      assertMessage(arrivalTimeQuestion, "Time of Arrival")
-      assertMessage(arrivalTimeHint, "Enter the time in 24 hour format. For example, 13 30")
-    }
-  }
-
-  "Arrival Details View on empty page" should {
-
-    "display same page title as header" in {
-
-      val view = createView()
-      view.title() must include(view.getElementsByTag("h1").text())
+  "Arrival View" should {
+    "render title" in {
+      page(movementDetails.arrivalForm()).getTitle must containMessage("arrivalDetails.header")
     }
 
-    "display page header" in {
-
-      getElementById(createView(), "title").text() must be(messages(arrivalHeader))
+    "render heading input with hint for date" in {
+      page(movementDetails.arrivalForm()).getElementById("dateOfArrival-label") must containMessage("arrivalDetails.date.question")
+      page(movementDetails.arrivalForm()).getElementById("dateOfArrival-hint") must containMessage("arrivalDetails.date.hint")
     }
 
-    "display input with hint for date" in {
-
-      getElementById(createView(), "dateOfArrival-label").text() must be(messages(arrivalDateQuestion))
-      getElementById(createView(), "dateOfArrival-hint").text() must be(messages(arrivalDateHint))
+    "render heading input with hint for time" in {
+      page(movementDetails.arrivalForm()).getElementById("timeOfArrival-label") must containMessage("arrivalDetails.time.question")
+      page(movementDetails.arrivalForm()).getElementById("timeOfArrival-hint") must containMessage("arrivalDetails.time.hint")
     }
 
-    "display input with hint for time" in {
+    "render back button" in {
+      val backButton = page(movementDetails.arrivalForm()).getBackButton
 
-      getElementById(createView(), "timeOfArrival-label").text() must be(messages(arrivalTimeQuestion))
-      getElementById(createView(), "timeOfArrival-hint").text() must be(messages(arrivalTimeHint))
+      backButton mustBe defined
+      backButton.get must haveHref(controllers.routes.ArrivalReferenceController.displayPage())
     }
 
-    "display \"Back\" button that links to Consignment References" in {
+    "render error summary" when {
+      "no errors" in {
+        page(movementDetails.arrivalForm()).getErrorSummary mustBe empty
+      }
 
-      val backButton = getElementById(createView(), "link-back")
-
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-movements/arrival-reference")
-    }
-
-    "display \"Save and continue\" button on page" in {
-
-      val saveButton = getElementById(createView(), "submit")
-
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      "some errors" in {
+        page(movementDetails.arrivalForm().withError("error", "error.required")).getErrorSummary mustBe defined
+      }
     }
   }
 }

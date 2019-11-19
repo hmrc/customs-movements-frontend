@@ -24,7 +24,7 @@
 
 @(form: Form[Choice])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("movement.choice.title")) {
+@main_template(title = Title("movement.choice.title", None)) {
 
     @components.back_link(routes.StartController.displayStartPage())
 

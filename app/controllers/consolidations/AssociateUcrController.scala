@@ -16,56 +16,49 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyAction}
-import controllers.exception.IncompleteApplication
-import controllers.storage.CacheIdGenerator.movementCacheId
+import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.AssociateUcr.form
-import forms.{AssociateUcr, MucrOptions}
 import javax.inject.{Inject, Singleton}
+import models.ReturnToStartException
+import models.cache.{AssociateUcrAnswers, Cache, JourneyType}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
+import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.associate_ucr
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AssociateUcrController @Inject()(
   authenticate: AuthAction,
-  journeyType: JourneyAction,
+  getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
-  cacheService: CustomsCacheService,
+  cache: CacheRepository,
   associateUcrPage: associate_ucr
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    cacheService.fetch(movementCacheId()).map {
-      case Some(cache) =>
-        cache.getEntry[MucrOptions](MucrOptions.formId) match {
-          case Some(mucr) =>
-            val savedDucr = cache.getEntry[AssociateUcr](AssociateUcr.formId)
-            Ok(associateUcrPage(savedDucr.fold(form)(form.fill), mucr))
-          case None => throw IncompleteApplication
-        }
-      case None => throw IncompleteApplication
-    }
+  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ASSOCIATE_UCR)) { implicit request =>
+    val associateUcrAnswers = request.answersAs[AssociateUcrAnswers]
+    val mucrOptions = associateUcrAnswers.mucrOptions.getOrElse(throw ReturnToStartException)
+    val associateUcr = associateUcrAnswers.associateUcr
+
+    Ok(associateUcrPage(associateUcr.fold(form)(form.fill), mucrOptions))
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ASSOCIATE_UCR)).async { implicit request =>
+    val mucrOptions = request.answersAs[AssociateUcrAnswers].mucrOptions.getOrElse(throw ReturnToStartException)
+
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => {
-          cacheService.fetchAndGetEntry[MucrOptions](movementCacheId(), MucrOptions.formId).map {
-            case Some(options) => BadRequest(associateUcrPage(formWithErrors, options))
-            case None          => throw IncompleteApplication
-          }
-        },
-        formData =>
-          cacheService.cache(movementCacheId(), AssociateUcr.formId, formData).map { _ =>
+        formWithErrors => Future.successful(BadRequest(associateUcrPage(formWithErrors, mucrOptions))),
+        formData => {
+          val updatedCache = request.answersAs[AssociateUcrAnswers].copy(associateUcr = Some(formData))
+          cache.upsert(Cache(request.eori, updatedCache)).map { _ =>
             Redirect(routes.AssociateUcrSummaryController.displayPage())
+          }
         }
       )
   }

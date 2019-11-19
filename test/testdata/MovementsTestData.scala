@@ -21,13 +21,11 @@ import java.time.{Instant, LocalDate, LocalTime, ZoneId}
 import forms.Choice.Arrival
 import forms._
 import forms.common.{Date, Time}
-import models.requests.MovementRequest
 import models.submissions.{ActionType, Submission}
 import models.{SignedInUser, UcrBlock}
 import play.api.libs.json._
 import testdata.CommonTestData._
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
-import uk.gov.hmrc.http.cache.client.CacheMap
 
 object MovementsTestData {
 
@@ -47,13 +45,8 @@ object MovementsTestData {
 
   val movementDetails = new MovementDetails(zoneId)
 
-  val movementBuilder = new MovementBuilder(movementDetails, zoneId)
-
   def newUser(eori: String): SignedInUser =
     SignedInUser(eori, Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori))))
-
-  def validMovementRequest(movementType: Choice): MovementRequest =
-    movementBuilder.createMovementRequest(CacheMap(movementType.toString, cacheMapData(movementType)), "eori1", movementType)
 
   def cacheMapData(movementType: Choice, refType: String = "DUCR"): Map[String, JsValue] =
     Map(

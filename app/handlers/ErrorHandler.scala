@@ -32,7 +32,7 @@ import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 import views.html.error_template
 
 @Singleton
-class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi, errorTemplate: error_template)
+class ErrorHandler @Inject()(appConfig: AppConfig, override val messagesApi: MessagesApi, errorTemplate: error_template)
     extends FrontendErrorHandler with I18nSupport with AuthRedirects {
   override def config: Configuration = appConfig.runModeConfiguration
 

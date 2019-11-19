@@ -16,12 +16,9 @@
 
 package views
 
-import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.{Injector, Stubs}
-import views.spec.UnitViewSpec
 import views.html.unauthorised
+import views.spec.UnitViewSpec
 
 class UnauthorisedViewSpec extends UnitViewSpec {
 

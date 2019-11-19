@@ -16,15 +16,15 @@
 
 @import java.time.format.DateTimeFormatter
 
-@import models.notifications.NotificationFrontendModel
+@import models.notifications.Notification
 @import models.submissions.Submission
 @import views.Title
 
 @this(main_template: views.html.main_template, formatter: DateTimeFormatter)
 
-@(submissions: Seq[(Submission, Seq[NotificationFrontendModel])])(implicit request: Request[_], messages: Messages)
+@(submissions: Seq[(Submission, Seq[Notification])])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("submissions.title"),
+@main_template(title = Title("submissions.title", None),
     fullWidth = true) {
 
     @components.back_link(routes.ChoiceController.displayChoiceForm())

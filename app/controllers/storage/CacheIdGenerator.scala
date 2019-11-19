@@ -16,16 +16,16 @@
 
 package controllers.storage
 
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.requests.{AuthenticatedRequest, LegacyJourneyRequest}
 
 object CacheIdGenerator {
 
-  def eoriCacheId()(implicit request: JourneyRequest[_]): String =
+  def eoriCacheId()(implicit request: LegacyJourneyRequest[_]): String =
     request.authenticatedRequest.user.eori
 
   def cacheId()(implicit request: AuthenticatedRequest[_]): String =
     request.user.eori
 
-  def movementCacheId()(implicit request: JourneyRequest[_]): String =
+  def movementCacheId()(implicit request: LegacyJourneyRequest[_]): String =
     s"${request.choice.value}-${request.authenticatedRequest.user.eori}"
 }

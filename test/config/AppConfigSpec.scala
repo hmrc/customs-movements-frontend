@@ -16,18 +16,17 @@
 
 package config
 
-import base.MovementBaseSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import features.{Feature, FeatureStatus}
+import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.Mode.Test
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
-class AppConfigSpec extends MovementBaseSpec {
+class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
 
-  val config = app.injector.instanceOf[AppConfig]
-  val environment = Environment.simple()
-
+  private val environment = Environment.simple()
   private val validAppConfig: Config =
     ConfigFactory.parseString(
       """

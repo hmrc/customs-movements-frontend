@@ -76,7 +76,7 @@ POST        /shut-mucr-summary                     controllers.consolidations.Sh
 GET         /shut-mucr-confirmation                controllers.consolidations.ShutMucrConfirmationController.displayPage()
 
 # Submissions page
-GET         /movements                             controllers.MovementsController.displayPage()
+GET         /movements                             controllers.SubmissionsController.displayPage()
 
 # Notifications page
 GET         /notifications/:conversationId         controllers.NotificationsController.listOfNotifications(conversationId)

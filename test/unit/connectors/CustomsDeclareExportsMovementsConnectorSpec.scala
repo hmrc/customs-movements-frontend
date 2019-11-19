@@ -16,274 +16,226 @@
 
 package unit.connectors
 
+import java.time.Instant
+
 import config.AppConfig
 import connectors.CustomsDeclareExportsMovementsConnector
-import forms.Choice
-import forms.Choice.{Arrival, Departure}
-import models.external.requests.ConsolidationRequest
-import models.notifications.NotificationFrontendModel
-import models.requests.MovementRequest
-import models.submissions.Submission
-import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{verify, when}
-import org.scalatest.concurrent.ScalaFutures
-import play.api.libs.json.Json
-import play.api.test.Helpers.OK
+import connectors.exchanges.DisassociateDUCRRequest
+import forms.ConsignmentReferences
+import models.notifications.ResponseType.ControlResponse
+import models.requests.{MovementDetailsRequest, MovementRequest, MovementType}
+import org.mockito.BDDMockito.given
+import play.api.http.Status
+import play.api.test.Helpers._
 import testdata.CommonTestData._
-import testdata.ConsolidationTestData._
-import testdata.MovementsTestData
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import unit.base.UnitSpec
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalTo, get, getRequestedFor, post, postRequestedFor, urlEqualTo, verify}
+import models.UcrBlock
+import models.requests.MovementType.Arrival
+import models.submissions.{ActionType, Submission}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
 
-class CustomsDeclareExportsMovementsConnectorSpec extends UnitSpec with ScalaFutures {
+  private val config = mock[AppConfig]
+  given(config.customsDeclareExportsMovements).willReturn(downstreamURL)
 
-  import CustomsDeclareExportsMovementsConnectorSpec._
+  private val connector = new CustomsDeclareExportsMovementsConnector(config, httpClient)
 
-  private trait Test {
-    implicit val headerCarrierMock: HeaderCarrier = mock[HeaderCarrier]
-    val appConfigMock: AppConfig = mock[AppConfig]
-    val httpClientMock: HttpClient = mock[HttpClient]
-    val defaultHttpResponse = HttpResponse(OK, Some(Json.toJson("Success")))
+  "Submit Movement" should {
 
-    when(httpClientMock.POST[MovementRequest, HttpResponse](any(), any(), any())(any(), any(), any(), any()))
-      .thenReturn(Future.successful(defaultHttpResponse))
-    when(httpClientMock.GET(any())(any(), any(), any())).thenReturn(Future.failed(new NotImplementedError()))
+    "POST to the Back End" in {
+      stubFor(
+        post("/movements")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.ACCEPTED)
+          )
+      )
 
-    val connector = new CustomsDeclareExportsMovementsConnector(appConfigMock, httpClientMock)
-  }
+      val request =
+        MovementRequest("eori", MovementType.Arrival, ConsignmentReferences("ref", "value"), MovementDetailsRequest("datetime"))
+      connector.submit(request).futureValue
 
-  "CustomsDeclareExportsMovementsConnector on sendArrivalDeclaration" should {
-
-    "call HttpClient, passing URL for Arrival submission endpoint" in new Test {
-
-      connector.sendArrivalDeclaration(movementSubmissionRequest(Arrival)).futureValue
-
-      val expectedSubmissionUrl =
-        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementsSubmissionUri}"
-      verify(httpClientMock).POST(meq(expectedSubmissionUrl), any(), any())(any(), any(), any(), any())
-    }
-
-    "call HttpClient, passing body provided" in new Test {
-
-      private val request: MovementRequest = movementSubmissionRequest(Arrival)
-
-      connector.sendArrivalDeclaration(request).futureValue
-
-      verify(httpClientMock).POST(any(), meq(request), any())(any(), any(), any(), any())
-    }
-
-    "call HttpClient, passing correct headers" in new Test {
-
-      connector.sendArrivalDeclaration(movementSubmissionRequest(Arrival)).futureValue
-
-      verify(httpClientMock).POST(any(), any(), any())(any(), any(), any(), any())
-    }
-
-    "return response from HttpClient" in new Test {
-
-      val result = connector.sendArrivalDeclaration(movementSubmissionRequest(Arrival)).futureValue
-
-      result must equal(defaultHttpResponse)
-    }
-  }
-
-  "CustomsDeclareExportsMovementsConnector on sendDepartureDeclaration" should {
-
-    "call HttpClient, passing URL for Departure submission endpoint" in new Test {
-
-      connector.sendDepartureDeclaration(movementSubmissionRequest(Departure)).futureValue
-
-      val expectedSubmissionUrl =
-        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementsSubmissionUri}"
-      verify(httpClientMock).POST(meq(expectedSubmissionUrl), any(), any())(any(), any(), any(), any())
-    }
-
-    "call HttpClient, passing body provided" in new Test {
-
-      private val request: MovementRequest = movementSubmissionRequest(Departure)
-      connector
-        .sendDepartureDeclaration(request)
-        .futureValue
-
-      verify(httpClientMock).POST(any(), meq(request), any())(any(), any(), any(), any())
-    }
-
-    "call HttpClient, passing correct headers" in new Test {
-
-      connector
-        .sendDepartureDeclaration(movementSubmissionRequest(Departure))
-        .futureValue
-
-      verify(httpClientMock).POST(any(), any(), any())(any(), any(), any(), any())
-    }
-
-    "return response from HttpClient" in new Test {
-
-      val result = connector
-        .sendDepartureDeclaration(movementSubmissionRequest(Departure))
-        .futureValue
-
-      result must equal(defaultHttpResponse)
-    }
-  }
-
-  "CustomsDeclareExportsMovementsConnector on sendConsolidation" should {
-
-    "call HttpClient for Association" in new Test {
-
-      when(httpClientMock.POST[ConsolidationRequest, ConsolidationRequest](any(), any(), any())(any(), any(), any(), any()))
-        .thenReturn(Future.successful(exampleAssociateDucrRequest))
-
-      val result = connector.sendConsolidationRequest(exampleAssociateDucrRequest).futureValue
-
-      val expectedUrl =
-        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementConsolidationUri}"
-
-      result must equal(exampleAssociateDucrRequest)
-
-      verify(httpClientMock).POST(meq(expectedUrl), meq(exampleAssociateDucrRequest), meq(validConsolidationRequestHeaders))(
-        any(),
-        any(),
-        any(),
-        any()
+      verify(
+        postRequestedFor(urlEqualTo("/movements"))
+          .withRequestBody(
+            equalTo(
+              """{"eori":"eori","choice":"EAL","consignmentReference":{"reference":"ref","referenceValue":"value"},"movementDetails":{"dateTime":"datetime"}}"""
+            )
+          )
       )
     }
+  }
 
-    "call HttpClient for Disassociation" in new Test {
+  "Submit Consolidation" should {
 
-      when(httpClientMock.POST[ConsolidationRequest, ConsolidationRequest](any(), any(), any())(any(), any(), any(), any()))
-        .thenReturn(Future.successful(exampleDisassociateDucrRequest))
+    "POST to the Back End" in {
+      stubFor(
+        post("/consolidation")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.ACCEPTED)
+          )
+      )
 
-      val result = connector.sendConsolidationRequest(exampleDisassociateDucrRequest).futureValue
+      val request = DisassociateDUCRRequest("eori", "ucr")
+      connector.submit(request).futureValue
 
-      val expectedUrl =
-        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementConsolidationUri}"
-
-      result must equal(exampleDisassociateDucrRequest)
-
-      verify(httpClientMock).POST(meq(expectedUrl), meq(exampleDisassociateDucrRequest), meq(validConsolidationRequestHeaders))(
-        any(),
-        any(),
-        any(),
-        any()
+      verify(
+        postRequestedFor(urlEqualTo("/consolidation"))
+          .withRequestBody(equalTo("""{"ucr":"ucr","consolidationType":"DISASSOCIATE_DUCR","eori":"eori"}"""))
       )
     }
-
-    "call HttpClient for Shut Mucr " in new Test {
-
-      when(httpClientMock.POST[ConsolidationRequest, ConsolidationRequest](any(), any(), any())(any(), any(), any(), any()))
-        .thenReturn(Future.successful(exampleShutMucrRequest))
-
-      val result = connector.sendConsolidationRequest(exampleShutMucrRequest).futureValue
-
-      val expectedUrl =
-        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.movementConsolidationUri}"
-
-      result must equal(exampleShutMucrRequest)
-
-      verify(httpClientMock).POST(meq(expectedUrl), meq(exampleShutMucrRequest), meq(validConsolidationRequestHeaders))(any(), any(), any(), any())
-    }
   }
 
-  "CustomsDeclareExportsMovementsConnector on fetchNotifications" should {
+  "fetch all Submissions" should {
 
-    "call HttpClient, passing EORI and URL and query params for fetch Notifications endpoint" in new Test {
+    "send GET request to the backend" in {
 
-      when(httpClientMock.GET[Seq[NotificationFrontendModel]](any(), any())(any(), any(), any()))
-        .thenReturn(Future.successful(Seq.empty))
+      val expectedSubmission = exampleSubmission()
+      val submissionsJson =
+        s"""[
+           |  {
+           |    "uuid":"${expectedSubmission.uuid}",
+           |    "eori":"$validEori",
+           |    "conversationId":"$conversationId",
+           |    "ucrBlocks":[
+           |      {
+           |        "ucr":"$correctUcr",
+           |        "ucrType":"D"
+           |      }
+           |    ],
+           |    "actionType":"Arrival",
+           |    "requestTimestamp":"${expectedSubmission.requestTimestamp}"
+           |  }
+           |]""".stripMargin
 
-      connector.fetchNotifications(conversationId, validEori).futureValue
-
-      val expectedUrl =
-        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.fetchNotifications}/$conversationId"
-      val expectedQueryParameters = Seq("eori" -> validEori)
-      verify(httpClientMock).GET(meq(expectedUrl), meq(expectedQueryParameters))(any(), any(), any())
-    }
-
-    "return response from HttpClient" in new Test {
-
-      val expectedResponseContent = Seq(
-        exampleNotificationFrontendModel(conversationId = conversationId),
-        exampleNotificationFrontendModel(conversationId = conversationId),
-        exampleNotificationFrontendModel(conversationId = conversationId)
+      stubFor(
+        get("/submissions?eori=eori")
+          .willReturn(aResponse().withStatus(OK).withBody(submissionsJson))
       )
-      when(httpClientMock.GET[Seq[NotificationFrontendModel]](any(), any())(any(), any(), any()))
-        .thenReturn(Future.successful(expectedResponseContent))
 
-      val result: Seq[NotificationFrontendModel] = connector.fetchNotifications(conversationId, validEori).futureValue
+      connector.fetchAllSubmissions("eori").futureValue mustBe Seq(expectedSubmission)
 
-      result.length must equal(expectedResponseContent.length)
-      result must equal(expectedResponseContent)
+      verify(getRequestedFor(urlEqualTo("/submissions?eori=eori")))
     }
   }
 
-  "CustomsDeclareExportsMovementsConnector on fetchAllSubmissions" should {
+  "fetch single Submission" should {
 
-    "call HttpClient, passing EORI and URL and query params for fetch all Submissions endpoint" in new Test {
+    "send GET request to the backend" in {
 
-      when(httpClientMock.GET[Seq[Submission]](any(), any())(any(), any(), any()))
-        .thenReturn(Future.successful(Seq.empty))
-
-      connector.fetchAllSubmissions(validEori).futureValue
-
-      val expectedUrl = s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.fetchAllSubmissions}"
-      val expectedQueryParameters = Seq("eori" -> validEori)
-      verify(httpClientMock).GET(meq(expectedUrl), meq(expectedQueryParameters))(any(), any(), any())
-    }
-
-    "return response from HttpClient" in new Test {
-
-      val expectedResponseContent = Seq(
-        exampleSubmission(conversationId = conversationId),
-        exampleSubmission(conversationId = conversationId_2),
-        exampleSubmission(conversationId = conversationId_3)
+      val submission = Submission(
+        eori = "eori",
+        conversationId = conversationId,
+        ucrBlocks = Seq(UcrBlock(ucr = "ucr", ucrType = "type")),
+        actionType = ActionType.Arrival,
+        requestTimestamp = Instant.EPOCH
       )
-      when(httpClientMock.GET[Seq[Submission]](any(), any())(any(), any(), any()))
-        .thenReturn(Future.successful(expectedResponseContent))
+      val submissionJson =
+        s"""
+           |  {
+           |    "uuid":"${submission.uuid}",
+           |    "eori":"eori",
+           |    "conversationId":"$conversationId",
+           |    "ucrBlocks":[
+           |      {
+           |        "ucr":"ucr",
+           |        "ucrType":"type"
+           |      }
+           |    ],
+           |    "actionType":"Arrival",
+           |    "requestTimestamp":"${submission.requestTimestamp}"
+           |  }
+           |""".stripMargin
 
-      val result: Seq[Submission] = connector.fetchAllSubmissions(validEori).futureValue
+      stubFor(
+        get(s"/submissions/$conversationId?eori=eori")
+          .willReturn(aResponse().withStatus(OK).withBody(submissionJson))
+      )
 
-      result.length must equal(expectedResponseContent.length)
-      result must equal(expectedResponseContent)
+      val response = connector.fetchSingleSubmission(conversationId, "eori").futureValue
+
+      verify(getRequestedFor(urlEqualTo(s"/submissions/$conversationId?eori=eori")))
+
+      response mustBe Some(submission)
     }
   }
 
-  "CustomsDeclareExportsMovementsConnector on fetchSingleSubmission" should {
+  "fetch user Notifications" should {
 
-    "call HttpClient, passing EORI and URL for fetch single Submission endpoint" in new Test {
+    "send GET request to the backend" in {
 
-      when(httpClientMock.GET[Option[Submission]](any(), any())(any(), any(), any()))
-        .thenReturn(Future.successful(None))
+      val expectedNotification = exampleNotificationFrontendModel()
+      val notificationsJson =
+        s"""[
+           |   {
+           |     "timestampReceived":"${expectedNotification.timestampReceived}",
+           |     "conversationId":"$conversationId",
+           |     "responseType":"${ControlResponse.value}",
+           |     "entries":[
+           |       {
+           |         "ucrBlock":{
+           |           "ucr":"$correctUcr",
+           |           "ucrType":"D"
+           |         },
+           |         "goodsItem":[]
+           |       }
+           |     ],
+           |     "errorCodes":[],
+           |     "messageCode":""
+           |   }
+           |]""".stripMargin
 
-      connector.fetchSingleSubmission(conversationId, validEori).futureValue
+      stubFor(
+        get(s"/notifications?eori=eori")
+          .willReturn(aResponse().withStatus(OK).withBody(notificationsJson))
+      )
 
-      val expectedUrl =
-        s"${appConfigMock.customsDeclareExportsMovements}${appConfigMock.fetchSingleSubmission}/$conversationId"
-      val expectedQueryParameters = Seq("eori" -> validEori)
-      verify(httpClientMock).GET(meq(expectedUrl), meq(expectedQueryParameters))(any(), any(), any())
-    }
+      val response = connector.fetchAllNotificationsForUser("eori").futureValue
 
-    "return response from HttpClient" in new Test {
+      verify(getRequestedFor(urlEqualTo(s"/notifications?eori=eori")))
 
-      val expectedResponseContent = Some(exampleSubmission(conversationId = conversationId))
-      when(httpClientMock.GET[Option[Submission]](any(), any())(any(), any(), any()))
-        .thenReturn(Future.successful(expectedResponseContent))
-
-      val result: Option[Submission] = connector.fetchSingleSubmission(conversationId, validEori).futureValue
-
-      result must equal(expectedResponseContent)
+      response mustBe Seq(expectedNotification)
     }
   }
 
-}
+  "fetch Notifications" should {
 
-object CustomsDeclareExportsMovementsConnectorSpec {
-  def movementSubmissionRequest(movementType: Choice): MovementRequest =
-    MovementsTestData.validMovementRequest(movementType)
+    "send GET request to the backend" in {
+
+      val expectedNotification = exampleNotificationFrontendModel()
+      val notificationsJson =
+        s"""[
+          |   {
+          |     "timestampReceived":"${expectedNotification.timestampReceived}",
+          |     "conversationId":"$conversationId",
+          |     "responseType":"${ControlResponse.value}",
+          |     "entries":[
+          |       {
+          |         "ucrBlock":{
+          |           "ucr":"$correctUcr",
+          |           "ucrType":"D"
+          |         },
+          |         "goodsItem":[]
+          |       }
+          |     ],
+          |     "errorCodes":[],
+          |     "messageCode":""
+          |   }
+          |]""".stripMargin
+
+      stubFor(
+        get(s"/notifications/$conversationId?eori=eori")
+          .willReturn(aResponse().withStatus(OK).withBody(notificationsJson))
+      )
+
+      val response = connector.fetchNotifications(conversationId, "eori").futureValue
+
+      verify(getRequestedFor(urlEqualTo(s"/notifications/$conversationId?eori=eori")))
+
+      response mustBe Seq(expectedNotification)
+    }
+  }
 }

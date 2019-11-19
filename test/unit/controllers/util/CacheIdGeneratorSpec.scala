@@ -19,7 +19,7 @@ package unit.controllers.util
 import controllers.storage.CacheIdGenerator
 import forms.Choice.Arrival
 import models.SignedInUser
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.requests.{AuthenticatedRequest, LegacyJourneyRequest}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
 import unit.base.UnitSpec
@@ -33,7 +33,7 @@ class CacheIdGeneratorSpec extends UnitSpec {
   val user = SignedInUser(userEori, Enrolments(Set.empty[Enrolment]))
 
   val authenticatedRequest = AuthenticatedRequest(fakeRequest, user)
-  val journeyRequest = JourneyRequest(authenticatedRequest, userChoice)
+  val journeyRequest = LegacyJourneyRequest(authenticatedRequest, userChoice)
 
   "Cache Id Generator" should {
 

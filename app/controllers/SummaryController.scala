@@ -16,26 +16,25 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, JourneyAction}
-import controllers.storage.CacheIdGenerator.movementCacheId
+import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.storage.FlashKeys
-import forms.Choice._
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.cache.{ArrivalAnswers, DepartureAnswers, JourneyType, MovementAnswers}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{CustomsCacheService, SubmissionService}
+import repositories.CacheRepository
+import services.SubmissionService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.summary.{arrival_summary_page, departure_summary_page}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class SummaryController @Inject()(
   authenticate: AuthAction,
-  journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService,
+  getJourney: JourneyRefiner,
+  cache: CacheRepository,
   submissionService: SubmissionService,
   mcc: MessagesControllerComponents,
   arrivalSummaryPage: arrival_summary_page,
@@ -43,42 +42,26 @@ class SummaryController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  private val logger = Logger(this.getClass)
-
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val cacheMapOpt = customsCacheService.fetch(movementCacheId)
-
-    val typeOfJourney = request.choice
-
-    cacheMapOpt.map {
-      case Some(data) if typeOfJourney == Arrival =>
-        Ok(arrivalSummaryPage(data))
-      case Some(data) if typeOfJourney == Departure =>
-        Ok(departureSummaryPage(data))
-      case _ =>
-        logger.warn(s"No movement data found in cache.")
-        errorHandler.getInternalServerErrorPage
+  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)) { implicit request =>
+    request.answers match {
+      case arrivalAnswers: ArrivalAnswers     => Ok(arrivalSummaryPage(arrivalAnswers))
+      case departureAnswers: DepartureAnswers => Ok(departureSummaryPage(departureAnswers))
     }
   }
 
-  def submitMovementRequest(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    submissionService
-      .submitMovementRequest(movementCacheId, request.authenticatedRequest.user.eori, request.choice)
-      .flatMap {
-        case (Some(consignmentReferences), ACCEPTED) =>
-          customsCacheService.remove(movementCacheId).map { _ =>
-            Redirect(routes.MovementConfirmationController.display())
+  def submitMovementRequest(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)).async {
+    implicit request =>
+      submissionService
+        .submit(request.eori, request.answersAs[MovementAnswers])
+        .flatMap { consignmentReferences =>
+          cache.removeByEori(request.eori).map { _ =>
+            Redirect(controllers.routes.MovementConfirmationController.display())
               .flashing(
-                FlashKeys.MOVEMENT_TYPE -> request.choice.value,
+                FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString,
                 FlashKeys.UCR_KIND -> consignmentReferences.reference,
                 FlashKeys.UCR -> consignmentReferences.referenceValue
               )
           }
-        case _ =>
-          Future.successful {
-            logger.warn(s"No movement data found in cache.")
-            errorHandler.getInternalServerErrorPage
-          }
-      }
+        }
   }
 }

@@ -16,16 +16,15 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyAction}
-import controllers.exception.IncompleteApplication
-import controllers.storage.CacheIdGenerator.movementCacheId
+import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.storage.FlashKeys
-import forms.DisassociateUcr
-import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
+import models.ReturnToStartException
+import models.cache.{DisassociateUcrAnswers, JourneyType}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.{CustomsCacheService, SubmissionService}
+import repositories.CacheRepository
+import services.SubmissionService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.disassociate_ucr_summary
 
@@ -34,35 +33,29 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class DisassociateUcrSummaryController @Inject()(
   authenticate: AuthAction,
-  journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
+  getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
-  cacheService: CustomsCacheService,
+  cache: CacheRepository,
   submissionService: SubmissionService,
-  disassociateUcrSummaryPage: disassociate_ucr_summary
+  page: disassociate_ucr_summary
 )(implicit executionContext: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    for {
-      associateDucr <- cacheService
-        .fetchAndGetEntry[DisassociateUcr](movementCacheId(), DisassociateUcr.formId)
-        .map(_.getOrElse(throw IncompleteApplication))
-    } yield Ok(disassociateUcrSummaryPage(associateDucr))
+  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DISSOCIATE_UCR)) { implicit request =>
+    request.answersAs[DisassociateUcrAnswers].ucr match {
+      case Some(ucr) => Ok(page(ucr))
+      case _         => throw ReturnToStartException
+    }
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    for {
-      disassociateUcr <- cacheService
-        .fetchAndGetEntry[DisassociateUcr](movementCacheId(), DisassociateUcr.formId)
-        .map(_.getOrElse(throw IncompleteApplication))
+  def submit(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DISSOCIATE_UCR)).async { implicit request =>
+    val answers = request.answersAs[DisassociateUcrAnswers]
+    val ucr = answers.ucr.map(_.ucr).getOrElse(throw ReturnToStartException)
+    val kind = answers.ucr.map(_.kind).getOrElse(throw ReturnToStartException)
 
-      _ <- submissionService
-        .submitUcrDisassociation(disassociateUcr, request.authenticatedRequest.user.eori)
-      _ <- cacheService.remove(movementCacheId())
-
-    } yield
+    submissionService.submit(request.eori, answers).map { _ =>
       Redirect(routes.DisassociateUcrConfirmationController.displayPage())
-        .flashing(FlashKeys.UCR -> disassociateUcr.ucr, FlashKeys.CONSOLIDATION_KIND -> disassociateUcr.kind.formValue.toUpperCase)
+        .flashing(FlashKeys.UCR -> ucr, FlashKeys.CONSOLIDATION_KIND -> kind.formValue.toUpperCase())
+    }
   }
 }

@@ -18,48 +18,52 @@ package views
 
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit.MINUTES
-import java.time.{Instant, LocalDate, ZoneId, ZonedDateTime}
+import java.time.{Instant, LocalDate, ZoneId, ZoneOffset}
 
+import base.BaseSpec
+import controllers.routes
 import models.UcrBlock
-import models.notifications.{Entry, ResponseType}
+import models.notifications.{Entry, Notification, ResponseType}
 import models.submissions.{ActionType, Submission}
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
 import play.twirl.api.Html
 import testdata.CommonTestData.conversationId
 import testdata.ConsolidationTestData
 import testdata.ConsolidationTestData._
+import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import utils.Stubs
 import views.html.movements
 import views.spec.ViewValidator
 
-class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewValidator {
+class MovementsViewSpec extends BaseSpec with Stubs with ViewValidator with MessagesStub {
+
+  private implicit val implicitFakeRequest = FakeRequest()
 
   private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.of("Europe/London"))
-  val messages = stubMessages()
-  val page: Html = new movements(mainTemplate, dateTimeFormatter)(Seq.empty)(FakeRequest(), messages)
+  private val dateTime: Instant = LocalDate.of(2019, 10, 31).atStartOfDay().toInstant(ZoneOffset.UTC)
+
+  private def createView(submissions: Seq[(Submission, Seq[Notification])] = Seq.empty): Html =
+    new movements(mainTemplate, dateTimeFormatter)(submissions)(FakeRequest(), messages)
 
   "Movements page" should {
 
     "contain title" in {
 
-      page.getElementById("title") must containText(messages("submissions.title"))
+      createView().getElementById("title") must containMessage("submissions.title")
     }
 
     "contain correct table headers" in {
 
-      page.getElementById("ucr") must containText(messages("submissions.ucr"))
-      page.getElementById("ucrType") must containText(messages("submissions.submissionType"))
-      page.getElementById("submissionAction") must containText(messages("submissions.submissionAction"))
-      page.getElementById("dateOfRequest") must containText(messages("submissions.dateOfRequest"))
+      val page = createView()
+
+      page.getElementById("ucr") must containMessage("submissions.ucr")
+      page.getElementById("ucrType") must containMessage("submissions.submissionType")
+      page.getElementById("submissionAction") must containMessage("submissions.submissionAction")
+      page.getElementById("dateOfRequest") must containMessage("submissions.dateOfRequest")
     }
 
     "contain correct submission data" in {
-      val dateTime: Instant = ZonedDateTime
-        .of(LocalDate.parse("2019-10-31", DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay(), ZoneId.systemDefault())
-        .toInstant
       val submission = Submission(
         requestTimestamp = dateTime,
         eori = "",
@@ -72,15 +76,15 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
           timestampReceived = dateTime.plus(10, MINUTES),
           conversationId = conversationId,
           responseType = ResponseType.ControlResponse,
-          entries = Seq(Entry(ucrBlock = Some(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M"))))
+          entries = Seq(Entry(ucrBlock = Some(UcrBlock(ucr = ConsolidationTestData.validMucr, ucrType = "M"))))
         )
       )
 
-      val pageWithData: Html = new movements(mainTemplate, dateTimeFormatter)(Seq(submission -> notifications))(FakeRequest(), messages)
+      val pageWithData: Html = createView(Seq(submission -> notifications))
 
       getElementById(pageWithData, s"ucr-$conversationId").text() must be("4444")
       getElementById(pageWithData, s"ucrType-$conversationId").text() must be("MUCR")
-      getElementById(pageWithData, s"submissionAction-$conversationId").text() must be("submissions.shutmucr")
+      getElementById(pageWithData, s"submissionAction-$conversationId") must containMessage("submissions.shutmucr")
       getElementById(pageWithData, s"dateOfRequest-$conversationId").text() must be("31 Oct 2019 at 00:00")
     }
 
@@ -89,19 +93,30 @@ class MovementsViewSpec extends WordSpec with MustMatchers with Stubs with ViewV
         exampleNotificationFrontendModel(
           conversationId = conversationId,
           responseType = ResponseType.ControlResponse,
-          entries = Seq(Entry(ucrBlock = Some(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M"))))
+          entries = Seq(Entry(ucrBlock = Some(UcrBlock(ucr = ConsolidationTestData.validMucr, ucrType = "M"))))
         )
       )
 
-      val pageWithData: Html =
-        new movements(mainTemplate, dateTimeFormatter)(Seq(exampleAssociateDucrRequestSubmission -> notifications))(FakeRequest(), messages)
+      val pageWithData: Html = createView(Seq(exampleAssociateDucrRequestSubmission -> notifications))
 
       val actualUcrs = getElementById(pageWithData, s"ucr-$conversationId").text()
-      actualUcrs must include(ValidMucr)
-      actualUcrs must include(ValidDucr)
+      actualUcrs must include(validMucr)
+      actualUcrs must include(validDucr)
       val actualUcrTypes = getElementById(pageWithData, s"ucrType-$conversationId").text()
       actualUcrTypes must include("MUCR")
       actualUcrTypes must include("DUCR")
+    }
+
+    "contain link to ViewNotifications page" when {
+      "there are Notifications for the Submission" in {
+
+        val submission = exampleSubmission(requestTimestamp = dateTime)
+        val notifications = Seq(exampleNotificationFrontendModel(timestampReceived = dateTime.plusSeconds(3)))
+
+        val page = createView(Seq((submission, notifications)))
+
+        page.getElementById(s"ucr-$conversationId").child(0) must haveHref(routes.NotificationsController.listOfNotifications(conversationId))
+      }
     }
   }
 }

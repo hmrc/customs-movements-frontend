@@ -19,7 +19,7 @@ package models.viewmodels.notificationspage.converters
 import java.time.format.DateTimeFormatter
 
 import javax.inject.{Inject, Singleton}
-import models.notifications.NotificationFrontendModel
+import models.notifications.Notification
 import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.Logger
@@ -36,21 +36,21 @@ class ControlResponseBlockedConverter @Inject()(decoder: Decoder, dateTimeFormat
   private val TitleMessagesKey = "notifications.elem.title.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed"
   private val ContentHeaderMessagesKey = "notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed"
 
-  override def convert(notification: NotificationFrontendModel)(implicit messages: Messages): NotificationsPageSingleElement =
+  override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
       title = messages(TitleMessagesKey),
       timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
       content = buildContent(notification)
     )
 
-  private def buildContent(notification: NotificationFrontendModel)(implicit messages: Messages): Html = {
+  private def buildContent(notification: Notification)(implicit messages: Messages): Html = {
     val contentHeader = paragraph(messages(ContentHeaderMessagesKey + contentHeaderSuffix(notification)))
     val errorsExplanations = buildErrorsExplanations(notification.errorCodes)
 
     new Html(List(contentHeader, errorsExplanations))
   }
 
-  private def contentHeaderSuffix(notification: NotificationFrontendModel): String =
+  private def contentHeaderSuffix(notification: Notification): String =
     if (notification.errorCodes.length < 2) ".singleError" else ".multiError"
 
   private def buildErrorsExplanations(errorCodes: Seq[String])(implicit messages: Messages): Html = {

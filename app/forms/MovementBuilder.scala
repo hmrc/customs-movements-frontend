@@ -19,48 +19,52 @@ package forms
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-import forms.Choice._
 import javax.inject.Inject
+import models.ReturnToStartException
+import models.cache.{Answers, ArrivalAnswers, DepartureAnswers}
 import models.requests.{MovementDetailsRequest, MovementRequest, MovementType}
-import uk.gov.hmrc.http.cache.client.CacheMap
 
-class MovementBuilder @Inject()(details: MovementDetails, zoneId: ZoneId) {
+class MovementBuilder @Inject()(zoneId: ZoneId) {
 
   private val movementDateTimeFormatter = DateTimeFormatter.ISO_INSTANT
 
-  def createMovementRequest(cacheMap: CacheMap, eori: String, choice: Choice): MovementRequest = {
-    val consignmentReference =
-      cacheMap
-        .getEntry[ConsignmentReferences](ConsignmentReferences.formId)
-        .getOrElse(ConsignmentReferences("", ""))
+  def createMovementRequest(providerId: String, answers: Answers): MovementRequest = answers match {
+    case arrivalAnswers: ArrivalAnswers     => createMovementArrivalRequest(providerId, arrivalAnswers)
+    case departureAnswers: DepartureAnswers => createMovementDepartureRequest(providerId, departureAnswers)
+  }
 
-    val movementDateTime = choice match {
-      case Departure =>
-        cacheMap
-          .getEntry[DepartureDetails](MovementDetails.formId)
-          .map(departure => movementDateTimeFormatter.format(departure.goodsDepartureMoment(zoneId)))
-          .getOrElse("")
-      case Arrival =>
-        cacheMap
-          .getEntry[ArrivalDetails](MovementDetails.formId)
-          .map(arrival => movementDateTimeFormatter.format(arrival.goodsArrivalMoment(zoneId)))
-          .getOrElse("")
-    }
-
+  private def createMovementArrivalRequest(eori: String, answers: ArrivalAnswers) =
     MovementRequest(
       eori = eori,
-      choice = extractChoice(choice),
-      consignmentReference = consignmentReference,
-      movementDetails = MovementDetailsRequest(movementDateTime),
-      location = cacheMap.getEntry[Location](Location.formId),
-      transport = cacheMap.getEntry[Transport](Transport.formId),
-      arrivalReference = cacheMap.getEntry[ArrivalReference](ArrivalReference.formId)
+      choice = MovementType.Arrival,
+      consignmentReference = answers.consignmentReferences.getOrElse(throw ReturnToStartException),
+      movementDetails = movementDetails(answers),
+      location = answers.location,
+      arrivalReference = answers.arrivalReference
     )
-  }
 
-  private def extractChoice(choice: Choice) = choice match {
-    case Arrival   => MovementType.Arrival
-    case Departure => MovementType.Departure
-    case _         => throw new IllegalArgumentException("Allowed is only arrival or departure here")
-  }
+  private def createMovementDepartureRequest(eori: String, answers: DepartureAnswers) =
+    MovementRequest(
+      eori = eori,
+      choice = MovementType.Departure,
+      consignmentReference = answers.consignmentReferences.getOrElse(throw ReturnToStartException),
+      movementDetails = movementDetails(answers),
+      location = answers.location,
+      arrivalReference = answers.arrivalReference,
+      transport = answers.transport
+    )
+
+  private def movementDetails(answers: ArrivalAnswers) =
+    MovementDetailsRequest(
+      answers.arrivalDetails
+        .map(arrival => movementDateTimeFormatter.format(arrival.goodsArrivalMoment(zoneId)))
+        .getOrElse("")
+    )
+
+  private def movementDetails(answers: DepartureAnswers) =
+    MovementDetailsRequest(
+      answers.departureDetails
+        .map(departure => movementDateTimeFormatter.format(departure.goodsDepartureMoment(zoneId)))
+        .getOrElse("")
+    )
 }

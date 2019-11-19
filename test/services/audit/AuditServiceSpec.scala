@@ -16,33 +16,26 @@
 
 package services.audit
 
-import java.time.{LocalDate, LocalTime}
-
-import base.{BaseSpec, MockCustomsCacheService}
-import forms.Choice.Arrival
 import forms._
-import forms.common.{Date, Time}
 import models.requests.{MovementDetailsRequest, MovementRequest, MovementType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import play.api.libs.json.Json
 import services.audit.EventData._
-import testdata.CommonTestData.validEori
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
+import unit.base.UnitSpec
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustomsCacheService {
+class AuditServiceSpec extends UnitSpec with BeforeAndAfterEach {
 
-  implicit val ec: ExecutionContext = ExecutionContext.global
-  implicit val headerCarrier = HeaderCarrier()
+  private implicit val ec: ExecutionContext = ExecutionContext.global
+  private implicit val headerCarrier = HeaderCarrier()
 
-  val mockAuditConnector = mock[AuditConnector]
-  val spyAuditService = Mockito.spy(new AuditService(mockAuditConnector, "appName"))
+  private val mockAuditConnector = mock[AuditConnector]
+  private val spyAuditService = Mockito.spy(new AuditService(mockAuditConnector, "appName"))
 
   override def beforeEach(): Unit =
     when(mockAuditConnector.sendEvent(any())(any[HeaderCarrier], any[ExecutionContext]))
@@ -69,26 +62,10 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustoms
       verify(spyAuditService).audit(AuditTypes.AuditDisassociate, dataToAudit)
     }
 
-    "get movements data in a Json format" in {
-
-      val expectedResult = Map(
-        Location.formId -> Json.toJson(Location("PLAUcorrect")),
-        MovementDetails.formId -> Json.toJson(
-          ArrivalDetails(dateOfArrival = Date(LocalDate.of(2019, 1, 12)), timeOfArrival = Time(LocalTime.of(10, 10)))
-        ),
-        ArrivalReference.formId -> Json.toJson(ArrivalReference(Some("213"))),
-        ConsignmentReferences.formId -> Json.toJson(ConsignmentReferences("reference", "value")),
-        Transport.formId -> Json.toJson(Transport("1", "GB", "SHIP-123"))
-      )
-
-      val cacheMap = CacheMap(id = "CacheID", data = expectedResult)
-      spyAuditService.getMovementsData(Arrival, cacheMap) mustBe Json.toJson(expectedResult)
-    }
-
     "audit a movement" in {
       val dataToAudit = Map(
         EventData.movementReference.toString -> "",
-        EventData.eori.toString -> "eori",
+        EventData.eori.toString -> "GB12345678",
         EventData.messageCode.toString -> "EAL",
         EventData.ucr.toString -> "UCR",
         EventData.ucrType.toString -> "D",
@@ -96,12 +73,12 @@ class AuditServiceSpec extends BaseSpec with BeforeAndAfterEach with MockCustoms
       )
       val data =
         MovementRequest(
-          eori = validEori,
+          eori = "GB12345678",
           choice = MovementType.Arrival,
           consignmentReference = ConsignmentReferences("UCR", "D"),
           movementDetails = MovementDetailsRequest("dateTime")
         )
-      spyAuditService.auditMovements("eori", data, "200", AuditTypes.AuditArrival)
+      spyAuditService.auditMovements(data, "200", AuditTypes.AuditArrival)
       verify(spyAuditService).audit(AuditTypes.AuditArrival, dataToAudit)
     }
   }

@@ -16,16 +16,17 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.Choice.{Arrival, Departure}
-import forms.Location._
 import forms.Location
+import forms.Location._
 import javax.inject.{Inject, Singleton}
+import models.cache.{ArrivalAnswers, Cache, DepartureAnswers, JourneyType, MovementAnswers}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
+import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.location
 
@@ -34,35 +35,35 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class LocationController @Inject()(
   authenticate: AuthAction,
-  journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
+  journeyType: JourneyRefiner,
+  cache: CacheRepository,
   mcc: MessagesControllerComponents,
   locationPage: location
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[Location](movementCacheId, formId)
-      .map(data => Ok(locationPage(data.fold(form)(form.fill(_)))))
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ARRIVE, JourneyType.DEPART)) { implicit request =>
+    val location = request.answersAs[MovementAnswers].location
+    Ok(locationPage(location.fold(form())(form().fill(_))))
   }
 
-  def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form
+  def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ARRIVE, JourneyType.DEPART)).async { implicit request =>
+    form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Location]) => Future.successful(BadRequest(locationPage(formWithErrors))),
-        validForm =>
-          customsCacheService
-            .cache[Location](movementCacheId(), formId, validForm)
-            .map { _ =>
-              request.choice match {
-                case Arrival =>
-                  Redirect(controllers.routes.SummaryController.displayPage())
-                case Departure =>
-                  Redirect(controllers.routes.TransportController.displayPage())
+        validForm => {
+          request.answers match {
+            case arrivalAnswers: ArrivalAnswers =>
+              cache.upsert(Cache(request.eori, arrivalAnswers.copy(location = Some(validForm)))).map { _ =>
+                Redirect(controllers.routes.SummaryController.displayPage())
+              }
+            case departureAnswers: DepartureAnswers =>
+              cache.upsert(Cache(request.eori, departureAnswers.copy(location = Some(validForm)))).map { _ =>
+                Redirect(controllers.routes.TransportController.displayPage())
               }
           }
+        }
       )
   }
 }

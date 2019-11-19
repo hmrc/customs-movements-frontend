@@ -21,7 +21,7 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("startPage.title", "startPage.title.sectionHeader")) {
+@main_template(title = Title("startPage.title", Some("startPage.title.sectionHeader"))) {
 
   <div class="grid-row">
     <div class="column-full">

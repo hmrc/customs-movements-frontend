@@ -17,9 +17,9 @@
 package unit.controllers
 
 import controllers.{routes, TransportController}
-import forms.Choice.Arrival
+import forms.Transport
 import forms.Transport.ModesOfTransport.Sea
-import forms.{Choice, Transport}
+import models.cache.DepartureAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -28,29 +28,25 @@ import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.ControllerSpec
+import unit.repository.MockCache
 import views.html.transport
 
 import scala.concurrent.ExecutionContext.global
 
-class TransportControllerSpec extends ControllerSpec with OptionValues {
+class TransportControllerSpec extends ControllerLayerSpec with MockCache with OptionValues {
 
   private val mockTransportPage = mock[transport]
 
-  private val controller =
-    new TransportController(mockAuthAction, mockJourneyAction, mockCustomsCacheService, stubMessagesControllerComponents(), mockTransportPage)(global)
+  private def controller(answers: DepartureAnswers) =
+    new TransportController(SuccessfulAuth(), ValidJourney(answers), cache, stubMessagesControllerComponents(), mockTransportPage)(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-
-    authorizedUser()
-    withCaching(Choice.choiceId, Some(Arrival))
     when(mockTransportPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     reset(mockTransportPage)
-
     super.afterEach()
   }
 
@@ -65,21 +61,17 @@ class TransportControllerSpec extends ControllerSpec with OptionValues {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-
-        withCaching(Transport.formId, None)
-
-        val result = controller.displayPage()(getRequest())
+        val result = controller(DepartureAnswers()).displayPage()(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value mustBe empty
       }
 
       "display page method is invoked and cache contains data" in {
-
         val cachedData = Transport(Sea, "PL", "")
-        withCaching(Transport.formId, Some(cachedData))
 
-        val result = controller.displayPage()(getRequest())
+        val answers = DepartureAnswers(transport = Some(cachedData))
+        val result = controller(answers).displayPage()(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value.value mustBe cachedData
@@ -89,13 +81,10 @@ class TransportControllerSpec extends ControllerSpec with OptionValues {
     "return 400 (BAD_REQUEST)" when {
 
       "form is incorrect" in {
-
-        withCaching(Transport.formId)
-
         val incorrectForm: JsValue =
           JsObject(Map("modeOfTransport" -> JsString("transport"), "nationality" -> JsString("Country")))
 
-        val result = controller.saveTransport()(postRequest(incorrectForm))
+        val result = controller(DepartureAnswers()).saveTransport()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -104,13 +93,10 @@ class TransportControllerSpec extends ControllerSpec with OptionValues {
     "return 303 (SEE_OTHER) and redirect to summary page" when {
 
       "form is correct" in {
-
-        withCaching(Transport.formId)
-
         val incorrectForm: JsValue =
           JsObject(Map("modeOfTransport" -> JsString(Sea), "nationality" -> JsString("PL"), "transportId" -> JsString("someReference")))
 
-        val result = controller.saveTransport()(postRequest(incorrectForm))
+        val result = controller(DepartureAnswers()).saveTransport()(postRequest(incorrectForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.SummaryController.displayPage().url

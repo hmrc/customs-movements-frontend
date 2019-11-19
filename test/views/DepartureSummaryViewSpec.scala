@@ -16,91 +16,46 @@
 
 package views
 
-import controllers.routes
-import forms.Choice.Departure
+import models.cache.{ArrivalAnswers, DepartureAnswers}
+import models.requests.JourneyRequest
+import org.jsoup.nodes.Document
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.Helpers._
-import testdata.MovementsTestData.cacheMapData
-import uk.gov.hmrc.http.cache.client.CacheMap
 import views.html.summary.departure_summary_page
-import views.spec.UnitViewSpec
 
-class DepartureSummaryViewSpec extends UnitViewSpec {
+class DepartureSummaryViewSpec extends ViewSpec {
 
-  val cachedData = cacheMapData(Departure)
-  val departureSummaryPage = new departure_summary_page(mainTemplate)
-  val departureSummaryView = departureSummaryPage(CacheMap("id", cachedData))(request, messages)
-  val departureSummaryContent = contentAsString(departureSummaryView)
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())
 
-  "Departure Summary messages" should {
+  private val page = new departure_summary_page(main_template)
 
-    "have correct content" in {
+  private val answers = DepartureAnswers()
 
-      val messages = messagesApi.preferred(request)
+  "View" should {
 
-      messages("summary.departure.title") mustBe "Is the information provided for this departure correct?"
-      messages("summary.consignmentDetails") mustBe "Consignment details"
-      messages("summary.referenceType") mustBe "Consignment type"
-      messages("summary.referenceValue") mustBe "Consignment reference"
-      messages("summary.departure.date") mustBe "Date of departure"
-      messages("summary.goodsLocation") mustBe "Goods location code"
-      messages("summary.modeOfTransport") mustBe "Transport type"
-      messages("summary.nationality") mustBe "Transport nationality"
-      messages("transport.modeOfTransport.2") mustBe "Rail transport"
+    "render title" in {
+      page(answers).getTitle must containMessage("summary.departure.title")
+    }
+
+    "render heading" in {
+      page(answers).getElementById("title") must containMessage("summary.departure.title")
+    }
+
+    "render back button" in {
+      val backButton = page(answers).getBackButton
+
+      backButton mustBe defined
+      backButton.get must haveHref(controllers.routes.TransportController.displayPage())
+    }
+
+    "render sub-headers for summary sections" in {
+      val summaryContent: Document = page(answers)
+
+      summaryContent must containMessage("summary.consignmentDetails")
+      summaryContent must containMessage("location.title")
+      summaryContent must containMessage("departureDetails.title")
+      summaryContent must containMessage("transport.title")
     }
   }
 
-  "Departure Summary Page" should {
-
-    "display same page title as header" in {
-
-      val view = departureSummaryPage(CacheMap("id", cachedData))(request, messagesApi.preferred(request))
-      view.title() must include(view.getElementsByTag("h1").text())
-    }
-
-    "have correct heading" in {
-
-      departureSummaryView.getElementById("title").text() mustBe messages("summary.departure.title")
-    }
-
-    "have correct back link" in {
-
-      departureSummaryView.getElementById("link-back") must haveHref(routes.TransportController.displayPage())
-    }
-
-    "have correct main buttons" in {
-
-      departureSummaryContent must include("site.back")
-      departureSummaryContent must include("site.confirmAndSubmit")
-    }
-
-    "have correct consignment references part" in {
-
-      departureSummaryContent must include("summary.consignmentDetails")
-      departureSummaryContent must include("summary.referenceType")
-      departureSummaryContent must include("consignmentReferences.reference.mucr")
-      departureSummaryContent must include("summary.referenceValue")
-    }
-
-    "have correct departure details part for depart out" in {
-
-      departureSummaryContent must include("departureDetails.title")
-      departureSummaryContent must include("summary.departure.date")
-    }
-
-    "have correct location part" in {
-
-      departureSummaryContent must include("location.title")
-      departureSummaryContent must include("summary.goodsLocation")
-    }
-
-    "have correct transport part for depart out" in {
-
-      departureSummaryContent must include("transport.title")
-      departureSummaryContent must include("summary.modeOfTransport")
-      departureSummaryContent must include("summary.transportId")
-      departureSummaryContent must include("summary.nationality")
-      departureSummaryContent must include("transport.modeOfTransport.2")
-    }
-
-  }
 }

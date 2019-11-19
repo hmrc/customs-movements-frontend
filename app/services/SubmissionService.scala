@@ -17,94 +17,86 @@
 package services
 
 import connectors.CustomsDeclareExportsMovementsConnector
-import forms.Choice._
+import connectors.exchanges.{AssociateUCRRequest, DisassociateDUCRRequest, ShutMUCRRequest}
 import forms._
 import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
-import models.external.requests.ConsolidationRequest
-import models.external.requests.ConsolidationRequestFactory._
-import models.requests.MovementRequest
-import play.api.http.Status.{ACCEPTED, INTERNAL_SERVER_ERROR}
+import models.ReturnToStartException
+import models.cache._
+import play.api.http.Status
+import repositories.CacheRepository
 import services.audit.{AuditService, AuditTypes}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Success
+import scala.util.{Failure, Success}
 
 @Singleton
 class SubmissionService @Inject()(
-  cacheService: CustomsCacheService,
+  repository: CacheRepository,
   connector: CustomsDeclareExportsMovementsConnector,
   auditService: AuditService,
   metrics: MovementsMetrics,
   movementBuilder: MovementBuilder
 )(implicit ec: ExecutionContext) {
 
-  def submitMovementRequest(cacheId: String, eori: String, choice: Choice)(implicit hc: HeaderCarrier): Future[(Option[ConsignmentReferences], Int)] =
-    cacheService.fetch(cacheId).flatMap {
-      case Some(cacheMap) => {
-        val data = movementBuilder.createMovementRequest(cacheMap, eori, choice)
-        val timer = metrics.startTimer(choice)
+  def submit(eori: String, answers: DisassociateUcrAnswers)(implicit hc: HeaderCarrier): Future[Unit] = {
+    val ucr = answers.ucr.getOrElse(throw ReturnToStartException).ucr
 
-        auditService.auditAllPagesUserInput(choice, cacheMap)
-
-        val movementAuditType =
-          if (choice == Arrival) AuditTypes.AuditArrival else AuditTypes.AuditDeparture
-
-        sendMovementRequest(choice, data).map { submitResponse =>
-          metrics.incrementCounter(choice)
-          auditService
-            .auditMovements(eori, data, submitResponse.status.toString, movementAuditType)
-          timer.stop()
-          (Some(data.consignmentReference), submitResponse.status)
-        }
-      }
-      case _ =>
-        Future.successful((None, INTERNAL_SERVER_ERROR))
-    }
-
-  private def sendMovementRequest(
-    choice: Choice,
-    movementRequest: MovementRequest
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    choice match {
-      case Arrival   => connector.sendArrivalDeclaration(movementRequest)
-      case Departure => connector.sendDepartureDeclaration(movementRequest)
-    }
-
-  def submitUcrAssociation(mucrOptions: MucrOptions, associateDucr: AssociateUcr, eori: String)(
-    implicit hc: HeaderCarrier
-  ): Future[ConsolidationRequest] = {
-    val timer = metrics.startTimer(AssociateUCR)
     connector
-      .sendConsolidationRequest(buildAssociationRequest(eori, mucrOptions.mucr, associateDucr))
+      .submit(DisassociateDUCRRequest(eori, ucr))
       .andThen {
         case Success(_) =>
-          auditService.auditAssociate(eori, mucrOptions.mucr, associateDucr.ucr, ACCEPTED.toString)
-          timer.stop()
-          metrics.incrementCounter(AssociateUCR)
+          repository.removeByEori(eori).flatMap { _ =>
+            auditService.auditDisassociate(eori, ucr, "Success")
+          }
+        case Failure(_) =>
+          auditService.auditDisassociate(eori, ucr, "Failed")
       }
   }
 
-  def submitUcrDisassociation(disassociateUcr: DisassociateUcr, eori: String)(implicit hc: HeaderCarrier): Future[ConsolidationRequest] = {
-    val timer = metrics.startTimer(DisassociateUCR)
+  def submit(eori: String, answers: AssociateUcrAnswers)(implicit hc: HeaderCarrier): Future[Unit] = {
+    val mucr = answers.mucrOptions.map(_.mucr).getOrElse(throw ReturnToStartException)
+    val ucr = answers.associateUcr.map(_.ucr).getOrElse(throw ReturnToStartException)
+
     connector
-      .sendConsolidationRequest(buildDisassociationRequest(eori, disassociateUcr))
+      .submit(AssociateUCRRequest(eori, mucr, ucr))
       .andThen {
         case Success(_) =>
-          auditService.auditDisassociate(eori, disassociateUcr.ucr, ACCEPTED.toString)
-          timer.stop()
-          metrics.incrementCounter(DisassociateUCR)
+          repository.removeByEori(eori).flatMap { _ =>
+            auditService.auditAssociate(eori, mucr, ucr, "Success")
+          }
+        case Failure(_) =>
+          auditService.auditAssociate(eori, mucr, ucr, "Failed")
       }
   }
 
-  def submitShutMucrRequest(shutMucr: ShutMucr, eori: String)(implicit hc: HeaderCarrier): Future[ConsolidationRequest] = {
-    val timer = metrics.startTimer(ShutMUCR)
-    connector.sendConsolidationRequest(buildShutMucrRequest(eori, shutMucr.mucr)).andThen {
-      case Success(_) =>
-        auditService.auditShutMucr(eori, shutMucr.mucr, ACCEPTED.toString)
-        timer.stop()
-        metrics.incrementCounter(ShutMUCR)
+  def submit(eori: String, answers: ShutMucrAnswers)(implicit hc: HeaderCarrier): Future[Unit] = {
+    val mucr = answers.shutMucr.map(_.mucr).getOrElse(throw ReturnToStartException)
+
+    connector
+      .submit(ShutMUCRRequest(eori, mucr))
+      .andThen {
+        case Success(_) =>
+          repository.removeByEori(eori).flatMap { _ =>
+            auditService.auditShutMucr(eori, mucr, "Success")
+          }
+        case Failure(_) =>
+          auditService.auditShutMucr(eori, mucr, "Failed")
+      }
+  }
+
+  def submit(eori: String, answers: MovementAnswers)(implicit hc: HeaderCarrier): Future[ConsignmentReferences] = {
+    val data = movementBuilder.createMovementRequest(eori, answers)
+
+    auditService.auditAllPagesUserInput(answers)
+
+    val movementAuditType =
+      if (answers.`type` == JourneyType.ARRIVE) AuditTypes.AuditArrival else AuditTypes.AuditDeparture
+
+    connector.submit(data).map { _ =>
+      auditService.auditMovements(data, Status.OK.toString, movementAuditType)
+      data.consignmentReference
     }
   }
 }

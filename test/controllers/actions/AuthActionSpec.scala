@@ -16,24 +16,87 @@
 
 package controllers.actions
 
-import base.MovementBaseSpec
 import controllers.routes
+import models.requests.AuthenticatedRequest
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.mockito.BDDMockito.given
+import org.mockito.Mockito.verify
+import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.{AnyContent, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.InsufficientEnrolments
+import uk.gov.hmrc.auth.core.authorise.Predicate
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval}
+import uk.gov.hmrc.auth.core._
+import utils.Stubs
 
-class AuthActionSpec extends MovementBaseSpec {
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-  val uri = routes.ChoiceController.displayChoiceForm().url
+class AuthActionSpec extends WordSpec with MustMatchers with MockitoSugar with Stubs {
+
+  private val connector = mock[AuthConnector]
+  private val whitelist = mock[EoriWhitelist]
+  private val parsers = stubControllerComponents().parsers
+  private val block = mock[AuthenticatedRequest[AnyContent] => Future[Result]]
+  private val action = new AuthActionImpl(connector, whitelist, parsers)
 
   "Auth Action" should {
+    val controllerResponse = mock[Result]
 
-    "return InsufficientEnrolments when EORI number is missing" in {
-      userWithoutEori()
+    "delegate to controller" when {
 
-      val result = route(app, FakeRequest("GET", uri)).get
+      "auth success for whitelisited eori" in {
+        val enrolment = Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "eori")), "state")
+        given(block.apply(any())).willReturn(Future.successful(controllerResponse))
+        given(connector.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set(enrolment))))
+        given(whitelist.contains(any())).willReturn(true)
 
-      intercept[InsufficientEnrolments](status(result))
+        val result: Result = await(action.invokeBlock(FakeRequest(), block))
+
+        result mustBe controllerResponse
+        theAuthCondition mustBe Enrolment("HMRC-CUS-ORG")
+      }
+    }
+
+    "throw Insufficient Enrolments" when {
+      "role is missing" in {
+        given(connector.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set.empty)))
+
+        intercept[InsufficientEnrolments] {
+          await(action.invokeBlock(FakeRequest(), block))
+        }
+      }
+
+      "eori is missing" in {
+        val enrolment = Enrolment("HMRC-CUS-ORG", Seq.empty, "state")
+        given(connector.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set(enrolment))))
+
+        intercept[InsufficientEnrolments] {
+          await(action.invokeBlock(FakeRequest(), block))
+        }
+      }
+    }
+
+    "redirect to unauthorized" when {
+      val enrolment = Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "eori")), "state")
+
+      "eori missing from whitelist" in {
+        given(connector.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set(enrolment))))
+        given(whitelist.contains(any())).willReturn(false)
+
+        val result: Result = await(action.invokeBlock(FakeRequest(), block))
+
+        result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad())
+      }
+    }
+
+    def theAuthCondition: Predicate = {
+      val captor = ArgumentCaptor.forClass(classOf[Predicate])
+      verify(connector).authorise(captor.capture(), any[Retrieval[Option[Credentials]]])(any(), any())
+      captor.getValue
     }
   }
 }

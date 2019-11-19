@@ -20,7 +20,7 @@ import play.api.data.Forms.of
 import play.api.data.format.Formatter
 import play.api.data.{FieldMapping, FormError}
 
-object Mapping {
+object EnhancedMapping {
 
   def requiredRadio(requiredKey: String = "error.required"): FieldMapping[String] =
     of(radioFormatter(requiredKey))

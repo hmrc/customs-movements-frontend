@@ -16,16 +16,16 @@
 
 @import controllers.routes
 @import forms.ConsignmentReferences.AllowedReferences
+@import models.cache.ArrivalAnswers
 @import forms._
 @import models.viewmodels.HtmlTableRow
-@import uk.gov.hmrc.http.cache.client.CacheMap
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
-@(data: CacheMap)(implicit request: Request[_], messages: Messages)
+@(data: ArrivalAnswers)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("summary.arrival.title")){
+@main_template(title = Title("summary.arrival.title", None)){
     @components.back_link(routes.LocationController.displayPage())
 
     @components.page_title(Some(messages("summary.arrival.title")))
@@ -33,7 +33,7 @@
     @components.summary_list(Some(messages("summary.consignmentDetails"))){
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("summary.referenceType"),
-            value = data.getEntry[ConsignmentReferences](ConsignmentReferences.formId).map(ref =>
+            value = data.consignmentReferences.map(ref =>
                 if(ref.reference.equals(AllowedReferences.Ducr)) {
                     messages("consignmentReferences.reference.ducr")
                 } else {
@@ -43,11 +43,11 @@
         ))
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("summary.referenceValue"),
-            value = data.getEntry[ConsignmentReferences](ConsignmentReferences.formId).map(_.referenceValue)
+            value = data.consignmentReferences.map(_.referenceValue)
         ))
     }
 
-    @data.getEntry[ArrivalReference](ArrivalReference.formId).flatMap(_.reference).filter(_.nonEmpty).map { reference =>
+    @data.arrivalReference.flatMap(_.reference).filter(_.nonEmpty).map { reference =>
         @components.summary_list(Some(messages("arrivalReference"))){
             @components.table_row_no_change_link(HtmlTableRow(
                 label = messages("summary.arrivalReference.reference"),
@@ -59,24 +59,24 @@
     @components.summary_list(Some(messages("arrivalDetails.title"))){
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("summary.arrival.date"),
-            value = data.getEntry[ArrivalDetails](MovementDetails.formId).map(_.dateOfArrival.toString)
+            value = data.arrivalDetails.map(_.dateOfArrival.toString)
         ))
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("summary.arrival.time"),
-            value = data.getEntry[ArrivalDetails](MovementDetails.formId).map(_.timeOfArrival.toString)
+            value = data.arrivalDetails.map(_.timeOfArrival.toString)
         ))
     }
 
     @components.summary_list(Some(messages("location.title"))){
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("summary.goodsLocation"),
-            value = data.getEntry[Location](Location.formId).map(_.code)
+            value = data.location.map(_.code)
         ))
     }
 
     @helper.form(action = routes.SummaryController.submitMovementRequest()) {
         @helper.CSRF.formField
 
-        @components.submit_button(messages("site.confirmAndSubmit"))
+        @components.submit_button("site.confirmAndSubmit")
     }
 }

@@ -17,86 +17,81 @@
 package models.viewmodels.notificationspage
 
 import java.time.format.DateTimeFormatter
-import java.time.{ZoneId, ZonedDateTime}
+import java.time.{Instant, ZoneId}
 
+import base.BaseSpec
 import com.google.inject.Guice
 import models.UcrBlock
-import models.notifications.NotificationFrontendModel
+import models.notifications.Notification
 import models.submissions.{ActionType, Submission}
 import models.viewmodels.notificationspage.converters._
-import modules.DateTimeModule
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{verify, when}
-import org.scalatest.{MustMatchers, WordSpec}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
-import play.api.test.Helpers.stubMessages
+import play.api.test.FakeRequest
 import play.twirl.api.Html
 import testdata.CommonTestData._
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
+import utils.DateTimeTestModule
+import views.MessagesStub
 
-class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatchers with MockitoSugar {
+class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSugar with MessagesStub with BeforeAndAfterEach {
 
-  private val testTimestampString = "2019-10-23T12:34+00:00"
-  private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.systemDefault())
-  private val testTimestamp = ZonedDateTime.parse(testTimestampString, formatter).toInstant
+  private val testTimestamp: Instant = Instant.parse("2019-10-31T00:00:00Z")
 
-  private val injector = Guice.createInjector(new DateTimeModule())
+  private implicit val fakeRequest = FakeRequest()
 
-  private trait Test {
-    implicit val messages: Messages = stubMessages()
+  private val responseConverterProvider = mock[ResponseConverterProvider]
+  private val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.of("Europe/London"))
+  private val factory = new NotificationPageSingleElementFactory(responseConverterProvider, formatter)
 
-    val unknownResponseConverter = injector.getInstance(classOf[UnknownResponseConverter])
+  private val injector = Guice.createInjector(new DateTimeTestModule())
+  private val unknownResponseConverter = injector.getInstance(classOf[UnknownResponseConverter])
 
-    val responseConverterProvider = mock[ResponseConverterProvider]
-    when(responseConverterProvider.provideResponseConverter(any[NotificationFrontendModel]))
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    reset(responseConverterProvider)
+    when(responseConverterProvider.provideResponseConverter(any[Notification]))
       .thenReturn(unknownResponseConverter)
-
-    val factory = new NotificationPageSingleElementFactory(responseConverterProvider)
   }
 
   "NotificationPageSingleElementFactory" should {
 
     "return NotificationsPageSingleElement with values returned by Messages" when {
 
-      "provided with Arrival Submission" in new Test {
+      "provided with Arrival Submission" in {
 
         val input: Submission =
           exampleSubmission(actionType = ActionType.Arrival, requestTimestamp = testTimestamp)
-        val expectedResult = NotificationsPageSingleElement(
-          title = messages("notifications.elem.title.Arrival"),
-          timestampInfo = "23 Oct 2019 at 12:34",
-          content = Html(
-            s"<p>${messages("notifications.elem.content.Arrival")}</p>" +
-              s"<p>${messages("notifications.elem.content.footer")}</p>"
-          )
-        )
+
+        val expectedTitle = messages("notifications.elem.title.Arrival")
+        val expectedTimestampInfo = "31 Oct 2019 at 00:00"
+        val expectedContent = Seq(messages("notifications.elem.content.Arrival", "DUCR"), messages("notifications.elem.content.footer"))
 
         val result = factory.build(input)
 
-        assertEquality(result, expectedResult)
+        assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
 
-      "provided with Departure Submission" in new Test {
+      "provided with Departure Submission" in {
 
         val input: Submission =
           exampleSubmission(actionType = ActionType.Departure, requestTimestamp = testTimestamp)
-        val expectedResult = NotificationsPageSingleElement(
-          title = messages("notifications.elem.title.Departure"),
-          timestampInfo = "23 Oct 2019 at 12:34",
-          content = Html(
-            s"<p>${messages("notifications.elem.content.Departure")}</p>" +
-              s"<p>${messages("notifications.elem.content.footer")}</p>"
-          )
-        )
+
+        val expectedTitle = messages("notifications.elem.title.Departure")
+        val expectedTimestampInfo = "31 Oct 2019 at 00:00"
+        val expectedContent = Seq(messages("notifications.elem.content.Departure", "DUCR"), messages("notifications.elem.content.footer"))
 
         val result = factory.build(input)
 
-        assertEquality(result, expectedResult)
+        assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
 
-      "provided with DucrAssociation Submission" in new Test {
+      "provided with DucrAssociation Submission" in {
 
         val input: Submission = Submission(
           eori = validEori,
@@ -106,23 +101,17 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           ucrBlocks =
             Seq(UcrBlock(ucr = correctUcr, ucrType = "M"), UcrBlock(ucr = correctUcr_2, ucrType = "D"), UcrBlock(ucr = correctUcr_3, ucrType = "D"))
         )
-        val expectedResult = NotificationsPageSingleElement(
-          title = messages("notifications.elem.title.DucrAssociation"),
-          timestampInfo = "23 Oct 2019 at 12:34",
-          content = Html(
-            s"<p>${messages("notifications.elem.content.DucrAssociation")}</p>" +
-              s"<p>$correctUcr_2</p>" +
-              s"<p>$correctUcr_3</p>" +
-              s"<p>${messages("notifications.elem.content.footer")}</p>"
-          )
-        )
+
+        val expectedTitle = messages("notifications.elem.title.DucrAssociation")
+        val expectedTimestampInfo = "31 Oct 2019 at 00:00"
+        val expectedContent = Seq(messages("notifications.elem.content.DucrAssociation"), messages("notifications.elem.content.footer"))
 
         val result = factory.build(input)
 
-        assertEquality(result, expectedResult)
+        assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
 
-      "provided with MucrAssociation Submission" in new Test {
+      "provided with MucrAssociation Submission" in {
 
         val input: Submission = Submission(
           eori = validEori,
@@ -131,72 +120,56 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
           requestTimestamp = testTimestamp,
           ucrBlocks = Seq(UcrBlock(ucr = correctUcr, ucrType = "M"), UcrBlock(ucr = correctUcr_2, ucrType = "M"))
         )
-        val expectedResult = NotificationsPageSingleElement(
-          title = messages("notifications.elem.title.MucrAssociation"),
-          timestampInfo = "23 Oct 2019 at 12:34",
-          content = Html(
-            s"<p>${messages("notifications.elem.content.MucrAssociation")}</p>" +
-              s"<p>${messages("notifications.elem.content.footer")}</p>"
-          )
-        )
+
+        val expectedTitle = messages("notifications.elem.title.MucrAssociation")
+        val expectedTimestampInfo = "31 Oct 2019 at 00:00"
+        val expectedContent = Seq(messages("notifications.elem.content.MucrAssociation"), messages("notifications.elem.content.footer"))
 
         val result = factory.build(input)
 
-        assertEquality(result, expectedResult)
+        assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
 
-      "provided with DucrDisassociation Submission" in new Test {
+      "provided with DucrDisassociation Submission" in {
 
         val input: Submission =
           exampleSubmission(actionType = ActionType.DucrDisassociation, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "D")
-        val expectedResult = NotificationsPageSingleElement(
-          title = messages("notifications.elem.title.DucrDisassociation"),
-          timestampInfo = "23 Oct 2019 at 12:34",
-          content = Html(
-            s"<p>${messages("notifications.elem.content.DucrDisassociation")}</p>" +
-              s"<p>${messages("notifications.elem.content.footer")}</p>"
-          )
-        )
+
+        val expectedTitle = messages("notifications.elem.title.DucrDisassociation")
+        val expectedTimestampInfo = "31 Oct 2019 at 00:00"
+        val expectedContent = Seq(messages("notifications.elem.content.DucrDisassociation"), messages("notifications.elem.content.footer"))
 
         val result = factory.build(input)
 
-        assertEquality(result, expectedResult)
+        assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
 
-      "provided with MucrDisassociation Submission" in new Test {
+      "provided with MucrDisassociation Submission" in {
 
         val input: Submission =
           exampleSubmission(actionType = ActionType.MucrDisassociation, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "M")
-        val expectedResult = NotificationsPageSingleElement(
-          title = messages("notifications.elem.title.MucrDisassociation"),
-          timestampInfo = "23 Oct 2019 at 12:34",
-          content = Html(
-            s"<p>${messages("notifications.elem.content.MucrDisassociation")}</p>" +
-              s"<p>${messages("notifications.elem.content.footer")}</p>"
-          )
-        )
+
+        val expectedTitle = messages("notifications.elem.title.MucrDisassociation")
+        val expectedTimestampInfo = "31 Oct 2019 at 00:00"
+        val expectedContent = Seq(messages("notifications.elem.content.MucrDisassociation"), messages("notifications.elem.content.footer"))
 
         val result = factory.build(input)
 
-        assertEquality(result, expectedResult)
+        assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
 
-      "provided with ShutMucr Submission" in new Test {
+      "provided with ShutMucr Submission" in {
 
         val input: Submission =
           exampleSubmission(actionType = ActionType.ShutMucr, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "M")
-        val expectedResult = NotificationsPageSingleElement(
-          title = messages("notifications.elem.title.ShutMucr"),
-          timestampInfo = "23 Oct 2019 at 12:34",
-          content = Html(
-            s"<p>${messages("notifications.elem.content.ShutMucr")}</p>" +
-              s"<p>${messages("notifications.elem.content.footer")}</p>"
-          )
-        )
+
+        val expectedTitle = messages("notifications.elem.title.ShutMucr")
+        val expectedTimestampInfo = "31 Oct 2019 at 00:00"
+        val expectedContent = Seq(messages("notifications.elem.content.ShutMucr"), messages("notifications.elem.content.footer"))
 
         val result = factory.build(input)
 
-        assertEquality(result, expectedResult)
+        assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
     }
   }
@@ -205,7 +178,7 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
 
     "provided with NotificationFrontendModel" should {
 
-      "call ResponseConverterProvider" in new Test {
+      "call ResponseConverterProvider" in {
 
         val input = exampleNotificationFrontendModel()
 
@@ -214,15 +187,15 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         verify(responseConverterProvider).provideResponseConverter(meq(input))
       }
 
-      "call converter returned by ResponseConverterProvider" in new Test {
+      "call converter returned by ResponseConverterProvider" in {
 
         val exampleNotificationPageElement =
           NotificationsPageSingleElement(title = "TITLE", timestampInfo = "TIMESTAMP", content = Html("<test>HTML</test>"))
         val responseConverter = mock[NotificationPageSingleElementConverter]
-        when(responseConverter.convert(any[NotificationFrontendModel])(any()))
+        when(responseConverter.convert(any[Notification])(any()))
           .thenReturn(exampleNotificationPageElement)
 
-        when(responseConverterProvider.provideResponseConverter(any[NotificationFrontendModel]))
+        when(responseConverterProvider.provideResponseConverter(any[Notification]))
           .thenReturn(responseConverter)
 
         val input = exampleNotificationFrontendModel()
@@ -232,15 +205,15 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
         verify(responseConverter).convert(meq(input))(any[Messages])
       }
 
-      "return NotificationsPageSingleElement returned by converter" in new Test {
+      "return NotificationsPageSingleElement returned by converter" in {
 
         val exampleNotificationPageElement =
           NotificationsPageSingleElement(title = "TITLE", timestampInfo = "TIMESTAMP", content = Html("<test>HTML</test>"))
         val responseConverter = mock[NotificationPageSingleElementConverter]
-        when(responseConverter.convert(any[NotificationFrontendModel])(any()))
+        when(responseConverter.convert(any[Notification])(any()))
           .thenReturn(exampleNotificationPageElement)
 
-        when(responseConverterProvider.provideResponseConverter(any[NotificationFrontendModel]))
+        when(responseConverterProvider.provideResponseConverter(any[Notification]))
           .thenReturn(responseConverter)
 
         val input = exampleNotificationFrontendModel()
@@ -252,10 +225,19 @@ class NotificationPageSingleElementFactorySpec extends WordSpec with MustMatcher
     }
   }
 
-  private def assertEquality(actual: NotificationsPageSingleElement, expected: NotificationsPageSingleElement): Unit = {
-    actual.title must equal(expected.title)
-    actual.timestampInfo must equal(expected.timestampInfo)
-    actual.content must equal(expected.content)
+  private def assertResult(
+    actual: NotificationsPageSingleElement,
+    expectedTitle: String,
+    expectedTimestampInfo: String,
+    expectedContentElements: Seq[String]
+  ): Unit = {
+    actual.title mustBe expectedTitle
+    actual.timestampInfo mustBe expectedTimestampInfo
+
+    val contentAsString = actual.content.toString
+    expectedContentElements.foreach { contentElement =>
+      contentAsString must include(contentElement)
+    }
   }
 
 }

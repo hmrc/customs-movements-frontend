@@ -16,41 +16,15 @@
 
 package base
 
-import connectors.LegacyCustomsDeclareExportsMovementsConnector
 import models.notifications.Notification
 import models.submissions.Submission
 import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.test.Helpers.NO_CONTENT
 import play.twirl.api.HtmlFormat
-import testdata.ConsolidationTestData.exampleShutMucrRequest
-import uk.gov.hmrc.http.HttpResponse
-
-import scala.concurrent.Future
 
 object MockFactory extends MockitoSugar {
-
-  def buildCustomsDeclareExportsMovementsConnectorMock: LegacyCustomsDeclareExportsMovementsConnector = {
-    val customsDeclareExportsMovementsConnector = mock[LegacyCustomsDeclareExportsMovementsConnector]
-
-    when(customsDeclareExportsMovementsConnector.sendArrivalDeclaration(any())(any()))
-      .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
-    when(customsDeclareExportsMovementsConnector.sendDepartureDeclaration(any())(any()))
-      .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
-    when(customsDeclareExportsMovementsConnector.sendConsolidationRequest(any())(any()))
-      .thenReturn(Future.successful(exampleShutMucrRequest))
-
-    when(customsDeclareExportsMovementsConnector.fetchNotifications(any(), any())(any(), any()))
-      .thenReturn(Future.successful(Seq.empty))
-    when(customsDeclareExportsMovementsConnector.fetchAllSubmissions(any())(any()))
-      .thenReturn(Future.successful(Seq.empty))
-    when(customsDeclareExportsMovementsConnector.fetchSingleSubmission(any(), any())(any()))
-      .thenReturn(Future.successful(None))
-
-    customsDeclareExportsMovementsConnector
-  }
 
   def buildNotificationPageSingleElementFactoryMock = {
     val notificationPageSingleElementFactoryMock = mock[NotificationPageSingleElementFactory]

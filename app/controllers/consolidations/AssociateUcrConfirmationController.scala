@@ -16,7 +16,7 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, LegacyJourneyAction}
+import controllers.actions.{AuthAction}
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

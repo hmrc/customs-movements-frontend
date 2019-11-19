@@ -16,9 +16,8 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyRefiner, LegacyJourneyAction}
+import controllers.actions.AuthAction
 import javax.inject.{Inject, Singleton}
-import models.cache.JourneyType
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController

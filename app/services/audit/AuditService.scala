@@ -17,7 +17,6 @@
 package services.audit
 
 import com.google.inject.Inject
-import forms.Choice._
 import forms._
 import javax.inject.Named
 import models.cache.{Answers, ArrivalAnswers, DepartureAnswers, JourneyType}
@@ -25,7 +24,6 @@ import models.requests.MovementRequest
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}

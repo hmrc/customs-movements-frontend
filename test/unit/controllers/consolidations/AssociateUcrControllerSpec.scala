@@ -28,7 +28,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import testdata.ConsolidationTestData.ValidDucr
+import testdata.ConsolidationTestData.validDucr
 import unit.controllers.ControllerLayerSpec
 import unit.repository.MockCache
 import views.html.associate_ucr
@@ -110,7 +110,7 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
 
     "return 303 (SEE_OTHER)" when {
       "form is correct" in {
-        val validDUCR = AssociateUcr.mapping.unbind(AssociateUcr(Ducr, ValidDucr))
+        val validDUCR = AssociateUcr.mapping.unbind(AssociateUcr(Ducr, validDucr))
 
         val result = controller(AssociateUcrAnswers(Some(mucrOptions))).submit()(postRequest(validDUCR))
         status(result) must be(SEE_OTHER)

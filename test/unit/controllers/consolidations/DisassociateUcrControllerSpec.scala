@@ -28,7 +28,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import testdata.ConsolidationTestData.ValidDucr
+import testdata.ConsolidationTestData.validDucr
 import unit.controllers.ControllerLayerSpec
 import unit.repository.MockCache
 import views.html.disassociate_ucr
@@ -42,7 +42,7 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
   private def controller(answers: DisassociateUcrAnswers) =
     new DisassociateUcrController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, page)
 
-  private val correctForm = Json.toJson(DisassociateUcr(DisassociateKind.Ducr, Some(ValidDucr), Some("")))
+  private val correctForm = Json.toJson(DisassociateUcr(DisassociateKind.Ducr, Some(validDucr), Some("")))
   private val incorrectForm = Json.toJson(DisassociateUcr(DisassociateKind.Ducr, Some("abc"), None))
 
   override protected def beforeEach(): Unit = {

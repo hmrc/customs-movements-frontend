@@ -29,7 +29,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import testdata.CommonTestData
-import testdata.ConsolidationTestData.ValidMucr
+import testdata.ConsolidationTestData.validMucr
 import unit.controllers.ControllerLayerSpec
 import unit.repository.MockCache
 import views.html.mucr_options
@@ -106,7 +106,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
     "return 303 (SEE_OTHER)" when {
 
       "form is correct" in {
-        val correctForm = Json.toJson(MucrOptions(ValidMucr, "", Create))
+        val correctForm = Json.toJson(MucrOptions(validMucr, "", Create))
 
         val result = controller(AssociateUcrAnswers()).save()(postRequest(correctForm))
 

@@ -76,7 +76,7 @@ class MovementsViewSpec extends BaseSpec with Stubs with ViewValidator with Mess
           timestampReceived = dateTime.plus(10, MINUTES),
           conversationId = conversationId,
           responseType = ResponseType.ControlResponse,
-          entries = Seq(Entry(ucrBlock = Some(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M"))))
+          entries = Seq(Entry(ucrBlock = Some(UcrBlock(ucr = ConsolidationTestData.validMucr, ucrType = "M"))))
         )
       )
 
@@ -93,15 +93,15 @@ class MovementsViewSpec extends BaseSpec with Stubs with ViewValidator with Mess
         exampleNotificationFrontendModel(
           conversationId = conversationId,
           responseType = ResponseType.ControlResponse,
-          entries = Seq(Entry(ucrBlock = Some(UcrBlock(ucr = ConsolidationTestData.ValidMucr, ucrType = "M"))))
+          entries = Seq(Entry(ucrBlock = Some(UcrBlock(ucr = ConsolidationTestData.validMucr, ucrType = "M"))))
         )
       )
 
       val pageWithData: Html = createView(Seq(exampleAssociateDucrRequestSubmission -> notifications))
 
       val actualUcrs = getElementById(pageWithData, s"ucr-$conversationId").text()
-      actualUcrs must include(ValidMucr)
-      actualUcrs must include(ValidDucr)
+      actualUcrs must include(validMucr)
+      actualUcrs must include(validDucr)
       val actualUcrTypes = getElementById(pageWithData, s"ucrType-$conversationId").text()
       actualUcrTypes must include("MUCR")
       actualUcrTypes must include("DUCR")

@@ -810,7 +810,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
 
     "return true" when {
       "using test constant" in {
-        validMucr(ConsolidationTestData.ValidMucr) mustBe true
+        validMucr(ConsolidationTestData.validMucr) mustBe true
       }
       "is minimum first format" in {
         validMucr("GB/123-ABCDE") mustBe true
@@ -870,7 +870,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
 
     "return true" when {
       "using test constant" in {
-        validDucr(ConsolidationTestData.ValidDucr) mustBe true
+        validDucr(ConsolidationTestData.validDucr) mustBe true
       }
       "is minimum acceptable example" in {
         validDucr("9GB123456") mustBe true

@@ -16,89 +16,81 @@
 
 package controllers.consolidations
 
-import base.MockSubmissionService
-import controllers.exception.IncompleteApplication
-import forms.Choice.ShutMUCR
-import forms.{Choice, ShutMucr}
+import controllers.storage.FlashKeys
+import forms.ShutMucr
+import models.ReturnToStartException
+import models.cache.ShutMucrAnswers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.BDDMockito._
 import org.mockito.Mockito.{verify, when}
 import play.api.libs.json.JsObject
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import testdata.ConsolidationTestData.ValidMucr
-import unit.base.LegacyControllerSpec
+import services.SubmissionService
+import testdata.ConsolidationTestData.validMucr
+import unit.controllers.ControllerLayerSpec
+import unit.repository.MockCache
 import views.html.shut_mucr_summary
 
 import scala.concurrent.ExecutionContext.global
+import scala.concurrent.Future
 
-class ShutMucrSummaryControllerSpec extends LegacyControllerSpec with MockSubmissionService {
+class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with MockCache {
 
-  val shutMucrSummaryPage = mock[shut_mucr_summary]
+  private val submissionService = mock[SubmissionService]
+  private val page = mock[shut_mucr_summary]
 
-  val controller = new ShutMucrSummaryController(
-    mockAuthAction,
-    mockJourneyAction,
+  private def controller(answers: ShutMucrAnswers) = new ShutMucrSummaryController(
+    SuccessfulAuth(),
+    ValidJourney(answers),
     stubMessagesControllerComponents(),
-    mockCustomsCacheService,
-    mockSubmissionService,
-    shutMucrSummaryPage
+    cache,
+    submissionService,
+    page
   )(global)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-
-    authorizedUser()
-    withCaching(Choice.choiceId, Some(ShutMUCR))
-    when(shutMucrSummaryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(page.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Shut Mucr Summary Controller" should {
+    val mucr = ShutMucr(validMucr)
 
     "return 200 (OK)" when {
 
       "cache contains information from shut mucr page" in {
-
-        withCaching(ShutMucr.formId, Some(ShutMucr(ValidMucr)))
-
-        val result = controller.displayPage()(getRequest())
+        val result = controller(ShutMucrAnswers(Some(mucr))).displayPage()(getRequest())
 
         status(result) mustBe OK
-        verify(shutMucrSummaryPage).apply(any())(any(), any())
+        verify(page).apply(any())(any(), any())
       }
     }
 
     "throw an exception" when {
 
       "cache is empty for displayPage method" in {
-
-        withCaching(ShutMucr.formId, None)
-
-        intercept[IncompleteApplication] {
-          await(controller.displayPage()(getRequest()))
-        }
+        intercept[RuntimeException] {
+          await(controller(ShutMucrAnswers()).displayPage()(getRequest()))
+        } mustBe ReturnToStartException
       }
 
       "cache is empty for submit method" in {
-
-        withCaching(ShutMucr.formId, None)
-
-        intercept[IncompleteApplication] {
-          await(controller.submit()(postRequest(JsObject(Seq.empty))))
-        }
+        intercept[RuntimeException] {
+          await(controller(ShutMucrAnswers()).submit()(postRequest(JsObject(Seq.empty))))
+        } mustBe ReturnToStartException
       }
     }
 
     "return 303 (SEE_OTHER)" when {
 
       "cache contains shut mucr data and submission is successfully" in {
+        given(submissionService.submit(any(), any[ShutMucrAnswers])(any())).willReturn(Future.successful((): Unit))
 
-        withCaching(ShutMucr.formId, Some(ShutMucr(ValidMucr)))
-        mockShutMucr()
-        mockCustomsCacheServiceClearedSuccessfully
-
-        val result = controller.submit()(postRequest(JsObject(Seq.empty)))
+        val result = controller(ShutMucrAnswers(Some(mucr))).submit()(postRequest(JsObject(Seq.empty)))
 
         status(result) mustBe SEE_OTHER
+        flash(result).get(FlashKeys.MUCR) mustBe Some(validMucr)
       }
     }
   }

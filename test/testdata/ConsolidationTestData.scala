@@ -25,24 +25,24 @@ import testdata.CommonTestData._
 
 object ConsolidationTestData {
 
-  val ValidMucr = "GB/1234567890-MUCR"
-  val ValidDucr = "4GB123456789000-DUCR"
+  val validMucr = "GB/1234567890-MUCR"
+  val validDucr = "4GB123456789000-DUCR"
 
   val exampleAssociateDucrRequest: ConsolidationRequest =
-    ConsolidationRequest(consolidationType = ASSOCIATE_DUCR, eori = validEori, mucr = Some(ValidMucr), ucr = Some(ValidDucr))
+    ConsolidationRequest(consolidationType = ASSOCIATE_DUCR, eori = validEori, mucr = Some(validMucr), ucr = Some(validDucr))
 
   val exampleAssociateDucrRequestSubmission: Submission = Submission(
     eori = validEori,
     conversationId = conversationId,
     actionType = ActionType.DucrAssociation,
-    ucrBlocks = Seq(UcrBlock(ucr = ValidMucr, ucrType = "M"), UcrBlock(ucr = ValidDucr, ucrType = "D"))
+    ucrBlocks = Seq(UcrBlock(ucr = validMucr, ucrType = "M"), UcrBlock(ucr = validDucr, ucrType = "D"))
   )
 
   val exampleDisassociateDucrRequest: ConsolidationRequest =
-    ConsolidationRequest(consolidationType = DISASSOCIATE_DUCR, eori = validEori, mucr = None, ucr = Some(ValidDucr))
+    ConsolidationRequest(consolidationType = DISASSOCIATE_DUCR, eori = validEori, mucr = None, ucr = Some(validDucr))
 
   val exampleShutMucrRequest: ConsolidationRequest =
-    ConsolidationRequest(consolidationType = SHUT_MUCR, eori = validEori, mucr = Some(ValidMucr), ucr = None)
+    ConsolidationRequest(consolidationType = SHUT_MUCR, eori = validEori, mucr = Some(validMucr), ucr = None)
 
   val validConsolidationRequestHeaders: Seq[(String, String)] =
     Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.JSON, HeaderNames.ACCEPT -> ContentTypes.JSON)

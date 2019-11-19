@@ -25,7 +25,7 @@ import org.scalatest.OptionValues
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import testdata.ConsolidationTestData.ValidMucr
+import testdata.ConsolidationTestData.validMucr
 import unit.controllers.ControllerLayerSpec
 import unit.repository.MockCache
 import views.html.shut_mucr
@@ -84,7 +84,7 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
     "return 303 (SEE_OTHER)" when {
 
       "form is correct and submission service returned ACCEPTED" in {
-        val correctForm = Json.toJson(ShutMucr(ValidMucr))
+        val correctForm = Json.toJson(ShutMucr(validMucr))
 
         val result = controller(ShutMucrAnswers()).submitForm()(postRequest(correctForm))
 

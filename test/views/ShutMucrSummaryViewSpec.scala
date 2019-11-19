@@ -20,14 +20,14 @@ import controllers.consolidations.routes
 import forms.ShutMucr
 import helpers.views.CommonMessages
 import play.twirl.api.Html
-import testdata.ConsolidationTestData.ValidMucr
+import testdata.ConsolidationTestData.validMucr
 import views.html.shut_mucr_summary
 import views.spec.UnitViewSpec
 
 class ShutMucrSummaryViewSpec extends UnitViewSpec with CommonMessages {
 
   private val shutMucrSummaryPage = new shut_mucr_summary(mainTemplate)
-  private val view: Html = shutMucrSummaryPage(ShutMucr(ValidMucr))(request, messages)
+  private val view: Html = shutMucrSummaryPage(ShutMucr(validMucr))(request, messages)
 
   "Shut Mucr Summary View" should {
 
@@ -57,7 +57,7 @@ class ShutMucrSummaryViewSpec extends UnitViewSpec with CommonMessages {
 
     "display correct mucr" in {
 
-      view.getElementById("shutMucr-mucr").text() mustBe messages(ValidMucr)
+      view.getElementById("shutMucr-mucr").text() mustBe messages(validMucr)
     }
 
     "display correct change button" in {

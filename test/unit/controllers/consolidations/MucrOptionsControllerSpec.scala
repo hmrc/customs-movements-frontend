@@ -16,10 +16,10 @@
 
 package unit.controllers.consolidations
 
-import controllers.consolidations.{routes, MucrOptionsController}
-import forms.Choice.AssociateUCR
+import controllers.consolidations.{MucrOptionsController, routes}
+import forms.MucrOptions
 import forms.MucrOptions.Create
-import forms.{Choice, MucrOptions}
+import models.cache.AssociateUcrAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -30,33 +30,35 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import testdata.CommonTestData
 import testdata.ConsolidationTestData.ValidMucr
-import unit.base.LegacyControllerSpec
+import unit.controllers.ControllerLayerSpec
+import unit.repository.MockCache
 import views.html.mucr_options
 
 import scala.concurrent.ExecutionContext.global
 
-class MucrOptionsControllerSpec extends LegacyControllerSpec with OptionValues {
+class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with OptionValues {
 
-  private val mockMucrOptionsPage = mock[mucr_options]
+  private val page = mock[mucr_options]
 
-  private val controller =
-    new MucrOptionsController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), mockCustomsCacheService, mockMucrOptionsPage)(
+  private def controller(answers: AssociateUcrAnswers) =
+    new MucrOptionsController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, page)(
       global
     )
 
   override def beforeEach() {
     super.beforeEach()
-
-    authorizedUser()
-    withCaching(Choice.choiceId, Some(AssociateUCR))
-    withCaching(MucrOptions.formId, None)
-    when(mockMucrOptionsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(page.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override def afterEach(): Unit = {
-    reset(mockMucrOptionsPage)
-
+    reset(page)
     super.afterEach()
+  }
+
+  private def theFormRendered: Form[MucrOptions] = {
+    val captor: ArgumentCaptor[Form[MucrOptions]] = ArgumentCaptor.forClass(classOf[Form[MucrOptions]])
+    verify(page).apply(captor.capture())(any(), any())
+    captor.getValue
   }
 
   "Mucr Options Controller" should {
@@ -64,60 +66,49 @@ class MucrOptionsControllerSpec extends LegacyControllerSpec with OptionValues {
     "return 200 (OK)" when {
 
       "display page method is invoked" in {
-        withCaching(MucrOptions.formId, None)
-
-        val result = controller.displayPage()(getRequest())
+        val result = controller(AssociateUcrAnswers()).displayPage()(getRequest())
 
         status(result) mustBe OK
-        verify(mockMucrOptionsPage).apply(any())(any(), any())
+        theFormRendered.value mustBe empty
       }
 
       "display page with filled data" in {
-        withCaching(MucrOptions.formId, Some(MucrOptions(CommonTestData.correctUcr)))
+        val mucrOptions = MucrOptions(CommonTestData.correctUcr)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller(AssociateUcrAnswers(Some(mucrOptions))).displayPage()(getRequest())
 
         status(result) mustBe OK
-        val captor: ArgumentCaptor[Form[MucrOptions]] = ArgumentCaptor.forClass(classOf[Form[MucrOptions]])
-        verify(mockMucrOptionsPage).apply(captor.capture())(any(), any())
-        captor.getValue.value.get.mucr mustBe CommonTestData.correctUcr
+        theFormRendered.value.get.mucr mustBe CommonTestData.correctUcr
       }
     }
 
     "return 400 (BAD_REQUEST)" when {
 
       "form is incorrect during saving on first validation" in {
-        withCaching(MucrOptions.formId, None)
-
         val incorrectForm = Json.toJson(MucrOptions("8GB12345612345612345", "8GB12345612345612345", ""))
 
-        val result = controller.save()(postRequest(incorrectForm))
+        val result = controller(AssociateUcrAnswers()).save()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockMucrOptionsPage).apply(any())(any(), any())
+        verify(page).apply(any())(any(), any())
       }
 
       "form is incorrect during saving on second validation" in {
-        withCaching(MucrOptions.formId, None)
-
         val incorrectForm = Json.toJson(MucrOptions("incorrect", "incorrect", Create))
 
-        val result = controller.save()(postRequest(incorrectForm))
+        val result = controller(AssociateUcrAnswers()).save()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockMucrOptionsPage).apply(any())(any(), any())
+        verify(page).apply(any())(any(), any())
       }
     }
 
     "return 303 (SEE_OTHER)" when {
 
       "form is correct" in {
-        withCaching(MucrOptions.formId, None)
-        withCaching(MucrOptions.formId)
-
         val correctForm = Json.toJson(MucrOptions(ValidMucr, "", Create))
 
-        val result = controller.save()(postRequest(correctForm))
+        val result = controller(AssociateUcrAnswers()).save()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.AssociateUcrController.displayPage().url

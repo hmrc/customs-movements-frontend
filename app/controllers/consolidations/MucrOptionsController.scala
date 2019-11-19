@@ -16,14 +16,15 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, LegacyJourneyAction}
+import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.MucrOptions
 import forms.MucrOptions.{form, formId}
 import javax.inject.{Inject, Singleton}
+import models.cache.{AssociateUcrAnswers, Cache, JourneyType}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
+import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.mucr_options
 
@@ -32,30 +33,30 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class MucrOptionsController @Inject()(
   authenticate: AuthAction,
-  journeyType: LegacyJourneyAction,
+  getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
-  cacheService: CustomsCacheService,
-  mucrOptionsPage: mucr_options
+  cache: CacheRepository,
+  page: mucr_options
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    cacheService
-      .fetchAndGetEntry[MucrOptions](movementCacheId(), formId)
-      .map(data => Ok(mucrOptionsPage(data.fold(form)(form.fill))))
+  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ASSOCIATE_UCR)) { implicit request =>
+    val mucrOptions = request.answersAs[AssociateUcrAnswers].mucrOptions
+    Ok(page(mucrOptions.fold(form)(form.fill)))
   }
 
-  def save(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def save(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ASSOCIATE_UCR)).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(mucrOptionsPage(formWithErrors))),
-        formData => {
-          val validatedForm = MucrOptions.validateForm(form.fill(formData))
+        formWithErrors => Future.successful(BadRequest(page(formWithErrors))),
+        validForm => {
+          val validatedForm = MucrOptions.validateForm(form.fill(validForm))
           if (validatedForm.hasErrors) {
-            Future.successful(BadRequest(mucrOptionsPage(validatedForm)))
+            Future.successful(BadRequest(page(validatedForm)))
           } else {
-            cacheService.cache[MucrOptions](movementCacheId(), formId, formData).map { _ =>
+            val updatedCache = request.answersAs[AssociateUcrAnswers].copy(mucrOptions = Some(validForm))
+            cache.upsert(Cache(request.eori, updatedCache)).map { _ =>
               Redirect(routes.AssociateUcrController.displayPage())
             }
           }

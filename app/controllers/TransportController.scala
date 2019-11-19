@@ -16,15 +16,15 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, LegacyJourneyAction}
-import controllers.storage.CacheIdGenerator.movementCacheId
+import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.Transport
 import forms.Transport._
 import javax.inject.{Inject, Singleton}
+import models.cache.{Cache, DepartureAnswers, JourneyType}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
+import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.transport
 
@@ -32,28 +32,28 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TransportController @Inject()(
-                                     authenticate: AuthAction,
-                                     journeyType: LegacyJourneyAction,
-                                     customsCacheService: CustomsCacheService,
-                                     mcc: MessagesControllerComponents,
-                                     transportPage: transport
+  authenticate: AuthAction,
+  getJourney: JourneyRefiner,
+  cache: CacheRepository,
+  mcc: MessagesControllerComponents,
+  transportPage: transport
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[Transport](movementCacheId, formId).map { data =>
-      Ok(transportPage(data.fold(form)(form.fill(_))))
-    }
+  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DEPART)) { implicit request =>
+    Ok(transportPage(request.answersAs[DepartureAnswers].transport.fold(form)(form.fill(_))))
   }
 
-  def saveTransport(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveTransport(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DEPART)).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Transport]) => Future.successful(BadRequest(transportPage(formWithErrors))),
-        validForm =>
-          customsCacheService.cache[Transport](movementCacheId, formId, validForm).map { _ =>
+        validForm => {
+          val movementAnswers = request.answersAs[DepartureAnswers].copy(transport = Some(validForm))
+          cache.upsert(Cache(request.eori, movementAnswers)).map { _ =>
             Redirect(controllers.routes.SummaryController.displayPage())
+          }
         }
       )
   }

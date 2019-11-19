@@ -31,10 +31,10 @@ import views.html.movements
 import scala.concurrent.ExecutionContext
 
 class SubmissionsController @Inject()(
-                                     authenticate: AuthAction,
-                                     connector: CustomsDeclareExportsMovementsConnector,
-                                     mcc: MessagesControllerComponents,
-                                     movementsPage: movements
+  authenticate: AuthAction,
+  connector: CustomsDeclareExportsMovementsConnector,
+  mcc: MessagesControllerComponents,
+  movementsPage: movements
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -59,9 +59,7 @@ class SubmissionsController @Inject()(
     }
   }
 
-  private def sortWithOldestLast(
-    submissionsWithNotifications: Seq[(Submission, Seq[Notification])]
-  ): Seq[(Submission, Seq[Notification])] =
+  private def sortWithOldestLast(submissionsWithNotifications: Seq[(Submission, Seq[Notification])]): Seq[(Submission, Seq[Notification])] =
     submissionsWithNotifications.sortBy(_._1.requestTimestamp)(Ordering[Instant].reverse)
 
 }

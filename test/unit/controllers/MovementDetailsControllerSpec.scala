@@ -18,7 +18,7 @@ package unit.controllers
 
 import java.time.{LocalDate, LocalTime}
 
-import controllers.{MovementDetailsController, routes}
+import controllers.{routes, MovementDetailsController}
 import forms.common.{Date, Time}
 import forms.{ArrivalDetails, DepartureDetails}
 import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
@@ -41,15 +41,16 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
   private val mockArrivalDetailsPage = mock[arrival_details]
   private val mockDepartureDetailsPage = mock[departure_details]
 
-  private def controller(answers: MovementAnswers) = new MovementDetailsController(
-    SuccessfulAuth(),
-    ValidJourney(answers),
-    cache,
-    stubMessagesControllerComponents(),
-    MovementsTestData.movementDetails,
-    mockArrivalDetailsPage,
-    mockDepartureDetailsPage
-  )(global)
+  private def controller(answers: MovementAnswers) =
+    new MovementDetailsController(
+      SuccessfulAuth(),
+      ValidJourney(answers),
+      cache,
+      stubMessagesControllerComponents(),
+      MovementsTestData.movementDetails,
+      mockArrivalDetailsPage,
+      mockDepartureDetailsPage
+    )(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

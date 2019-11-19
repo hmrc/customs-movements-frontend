@@ -38,15 +38,16 @@ class SummaryControllerSpec extends ControllerLayerSpec with MockCache {
   private val mockArrivalSummaryPage = mock[arrival_summary_page]
   private val mockDepartureSummaryPage = mock[departure_summary_page]
 
-  private def controller(answers: MovementAnswers) = new SummaryController(
-    SuccessfulAuth(),
-    ValidJourney(answers),
-    cache,
-    service,
-    stubMessagesControllerComponents(),
-    mockArrivalSummaryPage,
-    mockDepartureSummaryPage
-  )(global)
+  private def controller(answers: MovementAnswers) =
+    new SummaryController(
+      SuccessfulAuth(),
+      ValidJourney(answers),
+      cache,
+      service,
+      stubMessagesControllerComponents(),
+      mockArrivalSummaryPage,
+      mockDepartureSummaryPage
+    )(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

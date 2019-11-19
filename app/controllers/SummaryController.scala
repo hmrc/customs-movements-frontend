@@ -49,18 +49,19 @@ class SummaryController @Inject()(
     }
   }
 
-  def submitMovementRequest(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)).async { implicit request =>
-    submissionService
-      .submit(request.eori, request.answersAs[MovementAnswers])
-      .flatMap { consignmentReferences =>
-        cache.removeByEori(request.eori).map { _ =>
-          Redirect(controllers.routes.MovementConfirmationController.display())
-            .flashing(
-              FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString,
-              FlashKeys.UCR_KIND -> consignmentReferences.reference,
-              FlashKeys.UCR -> consignmentReferences.referenceValue
-            )
+  def submitMovementRequest(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)).async {
+    implicit request =>
+      submissionService
+        .submit(request.eori, request.answersAs[MovementAnswers])
+        .flatMap { consignmentReferences =>
+          cache.removeByEori(request.eori).map { _ =>
+            Redirect(controllers.routes.MovementConfirmationController.display())
+              .flashing(
+                FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString,
+                FlashKeys.UCR_KIND -> consignmentReferences.reference,
+                FlashKeys.UCR -> consignmentReferences.referenceValue
+              )
+          }
         }
-      }
   }
 }

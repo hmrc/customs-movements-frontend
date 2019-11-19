@@ -30,11 +30,11 @@ import views.html.notifications
 import scala.concurrent.ExecutionContext
 
 class NotificationsController @Inject()(
-                                         authenticate: AuthAction,
-                                         connector: CustomsDeclareExportsMovementsConnector,
-                                         factory: NotificationPageSingleElementFactory,
-                                         mcc: MessagesControllerComponents,
-                                         notifications: notifications
+  authenticate: AuthAction,
+  connector: CustomsDeclareExportsMovementsConnector,
+  factory: NotificationPageSingleElementFactory,
+  mcc: MessagesControllerComponents,
+  notifications: notifications
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

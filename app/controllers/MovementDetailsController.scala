@@ -68,24 +68,26 @@ class MovementDetailsController @Inject()(
   }
 
   private def handleSavingArrival(arrivalAnswers: ArrivalAnswers)(implicit request: JourneyRequest[AnyContent]): Future[Either[Html, Call]] =
-    details.arrivalForm()
+    details
+      .arrivalForm()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ArrivalDetails]) => Future.successful(Left(arrivalDetailsPage(formWithErrors))),
         validForm =>
           cache.upsert(Cache(request.eori, arrivalAnswers.copy(arrivalDetails = Some(validForm)))).map { _ =>
             Right(controllers.routes.LocationController.displayPage())
-          }
+        }
       )
 
   private def handleSavingDeparture(departureAnswers: DepartureAnswers)(implicit request: JourneyRequest[AnyContent]): Future[Either[Html, Call]] =
-    details.departureForm()
+    details
+      .departureForm()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[DepartureDetails]) => Future.successful(Left(departureDetailsPage(formWithErrors))),
         validForm =>
           cache.upsert(Cache(request.eori, departureAnswers.copy(departureDetails = Some(validForm)))).map { _ =>
             Right(controllers.routes.LocationController.displayPage())
-          }
+        }
       )
 }

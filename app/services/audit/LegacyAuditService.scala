@@ -141,4 +141,3 @@ class LegacyAuditService @Inject()(connector: AuditConnector, @Named("appName") 
     hcAuditDetails.deepMerge(userInput)
   }
 }
-

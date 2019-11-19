@@ -30,7 +30,8 @@ import utils.FakeRequestCSRFSupport._
 import utils.Stubs
 
 @Deprecated
-trait LegacyControllerSpec extends UnitSpec with Stubs with MockAuthConnector with MockCustomsCacheService with JourneyActionMocks with ErrorHandlerMocks {
+trait LegacyControllerSpec
+    extends UnitSpec with Stubs with MockAuthConnector with MockCustomsCacheService with JourneyActionMocks with ErrorHandlerMocks {
 
   protected val user = newUser(validEori)
 

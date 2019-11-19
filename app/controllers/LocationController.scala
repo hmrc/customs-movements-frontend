@@ -34,11 +34,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class LocationController @Inject()(
-                                    authenticate: AuthAction,
-                                    journeyType: JourneyRefiner,
-                                    cache: CacheRepository,
-                                    mcc: MessagesControllerComponents,
-                                    locationPage: location
+  authenticate: AuthAction,
+  journeyType: JourneyRefiner,
+  cache: CacheRepository,
+  mcc: MessagesControllerComponents,
+  locationPage: location
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

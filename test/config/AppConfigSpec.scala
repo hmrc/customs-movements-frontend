@@ -26,7 +26,6 @@ import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
 
-
   private val environment = Environment.simple()
   private val validAppConfig: Config =
     ConfigFactory.parseString(

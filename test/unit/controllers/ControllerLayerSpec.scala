@@ -41,7 +41,8 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
   protected val user = SignedInUser("eori", Enrolments(Set.empty))
   protected def getRequest(): Request[AnyContent] = FakeRequest(GET, "/").withCSRFToken
   protected def postRequest(): Request[AnyContent] = FakeRequest(POST, "/").withCSRFToken
-  protected def postRequest[T](body: T)(implicit wts: Writes[T]): Request[AnyContentAsJson] = FakeRequest("POST", "/").withJsonBody(wts.writes(body)).withCSRFToken
+  protected def postRequest[T](body: T)(implicit wts: Writes[T]): Request[AnyContentAsJson] =
+    FakeRequest("POST", "/").withJsonBody(wts.writes(body)).withCSRFToken
 
   protected implicit def messages(implicit request: Request[_]): Messages = stubMessagesControllerComponents().messagesApi.preferred(request)
   protected implicit val flashApi: Flash = Flash()
@@ -49,21 +50,12 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
   protected def contentAsHtml(of: Future[Result]): Html = Html(contentAsBytes(of).decodeString(charset(of).getOrElse("utf-8")))
 
   case class SuccessfulAuth(operator: SignedInUser = user)
-      extends AuthActionImpl(
-        mock[AuthConnector],
-        mock[EoriWhitelist],
-        stubMessagesControllerComponents().parsers
-      ) {
+      extends AuthActionImpl(mock[AuthConnector], mock[EoriWhitelist], stubMessagesControllerComponents().parsers) {
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       block(AuthenticatedRequest(request, operator))
   }
 
-  case object UnsuccessfulAuth
-      extends AuthActionImpl(
-        mock[AuthConnector],
-        mock[EoriWhitelist],
-        stubMessagesControllerComponents().parsers
-      ) {
+  case object UnsuccessfulAuth extends AuthActionImpl(mock[AuthConnector], mock[EoriWhitelist], stubMessagesControllerComponents().parsers) {
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       Future.successful(Results.Forbidden)
   }

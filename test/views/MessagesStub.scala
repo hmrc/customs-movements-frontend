@@ -54,4 +54,3 @@ trait MessagesStub {
 object MessagesStub extends Injector {
   lazy val realMessagesApi: MessagesApi = instanceOf[MessagesApi]
 }
-

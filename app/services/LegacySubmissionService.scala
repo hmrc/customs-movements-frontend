@@ -34,11 +34,11 @@ import scala.util.Success
 @Deprecated
 @Singleton
 class LegacySubmissionService @Inject()(
-                                         cacheService: CustomsCacheService,
-                                         connector: LegacyCustomsDeclareExportsMovementsConnector,
-                                         auditService: LegacyAuditService,
-                                         metrics: MovementsMetrics,
-                                         movementBuilder: LegacyMovementBuilder
+  cacheService: CustomsCacheService,
+  connector: LegacyCustomsDeclareExportsMovementsConnector,
+  auditService: LegacyAuditService,
+  metrics: MovementsMetrics,
+  movementBuilder: LegacyMovementBuilder
 )(implicit ec: ExecutionContext) {
 
   def submitMovementRequest(cacheId: String, eori: String, choice: Choice)(implicit hc: HeaderCarrier): Future[(Option[ConsignmentReferences], Int)] =

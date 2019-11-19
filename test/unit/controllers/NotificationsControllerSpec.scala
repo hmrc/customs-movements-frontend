@@ -110,10 +110,7 @@ class NotificationsControllerSpec extends ControllerLayerSpec with ScalaFutures 
 
         val expectedUcr: String = expectedSubmission.ucrBlocks.head.ucr
 
-        verify(notificationsPage).apply(meq(expectedUcr), any[NotificationsPageSingleElement], any[Seq[NotificationsPageSingleElement]])(
-          any(),
-          any()
-        )
+        verify(notificationsPage).apply(meq(expectedUcr), any[NotificationsPageSingleElement], any[Seq[NotificationsPageSingleElement]])(any(), any())
       }
 
       "call notification view template, passing data returned by NotificationsPageSingleElementFactory" in {

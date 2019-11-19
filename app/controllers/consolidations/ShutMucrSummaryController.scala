@@ -32,12 +32,12 @@ import scala.concurrent.ExecutionContext
 import scala.util.Success
 
 class ShutMucrSummaryController @Inject()(
-                                           authenticate: AuthAction,
-                                           journeyType: LegacyJourneyAction,
-                                           mcc: MessagesControllerComponents,
-                                           cacheService: CustomsCacheService,
-                                           submissionService: LegacySubmissionService,
-                                           shutMucrSummaryPage: shut_mucr_summary
+  authenticate: AuthAction,
+  journeyType: LegacyJourneyAction,
+  mcc: MessagesControllerComponents,
+  cacheService: CustomsCacheService,
+  submissionService: LegacySubmissionService,
+  shutMucrSummaryPage: shut_mucr_summary
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

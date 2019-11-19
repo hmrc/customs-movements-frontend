@@ -32,11 +32,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ConsignmentReferencesController @Inject()(
-                                                 authenticate: AuthAction,
-                                                 getJourney: JourneyRefiner,
-                                                 cache: CacheRepository,
-                                                 mcc: MessagesControllerComponents,
-                                                 consignmentReferencesPage: consignment_references
+  authenticate: AuthAction,
+  getJourney: JourneyRefiner,
+  cache: CacheRepository,
+  mcc: MessagesControllerComponents,
+  consignmentReferencesPage: consignment_references
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -45,23 +45,24 @@ class ConsignmentReferencesController @Inject()(
     Ok(consignmentReferencesPage(references.fold(form())(form().fill(_))))
   }
 
-  def saveConsignmentReferences(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)).async { implicit request =>
-    form()
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
-        validForm => {
-          request.answers match {
-            case arrivalAnswers: ArrivalAnswers =>
-              cache.upsert(Cache(request.eori, arrivalAnswers.copy(consignmentReferences = Some(validForm)))).map { _ =>
-                Redirect(controllers.routes.ArrivalReferenceController.displayPage())
-              }
-            case departureAnswers: DepartureAnswers =>
-              cache.upsert(Cache(request.eori, departureAnswers.copy(consignmentReferences = Some(validForm)))).map { _ =>
-                Redirect(controllers.routes.MovementDetailsController.displayPage())
-              }
+  def saveConsignmentReferences(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)).async {
+    implicit request =>
+      form()
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
+          validForm => {
+            request.answers match {
+              case arrivalAnswers: ArrivalAnswers =>
+                cache.upsert(Cache(request.eori, arrivalAnswers.copy(consignmentReferences = Some(validForm)))).map { _ =>
+                  Redirect(controllers.routes.ArrivalReferenceController.displayPage())
+                }
+              case departureAnswers: DepartureAnswers =>
+                cache.upsert(Cache(request.eori, departureAnswers.copy(consignmentReferences = Some(validForm)))).map { _ =>
+                  Redirect(controllers.routes.MovementDetailsController.displayPage())
+                }
+            }
           }
-        }
-      )
+        )
   }
 }

@@ -16,7 +16,7 @@
 
 package unit.controllers
 
-import controllers.{LocationController, routes}
+import controllers.{routes, LocationController}
 import forms.Location
 import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
 import org.mockito.ArgumentCaptor

@@ -54,10 +54,7 @@ trait MovementAnswers extends Answers {
   val location: Option[Location]
 }
 
-case class AssociateUcrAnswers(
-  mucrOptions: Option[MucrOptions] = None,
-  associateUcr: Option[AssociateUcr] = None
-) extends Answers {
+case class AssociateUcrAnswers(mucrOptions: Option[MucrOptions] = None, associateUcr: Option[AssociateUcr] = None) extends Answers {
   override val `type`: JourneyType.Value = JourneyType.ASSOCIATE_UCR
 }
 

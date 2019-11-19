@@ -31,11 +31,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class MucrOptionsController @Inject()(
-                                       authenticate: AuthAction,
-                                       journeyType: LegacyJourneyAction,
-                                       mcc: MessagesControllerComponents,
-                                       cacheService: CustomsCacheService,
-                                       mucrOptionsPage: mucr_options
+  authenticate: AuthAction,
+  journeyType: LegacyJourneyAction,
+  mcc: MessagesControllerComponents,
+  cacheService: CustomsCacheService,
+  mucrOptionsPage: mucr_options
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

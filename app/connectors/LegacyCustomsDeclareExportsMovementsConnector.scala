@@ -71,15 +71,9 @@ class LegacyCustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConf
       JsonHeaders
     )
 
-  def fetchNotifications(
-    conversationId: String,
-    eori: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
+  def fetchNotifications(conversationId: String, eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient
-      .GET[Seq[Notification]](
-        s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}/$conversationId",
-        eoriQueryParam(eori)
-      )
+      .GET[Seq[Notification]](s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}/$conversationId", eoriQueryParam(eori))
       .andThen {
         case Success(response)  => logger.debug(s"Notifications fetch response. $response")
         case Failure(exception) => logger.warn(s"Notifications fetch failure. $exception")

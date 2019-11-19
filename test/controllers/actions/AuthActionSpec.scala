@@ -65,7 +65,7 @@ class AuthActionSpec extends WordSpec with MustMatchers with MockitoSugar with S
       "role is missing" in {
         given(connector.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set.empty)))
 
-        intercept[InsufficientEnrolments]{
+        intercept[InsufficientEnrolments] {
           await(action.invokeBlock(FakeRequest(), block))
         }
       }
@@ -74,7 +74,7 @@ class AuthActionSpec extends WordSpec with MustMatchers with MockitoSugar with S
         val enrolment = Enrolment("HMRC-CUS-ORG", Seq.empty, "state")
         given(connector.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set(enrolment))))
 
-        intercept[InsufficientEnrolments]{
+        intercept[InsufficientEnrolments] {
           await(action.invokeBlock(FakeRequest(), block))
         }
       }

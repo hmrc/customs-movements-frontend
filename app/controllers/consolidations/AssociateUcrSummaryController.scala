@@ -32,12 +32,12 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class AssociateUcrSummaryController @Inject()(
-                                               authenticate: AuthAction,
-                                               journeyType: LegacyJourneyAction,
-                                               mcc: MessagesControllerComponents,
-                                               cacheService: CustomsCacheService,
-                                               submissionService: LegacySubmissionService,
-                                               associateDucrSummaryPage: associate_ucr_summary
+  authenticate: AuthAction,
+  journeyType: LegacyJourneyAction,
+  mcc: MessagesControllerComponents,
+  cacheService: CustomsCacheService,
+  submissionService: LegacySubmissionService,
+  associateDucrSummaryPage: associate_ucr_summary
 )(implicit executionContext: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

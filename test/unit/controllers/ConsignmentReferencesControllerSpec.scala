@@ -16,7 +16,7 @@
 
 package unit.controllers
 
-import controllers.{ConsignmentReferencesController, routes}
+import controllers.{routes, ConsignmentReferencesController}
 import forms.ConsignmentReferences
 import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
 import org.mockito.ArgumentCaptor
@@ -36,13 +36,14 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
 
   private val mockConsignmentReferencePage = mock[consignment_references]
 
-  private def controller(answers: MovementAnswers = ArrivalAnswers()) = new ConsignmentReferencesController(
-    SuccessfulAuth(),
-    ValidJourney(answers),
-    cache,
-    stubMessagesControllerComponents(),
-    mockConsignmentReferencePage
-  )(global)
+  private def controller(answers: MovementAnswers = ArrivalAnswers()) =
+    new ConsignmentReferencesController(
+      SuccessfulAuth(),
+      ValidJourney(answers),
+      cache,
+      stubMessagesControllerComponents(),
+      mockConsignmentReferencePage
+    )(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

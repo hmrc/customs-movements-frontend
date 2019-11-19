@@ -40,23 +40,22 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, eoriWh
       HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     authorised(Enrolment("HMRC-CUS-ORG"))
-      .retrieve(allEnrolments) {
-        allEnrolments: Enrolments =>
-          val eori = allEnrolments
-            .getEnrolment("HMRC-CUS-ORG")
-            .flatMap(_.getIdentifier("EORINumber"))
+      .retrieve(allEnrolments) { allEnrolments: Enrolments =>
+        val eori = allEnrolments
+          .getEnrolment("HMRC-CUS-ORG")
+          .flatMap(_.getIdentifier("EORINumber"))
 
-          if (eori.isEmpty) {
-            throw InsufficientEnrolments()
-          }
+        if (eori.isEmpty) {
+          throw InsufficientEnrolments()
+        }
 
-          val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments)
+        val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments)
 
-          if (eoriWhitelist.contains(cdsLoggedInUser)) {
-            block(AuthenticatedRequest(request, cdsLoggedInUser))
-          } else {
-            Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad()))
-          }
+        if (eoriWhitelist.contains(cdsLoggedInUser)) {
+          block(AuthenticatedRequest(request, cdsLoggedInUser))
+        } else {
+          Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad()))
+        }
       }
   }
 }

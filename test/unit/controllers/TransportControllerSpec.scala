@@ -16,7 +16,7 @@
 
 package unit.controllers
 
-import controllers.{TransportController, routes}
+import controllers.{routes, TransportController}
 import forms.Transport
 import forms.Transport.ModesOfTransport.Sea
 import models.cache.DepartureAnswers

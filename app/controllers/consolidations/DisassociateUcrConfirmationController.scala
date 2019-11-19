@@ -27,10 +27,10 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class DisassociateUcrConfirmationController @Inject()(
-                                                       authenticate: AuthAction,
-                                                       journeyType: LegacyJourneyAction,
-                                                       mcc: MessagesControllerComponents,
-                                                       disassociateUcrConfirmationPage: disassociate_ucr_confirmation
+  authenticate: AuthAction,
+  journeyType: LegacyJourneyAction,
+  mcc: MessagesControllerComponents,
+  disassociateUcrConfirmationPage: disassociate_ucr_confirmation
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 

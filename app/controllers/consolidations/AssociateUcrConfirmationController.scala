@@ -25,10 +25,10 @@ import views.html.associate_ucr_confirmation
 
 @Singleton
 class AssociateUcrConfirmationController @Inject()(
-                                                    authenticate: AuthAction,
-                                                    journeyType: LegacyJourneyAction,
-                                                    mcc: MessagesControllerComponents,
-                                                    associateDucrConfirmPage: associate_ucr_confirmation
+  authenticate: AuthAction,
+  journeyType: LegacyJourneyAction,
+  mcc: MessagesControllerComponents,
+  associateDucrConfirmPage: associate_ucr_confirmation
 ) extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>

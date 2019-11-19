@@ -51,9 +51,8 @@ class ErrorHandlerSpec extends ControllerLayerSpec {
     given(messagesApi.preferred(any[RequestHeader]())).willReturn(messages)
   }
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     reset(errorPage, messagesApi, appConfig)
-  }
 
   "ErrorHandlerSpec" should {
 
@@ -112,9 +111,7 @@ class ErrorHandlerSpec extends ControllerLayerSpec {
       val res = errorHandler.resolveError(req, new NoActiveSession("A user is not logged in") {})
 
       res.header.status must be(Status.SEE_OTHER)
-      res.header.headers.get(HeaderNames.LOCATION) must be(
-        Some("login-url?continue=login-continue-url")
-      )
+      res.header.headers.get(HeaderNames.LOCATION) must be(Some("login-url?continue=login-continue-url"))
     }
 
     "handle insufficient enrolments authorisation exception" in {

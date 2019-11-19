@@ -16,81 +16,80 @@
 
 package unit.controllers.consolidations
 
-import base.MockSubmissionService
 import controllers.consolidations.{routes, DisassociateUcrController}
-import forms.Choice.DisassociateUCR
 import forms._
+import models.cache.DisassociateUcrAnswers
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
+import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import testdata.ConsolidationTestData.ValidDucr
-import unit.base.LegacyControllerSpec
+import unit.controllers.ControllerLayerSpec
+import unit.repository.MockCache
 import views.html.disassociate_ucr
 
-import scala.concurrent.ExecutionContext.global
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class DisassociateUcrControllerSpec extends LegacyControllerSpec with MockSubmissionService with ScalaFutures with OptionValues {
+class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache with ScalaFutures with OptionValues {
 
-  private val mockDisassociateUcrPage = mock[disassociate_ucr]
+  private val page = mock[disassociate_ucr]
 
-  private val controller = new DisassociateUcrController(
-    mockAuthAction,
-    mockJourneyAction,
-    stubMessagesControllerComponents(),
-    mockCustomsCacheService,
-    mockDisassociateUcrPage
-  )(global)
+  private def controller(answers: DisassociateUcrAnswers) =
+    new DisassociateUcrController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, page)
 
   private val correctForm = Json.toJson(DisassociateUcr(DisassociateKind.Ducr, Some(ValidDucr), Some("")))
   private val incorrectForm = Json.toJson(DisassociateUcr(DisassociateKind.Ducr, Some("abc"), None))
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-
-    authorizedUser()
-    withCaching(Choice.choiceId, Some(DisassociateUCR))
-    withCaching(DisassociateUcr.formId, None)
-    withCaching(DisassociateUcr.formId)
-    when(mockDisassociateUcrPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(page.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockDisassociateUcrPage)
+    reset(page)
     super.afterEach()
   }
 
+  private def theFormDisplayed: Form[DisassociateUcr] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[DisassociateUcr]])
+    verify(page).apply(captor.capture())(any(), any())
+    captor.getValue
+  }
+
   "Disassociate Ucr Controller" should {
-
     "return 200 (OK)" when {
-
       "display page is invoked" in {
-
-        val result = controller.displayPage()(getRequest())
+        val result = controller(DisassociateUcrAnswers()).displayPage()(getRequest())
 
         status(result) mustBe OK
+        theFormDisplayed.value mustBe empty
+      }
+
+      "display page is invoked with data" in {
+        val ucr = DisassociateUcr(DisassociateKind.Ducr, Some("ducr"), None)
+        val result = controller(DisassociateUcrAnswers(Some(ucr))).displayPage()(getRequest())
+
+        status(result) mustBe OK
+        theFormDisplayed.value mustBe Some(ucr)
       }
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "incorrect form is submitted" in {
-
-        val result = controller.submit()(postRequest(incorrectForm))
+        val result = controller(DisassociateUcrAnswers()).submit()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
     }
 
     "return 303 (SEE_OTHER)" when {
-
       "form is correct" in {
-
-        val result = controller.submit()(postRequest(correctForm))
-        await(result)
+        val result = controller(DisassociateUcrAnswers()).submit()(postRequest(correctForm))
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.DisassociateUcrSummaryController.displayPage().url
       }

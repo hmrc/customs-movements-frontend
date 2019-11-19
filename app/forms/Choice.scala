@@ -16,10 +16,10 @@
 
 package forms
 
-import forms.Mapping.requiredRadio
+import forms.EnhancedMapping.requiredRadio
 import models.cache.JourneyType.{ARRIVE, ASSOCIATE_UCR, DEPART, DISSOCIATE_UCR, JourneyType, SHUT_MUCR}
 import play.api.data.{Form, Forms, Mapping}
-import play.api.libs.json.{Format, JsError, JsResult, JsString, JsSuccess, JsValue}
+import play.api.libs.json._
 import utils.validators.forms.FieldValidator.isContainedIn
 
 sealed abstract class Choice(val value: String) {

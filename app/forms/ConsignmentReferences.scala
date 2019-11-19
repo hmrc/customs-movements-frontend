@@ -16,7 +16,7 @@
 
 package forms
 
-import forms.Mapping.requiredRadio
+import forms.EnhancedMapping.requiredRadio
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json

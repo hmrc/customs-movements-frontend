@@ -17,39 +17,29 @@
 package unit.controllers.consolidations
 
 import controllers.consolidations.DisassociateUcrConfirmationController
-import forms.Choice
-import forms.Choice.DisassociateUCR
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.base.LegacyControllerSpec
+import unit.controllers.ControllerLayerSpec
 import views.html.disassociate_ucr_confirmation
 
 import scala.concurrent.ExecutionContext.global
 
-class DisassociateUcrConfirmationControllerSpec extends LegacyControllerSpec {
+class DisassociateUcrConfirmationControllerSpec extends ControllerLayerSpec {
 
   private val mockDisassociateDucrConfirmationPage = mock[disassociate_ucr_confirmation]
 
-  private val controller = new DisassociateUcrConfirmationController(
-    mockAuthAction,
-    mockJourneyAction,
-    stubMessagesControllerComponents(),
-    mockDisassociateDucrConfirmationPage
-  )(global)
+  private val controller =
+    new DisassociateUcrConfirmationController(SuccessfulAuth(), stubMessagesControllerComponents(), mockDisassociateDucrConfirmationPage)(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-
-    authorizedUser()
-    withCaching(Choice.choiceId, Some(DisassociateUCR))
     when(mockDisassociateDucrConfirmationPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     reset(mockDisassociateDucrConfirmationPage)
-
     super.afterEach()
   }
 

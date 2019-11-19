@@ -16,7 +16,7 @@
 
 package unit.controllers.consolidations
 
-import controllers.consolidations.{AssociateUcrController, routes}
+import controllers.consolidations.{routes, AssociateUcrController}
 import forms.AssociateKind._
 import forms.{AssociateUcr, MucrOptions}
 import models.ReturnToStartException

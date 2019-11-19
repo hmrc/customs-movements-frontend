@@ -16,8 +16,9 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, LegacyJourneyAction}
+import controllers.actions.{AuthAction, JourneyRefiner, LegacyJourneyAction}
 import javax.inject.{Inject, Singleton}
+import models.cache.JourneyType
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -28,13 +29,12 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class DisassociateUcrConfirmationController @Inject()(
   authenticate: AuthAction,
-  journeyType: LegacyJourneyAction,
   mcc: MessagesControllerComponents,
   disassociateUcrConfirmationPage: disassociate_ucr_confirmation
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = authenticate { implicit request =>
     Ok(disassociateUcrConfirmationPage())
   }
 }

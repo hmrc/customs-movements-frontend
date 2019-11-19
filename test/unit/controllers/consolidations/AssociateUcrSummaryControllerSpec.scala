@@ -42,14 +42,15 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with MockCac
   private val service = mock[SubmissionService]
   private val mockAssociateDucrSummaryPage = mock[associate_ucr_summary]
 
-  private def controller(answers: AssociateUcrAnswers) = new AssociateUcrSummaryController(
-    SuccessfulAuth(),
-    ValidJourney(answers),
-    stubMessagesControllerComponents(),
-    cache,
-    service,
-    mockAssociateDucrSummaryPage
-  )(global)
+  private def controller(answers: AssociateUcrAnswers) =
+    new AssociateUcrSummaryController(
+      SuccessfulAuth(),
+      ValidJourney(answers),
+      stubMessagesControllerComponents(),
+      cache,
+      service,
+      mockAssociateDucrSummaryPage
+    )(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -114,7 +115,8 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with MockCac
       "all mandatory data is in cache and submission service returned ACCEPTED" in {
         when(service.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
 
-        val result = controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))).submit()(postRequest(Json.obj()))
+        val result =
+          controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))).submit()(postRequest(Json.obj()))
 
         status(result) mustBe SEE_OTHER
         flash(result).get(FlashKeys.MUCR) mustBe None

@@ -31,7 +31,7 @@ class DepartureDetailsViewSpec extends UnitViewSpec with DepartureDetailsMessage
 
   private def createView(form: Form[DepartureDetails] = form): Document = departureDetailsPage(form)
 
-  "Arrival Details View" should {
+  "Departure Details View" should {
 
     "have a proper labels for messages" in {
       val messages = messagesApi.preferred(request)
@@ -44,7 +44,7 @@ class DepartureDetailsViewSpec extends UnitViewSpec with DepartureDetailsMessage
     }
   }
 
-  "Arrival Details View on empty page" should {
+  "Departure Details View on empty page" should {
 
     val view = createView()
 
@@ -79,11 +79,11 @@ class DepartureDetailsViewSpec extends UnitViewSpec with DepartureDetailsMessage
       backButton must haveHref(routes.ConsignmentReferencesController.displayPage())
     }
 
-    "display \"Save and continue\" button on page" in {
+    "display 'Continue' button on page" in {
 
       val saveButton = view.getElementById("submit")
 
-      saveButton.text() mustBe saveAndContinueCaption
+      saveButton.text() mustBe continueCaption
     }
   }
 }

@@ -49,7 +49,7 @@
                     revealComponent = components.input_text(
                         form("ducr"),
                         messages("associate.ucr.ducr.label"),
-                        labelClass=Some("visuallyhidden")
+                        labelClass = Some("visuallyhidden")
                     )
                 ),
                 RadioOption(
@@ -58,12 +58,14 @@
                     revealComponent = components.input_text(
                         form("mucr"),
                         messages("associate.ucr.mucr.label"),
-                        labelClass=Some("visuallyhidden")
+                        labelClass = Some("visuallyhidden")
                     )
                 )
             )
         )
 
-        @components.submit_button(messages("site.continue"))
+        @components.submit_button {
+            @messages("site.continue")
+        }
     }
 }

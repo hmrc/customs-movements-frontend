@@ -44,7 +44,7 @@
                 RadioOption(
                     keyPrefix = "disassociate.ucr",
                     option = DisassociateKind.Ducr.formValue,
-                    revealComponent = components.input_text(form("ducr"), "")  // TODO input label
+                    revealComponent = components.input_text(form("ducr"), "") // TODO input label
                 ),
                 RadioOption(
                     keyPrefix = "disassociate.ucr",
@@ -54,6 +54,8 @@
             )
         )
 
-        @components.submit_button("site.continue")
+        @components.submit_button {
+            @messages("site.continue")
+        }
     }
 }

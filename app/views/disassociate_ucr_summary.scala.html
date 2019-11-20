@@ -22,28 +22,30 @@
 @(disassociateUcr: DisassociateUcr)(implicit request: Request[_], messages: Messages)
 
 
-  @main_template(title = Title(messages("disassociate.ucr.summary.title")),
+@main_template(title = Title(messages("disassociate.ucr.summary.title")),
     fullWidth = true) {
     @helper.form(consolidations.routes.DisassociateUcrSummaryController.submit(), 'autoComplete -> "off") {
-      @helper.CSRF.formField
+        @helper.CSRF.formField
 
-      @components.back_link(consolidations.routes.DisassociateUcrController.displayPage())
+        @components.back_link(consolidations.routes.DisassociateUcrController.displayPage())
 
-      @components.page_title(title = Some(messages("disassociate.ucr.summary.title")))
+        @components.page_title(title = Some(messages("disassociate.ucr.summary.title")))
 
-      <table>
-          <caption class="heading-medium">@messages("disassociate.ucr.summary.table.caption")</caption>
-          <tbody>
-              <tr>
-                  <td id="disassociate_ucr-type">@disassociateUcr.kind.toString.toUpperCase</td>
-                  <td id="disassociate_ucr-reference">@disassociateUcr.ucr</td>
-                  <td class="text-right">
-                      <a id="disassociate_ucr-remove" href="@consolidations.routes.DisassociateUcrController.displayPage()">@messages("site.change")</a>
-                  </td>
-              </tr>
-          </tbody>
-      </table>
+        <table>
+            <caption class="heading-medium">@messages("disassociate.ucr.summary.table.caption")</caption>
+            <tbody>
+                <tr>
+                    <td id="disassociate_ucr-type">@disassociateUcr.kind.toString.toUpperCase</td>
+                    <td id="disassociate_ucr-reference">@disassociateUcr.ucr</td>
+                    <td class="text-right">
+                        <a id="disassociate_ucr-remove" href="@consolidations.routes.DisassociateUcrController.displayPage()">@messages("site.change")</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-      @components.submit_button("site.confirmAndSubmit")
+        @components.submit_button {
+            @messages("site.confirmAndSubmit")
+        }
     }
-  }
+}

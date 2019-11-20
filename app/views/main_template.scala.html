@@ -21,29 +21,29 @@
 @this(govuk_wrapper: views.html.govuk_wrapper, sidebar_di: Sidebar, article_di: Article)
 
 @(title: Title,
-        sidebarLinks: Option[Html] = None,
-        contentHeader: Option[Html] = None,
-        bodyClasses: Option[String] = None,
-        mainClass: Option[String] = None,
-        scriptElem: Option[Html] = None,
-        fullWidth: Boolean = false)(mainContent: Html)(implicit request: Request[_], messages: Messages)
+  sidebarLinks: Option[Html] = None,
+  contentHeader: Option[Html] = None,
+  bodyClasses: Option[String] = None,
+  mainClass: Option[String] = None,
+  scriptElem: Option[Html] = None,
+  fullWidth: Boolean = false)(mainContent: Html)(implicit request : Request[_], messages: Messages)
 
-    @import uk.gov.hmrc.play.views.html.layouts
+@import uk.gov.hmrc.play.views.html.layouts
 
-    @serviceInfoContent = {}
+@serviceInfoContent = {}
 
-    @sidebar = {
+@sidebar = {
     @if(sidebarLinks.isDefined) {
         @sidebar_di(sidebarLinks.get, Some("sidebar"))
     }
-    }
+}
 
-    @govuk_wrapper(title = title.title,
-        mainClass = mainClass,
-        bodyClasses = bodyClasses,
-        sidebar = sidebar,
-        contentHeader = contentHeader,
-        mainContent = article_di(mainContent, articleClasses = if(fullWidth) Some("full-width") else None),
-        serviceInfoContent = serviceInfoContent,
-        scriptElem = scriptElem
-    )
+@govuk_wrapper(title = title.title,
+               mainClass = mainClass,
+               bodyClasses = bodyClasses,
+               sidebar = sidebar,
+               contentHeader = contentHeader,
+               mainContent = article_di(mainContent, articleClasses = if(fullWidth) Some("full-width") else None),
+               serviceInfoContent = serviceInfoContent,
+               scriptElem = scriptElem
+)

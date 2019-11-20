@@ -46,8 +46,6 @@
             hint = Some(messages("arrivalDetails.time.hint"))
         )
 
-        @components.submit_button {
-            @messages("site.continue")
-        }
+        @components.submit_button(messages("site.continue"))
     }
 }

@@ -94,11 +94,11 @@ class TransportViewSpec extends UnitViewSpec with TransportMessages with CommonM
       backButton.attr("href") mustBe routes.LocationController.displayPage().url
     }
 
-    "display \"Save and continue\" button on page" in {
+    "display 'continue' button on page" in {
 
       val saveButton = view.getElementById("submit")
 
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      saveButton.text() must be(messages(continueCaption))
     }
   }
 }

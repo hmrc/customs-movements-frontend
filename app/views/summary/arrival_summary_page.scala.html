@@ -25,12 +25,12 @@
 
 @(data: ArrivalAnswers)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("summary.arrival.title", None)){
+@main_template(title = Title("summary.arrival.title", None)) {
     @components.back_link(routes.LocationController.displayPage())
 
     @components.page_title(Some(messages("summary.arrival.title")))
 
-    @components.summary_list(Some(messages("summary.consignmentDetails"))){
+    @components.summary_list(Some(messages("summary.consignmentDetails"))) {
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("summary.referenceType"),
             value = data.consignmentReferences.map(ref =>
@@ -48,7 +48,7 @@
     }
 
     @data.arrivalReference.flatMap(_.reference).filter(_.nonEmpty).map { reference =>
-        @components.summary_list(Some(messages("arrivalReference"))){
+        @components.summary_list(Some(messages("arrivalReference"))) {
             @components.table_row_no_change_link(HtmlTableRow(
                 label = messages("summary.arrivalReference.reference"),
                 value = reference
@@ -56,7 +56,7 @@
         }
     }
 
-    @components.summary_list(Some(messages("arrivalDetails.title"))){
+    @components.summary_list(Some(messages("arrivalDetails.title"))) {
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("summary.arrival.date"),
             value = data.arrivalDetails.map(_.dateOfArrival.toString)
@@ -67,7 +67,7 @@
         ))
     }
 
-    @components.summary_list(Some(messages("location.title"))){
+    @components.summary_list(Some(messages("location.title"))) {
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("summary.goodsLocation"),
             value = data.location.map(_.code)
@@ -77,6 +77,6 @@
     @helper.form(action = routes.SummaryController.submitMovementRequest()) {
         @helper.CSRF.formField
 
-        @components.submit_button("site.confirmAndSubmit")
+        @components.submit_button(messages("site.confirmAndSubmit"))
     }
 }

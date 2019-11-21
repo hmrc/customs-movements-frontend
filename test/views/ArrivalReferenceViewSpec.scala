@@ -60,9 +60,9 @@ class ArrivalReferenceViewSpec extends UnitViewSpec {
       createView().getElementById("reference-hint").text() mustBe messages("arrivalReference.hint")
     }
 
-    "have save and continue button" in {
+    "have 'Continue' button" in {
 
-      createView().getElementById("submit").text() mustBe messages("site.save_and_continue")
+      createView().getElementById("submit").text() mustBe messages("site.continue")
     }
 
     "have back button" in {

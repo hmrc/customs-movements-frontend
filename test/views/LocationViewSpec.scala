@@ -68,11 +68,11 @@ class LocationViewSpec extends UnitViewSpec with CommonMessages {
       backButton must haveHref(routes.MovementDetailsController.displayPage())
     }
 
-    "display \"Save and continue\" button on page" in {
+    "display 'Continue' button on page" in {
 
       val saveButton = view.getElementById("submit")
 
-      saveButton.text() mustBe messages(saveAndContinueCaption)
+      saveButton.text() mustBe messages(continueCaption)
     }
   }
 }

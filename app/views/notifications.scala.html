@@ -23,24 +23,28 @@
 
 @notificationsList(elementsToDisplay: Seq[NotificationsPageSingleElement]) = {
     <div class="govuk-grid-column-two-thirds">
-        @for((element, index) <- elementsToDisplay.zip(Stream.from(1)).reverse) {
-            @components.notifications_single_element(index, element)
-        }
+    @for((element, index) <- elementsToDisplay.zip(Stream.from(1)).reverse) {
+        @components.notifications_single_element(index, element)
+    }
 
     </div>
     <div id="notifications-request">
-      <h2 id="notifications-request-title" class="heading-large">@submissionElement.title</h2>
-      <p id="notifications-request-timestamp">@{submissionElement.timestampInfo}</p>
-      <div id="notifications-request-content">@{submissionElement.content}</div>
+        <h2 id="notifications-request-title" class="heading-large">@submissionElement.title</h2>
+        <p id="notifications-request-timestamp">@{
+            submissionElement.timestampInfo
+        }</p>
+        <div id="notifications-request-content">@{
+            submissionElement.content
+        }</div>
     </div>
 }
 
 @main_template(title = Title(messages("notifications.title", submissionUcr))) {
 
-  @components.back_link(routes.SubmissionsController.displayPage())
+    @components.back_link(routes.SubmissionsController.displayPage())
 
-  @components.page_title(Some(messages("notifications.title", submissionUcr)))
+    @components.page_title(Some(messages("notifications.title", submissionUcr)))
 
-  @notificationsList(elementsToDisplay)
+    @notificationsList(elementsToDisplay)
 
 }

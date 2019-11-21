@@ -18,12 +18,11 @@ package helpers.views
 
 trait CommonMessages {
 
-  val errorPrefix: String = "error"
-  val ducrError: String = errorPrefix + ".ducr"
+  val ducrError: String = "error.ducr"
   val mucrErrorEmpty: String = "error.mucr.empty"
   val mucrErrorFormat: String = "error.mucr.format"
-  val errorSummaryTitle: String = errorPrefix + ".summary.title"
-  val errorSummaryText: String = errorPrefix + ".summary.text"
+  val errorSummaryTitle: String = "error.summary.title"
+  val errorSummaryText: String = "error.summary.text"
 
   val backCaption: String = "site.back"
   val saveAndContinueCaption: String = "site.save_and_continue"
@@ -32,8 +31,7 @@ trait CommonMessages {
   val confirmAndSubmitCaption: String = "site.confirmAndSubmit"
   val changeCaption: String = "site.change"
 
-  val globalError: String = "global.error"
-  val globalErrorTitle: String = globalError + ".title"
-  val globalErrorHeading: String = globalError + ".heading"
-  val globalErrorMessage: String = globalError + ".message"
+  val globalErrorTitle: String = "global.error.title"
+  val globalErrorHeading: String = "global.error.heading"
+  val globalErrorMessage: String = "global.error.message"
 }

@@ -67,7 +67,7 @@ class ArrivalReferenceViewSpec extends UnitViewSpec {
 
     "have back button" in {
 
-      val backButton = createView().getElementById("link-back")
+      val backButton = createView().getElementById("back-link")
 
       backButton must containMessage("site.back")
       backButton must haveHref(routes.ConsignmentReferencesController.displayPage())

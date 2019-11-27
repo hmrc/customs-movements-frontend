@@ -88,7 +88,7 @@ class TransportViewSpec extends UnitViewSpec with TransportMessages with CommonM
 
     "display \"Back\" button that links to Location" in {
 
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") mustBe routes.LocationController.displayPage().url

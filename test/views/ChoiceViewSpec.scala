@@ -75,7 +75,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
     "display 'Back' button that links to 'Make an export declaration' page" in {
 
-      val backButton = createView().getElementById("link-back")
+      val backButton = createView().getElementById("back-link")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be(controllers.routes.StartController.displayStartPage().url)

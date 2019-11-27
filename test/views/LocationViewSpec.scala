@@ -62,7 +62,7 @@ class LocationViewSpec extends UnitViewSpec with CommonMessages {
 
     "display \"Back\" button that links to Movement Details" in {
 
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
       backButton.text() must be(messages(backCaption))
       backButton must haveHref(routes.MovementDetailsController.displayPage())

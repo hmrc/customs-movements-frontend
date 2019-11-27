@@ -73,7 +73,7 @@ class DepartureDetailsViewSpec extends UnitViewSpec with DepartureDetailsMessage
 
     "display \"Back\" button that links to Consignment References" in {
 
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
       backButton.text() must be(backCaption)
       backButton must haveHref(routes.ConsignmentReferencesController.displayPage())

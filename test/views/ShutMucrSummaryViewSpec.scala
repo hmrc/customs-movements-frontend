@@ -65,7 +65,7 @@ class ShutMucrSummaryViewSpec extends UnitViewSpec with CommonMessages {
       val changeButton = view.getElementById("shutMucr-change")
 
       changeButton must haveHref(routes.ShutMucrController.displayPage())
-      changeButton.text() mustBe messages("site.edit")
+      changeButton.text() must include(messages("site.edit"))
     }
 
     "display correct submit button" in {

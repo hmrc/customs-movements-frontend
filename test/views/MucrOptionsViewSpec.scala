@@ -53,7 +53,7 @@ class MucrOptionsViewSpec extends UnitViewSpec with CommonMessages {
     }
 
     "display 'Back' button that links to start page" in {
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
       backButton.text() must be(backCaption)
       backButton must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
     }

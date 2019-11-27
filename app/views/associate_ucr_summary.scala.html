@@ -40,7 +40,10 @@
                     <td id="associate_ucr-type">@messages(s"associate.ucr.summary.kind.${associateUcr.kind.formValue}")</td>
                     <td id="associate_ucr-reference">@associateUcr.ucr</td>
                     <td class="text-right">
-                        <a id="associate_ducr-change" href="@consolidations.routes.AssociateUcrController.displayPage()">@messages("site.change")</a>
+                        <a id="associate_ducr-change" href="@consolidations.routes.AssociateUcrController.displayPage()">
+                            <span aria-hidden="true">@messages("site.change")</span>
+                            <span class="visuallyhidden">@{messages("site.change.hint.associate.ucr")}</span>
+                        </a>
                     </td>
                 </tr>
             </tbody>
@@ -54,7 +57,10 @@
                     <td id="mucr-type">@messages("associate.ucr.summary.kind.mucr")</td>
                     <td id="mucr-reference">@mucr</td>
                     <td class="text-right">
-                        <a id="mucr-change" href="@consolidations.routes.MucrOptionsController.displayPage()">@messages("site.change")</a>
+                        <a id="mucr-change" href="@consolidations.routes.MucrOptionsController.displayPage()">
+                            <span aria-hidden="true">@messages("site.change")</span>
+                            <span class="visuallyhidden">@{messages("site.change.hint.associate.mucr")}</span>
+                        </a>
                     </td>
                 </tr>
             </tbody>

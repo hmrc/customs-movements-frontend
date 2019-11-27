@@ -41,7 +41,10 @@
                     <td id="shutMucr-type">@messages("shutMucr.summary.type")</td>
                     <td id="shutMucr-mucr">@shutMucr.mucr</td>
                     <td class="text-right">
-                        <a id="shutMucr-change" href="@routes.ShutMucrController.displayPage()">@messages("site.edit")</a>
+                        <a id="shutMucr-change" href="@routes.ShutMucrController.displayPage()">
+                            <span aria-hidden="true">@messages("site.edit")</span>
+                            <span class="visuallyhidden">@{messages("site.change.hint.shut.mucr")}</span>
+                        </a>
                     </td>
                 </tr>
             </tbody>

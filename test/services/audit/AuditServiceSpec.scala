@@ -16,15 +16,16 @@
 
 package services.audit
 
-import forms._
-import models.requests.{MovementDetailsRequest, MovementRequest, MovementType}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import services.audit.EventData._
+import play.api.libs.json.{JsValue, Json}
+import services.audit.AuditService.EventData
+import testdata.{CommonTestData, MovementsTestData}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
+import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 import unit.base.UnitSpec
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,54 +33,217 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuditServiceSpec extends UnitSpec with BeforeAndAfterEach {
 
   private implicit val ec: ExecutionContext = ExecutionContext.global
-  private implicit val headerCarrier = HeaderCarrier()
+  private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
 
-  private val mockAuditConnector = mock[AuditConnector]
-  private val spyAuditService = Mockito.spy(new AuditService(mockAuditConnector, "appName"))
+  private val auditConnector = mock[AuditConnector]
+  private val service = new AuditService(auditConnector, "appName")
 
-  override def beforeEach(): Unit =
-    when(mockAuditConnector.sendEvent(any())(any[HeaderCarrier], any[ExecutionContext]))
-      .thenReturn(Future.successful(AuditResult.Success))
+  override def beforeEach(): Unit = {
+    super.beforeEach()
 
-  override def afterEach(): Unit = reset(mockAuditConnector)
+    when(auditConnector.sendEvent(any())(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future.successful(AuditResult.Success))
+    when(auditConnector.sendExtendedEvent(any())(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future.successful(AuditResult.Success))
+  }
+
+  override def afterEach(): Unit = {
+    reset(auditConnector)
+
+    super.afterEach()
+  }
+
+  private def auditTagsPayload(auditType: String): Map[String, String] = Map(
+    "clientIP" -> "-",
+    "path" -> s"customs-declare-exports/$auditType/full-payload",
+    "X-Session-ID" -> "-",
+    "Akamai-Reputation" -> "-",
+    "X-Request-ID" -> "-",
+    "deviceID" -> "-",
+    "clientPort" -> "-",
+    "transactionName" -> s"Export-Declaration-${auditType}-payload-request"
+  )
+
+  private def auditTagsResult(auditType: String): Map[String, String] = Map(
+    "clientIP" -> "-",
+    "path" -> s"customs-declare-exports/$auditType",
+    "X-Session-ID" -> "-",
+    "Akamai-Reputation" -> "-",
+    "X-Request-ID" -> "-",
+    "deviceID" -> "-",
+    "clientPort" -> "-",
+    "transactionName" -> s"Export-Declaration-${auditType}-request"
+  )
+
+  private def sentExtendedDataEvent: ExtendedDataEvent = {
+    val captor: ArgumentCaptor[ExtendedDataEvent] = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
+    verify(auditConnector).sendExtendedEvent(captor.capture())(any[HeaderCarrier], any[ExecutionContext])
+    captor.getValue
+  }
+
+  private def sentDataEvent: DataEvent = {
+    val captor: ArgumentCaptor[DataEvent] = ArgumentCaptor.forClass(classOf[DataEvent])
+    verify(auditConnector).sendEvent(captor.capture())(any[HeaderCarrier], any[ExecutionContext])
+    captor.getValue
+  }
 
   "AuditService" should {
-    "audit Shut a Mucr data" in {
-      val dataToAudit = Map(eori.toString -> "eori", mucr.toString -> "mucr", submissionResult.toString -> "200")
-      spyAuditService.auditShutMucr("eori", "mucr", "200")
-      verify(spyAuditService).audit(AuditTypes.AuditShutMucr, dataToAudit)
-    }
 
-    "audit an association" in {
-      val dataToAudit = Map(eori.toString -> "eori", mucr.toString -> "mucr", ducr.toString -> "ducr", submissionResult.toString -> "200")
-      spyAuditService.auditAssociate("eori", "mucr", "ducr", "200")
-      verify(spyAuditService).audit(AuditTypes.AuditAssociate, dataToAudit)
-    }
+    "call AuditConnector sendExtendedEvent method with correct data when auditing submission payload" when {
 
-    "audit a disassociation" in {
-      val dataToAudit = Map(eori.toString -> "eori", ducr.toString -> "ducr", submissionResult.toString -> "200")
-      spyAuditService.auditDisassociate("eori", "ducr", "200")
-      verify(spyAuditService).audit(AuditTypes.AuditDisassociate, dataToAudit)
-    }
+      "used for Arrival" in {
 
-    "audit a movement" in {
-      val dataToAudit = Map(
-        EventData.movementReference.toString -> "",
-        EventData.eori.toString -> "GB12345678",
-        EventData.messageCode.toString -> "EAL",
-        EventData.ucr.toString -> "UCR",
-        EventData.ucrType.toString -> "D",
-        EventData.submissionResult.toString -> "200"
-      )
-      val data =
-        MovementRequest(
-          eori = "GB12345678",
-          choice = MovementType.Arrival,
-          consignmentReference = ConsignmentReferences("UCR", "D"),
-          movementDetails = MovementDetailsRequest("dateTime")
+        val answers = MovementsTestData.validArrivalAnswers
+
+        val auditTags = auditTagsPayload("Arrival")
+        val auditDetail: JsValue = Json.obj(
+          "ConsignmentReferences" -> answers.consignmentReferences,
+          "Location" -> answers.location,
+          "MovementDetails" -> answers.arrivalDetails,
+          "ArrivalReference" -> answers.arrivalReference
         )
-      spyAuditService.auditMovements(data, "200", AuditTypes.AuditArrival)
-      verify(spyAuditService).audit(AuditTypes.AuditArrival, dataToAudit)
+        val expectedExtendedDataEvent =
+          ExtendedDataEvent(auditSource = "appName", auditType = AuditType.AuditArrival.toString, tags = auditTags, detail = auditDetail)
+
+        service.auditAllPagesUserInput(answers)
+
+        val actualExtendedDataEvent = sentExtendedDataEvent
+        actualExtendedDataEvent.auditSource mustBe expectedExtendedDataEvent.auditSource
+        actualExtendedDataEvent.auditType mustBe expectedExtendedDataEvent.auditType
+        actualExtendedDataEvent.tags mustBe expectedExtendedDataEvent.tags
+        actualExtendedDataEvent.detail mustBe expectedExtendedDataEvent.detail
+      }
+
+      "used for Departure" in {
+
+        val answers = MovementsTestData.validDepartureAnswers
+
+        val auditTags = auditTagsPayload("Departure")
+        val auditDetail: JsValue = Json.obj(
+          "ConsignmentReferences" -> answers.consignmentReferences,
+          "Location" -> answers.location,
+          "MovementDetails" -> answers.departureDetails,
+          "Transport" -> answers.transport
+        )
+        val expectedExtendedDataEvent =
+          ExtendedDataEvent(auditSource = "appName", auditType = AuditType.AuditDeparture.toString, tags = auditTags, detail = auditDetail)
+
+        service.auditAllPagesUserInput(answers)
+
+        val actualExtendedDataEvent = sentExtendedDataEvent
+        actualExtendedDataEvent.auditSource mustBe expectedExtendedDataEvent.auditSource
+        actualExtendedDataEvent.auditType mustBe expectedExtendedDataEvent.auditType
+        actualExtendedDataEvent.tags mustBe expectedExtendedDataEvent.tags
+        actualExtendedDataEvent.detail mustBe expectedExtendedDataEvent.detail
+      }
+    }
+
+    "call AuditConnector sendEvent method with correct data when auditing submission result" when {
+
+      "used for Shut a Mucr" in {
+
+        val auditTags = auditTagsResult("ShutMucr")
+        val auditDetail =
+          Map(EventData.eori.toString -> CommonTestData.validEori, EventData.mucr.toString -> "mucr", EventData.submissionResult.toString -> "200")
+        val expectedDataEvent =
+          DataEvent(auditSource = "appName", auditType = AuditType.AuditShutMucr.toString, tags = auditTags, detail = auditDetail)
+
+        service.auditShutMucr(CommonTestData.validEori, "mucr", "200")
+
+        val actualDataEvent = sentDataEvent
+        actualDataEvent.auditSource mustBe expectedDataEvent.auditSource
+        actualDataEvent.auditType mustBe expectedDataEvent.auditType
+        actualDataEvent.tags mustBe expectedDataEvent.tags
+        actualDataEvent.detail mustBe expectedDataEvent.detail
+      }
+
+      "used for Association" in {
+
+        val auditTags = auditTagsResult("Associate")
+        val auditDetail =
+          Map(
+            EventData.eori.toString -> CommonTestData.validEori,
+            EventData.mucr.toString -> "mucr",
+            EventData.ducr.toString -> "ducr",
+            EventData.submissionResult.toString -> "200"
+          )
+        val expectedDataEvent =
+          DataEvent(auditSource = "appName", auditType = AuditType.AuditAssociate.toString, tags = auditTags, detail = auditDetail)
+
+        service.auditAssociate(CommonTestData.validEori, "mucr", "ducr", "200")
+
+        val actualDataEvent = sentDataEvent
+        actualDataEvent.auditSource mustBe expectedDataEvent.auditSource
+        actualDataEvent.auditType mustBe expectedDataEvent.auditType
+        actualDataEvent.tags mustBe expectedDataEvent.tags
+        actualDataEvent.detail mustBe expectedDataEvent.detail
+      }
+
+      "used for Disassociation" in {
+
+        val auditTags = auditTagsResult("Disassociate")
+        val auditDetail =
+          Map(EventData.eori.toString -> CommonTestData.validEori, EventData.ucr.toString -> "ucr", EventData.submissionResult.toString -> "200")
+        val expectedDataEvent =
+          DataEvent(auditSource = "appName", auditType = AuditType.AuditDisassociate.toString, tags = auditTags, detail = auditDetail)
+
+        service.auditDisassociate(CommonTestData.validEori, "ucr", "200")
+
+        val actualDataEvent = sentDataEvent
+        actualDataEvent.auditSource mustBe expectedDataEvent.auditSource
+        actualDataEvent.auditType mustBe expectedDataEvent.auditType
+        actualDataEvent.tags mustBe expectedDataEvent.tags
+        actualDataEvent.detail mustBe expectedDataEvent.detail
+      }
+
+      "used for Arrival" in {
+
+        val auditTags = auditTagsResult("Arrival")
+        val auditDetail = Map(
+          EventData.eori.toString -> CommonTestData.validEori,
+          EventData.messageCode.toString -> "EAL",
+          EventData.ucr.toString -> CommonTestData.correctUcr,
+          EventData.ucrType.toString -> "D",
+          EventData.submissionResult.toString -> "200",
+          EventData.movementReference.toString -> "arrivalReference"
+        )
+        val expectedDataEvent =
+          DataEvent(auditSource = "appName", auditType = AuditType.AuditArrival.toString, tags = auditTags, detail = auditDetail)
+
+        val data = MovementsTestData.validArrivalMovementRequest
+
+        service.auditMovements(data, "200", AuditType.AuditArrival)
+
+        val actualDataEvent = sentDataEvent
+        actualDataEvent.auditSource mustBe expectedDataEvent.auditSource
+        actualDataEvent.auditType mustBe expectedDataEvent.auditType
+        actualDataEvent.tags mustBe expectedDataEvent.tags
+        actualDataEvent.detail mustBe expectedDataEvent.detail
+      }
+
+      "used for Departure" in {
+
+        val auditTags = auditTagsResult("Departure")
+        val auditDetail = Map(
+          EventData.eori.toString -> CommonTestData.validEori,
+          EventData.messageCode.toString -> "EDL",
+          EventData.ucr.toString -> CommonTestData.correctUcr,
+          EventData.ucrType.toString -> "D",
+          EventData.submissionResult.toString -> "200",
+          EventData.movementReference.toString -> ""
+        )
+        val expectedDataEvent =
+          DataEvent(auditSource = "appName", auditType = AuditType.AuditDeparture.toString, tags = auditTags, detail = auditDetail)
+
+        val data = MovementsTestData.validDepartureMovementRequest
+
+        service.auditMovements(data, "200", AuditType.AuditDeparture)
+
+        val actualDataEvent = sentDataEvent
+        actualDataEvent.auditSource mustBe expectedDataEvent.auditSource
+        actualDataEvent.auditType mustBe expectedDataEvent.auditType
+        actualDataEvent.tags mustBe expectedDataEvent.tags
+        actualDataEvent.detail mustBe expectedDataEvent.detail
+      }
     }
   }
+
 }

@@ -25,7 +25,7 @@ import models.ReturnToStartException
 import models.cache._
 import play.api.http.Status
 import repositories.CacheRepository
-import services.audit.{AuditService, AuditTypes}
+import services.audit.{AuditService, AuditType}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -92,8 +92,9 @@ class SubmissionService @Inject()(
     auditService.auditAllPagesUserInput(answers)
 
     val movementAuditType =
-      if (answers.`type` == JourneyType.ARRIVE) AuditTypes.AuditArrival else AuditTypes.AuditDeparture
+      if (answers.`type` == JourneyType.ARRIVE) AuditType.AuditArrival else AuditType.AuditDeparture
 
+    // TODO: Change here to be the same as in Internal Service
     connector.submit(data).map { _ =>
       auditService.auditMovements(data, Status.OK.toString, movementAuditType)
       data.consignmentReference

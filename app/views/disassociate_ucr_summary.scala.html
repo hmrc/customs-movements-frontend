@@ -40,7 +40,9 @@
                     <td class="text-right">
                         <a id="disassociate_ucr-remove" href="@consolidations.routes.DisassociateUcrController.displayPage()">
                             <span aria-hidden="true">@messages("site.change")</span>
-                            <span class="visuallyhidden">@{messages("site.change.hint.disassociate.ucr")}</span>
+                            <span class="visuallyhidden">
+                                @{messages("site.change.hint.disassociate.ucr", disassociateUcr.kind.toString.toUpperCase)}
+                            </span>
                         </a>
                     </td>
                 </tr>

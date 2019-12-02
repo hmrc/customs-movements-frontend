@@ -50,7 +50,6 @@ class MovementBuilder @Inject()(zoneId: ZoneId) {
       consignmentReference = answers.consignmentReferences.getOrElse(throw ReturnToStartException),
       movementDetails = movementDetails(answers),
       location = answers.location,
-      arrivalReference = answers.arrivalReference,
       transport = answers.transport
     )
 

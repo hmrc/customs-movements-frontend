@@ -64,9 +64,9 @@ site.backToStartPage = Back to start page
 site.add = Add
 site.remove = Remove
 site.change = Change
-site.change.hint.disassociate.ucr = Change DUCR dissociation
-site.change.hint.associate.ucr = Change DUCR association
-site.change.hint.associate.mucr = Change MUCR association
+site.change.hint.disassociate.ucr = Change {0} dissociation
+site.change.hint.associate.ucr = Change added {0} association
+site.change.hint.associate.mucr = Change MUCR to be associated to
 site.change.hint.shut.mucr = Change MUCR
 site.add.item= Add item
 

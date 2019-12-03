@@ -18,10 +18,8 @@ package controllers
 
 import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.storage.FlashKeys
-import handlers.ErrorHandler
 import javax.inject.Inject
 import models.cache.{ArrivalAnswers, DepartureAnswers, JourneyType, MovementAnswers}
-import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.CacheRepository
@@ -53,15 +51,14 @@ class SummaryController @Inject()(
     implicit request =>
       submissionService
         .submit(request.eori, request.answersAs[MovementAnswers])
-        .flatMap { consignmentReferences =>
-          cache.removeByEori(request.eori).map { _ =>
-            Redirect(controllers.routes.MovementConfirmationController.display())
-              .flashing(
-                FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString,
-                FlashKeys.UCR_KIND -> consignmentReferences.reference,
-                FlashKeys.UCR -> consignmentReferences.referenceValue
-              )
-          }
+        .map { consignmentReferences =>
+          Redirect(controllers.routes.MovementConfirmationController.display())
+            .flashing(
+              FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString,
+              FlashKeys.UCR_KIND -> consignmentReferences.reference,
+              FlashKeys.UCR -> consignmentReferences.referenceValue
+            )
         }
+
   }
 }

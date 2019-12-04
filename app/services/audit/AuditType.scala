@@ -19,9 +19,9 @@ package services.audit
 object AuditType extends Enumeration {
   type Audit = Value
 
-  val AuditArrival: AuditType.Value = Value("Arrival")
-  val AuditDeparture: AuditType.Value = Value("Departure")
-  val AuditAssociate: AuditType.Value = Value("Associate")
-  val AuditDisassociate: AuditType.Value = Value("Disassociate")
-  val AuditShutMucr: AuditType.Value = Value("ShutMucr")
+  val AuditArrival: AuditType.Value = Value("arrival")
+  val AuditDeparture: AuditType.Value = Value("departure")
+  val AuditAssociate: AuditType.Value = Value("associate")
+  val AuditDisassociate: AuditType.Value = Value("disassociate")
+  val AuditShutMucr: AuditType.Value = Value("shut-mucr")
 }

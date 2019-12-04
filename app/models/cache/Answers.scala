@@ -23,7 +23,7 @@ import uk.gov.hmrc.play.json.Union
 
 case class ArrivalAnswers(
   override val consignmentReferences: Option[ConsignmentReferences] = None,
-  override val arrivalReference: Option[ArrivalReference] = None,
+  arrivalReference: Option[ArrivalReference] = None,
   arrivalDetails: Option[ArrivalDetails] = None,
   override val location: Option[Location] = None
 ) extends MovementAnswers {
@@ -36,7 +36,6 @@ object DepartureAnswers {
 
 case class DepartureAnswers(
   override val consignmentReferences: Option[ConsignmentReferences] = None,
-  override val arrivalReference: Option[ArrivalReference] = None,
   departureDetails: Option[DepartureDetails] = None,
   override val location: Option[Location] = None,
   transport: Option[Transport] = None
@@ -50,7 +49,6 @@ object ArrivalAnswers {
 
 trait MovementAnswers extends Answers {
   val consignmentReferences: Option[ConsignmentReferences]
-  val arrivalReference: Option[ArrivalReference]
   val location: Option[Location]
 }
 

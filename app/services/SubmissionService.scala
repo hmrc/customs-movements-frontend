@@ -22,10 +22,10 @@ import forms._
 import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
 import models.ReturnToStartException
+import models.cache.JourneyType.JourneyType
 import models.cache._
-import play.api.http.Status
 import repositories.CacheRepository
-import services.audit.{AuditService, AuditTypes}
+import services.audit.{AuditService, AuditType}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,6 +40,9 @@ class SubmissionService @Inject()(
   movementBuilder: MovementBuilder
 )(implicit ec: ExecutionContext) {
 
+  private val success = "Success"
+  private val failed = "Failed"
+
   def submit(eori: String, answers: DisassociateUcrAnswers)(implicit hc: HeaderCarrier): Future[Unit] = {
     val ucr = answers.ucr.getOrElse(throw ReturnToStartException).ucr
 
@@ -48,10 +51,10 @@ class SubmissionService @Inject()(
       .andThen {
         case Success(_) =>
           repository.removeByEori(eori).flatMap { _ =>
-            auditService.auditDisassociate(eori, ucr, "Success")
+            auditService.auditDisassociate(eori, ucr, success)
           }
         case Failure(_) =>
-          auditService.auditDisassociate(eori, ucr, "Failed")
+          auditService.auditDisassociate(eori, ucr, failed)
       }
   }
 
@@ -64,10 +67,10 @@ class SubmissionService @Inject()(
       .andThen {
         case Success(_) =>
           repository.removeByEori(eori).flatMap { _ =>
-            auditService.auditAssociate(eori, mucr, ucr, "Success")
+            auditService.auditAssociate(eori, mucr, ucr, success)
           }
         case Failure(_) =>
-          auditService.auditAssociate(eori, mucr, ucr, "Failed")
+          auditService.auditAssociate(eori, mucr, ucr, failed)
       }
   }
 
@@ -79,24 +82,37 @@ class SubmissionService @Inject()(
       .andThen {
         case Success(_) =>
           repository.removeByEori(eori).flatMap { _ =>
-            auditService.auditShutMucr(eori, mucr, "Success")
+            auditService.auditShutMucr(eori, mucr, success)
           }
         case Failure(_) =>
-          auditService.auditShutMucr(eori, mucr, "Failed")
+          auditService.auditShutMucr(eori, mucr, failed)
       }
   }
 
   def submit(eori: String, answers: MovementAnswers)(implicit hc: HeaderCarrier): Future[ConsignmentReferences] = {
+    val journeyType = answers.`type`
     val data = movementBuilder.createMovementRequest(eori, answers)
+    val timer = metrics.startTimer(Choice(journeyType))
 
     auditService.auditAllPagesUserInput(answers)
 
-    val movementAuditType =
-      if (answers.`type` == JourneyType.ARRIVE) AuditTypes.AuditArrival else AuditTypes.AuditDeparture
+    connector
+      .submit(data)
+      .map(_ => repository.removeByEori(eori))
+      .map(_ => data.consignmentReference)
+      .andThen {
+        case Success(_) => auditService.auditMovements(data, success, movementAuditType(journeyType))
+        case Failure(_) => auditService.auditMovements(data, failed, movementAuditType(journeyType))
+      }
+      .andThen {
+        case _ =>
+          metrics.incrementCounter(Choice(journeyType))
+          timer.stop()
+      }
+  }
 
-    connector.submit(data).map { _ =>
-      auditService.auditMovements(data, Status.OK.toString, movementAuditType)
-      data.consignmentReference
-    }
+  private def movementAuditType(journeyType: JourneyType): AuditType.Value = journeyType match {
+    case JourneyType.ARRIVE => AuditType.AuditArrival
+    case JourneyType.DEPART => AuditType.AuditDeparture
   }
 }

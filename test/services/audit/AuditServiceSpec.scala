@@ -94,6 +94,7 @@ class AuditServiceSpec extends UnitSpec with BeforeAndAfterEach {
 
         val auditTags = auditTagsPayload("arrival")
         val auditDetail: JsValue = Json.obj(
+          "eori" -> "eori",
           "ConsignmentReferences" -> answers.consignmentReferences,
           "Location" -> answers.location,
           "MovementDetails" -> answers.arrivalDetails,
@@ -102,7 +103,7 @@ class AuditServiceSpec extends UnitSpec with BeforeAndAfterEach {
         val expectedExtendedDataEvent =
           ExtendedDataEvent(auditSource = "appName", auditType = "arrival", tags = auditTags, detail = auditDetail)
 
-        service.auditAllPagesUserInput(answers)
+        service.auditAllPagesUserInput("eori", answers)
 
         val actualExtendedDataEvent = sentExtendedDataEvent
         actualExtendedDataEvent.auditSource mustBe expectedExtendedDataEvent.auditSource
@@ -117,6 +118,7 @@ class AuditServiceSpec extends UnitSpec with BeforeAndAfterEach {
 
         val auditTags = auditTagsPayload("departure")
         val auditDetail: JsValue = Json.obj(
+          "eori" -> "eori",
           "ConsignmentReferences" -> answers.consignmentReferences,
           "Location" -> answers.location,
           "MovementDetails" -> answers.departureDetails,
@@ -125,7 +127,7 @@ class AuditServiceSpec extends UnitSpec with BeforeAndAfterEach {
         val expectedExtendedDataEvent =
           ExtendedDataEvent(auditSource = "appName", auditType = "departure", tags = auditTags, detail = auditDetail)
 
-        service.auditAllPagesUserInput(answers)
+        service.auditAllPagesUserInput("eori", answers)
 
         val actualExtendedDataEvent = sentExtendedDataEvent
         actualExtendedDataEvent.auditSource mustBe expectedExtendedDataEvent.auditSource

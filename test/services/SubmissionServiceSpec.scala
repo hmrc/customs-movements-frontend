@@ -241,7 +241,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
         "return same UCR as in the answers" in {
           given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
           given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful((): Unit))
-          given(audit.auditAllPagesUserInput(any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
+          given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit])(any()))
             .willReturn(Future.successful(AuditResult.Success))
           given(movementBuilder.createMovementRequest(anyString(), any[MovementAnswers])).willReturn(validArrivalMovementRequest)
@@ -256,7 +256,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
         "call MovementBuilder, AuditService, backend Connector, CacheRepository and AuditService again" in {
           given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
           given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful((): Unit))
-          given(audit.auditAllPagesUserInput(any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
+          given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit])(any()))
             .willReturn(Future.successful(AuditResult.Success))
           val arrivalExchange = validArrivalMovementRequest
@@ -268,7 +268,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
           val inOrder = Mockito.inOrder(movementBuilder, repository, audit, connector)
           inOrder.verify(movementBuilder).createMovementRequest(meq(validEori), meq(answers))
-          inOrder.verify(audit).auditAllPagesUserInput(meq(answers))(any())
+          inOrder.verify(audit).auditAllPagesUserInput(meq(validEori), meq(answers))(any())
           inOrder.verify(connector).submit(meq(arrivalExchange))(any())
           inOrder.verify(repository).removeByEori(meq(validEori))
           inOrder.verify(audit).auditMovements(meq(arrivalExchange), meq("Success"), meq(AuditType.AuditArrival))(any())
@@ -305,7 +305,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
         "not call CacheRepository" in {
           given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.failed(new RuntimeException("Error")))
-          given(audit.auditAllPagesUserInput(any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
+          given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit])(any()))
             .willReturn(Future.successful(AuditResult.Success))
           given(movementBuilder.createMovementRequest(anyString(), any[MovementAnswers])).willReturn(validArrivalMovementRequest)
@@ -321,7 +321,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
         "call AuditService second time with failed result" in {
           given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.failed(new RuntimeException("Error")))
-          given(audit.auditAllPagesUserInput(any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
+          given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit])(any()))
             .willReturn(Future.successful(AuditResult.Success))
           val arrivalExchange = validArrivalMovementRequest
@@ -345,7 +345,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
         "return same UCR as in the answers" in {
           given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
           given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful((): Unit))
-          given(audit.auditAllPagesUserInput(any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
+          given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit])(any()))
             .willReturn(Future.successful(AuditResult.Success))
           given(movementBuilder.createMovementRequest(anyString(), any[MovementAnswers])).willReturn(validDepartureMovementRequest)
@@ -360,7 +360,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
         "call MovementBuilder, AuditService, backend Connector, CacheRepository and AuditService again" in {
           given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
           given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful((): Unit))
-          given(audit.auditAllPagesUserInput(any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
+          given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit])(any()))
             .willReturn(Future.successful(AuditResult.Success))
           val departureExchange = validDepartureMovementRequest
@@ -372,7 +372,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
           val inOrder = Mockito.inOrder(movementBuilder, repository, audit, connector)
           inOrder.verify(movementBuilder).createMovementRequest(meq(validEori), meq(answers))
-          inOrder.verify(audit).auditAllPagesUserInput(meq(answers))(any())
+          inOrder.verify(audit).auditAllPagesUserInput(meq(validEori), meq(answers))(any())
           inOrder.verify(connector).submit(meq(departureExchange))(any())
           inOrder.verify(repository).removeByEori(meq(validEori))
           inOrder.verify(audit).auditMovements(meq(departureExchange), meq("Success"), meq(AuditType.AuditDeparture))(any())
@@ -409,7 +409,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
         "not call CacheRepository" in {
           given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.failed(new RuntimeException("Error")))
-          given(audit.auditAllPagesUserInput(any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
+          given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit])(any()))
             .willReturn(Future.successful(AuditResult.Success))
           given(movementBuilder.createMovementRequest(anyString(), any[MovementAnswers])).willReturn(validDepartureMovementRequest)
@@ -425,7 +425,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
         "call AuditService second time with failed result" in {
           given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.failed(new RuntimeException("Error")))
-          given(audit.auditAllPagesUserInput(any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
+          given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit])(any()))
             .willReturn(Future.successful(AuditResult.Success))
           val departureExchange = validDepartureMovementRequest

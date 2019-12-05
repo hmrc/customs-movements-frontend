@@ -94,7 +94,7 @@ class SubmissionService @Inject()(
     val data = movementBuilder.createMovementRequest(eori, answers)
     val timer = metrics.startTimer(Choice(journeyType))
 
-    auditService.auditAllPagesUserInput(answers)
+    auditService.auditAllPagesUserInput(eori, answers)
 
     connector
       .submit(data)

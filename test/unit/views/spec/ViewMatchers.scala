@@ -30,6 +30,62 @@ trait ViewMatchers { self: MustMatchers =>
 
   implicit private def elements2Scala(elements: Elements): Iterator[Element] = elements.iterator().asScala
 
+  val checked: BeMatcher[Element] = new BeMatcher[Element] {
+    override def apply(left: Element): MatchResult =
+      MatchResult(left.attr("checked") == "checked", "Element is not checked", "Element is checked")
+  }
+  val unchecked: BeMatcher[Element] = not(checked)
+
+  def containElementWithID(id: String): Matcher[Element] = new ContainElementWithIDMatcher(id)
+
+  def containElementWithClass(name: String): Matcher[Element] = new ContainElementWithClassMatcher(name)
+
+  def containElementWithAttribute(key: String, value: String): Matcher[Element] =
+    new ContainElementWithAttribute(key, value)
+
+  def containErrorElementWithTagAndHref(tag: String, href: String): Matcher[Element] = new ContainErrorElementWithClassMatcher(tag, href)
+
+  def containElementWithTag(tag: String): Matcher[Element] = new ContainElementWithTagMatcher(tag)
+
+  def containText(text: String): Matcher[Element] = new ElementContainsTextMatcher(text)
+
+  def containMessage(key: String, args: Any*)(implicit messages: Messages): Matcher[Element] =
+    new ElementContainsMessageMatcher(key, args)
+
+  def haveClass(text: String): Matcher[Element] = new ElementHasClassMatcher(text)
+
+  def containHtml(text: String): Matcher[Element] = new ElementContainsHtmlMatcher(text)
+
+  def haveSize(size: Int): Matcher[Elements] = new ElementsHasSizeMatcher(size)
+
+  def haveAttribute(key: String, value: String): Matcher[Element] = new ElementHasAttributeValueMatcher(key, value)
+
+  def haveAttribute(key: String): Matcher[Element] = new ElementHasAttributeMatcher(key)
+
+  def haveTag(tag: String): Matcher[Element] = new ElementTagMatcher(tag)
+
+  def haveChildCount(count: Int): Matcher[Element] = new ElementHasChildCountMatcher(count)
+
+  def haveChild(tag: String) = new ChildMatcherBuilder(tag)
+
+  def haveFieldError(fieldName: String, content: String): Matcher[Element] =
+    new ContainElementWithIDMatcher(s"error-message-$fieldName-input") and new ElementContainsFieldError(fieldName, content)
+
+  def haveFieldErrorLink(fieldName: String, link: String): Matcher[Element] = new ElementContainsFieldErrorLink(fieldName, link)
+
+  def haveGlobalErrorSummary: Matcher[Element] = new ContainElementWithIDMatcher("error-summary-heading")
+
+  def haveGovUkGlobalErrorSummary: Matcher[Element] = new ContainElementWithClassMatcher("govuk-error-summary")
+
+  def haveGovUkFieldError(fieldName: String, content: String): Matcher[Element] =
+    new ContainElementWithIDMatcher(s"$fieldName-error") and new ElementContainsGovUkFieldError(fieldName, content)
+
+  def haveHref(value: Call): Matcher[Element] = new ElementHasAttributeValueMatcher("href", value.url)
+
+  def haveHref(url: String): Matcher[Element] = new ElementHasAttributeValueMatcher("href", url)
+
+  def haveTranslationFor(key: String): Matcher[Messages] = new TranslationKeyMatcher(key)
+
   private def actualContentWas(node: Element): String =
     if (node == null) {
       "Element did not exist"
@@ -77,6 +133,19 @@ trait ViewMatchers { self: MustMatchers =>
         left != null && !left.getElementsByTag(tag).isEmpty,
         s"Document did not contain element with Tag {$tag}\n${actualContentWas(left)}",
         s"Document contained an element with Tag {$tag}"
+      )
+  }
+
+  class ContainErrorElementWithClassMatcher(tag: String, href: String) extends Matcher[Element] {
+    override def apply(left: Element): MatchResult =
+      MatchResult(
+        left != null && left
+          .getElementsByClass("govuk-list govuk-error-summary__list")
+          .get(0)
+          .getElementsByTag(tag)
+          .attr("href") == href,
+        s"Document did not contain element with class {$tag}\n${actualContentWas(left)}",
+        s"Document contained an element with class {$tag}"
       )
   }
 
@@ -219,43 +288,4 @@ trait ViewMatchers { self: MustMatchers =>
     def containingText(text: String) = new ElementContainsChildWithTextMatcher(tag, text)
     def withAttribute(key: String, value: String) = new ElementContainsChildWithAttributeMatcher(tag, key, value)
   }
-
-  def containElementWithID(id: String): Matcher[Element] = new ContainElementWithIDMatcher(id)
-  def containElementWithClass(name: String): Matcher[Element] = new ContainElementWithClassMatcher(name)
-  def containElementWithAttribute(key: String, value: String): Matcher[Element] =
-    new ContainElementWithAttribute(key, value)
-  def containElementWithTag(tag: String): Matcher[Element] = new ContainElementWithTagMatcher(tag)
-  def containText(text: String): Matcher[Element] = new ElementContainsTextMatcher(text)
-  def containMessage(key: String, args: Any*)(implicit messages: Messages): Matcher[Element] =
-    new ElementContainsMessageMatcher(key, args)
-  def haveClass(text: String): Matcher[Element] = new ElementHasClassMatcher(text)
-  def containHtml(text: String): Matcher[Element] = new ElementContainsHtmlMatcher(text)
-  def haveSize(size: Int): Matcher[Elements] = new ElementsHasSizeMatcher(size)
-  def haveAttribute(key: String, value: String): Matcher[Element] = new ElementHasAttributeValueMatcher(key, value)
-  def haveAttribute(key: String): Matcher[Element] = new ElementHasAttributeMatcher(key)
-  def haveTag(tag: String): Matcher[Element] = new ElementTagMatcher(tag)
-  def haveChildCount(count: Int): Matcher[Element] = new ElementHasChildCountMatcher(count)
-  def haveChild(tag: String) = new ChildMatcherBuilder(tag)
-
-  def haveFieldError(fieldName: String, content: String): Matcher[Element] =
-    new ContainElementWithIDMatcher(s"error-message-$fieldName-input") and new ElementContainsFieldError(fieldName, content)
-  def haveGovUkFieldError(fieldName: String, content: String): Matcher[Element] =
-    new ContainElementWithIDMatcher(s"$fieldName-error") and new ElementContainsGovUkFieldError(fieldName, content)
-
-  def haveFieldErrorLink(fieldName: String, link: String): Matcher[Element] = new ElementContainsFieldErrorLink(fieldName, link)
-
-  def haveGlobalErrorSummary: Matcher[Element] = new ContainElementWithIDMatcher("error-summary-heading")
-  def haveGovUkGlobalErrorSummary: Matcher[Element] = new ContainElementWithIDMatcher("error-summary-title")
-
-  def haveHref(value: Call): Matcher[Element] = new ElementHasAttributeValueMatcher("href", value.url)
-  def haveHref(url: String): Matcher[Element] = new ElementHasAttributeValueMatcher("href", url)
-
-  def haveTranslationFor(key: String): Matcher[Messages] = new TranslationKeyMatcher(key)
-
-  val checked: BeMatcher[Element] = new BeMatcher[Element] {
-    override def apply(left: Element): MatchResult =
-      MatchResult(left.attr("checked") == "checked", "Element is not checked", "Element is checked")
-  }
-
-  val unchecked: BeMatcher[Element] = not(checked)
 }

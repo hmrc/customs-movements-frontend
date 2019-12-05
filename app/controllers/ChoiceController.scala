@@ -17,14 +17,13 @@
 package controllers
 
 import controllers.actions.AuthAction
-import controllers.storage.CacheIdGenerator.cacheId
 import forms.Choice
 import forms.Choice._
 import javax.inject.{Inject, Singleton}
-import models.cache.{Answers, ArrivalAnswers, AssociateUcrAnswers, Cache, DepartureAnswers, DisassociateUcrAnswers, ShutMucrAnswers}
+import models.cache._
 import models.requests.AuthenticatedRequest
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.mvc._
 import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.choice_page

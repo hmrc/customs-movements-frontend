@@ -22,7 +22,7 @@ import javax.inject.Named
 import models.cache.{Answers, ArrivalAnswers, DepartureAnswers, JourneyType}
 import models.requests.MovementRequest
 import play.api.Logger
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 import services.audit.AuditService.EventData
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions
@@ -101,7 +101,7 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
       Disabled
   }
 
-  def auditAllPagesUserInput(answers: Answers)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+  def auditAllPagesUserInput(eori: String, answers: Answers)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val auditType =
       if (answers.`type` == JourneyType.ARRIVE)
         AuditType.AuditArrival.toString
@@ -111,16 +111,17 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
       auditSource = appName,
       auditType = auditType,
       tags = getAuditTags(s"${auditType}-payload-request", s"${auditType}/full-payload"),
-      detail = getAuditDetails(getMovementsData(answers))
+      detail = getAuditDetails(getMovementsData(eori, answers))
     )
     connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType))
   }
 
-  private def getMovementsData(answers: Answers): JsObject = {
+  private def getMovementsData(eori: String, answers: Answers): JsObject = {
 
     val userInput = answers match {
       case arrivalAnswers: ArrivalAnswers =>
         Map(
+          EventData.eori.toString -> JsString(eori),
           ConsignmentReferences.formId -> Json.toJson(arrivalAnswers.consignmentReferences),
           Location.formId -> Json.toJson(arrivalAnswers.location),
           MovementDetails.formId -> Json.toJson(arrivalAnswers.arrivalDetails),
@@ -128,6 +129,7 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
         )
       case departureAnswers: DepartureAnswers =>
         Map(
+          EventData.eori.toString -> JsString(eori),
           ConsignmentReferences.formId -> Json.toJson(departureAnswers.consignmentReferences),
           Location.formId -> Json.toJson(departureAnswers.location),
           MovementDetails.formId -> Json.toJson(departureAnswers.departureDetails),

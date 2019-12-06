@@ -23,10 +23,20 @@ lazy val microservice = Project(appName, file("."))
     scalaVersion := "2.11.12"
   )
   .configs(IntegrationTest)
-  .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
+  .settings(
+    unmanagedSourceDirectories in Test := Seq(
+      (baseDirectory in Test).value / "test/unit",
+      (baseDirectory in Test).value / "test/util"
+    ),
+    addTestReportOption(Test, "test-reports")
+  )
+  .settings(inConfig(TemplateItTest)(Defaults.itSettings): _*)
   .settings(
     Keys.fork in IntegrationTest := false,
-    unmanagedSourceDirectories in IntegrationTest := (baseDirectory in IntegrationTest)(base => Seq(base / "it")).value,
+    unmanagedSourceDirectories in IntegrationTest := Seq(
+      (baseDirectory in IntegrationTest).value / "test/it",
+      (baseDirectory in Test).value / "test/util"
+    ),
     addTestReportOption(IntegrationTest, "int-test-reports"),
     testGrouping in IntegrationTest := TestPhases.oneForkedJvmPerTest((definedTests in IntegrationTest).value),
     parallelExecution in IntegrationTest := false
@@ -57,6 +67,9 @@ lazy val microservice = Project(appName, file("."))
     includeFilter in uglify := GlobFilter("customsdecexfrontend-*.js")
     
   ).settings(scoverageSettings)
+
+lazy val TemplateTest = config("tt") extend Test
+lazy val TemplateItTest = config("tit") extend IntegrationTest
 
 lazy val scoverageSettings: Seq[Setting[_]] = Seq(
   coverageExcludedPackages := List(

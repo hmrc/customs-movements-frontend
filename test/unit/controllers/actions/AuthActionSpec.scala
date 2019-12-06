@@ -27,9 +27,9 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval}
-import uk.gov.hmrc.auth.core._
 import utils.Stubs
 
 import scala.concurrent.ExecutionContext.Implicits.global

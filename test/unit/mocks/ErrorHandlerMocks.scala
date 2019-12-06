@@ -33,8 +33,6 @@ trait ErrorHandlerMocks extends BeforeAndAfterEach { self: MockitoSugar with Sui
     when(mockErrorHandler.standardErrorTemplate(anyString, anyString, anyString)(any())).thenReturn(HtmlFormat.empty)
 
     when(mockErrorHandler.getBadRequestPage()(any())).thenReturn(BadRequest(HtmlFormat.empty))
-
-    when(mockErrorHandler.getInternalServerErrorPage()(any())).thenReturn(InternalServerError(HtmlFormat.empty))
   }
 
   override protected def afterEach(): Unit = {

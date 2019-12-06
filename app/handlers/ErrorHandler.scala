@@ -60,13 +60,4 @@ class ErrorHandler @Inject()(appConfig: AppConfig, override val messagesApi: Mes
         message = Messages("global.error.message")
       )
     )
-
-  def getInternalServerErrorPage()(implicit request: Request[_]): Result =
-    InternalServerError(
-      standardErrorTemplate(
-        pageTitle = Messages("global.error.title"),
-        heading = Messages("global.error.heading"),
-        message = Messages("global.error.message")
-      )
-    )
 }

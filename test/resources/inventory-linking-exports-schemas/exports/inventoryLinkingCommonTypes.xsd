@@ -136,9 +136,11 @@
         <xs:restriction base="xs:string">
             <xs:enumeration value="EAA" />
             <xs:enumeration value="EAL" />
+            <xs:enumeration value="RET" />
             <xs:enumeration value="EDL" />
             <xs:enumeration value="EAC" />
             <xs:enumeration value="CST" />
+            <xs:enumeration value="QUE" />
         </xs:restriction>
     </xs:simpleType>
 

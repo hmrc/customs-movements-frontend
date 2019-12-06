@@ -52,6 +52,7 @@
         <xs:restriction base="xs:string">
             <xs:enumeration value="EAA" />
             <xs:enumeration value="EAL" />
+            <xs:enumeration value="RET" />
             <xs:enumeration value="EDL" />
         </xs:restriction>
     </xs:simpleType>
@@ -121,7 +122,6 @@
         </xs:annotation>
         <xs:sequence>
             <xs:element name="queryUCR" type="ucrBlock" minOccurs="1" />
-            <xs:element name="agentDetails" type="agentDetails" minOccurs="0" />
         </xs:sequence>
     </xs:complexType>
 
@@ -130,71 +130,64 @@
             <xs:documentation>A response to an inventory linking query. The response includes the queried MUCR: 1/ children (the whole subtree with all MUCRs and DUCRs with declarations); 2/ all movements of the queried MUCR;  3/ all parents with their movements</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="queriedUCR" type="ucrBlock" minOccurs="1" maxOccurs="1">
-                <xs:annotation><xs:documentation>queried UCR from the request</xs:documentation></xs:annotation>
+            <xs:element name="queriedDUCR" type="DUCRObject" minOccurs="0" maxOccurs="1" >
+                <xs:annotation><xs:documentation>the queried DUCR</xs:documentation></xs:annotation>
             </xs:element>
-            <xs:element name="shut" type="xs:boolean" default="false" minOccurs="0" maxOccurs="1" />
-            <xs:element name="responseIsTruncated" type="xs:boolean" default="false" minOccurs="0" maxOccurs="1" >
-                <xs:annotation><xs:documentation>signal to consumers if the responjse has been truncated for performance reasons</xs:documentation></xs:annotation>
+            <xs:element name="queriedMUCR" type="MUCRObject" minOccurs="0" maxOccurs="1" >
+                <xs:annotation><xs:documentation>the queried MUCR</xs:documentation></xs:annotation>
             </xs:element>
-            <xs:element name="children" type="childBlock" minOccurs="0" maxOccurs="1" >
-                <xs:annotation><xs:documentation>list of all children for the queried MUCR; the whole subtree; with declarations for DUCRs only; no movements</xs:documentation></xs:annotation>
+            <xs:element name="parentMUCR" type="MUCRObject" minOccurs="0" maxOccurs="1" >
+                <xs:annotation><xs:documentation>the parent DUCR</xs:documentation></xs:annotation>
             </xs:element>
-            <xs:element name="movement" type="movement" minOccurs="0" maxOccurs="unbounded" >
-                <xs:annotation><xs:documentation>all movements for the queried UCR only</xs:documentation></xs:annotation>
+            <xs:element name="childDUCR" type="DUCRObject" minOccurs="0" maxOccurs="unbounded" >
+                <xs:annotation><xs:documentation>the children DUCRs</xs:documentation></xs:annotation>
             </xs:element>
-            <xs:element name="parentAndTheirMovements" type="parentBlock" minOccurs="0" maxOccurs="1" >
-                <xs:annotation> <xs:documentation>list of all parents of the queried MUCR; with all movements but none declarations</xs:documentation></xs:annotation>
-            </xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="childBlock">
-        <xs:annotation> <xs:documentation>list of all MUCRs and DUCRs on one level below of the MUCR above</xs:documentation></xs:annotation>
-        <xs:sequence>
-            <xs:element name="master" type="masterUCR" minOccurs="0" maxOccurs="unbounded" >
-                <xs:annotation> <xs:documentation>list of all MUCRs on this particular level</xs:documentation></xs:annotation>
-            </xs:element>
-            <xs:element name="declaration" type="declarationUCR" minOccurs="0" maxOccurs="unbounded" >
-                <xs:annotation> <xs:documentation>list of all DUCRs on this particular level</xs:documentation></xs:annotation>
+            <xs:element name="childMUCR" type="MUCRObject" minOccurs="0" maxOccurs="unbounded" >
+                <xs:annotation><xs:documentation>the children MUCRs</xs:documentation></xs:annotation>
             </xs:element>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="masterUCR">
+    <xs:complexType name="DUCRObject">
         <xs:annotation>
-            <xs:documentation>represents single MUCR with all it's MUCR/DUCR children</xs:documentation>
+            <xs:documentation>represents a single DUCR object</xs:documentation>
         </xs:annotation>
         <xs:sequence>
             <xs:element name="UCR" type="ucr" minOccurs="1" maxOccurs="1" />
-            <xs:element name="shut" type="xs:boolean" default="false" minOccurs="0" maxOccurs="1" />
-            <xs:element name="children" type="childBlock" minOccurs="0" maxOccurs="1" />
+            <xs:element name="parentMUCR" type="ucr" minOccurs="0" maxOccurs="1" />
+            <xs:element name="declarationID" type="declarationID" minOccurs="1" maxOccurs="1" />
+            <xs:element name="entryStatus" type="entryStatus" minOccurs="0" maxOccurs="1" />
+            <xs:element name="movement" type="movementObject" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="goodsItem" type="goodsItemObject" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="declarationUCR">
+    <xs:complexType name="MUCRObject">
         <xs:annotation>
-            <xs:documentation>represents single declaration object</xs:documentation>
+            <xs:documentation>represents a single MUCR object</xs:documentation>
         </xs:annotation>
         <xs:sequence>
             <xs:element name="UCR" type="ucr" minOccurs="1" maxOccurs="1" />
-            <xs:element name="declarationID" type="declarationID" minOccurs="0" maxOccurs="1" />
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="parentBlock">
-        <xs:annotation>
-            <xs:documentation>parent MUCR (with all movements) of the queried MUCR</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:element name="UCR" type="ucr" minOccurs="1" maxOccurs="1" />
+            <xs:element name="parentMUCR" type="ucr" minOccurs="0" maxOccurs="1" />
+            <xs:element name="entryStatus" type="entryStatus" minOccurs="0" maxOccurs="1" />
             <xs:element name="shut" type="xs:boolean" default="false" minOccurs="0" maxOccurs="1" />
-            <xs:element name="movement" type="movement" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="parentAndKnownMovements" type="parentBlock" minOccurs="0" maxOccurs="1" />
+            <xs:element name="movement" type="movementObject" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="movement">
+    <xs:complexType name="goodsItemObject">
+        <xs:sequence>
+            <xs:element name="totalPackages" minOccurs="0">
+                <xs:simpleType>
+                    <xs:restriction base="xs:positiveInteger">
+                        <xs:totalDigits value="8" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="movementObject">
         <xs:annotation>
             <xs:documentation>represents single movement object</xs:documentation>
         </xs:annotation>
@@ -203,12 +196,8 @@
             <xs:element name="goodsLocation" type="goodsLocation" minOccurs="1" />
             <xs:element name="goodsArrivalDateTime" type="xs:dateTime" minOccurs="0" nillable="true" />
             <xs:element name="goodsDepartureDateTime" type="xs:dateTime" minOccurs="0" nillable="true" />
-            <xs:element name="shedOPID" type="shedOPID" minOccurs="0" nillable="true" />
-            <xs:element name="masterOpt" type="masterOpt" minOccurs="0" />
             <xs:element name="movementReference" type="movementReference" minOccurs="0" nillable="true" />
             <xs:element name="transportDetails" type="transportDetails" minOccurs="0" />
-            <xs:element name="goodsItem" type="goodsItem" minOccurs="0" maxOccurs="999" />
-            <xs:element name="entryStatus" type="entryStatus" minOccurs="0" />
         </xs:sequence>
     </xs:complexType>
 
@@ -253,9 +242,7 @@
     </xs:simpleType>
 
     <xs:simpleType name="declarationCount">
-        <xs:restriction base="xs:integer">
-            <xs:maxInclusive value="999" />
-        </xs:restriction>
+        <xs:restriction base="xs:integer"/>
     </xs:simpleType>
 
     <xs:simpleType name="masterROE">
@@ -273,21 +260,36 @@
     </xs:simpleType>
 
     <!-- ============================= -->
-    <!-- DMS MUCR Validation Service Responses -->
+    <!-- DMS DUCR MUCR Validation Service Responses -->
     <!-- ============================= -->
+
+    <xs:complexType name="inventoryLinkingValidateDUCRRequest">
+        <xs:sequence>
+            <xs:element name="MRN" type="mrn" minOccurs="1" nillable="false"  />
+            <xs:element name="DUCR" type="xs:string" minOccurs="1" nillable="false" />
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:complexType name="inventoryLinkingValidateMUCRRequest">
         <xs:sequence>
+            <xs:element name="masterUCR" type="xs:string" minOccurs="1" nillable="false" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="inventoryLinkingValidateDUCRResponse">
+        <xs:sequence>
             <xs:element name="MRN" type="mrn" minOccurs="1" nillable="false"  />
-            <xs:element name="masterUCR" type="ucr" minOccurs="1" nillable="false" />
+            <xs:element name="DUCR" type="xs:string" minOccurs="1" nillable="false" />
+            <xs:element name="isFormatValid" type="xs:boolean" minOccurs="1" nillable="false" />
+            <xs:element name="isFound" type="xs:boolean" minOccurs="0" nillable="true" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="inventoryLinkingValidateMUCRResponse">
         <xs:sequence>
-            <xs:element name="MRN" type="mrn" minOccurs="1" nillable="false"  />
-            <xs:element name="masterUCR" type="ucr" minOccurs="1" nillable="false" />
-            <xs:element name="isFound" type="xs:boolean" minOccurs="1" nillable="false" />
+            <xs:element name="masterUCR" type="xs:string" minOccurs="1" nillable="false" />
+            <xs:element name="isFormatValid" type="xs:boolean" minOccurs="1" nillable="false" />
+            <xs:element name="isFound" type="xs:boolean" minOccurs="0" nillable="true" />
             <xs:element name="isShut" type="xs:boolean" minOccurs="0" nillable="true" />
             <xs:element name="shutDate" type="xs:dateTime" minOccurs="0" nillable="true" />
         </xs:sequence>

@@ -18,7 +18,14 @@ package services
 
 import base.MovementsMetricsStub
 import connectors.CustomsDeclareExportsMovementsConnector
-import connectors.exchanges.{AssociateUCRRequest, Consolidation, DisassociateDUCRRequest, ShutMUCRRequest}
+import connectors.exchanges.{
+  AssociateDUCRRequest,
+  AssociateMUCRRequest,
+  Consolidation,
+  DisassociateDUCRRequest,
+  DisassociateMUCRRequest,
+  ShutMUCRRequest
+}
 import forms._
 import models.ReturnToStartException
 import models.cache.{AssociateUcrAnswers, DisassociateUcrAnswers, MovementAnswers, ShutMucrAnswers}
@@ -60,17 +67,30 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
   "Submit Associate" should {
 
-    "delegate to connector" in {
+    "delegate to connector" when {
+      "Associate DUCR" in {
+        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful((): Unit))
+        given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
 
-      given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful((): Unit))
-      given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
+        val answers = AssociateUcrAnswers(Some(MucrOptions(mucr)), Some(AssociateUcr(AssociateKind.Ducr, ucr)))
+        await(service.submit(validEori, answers))
 
-      val answers = AssociateUcrAnswers(Some(MucrOptions(mucr)), Some(AssociateUcr(AssociateKind.Ducr, ucr)))
-      await(service.submit(validEori, answers))
+        theAssociationSubmitted mustBe AssociateDUCRRequest(validEori, mucr, ucr)
+        verify(repository).removeByEori(validEori)
+        verify(audit).auditAssociate(validEori, mucr, ucr, "Success")
+      }
 
-      theAssociationSubmitted mustBe AssociateUCRRequest(validEori, mucr, ucr)
-      verify(repository).removeByEori(validEori)
-      verify(audit).auditAssociate(validEori, mucr, ucr, "Success")
+      "Associate MUCR" in {
+        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful((): Unit))
+        given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
+
+        val answers = AssociateUcrAnswers(Some(MucrOptions(mucr)), Some(AssociateUcr(AssociateKind.Mucr, ucr)))
+        await(service.submit(validEori, answers))
+
+        theAssociationSubmitted mustBe AssociateMUCRRequest(validEori, mucr, ucr)
+        verify(repository).removeByEori(validEori)
+        verify(audit).auditAssociate(validEori, mucr, ucr, "Success")
+      }
     }
 
     "audit when failed" in {
@@ -81,7 +101,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
         await(service.submit(validEori, answers))
       }
 
-      theAssociationSubmitted mustBe AssociateUCRRequest(validEori, mucr, ucr)
+      theAssociationSubmitted mustBe AssociateDUCRRequest(validEori, mucr, ucr)
       verify(repository, never()).removeByEori(validEori)
       verify(audit).auditAssociate(validEori, mucr, ucr, "Failed")
     }
@@ -96,8 +116,8 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
       verifyZeroInteractions(audit)
     }
 
-    def theAssociationSubmitted: AssociateUCRRequest = {
-      val captor: ArgumentCaptor[AssociateUCRRequest] = ArgumentCaptor.forClass(classOf[AssociateUCRRequest])
+    def theAssociationSubmitted: Consolidation = {
+      val captor: ArgumentCaptor[Consolidation] = ArgumentCaptor.forClass(classOf[Consolidation])
       verify(connector).submit(captor.capture())(any())
       captor.getValue
     }
@@ -114,7 +134,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
         val answers = DisassociateUcrAnswers(Some(DisassociateUcr(DisassociateKind.Mucr, None, Some(ucr))))
         await(service.submit(validEori, answers))
 
-        theDisassociationSubmitted mustBe DisassociateDUCRRequest(validEori, ucr)
+        theDisassociationSubmitted mustBe DisassociateMUCRRequest(validEori, ucr)
         verify(repository).removeByEori(validEori)
         verify(audit).auditDisassociate(validEori, ucr, "Success")
       }
@@ -140,7 +160,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
         await(service.submit(validEori, answers))
       }
 
-      theDisassociationSubmitted mustBe DisassociateDUCRRequest(validEori, ucr)
+      theDisassociationSubmitted mustBe DisassociateMUCRRequest(validEori, ucr)
       verify(repository, never()).removeByEori(validEori)
       verify(audit).auditDisassociate(validEori, ucr, "Failed")
     }
@@ -181,8 +201,8 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
       }
     }
 
-    def theDisassociationSubmitted: DisassociateDUCRRequest = {
-      val captor: ArgumentCaptor[DisassociateDUCRRequest] = ArgumentCaptor.forClass(classOf[DisassociateDUCRRequest])
+    def theDisassociationSubmitted: Consolidation = {
+      val captor: ArgumentCaptor[Consolidation] = ArgumentCaptor.forClass(classOf[Consolidation])
       verify(connector).submit(captor.capture())(any())
       captor.getValue
     }

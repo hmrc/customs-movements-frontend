@@ -74,18 +74,6 @@ class ErrorHandlerSpec extends ControllerLayerSpec {
         refEq(messages("global.error.message"))
       )(any(), any())
     }
-
-    "return Internal Server Error page" in {
-      val result = successful(errorHandler.getInternalServerErrorPage()(FakeRequest()))
-
-      status(result) mustBe INTERNAL_SERVER_ERROR
-      contentAsString(result) mustBe errorPageHTML.toString()
-      verify(errorPage).apply(
-        refEq(messages("global.error.title")),
-        refEq(messages("global.error.heading")),
-        refEq(messages("global.error.message"))
-      )(any(), any())
-    }
   }
 
   "resolve error" should {

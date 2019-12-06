@@ -22,24 +22,36 @@ import uk.gov.hmrc.play.json.Union
 
 object ConsolidationType extends Enumeration {
   type ConsolidationType = Value
-  val ASSOCIATE_DUCR, DISASSOCIATE_DUCR, SHUT_MUCR = Value
+  val ASSOCIATE_DUCR, ASSOCIATE_MUCR, DISASSOCIATE_DUCR, DISASSOCIATE_MUCR, SHUT_MUCR = Value
   implicit val format: Format[ConsolidationType] = Format(Reads.enumNameReads(ConsolidationType), Writes.enumNameWrites)
 }
 
-case class AssociateUCRRequest(override val eori: String, mucr: String, ucr: String) extends Consolidation {
+case class AssociateDUCRRequest(override val eori: String, mucr: String, ucr: String) extends Consolidation {
   override val consolidationType: ConsolidationType.Value = ConsolidationType.ASSOCIATE_DUCR
 }
+object AssociateDUCRRequest {
+  implicit val format: OFormat[AssociateDUCRRequest] = Json.format[AssociateDUCRRequest]
+}
 
-object AssociateUCRRequest {
-  implicit val format: OFormat[AssociateUCRRequest] = Json.format[AssociateUCRRequest]
+case class AssociateMUCRRequest(override val eori: String, mucr: String, ucr: String) extends Consolidation {
+  override val consolidationType: ConsolidationType.Value = ConsolidationType.ASSOCIATE_MUCR
+}
+object AssociateMUCRRequest {
+  implicit val format: OFormat[AssociateMUCRRequest] = Json.format[AssociateMUCRRequest]
 }
 
 case class DisassociateDUCRRequest(override val eori: String, ucr: String) extends Consolidation {
   override val consolidationType: ConsolidationType.Value = ConsolidationType.DISASSOCIATE_DUCR
 }
-
 object DisassociateDUCRRequest {
   implicit val format: OFormat[DisassociateDUCRRequest] = Json.format[DisassociateDUCRRequest]
+}
+
+case class DisassociateMUCRRequest(override val eori: String, ucr: String) extends Consolidation {
+  override val consolidationType: ConsolidationType.Value = ConsolidationType.DISASSOCIATE_MUCR
+}
+object DisassociateMUCRRequest {
+  implicit val format: OFormat[DisassociateMUCRRequest] = Json.format[DisassociateMUCRRequest]
 }
 
 case class ShutMUCRRequest(override val eori: String, mucr: String) extends Consolidation {
@@ -57,8 +69,10 @@ trait Consolidation {
 object Consolidation {
   implicit val format: Format[Consolidation] = Union
     .from[Consolidation](typeField = "consolidationType")
-    .and[AssociateUCRRequest](typeTag = ConsolidationType.ASSOCIATE_DUCR.toString)
+    .and[AssociateDUCRRequest](typeTag = ConsolidationType.ASSOCIATE_DUCR.toString)
+    .and[AssociateMUCRRequest](typeTag = ConsolidationType.ASSOCIATE_MUCR.toString)
     .and[DisassociateDUCRRequest](typeTag = ConsolidationType.DISASSOCIATE_DUCR.toString)
+    .and[DisassociateMUCRRequest](typeTag = ConsolidationType.DISASSOCIATE_MUCR.toString)
     .and[ShutMUCRRequest](typeTag = ConsolidationType.SHUT_MUCR.toString)
     .format
 }

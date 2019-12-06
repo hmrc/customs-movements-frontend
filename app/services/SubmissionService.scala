@@ -17,7 +17,7 @@
 package services
 
 import connectors.CustomsDeclareExportsMovementsConnector
-import connectors.exchanges.{AssociateUCRRequest, DisassociateDUCRRequest, ShutMUCRRequest}
+import connectors.exchanges._
 import forms._
 import javax.inject.{Inject, Singleton}
 import metrics.MovementsMetrics
@@ -45,9 +45,13 @@ class SubmissionService @Inject()(
 
   def submit(eori: String, answers: DisassociateUcrAnswers)(implicit hc: HeaderCarrier): Future[Unit] = {
     val ucr = answers.ucr.getOrElse(throw ReturnToStartException).ucr
+    val exchange = answers.ucr.map(_.kind) match {
+      case Some(DisassociateKind.Ducr) => DisassociateDUCRRequest(eori, ucr)
+      case Some(DisassociateKind.Mucr) => DisassociateMUCRRequest(eori, ucr)
+    }
 
     connector
-      .submit(DisassociateDUCRRequest(eori, ucr))
+      .submit(exchange)
       .andThen {
         case Success(_) =>
           repository.removeByEori(eori).flatMap { _ =>
@@ -61,9 +65,13 @@ class SubmissionService @Inject()(
   def submit(eori: String, answers: AssociateUcrAnswers)(implicit hc: HeaderCarrier): Future[Unit] = {
     val mucr = answers.mucrOptions.map(_.mucr).getOrElse(throw ReturnToStartException)
     val ucr = answers.associateUcr.map(_.ucr).getOrElse(throw ReturnToStartException)
+    val exchange = answers.associateUcr.map(_.kind) match {
+      case Some(AssociateKind.Ducr) => AssociateDUCRRequest(eori, mucr, ucr)
+      case Some(AssociateKind.Mucr) => AssociateMUCRRequest(eori, mucr, ucr)
+    }
 
     connector
-      .submit(AssociateUCRRequest(eori, mucr, ucr))
+      .submit(exchange)
       .andThen {
         case Success(_) =>
           repository.removeByEori(eori).flatMap { _ =>

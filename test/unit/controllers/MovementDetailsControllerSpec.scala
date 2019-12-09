@@ -16,9 +16,9 @@
 
 package unit.controllers
 
-import java.time.{LocalDate, LocalTime}
+import java.time.{LocalDate, LocalDateTime, LocalTime}
 
-import controllers.{routes, MovementDetailsController}
+import controllers._
 import forms.common.{Date, Time}
 import forms.{ArrivalDetails, DepartureDetails}
 import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
@@ -40,6 +40,8 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
   private val mockArrivalDetailsPage = mock[arrival_details]
   private val mockDepartureDetailsPage = mock[departure_details]
+
+  private val yesterday = LocalDateTime.now().minusDays(1)
 
   private def controller(answers: MovementAnswers) =
     new MovementDetailsController(
@@ -107,11 +109,10 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
     "return 303 (SEE_OTHER) and redirect to location page" when {
       "form is correct" in {
-        val correctDate: JsValue =
-          JsObject(Map("day" -> JsNumber(10), "month" -> JsNumber(10), "year" -> JsNumber(2019)))
-        val correctTime: JsValue = JsObject(Map("hour" -> JsString("10"), "minute" -> JsString("10")))
-
-        val correctForm: JsValue = JsObject(Map("dateOfArrival" -> correctDate, "timeOfArrival" -> correctTime))
+        val correctForm = Json.obj(
+          "dateOfArrival" -> Json.obj("day" -> yesterday.getDayOfMonth, "month" -> yesterday.getMonthValue, "year" -> yesterday.getYear),
+          "timeOfArrival" -> Json.obj("hour" -> yesterday.getHour, "minute" -> yesterday.getMinute)
+        )
 
         val result = controller(ArrivalAnswers()).saveMovementDetails()(postRequest(correctForm))
 
@@ -154,12 +155,12 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
     "return 303 (SEE_OTHER) and redirect to location page" when {
       "form is correct" in {
-        val form = Json.obj(
-          "dateOfDeparture" -> Json.obj("day" -> 10, "month" -> 10, "year" -> 2019),
-          "timeOfDeparture" -> Json.obj("hour" -> 12, "minute" -> 34)
+        val correctForm = Json.obj(
+          "dateOfDeparture" -> Json.obj("day" -> yesterday.getDayOfMonth, "month" -> yesterday.getMonthValue, "year" -> yesterday.getYear),
+          "timeOfDeparture" -> Json.obj("hour" -> yesterday.getHour, "minute" -> yesterday.getMinute)
         )
 
-        val result = controller(DepartureAnswers()).saveMovementDetails()(postRequest(form))
+        val result = controller(DepartureAnswers()).saveMovementDetails()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.LocationController.displayPage().url

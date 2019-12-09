@@ -1,6 +1,6 @@
 // Based on https://github.com/alphagov/govuk_publishing_components/blob/v9.3.6/app/assets/stylesheets/govuk_publishing_components/components/_step-by-step-nav.scss
 
-@import '../colours/_colour';
+@import 'lib/govuk-frontend/govuk/settings/colours-applied';
 
 .exports-notifications__steps {
   padding: 0;
@@ -14,15 +14,15 @@
 }
 
 .exports-notifications__step:nth-last-child(odd) .exports-notifications__header {
-  background-color: govuk-colour("grey-5");
+  background-color: govuk-colour("light-grey");
 }
 
 .exports-notifications__step:nth-last-child(odd) .govuk-form-group {
-  background-color: govuk-colour("grey-5");
+  background-color: govuk-colour("light-grey");
 }
 
 .exports-notifications__step:nth-last-child(odd) .exports-notifications__panel {
-  border-bottom: solid 2px govuk-colour("grey-3");
+  border-bottom: solid 2px govuk-colour("mid-grey");
 }
 
 .exports-notifications__step:after {

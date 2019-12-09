@@ -3,7 +3,8 @@ service.name=Customs Movements Service
 title.format={0} - {1} - GOV.UK
 title.withSection.format={0} - {1} - {2} - GOV.UK
 
-
+feedback=This is a new service - your {0} will help us to improve it.
+feedback.link=feedback
 
 date.day = Day
 date.month = Month

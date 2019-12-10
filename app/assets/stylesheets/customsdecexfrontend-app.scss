@@ -9,11 +9,7 @@
 
 @import 'partials/_shame';
 
-@import 'colours/_colours-palette';
-@import 'colours/_colours-organisations';
-@import 'colours/_colour';
-@import 'colours/_colours-applied';
-
+@import 'lib/govuk-frontend/govuk/all';
 @import 'partials/_step-by-step-navigation';
 @import 'partials/_lists.scss';
 @import 'partials/_layout.scss';
@@ -21,3 +17,7 @@
 .text-right {
   text-align: right;
 }
+
+$govuk-assets-path: '/customs-movements/assets/';
+$govuk-images-path: "/customs-movements/assets/lib/govuk-frontend/govuk/assets/images/";
+$govuk-fonts-path: "/customs-movements/assets/lib/govuk-frontend/govuk/assets/fonts/";

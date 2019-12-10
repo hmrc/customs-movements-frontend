@@ -22,29 +22,45 @@
 @(submissionUcr: String, submissionElement: NotificationsPageSingleElement, elementsToDisplay: Seq[NotificationsPageSingleElement])(implicit request: Request[_], messages: Messages)
 
 @notificationsList(elementsToDisplay: Seq[NotificationsPageSingleElement]) = {
-    <div class="govuk-grid-column-two-thirds">
-    @for((element, index) <- elementsToDisplay.zip(Stream.from(1)).reverse) {
-        @components.notifications_single_element(index, element)
-    }
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
 
+        @for((element, index) <- elementsToDisplay.zip(Stream.from(1)).reverse) {
+            @components.notifications_single_element(index, element)
+        }
+
+      </div>
     </div>
-    <div id="notifications-request">
-        <h2 id="notifications-request-title" class="heading-large">@submissionElement.title</h2>
-        <p id="notifications-request-timestamp">@{
-            submissionElement.timestampInfo
-        }</p>
-        <div id="notifications-request-content">@{
-            submissionElement.content
-        }</div>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+
+        <div id="notifications-request">
+            <h2 id="notifications-request-title" class="heading-large">@submissionElement.title</h2>
+            <p id="notifications-request-timestamp">@{
+                submissionElement.timestampInfo
+            }</p>
+            <div id="notifications-request-content">@{
+                submissionElement.content
+            }</div>
+        </div>
+
+      </div>
     </div>
 }
 
 @main_template(title = Title(messages("notifications.title", submissionUcr))) {
 
+  <div class="govuk-width-container">
+
     @components.back_link(routes.SubmissionsController.displayPage())
+
+    <main class="govuk-main-wrapper">
 
     @components.page_title(Some(messages("notifications.title", submissionUcr)))
 
     @notificationsList(elementsToDisplay)
 
+    </main>
+  </div>
 }

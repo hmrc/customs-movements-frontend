@@ -16,42 +16,53 @@
 
 @import forms.MucrOptions
 @import MucrOptions._
-@import views.components.fields.RadioOption
-@import views.Title
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import config.AppConfig
 
-@this(main_template: views.html.main_template)
+@this(  govukLayout: views.html.gds_main_template,
+govukButton: GovukButton,
+govukRadios: GovukRadios,
+errorSummary: components.errorSummary,
+formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+appConfig: AppConfig)
 
 @(form: Form[MucrOptions])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("mucrOptions.title", None)) {
-    @helper.form(consolidations.routes.MucrOptionsController.save(), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+@govukLayout(
+    title = messages("mucrOptions.title"),
+    backButtonTitle = messages("site.back"),
+    backButtonUrl = controllers.routes.ChoiceController.displayChoiceForm().url) {
 
-        @components.back_link(routes.ChoiceController.displayChoiceForm())
+    @formHelper(action = consolidations.routes.MucrOptionsController.save(), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.heading(title = messages("mucrOptions.title"), sectionHeader = messages("associate.heading", ""))
-
-        @components.input_radio(
-            field = form("createOrAdd"),
-            legend = "",
-            hint = None,
-            inputs = Seq(
-                RadioOption(
-                    keyPrefix = "mucrOptions",
-                    option = Create,
-                    revealComponent = components.input_text(form("newMucr"), messages("mucrOptions.create.reference"))
+        @govukRadios(Radios(
+            name = "createOrAdd",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("mucrOptions.title")),
+                    isPageHeading = true,
+                    classes = "govuk-fieldset__legend--x1"
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some("mucrOptions.create"),
+                    value = Some("create"),
+                    content = Text(messages("mucrOptions.create")),
+                    checked = form("createOrAdd").value.contains()
                 ),
-                RadioOption(
-                    keyPrefix = "mucrOptions",
-                    option = Add,
-                    revealComponent = components.input_text(form("existingMucr"), messages("mucrOptions.add.reference"), labelClass = Some("visuallyhidden"))
+                RadioItem(
+                    id = Some("mucrOptions.add"),
+                    value = Some("add"),
+                    content = Text(messages("mucrOptions.add")),
+                    checked = form("createOrAdd").value.contains()
                 )
-            )
-        )
-
-        @components.submit_button(messages("site.continue"))
+            ),
+            errorMessage = form("createOrAdd").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+        @govukButton(Button(content = Text(messages("site.continue"))))
     }
 }
+)
     

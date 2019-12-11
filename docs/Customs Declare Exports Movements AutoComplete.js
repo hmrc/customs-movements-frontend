@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports Movements AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.12
+// @version      0.13
 // @description  Customs Declare Exports Movements
 // @author       You
 // @match        http*://*/customs-movements*
@@ -11,13 +11,19 @@
 
 (function() {
     'use strict';
-    document.getElementById('global-header').appendChild(createQuickButton());
+    document.getElementsByTagName("body")[0].appendChild(createQuickButton());
 })();
 
 function createQuickButton() {
     let button = document.createElement('button');
     button.id="quickSubmit";
-    button.classList.add('button-start');
+    if (!!document.getElementById('global-header')) {
+        button.classList.add('button-start');
+    } else {
+        button.classList.add('govuk-button');
+    }
+    button.style.position = "absolute"
+    button.style.top = "50px"
     button.innerHTML = 'Quick Submit';
     button.onclick = () => completePage();
     return button;
@@ -61,8 +67,8 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-movements/choice")){
-        selectRadioOption(document.getElementById("choice"), 0);
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById("choice").checked = true
+        document.getElementsByClassName('govuk-button')[0].click()
     }
 
     if(currentPageIs("/customs-movements/consignment-references")){
@@ -112,11 +118,11 @@ function completePage() {
         document.getElementById("newMucr").value = "GB/1234-123ABC456DEFIIIII"
         document.getElementsByClassName('button')[0].click()
     }
-    if(currentPageIs("/customs-movements/associate-ducr$")){
-        selectRadioOption(document.getElementById("kind"), 0);
+    if(currentPageIs("/customs-movements/associate-ucr")){
+        document.getElementById("kind").checked = true
         const now = new Date()
         document.getElementById("ducr").value = `5GB123456789000-${now.valueOf()}IIIII`
-        document.getElementsByClassName('button')[0].click()
+        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/associate-ducr-summary")){
         document.getElementsByClassName('button')[0].click()

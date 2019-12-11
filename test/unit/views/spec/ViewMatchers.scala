@@ -242,7 +242,6 @@ trait ViewMatchers { self: MustMatchers =>
   def haveGovUkFieldError(fieldName: String, content: String): Matcher[Element] =
     new ContainElementWithIDMatcher(s"$fieldName-error") and new ElementContainsGovUkFieldError(fieldName, content)
 
-
   def haveFieldErrorLink(fieldName: String, link: String): Matcher[Element] = new ElementContainsFieldErrorLink(fieldName, link)
 
   def haveGlobalErrorSummary: Matcher[Element] = new ContainElementWithIDMatcher("error-summary-heading")

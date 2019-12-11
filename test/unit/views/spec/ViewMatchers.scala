@@ -43,7 +43,7 @@ trait ViewMatchers { self: MustMatchers =>
   def containElementWithAttribute(key: String, value: String): Matcher[Element] =
     new ContainElementWithAttribute(key, value)
 
-  def containErrorElementWithTagAndHref(tag: String, href: String): Matcher[Element] = new ContainErrorElementWithClassMatcher(tag, href)
+  def containErrorElementWithTagAndHref(tag: String, href: String): Matcher[Element] = new ContainErrorElementWithTagMatcher(tag, href)
 
   def containElementWithTag(tag: String): Matcher[Element] = new ContainElementWithTagMatcher(tag)
 
@@ -136,7 +136,7 @@ trait ViewMatchers { self: MustMatchers =>
       )
   }
 
-  class ContainErrorElementWithClassMatcher(tag: String, href: String) extends Matcher[Element] {
+  class ContainErrorElementWithTagMatcher(tag: String, href: String) extends Matcher[Element] {
     override def apply(left: Element): MatchResult =
       MatchResult(
         left != null && left
@@ -144,8 +144,8 @@ trait ViewMatchers { self: MustMatchers =>
           .get(0)
           .getElementsByTag(tag)
           .attr("href") == href,
-        s"Document did not contain element with class {$tag}\n${actualContentWas(left)}",
-        s"Document contained an element with class {$tag}"
+        s"Document did not contain element with tag {$tag}\n${actualContentWas(left)}",
+        s"Document contained an element with tag {$tag}"
       )
   }
 

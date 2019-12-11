@@ -82,26 +82,26 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
       backButton.attr("href") must be(controllers.routes.StartController.displayStartPage().url)
     }
 
-    "display 4 radio buttons with labels" in {
+    "display 6 radio buttons with labels" in {
 
       val view = createView(Choice.form())
 
-      view.getElementsByAttributeValue("for", "arrival").text() must be(messages("movement.choice.arrival.label"))
-      view.getElementsByAttributeValue("for", "departure").text() must be(messages("movement.choice.departure.label"))
-      view.getElementsByAttributeValue("for", "submissions").text() must be(messages("movement.choice.submissions.label"))
-      view.getElementsByAttributeValue("for", "associate").text() must be(messages("movement.choice.associateucr.label"))
-      view.getElementsByAttributeValue("for", "disassociate").text() must be(messages("movement.choice.disassociateucr.label"))
-      view.getElementsByAttributeValue("for", "shut_mucr").text() must be(messages("movement.choice.shutmucr.label"))
+      view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
+      view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.associateucr.label"))
+      view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.disassociateucr.label"))
+      view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.shutmucr.label"))
+      view.getElementsByAttributeValue("for", "choice-5").text() must be(messages("movement.choice.departure.label"))
+      view.getElementsByAttributeValue("for", "choice-6").text() must be(messages("movement.choice.submissions.label"))
     }
 
     "display 4 unchecked radio buttons" in {
 
       val view = createView(Choice.form())
 
-      ensureRadioIsUnChecked(view, "arrival")
-      ensureRadioIsUnChecked(view, "departure")
-      ensureRadioIsUnChecked(view, "disassociate")
-      ensureRadioIsUnChecked(view, "shut_mucr")
+      ensureRadioIsUnChecked(view, "choice")
+      ensureRadioIsUnChecked(view, "choice-2")
+      ensureRadioIsUnChecked(view, "choice-3")
+      ensureRadioIsUnChecked(view, "choice-4")
     }
 
     "display 'Save and continue' button on page" in {
@@ -142,40 +142,40 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
 
       val view = createView(Choice.form().fill(Arrival))
 
-      ensureRadioIsChecked(view, "arrival")
-      ensureRadioIsUnChecked(view, "departure")
-      ensureRadioIsUnChecked(view, "disassociate")
-      ensureRadioIsUnChecked(view, "shut_mucr")
+      ensureRadioIsChecked(view, "choice")
+      ensureRadioIsUnChecked(view, "choice-2")
+      ensureRadioIsUnChecked(view, "choice-3")
+      ensureRadioIsUnChecked(view, "choice-4")
     }
 
-    "display selected 2nd radio button - Departure (EDL)" in {
+    "display selected 2nd radio button - Associate (EDL)" in {
 
-      val view = createView(Choice.form().fill(Departure))
+      val view = createView(Choice.form().fill(AssociateUCR))
 
-      ensureRadioIsUnChecked(view, "arrival")
-      ensureRadioIsChecked(view, "departure")
-      ensureRadioIsUnChecked(view, "disassociate")
-      ensureRadioIsUnChecked(view, "shut_mucr")
+      ensureRadioIsUnChecked(view, "choice")
+      ensureRadioIsChecked(view, "choice-2")
+      ensureRadioIsUnChecked(view, "choice-3")
+      ensureRadioIsUnChecked(view, "choice-4")
     }
 
     "display selected 3rd radio button - Disassociate (EAC)" in {
 
       val view = createView(Choice.form().fill(DisassociateUCR))
 
-      ensureRadioIsUnChecked(view, "arrival")
-      ensureRadioIsUnChecked(view, "departure")
-      ensureRadioIsChecked(view, "disassociate")
-      ensureRadioIsUnChecked(view, "shut_mucr")
+      ensureRadioIsUnChecked(view, "choice")
+      ensureRadioIsUnChecked(view, "choice-2")
+      ensureRadioIsChecked(view, "choice-3")
+      ensureRadioIsUnChecked(view, "choice-4")
     }
 
     "display selected 4th radio button - Shut a MUCR (CST)" in {
 
       val view = createView(Choice.form().fill(ShutMUCR))
 
-      ensureRadioIsUnChecked(view, "arrival")
-      ensureRadioIsUnChecked(view, "departure")
-      ensureRadioIsUnChecked(view, "disassociate")
-      ensureRadioIsChecked(view, "shut_mucr")
+      ensureRadioIsUnChecked(view, "choice")
+      ensureRadioIsUnChecked(view, "choice-2")
+      ensureRadioIsUnChecked(view, "choice-3")
+      ensureRadioIsChecked(view, "choice-4")
     }
   }
 

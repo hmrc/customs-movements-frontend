@@ -48,37 +48,31 @@ appConfig: AppConfig)
             )),
             items = Seq(
                 RadioItem(
-                    id = Some("arrival"),
                     value = Some(Arrival.value.toString),
                     content = Text(messages(s"movement.choice.${Arrival.toString.toLowerCase}.label")),
                     checked = form("choice").value.contains(Arrival.toString.toLowerCase)
                 ),
                 RadioItem(
-                    id = Some("associate"),
                     value = Some(AssociateUCR.value.toString),
                     content = Text(messages(s"movement.choice.${AssociateUCR.toString.toLowerCase}.label")),
                     checked = form("choice").value.contains(AssociateUCR.value.toString)
                 ),
                 RadioItem(
-                    id = Some("disassociate"),
                     value = Some(DisassociateUCR.value.toString),
                     content = Text(messages(s"movement.choice.${DisassociateUCR.toString.toLowerCase}.label")),
                     checked = form("choice").value.contains(DisassociateUCR.value.toString)
                 ),
                 RadioItem(
-                    id = Some("shut_mucr"),
                     value = Some(ShutMUCR.value.toString),
                     content = Text(messages(s"movement.choice.${ShutMUCR.toString.toLowerCase}.label")),
                     checked = form("choice").value.contains(ShutMUCR.value.toString)
                 ),
                 RadioItem(
-                    id = Some("departure"),
                     value = Some(Departure.value.toString),
                     content = Text(messages(s"movement.choice.${Departure.toString.toLowerCase}.label")),
                     checked = form("choice").value.contains(Departure.toString.toLowerCase())
                 ),
                 RadioItem(
-                    id = Some("submissions"),
                     value = Some(Submissions.value.toString),
                     content = Text(messages(s"movement.choice.${Submissions.toString.toLowerCase}.label")),
                     checked = form("choice").value.contains(Submissions.toString.toLowerCase)

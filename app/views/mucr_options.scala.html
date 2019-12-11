@@ -37,7 +37,7 @@ appConfig: AppConfig)
     @formHelper(action = consolidations.routes.MucrOptionsController.save(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        <span class="govuk-caption-xl">@messages("associate.heading")</span>
+        <span class="govuk-caption-xl">@messages("associate.heading", "")</span>
 
         @govukRadios(Radios(
             name = "createOrAdd",

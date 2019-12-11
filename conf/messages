@@ -45,6 +45,7 @@ session_expired.heading = For your security, this service has been reset
 session_expired.guidance = The details you have given have been deleted because you did not continue the service for 1 hour.
 
 site.back = Back
+site.back.toStartPage = Back to selection page
 site.delete = Remove
 site.link.delete = Delete
 site.edit = Change

@@ -15,45 +15,69 @@
  *@
 
 @import forms.DisassociateUcr
-@import forms.MucrOptions
-@import views.components.fields.RadioOption
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import config.AppConfig
 @import views.Title
 @import forms.DisassociateKind
 
-@this(main_template: views.html.main_template)
+@this(govukLayout: views.html.gds_main_template,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukInput: GovukInput,
+        errorSummary: components.errorSummary,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        appConfig: AppConfig)
 
 @(form: Form[DisassociateUcr])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("disassociate.ucr.title", None)) {
-    @helper.form(consolidations.routes.DisassociateUcrController.submit(), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+@govukLayout(
+    title = Title(messages("disassociate.ucr.title")),
+    backButtonTitle = messages("site.back"),
+    backButtonUrl = controllers.routes.StartController.displayStartPage().url) {
 
-        @components.back_link(routes.ChoiceController.displayChoiceForm())
-
-        @components.error_summary(form.errors)
-
-        @components.heading(
-            title = messages("disassociate.ucr.title"),
-            sectionHeader = messages("disassociate.ucr.heading")
-        )
-
-        @components.input_radio(
-            field = form("kind"),
-            legend = "",
-            inputs = Seq(
-                RadioOption(
-                    keyPrefix = "disassociate.ucr",
-                    option = DisassociateKind.Ducr.formValue,
-                    revealComponent = components.input_text(form("ducr"), "") // TODO input label
+    @formHelper(action = consolidations.routes.DisassociateUcrController.submit(), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+        <span class="govuk-caption-xl">@messages("disassociate.ucr.heading")</span>
+        @govukRadios(Radios(
+            name = "value",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("disassociate.ucr.title")),
+                    isPageHeading = true,
+                    classes = "govuk-fieldset__legend--xl"
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some(DisassociateKind.Ducr.formValue),
+                    value = Some(DisassociateKind.Ducr.formValue),
+                    content = Text(messages("disassociate.ucr.ducr")),
+                    checked = form("value").value.contains(DisassociateKind.Ducr.formValue)
                 ),
-                RadioOption(
-                    keyPrefix = "disassociate.ucr",
-                    option = DisassociateKind.Mucr.formValue,
-                    revealComponent = components.input_text(form("mucr"), "") // TODO input label
-                )
-            )
-        )
+                RadioItem(
+                    id = Some(DisassociateKind.Mucr.toString),
+                    value = Some(DisassociateKind.Mucr.toString),
+                    content = Text(messages("disassociate.ucr.mucr")),
+                    checked = form("value").value.contains(DisassociateKind.Mucr.formValue),
+                    conditionalHtml = Some(conditionalHtml)
+                )),
+            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
+        ))
+        @** conditional for ducr *@
+        @govukButton(Button(content = Text(messages("site.save_and_continue"))))
 
-        @components.submit_button(messages("site.continue"))
     }
+}
+
+@conditionalHtml = {
+@govukInput(Input(
+    id = "cond-1",
+    name = "cond-1",
+    inputType = "text",
+    classes = "govuk-!-width-one-third",
+    label = Label(
+        content = Text("???")
+    ),
+    attributes = Map("spellcheck" -> "false")
+))
 }

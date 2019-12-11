@@ -188,6 +188,18 @@ trait ViewMatchers { self: MustMatchers =>
     }
   }
 
+  class ElementContainsGovUkFieldError(fieldName: String, content: String = "") extends Matcher[Element] {
+    override def apply(left: Element): MatchResult = {
+      val element = left.getElementById(s"$fieldName-error")
+      val fieldErrorElement = if (element == null) left else element
+      MatchResult(
+        fieldErrorElement.text().contains(content),
+        s"Element did not contain {$content}\n${actualContentWas(fieldErrorElement)}",
+        s"Element contained {$content}"
+      )
+    }
+  }
+
   class ElementContainsFieldErrorLink(fieldName: String, link: String) extends Matcher[Element] {
     override def apply(left: Element): MatchResult = {
       val element = left.getElementById(s"$fieldName-error")
@@ -227,9 +239,13 @@ trait ViewMatchers { self: MustMatchers =>
 
   def haveFieldError(fieldName: String, content: String): Matcher[Element] =
     new ContainElementWithIDMatcher(s"error-message-$fieldName-input") and new ElementContainsFieldError(fieldName, content)
+  def haveGovUkFieldError(fieldName: String, content: String): Matcher[Element] =
+    new ContainElementWithIDMatcher(s"$fieldName-error") and new ElementContainsGovUkFieldError(fieldName, content)
+
   def haveFieldErrorLink(fieldName: String, link: String): Matcher[Element] = new ElementContainsFieldErrorLink(fieldName, link)
 
   def haveGlobalErrorSummary: Matcher[Element] = new ContainElementWithIDMatcher("error-summary-heading")
+  def haveGovUkGlobalErrorSummary: Matcher[Element] = new ContainElementWithIDMatcher("error-summary-title")
 
   def haveHref(value: Call): Matcher[Element] = new ElementHasAttributeValueMatcher("href", value.url)
   def haveHref(url: String): Matcher[Element] = new ElementHasAttributeValueMatcher("href", url)

@@ -22,6 +22,7 @@
 @this(  govukLayout: views.html.gds_main_template,
 govukButton: GovukButton,
 govukRadios: GovukRadios,
+govukInput: GovukInput,
 errorSummary: components.errorSummary,
 formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
 appConfig: AppConfig)
@@ -42,27 +43,43 @@ appConfig: AppConfig)
                 legend = Some(Legend(
                     content = Text(messages("mucrOptions.title")),
                     isPageHeading = true,
-                    classes = "govuk-fieldset__legend--x1"
+                    classes = "govuk-fieldset__legend--xl"
                 ))
             )),
             items = Seq(
                 RadioItem(
-                    id = Some("mucrOptions.create"),
                     value = Some("create"),
                     content = Text(messages("mucrOptions.create")),
-                    checked = form("createOrAdd").value.contains()
+                    checked = form("createOrAdd").value.contains(),
+                    conditionalHtml = Some(govukInput(Input(
+                                        id = "mucrOptions.create",
+                                        name = "mucrOptions.create",
+                                        classes = "govuk-!-width-one-third",
+                                        label = Label(
+                                            content = Text(messages("mucrOptions.create.reference"))
+                                        ),
+                                        attributes = Map("spellcheck" -> "false")
+                    )))
                 ),
                 RadioItem(
-                    id = Some("mucrOptions.add"),
                     value = Some("add"),
                     content = Text(messages("mucrOptions.add")),
-                    checked = form("createOrAdd").value.contains()
+                    checked = form("createOrAdd").value.contains(),
+                    conditionalHtml = Some(govukInput(Input(
+                                        id = "mucrOptions.add",
+                                        name = "mucrOptions.add",
+                                        classes = "govuk-!-width-one-third",
+                                        attributes = Map("spellcheck" -> "false")
+                    )))
                 )
             ),
             errorMessage = form("createOrAdd").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
+
+
         @govukButton(Button(content = Text(messages("site.continue"))))
     }
 }
 )
+
     

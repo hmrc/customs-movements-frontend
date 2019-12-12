@@ -21,17 +21,19 @@ import forms.DisassociateUcr
 import helpers.views.CommonMessages
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.twirl.api.Html
+import views.html.disassociate_ucr
 import views.spec.{UnitViewSpec, ViewMatchers}
 import views.tags.ViewTest
 
 @ViewTest
 class DisassociateUcrViewSpec extends UnitViewSpec with CommonMessages with ViewMatchers {
 
-  private val page = new views.html.disassociate_ucr(mainTemplate)
+  private val disassociatePage: disassociate_ucr = asInstanceOf[disassociate_ucr]
 
   private def createView(form: Form[DisassociateUcr]): Html =
-    page(form)(request, messages)
+    disassociatePage(form)(request, messages)
 
   "Disassociate Ucr View" when {
 
@@ -39,6 +41,8 @@ class DisassociateUcrViewSpec extends UnitViewSpec with CommonMessages with View
       val messages = messagesApi.preferred(request)
       messages must haveTranslationFor("disassociate.ucr.title")
       messages must haveTranslationFor("disassociate.ucr.heading")
+      messages must haveTranslationFor("disassociate.ucr.ducr")
+      messages must haveTranslationFor("disassociate.ucr.mucr")
     }
 
     "form is empty" should {

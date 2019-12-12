@@ -33,13 +33,13 @@
 @govukLayout(
     title = Title(messages("disassociate.ucr.title")),
     backButtonTitle = messages("site.back"),
-    backButtonUrl = controllers.routes.StartController.displayStartPage().url) {
+    backButtonUrl = controllers.routes.ChoiceController.displayChoiceForm().url) {
 
     @formHelper(action = consolidations.routes.DisassociateUcrController.submit(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
         <span class="govuk-caption-xl">@messages("disassociate.ucr.heading")</span>
         @govukRadios(Radios(
-            name = "value",
+            name = "kind",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("disassociate.ucr.title")),
@@ -52,32 +52,40 @@
                     id = Some(DisassociateKind.Ducr.formValue),
                     value = Some(DisassociateKind.Ducr.formValue),
                     content = Text(messages("disassociate.ucr.ducr")),
-                    checked = form("value").value.contains(DisassociateKind.Ducr.formValue)
+                    checked = form("value").value.contains(DisassociateKind.Ducr.formValue),
+                    conditionalHtml = Some(disassociateDucr)
                 ),
                 RadioItem(
-                    id = Some(DisassociateKind.Mucr.toString),
-                    value = Some(DisassociateKind.Mucr.toString),
+                    id = Some(DisassociateKind.Mucr.formValue),
+                    value = Some(DisassociateKind.Mucr.formValue),
                     content = Text(messages("disassociate.ucr.mucr")),
                     checked = form("value").value.contains(DisassociateKind.Mucr.formValue),
-                    conditionalHtml = Some(conditionalHtml)
+                    conditionalHtml = Some(disassociateMucr)
                 )),
             errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
         ))
         @** conditional for ducr *@
-        @govukButton(Button(content = Text(messages("site.save_and_continue"))))
+        @govukButton(Button(content = Text(messages("site.continue"))))
 
     }
 }
 
-@conditionalHtml = {
+@disassociateDucr = {
 @govukInput(Input(
-    id = "cond-1",
-    name = "cond-1",
+    id = "ducr",
+    name = "ducr",
     inputType = "text",
     classes = "govuk-!-width-one-third",
-    label = Label(
-        content = Text("???")
-    ),
+    attributes = Map("spellcheck" -> "false")
+))
+}
+
+@disassociateMucr = {
+@govukInput(Input(
+    id = "mucr",
+    name = "mucr",
+    inputType = "text",
+    classes = "govuk-!-width-one-third",
     attributes = Map("spellcheck" -> "false")
 ))
 }

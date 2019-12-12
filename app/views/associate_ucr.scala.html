@@ -28,19 +28,20 @@
         govukInput: GovukInput,
         exportsInputText: components.gds.exportsInputText,
         errorSummary: components.errorSummary,
+        sectionHeader: components.sectionHeader,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(form: Form[AssociateUcr], mucrOptions: MucrOptions)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
-    title = Title(messages("associate.ucr.title", mucrOptions.mucr)),
+    title = Title("associate.ucr.title", Some("mucrOptions.heading")),
     backButtonTitle = messages("site.back"),
     backButtonUrl = consolidations.routes.MucrOptionsController.displayPage.url) {
 
     @formHelper(action = consolidations.routes.AssociateUcrController.submit(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        <span class="govuk-caption-xl">@messages("associate.heading", mucrOptions.mucr)</span>
+        @sectionHeader(messages("associate.heading", mucrOptions.mucr))
 
         @govukRadios(Radios(
             name = "kind",

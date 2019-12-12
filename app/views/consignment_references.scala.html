@@ -29,26 +29,30 @@
   govukRadios: GovukRadios,
   exportsInputText: components.gds.exportsInputText,
   errorSummary: components.errorSummary,
+  sectionHeader: components.sectionHeader,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_], messages: Messages)
 
+@headerKey = @{s"consignmentReferences.${request.answers.`type`}.question"}
+@sectionHeaderKey = @{s"consignmentReferences.${request.answers.`type`}.heading"}
+
 @govukLayout(
-  title = Title(messages("consignmentReferences.title")),
+  title = Title(headerKey, Some(sectionHeaderKey)),
   backButtonTitle = messages("site.back.toStartPage"),
   backButtonUrl = controllers.routes.ChoiceController.displayChoiceForm().url) {
 
   @formHelper(action = routes.ConsignmentReferencesController.saveConsignmentReferences(), 'autoComplete -> "off") {
     @errorSummary(form.errors)
 
-    <span id="section-header" class="govuk-caption-xl">@messages(s"consignmentReferences.${request.answers.`type`}.heading")</span>
+     @sectionHeader(messages(sectionHeaderKey))
 
-    @govukRadios(Radios(
+      @govukRadios(Radios(
       name = "reference",
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages(s"consignmentReferences.${request.answers.`type`}.question")),
+          content = Text(messages(headerKey)),
           isPageHeading = true,
           classes = "govuk-fieldset__legend govuk-fieldset__legend--l"
         ))

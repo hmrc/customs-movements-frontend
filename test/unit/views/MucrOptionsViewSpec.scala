@@ -36,7 +36,7 @@ class MucrOptionsViewSpec extends UnitViewSpec with CommonMessages {
     }
 
     "have the correct heading" in {
-      view.getElementById("section-header").text() mustBe "associate.heading"
+      view.getElementById("section-header").text() mustBe "mucrOptions.heading"
     }
 
     "have the correct label for create new" in {

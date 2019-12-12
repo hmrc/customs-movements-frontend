@@ -31,7 +31,7 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector {
 
   "View" should {
     "render title" in {
-      page(ConsignmentReferences.form).getTitle must containMessage("consignmentReferences.title")
+      page(ConsignmentReferences.form).getTitle must containMessage("consignmentReferences.ARRIVE.question")
     }
 
     "render heading" in {

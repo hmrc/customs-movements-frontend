@@ -22,7 +22,7 @@
 
 @(form: Form[Location])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("location.question", None)) {
+@main_template(title = Title("location.question")) {
     @helper.form(routes.LocationController.saveLocation(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 

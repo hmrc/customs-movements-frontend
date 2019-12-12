@@ -24,7 +24,7 @@
 
 @(form: Form[DisassociateUcr])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("disassociate.ucr.title", None)) {
+@main_template(title = Title("disassociate.ucr.title", Some("disassociate.ucr.heading"))) {
     @helper.form(consolidations.routes.DisassociateUcrController.submit(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 

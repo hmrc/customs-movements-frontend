@@ -26,7 +26,7 @@
 
 @radio(mode: String) = { RadioOption(mode, mode, Transport.messageKey(mode)) }
 
-@main_template(title = Title("transport.title", None)) {
+@main_template(title = Title("transport.title")) {
     @helper.form(routes.TransportController.saveTransport(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 

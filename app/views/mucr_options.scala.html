@@ -23,7 +23,7 @@
 
 @(form: Form[MucrOptions])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("mucrOptions.title", None)) {
+@main_template(title = Title("mucrOptions.title", Some("mucrOptions.heading"))) {
     @helper.form(consolidations.routes.MucrOptionsController.save(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
@@ -31,7 +31,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(title = messages("mucrOptions.title"), sectionHeader = messages("associate.heading", ""))
+        @components.heading(title = messages("mucrOptions.title"), sectionHeader = messages("mucrOptions.heading"))
 
         @components.input_radio(
             field = form("createOrAdd"),

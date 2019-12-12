@@ -30,7 +30,7 @@ appConfig: AppConfig)
 @(form: Form[Choice])(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
-    title = Title(messages("movement.choice.title")),
+    title = Title("movement.choice.title"),
     backButtonTitle = messages("site.back"),
     backButtonUrl = controllers.routes.StartController.displayStartPage().url) {
 

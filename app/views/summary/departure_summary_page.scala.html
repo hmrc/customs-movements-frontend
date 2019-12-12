@@ -25,7 +25,7 @@
 
 @(data: DepartureAnswers)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("summary.departure.title", None)) {
+@main_template(title = Title("summary.departure.title")) {
 
     @components.back_link(routes.TransportController.displayPage())
 

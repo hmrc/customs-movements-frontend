@@ -26,6 +26,7 @@
         govukButton: GovukButton,
         govukRadios: GovukRadios,
         govukInput: GovukInput,
+        exportsInputText: components.gds.exportsInputText,
         errorSummary: components.errorSummary,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
@@ -58,27 +59,17 @@
                     value = Some(AssociateKind.Ducr.formValue),
                     content = Text(messages("associate.ucr.ducr")),
                     checked = form("kind").value.contains(AssociateKind.Ducr.formValue),
-                    conditionalHtml = Some(conditionalHtml("ducr"))
+                    conditionalHtml = Some(exportsInputText(form("ducr")))
                 ),
                 RadioItem(
                     value = Some(AssociateKind.Mucr.formValue),
                     content = Text(messages("associate.ucr.mucr")),
                     checked = form("kind").value.contains(AssociateKind.Mucr.formValue),
-                    conditionalHtml = Some(conditionalHtml("mucr"))
+                    conditionalHtml = Some(exportsInputText(form("mucr")))
                 )
             ),
             errorMessage = form("kind").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
         @govukButton(Button(content = Text(messages("site.continue"))))
     }
-}
-
-@conditionalHtml(field: String) = {
-    @govukInput(Input(
-        id = field,
-        name = field,
-        value = form(field).value,
-        errorMessage = form(field).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
-        classes = "govuk-!-width-two-thirds"
-    ))
 }

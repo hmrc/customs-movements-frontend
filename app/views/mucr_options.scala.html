@@ -26,6 +26,7 @@ govukButton: GovukButton,
 govukRadios: GovukRadios,
 govukInput: GovukInput,
 errorSummary: components.errorSummary,
+exportsInputText: components.gds.exportsInputText,
 formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
 appConfig: AppConfig)
 
@@ -55,28 +56,13 @@ appConfig: AppConfig)
                     value = Some("create"),
                     content = Text(messages("mucrOptions.create")),
                     checked = form("createOrAdd").value.contains("create"),
-                    conditionalHtml = Some(govukInput(Input(
-                                        id = "newMucr",
-                                        name = "newMucr",
-                                        value = form("newMucr").value,
-                                        classes = "govuk-!-width-two-thirds",
-                                        errorMessage = form("newMucr").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
-                                        label = Label(
-                                            content = Text(messages("mucrOptions.create.reference"))
-                                        )
-                    )))
+                    conditionalHtml = Some(exportsInputText(form("newMucr")))
                 ),
                 RadioItem(
                     value = Some("add"),
                     content = Text(messages("mucrOptions.add")),
                     checked = form("createOrAdd").value.contains("add"),
-                    conditionalHtml = Some(govukInput(Input(
-                                        id = "existingMucr",
-                                        name = "existingMucr",
-                                        value = form("existingMucr").value,
-                                        errorMessage = form("existingMucr").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
-                                        classes = "govuk-!-width-two-thirds"
-                    )))
+                    conditionalHtml = Some(exportsInputText(form("existingMucr")))
                 )
             ),
             errorMessage = form("createOrAdd").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))

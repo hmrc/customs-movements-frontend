@@ -42,7 +42,7 @@
   @formHelper(action = routes.ConsignmentReferencesController.saveConsignmentReferences(), 'autoComplete -> "off") {
     @errorSummary(form.errors)
 
-    <span id="section-header" class="govuk-caption-l">@messages(s"consignmentReferences.${request.answers.`type`}.heading")</span>
+    <span id="section-header" class="govuk-caption-xl">@messages(s"consignmentReferences.${request.answers.`type`}.heading")</span>
 
     @govukRadios(Radios(
       name = "reference",

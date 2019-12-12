@@ -17,15 +17,14 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.Choice._
 @import forms.Choice
-@import config.AppConfig
 @import views.Title
+@import components.errorSummary
 
 @this(  govukLayout: views.html.gds_main_template,
 govukButton: GovukButton,
 govukRadios: GovukRadios,
-errorSummary: components.errorSummary,
-formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-appConfig: AppConfig)
+errorSummary: errorSummary,
+formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(form: Form[Choice])(implicit request: Request[_], messages: Messages)
 

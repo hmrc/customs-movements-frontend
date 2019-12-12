@@ -96,6 +96,12 @@ class DisassociateUcrViewSpec extends ViewSpec with Injector {
       }
     }
 
+    "form contains input text labels" in {
+      val mucrView = createView(DisassociateUcr.form.fill(DisassociateUcr(Mucr, ducr = None, mucr = Some("1234"))))
+      mucrView.getElementsByAttributeValue("for", "mucr").first() must containMessage("site.inputText.mucr.label")
+      mucrView.getElementsByAttributeValue("for", "ducr").first() must containMessage("site.inputText.ducr.label")
+    }
+
     "form contains 'DUCR' with value" should {
       val ducrView = createView(DisassociateUcr.form.fill(DisassociateUcr(Ducr, ducr = Some("1234"), mucr = None)))
       "display value" in {

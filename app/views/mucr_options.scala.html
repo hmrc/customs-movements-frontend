@@ -17,15 +17,18 @@
 @import forms.MucrOptions
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
+@import components.errorSummary
+@import components.sectionHeader
+@import components.gds.exportsInputText
 
 
 @this(  govukLayout: views.html.gds_main_template,
 govukButton: GovukButton,
 govukRadios: GovukRadios,
 govukInput: GovukInput,
-errorSummary: components.errorSummary,
-sectionHeader: components.sectionHeader,
-exportsInputText: components.gds.exportsInputText,
+errorSummary: errorSummary,
+exportsInputText: exportsInputText,
+sectionHeader: sectionHeader,
 formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(form: Form[MucrOptions])(implicit request: Request[_], messages: Messages)
@@ -54,13 +57,13 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
                     value = Some("create"),
                     content = Text(messages("mucrOptions.create")),
                     checked = form("createOrAdd").value.contains("create"),
-                    conditionalHtml = Some(exportsInputText(form("newMucr")))
+                    conditionalHtml = Some(exportsInputText(form("newMucr"), "site.inputText.newMucr.label", Some("site.inputText.newMucr.label.hint")))
                 ),
                 RadioItem(
                     value = Some("add"),
                     content = Text(messages("mucrOptions.add")),
                     checked = form("createOrAdd").value.contains("add"),
-                    conditionalHtml = Some(exportsInputText(form("existingMucr")))
+                    conditionalHtml = Some(exportsInputText(form("existingMucr"), "site.inputText.mucr.label"))
                 )
             ),
             errorMessage = form("createOrAdd").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))

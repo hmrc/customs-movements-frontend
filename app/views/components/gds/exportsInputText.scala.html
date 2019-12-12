@@ -18,12 +18,14 @@
 
 @this(govukInput: GovukInput)
 
-@(field: Field)(implicit messages: Messages)
+@(field: Field, labelKey: String, hintKey: Option[String] = None)(implicit messages: Messages)
 
 @govukInput(Input(
   id = field.id,
   name = field.name,
   value = field.value,
+  label = Label(content = Text(messages(labelKey))),
+  hint = hintKey.map(key => Hint(content = Text(messages(key)))),
   errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message)))),
   classes = "govuk-!-width-two-thirds"
 ))

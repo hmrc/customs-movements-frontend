@@ -17,15 +17,15 @@
 package views
 
 import base.Injector
+import forms.AssociateKind._
 import forms.{AssociateUcr, MucrOptions}
 import helpers.views.{AssociateDucrMessages, CommonMessages}
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import play.twirl.api.Html
+import views.html.associate_ucr
 import views.spec.{UnitViewSpec, ViewMatchers}
 import views.tags.ViewTest
-import forms.AssociateKind._
-import views.html.associate_ucr
 
 @ViewTest
 class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with CommonMessages with ViewMatchers with Injector {
@@ -82,6 +82,12 @@ class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with 
       "display value" in {
         mucrView.getElementById("mucr").`val`() mustBe "1234"
       }
+    }
+
+    "form contains input text labels" in {
+      val mucrView = createView(mucrOptions, AssociateUcr.form.fill(AssociateUcr(Mucr, "1234")))
+      mucrView.getElementsByAttributeValue("for", "mucr").first() must containMessage("site.inputText.mucr.label")
+      mucrView.getElementsByAttributeValue("for", "ducr").first() must containMessage("site.inputText.ducr.label")
     }
 
     "form contains 'DUCR' with value" should {

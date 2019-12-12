@@ -47,6 +47,11 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector {
       )
     }
 
+    "render labels" in {
+      page(ConsignmentReferences.form).getElementsByAttributeValue("for", "mucrValue").first() must containMessage("site.inputText.mucr.label")
+      page(ConsignmentReferences.form).getElementsByAttributeValue("for", "ducrValue").first() must containMessage("site.inputText.ducr.label")
+    }
+
     "render back button" in {
       val backButton = page(ConsignmentReferences.form).getBackButton
 

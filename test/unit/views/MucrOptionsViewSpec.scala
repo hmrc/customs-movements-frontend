@@ -40,10 +40,11 @@ class MucrOptionsViewSpec extends ViewSpec with Injector {
       page(MucrOptions.form).getElementById("section-header") must containMessage("mucrOptions.heading")
     }
 
-    // TODO - re-enable when labels added back to input fields
-//    "have the correct label for create new" in {
-//      view.getElementById("conditional-createOrAdd").text() mustBe "mucrOptions.create.reference"
-//    }
+    "render the correct labels and hints" in {
+      page(MucrOptions.form).getElementsByAttributeValue("for", "existingMucr").first() must containMessage("site.inputText.mucr.label")
+      page(MucrOptions.form).getElementsByAttributeValue("for", "newMucr").first() must containMessage("site.inputText.newMucr.label")
+      page(MucrOptions.form).getElementById("newMucr-hint") must containMessage("site.inputText.newMucr.label.hint")
+    }
 
     "have no options selected on initial display" in {
       page(MucrOptions.form).getElementById("createOrAdd") mustBe unchecked

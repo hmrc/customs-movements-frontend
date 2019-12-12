@@ -282,6 +282,7 @@ shutMucr.summary.header = Shut master consignment
 shutMucr.summary.type = MUCR
 
 associate.heading = Add to MUCR {0}
+mucrOptions.heading = Add to MUCR
 mucrOptions.title = Create or enter a Master Consignment Reference (MUCR) to associate with
 mucrOptions.create = Create a new Master Consignment Reference (MUCR)
 mucrOptions.add = Add to an existing Master Consignment Reference (MUCR)

@@ -19,7 +19,8 @@ package views
 import base.Injector
 import forms.MucrOptions
 import models.cache.ArrivalAnswers
-import play.api.data.Form
+import org.jsoup.nodes.Document
+import play.api.data.{Form, FormError}
 import views.html.mucr_options
 
 class MucrOptionsViewSpec extends ViewSpec with Injector {
@@ -58,6 +59,19 @@ class MucrOptionsViewSpec extends ViewSpec with Injector {
 
     "display 'Continue' button on page" in {
       page(MucrOptions.form).getElementsByClass("govuk-button").first() must containMessage("site.continue")
+    }
+
+    "render error summary" when {
+      "no errors" in {
+        page(MucrOptions.form).getErrorSummary mustBe empty
+      }
+
+      "some errors" in {
+        val view: Document = page(MucrOptions.form.withError(FormError("createOrAdd", "mucrOptions.createAdd.value.empty")))
+
+        view must haveGovUkGlobalErrorSummary
+        view must haveGovUkFieldError("createOrAdd", messages("mucrOptions.createAdd.value.empty"))
+      }
     }
   }
 }

@@ -16,19 +16,22 @@
 
 package views
 
+import base.Injector
 import forms.ConsignmentReferences
 import models.cache.ArrivalAnswers
+import org.jsoup.nodes.{Document, Element}
+import play.api.data.FormError
 import views.html.consignment_references
 
-class ConsignmentReferenceViewSpec extends ViewSpec {
+class ConsignmentReferenceViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(ArrivalAnswers())
 
-  private val page = new consignment_references(main_template)
+  private val page = instanceOf[consignment_references]
 
   "View" should {
     "render title" in {
-      page(ConsignmentReferences.form).getTitle must containMessage("consignmentReferences.title")
+      page(ConsignmentReferences.form).getTitle must containMessage("consignmentReferences.ARRIVE.question")
     }
 
     "render heading" in {
@@ -36,8 +39,17 @@ class ConsignmentReferenceViewSpec extends ViewSpec {
     }
 
     "render options" in {
-      page(ConsignmentReferences.form).getElementById("Ducr-label") must containMessage("consignmentReferences.reference.ducr")
-      page(ConsignmentReferences.form).getElementById("Mucr-label") must containMessage("consignmentReferences.reference.mucr")
+      page(ConsignmentReferences.form).getElementsByAttributeValue("for", "reference").first() must containMessage(
+        "consignmentReferences.reference.ducr"
+      )
+      page(ConsignmentReferences.form).getElementsByAttributeValue("for", "reference-2").first() must containMessage(
+        "consignmentReferences.reference.mucr"
+      )
+    }
+
+    "render labels" in {
+      page(ConsignmentReferences.form).getElementsByAttributeValue("for", "mucrValue").first() must containMessage("site.inputText.mucr.label")
+      page(ConsignmentReferences.form).getElementsByAttributeValue("for", "ducrValue").first() must containMessage("site.inputText.ducr.label")
     }
 
     "render back button" in {
@@ -53,7 +65,10 @@ class ConsignmentReferenceViewSpec extends ViewSpec {
       }
 
       "some errors" in {
-        page(ConsignmentReferences.form.withError("error", "error.required")).getErrorSummary mustBe defined
+        val view: Document = page(ConsignmentReferences.form.withError(FormError("reference", "consignmentReferences.reference.empty")))
+
+        view must haveGovUkGlobalErrorSummary
+        view must haveGovUkFieldError("reference", messages("consignmentReferences.reference.empty"))
       }
     }
   }

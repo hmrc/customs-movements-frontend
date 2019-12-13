@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package views
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-import play.api.i18n.Messages
+@this(govukInput: GovukInput)
 
-case class Title(headingKey: String, sectionKey: Option[String] = None, headingArgs: Seq[String] = Seq.empty) {
+@(field: Field, labelKey: String, hintKey: Option[String] = None)(implicit messages: Messages)
 
-  def format(implicit messages: Messages): String = {
-    val heading = messages(headingKey, headingArgs: _*)
-    val service = messages("service.name")
-
-    sectionKey match {
-      case Some(section) => messages("title.withSection.format", heading, messages(section), service)
-      case _             => messages("title.format", heading, service)
-    }
-
-  }
-}
+@govukInput(Input(
+  id = field.id,
+  name = field.name,
+  value = field.value,
+  label = Label(content = Text(messages(labelKey))),
+  hint = hintKey.map(key => Hint(content = Text(messages(key)))),
+  errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message)))),
+  classes = "govuk-!-width-two-thirds"
+))

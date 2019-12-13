@@ -16,19 +16,21 @@
 
 package views
 
+import base.Injector
+import forms.AssociateKind._
 import forms.{AssociateUcr, MucrOptions}
 import helpers.views.{AssociateDucrMessages, CommonMessages}
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import play.twirl.api.Html
+import views.html.associate_ucr
 import views.spec.{UnitViewSpec, ViewMatchers}
 import views.tags.ViewTest
-import forms.AssociateKind._
 
 @ViewTest
-class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with CommonMessages with ViewMatchers {
+class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with CommonMessages with ViewMatchers with Injector {
 
-  private val page = new views.html.associate_ucr(mainTemplate)
+  private val page = instanceOf[associate_ucr]
 
   val mucrOptions = MucrOptions("MUCR")
 
@@ -47,11 +49,11 @@ class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with 
       val emptyView = createView(mucrOptions, AssociateUcr.form)
       "have 'DUCR' section" which {
         "have radio button" in {
-          emptyView.getElementById("associate.ucr.ducr") mustBe unchecked
+          emptyView.getElementById("kind") mustBe unchecked
         }
 
         "display label" in {
-          emptyView.getElementsByAttributeValue("for", "associate.ucr.ducr").text() mustBe "associate.ucr.ducr"
+          emptyView.getElementsByAttributeValue("for", "kind").text() mustBe "associate.ucr.ducr"
         }
         "have input for value" in {
           emptyView.getElementById("ducr").`val`() mustBe empty
@@ -60,10 +62,10 @@ class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with 
 
       "have 'MUCR' section" which {
         "have radio button" in {
-          emptyView.getElementById("associate.ucr.mucr") mustBe unchecked
+          emptyView.getElementById("kind-2") mustBe unchecked
         }
         "display label" in {
-          emptyView.getElementsByAttributeValue("for", "associate.ucr.mucr").text() mustBe "associate.ucr.mucr"
+          emptyView.getElementsByAttributeValue("for", "kind-2").text() mustBe "associate.ucr.mucr"
         }
         "have input" in {
           emptyView.getElementById("mucr").`val`() mustBe empty
@@ -71,7 +73,7 @@ class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with 
       }
 
       "display 'Continue' button on page" in {
-        emptyView.getElementsByClass("button").text() mustBe continueCaption
+        emptyView.getElementsByClass("govuk-button").text() mustBe continueCaption
       }
     }
 
@@ -80,6 +82,12 @@ class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with 
       "display value" in {
         mucrView.getElementById("mucr").`val`() mustBe "1234"
       }
+    }
+
+    "form contains input text labels" in {
+      val mucrView = createView(mucrOptions, AssociateUcr.form.fill(AssociateUcr(Mucr, "1234")))
+      mucrView.getElementsByAttributeValue("for", "mucr").first() must containMessage("site.inputText.mucr.label")
+      mucrView.getElementsByAttributeValue("for", "ducr").first() must containMessage("site.inputText.ducr.label")
     }
 
     "form contains 'DUCR' with value" should {
@@ -94,8 +102,8 @@ class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with 
 
       val view: Document = createView(mucrOptions, value)
 
-      view must haveGlobalErrorSummary
-      view must haveFieldError("ducr", "ducr.error.empty")
+      view must haveGovUkGlobalErrorSummary
+      view must haveGovUkFieldError("ducr", "ducr.error.empty")
     }
   }
 

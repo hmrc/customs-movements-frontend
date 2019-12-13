@@ -14,41 +14,71 @@
  * limitations under the License.
  *@
 
-@import controllers.routes
-@import forms.Choice
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.Choice._
+@import forms.Choice
 @import views.Title
-@import views.components.fields.RadioOption
+@import components.errorSummary
 
-@this(main_template: views.html.main_template)
+@this(  govukLayout: views.html.gds_main_template,
+govukButton: GovukButton,
+govukRadios: GovukRadios,
+errorSummary: errorSummary,
+formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(form: Form[Choice])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("movement.choice.title", None)) {
+@govukLayout(
+    title = Title("movement.choice.title"),
+    backButtonTitle = messages("site.back"),
+    backButtonUrl = controllers.routes.StartController.displayStartPage().url) {
 
-    @components.back_link(routes.StartController.displayStartPage())
+    @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-    @helper.form(routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
-        @helper.CSRF.formField
-
-        @components.error_summary(form.errors)
-
-        @components.heading(title = messages("movement.choice.title"))
-
-        @components.input_radio(
-            field = form("choice"),
-            legend = "",
-            inputs = Seq(
-                RadioOption("arrival", Arrival.value, messages(s"movement.choice.arrival.label")),
-                RadioOption("associate", AssociateUCR.value, messages(s"movement.choice.associate.label")),
-                RadioOption("disassociate", DisassociateUCR.value, messages(s"movement.choice.disassociateDucr.label")),
-                RadioOption("shut_mucr", ShutMUCR.value, messages("movement.choice.shutMucr.label")),
-                RadioOption("departure", Departure.value, messages(s"movement.choice.departure.label")),
-                RadioOption("submissions", Submissions.value, messages("movement.choice.submissions.label"))
-            )
-        )
-
-        @components.submit_button(messages("site.continue"))
-
+        @govukRadios(Radios(
+            name = "choice",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("movement.choice.title")),
+                    isPageHeading = true,
+                    classes = "govuk-fieldset__legend--xl"
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    value = Some(Arrival.value.toString),
+                    content = Text(messages(s"movement.choice.${Arrival.toString.toLowerCase}.label")),
+                    checked = form("choice").value.contains(Arrival.toString.toLowerCase)
+                ),
+                RadioItem(
+                    value = Some(AssociateUCR.value.toString),
+                    content = Text(messages(s"movement.choice.${AssociateUCR.toString.toLowerCase}.label")),
+                    checked = form("choice").value.contains(AssociateUCR.value.toString)
+                ),
+                RadioItem(
+                    value = Some(DisassociateUCR.value.toString),
+                    content = Text(messages(s"movement.choice.${DisassociateUCR.toString.toLowerCase}.label")),
+                    checked = form("choice").value.contains(DisassociateUCR.value.toString)
+                ),
+                RadioItem(
+                    value = Some(ShutMUCR.value.toString),
+                    content = Text(messages(s"movement.choice.${ShutMUCR.toString.toLowerCase}.label")),
+                    checked = form("choice").value.contains(ShutMUCR.value.toString)
+                ),
+                RadioItem(
+                    value = Some(Departure.value.toString),
+                    content = Text(messages(s"movement.choice.${Departure.toString.toLowerCase}.label")),
+                    checked = form("choice").value.contains(Departure.toString.toLowerCase())
+                ),
+                RadioItem(
+                    value = Some(Submissions.value.toString),
+                    content = Text(messages(s"movement.choice.${Submissions.toString.toLowerCase}.label")),
+                    checked = form("choice").value.contains(Submissions.toString.toLowerCase)
+                )
+            ),
+            errorMessage = form("choice").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+        @govukButton(Button(content = Text(messages("site.continue"))))
     }
 }

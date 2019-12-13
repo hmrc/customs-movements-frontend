@@ -16,40 +16,56 @@
 
 package views
 
+import base.Injector
 import forms.DisassociateKind.{Ducr, Mucr}
 import forms.DisassociateUcr
-import helpers.views.CommonMessages
+import models.cache.DisassociateUcrAnswers
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
-import views.spec.{UnitViewSpec, ViewMatchers}
+import views.html.disassociate_ucr
 import views.tags.ViewTest
 
 @ViewTest
-class DisassociateUcrViewSpec extends UnitViewSpec with CommonMessages with ViewMatchers {
+class DisassociateUcrViewSpec extends ViewSpec with Injector {
 
-  private val page = new views.html.disassociate_ucr(mainTemplate)
+  private implicit val request = journeyRequest(DisassociateUcrAnswers())
 
-  private def createView(form: Form[DisassociateUcr]): Html =
-    page(form)(request, messages)
+  private val disassociatePage: disassociate_ucr = instanceOf[disassociate_ucr]
+
+  private def createView(form: Form[DisassociateUcr]): Html = disassociatePage(form)(request, messages)
 
   "Disassociate Ucr View" when {
 
     "have a proper labels for messages" in {
-      val messages = messagesApi.preferred(request)
       messages must haveTranslationFor("disassociate.ucr.title")
       messages must haveTranslationFor("disassociate.ucr.heading")
+      messages must haveTranslationFor("disassociate.ucr.ducr")
+      messages must haveTranslationFor("disassociate.ucr.mucr")
     }
 
     "form is empty" should {
       val emptyView = createView(DisassociateUcr.form)
+
+      "have title" in {
+        emptyView.getTitle must containMessage("disassociate.ucr.title")
+      }
+
+      "have section header" in {
+        emptyView.getElementById("section-header") must containMessage("disassociate.ucr.heading")
+      }
+
+      "have heading" in {
+        emptyView.getElementsByTag("h1").text() mustBe messages("disassociate.ucr.title")
+      }
+
       "have 'DUCR' section" which {
         "have radio button" in {
-          emptyView.getElementById("disassociate.ucr.ducr") mustBe unchecked
+          emptyView.getElementById("kind") mustBe unchecked
         }
 
         "display label" in {
-          emptyView.getElementsByAttributeValue("for", "disassociate.ucr.ducr").text() mustBe "disassociate.ucr.ducr"
+          emptyView.getElementsByAttributeValue("for", "kind").first() must containMessage("disassociate.ucr.ducr")
         }
         "have input for value" in {
           emptyView.getElementById("ducr").`val`() mustBe empty
@@ -58,10 +74,10 @@ class DisassociateUcrViewSpec extends UnitViewSpec with CommonMessages with View
 
       "have 'MUCR' section" which {
         "have radio button" in {
-          emptyView.getElementById("disassociate.ucr.mucr") mustBe unchecked
+          emptyView.getElementById("kind-2") mustBe unchecked
         }
         "display label" in {
-          emptyView.getElementsByAttributeValue("for", "disassociate.ucr.mucr").text() mustBe "disassociate.ucr.mucr"
+          emptyView.getElementsByAttributeValue("for", "kind-2").first() must containMessage("disassociate.ucr.mucr")
         }
         "have input" in {
           emptyView.getElementById("mucr").`val`() mustBe empty
@@ -69,7 +85,7 @@ class DisassociateUcrViewSpec extends UnitViewSpec with CommonMessages with View
       }
 
       "display 'Save and Continue' button on page" in {
-        emptyView.getElementsByClass("button").text() mustBe continueCaption
+        emptyView.getElementsByClass("govuk-button").first() must containMessage("site.continue")
       }
     }
 
@@ -78,6 +94,12 @@ class DisassociateUcrViewSpec extends UnitViewSpec with CommonMessages with View
       "display value" in {
         mucrView.getElementById("mucr").`val`() mustBe "1234"
       }
+    }
+
+    "form contains input text labels" in {
+      val mucrView = createView(DisassociateUcr.form.fill(DisassociateUcr(Mucr, ducr = None, mucr = Some("1234"))))
+      mucrView.getElementsByAttributeValue("for", "mucr").first() must containMessage("site.inputText.mucr.label")
+      mucrView.getElementsByAttributeValue("for", "ducr").first() must containMessage("site.inputText.ducr.label")
     }
 
     "form contains 'DUCR' with value" should {
@@ -90,29 +112,29 @@ class DisassociateUcrViewSpec extends UnitViewSpec with CommonMessages with View
     "display DUCR empty" in {
       val view: Document = createView(DisassociateUcr.form.fillAndValidate(DisassociateUcr(Ducr, ducr = Some(""), mucr = None)))
 
-      view must haveGlobalErrorSummary
-      view must haveFieldError("ducr", "disassociate.ucr.ducr.empty")
+      view must haveGovUkGlobalErrorSummary
+      view must haveGovUkFieldError("ducr", messages("disassociate.ucr.ducr.empty"))
     }
 
     "display DUCR invalid" in {
       val view: Document = createView(DisassociateUcr.form.fillAndValidate(DisassociateUcr(Ducr, ducr = Some("DUCR"), mucr = None)))
 
-      view must haveGlobalErrorSummary
-      view must haveFieldError("ducr", "disassociate.ucr.ducr.error")
+      view must haveGovUkGlobalErrorSummary
+      view must haveGovUkFieldError("ducr", messages("disassociate.ucr.ducr.error"))
     }
 
     "display MUCR empty" in {
       val view: Document = createView(DisassociateUcr.form.fillAndValidate(DisassociateUcr(Mucr, ducr = None, mucr = Some(""))))
 
-      view must haveGlobalErrorSummary
-      view must haveFieldError("mucr", "disassociate.ucr.mucr.empty")
+      view must haveGovUkGlobalErrorSummary
+      view must haveGovUkFieldError("mucr", messages("disassociate.ucr.mucr.empty"))
     }
 
     "display MUCR invalid" in {
       val view: Document = createView(DisassociateUcr.form.fillAndValidate(DisassociateUcr(Mucr, ducr = None, mucr = Some("MUCR"))))
 
-      view must haveGlobalErrorSummary
-      view must haveFieldError("mucr", "disassociate.ucr.mucr.error")
+      view must haveGovUkGlobalErrorSummary
+      view must haveGovUkFieldError("mucr", messages("disassociate.ucr.mucr.error"))
     }
   }
 

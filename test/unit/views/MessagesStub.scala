@@ -22,8 +22,8 @@ import play.api.mvc.Request
 
 trait MessagesStub {
 
-  protected implicit def messages(implicit request: Request[_]): Messages = //new AllMessageKeysAreMandatoryMessages(messagesApi.preferred(request))
-    MessagesStub.realMessagesApi.preferred(request) // TODO use Mandatory Key Messages
+  protected implicit def messages(implicit request: Request[_]): Messages =
+    new AllMessageKeysAreMandatoryMessages(MessagesStub.realMessagesApi.preferred(request))
 
   protected def messages(key: String, args: Any*)(implicit request: Request[_]): String = messages(request)(key, args: _*)
 

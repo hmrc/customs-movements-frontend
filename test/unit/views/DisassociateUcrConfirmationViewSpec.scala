@@ -40,8 +40,8 @@ class DisassociateUcrConfirmationViewSpec extends UnitViewSpec with CommonMessag
 
       val messages = messagesApi.preferred(request)
 
-      messages must haveTranslationFor("disassociate.ucr.confirmation.tab.heading")
-      messages must haveTranslationFor("disassociate.ucr.confirmation.heading")
+      messages must haveTranslationFor("disassociate.ucr.confirmation.MUCR.title")
+      messages must haveTranslationFor("disassociate.ucr.confirmation.DUCR.title")
       messages must haveTranslationFor("disassociation.confirmation.associateOrShut")
       messages must haveTranslationFor("disassociation.confirmation.associateOrShut.associate")
       messages must haveTranslationFor("disassociation.confirmation.associateOrShut.shut")

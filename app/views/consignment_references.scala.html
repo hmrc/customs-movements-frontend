@@ -14,58 +14,70 @@
  * limitations under the License.
  *@
 
+  
 @import controllers.routes
 @import forms.ConsignmentReferences
 @import forms.ConsignmentReferences.AllowedReferences._
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.play.views.html._
-@import views.components.fields.RadioOption
 @import views.Title
 
-@this(main_template: views.html.main_template)
+@import components.gds.exportsInputText
+@import components.errorSummary
+@import components.sectionHeader
+
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+
+@this(
+  govukLayout: views.html.gds_main_template,
+  govukButton: GovukButton,
+  govukRadios: GovukRadios,
+  exportsInputText: exportsInputText,
+  errorSummary: errorSummary,
+  sectionHeader: sectionHeader,
+  formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_], messages: Messages)
 
-@main_template(title = Title("consignmentReferences.title", None)) {
-    @helper.form(routes.ConsignmentReferencesController.saveConsignmentReferences(), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+@headerKey = @{s"consignmentReferences.${request.answers.`type`}.question"}
+@sectionHeaderKey = @{s"consignmentReferences.${request.answers.`type`}.heading"}
 
-        @components.back_link(routes.ChoiceController.displayChoiceForm())
+@govukLayout(
+  title = Title(headerKey, Some(sectionHeaderKey)),
+  backButtonTitle = messages("site.back.toStartPage"),
+  backButtonUrl = controllers.routes.ChoiceController.displayChoiceForm().url) {
 
-        @components.error_summary(form.errors)
+  @formHelper(action = routes.ConsignmentReferencesController.saveConsignmentReferences(), 'autoComplete -> "off") {
+    @errorSummary(form.errors)
 
-        @components.heading(
-            title = messages(s"consignmentReferences.${request.answers.`type`}.question"),
-            sectionHeader = messages(s"consignmentReferences.${request.answers.`type`}.heading")
+     @sectionHeader(messages(sectionHeaderKey))
+
+      @govukRadios(Radios(
+      name = "reference",
+      fieldset = Some(Fieldset(
+        legend = Some(Legend(
+          content = Text(messages(headerKey)),
+          isPageHeading = true,
+          classes = "govuk-fieldset__legend govuk-fieldset__legend--l"
+        ))
+      )),
+      errorMessage = form("reference").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
+      items = Seq(
+        RadioItem(
+          value = Some(Ducr),
+          content = Text(messages("consignmentReferences.reference.ducr")),
+          checked = form("reference").value.contains(Ducr),
+          conditionalHtml = Some(exportsInputText(form("ducrValue"), "site.inputText.ducr.label"))
+        ),
+        RadioItem(
+          value = Some(Mucr),
+          content = Text(messages("consignmentReferences.reference.mucr")),
+          checked = form("reference").value.contains(Mucr),
+          conditionalHtml = Some(exportsInputText(form("mucrValue"), "site.inputText.mucr.label"))
         )
+      )
+    ))
 
-        @components.input_radio(
-          field = form("reference"),
-            legend = "",
-            inputs = Seq(
-              RadioOption(
-                  id = "Ducr",
-                  value = Ducr,
-                  messageKey = "consignmentReferences.reference.ducr",
-                  revealComponent = Some(components.input_text(
-                      field = form("ducrValue"),
-                      label = messages("consignmentReferences.reference.ducrValue"),
-                      labelClass = Some("visuallyhidden")
-                  ))
-              ),
-              RadioOption(
-                  id = "Mucr",
-                  value = Mucr,
-                  messageKey = "consignmentReferences.reference.mucr",
-                  revealComponent = Some(components.input_text(
-                      field = form("mucrValue"),
-                      label = messages("consignmentReferences.reference.mucrValue"),
-                      labelClass = Some("visuallyhidden")
-                  ))
-              )
-            )
-        )
-
-        @components.submit_button(messages("site.continue"))
-    }
+    @govukButton(Button(content = Text(messages("site.continue"))))
+  }
 }

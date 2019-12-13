@@ -30,7 +30,7 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 @(form: Form[MucrOptions])(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
-    title = Title(messages("mucrOptions.title", None)),
+    title = Title("mucrOptions.title"),
     backButtonTitle = messages("site.back"),
     backButtonUrl = controllers.routes.ChoiceController.displayChoiceForm().url) {
 

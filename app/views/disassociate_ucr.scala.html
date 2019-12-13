@@ -30,7 +30,7 @@
 @(form: Form[DisassociateUcr])(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
-    title = Title(messages("disassociate.ucr.title")),
+    title = Title("disassociate.ucr.title"),
     backButtonTitle = messages("site.back"),
     backButtonUrl = controllers.routes.ChoiceController.displayChoiceForm().url) {
 

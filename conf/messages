@@ -176,7 +176,6 @@ startPage.buttonName = Start now
 choicePage.input.error.empty = Please, choose what do you want to do
 choicePage.input.error.incorrectValue = Please, choose valid option
 
-consignmentReferences.title = Consignment references
 consignmentReferences.ARRIVE.heading = Arrive consignment
 consignmentReferences.DEPART.heading = Depart consignment
 consignmentReferences.ARRIVE.question = What consignment do you want to arrive?
@@ -263,7 +262,8 @@ disassociate.ucr.ducr = Declaration Consignment Reference (DUCR)
 disassociate.ucr.mucr = Master Consignment Reference (MUCR)
 disassociate.ucr.summary.title = Is the information provided for this dissociation request correct?
 disassociate.ucr.summary.table.caption = Remove consignment
-disassociate.ucr.confirmation.tab.heading = Request to dissociate {0} submitted
+disassociate.ucr.confirmation.DUCR.title = Request to dissociate DUCR submitted
+disassociate.ucr.confirmation.MUCR.title = Request to dissociate MUCR submitted
 disassociate.ucr.confirmation.heading = Request to dissociate {0} {1} has been submitted
 disassociate.ucr.ducr.error = Declaration Consignment Reference is incorrect
 disassociate.ucr.ducr.empty = Enter a Declaration Consignment Reference

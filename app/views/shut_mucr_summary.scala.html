@@ -22,7 +22,7 @@
 
 @(shutMucr: ShutMucr)(implicit request: Request[AnyContent], messages: Messages)
 
-@main_template(title = Title(messages("shutMucr.summary.title")), fullWidth = true) {
+@main_template(title = Title("shutMucr.summary.title"), fullWidth = true) {
 
     @helper.form(routes.ShutMucrSummaryController.submit(), 'autoComplete -> "off") {
         @helper.CSRF.formField

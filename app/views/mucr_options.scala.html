@@ -24,6 +24,7 @@ govukButton: GovukButton,
 govukRadios: GovukRadios,
 govukInput: GovukInput,
 errorSummary: components.errorSummary,
+sectionHeader: components.sectionHeader,
 exportsInputText: components.gds.exportsInputText,
 formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
@@ -37,7 +38,7 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
     @formHelper(action = consolidations.routes.MucrOptionsController.save(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        <span id="section-header" class="govuk-caption-xl">@messages("mucrOptions.heading")</span>
+        @sectionHeader(messages("mucrOptions.heading"))
 
         @govukRadios(Radios(
             name = "createOrAdd",

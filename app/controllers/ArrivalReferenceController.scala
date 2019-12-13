@@ -41,17 +41,21 @@ class ArrivalReferenceController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE)) { implicit request =>
-    Ok(arrivalReferencePage(request.answersAs[ArrivalAnswers].arrivalReference.fold(form)(form.fill)))
+    val answers = request.answersAs[ArrivalAnswers]
+    val consignmentReference = answers.consignmentReferences.map(_.referenceValue)
+    Ok(arrivalReferencePage(answers.arrivalReference.fold(form)(form.fill), consignmentReference))
   }
 
   def submit(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE)).async { implicit request =>
+    val answers = request.answersAs[ArrivalAnswers]
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ArrivalReference]) => Future.successful(BadRequest(arrivalReferencePage(formWithErrors))),
+        (formWithErrors: Form[ArrivalReference]) =>
+          Future.successful(BadRequest(arrivalReferencePage(formWithErrors, answers.consignmentReferences.map(_.referenceValue)))),
         validForm => {
-          val answers = request.answersAs[ArrivalAnswers].copy(arrivalReference = Some(validForm))
-          cache.upsert(Cache(request.eori, answers)).map { _ =>
+          val updatedAnswers = answers.copy(arrivalReference = Some(validForm))
+          cache.upsert(Cache(request.eori, updatedAnswers)).map { _ =>
             Redirect(controllers.routes.MovementDetailsController.displayPage())
           }
         }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
 
@@ -266,15 +267,30 @@ class DepartureSpec extends IntegrationSpec {
                    |"transport":{"modeOfTransport":"1","nationality":"FR","transportId":"123"}
                    |}""".stripMargin))
         )
-        verifyEventually(
-          postRequestedForAudit()
-            .withRequestBody(matchingJsonPath("auditType", equalTo("departure")))
-            .withRequestBody(matchingJsonPath("detail.eori", equalTo("eori")))
-            .withRequestBody(matchingJsonPath("detail.ucr", equalTo("GB/123-12345")))
-            .withRequestBody(matchingJsonPath("detail.ucrType", equalTo("M")))
-            .withRequestBody(matchingJsonPath("detail.messageCode", equalTo("EDL")))
-            .withRequestBody(matchingJsonPath("detail.submissionResult", equalTo("Success")))
-        )
+
+        val expectedTimeFormatted = time.format(DateTimeFormatter.ISO_TIME)
+        val submissionPayloadRequestBuilder = postRequestedForAudit()
+          .withRequestBody(matchingJsonPath("auditType", equalTo("departure")))
+          .withRequestBody(matchingJsonPath("detail.eori", equalTo("eori")))
+          .withRequestBody(matchingJsonPath("detail.MovementDetails.dateOfDeparture.date", equalTo(date.toString)))
+          .withRequestBody(matchingJsonPath("detail.MovementDetails.timeOfDeparture.time", equalTo(expectedTimeFormatted)))
+          .withRequestBody(matchingJsonPath("detail.Transport.modeOfTransport", equalTo("1")))
+          .withRequestBody(matchingJsonPath("detail.Transport.nationality", equalTo("FR")))
+          .withRequestBody(matchingJsonPath("detail.Transport.transportId", equalTo("123")))
+          .withRequestBody(matchingJsonPath("detail.ConsignmentReferences.reference", equalTo("M")))
+          .withRequestBody(matchingJsonPath("detail.ConsignmentReferences.referenceValue", equalTo("GB/123-12345")))
+          .withRequestBody(matchingJsonPath("detail.Location.code", equalTo("GBAUEMAEMAEMA")))
+
+        val submissionResultRequestBuilder = postRequestedForAudit()
+          .withRequestBody(matchingJsonPath("auditType", equalTo("departure")))
+          .withRequestBody(matchingJsonPath("detail.eori", equalTo("eori")))
+          .withRequestBody(matchingJsonPath("detail.ucr", equalTo("GB/123-12345")))
+          .withRequestBody(matchingJsonPath("detail.ucrType", equalTo("M")))
+          .withRequestBody(matchingJsonPath("detail.messageCode", equalTo("EDL")))
+          .withRequestBody(matchingJsonPath("detail.submissionResult", equalTo("Success")))
+
+        verifyEventually(submissionPayloadRequestBuilder)
+        verifyEventually(submissionResultRequestBuilder)
       }
     }
   }

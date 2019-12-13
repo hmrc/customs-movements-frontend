@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
 
@@ -265,16 +266,29 @@ class ArrivalSpec extends IntegrationSpec {
                    |"arrivalReference":{"reference":"ABC"}
                    |}""".stripMargin))
         )
-        verifyEventually(
-          postRequestedForAudit()
-            .withRequestBody(matchingJsonPath("auditType", equalTo("arrival")))
-            .withRequestBody(matchingJsonPath("detail.eori", equalTo("eori")))
-            .withRequestBody(matchingJsonPath("detail.ucr", equalTo("GB/123-12345")))
-            .withRequestBody(matchingJsonPath("detail.ucrType", equalTo("M")))
-            .withRequestBody(matchingJsonPath("detail.messageCode", equalTo("EAL")))
-            .withRequestBody(matchingJsonPath("detail.movementReference", equalTo("ABC")))
-            .withRequestBody(matchingJsonPath("detail.submissionResult", equalTo("Success")))
-        )
+
+        val expectedTimeFormatted = time.format(DateTimeFormatter.ISO_TIME)
+        val submissionPayloadRequestBuilder = postRequestedForAudit()
+          .withRequestBody(matchingJsonPath("auditType", equalTo("arrival")))
+          .withRequestBody(matchingJsonPath("detail.eori", equalTo("eori")))
+          .withRequestBody(matchingJsonPath("detail.ArrivalReference.reference", equalTo("ABC")))
+          .withRequestBody(matchingJsonPath("detail.MovementDetails.dateOfArrival.date", equalTo(date.toString)))
+          .withRequestBody(matchingJsonPath("detail.MovementDetails.timeOfArrival.time", equalTo(expectedTimeFormatted)))
+          .withRequestBody(matchingJsonPath("detail.ConsignmentReferences.reference", equalTo("M")))
+          .withRequestBody(matchingJsonPath("detail.ConsignmentReferences.referenceValue", equalTo("GB/123-12345")))
+          .withRequestBody(matchingJsonPath("detail.Location.code", equalTo("GBAUEMAEMAEMA")))
+
+        val submissionResultRequestBuilder = postRequestedForAudit()
+          .withRequestBody(matchingJsonPath("auditType", equalTo("arrival")))
+          .withRequestBody(matchingJsonPath("detail.eori", equalTo("eori")))
+          .withRequestBody(matchingJsonPath("detail.ucr", equalTo("GB/123-12345")))
+          .withRequestBody(matchingJsonPath("detail.ucrType", equalTo("M")))
+          .withRequestBody(matchingJsonPath("detail.messageCode", equalTo("EAL")))
+          .withRequestBody(matchingJsonPath("detail.movementReference", equalTo("ABC")))
+          .withRequestBody(matchingJsonPath("detail.submissionResult", equalTo("Success")))
+
+        verifyEventually(submissionPayloadRequestBuilder)
+        verifyEventually(submissionResultRequestBuilder)
       }
     }
   }

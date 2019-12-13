@@ -25,6 +25,7 @@
         govukRadios: GovukRadios,
         exportsInputText: components.gds.exportsInputText,
         errorSummary: components.errorSummary,
+        sectionHeader: components.sectionHeader,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(form: Form[DisassociateUcr])(implicit request: Request[_], messages: Messages)
@@ -37,7 +38,7 @@
     @formHelper(action = consolidations.routes.DisassociateUcrController.submit(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        <span id="section-header" class="govuk-caption-xl">@messages("disassociate.ucr.heading")</span>
+        @sectionHeader(messages("disassociate.ucr.heading"))
 
         @govukRadios(Radios(
             name = "kind",

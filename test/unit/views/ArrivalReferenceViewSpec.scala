@@ -26,7 +26,6 @@ class ArrivalReferenceViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(ArrivalAnswers())
 
-  private val form: Form[ArrivalReference] = ArrivalReference.form
   private val page = instanceOf[arrival_reference]
 
   private def createPage = page(ArrivalReference.form, Some("some-reference"))

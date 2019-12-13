@@ -113,6 +113,7 @@ arrivals.title = Arrivals
 arrivals.heading = Arrivals
 arrivals.ducr = DUCR
 
+movement.sectionHeading = {0} consignment {1}
 movement.arrival.confirmation.tab.heading = Arrival request submitted
 movement.arrival.confirmation.heading = Request to arrive {0} {1} has been submitted
 movement.arrival.confirmation.nextSteps = {0}, or {1}

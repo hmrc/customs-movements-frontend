@@ -36,12 +36,9 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
 
   private val mockLocationPage = mock[location]
 
-  private def controller(answers: MovementAnswers = ArrivalAnswers()) =
-    new LocationController(SuccessfulAuth(), ValidJourney(answers), cache, stubMessagesControllerComponents(), mockLocationPage)(global)
-
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockLocationPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockLocationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -49,9 +46,12 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
     super.afterEach()
   }
 
+  private def controller(answers: MovementAnswers = ArrivalAnswers()) =
+    new LocationController(SuccessfulAuth(), ValidJourney(answers), cache, stubMessagesControllerComponents(), mockLocationPage)(global)
+
   private def theResponseForm: Form[Location] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Location]])
-    verify(mockLocationPage).apply(captor.capture())(any(), any())
+    verify(mockLocationPage).apply(captor.capture(), any())(any(), any())
     captor.getValue
   }
 

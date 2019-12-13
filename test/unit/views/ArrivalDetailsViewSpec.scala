@@ -19,22 +19,26 @@ package views
 import java.text.DecimalFormat
 import java.time.{LocalDate, LocalTime}
 
-import forms.ArrivalDetails
+import base.Injector
 import forms.common.{Date, Time}
+import forms.{ArrivalDetails, ConsignmentReferences}
 import models.cache.ArrivalAnswers
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
+import testdata.CommonTestData.correctUcr
 import testdata.MovementsTestData
 import views.html.arrival_details
 
-class ArrivalDetailsViewSpec extends ViewSpec {
+class ArrivalDetailsViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(ArrivalAnswers())
   private val movementDetails = MovementsTestData.movementDetails
-  private val page = new arrival_details(main_template)
+  private val page = instanceOf[arrival_details]
 
-  private def createView(form: Form[ArrivalDetails]): Html = page(form)(request, messages)
+  private val consignmentReferences = ConsignmentReferences(reference = "M", referenceValue = correctUcr)
+  private def createView(form: Form[ArrivalDetails]): Html =
+    page(form, Some(consignmentReferences))(request, messages)
 
   private def convertIntoTwoDigitFormat(input: Int): String = {
     val formatter = new DecimalFormat("00")
@@ -62,6 +66,10 @@ class ArrivalDetailsViewSpec extends ViewSpec {
         backButton.get must haveHref(controllers.routes.ArrivalReferenceController.displayPage())
       }
 
+      "have section header" in {
+        emptyView.getElementById("section-header") must containMessage("arrivalDetails.sectionHeading", consignmentReferences.referenceValue)
+      }
+
       "have heading" in {
         emptyView.getElementById("title") must containMessage("arrivalDetails.header")
       }
@@ -69,7 +77,11 @@ class ArrivalDetailsViewSpec extends ViewSpec {
       "have date section" which {
 
         "contains label" in {
-          emptyView.getElementById("dateOfArrival-label") must containMessage("arrivalDetails.date.question")
+          import scala.collection.JavaConversions._
+
+          emptyView.getElementsByTag("legend").exists { elem =>
+            elem.text() == messages("arrivalDetails.date.question")
+          }
         }
 
         "contains hint" in {
@@ -95,7 +107,11 @@ class ArrivalDetailsViewSpec extends ViewSpec {
       "have time section" which {
 
         "contains label" in {
-          emptyView.getElementById("timeOfArrival-label") must containMessage("arrivalDetails.time.question")
+          import scala.collection.JavaConversions._
+
+          emptyView.getElementsByTag("legend").exists { elem =>
+            elem.text() == messages("arrivalDetails.time.question")
+          }
         }
 
         "contains hint" in {
@@ -114,7 +130,7 @@ class ArrivalDetailsViewSpec extends ViewSpec {
       }
 
       "have 'Continue' button" in {
-        emptyView.getElementsByClass("button").first() must containMessage("site.continue")
+        emptyView.getElementsByClass("govuk-button").first() must containMessage("site.continue")
       }
     }
 
@@ -148,11 +164,11 @@ class ArrivalDetailsViewSpec extends ViewSpec {
       val viewWithDateError: Document = createView(movementDetails.arrivalForm().withError("dateOfArrival", "date.error.invalid"))
 
       "have error summary" in {
-        viewWithDateError must haveGlobalErrorSummary
+        viewWithDateError must haveGovUkGlobalErrorSummary
       }
 
       "have field error for Date" in {
-        viewWithDateError must haveFieldError("dateOfArrival", messages("date.error.invalid"))
+        viewWithDateError must haveGovUkFieldError("dateOfArrival", messages("date.error.invalid"))
       }
     }
 
@@ -160,11 +176,11 @@ class ArrivalDetailsViewSpec extends ViewSpec {
       val viewWithTimeError: Document = createView(movementDetails.arrivalForm().withError("timeOfArrival", "time.error.invalid"))
 
       "have error summary" in {
-        viewWithTimeError must haveGlobalErrorSummary
+        viewWithTimeError must haveGovUkGlobalErrorSummary
       }
 
       "have field error for Time" in {
-        viewWithTimeError must haveFieldError("timeOfArrival", messages("time.error.invalid"))
+        viewWithTimeError must haveGovUkFieldError("timeOfArrival", messages("time.error.invalid"))
       }
     }
   }

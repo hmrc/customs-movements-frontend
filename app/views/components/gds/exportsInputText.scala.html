@@ -20,11 +20,11 @@
 
 @(field: Field, labelKey: String, hintKey: Option[String] = None, isPageHeading: Boolean = false)(implicit messages: Messages)
 
-@buildLabel = @{if(isPageHeading) {
+@buildLabel = @{ if(isPageHeading) {
     Label(content = Text(messages(labelKey)), isPageHeading = true,  classes = "govuk-label--l")
-    } else {
+  } else {
     Label(content = Text(messages(labelKey)))
-}
+  }
 }
 
 @govukInput(Input(

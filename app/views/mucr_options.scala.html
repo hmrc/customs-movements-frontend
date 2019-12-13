@@ -15,9 +15,7 @@
  *@
 
 @import forms.MucrOptions
-@import MucrOptions._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import config.AppConfig
 @import views.Title
 
 
@@ -27,8 +25,7 @@ govukRadios: GovukRadios,
 govukInput: GovukInput,
 errorSummary: components.errorSummary,
 exportsInputText: components.gds.exportsInputText,
-formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-appConfig: AppConfig)
+formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(form: Form[MucrOptions])(implicit request: Request[_], messages: Messages)
 
@@ -40,7 +37,7 @@ appConfig: AppConfig)
     @formHelper(action = consolidations.routes.MucrOptionsController.save(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        <span class="govuk-caption-xl">@messages("mucrOptions.heading")</span>
+        <span id="section-header" class="govuk-caption-xl">@messages("mucrOptions.heading")</span>
 
         @govukRadios(Radios(
             name = "createOrAdd",

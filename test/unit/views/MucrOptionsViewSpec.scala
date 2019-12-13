@@ -18,46 +18,46 @@ package views
 
 import base.Injector
 import forms.MucrOptions
-import helpers.views.CommonMessages
-import org.jsoup.nodes.Document
+import models.cache.ArrivalAnswers
 import play.api.data.Form
 import views.html.mucr_options
-import views.spec.{UnitViewSpec, ViewMatchers}
 
-class MucrOptionsViewSpec extends UnitViewSpec with CommonMessages with ViewMatchers with Injector {
+class MucrOptionsViewSpec extends ViewSpec with Injector {
+
+  private implicit val request = journeyRequest(ArrivalAnswers())
 
   private val form: Form[MucrOptions] = MucrOptions.form
   private val page = instanceOf[mucr_options]
 
-  private val view: Document = page(form)
-
   "MUCR options" should {
 
     "have the correct title" in {
-      view.getElementsByClass("govuk-fieldset__heading").text() mustBe "mucrOptions.title"
+      page(MucrOptions.form).getTitle must containMessage("mucrOptions.title")
     }
 
     "have the correct heading" in {
-      view.getElementsByClass("govuk-caption-xl").text() mustBe "associate.heading"
+      page(MucrOptions.form).getElementById("section-header") must containMessage("mucrOptions.heading")
     }
 
-    "have the correct label for create new" in {
-      view.getElementById("conditional-createOrAdd").text() mustBe "mucrOptions.create.reference"
-    }
+    // TODO - re-enable when labels added back to input fields
+//    "have the correct label for create new" in {
+//      view.getElementById("conditional-createOrAdd").text() mustBe "mucrOptions.create.reference"
+//    }
 
     "have no options selected on initial display" in {
-      view.getElementById("mucrOptions.create") mustBe unchecked
-      view.getElementById("mucrOptions.add") mustBe unchecked
+      page(MucrOptions.form).getElementById("createOrAdd") mustBe unchecked
+      page(MucrOptions.form).getElementById("createOrAdd-2") mustBe unchecked
     }
 
     "display 'Back' button that links to start page" in {
-      val backButton = view.getElementById("back-link")
-      backButton.text() must be(backCaption)
-      backButton must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+      val backButton = page(MucrOptions.form).getBackButton
+
+      backButton mustBe defined
+      backButton.get must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
     }
 
     "display 'Continue' button on page" in {
-      view.getElementsByClass("govuk-button").text() mustBe continueCaption
+      page(MucrOptions.form).getElementsByClass("govuk-button").first() must containMessage("site.continue")
     }
   }
 }

@@ -198,6 +198,12 @@ consignmentReferences.reference.ducrValue.empty = Enter a Declaration Unique Con
 consignmentReferences.reference.mucrValue.error = Master Unique Consignment Reference is incorrect
 consignmentReferences.reference.ducrValue.error = Declaration Unique Consignment Reference is incorrect
 
+movementDetails.date.day = Day
+movementDetails.date.month = Month
+movementDetails.date.year = Year
+movementDetails.time.hour = Hour
+movementDetails.time.minute = Minute
+
 arrivalDetails.title = Arrival date and time
 arrivalDetails.header = Enter date and time of arrival
 arrivalDetails.date.question = Date of Arrival

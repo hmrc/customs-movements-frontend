@@ -21,6 +21,7 @@ import forms.Transport
 import forms.Transport._
 import javax.inject.{Inject, Singleton}
 import models.cache.{Cache, DepartureAnswers, JourneyType}
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,15 +41,19 @@ class TransportController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DEPART)) { implicit request =>
-    Ok(transportPage(request.answersAs[DepartureAnswers].transport.fold(form)(form.fill(_))))
+  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE)) { implicit request =>
+    val answers = request.answersAs[DepartureAnswers]
+    val consignmentReference = answers.consignmentReferences
+    Ok(transportPage(answers.transport.fold(form)(form.fill), consignmentReference))
   }
 
   def saveTransport(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DEPART)).async { implicit request =>
+    val answers = request.answersAs[DepartureAnswers]
+    val consignmentReference = answers.consignmentReferences
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Transport]) => Future.successful(BadRequest(transportPage(formWithErrors))),
+        (formWithErrors: Form[Transport]) => Future.successful(BadRequest(transportPage(formWithErrors, consignmentReference))),
         validForm => {
           val movementAnswers = request.answersAs[DepartureAnswers].copy(transport = Some(validForm))
           cache.upsert(Cache(request.eori, movementAnswers)).map { _ =>

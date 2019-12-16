@@ -281,7 +281,7 @@ disassociateDucr.ducr.empty = Please enter DUCR
 disassociateDucr.ducr.error = Incorrect DUCR
 
 shutMucr.tabTitle = Shut a MUCR
-shutMucr.title = Which MUCR do you want to shut?
+shutMucr.title = Which master consignment do you want to shut?
 
 shutMucr.summary.title = Is the information provided for this shut request correct?
 shutMucr.summary.header = Shut master consignment

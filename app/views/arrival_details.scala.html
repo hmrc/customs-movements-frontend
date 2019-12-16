@@ -16,11 +16,9 @@
 
 @import controllers.routes
 @import forms.{ArrivalDetails, ConsignmentReferences}
-@import forms.common.Date.{dayKey, monthKey, yearKey}
-@import forms.common.Time.{hourKey, minuteKey}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
-@import views.html.components.gds.{exportsInputText, pageTitle, inputDate}
+@import views.html.components.gds.{exportsInputText, pageTitle, inputDate, inputTime}
 @import views.html.components.{errorSummary, sectionHeader}
 
 @this(
@@ -32,13 +30,11 @@
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
   inputDate: inputDate,
+  inputTime: inputTime,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(form: Form[ArrivalDetails], consignmentReferences: Option[ConsignmentReferences])(implicit request: Request[_], messages: Messages)
-
-@hourField = @{form(s"timeOfArrival.${hourKey}")}
-@minuteField = @{form(s"timeOfArrival.${minuteKey}")}
 
 @govukLayout(
   title = Title("arrivalDetails.header"),
@@ -59,33 +55,12 @@
       hint = Some(messages("arrivalDetails.date.hint"))
     )
 
-    @dateInput(DateInput(
-      id = Some("timeOfArrival"),
-      fieldset = Some(Fieldset(
-        legend = Some(Legend(
-          content = Text(messages("arrivalDetails.time.question")),
-          classes = "govuk-fieldset__legend--m"
-        ))
-      )),
-      hint = Some(Hint(content = Text(messages("arrivalDetails.time.hint")))),
-      errorMessage = form("timeOfArrival").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
-      items = Some(Seq(
-        InputItem(
-          id = Some(s"timeOfArrival_$hourKey"),
-          name = hourField.name,
-          label = Some(messages("time.hour")),
-          value = hourField.value,
-          classes = "govuk-input--width-2"
-        ),
-        InputItem(
-          id = Some(s"timeOfArrival_$minuteKey"),
-          name = minuteField.name,
-          label = Some(messages("time.minute")),
-          value = minuteField.value,
-          classes = "govuk-input--width-2"
-        )
-      ))
-    ))
+    @inputTime(
+      field = form("timeOfArrival"),
+      form = form,
+      label = messages("arrivalDetails.time.question"),
+      hint = Some(messages("arrivalDetails.time.hint"))
+    )
 
     @govukButton(Button(content = Text(messages("site.continue"))))
   }

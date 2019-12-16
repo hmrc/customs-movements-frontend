@@ -87,7 +87,8 @@ class MovementDetailsController @Inject()(
       .departureForm()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DepartureDetails]) => Future.successful(Left(departureDetailsPage(formWithErrors, departureAnswers.consignmentReferences))),
+        (formWithErrors: Form[DepartureDetails]) =>
+          Future.successful(Left(departureDetailsPage(formWithErrors, departureAnswers.consignmentReferences))),
         validForm =>
           cache.upsert(Cache(request.eori, departureAnswers.copy(departureDetails = Some(validForm)))).map { _ =>
             Right(controllers.routes.LocationController.displayPage())

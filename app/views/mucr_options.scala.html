@@ -35,7 +35,7 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @govukLayout(
     title = Title("mucrOptions.title"),
-    backButtonTitle = messages("site.back"),
+    backButtonTitle = messages("site.back.toStartPage"),
     backButtonUrl = controllers.routes.ChoiceController.displayChoiceForm().url) {
 
     @formHelper(action = consolidations.routes.MucrOptionsController.save(), 'autoComplete -> "off") {

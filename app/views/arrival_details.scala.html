@@ -20,7 +20,7 @@
 @import forms.common.Time.{hourKey, minuteKey}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
-@import views.html.components.gds.{exportsInputText, pageTitle}
+@import views.html.components.gds.{exportsInputText, pageTitle, inputDate}
 @import views.html.components.{errorSummary, sectionHeader}
 
 @this(
@@ -31,14 +31,11 @@
   exportsInputText: exportsInputText,
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
+  inputDate: inputDate,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(form: Form[ArrivalDetails], consignmentReferences: Option[ConsignmentReferences])(implicit request: Request[_], messages: Messages)
-
-@dayField = @{form(s"dateOfArrival.${dayKey}")}
-@monthField = @{form(s"dateOfArrival.${monthKey}")}
-@yearField = @{form(s"dateOfArrival.${yearKey}")}
 
 @hourField = @{form(s"timeOfArrival.${hourKey}")}
 @minuteField = @{form(s"timeOfArrival.${minuteKey}")}
@@ -55,40 +52,12 @@
 
     @pageTitle(messages("arrivalDetails.header"))
 
-    @dateInput(DateInput(
-      id = Some("dateOfArrival"),
-      fieldset = Some(Fieldset(
-        legend = Some(Legend(
-          content = Text(messages("arrivalDetails.date.question")),
-          classes = "govuk-fieldset__legend--m"
-        ))
-      )),
-      hint = Some(Hint(content = Text(messages("arrivalDetails.date.hint")))),
-      errorMessage = form("dateOfArrival").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
-      items = Some(Seq(
-        InputItem(
-          id = Some(s"dateOfArrival_$dayKey"),
-          name = dayField.name,
-          label = Some(messages("date.day")),
-          value = dayField.value,
-          classes = "govuk-input--width-2"
-        ),
-        InputItem(
-          id = Some(s"dateOfArrival_$monthKey"),
-          name = monthField.name,
-          label = Some(messages("date.month")),
-          value = monthField.value,
-          classes = "govuk-input--width-2"
-        ),
-        InputItem(
-          id = Some(s"dateOfArrival_$yearKey"),
-          name = yearField.name,
-          label = Some(messages("date.year")),
-          value = yearField.value,
-          classes = "govuk-input--width-4"
-        )
-      ))
-    ))
+    @inputDate(
+      field = form("dateOfArrival"),
+      form = form,
+      label = messages("arrivalDetails.date.question"),
+      hint = Some(messages("arrivalDetails.date.hint"))
+    )
 
     @dateInput(DateInput(
       id = Some("timeOfArrival"),

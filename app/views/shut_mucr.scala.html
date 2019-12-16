@@ -16,26 +16,40 @@
 
 @import forms.ShutMucr
 @import views.Title
+@import forms.ArrivalReference
+@import views.Title
+@import forms.AssociateUcr
+@import forms.MucrOptions
+@import views.components.fields.RadioOption
+@import components.gds.exportsInputText
+@import components.errorSummary
+@import views.Title
+@import forms.AssociateKind
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(main_template: views.html.main_template)
+@this(  govukLayout: views.html.gds_main_template,
+        govukButton: GovukButton,
+        govukInput: GovukInput,
+        exportsInputText: exportsInputText,
+        errorSummary: errorSummary,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(form: Form[ShutMucr])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("shutMucr.title")) {
+@govukLayout(
+    title = Title("shutMucr.title"),
+    backButtonTitle = messages("site.back.toStartPage"),
+    backButtonUrl = routes.ChoiceController.displayChoiceForm.url) {
 
-    @helper.form(consolidations.routes.ShutMucrController.submitForm(), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+    @formHelper(action = consolidations.routes.ShutMucrController.submitForm, 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-        @components.back_link(routes.ChoiceController.displayChoiceForm())
-
-        @components.error_summary(form.errors)
-
-        @components.input_text(
+        @exportsInputText(
             field = form("mucr"),
-            label = messages("shutMucr.title"),
-            labelClass = Some("heading-xlarge")
+            labelKey = "shutMucr.title",
+            isPageHeading = true
         )
 
-        @components.submit_button(messages("site.continue"))
+        @govukButton(Button(content = Text(messages("site.continue"))))
     }
 }

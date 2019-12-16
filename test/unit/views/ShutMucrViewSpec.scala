@@ -16,15 +16,18 @@
 
 package views
 
+import base.Injector
 import forms.ShutMucr
 import models.cache.ShutMucrAnswers
+import org.jsoup.nodes.Document
+import play.api.data.FormError
 import views.html.shut_mucr
 
-class ShutMucrViewSpec extends ViewSpec {
+class ShutMucrViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(ShutMucrAnswers())
 
-  private val page = new shut_mucr(main_template)
+  private val page = instanceOf[shut_mucr]
 
   "View" should {
     "render title" in {
@@ -32,23 +35,31 @@ class ShutMucrViewSpec extends ViewSpec {
     }
 
     "render input for mucr" in {
-      page(ShutMucr.form()).getElementById("mucr-label") must containMessage("shutMucr.title")
+      page(ShutMucr.form()).getElementsByAttributeValue("for", "mucr").first() must containMessage("shutMucr.title")
     }
 
     "render back button" in {
       val backButton = page(ShutMucr.form()).getBackButton
 
       backButton mustBe defined
-      backButton.get must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+      backButton.foreach(button => {
+        button must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+        button must containMessage("site.back.toStartPage")
+      })
     }
 
     "render error summary" when {
       "no errors" in {
-        page(ShutMucr.form()).getErrorSummary mustBe empty
+        page(ShutMucr.form()).getGovUkErrorSummary mustBe empty
       }
 
       "some errors" in {
-        page(ShutMucr.form().withError("error", "error.required")).getErrorSummary mustBe defined
+        val value = ShutMucr.form.withError(FormError("mucr", "error.mucr.empty"))
+
+        val view: Document = page(value)
+
+        view must haveGovUkGlobalErrorSummary
+        view must haveGovUkFieldError("mucr", messages("error.mucr.empty"))
       }
     }
   }

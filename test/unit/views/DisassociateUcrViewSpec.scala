@@ -44,6 +44,16 @@ class DisassociateUcrViewSpec extends ViewSpec with Injector {
       messages must haveTranslationFor("disassociate.ucr.mucr")
     }
 
+    "display 'Back' button that links to start page" in {
+      val backButton = createView(DisassociateUcr.form).getBackButton
+
+      backButton mustBe defined
+      backButton.foreach(button => {
+        button must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+        button must containMessage("site.back.toStartPage")
+      })
+    }
+
     "form is empty" should {
       val emptyView = createView(DisassociateUcr.form)
 

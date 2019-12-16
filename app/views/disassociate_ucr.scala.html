@@ -34,7 +34,7 @@
 
 @govukLayout(
     title = Title("disassociate.ucr.title"),
-    backButtonTitle = messages("site.back"),
+    backButtonTitle = messages("site.back.toStartPage"),
     backButtonUrl = controllers.routes.ChoiceController.displayChoiceForm().url) {
 
     @formHelper(action = consolidations.routes.DisassociateUcrController.submit(), 'autoComplete -> "off") {

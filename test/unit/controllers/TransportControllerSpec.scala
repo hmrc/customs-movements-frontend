@@ -42,7 +42,7 @@ class TransportControllerSpec extends ControllerLayerSpec with MockCache with Op
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockTransportPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockTransportPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -52,7 +52,7 @@ class TransportControllerSpec extends ControllerLayerSpec with MockCache with Op
 
   private def theResponseForm: Form[Transport] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Transport]])
-    verify(mockTransportPage).apply(captor.capture())(any(), any())
+    verify(mockTransportPage).apply(captor.capture(), any())(any(), any())
     captor.getValue
   }
 

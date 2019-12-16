@@ -34,7 +34,7 @@
         sectionHeader: sectionHeader,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
-@(form: Form[Transport], consignmentReferences: Option[ConsignmentReferences])(implicit request: Request[_], messages: Messages)
+@(form: Form[Transport], consignmentReference: Option[String])(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
     title = Title("transport.title"),
@@ -44,7 +44,7 @@
     @formHelper(action = routes.TransportController.saveTransport(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("transport.heading", consignmentReferences.map(_.referenceValue).getOrElse("")))
+        @sectionHeader(messages("transport.heading", consignmentReference.getOrElse("")))
 
         @pageTitle(messages("transport.title"))
 
@@ -53,7 +53,7 @@
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("transport.modeOfTransport.question")),
-                    isPageHeading = true,
+                    isPageHeading = false,
                     classes = "govuk-fieldset__legend--m"
                 ))
             )),

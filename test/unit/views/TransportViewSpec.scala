@@ -16,24 +16,24 @@
 
 package views
 
+import base.Injector
 import controllers.routes
 import forms.Transport
 import helpers.views.{CommonMessages, TransportMessages}
+import models.cache.ArrivalAnswers
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.transport
 import views.spec.UnitViewSpec
 
-class TransportViewSpec extends UnitViewSpec with TransportMessages with CommonMessages {
+class TransportViewSpec extends UnitViewSpec with TransportMessages with CommonMessages with Injector {
 
   private val form: Form[Transport] = Transport.form
-  private val transportPage = new transport(mainTemplate)
+  private val transportPage = instanceOf[transport]
 
-  private val view: Html = transportPage(form)
+  private val view: Html = transportPage(form, Some("some-reference"))
 
   "Transport View" should {
-
-    val messages = messagesApi.preferred(request)
 
     "have a proper labels for messages" in {
 
@@ -82,7 +82,7 @@ class TransportViewSpec extends UnitViewSpec with TransportMessages with CommonM
 
     "display input for nationality" in {
 
-      view.getElementById("nationality-label").text() mustBe messages(nationalityQuestion)
+      view.getElementById("nationality").text() mustBe messages(nationalityQuestion)
       view.getElementById("nationality-hint").text() mustBe messages(nationalityHint)
     }
 

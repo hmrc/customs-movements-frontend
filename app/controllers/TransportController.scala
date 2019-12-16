@@ -43,13 +43,13 @@ class TransportController @Inject()(
 
   def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DEPART)) { implicit request =>
     val answers = request.answersAs[DepartureAnswers]
-    val consignmentReference = answers.consignmentReferences
+    val consignmentReference = answers.consignmentReferences.map(_.referenceValue)
     Ok(transportPage(answers.transport.fold(form)(form.fill), consignmentReference))
   }
 
   def saveTransport(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DEPART)).async { implicit request =>
     val answers = request.answersAs[DepartureAnswers]
-    val consignmentReference = answers.consignmentReferences
+    val consignmentReference = answers.consignmentReferences.map(_.referenceValue)
     form
       .bindFromRequest()
       .fold(

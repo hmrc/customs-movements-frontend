@@ -15,11 +15,11 @@
  *@
 
 @import controllers.routes
-@import forms.Transport
+@import forms.{Transport, ConsignmentReferences}
 @import forms.Transport.ModesOfTransport._
 @import views.Title
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import components.errorSummary
+@import components.{errorSummary, sectionHeader}
 @import forms.Transport.ModesOfTransport
 
 
@@ -27,9 +27,10 @@
         govukButton: GovukButton,
         govukRadios: GovukRadios,
         errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
-@(form: Form[Transport])(implicit request: Request[_], messages: Messages)
+@(form: Form[Transport], consignmentReferences: Option[ConsignmentReferences])(implicit request: Request[_], messages: Messages)
 
 @* @radio(mode: String) = { RadioOption(mode, mode, Transport.messageKey(mode)) }*@
 
@@ -40,6 +41,8 @@
 
     @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
+
+        @sectionHeader(messages(s"arrivalDetails.sectionHeading ${consignmentReferences.map(_.referenceValue).getOrElse("")}"))
 
         @govukRadios(Radios(
             name = "modeOfTransport",

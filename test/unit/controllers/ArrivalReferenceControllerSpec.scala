@@ -44,7 +44,7 @@ class ArrivalReferenceControllerSpec extends ControllerLayerSpec with MockCache 
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockArrivalReferencePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockArrivalReferencePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -54,7 +54,7 @@ class ArrivalReferenceControllerSpec extends ControllerLayerSpec with MockCache 
 
   private def theResponseForm: Form[ArrivalReference] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ArrivalReference]])
-    verify(mockArrivalReferencePage).apply(captor.capture())(any(), any())
+    verify(mockArrivalReferencePage).apply(captor.capture(), any())(any(), any())
     captor.getValue
   }
 

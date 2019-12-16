@@ -16,61 +16,50 @@
 
 package views
 
-import controllers.routes
+import base.Injector
 import forms.ArrivalReference
+import models.cache.ArrivalAnswers
 import play.api.data.Form
-import play.twirl.api.Html
 import views.html.arrival_reference
-import views.spec.UnitViewSpec
 
-class ArrivalReferenceViewSpec extends UnitViewSpec {
+class ArrivalReferenceViewSpec extends ViewSpec with Injector {
 
-  val arrivalReferencePage = new arrival_reference(mainTemplate)
-  def createView(form: Form[ArrivalReference] = ArrivalReference.form): Html =
-    arrivalReferencePage(form)(request, messages)
+  private implicit val request = journeyRequest(ArrivalAnswers())
 
-  "Arrival Reference messages" should {
+  private val form: Form[ArrivalReference] = ArrivalReference.form
+  private val page = instanceOf[arrival_reference]
 
-    "have correct content" in {
-
-      val messages = messagesApi.preferred(request)
-
-      messages must haveTranslationFor("arrivalReference")
-      messages must haveTranslationFor("arrivalReference.question")
-      messages must haveTranslationFor("arrivalReference.hint")
-      messages must haveTranslationFor("arrivalReference.error")
-    }
-  }
+  private def createPage = page(ArrivalReference.form, Some("some-reference"))
 
   "Arrival Reference page" should {
 
-    "display same page title as header" in {
-
-      val view = arrivalReferencePage(ArrivalReference.form)(request, messagesApi.preferred(request))
-      view.title() must include(view.getElementsByTag("h1").text())
+    "have the correct title" in {
+      createPage.getTitle must containMessage("arrivalReference.question")
     }
 
-    "have question" in {
-
-      createView().getElementById("reference-label").text() mustBe messages("arrivalReference.question")
+    "have the correct header" in {
+      createPage.getElementsByTag("h1").first() must containMessage("arrivalReference.question")
     }
 
-    "have hint" in {
-
-      createView().getElementById("reference-hint").text() mustBe messages("arrivalReference.hint")
+    "have the correct section header" in {
+      createPage.getElementById("section-header") must containMessage("arrivalReference.sectionHeading", "some-reference")
     }
 
-    "have 'Continue' button" in {
-
-      createView().getElementById("submit").text() mustBe messages("site.continue")
+    "render the correct labels and hints" in {
+      createPage.getElementsByAttributeValue("for", "reference").first() must containMessage("arrivalReference.question")
+      createPage.getElementById("reference-hint") must containMessage("arrivalReference.hint")
     }
 
-    "have back button" in {
+    "display 'Back' button that links to start page" in {
+      val backButton = createPage.getBackButton
 
-      val backButton = createView().getElementById("back-link")
-
-      backButton must containMessage("site.back")
-      backButton must haveHref(routes.ConsignmentReferencesController.displayPage())
+      backButton mustBe defined
+      backButton.get must haveHref(controllers.routes.ConsignmentReferencesController.displayPage())
     }
+
+    "display 'Continue' button on page" in {
+      createPage.getElementsByClass("govuk-button").first() must containMessage("site.continue")
+    }
+
   }
 }

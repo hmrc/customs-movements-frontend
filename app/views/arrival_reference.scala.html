@@ -16,27 +16,43 @@
 
 @import forms.ArrivalReference
 @import views.Title
+@import forms.AssociateUcr
+@import forms.MucrOptions
+@import views.components.fields.RadioOption
+@import components.gds.exportsInputText
+@import components.errorSummary
+@import components.sectionHeader
+@import views.Title
+@import forms.AssociateKind
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(main_template: views.html.main_template)
+@this(  govukLayout: views.html.gds_main_template,
+        govukButton: GovukButton,
+        govukInput: GovukInput,
+        exportsInputText: exportsInputText,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
-@(form: Form[ArrivalReference])(implicit request: Request[_], messages: Messages)
+@(form: Form[ArrivalReference], consignmentReference: Option[String])(implicit request: Request[_], messages: Messages)
 
-@main_template(Title("arrivalReference.question")) {
+@govukLayout(
+    title = Title("arrivalReference.question"),
+    backButtonTitle = messages("site.back"),
+    backButtonUrl = controllers.routes.ConsignmentReferencesController.displayPage.url) {
 
-    @helper.form(controllers.routes.ArrivalReferenceController.submit(), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+    @formHelper(action = controllers.routes.ArrivalReferenceController.submit(), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-        @components.back_link(controllers.routes.ConsignmentReferencesController.displayPage())
+        @sectionHeader(messages("arrivalReference.sectionHeading", consignmentReference.getOrElse("")))
 
-        @components.error_summary(form.errors)
-
-        @components.input_text(
+        @exportsInputText(
             field = form("reference"),
-            label = messages("arrivalReference.question"),
-            hint = Some(messages("arrivalReference.hint")),
-            labelClass = Some("heading-large")
+            labelKey = "arrivalReference.question",
+            hintKey = Some("arrivalReference.hint"),
+            isPageHeading = true
         )
 
-        @components.submit_button(messages("site.continue"))
+        @govukButton(Button(content = Text(messages("site.continue"))))
     }
 }

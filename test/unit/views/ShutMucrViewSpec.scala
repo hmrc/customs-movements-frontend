@@ -42,7 +42,10 @@ class ShutMucrViewSpec extends ViewSpec with Injector {
       val backButton = page(ShutMucr.form()).getBackButton
 
       backButton mustBe defined
-      backButton.get must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+      backButton.foreach(button => {
+        button must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+        button must containMessage("site.back.toStartPage")
+      })
     }
 
     "render error summary" when {

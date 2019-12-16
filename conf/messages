@@ -224,6 +224,7 @@ location.code.empty = Goods location code cannot be empty
 location.code.error = Goods location code is incorrect
 
 transport.title = Transport
+transport.heading = Depart consignment {0}
 transport.modeOfTransport.question = What transport type took the goods across the border?
 transport.modeOfTransport.empty = You need to choose mode of transport
 transport.modeOfTransport.error = Mode of transport is incorrect

@@ -42,7 +42,7 @@
     @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages(s"arrivalDetails.sectionHeading ${consignmentReferences.map(_.referenceValue).getOrElse("")}"))
+        @sectionHeader(messages("transport.heading", consignmentReferences.map(_.referenceValue).getOrElse("")))
 
         @govukRadios(Radios(
             name = "modeOfTransport",

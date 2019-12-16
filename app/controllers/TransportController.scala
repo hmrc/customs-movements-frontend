@@ -41,7 +41,7 @@ class TransportController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DEPART)) { implicit request =>
     val answers = request.answersAs[DepartureAnswers]
     val consignmentReference = answers.consignmentReferences
     Ok(transportPage(answers.transport.fold(form)(form.fill), consignmentReference))

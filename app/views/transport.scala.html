@@ -26,6 +26,7 @@
 @this(  govukLayout: views.html.gds_main_template,
         govukButton: GovukButton,
         govukRadios: GovukRadios,
+        govukInput: GovukInput,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
@@ -35,11 +36,11 @@
 @* @radio(mode: String) = { RadioOption(mode, mode, Transport.messageKey(mode)) }*@
 
 @govukLayout(
-    title = Title("movement.choice.title"),
+    title = Title("transport.title"),
     backButtonTitle = messages("site.back"),
-    backButtonUrl = controllers.routes.StartController.displayStartPage().url) {
+    backButtonUrl = controllers.routes.LocationController.displayPage().url) {
 
-    @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
+    @formHelper(action = routes.TransportController.saveTransport(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("transport.heading", consignmentReferences.map(_.referenceValue).getOrElse("")))
@@ -48,9 +49,9 @@
             name = "modeOfTransport",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("transport.title")),
+                    content = Text(messages("transport.modeOfTransport.question")),
                     isPageHeading = true,
-                    classes = "govuk-fieldset__legend--xl"
+                    classes = "govuk-fieldset__legend--m"
                 ))
             )),
             items = Seq(
@@ -97,6 +98,37 @@
             ),
             errorMessage = form("modeOfTransport").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
+
+        @govukInput(Input(
+            id = "transportId",
+            name = "transportId",
+            classes = "govuk-!-width-one-third",
+            label = Label(
+                content = Text(messages("transport.transportId.question"))
+            ),
+            hint = Some(Hint(
+              content = Text(messages("transport.transportId.hint"))
+            )),
+            errorMessage =
+              form("transportId").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))
+            )
+        ))
+
+        @govukInput(Input(
+            id = "nationality",
+            name = "nationality",
+            classes = "govuk-input--width-2",
+            label = Label(
+                content = Text(messages("transport.nationality.question"))
+            ),
+            hint = Some(Hint(
+              content = Text(messages("transport.nationality.hint"))
+            )),
+            errorMessage =
+              form("nationality").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))
+            )
+        ))
+
         @govukButton(Button(content = Text(messages("site.continue"))))
     }
 }

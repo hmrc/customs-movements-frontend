@@ -18,14 +18,87 @@
 @import forms.Transport
 @import forms.Transport.ModesOfTransport._
 @import views.Title
-@import views.components.fields.RadioOption
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import components.errorSummary
+@import forms.Transport.ModesOfTransport
 
-@this(main_template: views.html.main_template)
+
+@this(  govukLayout: views.html.gds_main_template,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        errorSummary: errorSummary,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(form: Form[Transport])(implicit request: Request[_], messages: Messages)
 
-@radio(mode: String) = { RadioOption(mode, mode, Transport.messageKey(mode)) }
+@* @radio(mode: String) = { RadioOption(mode, mode, Transport.messageKey(mode)) }*@
 
+@govukLayout(
+    title = Title("movement.choice.title"),
+    backButtonTitle = messages("site.back"),
+    backButtonUrl = controllers.routes.StartController.displayStartPage().url) {
+
+    @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @govukRadios(Radios(
+            name = "modeOfTransport",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("transport.title")),
+                    isPageHeading = true,
+                    classes = "govuk-fieldset__legend--xl"
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    value = Some(Transport.ModesOfTransport.Sea),
+                    content = Text(messages(s"transport.modeOfTransport.$Sea")),
+                    checked = form("modeOfTransport").value.contains(Transport.ModesOfTransport.Sea)
+                ),
+                RadioItem(
+                    value = Some(Transport.ModesOfTransport.Rail),
+                    content = Text(messages(s"transport.modeOfTransport.$Rail")),
+                    checked = form("modeOfTransport").value.contains(Transport.ModesOfTransport.Rail)
+                ),
+                RadioItem(
+                    value = Some(Transport.ModesOfTransport.Road),
+                    content = Text(messages(s"transport.modeOfTransport.$Road")),
+                    checked = form("modeOfTransport").value.contains(Transport.ModesOfTransport.Road)
+                ),
+                RadioItem(
+                    value = Some(Transport.ModesOfTransport.Air),
+                    content = Text(messages(s"transport.modeOfTransport.$Air")),
+                    checked = form("modeOfTransport").value.contains(Transport.ModesOfTransport.Air)
+                ),
+                RadioItem(
+                    value = Some(Transport.ModesOfTransport.PostalOrMail),
+                    content = Text(messages(s"transport.modeOfTransport.$PostalOrMail")),
+                    checked = form("modeOfTransport").value.contains(Transport.ModesOfTransport.PostalOrMail)
+                ),
+                RadioItem(
+                    value = Some(Transport.ModesOfTransport.FixedInstallations),
+                    content = Text(messages(s"transport.modeOfTransport.$FixedInstallations")),
+                    checked = form("modeOfTransport").value.contains(Transport.ModesOfTransport.FixedInstallations)
+                ),
+                RadioItem(
+                    value = Some(Transport.ModesOfTransport.InlandWaterway),
+                    content = Text(messages(s"transport.modeOfTransport.$InlandWaterway")),
+                    checked = form("modeOfTransport").value.contains(Transport.ModesOfTransport.InlandWaterway)
+                ),
+                RadioItem(
+                    value = Some(Transport.ModesOfTransport.Other),
+                    content = Text(messages(s"transport.modeOfTransport.$Other")),
+                    checked = form("modeOfTransport").value.contains(Transport.ModesOfTransport.Other)
+                )
+            ),
+            errorMessage = form("modeOfTransport").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+        @govukButton(Button(content = Text(messages("site.continue"))))
+    }
+}
+
+    @*
 @main_template(title = Title("transport.title")) {
     @helper.form(routes.TransportController.saveTransport(), 'autoComplete -> "off") {
         @helper.CSRF.formField
@@ -68,3 +141,4 @@
         @components.submit_button(messages("site.continue"))
     }
 }
+    *@

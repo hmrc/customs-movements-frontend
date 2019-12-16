@@ -36,8 +36,6 @@
 
 @(form: Form[Transport], consignmentReferences: Option[ConsignmentReferences])(implicit request: Request[_], messages: Messages)
 
-@* @radio(mode: String) = { RadioOption(mode, mode, Transport.messageKey(mode)) }*@
-
 @govukLayout(
     title = Title("transport.title"),
     backButtonTitle = messages("site.back"),

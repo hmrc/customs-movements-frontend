@@ -69,21 +69,21 @@
         InputItem(
           id = Some(s"dateOfArrival_$dayKey"),
           name = dayField.name,
-          label = Some(messages("movementDetails.date.day")),
+          label = Some(messages("date.day")),
           value = dayField.value,
           classes = "govuk-input--width-2"
         ),
         InputItem(
           id = Some(s"dateOfArrival_$monthKey"),
           name = monthField.name,
-          label = Some(messages("movementDetails.date.month")),
+          label = Some(messages("date.month")),
           value = monthField.value,
           classes = "govuk-input--width-2"
         ),
         InputItem(
           id = Some(s"dateOfArrival_$yearKey"),
           name = yearField.name,
-          label = Some(messages("movementDetails.date.year")),
+          label = Some(messages("date.year")),
           value = yearField.value,
           classes = "govuk-input--width-4"
         )
@@ -104,14 +104,14 @@
         InputItem(
           id = Some(s"timeOfArrival_$hourKey"),
           name = hourField.name,
-          label = Some(messages("movementDetails.time.hour")),
+          label = Some(messages("time.hour")),
           value = hourField.value,
           classes = "govuk-input--width-2"
         ),
         InputItem(
           id = Some(s"timeOfArrival_$minuteKey"),
           name = minuteField.name,
-          label = Some(messages("movementDetails.time.minute")),
+          label = Some(messages("time.minute")),
           value = minuteField.value,
           classes = "govuk-input--width-2"
         )
@@ -121,33 +121,3 @@
     @govukButton(Button(content = Text(messages("site.continue"))))
   }
 }
-
-@*
-//@main_template(title = Title("arrivalDetails.header")) {
-//    @helper.form(routes.MovementDetailsController.saveMovementDetails(), 'autoComplete -> "off") {
-//        @helper.CSRF.formField
-//
-//        @components.back_link(routes.ArrivalReferenceController.displayPage())
-//
-//        @components.error_summary(form.errors)
-//
-//        @components.page_title(Some(messages("arrivalDetails.header")))
-//
-//        @components.input_date(
-//            field = form("dateOfArrival"),
-//            form = form,
-//            label = messages("arrivalDetails.date.question"),
-//            hint = Some(messages("arrivalDetails.date.hint"))
-//        )
-//
-//        @components.input_time(
-//            field = form("timeOfArrival"),
-//            form = form,
-//            label = messages("arrivalDetails.time.question"),
-//            hint = Some(messages("arrivalDetails.time.hint"))
-//        )
-//
-//        @components.submit_button(messages("site.continue"))
-//    }
-//}
-*@

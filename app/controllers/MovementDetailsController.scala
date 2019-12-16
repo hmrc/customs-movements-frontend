@@ -46,15 +46,18 @@ class MovementDetailsController @Inject()(
   def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)) { implicit request =>
     request.answers match {
       case arrivalAnswers: ArrivalAnswers     => Ok(arrivalPage(arrivalAnswers))
-      case departureAnswers: DepartureAnswers => Ok(departurePage(departureAnswers.departureDetails))
+      case departureAnswers: DepartureAnswers => Ok(departurePage(departureAnswers))
     }
   }
 
   private def arrivalPage(arrivalAnswers: ArrivalAnswers)(implicit request: JourneyRequest[AnyContent]): Html =
     arrivalDetailsPage(arrivalAnswers.arrivalDetails.fold(details.arrivalForm())(details.arrivalForm().fill(_)), arrivalAnswers.consignmentReferences)
 
-  private def departurePage(departureDetails: Option[DepartureDetails])(implicit request: JourneyRequest[AnyContent]): Html =
-    departureDetailsPage(departureDetails.fold(details.departureForm())(details.departureForm().fill(_)))
+  private def departurePage(departureAnswers: DepartureAnswers)(implicit request: JourneyRequest[AnyContent]): Html =
+    departureDetailsPage(
+      departureAnswers.departureDetails.fold(details.departureForm())(details.departureForm().fill(_)),
+      departureAnswers.consignmentReferences
+    )
 
   def saveMovementDetails(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)).async {
     implicit request =>
@@ -84,7 +87,7 @@ class MovementDetailsController @Inject()(
       .departureForm()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DepartureDetails]) => Future.successful(Left(departureDetailsPage(formWithErrors))),
+        (formWithErrors: Form[DepartureDetails]) => Future.successful(Left(departureDetailsPage(formWithErrors, departureAnswers.consignmentReferences))),
         validForm =>
           cache.upsert(Cache(request.eori, departureAnswers.copy(departureDetails = Some(validForm)))).map { _ =>
             Right(controllers.routes.LocationController.displayPage())

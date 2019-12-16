@@ -19,22 +19,25 @@ package views
 import java.text.DecimalFormat
 import java.time.{LocalDate, LocalTime}
 
-import forms.DepartureDetails
+import base.Injector
 import forms.common.{Date, Time}
+import forms.{ConsignmentReferences, DepartureDetails}
 import models.cache.ArrivalAnswers
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
+import testdata.CommonTestData.correctUcr
 import testdata.MovementsTestData
 import views.html.departure_details
 
-class DepartureDetailsViewSpec extends ViewSpec {
+class DepartureDetailsViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(ArrivalAnswers())
   private val movementDetails = MovementsTestData.movementDetails
-  private val page = new departure_details(main_template)
+  private val page = instanceOf[departure_details]
 
-  private def createView(form: Form[DepartureDetails]): Html = page(form)(request, messages)
+  private val consignmentReferences = ConsignmentReferences(reference = "M", referenceValue = correctUcr)
+  private def createView(form: Form[DepartureDetails]): Html = page(form, Some(consignmentReferences))(request, messages)
 
   private def convertIntoTwoDigitFormat(input: Int): String = {
     val formatter = new DecimalFormat("00")
@@ -62,6 +65,10 @@ class DepartureDetailsViewSpec extends ViewSpec {
         backButton.get must haveHref(controllers.routes.ConsignmentReferencesController.displayPage())
       }
 
+      "have section header" in {
+        emptyView.getElementById("section-header") must containMessage("departureDetails.sectionHeading", consignmentReferences.referenceValue)
+      }
+
       "have heading" in {
         emptyView.getElementById("title") must containMessage("departureDetails.header")
       }
@@ -69,7 +76,11 @@ class DepartureDetailsViewSpec extends ViewSpec {
       "have date section" which {
 
         "contains label" in {
-          emptyView.getElementById("dateOfDeparture-label") must containMessage("departureDetails.date.question")
+          import scala.collection.JavaConversions._
+
+          emptyView.getElementsByTag("legend").exists { elem =>
+            elem.text() == messages("departureDetails.date.question")
+          }
         }
 
         "contains hint" in {
@@ -77,17 +88,17 @@ class DepartureDetailsViewSpec extends ViewSpec {
         }
 
         "contains input for day" in {
-          emptyView.getElementsByAttributeValue("for", "dateOfDeparture_day").first() must containMessage("movementDetails.date.day")
+          emptyView.getElementsByAttributeValue("for", "dateOfDeparture_day").first() must containMessage("date.day")
           emptyView.getElementById("dateOfDeparture_day").`val`() mustBe empty
         }
 
         "contains input for month" in {
-          emptyView.getElementsByAttributeValue("for", "dateOfDeparture_month").first() must containMessage("movementDetails.date.month")
+          emptyView.getElementsByAttributeValue("for", "dateOfDeparture_month").first() must containMessage("date.month")
           emptyView.getElementById("dateOfDeparture_month").`val`() mustBe empty
         }
 
         "contains input for year" in {
-          emptyView.getElementsByAttributeValue("for", "dateOfDeparture_year").first() must containMessage("movementDetails.date.year")
+          emptyView.getElementsByAttributeValue("for", "dateOfDeparture_year").first() must containMessage("date.year")
           emptyView.getElementById("dateOfDeparture_year").`val`() mustBe empty
         }
       }
@@ -95,7 +106,11 @@ class DepartureDetailsViewSpec extends ViewSpec {
       "have time section" which {
 
         "contains label" in {
-          emptyView.getElementById("timeOfDeparture-label") must containMessage("departureDetails.time.question")
+          import scala.collection.JavaConversions._
+
+          emptyView.getElementsByTag("legend").exists { elem =>
+            elem.text() == messages("departureDetails.time.question")
+          }
         }
 
         "contains hint" in {
@@ -103,18 +118,18 @@ class DepartureDetailsViewSpec extends ViewSpec {
         }
 
         "contains input for hour" in {
-          emptyView.getElementsByAttributeValue("for", "timeOfDeparture_hour").first() must containMessage("movementDetails.time.hour")
+          emptyView.getElementsByAttributeValue("for", "timeOfDeparture_hour").first() must containMessage("time.hour")
           emptyView.getElementById("timeOfDeparture_hour").`val`() mustBe empty
         }
 
         "contains input for minute" in {
-          emptyView.getElementsByAttributeValue("for", "timeOfDeparture_minute").first() must containMessage("movementDetails.time.minute")
+          emptyView.getElementsByAttributeValue("for", "timeOfDeparture_minute").first() must containMessage("time.minute")
           emptyView.getElementById("timeOfDeparture_minute").`val`() mustBe empty
         }
       }
 
       "have 'Continue' button" in {
-        emptyView.getElementsByClass("button").first() must containMessage("site.continue")
+        emptyView.getElementsByClass("govuk-button").first() must containMessage("site.continue")
       }
     }
 
@@ -148,11 +163,11 @@ class DepartureDetailsViewSpec extends ViewSpec {
       val viewWithDateError: Document = createView(movementDetails.departureForm().withError("dateOfDeparture", "date.error.invalid"))
 
       "have error summary" in {
-        viewWithDateError must haveGlobalErrorSummary
+        viewWithDateError must haveGovUkGlobalErrorSummary
       }
 
       "have field error for Date" in {
-        viewWithDateError must haveFieldError("dateOfDeparture", messages("date.error.invalid"))
+        viewWithDateError must haveGovUkFieldError("dateOfDeparture", messages("date.error.invalid"))
       }
     }
 
@@ -160,76 +175,13 @@ class DepartureDetailsViewSpec extends ViewSpec {
       val viewWithTimeError: Document = createView(movementDetails.departureForm().withError("timeOfDeparture", "time.error.invalid"))
 
       "have error summary" in {
-        viewWithTimeError must haveGlobalErrorSummary
+        viewWithTimeError must haveGovUkGlobalErrorSummary
       }
 
       "have field error for Time" in {
-        viewWithTimeError must haveFieldError("timeOfDeparture", messages("time.error.invalid"))
+        viewWithTimeError must haveGovUkFieldError("timeOfDeparture", messages("time.error.invalid"))
       }
     }
   }
 
 }
-
-//{
-//  val form: Form[DepartureDetails] = MovementsTestData.movementDetails.departureForm()
-//  val departureDetailsPage = new views.html.departure_details(mainTemplate)
-//
-//  private def createView(form: Form[DepartureDetails] = form): Document = departureDetailsPage(form)
-//
-//  "Departure Details View" should {
-//
-//    "have a proper labels for messages" in {
-//      val messages = messagesApi.preferred(request)
-//      messages must haveTranslationFor(departureTitle)
-//      messages must haveTranslationFor(departureHeader)
-//      messages must haveTranslationFor(departureDateQuestion)
-//      messages must haveTranslationFor(departureDateHint)
-//      messages must haveTranslationFor(departureTimeQuestion)
-//      messages must haveTranslationFor(departureTimeHint)
-//    }
-//  }
-//
-//  "Departure Details View on empty page" should {
-//
-//    val view = createView()
-//
-//    "display same page title as header" in {
-//      val fullRender = departureDetailsPage(form)(request, messagesApi.preferred(request))
-//      fullRender.title() must include(fullRender.getElementsByTag("h1").text())
-//    }
-//
-//    "have date section" that {
-//      "got label" in {
-//        view.getElementById("dateOfDeparture-label").text() mustBe departureDateQuestion
-//      }
-//      "got hint" in {
-//        view.getElementById("dateOfDeparture-hint").text() mustBe departureDateHint
-//      }
-//    }
-//
-//    "have time input" that {
-//      "got legend" in {
-//        view.getElementById("timeOfDeparture-label").text() mustBe departureTimeQuestion
-//      }
-//      "got lable" in {
-//        view.getElementById("timeOfDeparture-hint").text() mustBe departureTimeHint
-//      }
-//    }
-//
-//    "display \"Back\" button that links to Consignment References" in {
-//
-//      val backButton = view.getElementById("back-link")
-//
-//      backButton.text() must be(backCaption)
-//      backButton must haveHref(routes.ConsignmentReferencesController.displayPage())
-//    }
-//
-//    "display 'Continue' button on page" in {
-//
-//      val saveButton = view.getElementById("submit")
-//
-//      saveButton.text() mustBe continueCaption
-//    }
-//  }
-//}

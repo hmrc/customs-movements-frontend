@@ -58,7 +58,7 @@
         </legend>
         <div class="form-date" id="@{field.id}">
             <div class="form-group form-group-day">
-                <label class="form-label" for="@{dayField.id}">@messages("movementDetails.date.day")</label>
+                <label class="form-label" for="@{dayField.id}">@messages("date.day")</label>
                 <input
                     class="form-control @if(yearField.hasErrors){form-control-error}"
                     id="@{dayField.id}"
@@ -70,7 +70,7 @@
                 >
             </div>
             <div class="form-group form-group-month">
-                <label class="form-label" for="@{monthField.id}">@messages("movementDetails.date.month")</label>
+                <label class="form-label" for="@{monthField.id}">@messages("date.month")</label>
                 <input
                     class="form-control @if(yearField.hasErrors){form-control-error}"
                     id="@{monthField.id}"
@@ -82,7 +82,7 @@
                 >
             </div>
             <div class="form-group form-group-year">
-                <label class="form-label" for="@{yearField.id}">@messages("movementDetails.date.year")</label>
+                <label class="form-label" for="@{yearField.id}">@messages("date.year")</label>
                 <input
                     class="form-control @if(yearField.hasErrors){form-control-error}"
                     id="@{yearField.id}"

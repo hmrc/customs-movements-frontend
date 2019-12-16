@@ -37,8 +37,7 @@ class ArrivalDetailsViewSpec extends ViewSpec with Injector {
   private val page = instanceOf[arrival_details]
 
   private val consignmentReferences = ConsignmentReferences(reference = "M", referenceValue = correctUcr)
-  private def createView(form: Form[ArrivalDetails]): Html =
-    page(form, Some(consignmentReferences))(request, messages)
+  private def createView(form: Form[ArrivalDetails]): Html = page(form, Some(consignmentReferences))(request, messages)
 
   private def convertIntoTwoDigitFormat(input: Int): String = {
     val formatter = new DecimalFormat("00")
@@ -89,17 +88,17 @@ class ArrivalDetailsViewSpec extends ViewSpec with Injector {
         }
 
         "contains input for day" in {
-          emptyView.getElementsByAttributeValue("for", "dateOfArrival_day").first() must containMessage("movementDetails.date.day")
+          emptyView.getElementsByAttributeValue("for", "dateOfArrival_day").first() must containMessage("date.day")
           emptyView.getElementById("dateOfArrival_day").`val`() mustBe empty
         }
 
         "contains input for month" in {
-          emptyView.getElementsByAttributeValue("for", "dateOfArrival_month").first() must containMessage("movementDetails.date.month")
+          emptyView.getElementsByAttributeValue("for", "dateOfArrival_month").first() must containMessage("date.month")
           emptyView.getElementById("dateOfArrival_month").`val`() mustBe empty
         }
 
         "contains input for year" in {
-          emptyView.getElementsByAttributeValue("for", "dateOfArrival_year").first() must containMessage("movementDetails.date.year")
+          emptyView.getElementsByAttributeValue("for", "dateOfArrival_year").first() must containMessage("date.year")
           emptyView.getElementById("dateOfArrival_year").`val`() mustBe empty
         }
       }
@@ -119,12 +118,12 @@ class ArrivalDetailsViewSpec extends ViewSpec with Injector {
         }
 
         "contains input for hour" in {
-          emptyView.getElementsByAttributeValue("for", "timeOfArrival_hour").first() must containMessage("movementDetails.time.hour")
+          emptyView.getElementsByAttributeValue("for", "timeOfArrival_hour").first() must containMessage("time.hour")
           emptyView.getElementById("timeOfArrival_hour").`val`() mustBe empty
         }
 
         "contains input for minute" in {
-          emptyView.getElementsByAttributeValue("for", "timeOfArrival_minute").first() must containMessage("movementDetails.time.minute")
+          emptyView.getElementsByAttributeValue("for", "timeOfArrival_minute").first() must containMessage("time.minute")
           emptyView.getElementById("timeOfArrival_minute").`val`() mustBe empty
         }
       }

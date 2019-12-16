@@ -19,6 +19,8 @@
 @import forms.Transport.ModesOfTransport._
 @import views.Title
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.{exportsInputText, pageTitle}
+
 @import components.{errorSummary, sectionHeader}
 @import forms.Transport.ModesOfTransport
 
@@ -27,6 +29,7 @@
         govukButton: GovukButton,
         govukRadios: GovukRadios,
         govukInput: GovukInput,
+        pageTitle: pageTitle,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
@@ -44,6 +47,8 @@
         @errorSummary(form.errors)
 
         @sectionHeader(messages("transport.heading", consignmentReferences.map(_.referenceValue).getOrElse("")))
+
+        @pageTitle(messages("transport.title"))
 
         @govukRadios(Radios(
             name = "modeOfTransport",
@@ -104,7 +109,8 @@
             name = "transportId",
             classes = "govuk-!-width-one-third",
             label = Label(
-                content = Text(messages("transport.transportId.question"))
+              content = Text(messages("transport.transportId.question")),
+              classes = "govuk-label--m"
             ),
             hint = Some(Hint(
               content = Text(messages("transport.transportId.hint"))
@@ -119,7 +125,8 @@
             name = "nationality",
             classes = "govuk-input--width-2",
             label = Label(
-                content = Text(messages("transport.nationality.question"))
+              content = Text(messages("transport.nationality.question")),
+              classes = "govuk-label--m"
             ),
             hint = Some(Hint(
               content = Text(messages("transport.nationality.hint"))

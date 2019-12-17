@@ -19,21 +19,22 @@ package views
 import base.Injector
 import controllers.routes
 import forms.Transport
-import helpers.views.{CommonMessages, TransportMessages}
+import helpers.views.CommonMessages
 import models.cache.ArrivalAnswers
+import models.requests.JourneyRequest
 import play.api.data.Form
+import play.api.mvc.AnyContentAsEmpty
 import play.twirl.api.Html
 import views.html.transport
-import views.spec.UnitViewSpec
 
 class TransportViewSpec extends ViewSpec with CommonMessages with Injector {
 
   private val form: Form[Transport] = Transport.form
   private val transportPage = instanceOf[transport]
 
-  private implicit val request = journeyRequest(ArrivalAnswers())
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())
 
-  private def createPage = transportPage(Transport.form, Some("some-reference"))
+  private def createPage: Html = transportPage(Transport.form, Some("some-reference"))
 
   "Transport View" should {
 

@@ -46,14 +46,14 @@
     @pageTitle(messages("departureDetails.header"))
 
     @inputDate(
-      field = form("dateOfDeparture"),
+      fieldName = "dateOfDeparture",
       form = form,
       label = messages("departureDetails.date.question"),
       hint = Some(messages("departureDetails.date.hint"))
     )
 
     @inputTime(
-      field = form("timeOfDeparture"),
+      fieldName = "timeOfDeparture",
       form = form,
       label = messages("departureDetails.time.question"),
       hint = Some(messages("departureDetails.time.hint"))

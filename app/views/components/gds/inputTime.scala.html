@@ -20,17 +20,17 @@
 @this(dateInput: GovukDateInput)
 
 @(
-  field: Field,
+  fieldName: String,
   form: Form[_],
   label: String,
   hint: Option[String] = None
 )(implicit messages: Messages)
 
-@hourField = @{form(s"${field.name}.${hourKey}")}
-@minuteField = @{form(s"${field.name}.${minuteKey}")}
+@hourField = @{form(s"$fieldName.${hourKey}")}
+@minuteField = @{form(s"$fieldName.${minuteKey}")}
 
 @dateInput(DateInput(
-  id = Some(field.name),
+  id = Some(fieldName),
   fieldset = Some(Fieldset(
     legend = Some(Legend(
       content = Text(label),
@@ -38,17 +38,17 @@
     ))
   )),
   hint = hint.map(h => Hint(content = Text(h))),
-  errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
+  errorMessage = form(fieldName).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
   items = Some(Seq(
     InputItem(
-      id = Some(s"${field.name}_$hourKey"),
+      id = Some(s"${fieldName}_$hourKey"),
       name = hourField.name,
       label = Some(messages("time.hour")),
       value = hourField.value,
       classes = "govuk-input--width-2"
     ),
     InputItem(
-      id = Some(s"${field.name}_$minuteKey"),
+      id = Some(s"${fieldName}_$minuteKey"),
       name = minuteField.name,
       label = Some(messages("time.minute")),
       value = minuteField.value,

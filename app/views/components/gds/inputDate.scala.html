@@ -20,18 +20,18 @@
 @this(dateInput: GovukDateInput)
 
 @(
-  field: Field,
+  fieldName: String,
   form: Form[_],
   label: String,
   hint: Option[String] = None
 )(implicit messages: Messages)
 
-@dayField = @{form(s"${field.name}.$dayKey")}
-@monthField = @{form(s"${field.name}.$monthKey")}
-@yearField = @{form(s"${field.name}.$yearKey")}
+@dayField = @{form(s"$fieldName.$dayKey")}
+@monthField = @{form(s"$fieldName.$monthKey")}
+@yearField = @{form(s"$fieldName.$yearKey")}
 
 @dateInput(DateInput(
-  id = Some(field.name),
+  id = Some(fieldName),
   fieldset = Some(Fieldset(
     legend = Some(Legend(
       content = Text(label),
@@ -39,24 +39,24 @@
     ))
   )),
   hint = hint.map(h => Hint(content = Text(h))),
-  errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
+  errorMessage = form(fieldName).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
   items = Some(Seq(
     InputItem(
-      id = Some(s"${field.name}_$dayKey"),
+      id = Some(s"${fieldName}_$dayKey"),
       name = dayField.name,
       label = Some(messages("date.day")),
       value = dayField.value,
       classes = "govuk-input--width-2"
     ),
     InputItem(
-      id = Some(s"${field.name}_$monthKey"),
+      id = Some(s"${fieldName}_$monthKey"),
       name = monthField.name,
       label = Some(messages("date.month")),
       value = monthField.value,
       classes = "govuk-input--width-2"
     ),
     InputItem(
-      id = Some(s"${field.name}_$yearKey"),
+      id = Some(s"${fieldName}_$yearKey"),
       name = yearField.name,
       label = Some(messages("date.year")),
       value = yearField.value,

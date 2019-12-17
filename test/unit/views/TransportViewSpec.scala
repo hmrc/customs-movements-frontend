@@ -37,8 +37,12 @@ class TransportViewSpec extends UnitViewSpec with TransportMessages with CommonM
 
     "have a proper labels for messages" in {
 
+      println(messages)
+
       messages must haveTranslationFor(title)
+      messages must haveTranslationFor(heading)
       messages must haveTranslationFor(modeOfTransportQuestion)
+      messages must haveTranslationFor(modeOfTransportHint)
       messages must haveTranslationFor(modeOfTransportSea)
       messages must haveTranslationFor(modeOfTransportRail)
       messages must haveTranslationFor(modeOfTransportRoad)

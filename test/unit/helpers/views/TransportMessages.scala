@@ -19,6 +19,7 @@ package helpers.views
 trait TransportMessages {
 
   val title = "transport.title"
+  val heading = "transport.heading"
 
   val modeOfTransportQuestion = "transport.modeOfTransport.question"
   val modeOfTransportHint = "transport.modeOfTransport.hint"

@@ -14,17 +14,18 @@
  * limitations under the License.
  *@
 
+@import components.gds.{phaseBanner, siteHeader}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import views.Title
 
 @this(
-        govukHeader: GovukHeader,
-        govukLayout: GovukLayout,
-        govukPhaseBanner: GovukPhaseBanner,
-        govukBackLink: GovukBackLink,
-        siteHeader: components.siteHeader,
-        phaseBanner: components.phaseBanner
+  govukHeader: GovukHeader,
+  govukLayout: GovukLayout,
+  govukPhaseBanner: GovukPhaseBanner,
+  govukBackLink: GovukBackLink,
+  siteHeader: siteHeader,
+  phaseBanner: phaseBanner
 )
 
 @(  title: Title,

@@ -29,7 +29,8 @@ import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 import uk.gov.hmrc.play.config.{AssetsConfig, GTMConfig, OptimizelyConfig}
 import uk.gov.hmrc.play.views.html.layouts._
 import views.html.layouts.GovUkTemplate
-import views.html.{govuk_wrapper, main_template}
+import views.html.main_template
+import views.html.components.gds.govuk_wrapper
 
 import scala.concurrent.ExecutionContext
 

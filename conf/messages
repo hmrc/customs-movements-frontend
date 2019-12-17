@@ -10,6 +10,9 @@ date.day = Day
 date.month = Month
 date.year = Year
 
+time.hour = Hour
+time.minute = Minute
+
 error.boolean = Please give an answer
 error.invalid_date = Give a correct date
 error.date.day_blank = Enter a day
@@ -185,8 +188,8 @@ choicePage.input.error.incorrectValue = Please, choose valid option
 
 consignmentReferences.ARRIVE.heading = Arrive consignment
 consignmentReferences.DEPART.heading = Depart consignment
-consignmentReferences.ARRIVE.question = What consignment do you want to arrive?
-consignmentReferences.DEPART.question = What consignment do you want to depart?
+consignmentReferences.ARRIVE.question = Which consignment do you want to arrive?
+consignmentReferences.DEPART.question = Which consignment do you want to depart?
 consignmentReferences.reference.ducr = Declaration Consignment Reference (DUCR)
 consignmentReferences.reference.mucr = Master Consignment Reference (MUCR)
 consignmentReferences.reference.empty = Please choose reference
@@ -199,21 +202,23 @@ consignmentReferences.reference.mucrValue.error = Master Unique Consignment Refe
 consignmentReferences.reference.ducrValue.error = Declaration Unique Consignment Reference is incorrect
 
 arrivalDetails.title = Arrival date and time
+arrivalDetails.sectionHeading = Arrive consignment {0}
 arrivalDetails.header = Enter date and time of arrival
-arrivalDetails.date.question = Date of Arrival
+arrivalDetails.date.question = Date of arrival
 arrivalDetails.date.hint = For example, 01 08 2007
-arrivalDetails.time.question = Time of Arrival
+arrivalDetails.time.question = Time of arrival
 arrivalDetails.time.hint = Enter the time in 24 hour format. For example, 13 30
 
 arrival.details.error.overdue = Time of Arrival cannot be more than 60 days in the past
 arrival.details.error.future = Time of Arrival cannot be in the future
 
 departureDetails.title = Departure date and time
-departureDetails.header = Enter departure details
+departureDetails.sectionHeading = Depart consignment {0}
+departureDetails.header = Enter date and time of departure
 departureDetails.date.question = Date of departure
 departureDetails.date.hint = For example, 01 08 2007
 departureDetails.time.question = Time of departure
-departureDetails.time.hint = For example, 21 37
+departureDetails.time.hint = Enter the time in 24 hour format. For example, 13 30
 
 departure.details.error.overdue = Time of Departure cannot be more than 60 days in the past
 departure.details.error.future = Time of Departure cannot be in the future

@@ -94,7 +94,7 @@ class DisassociateUcrViewSpec extends ViewSpec with Injector {
         }
       }
 
-      "display 'Save and Continue' button on page" in {
+      "display 'Continue' button on page" in {
         emptyView.getElementsByClass("govuk-button").first() must containMessage("site.continue")
       }
     }

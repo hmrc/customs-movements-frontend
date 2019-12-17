@@ -20,17 +20,20 @@
 
 @(errors: Seq[FormError], errorFieldName: Option[String] = None)(implicit messages: Messages)
 
-@errorList = @{errors.map { error =>
+@errorList = @{
+  errors.map { error =>
+    val errorKey = error.key.replace(".", "_").replace('[', '_').replace("]", "")
     ErrorLink(
-        href = Some(s"#${errorFieldName.getOrElse(error.key)}"),
-        content = Text(messages(error.message, error.args: _*))
+      href = Some(s"#${errorFieldName.getOrElse(errorKey)}"),
+      content = Text(messages(error.message, error.args: _*))
     )
-}}
+  }
+}
 
 @if(errorList.nonEmpty) {
-    @govukErrorSummary(
-        ErrorSummary(
-            errorList = errorList,
-            title = Text(messages("error.summary.title"))
-        ))
+  @govukErrorSummary(
+    ErrorSummary(
+      errorList = errorList,
+      title = Text(messages("error.summary.title"))
+    ))
 }

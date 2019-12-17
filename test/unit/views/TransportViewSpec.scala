@@ -26,7 +26,7 @@ import play.twirl.api.Html
 import views.html.transport
 import views.spec.UnitViewSpec
 
-class TransportViewSpec extends ViewSpec with TransportMessages with CommonMessages with Injector {
+class TransportViewSpec extends ViewSpec with CommonMessages with Injector {
 
   private val form: Form[Transport] = Transport.form
   private val transportPage = instanceOf[transport]

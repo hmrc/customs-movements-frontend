@@ -16,50 +16,58 @@
 
 @import forms.{Choice, ConsignmentReferences}
 @import views.Title
+@import forms.MucrOptions
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.Title
+@import components.gds.{errorSummary, sectionHeader, gds_main_template}
+@import components.gds.exportsInputText
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gds_main_template,
+        govukButton: GovukButton,
+        govukPanel : GovukPanel,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(choice: Choice, consignmentReferences: ConsignmentReferences)(implicit request: Request[_], messages: Messages)
 
 @associateLink = {
-    <a href="@routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value)">@messages("movement.arrival.confirmation.nextSteps.associate")</a>
+  @components.gds.link("movement.arrival.confirmation.nextSteps.associate", routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value))
 }
 @departureLinkForArrival = {
-    <a href="@routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value)">@messages("movement.arrival.confirmation.nextSteps.depart")</a>
+  @components.gds.link("movement.arrival.confirmation.nextSteps.depart", routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value))
 }
 @departureLinkForDeparture = {
-    <a href="@routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value)">@messages("movement.departure.confirmation.nextSteps.depart")</a>
+  @components.gds.link("movement.departure.confirmation.nextSteps.depart", routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value))
 }
 @arrivalLink = {
-    <a href="@routes.ChoiceController.startSpecificJourney(forms.Choice.Arrival.value)">@messages("movement.departure.confirmation.nextSteps.arrive")</a>
+  @components.gds.link("movement.departure.confirmation.nextSteps.arrive", routes.ChoiceController.startSpecificJourney(forms.Choice.Arrival.value))
 }
 
-@main_template(
-    title = Title(s"movement.${choice.value}.confirmation.tab.heading")
-) {
+@govukLayout(title = Title(s"movement.${choice.value}.confirmation.tab.heading"), requiresBackLink = false) {
 
-    @components.highlight_box_with_reference(
-        headingText = messages(
+    @govukPanel(Panel(
+        title = Text(messages(
             s"movement.${choice.value}.confirmation.heading",
             if(consignmentReferences.reference == "D") "DUCR" else "MUCR",
             consignmentReferences.referenceValue
-        )
-    )
+        ))
+    ))
 
     @components.confirmation_status_info()
 
-    <h2 id="what-next">@messages("movement.confirmation.whatNext")</h2>
+    <h2 id="what-next" class="govuk-heading-m">@messages("movement.confirmation.whatNext")</h2>
 
-    @if(choice.isArrival) {
-        <div id="next-steps">
-        @Html(messages("movement.arrival.confirmation.nextSteps", associateLink, departureLinkForArrival))
-        </div>
-    }
-    @if(choice.isDeparture) {
-        <div id="next-steps">
-        @Html(messages("movement.departure.confirmation.nextSteps", departureLinkForDeparture, arrivalLink))
-        </div>
-    }
+    <p id="next-steps" class="govuk-body">
+
+        @if(choice.isArrival) {
+            @Html(messages("movement.arrival.confirmation.nextSteps", associateLink, departureLinkForArrival))
+        }
+        @if(choice.isDeparture) {
+            @Html(messages("movement.departure.confirmation.nextSteps", departureLinkForDeparture, arrivalLink))
+        }
+
+    </p>
 
     @components.button_link("site.backToStart", routes.ChoiceController.displayChoiceForm())
 }

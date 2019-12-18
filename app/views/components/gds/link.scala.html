@@ -16,4 +16,4 @@
 
 @(messageKey: String = "", href: Call)(implicit messages: Messages)
 
-<a href="@href.url" role="button" class="govuk-button">@messages(messageKey)</a>
+<a class="govuk-link govuk-link--no-visited-state" href="@href.url">@messages(messageKey)</a>

@@ -21,9 +21,9 @@ import play.api.{Configuration, Environment, Mode}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 import uk.gov.hmrc.play.config.{AssetsConfig, GTMConfig, OptimizelyConfig}
 import uk.gov.hmrc.play.views.html.layouts._
+import views.html.components.gds.govuk_wrapper
 import views.html.layouts.GovUkTemplate
 import views.html.main_template
-import views.html.components.gds.govuk_wrapper
 
 trait ViewTemplates {
 
@@ -71,6 +71,6 @@ trait ViewTemplates {
     minimalAppConfig
   )
 
-  protected val main_template = new main_template(govuk_wrapper, new Sidebar(), new Article())
+  protected val mainTemplate = new main_template(govuk_wrapper, new Sidebar(), new Article())
 
 }

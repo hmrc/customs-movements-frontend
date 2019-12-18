@@ -31,11 +31,11 @@ import play.twirl.api.Html
 import testdata.MovementsTestData
 import unit.base.UnitSpec
 import utils.Stubs
-import views.html.main_template
+import views.ViewTemplates
 
 import scala.concurrent.Future
 
-class UnitViewSpec extends UnitSpec with ViewMatchers {
+class UnitViewSpec extends UnitSpec with ViewTemplates with ViewMatchers {
 
   import utils.FakeRequestCSRFSupport._
 
@@ -45,8 +45,6 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
     LegacyJourneyRequest(AuthenticatedRequest(FakeRequest("", "").withCSRFToken, MovementsTestData.newUser("")), choice)
 
   implicit val messages: Messages = Helpers.stubMessages()
-
-  def mainTemplate: main_template = UnitViewSpec.mainTemplate
 
   def messagesApi: MessagesApi = UnitViewSpec.realMessagesApi
 

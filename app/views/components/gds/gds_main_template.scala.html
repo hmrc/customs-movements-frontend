@@ -30,7 +30,8 @@
 
 @(  title: Title,
     backButtonTitle: String = "Back",
-    backButtonUrl: String = "/", requiresBackLink: Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+    backButtonUrl: String = "/",
+    requiresBackLink: Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @head = {
     <link rel="shortcut icon" href='@routes.Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />

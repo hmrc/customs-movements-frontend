@@ -15,17 +15,14 @@
  *@
 
 @import controllers.routes
-@import forms.{Transport, ConsignmentReferences}
+@import forms.Transport
 @import forms.Transport.ModesOfTransport._
-@import views.Title
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds.{exportsInputText, pageTitle}
-
-@import components.{errorSummary, sectionHeader}
-@import forms.Transport.ModesOfTransport
+@import views.Title
+@import components.gds.{errorSummary, gds_main_template, pageTitle, sectionHeader}
 
 
-@this(  govukLayout: views.html.gds_main_template,
+@this(  govukLayout: gds_main_template,
         govukButton: GovukButton,
         govukRadios: GovukRadios,
         govukInput: GovukInput,

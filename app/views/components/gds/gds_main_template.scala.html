@@ -30,7 +30,7 @@
 
 @(  title: Title,
     backButtonTitle: String = "Back",
-    backButtonUrl: String = "/")(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+    backButtonUrl: String = "/", requiresBackLink: Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @head = {
     <link rel="shortcut icon" href='@routes.Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />
@@ -55,11 +55,13 @@
 
     @phaseBanner("beta")
 
-    @govukBackLink(BackLink(
-        content = Text(backButtonTitle),
-        attributes = Map("id" -> "back-link"),
-        href = backButtonUrl
-    ))
+    @if(requiresBackLink) {
+        @govukBackLink(BackLink(
+            content = Text(backButtonTitle),
+            attributes = Map("id" -> "back-link"),
+            href = backButtonUrl
+        ))
+    }
 }
 
 @footer = @{

@@ -16,49 +16,27 @@
 
 package views
 
+import base.Injector
 import controllers.routes
-import forms.Choice.{Arrival, Departure}
 import forms.{Choice, ConsignmentReferences}
-import helpers.views.CommonMessages
+import models.cache.{ArrivalAnswers, DepartureAnswers}
 import testdata.CommonTestData.correctUcr
 import views.html.movement_confirmation_page
-import views.spec.UnitViewSpec
 
-class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
+class MovementConfirmationViewSpec extends ViewSpec with Injector {
 
-  val movementConfirmationPage = new movement_confirmation_page(mainTemplate)
+  val movementConfirmationPage = instanceOf[movement_confirmation_page]
+
   val consignmentReferences = ConsignmentReferences(ConsignmentReferences.AllowedReferences.Ducr, correctUcr)
-  val arrivalRequest = fakeJourneyRequest(Arrival)
-  val departureRequest = fakeJourneyRequest(Departure)
-  val arrivalConfirmationView = movementConfirmationPage(Choice.Arrival, consignmentReferences)(arrivalRequest, messages)
-  val departureConfirmationView = movementConfirmationPage(Choice.Departure, consignmentReferences)(departureRequest, messages)
-
-  "Movement Confirmation Page" should {
-
-    "have correct messages" in {
-
-      val messages = messagesApi.preferred(request)
-
-      messages must haveTranslationFor("movement.arrival.confirmation.tab.heading")
-      messages must haveTranslationFor("movement.arrival.confirmation.heading")
-      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps")
-      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps.associate")
-      messages must haveTranslationFor("movement.departure.confirmation.tab.heading")
-      messages must haveTranslationFor("movement.departure.confirmation.heading")
-      messages must haveTranslationFor("movement.departure.confirmation.nextSteps")
-      messages must haveTranslationFor("movement.departure.confirmation.nextSteps.depart")
-      messages must haveTranslationFor("movement.departure.confirmation.nextSteps.arrive")
-      messages must haveTranslationFor("movement.confirmation.statusInfo")
-      messages must haveTranslationFor("movement.confirmation.statusInfo.submissions")
-      messages must haveTranslationFor("movement.confirmation.whatNext")
-    }
-  }
 
   "Arrival Confirmation Page" should {
 
+    implicit val request = journeyRequest(ArrivalAnswers())
+    val arrivalConfirmationView = movementConfirmationPage(Choice.Arrival, consignmentReferences)
+
     "have title" in {
 
-      arrivalConfirmationView.getElementsByTag("title").first().text() must include(messages("title.format"))
+      arrivalConfirmationView.getTitle must containMessage("movement.arrival.confirmation.tab.heading")
     }
 
     "have heading" in {
@@ -93,6 +71,9 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
   "Departure Confirmation Page" should {
 
+    implicit val request = journeyRequest(DepartureAnswers())
+    val departureConfirmationView = movementConfirmationPage(Choice.Departure, consignmentReferences)
+
     "have title" in {
 
       departureConfirmationView.getElementsByTag("title").first().text() must include(messages("title.format"))
@@ -121,7 +102,7 @@ class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
     "have back button" in {
 
-      val backButton = arrivalConfirmationView.getElementsByClass("button")
+      val backButton = departureConfirmationView.getElementsByClass("button")
 
       backButton.text() mustBe messages("site.backToStart")
       backButton.first() must haveHref(routes.ChoiceController.displayChoiceForm())

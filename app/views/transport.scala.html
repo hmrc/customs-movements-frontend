@@ -17,54 +17,123 @@
 @import controllers.routes
 @import forms.Transport
 @import forms.Transport.ModesOfTransport._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
-@import views.components.fields.RadioOption
+@import components.gds.{errorSummary, gds_main_template, pageTitle, sectionHeader}
 
-@this(main_template: views.html.main_template)
 
-@(form: Form[Transport])(implicit request: Request[_], messages: Messages)
+@this(  govukLayout: gds_main_template,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukInput: GovukInput,
+        pageTitle: pageTitle,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
-@radio(mode: String) = { RadioOption(mode, mode, Transport.messageKey(mode)) }
+@(form: Form[Transport], consignmentReference: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("transport.title")) {
-    @helper.form(routes.TransportController.saveTransport(), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+@govukLayout(
+    title = Title("transport.title"),
+    backButtonTitle = messages("site.back"),
+    backButtonUrl = controllers.routes.LocationController.displayPage().url) {
 
-        @components.back_link(routes.LocationController.displayPage())
+    @formHelper(action = routes.TransportController.saveTransport(), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @sectionHeader(messages("transport.heading", consignmentReference))
 
-        @components.page_title(Some(messages("transport.title")))
+        @pageTitle(messages("transport.title"))
 
-        @components.input_radio(
-            field = form("modeOfTransport"),
-            legend = messages("transport.modeOfTransport.question"),
-            inputs = Seq(
-                RadioOption(Sea, Sea, s"transport.modeOfTransport.$Sea"),
-                RadioOption(Rail, Rail, s"transport.modeOfTransport.$Rail"),
-                RadioOption(Road, Road, s"transport.modeOfTransport.$Road"),
-                RadioOption(Air, Air, s"transport.modeOfTransport.$Air"),
-                RadioOption(PostalOrMail, PostalOrMail, s"transport.modeOfTransport.$PostalOrMail"),
-                RadioOption(FixedInstallations, FixedInstallations, s"transport.modeOfTransport.$FixedInstallations"),
-                RadioOption(InlandWaterway, InlandWaterway, s"transport.modeOfTransport.$InlandWaterway"),
-                RadioOption(Other, Other, s"transport.modeOfTransport.$Other")
+        @govukRadios(Radios(
+            name = "modeOfTransport",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("transport.modeOfTransport.question")),
+                    isPageHeading = false,
+                    classes = "govuk-fieldset__legend--m"
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    value = Some(Transport.ModesOfTransport.Sea),
+                    content = Text(messages(s"transport.modeOfTransport.$Sea")),
+                    checked = form("modeOfTransport").value.contains(Transport.ModesOfTransport.Sea)
+                ),
+                RadioItem(
+                    value = Some(Transport.ModesOfTransport.Rail),
+                    content = Text(messages(s"transport.modeOfTransport.$Rail")),
+                    checked = form("modeOfTransport").value.contains(Transport.ModesOfTransport.Rail)
+                ),
+                RadioItem(
+                    value = Some(Transport.ModesOfTransport.Road),
+                    content = Text(messages(s"transport.modeOfTransport.$Road")),
+                    checked = form("modeOfTransport").value.contains(Transport.ModesOfTransport.Road)
+                ),
+                RadioItem(
+                    value = Some(Transport.ModesOfTransport.Air),
+                    content = Text(messages(s"transport.modeOfTransport.$Air")),
+                    checked = form("modeOfTransport").value.contains(Transport.ModesOfTransport.Air)
+                ),
+                RadioItem(
+                    value = Some(Transport.ModesOfTransport.PostalOrMail),
+                    content = Text(messages(s"transport.modeOfTransport.$PostalOrMail")),
+                    checked = form("modeOfTransport").value.contains(Transport.ModesOfTransport.PostalOrMail)
+                ),
+                RadioItem(
+                    value = Some(Transport.ModesOfTransport.FixedInstallations),
+                    content = Text(messages(s"transport.modeOfTransport.$FixedInstallations")),
+                    checked = form("modeOfTransport").value.contains(Transport.ModesOfTransport.FixedInstallations)
+                ),
+                RadioItem(
+                    value = Some(Transport.ModesOfTransport.InlandWaterway),
+                    content = Text(messages(s"transport.modeOfTransport.$InlandWaterway")),
+                    checked = form("modeOfTransport").value.contains(Transport.ModesOfTransport.InlandWaterway)
+                ),
+                RadioItem(
+                    value = Some(Transport.ModesOfTransport.Other),
+                    content = Text(messages(s"transport.modeOfTransport.$Other")),
+                    checked = form("modeOfTransport").value.contains(Transport.ModesOfTransport.Other)
+                )
+            ),
+            errorMessage = form("modeOfTransport").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+
+        @govukInput(Input(
+            id = "transportId",
+            name = "transportId",
+            classes = "govuk-!-width-one-third",
+            value = form("transportId").value,
+            label = Label(
+              content = Text(messages("transport.transportId.question")),
+              classes = "govuk-label--m"
+            ),
+            hint = Some(Hint(
+              content = Text(messages("transport.transportId.hint"))
+            )),
+            errorMessage =
+              form("transportId").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))
             )
-        )
+        ))
 
-        @components.input_text(
-            field = form("transportId"),
-            label = messages("transport.transportId.question"),
-            labelClass = Some("bold-small"),
-            hint = Some(messages("transport.transportId.hint"))
-        )
+        @govukInput(Input(
+            id = "nationality",
+            name = "nationality",
+            classes = "govuk-input--width-2",
+            value = form("nationality").value,
+            label = Label(
+              content = Text(messages("transport.nationality.question")),
+              classes = "govuk-label--m"
+            ),
+            hint = Some(Hint(
+              content = Text(messages("transport.nationality.hint"))
+            )),
+            errorMessage =
+              form("nationality").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))
+            )
+        ))
 
-        @components.input_text(
-            field = form("nationality"),
-            label = messages("transport.nationality.question"),
-            labelClass = Some("bold-small"),
-            hint = Some(messages("transport.nationality.hint"))
-        )
-
-        @components.submit_button(messages("site.continue"))
+        @govukButton(Button(content = Text(messages("site.continue"))))
     }
 }
+

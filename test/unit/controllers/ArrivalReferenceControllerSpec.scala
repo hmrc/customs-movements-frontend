@@ -17,7 +17,8 @@
 package unit.controllers
 
 import controllers.ArrivalReferenceController
-import forms.ArrivalReference
+import forms.{ArrivalReference, ConsignmentReferences}
+import models.ReturnToStartException
 import models.cache.ArrivalAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -37,6 +38,8 @@ class ArrivalReferenceControllerSpec extends ControllerLayerSpec with MockCache 
 
   private val mockArrivalReferencePage = mock[arrival_reference]
 
+  private val consignmentReferences = Some(ConsignmentReferences("reference", "referenceValue"))
+
   private def controller(answers: ArrivalAnswers = ArrivalAnswers()) =
     new ArrivalReferenceController(SuccessfulAuth(), ValidJourney(answers), cache, stubMessagesControllerComponents(), mockArrivalReferencePage)(
       global
@@ -44,7 +47,7 @@ class ArrivalReferenceControllerSpec extends ControllerLayerSpec with MockCache 
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockArrivalReferencePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockArrivalReferencePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -54,7 +57,7 @@ class ArrivalReferenceControllerSpec extends ControllerLayerSpec with MockCache 
 
   private def theResponseForm: Form[ArrivalReference] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ArrivalReference]])
-    verify(mockArrivalReferencePage).apply(captor.capture())(any(), any())
+    verify(mockArrivalReferencePage).apply(captor.capture(), any())(any(), any())
     captor.getValue
   }
 
@@ -62,17 +65,10 @@ class ArrivalReferenceControllerSpec extends ControllerLayerSpec with MockCache 
 
     "return 200 (OK)" when {
 
-      "display page is invoked during arrival journey with empty cache" in {
-        val result = controller().displayPage()(getRequest())
-
-        status(result) mustBe OK
-        theResponseForm.value mustBe empty
-      }
-
       "display page is invoked during arrival journey with data in cache" in {
         val reference = "123456"
 
-        val answers = ArrivalAnswers(arrivalReference = Some(ArrivalReference(Some(reference))))
+        val answers = ArrivalAnswers(consignmentReferences = consignmentReferences, arrivalReference = Some(ArrivalReference(Some(reference))))
         val result = controller(answers).displayPage()(getRequest())
 
         status(result) mustBe OK
@@ -80,11 +76,21 @@ class ArrivalReferenceControllerSpec extends ControllerLayerSpec with MockCache 
       }
     }
 
+    "return to start" when {
+
+      "consignment reference is missing" in {
+        intercept[RuntimeException] {
+          await(controller().displayPage()(getRequest()))
+        } mustBe ReturnToStartException
+      }
+
+    }
+
     "return 400 (BAD_REQUEST)" when {
       "form contains errors during submission" in {
         val incorrectForm = Json.toJson(ArrivalReference(Some("!@#$%")))
 
-        val result = controller().submit()(postRequest(incorrectForm))
+        val result = controller(ArrivalAnswers(consignmentReferences = consignmentReferences)).submit()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }

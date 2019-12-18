@@ -18,13 +18,20 @@
 
 @this(govukInput: GovukInput)
 
-@(field: Field, labelKey: String, hintKey: Option[String] = None)(implicit messages: Messages)
+@(field: Field, labelKey: String, hintKey: Option[String] = None, isPageHeading: Boolean = false)(implicit messages: Messages)
+
+@buildLabel = @{ if(isPageHeading) {
+    Label(content = Text(messages(labelKey)), isPageHeading = true,  classes = "govuk-label--l")
+  } else {
+    Label(content = Text(messages(labelKey)))
+  }
+}
 
 @govukInput(Input(
   id = field.id,
   name = field.name,
   value = field.value,
-  label = Label(content = Text(messages(labelKey))),
+  label = buildLabel,
   hint = hintKey.map(key => Hint(content = Text(messages(key)))),
   errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message)))),
   classes = "govuk-!-width-two-thirds"

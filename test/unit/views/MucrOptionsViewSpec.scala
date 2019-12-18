@@ -55,7 +55,10 @@ class MucrOptionsViewSpec extends ViewSpec with Injector {
       val backButton = page(MucrOptions.form).getBackButton
 
       backButton mustBe defined
-      backButton.get must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+      backButton.foreach(button => {
+        button must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+        button must containMessage("site.back.toStartPage")
+      })
     }
 
     "display 'Continue' button on page" in {

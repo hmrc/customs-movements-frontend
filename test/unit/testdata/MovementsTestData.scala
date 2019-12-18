@@ -19,7 +19,6 @@ package testdata
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDate, LocalTime, ZoneId}
 
-import forms.Choice.Arrival
 import forms.Transport.ModesOfTransport
 import forms._
 import forms.common.{Date, Time}
@@ -27,50 +26,16 @@ import models.cache.{ArrivalAnswers, DepartureAnswers}
 import models.requests.{MovementDetailsRequest, MovementRequest, MovementType}
 import models.submissions.{ActionType, Submission}
 import models.{SignedInUser, UcrBlock}
-import play.api.libs.json._
 import testdata.CommonTestData._
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
 
 object MovementsTestData {
 
-  val incorrectTransport: JsValue = JsObject(
-    Map(
-      "transportId" -> JsString("Transport Id"),
-      "transportMode" -> JsString("Transport mode"),
-      "transportNationality" -> JsString("Transport nationality")
-    )
-  )
-  val date = Date(LocalDate.of(2018, 8, 10))
-  val departureDetails = DepartureDetails(date, Time(LocalTime.now()))
-  val location: JsValue = Json.toJson(Location("PLAYcorrect"))
-  val correctTransport: JsValue = JsObject(Map("modeOfTransport" -> JsString("2"), "nationality" -> JsString("PL"), "transportId" -> JsString("REF")))
-
   private val zoneId: ZoneId = ZoneId.of("Europe/London")
-
   val movementDetails = new MovementDetails(zoneId)
 
   def newUser(eori: String): SignedInUser =
     SignedInUser(eori, Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori))))
-
-  def cacheMapData(movementType: Choice, refType: String = "DUCR"): Map[String, JsValue] =
-    Map(
-      Choice.choiceId -> Json.toJson(movementType),
-      ConsignmentReferences.formId -> Json.toJson(consignmentReferences(refType)),
-      MovementDetails.formId -> arrivalDepartureTimes(movementType),
-      Location.formId -> location,
-      Transport.formId -> correctTransport,
-      ArrivalReference.formId -> Json.toJson(arrivalReference(movementType))
-    )
-
-  def consignmentReferences(refType: String) = ConsignmentReferences(refType, CommonTestData.correctUcr)
-
-  def arrivalDepartureTimes(movementType: Choice): JsValue = movementType match {
-    case Arrival => Json.toJson(ArrivalDetails(date, Time(LocalTime.of(13, 34))))
-    case _       => Json.toJson(DepartureDetails(date, Time(LocalTime.now())))
-  }
-
-  def arrivalReference(movementType: Choice): ArrivalReference =
-    ArrivalReference(if (movementType == Arrival) Some("1234") else None)
 
   def exampleSubmission(
     eori: String = validEori,

@@ -16,43 +16,38 @@
 
 package views
 
+import base.Injector
 import controllers.routes
 import forms.Location
-import helpers.views.CommonMessages
+import models.cache.{ArrivalAnswers, DepartureAnswers}
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.location
-import views.spec.UnitViewSpec
 
-class LocationViewSpec extends UnitViewSpec with CommonMessages {
+class LocationViewSpec extends ViewSpec with Injector {
 
   private val form: Form[Location] = Location.form()
-  private val locationPage = new location(mainTemplate)
+  private val locationPage = instanceOf[location]
+  private implicit val request = journeyRequest(ArrivalAnswers())
 
-  private val view: Html = locationPage(form)
-
-  "Location View" should {
-
-    val messages = messagesApi.preferred(request)
-
-    "have a proper labels for messages" in {
-
-      messages must haveTranslationFor("location.title")
-      messages must haveTranslationFor("location.question")
-      messages must haveTranslationFor("location.hint")
-    }
-
-    "have a proper labels for errors" in {
-
-      messages must haveTranslationFor("location.code.error")
-    }
-  }
+  private val view: Html = locationPage(form, "some-reference")
 
   "Location View on empty page" should {
 
     "display page title" in {
 
-      view.getElementById("title").text() mustBe messages("location.question")
+      view.getElementsByTag("h1").first() must containMessage("location.question")
+    }
+
+    "have the correct section header for the Arrival journey" in {
+
+      view.getElementById("section-header") must containMessage("movement.sectionHeading", "Arrive", "some-reference")
+    }
+
+    "have the correct section header for the Departure journey" in {
+
+      val departureView = locationPage(form, "some-reference")(journeyRequest(DepartureAnswers()), messages)
+      departureView.getElementById("section-header") must containMessage("movement.sectionHeading", "Depart", "some-reference")
     }
 
     "display input hint" in {
@@ -62,17 +57,15 @@ class LocationViewSpec extends UnitViewSpec with CommonMessages {
 
     "display \"Back\" button that links to Movement Details" in {
 
-      val backButton = view.getElementById("back-link")
+      val backButton = view.getBackButton
 
-      backButton.text() must be(messages(backCaption))
-      backButton must haveHref(routes.MovementDetailsController.displayPage())
+      backButton mustBe defined
+      backButton.get must containMessage("site.back")
+      backButton.get must haveHref(routes.MovementDetailsController.displayPage())
     }
 
     "display 'Continue' button on page" in {
-
-      val saveButton = view.getElementById("submit")
-
-      saveButton.text() mustBe messages(continueCaption)
+      view.getElementsByClass("govuk-button").first() must containMessage("site.continue")
     }
   }
 }

@@ -15,37 +15,50 @@
  *@
 
 @import controllers.routes
-@import forms.DepartureDetails
+@import forms.{ConsignmentReferences, DepartureDetails}
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
+@import views.html.components.gds._
 
-@this(main_template: views.html.main_template)
+@this(
+  govukLayout: gds_main_template,
+  govukButton: GovukButton,
+  pageTitle: pageTitle,
+  errorSummary: errorSummary,
+  sectionHeader: sectionHeader,
+  inputDate: inputDate,
+  inputTime: inputTime,
+  formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
-@(form: Form[DepartureDetails])(implicit request: Request[_], messages: Messages)
+@(form: Form[DepartureDetails], consignmentReferences: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("departureDetails.header")) {
-    @helper.form(routes.MovementDetailsController.saveMovementDetails(), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+@govukLayout(
+  title = Title("departureDetails.header"),
+  backButtonTitle = messages("site.back"),
+  backButtonUrl = controllers.routes.ConsignmentReferencesController.displayPage().url) {
 
-        @components.back_link(routes.ConsignmentReferencesController.displayPage())
+  @formHelper(action = routes.MovementDetailsController.saveMovementDetails(), 'autoComplete -> "off") {
+    @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+    @sectionHeader(messages("departureDetails.sectionHeading", consignmentReferences))
 
-        @components.page_title(Some(messages("departureDetails.header")))
+    @pageTitle(messages("departureDetails.header"))
 
-        @components.input_date(
-            field = form("dateOfDeparture"),
-            form = form,
-            label = messages("departureDetails.date.question"),
-            hint = Some(messages("departureDetails.date.hint"))
-        )
+    @inputDate(
+      fieldName = "dateOfDeparture",
+      form = form,
+      label = messages("departureDetails.date.question"),
+      hint = Some(messages("departureDetails.date.hint"))
+    )
 
-        @components.input_time(
-            field = form("timeOfDeparture"),
-            form = form,
-            label = messages("departureDetails.time.question"),
-            hint = Some(messages("departureDetails.time.hint"))
-        )
+    @inputTime(
+      fieldName = "timeOfDeparture",
+      form = form,
+      label = messages("departureDetails.time.question"),
+      hint = Some(messages("departureDetails.time.hint"))
+    )
 
-        @components.submit_button(messages("site.continue"))
-    }
+    @govukButton(Button(content = Text(messages("site.continue"))))
+  }
 }

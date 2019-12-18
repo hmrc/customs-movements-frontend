@@ -17,12 +17,11 @@
 package controllers
 
 import controllers.actions.{AuthAction, JourneyRefiner}
-import controllers.storage.CacheIdGenerator.movementCacheId
-import forms.Choice.{Arrival, Departure}
 import forms.Location
 import forms.Location._
 import javax.inject.{Inject, Singleton}
-import models.cache.{ArrivalAnswers, Cache, DepartureAnswers, JourneyType, MovementAnswers}
+import models.ReturnToStartException
+import models.cache._
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -43,15 +42,19 @@ class LocationController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ARRIVE, JourneyType.DEPART)) { implicit request =>
-    val location = request.answersAs[MovementAnswers].location
-    Ok(locationPage(location.fold(form())(form().fill(_))))
+    val answers = request.answersAs[MovementAnswers]
+    val location = answers.location
+    val consignmentReference = answers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException)
+    Ok(locationPage(location.fold(form())(form().fill(_)), consignmentReference))
   }
 
   def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ARRIVE, JourneyType.DEPART)).async { implicit request =>
+    def consignmentReference =
+      request.answersAs[MovementAnswers].consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException)
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Location]) => Future.successful(BadRequest(locationPage(formWithErrors))),
+        (formWithErrors: Form[Location]) => Future.successful(BadRequest(locationPage(formWithErrors, consignmentReference))),
         validForm => {
           request.answers match {
             case arrivalAnswers: ArrivalAnswers =>

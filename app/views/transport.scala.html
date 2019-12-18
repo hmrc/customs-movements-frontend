@@ -103,6 +103,7 @@
             id = "transportId",
             name = "transportId",
             classes = "govuk-!-width-one-third",
+            value = form("transportId").value,
             label = Label(
               content = Text(messages("transport.transportId.question")),
               classes = "govuk-label--m"
@@ -119,6 +120,7 @@
             id = "nationality",
             name = "nationality",
             classes = "govuk-input--width-2",
+            value = form("nationality").value,
             label = Label(
               content = Text(messages("transport.nationality.question")),
               classes = "govuk-label--m"

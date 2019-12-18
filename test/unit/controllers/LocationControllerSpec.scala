@@ -17,7 +17,8 @@
 package unit.controllers
 
 import controllers.{routes, LocationController}
-import forms.Location
+import forms.{ConsignmentReferences, Location}
+import models.ReturnToStartException
 import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -35,6 +36,7 @@ import scala.concurrent.ExecutionContext.global
 class LocationControllerSpec extends ControllerLayerSpec with MockCache with OptionValues {
 
   private val mockLocationPage = mock[location]
+  private val consignmentRefereces = Some(ConsignmentReferences("reference", "referenceValue"))
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -57,17 +59,11 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
 
   "Location Controller" should {
     "return 200 (OK)" when {
-      "display page method is invoked and cache is empty" in {
-        val result = controller().displayPage()(getRequest())
-
-        status(result) mustBe OK
-        theResponseForm.value mustBe empty
-      }
 
       "display page method is invoked and cache contains data" in {
         val cachedData = Location("PLAYlocationCode")
 
-        val answers = ArrivalAnswers(location = Some(cachedData))
+        val answers = ArrivalAnswers(location = Some(cachedData), consignmentReferences = consignmentRefereces)
         val result = controller(answers).displayPage()(getRequest())
 
         status(result) mustBe OK
@@ -76,13 +72,25 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
     }
 
     "return 400 (BAD_REQUEST)" when {
+
       "form is incorrect" in {
         val incorrectForm: JsValue = Json.toJson(Location("PLincorrectYlocationCode"))
 
-        val result = controller().saveLocation()(postRequest(incorrectForm))
+        val answers = ArrivalAnswers(consignmentReferences = consignmentRefereces)
+        val result = controller(answers).saveLocation()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
+    }
+
+    "return to start" when {
+
+      "consignment reference is missing" in {
+        intercept[RuntimeException] {
+          await(controller().displayPage()(getRequest()))
+        } mustBe ReturnToStartException
+      }
+
     }
 
     "return 303 (SEE_OTHER) and redirect to summary page" when {

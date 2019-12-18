@@ -31,7 +31,7 @@
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(form: Form[ArrivalReference], consignmentReference: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[ArrivalReference], consignmentReference: String)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
     title = Title("arrivalReference.question"),
@@ -41,7 +41,7 @@
     @formHelper(action = controllers.routes.ArrivalReferenceController.submit(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("arrivalReference.sectionHeading", consignmentReference.getOrElse("")))
+        @sectionHeader(messages("arrivalReference.sectionHeading", consignmentReference))
 
         @exportsInputText(
             field = form("reference"),

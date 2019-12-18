@@ -31,7 +31,7 @@
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(form: Form[Location], consignmentReference: Option[String])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[Location], consignmentReference: String)(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("location.question"),
@@ -41,7 +41,7 @@
 
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("movement.sectionHeading", request.answers.`type`.toString.toLowerCase.capitalize, consignmentReference.getOrElse("")))
+        @sectionHeader(messages("movement.sectionHeading", request.answers.`type`.toString.toLowerCase.capitalize, consignmentReference))
 
         @exportsInputText(
             field = form("code"),

@@ -36,8 +36,8 @@ class DepartureDetailsViewSpec extends ViewSpec with Injector {
   private val movementDetails = MovementsTestData.movementDetails
   private val page = instanceOf[departure_details]
 
-  private val consignmentReferences = ConsignmentReferences(reference = "M", referenceValue = correctUcr)
-  private def createView(form: Form[DepartureDetails]): Html = page(form, Some(consignmentReferences))(request, messages)
+  private val consignmentReferences = "M-ref"
+  private def createView(form: Form[DepartureDetails]): Html = page(form, consignmentReferences)(request, messages)
 
   private def convertIntoTwoDigitFormat(input: Int): String = {
     val formatter = new DecimalFormat("00")
@@ -66,7 +66,7 @@ class DepartureDetailsViewSpec extends ViewSpec with Injector {
       }
 
       "have section header" in {
-        emptyView.getElementById("section-header") must containMessage("departureDetails.sectionHeading", consignmentReferences.referenceValue)
+        emptyView.getElementById("section-header") must containMessage("departureDetails.sectionHeading", consignmentReferences)
       }
 
       "have heading" in {

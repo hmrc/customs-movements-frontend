@@ -34,7 +34,7 @@ class TransportViewSpec extends ViewSpec with CommonMessages with Injector {
 
   private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())
 
-  private def createPage: Html = transportPage(Transport.form, Some("some-reference"))
+  private def createPage: Html = transportPage(Transport.form, "some-reference")
 
   "Transport View" should {
 

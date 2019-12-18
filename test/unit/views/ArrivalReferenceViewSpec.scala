@@ -28,7 +28,7 @@ class ArrivalReferenceViewSpec extends ViewSpec with Injector {
 
   private val page = instanceOf[arrival_reference]
 
-  private def createPage = page(ArrivalReference.form, Some("some-reference"))
+  private def createPage = page(ArrivalReference.form, "some-reference")
 
   "Arrival Reference page" should {
 

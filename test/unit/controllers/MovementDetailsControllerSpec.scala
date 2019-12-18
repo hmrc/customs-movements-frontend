@@ -20,7 +20,8 @@ import java.time.{LocalDate, LocalDateTime, LocalTime}
 
 import controllers._
 import forms.common.{Date, Time}
-import forms.{ArrivalDetails, DepartureDetails}
+import forms.{ArrivalDetails, ConsignmentReferences, DepartureDetails}
+import models.ReturnToStartException
 import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -40,6 +41,7 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
   private val mockArrivalDetailsPage = mock[arrival_details]
   private val mockDepartureDetailsPage = mock[departure_details]
+  private val consignmentReferences = Some(ConsignmentReferences("reference", "referenceValue"))
 
   private val yesterday = LocalDateTime.now().minusDays(1)
 
@@ -124,18 +126,11 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
   "Movement Details Controller for departure journey" should {
     "return 200 (OK)" when {
-      "display page method is invoked and cache is empty" in {
-
-        val result = controller(DepartureAnswers()).displayPage()(getRequest())
-
-        status(result) mustBe OK
-        departureResponseForm.value mustBe empty
-      }
 
       "display page method is invoked and cache contains data" in {
         val cachedData = DepartureDetails(Date(LocalDate.of(2019, 2, 10)), Time(LocalTime.now()))
 
-        val answers = DepartureAnswers(departureDetails = Some(cachedData))
+        val answers = DepartureAnswers(departureDetails = Some(cachedData), consignmentReferences = consignmentReferences)
         val result = controller(answers).displayPage()(getRequest())
 
         status(result) mustBe OK
@@ -143,11 +138,21 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
       }
     }
 
+    "return to start" when {
+
+      "consignment reference is missing" in {
+        intercept[RuntimeException] {
+          await(controller(DepartureAnswers()).displayPage()(getRequest()))
+        } mustBe ReturnToStartException
+      }
+
+    }
+
     "return 400 (BAD_REQUEST)" when {
       "form is incorrect" in {
         val incorrectForm: JsValue = JsObject(Map("dateOfDeparture" -> JsString("")))
 
-        val result = controller(DepartureAnswers()).saveMovementDetails()(postRequest(incorrectForm))
+        val result = controller(DepartureAnswers(consignmentReferences = consignmentReferences)).saveMovementDetails()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }

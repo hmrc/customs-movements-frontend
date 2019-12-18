@@ -19,6 +19,7 @@ package controllers
 import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.{ArrivalDetails, DepartureDetails, MovementDetails}
 import javax.inject.{Inject, Singleton}
+import models.ReturnToStartException
 import models.cache.{ArrivalAnswers, Cache, DepartureAnswers, JourneyType}
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -56,7 +57,7 @@ class MovementDetailsController @Inject()(
   private def departurePage(departureAnswers: DepartureAnswers)(implicit request: JourneyRequest[AnyContent]): Html =
     departureDetailsPage(
       departureAnswers.departureDetails.fold(details.departureForm())(details.departureForm().fill(_)),
-      departureAnswers.consignmentReferences
+      departureAnswers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException)
     )
 
   def saveMovementDetails(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)).async {
@@ -82,16 +83,17 @@ class MovementDetailsController @Inject()(
     )
   }
 
-  private def handleSavingDeparture(departureAnswers: DepartureAnswers)(implicit request: JourneyRequest[AnyContent]): Future[Either[Html, Call]] =
+  private def handleSavingDeparture(departureAnswers: DepartureAnswers)(implicit request: JourneyRequest[AnyContent]): Future[Either[Html, Call]] = {
+    def consignmentReference = departureAnswers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException)
     details
       .departureForm()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DepartureDetails]) =>
-          Future.successful(Left(departureDetailsPage(formWithErrors, departureAnswers.consignmentReferences))),
+        (formWithErrors: Form[DepartureDetails]) => Future.successful(Left(departureDetailsPage(formWithErrors, consignmentReference))),
         validForm =>
           cache.upsert(Cache(request.eori, departureAnswers.copy(departureDetails = Some(validForm)))).map { _ =>
             Right(controllers.routes.LocationController.displayPage())
         }
       )
+  }
 }

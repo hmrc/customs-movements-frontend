@@ -16,89 +16,74 @@
 
 package views
 
+import base.Injector
 import controllers.routes
 import forms.Transport
-import helpers.views.{CommonMessages, TransportMessages}
+import helpers.views.CommonMessages
+import models.cache.ArrivalAnswers
+import models.requests.JourneyRequest
 import play.api.data.Form
+import play.api.mvc.AnyContentAsEmpty
 import play.twirl.api.Html
 import views.html.transport
-import views.spec.UnitViewSpec
 
-class TransportViewSpec extends UnitViewSpec with TransportMessages with CommonMessages {
+class TransportViewSpec extends ViewSpec with CommonMessages with Injector {
 
   private val form: Form[Transport] = Transport.form
-  private val transportPage = new transport(mainTemplate)
+  private val transportPage = instanceOf[transport]
 
-  private val view: Html = transportPage(form)
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())
+
+  private def createPage: Html = transportPage(Transport.form, Some("some-reference"))
 
   "Transport View" should {
 
-    val messages = messagesApi.preferred(request)
-
-    "have a proper labels for messages" in {
-
-      messages must haveTranslationFor(title)
-      messages must haveTranslationFor(modeOfTransportQuestion)
-      messages must haveTranslationFor(modeOfTransportSea)
-      messages must haveTranslationFor(modeOfTransportRail)
-      messages must haveTranslationFor(modeOfTransportRoad)
-      messages must haveTranslationFor(modeOfTransportAir)
-      messages must haveTranslationFor(modeOfTransportPostalOrMail)
-      messages must haveTranslationFor(modeOfTransportFixed)
-      messages must haveTranslationFor(modeOfTransportInland)
-      messages must haveTranslationFor(modeOfTransportOther)
-      messages must haveTranslationFor(nationalityQuestion)
-      messages must haveTranslationFor(nationalityHint)
+    "have the correct title" in {
+      createPage.getTitle must containMessage("transport.title")
     }
 
-    "have a proper labels for errors" in {
-
-      messages must haveTranslationFor(modeOfTransportEmpty)
-      messages must haveTranslationFor(modeOfTransportError)
-      messages must haveTranslationFor(nationalityEmpty)
-      messages must haveTranslationFor(nationalityError)
-    }
-  }
-
-  "Transport View on empty page" should {
-
-    "display page header" in {
-
-      view.getElementById("title").text() mustBe messages(title)
+    "have the correct section header" in {
+      createPage.getElementById("section-header") must containMessage("transport.heading", "some-reference")
     }
 
-    "display input for mode of transport with all possible answers" in {
-
-      view.getElementById("modeOfTransport-label").text() mustBe messages(modeOfTransportQuestion)
-      view.getElementById("1-label").text() mustBe messages(modeOfTransportSea)
-      view.getElementById("2-label").text() mustBe messages(modeOfTransportRail)
-      view.getElementById("3-label").text() mustBe messages(modeOfTransportRoad)
-      view.getElementById("4-label").text() mustBe messages(modeOfTransportAir)
-      view.getElementById("5-label").text() mustBe messages(modeOfTransportPostalOrMail)
-      view.getElementById("6-label").text() mustBe messages(modeOfTransportFixed)
-      view.getElementById("7-label").text() mustBe messages(modeOfTransportInland)
-      view.getElementById("8-label").text() mustBe messages(modeOfTransportOther)
+    "display header with hint" in {
+      createPage.getElementsByClass("govuk-fieldset__legend").get(0).text() must be(messages("transport.modeOfTransport.question"))
     }
 
-    "display input for nationality" in {
-
-      view.getElementById("nationality-label").text() mustBe messages(nationalityQuestion)
-      view.getElementById("nationality-hint").text() mustBe messages(nationalityHint)
+    "display 8 radio buttons with labels" in {
+      createPage.getElementsByAttributeValue("for", "modeOfTransport").text() must be(messages("transport.modeOfTransport.1"))
+      createPage.getElementsByAttributeValue("for", "modeOfTransport-2").text() must be(messages("transport.modeOfTransport.2"))
+      createPage.getElementsByAttributeValue("for", "modeOfTransport-3").text() must be(messages("transport.modeOfTransport.3"))
+      createPage.getElementsByAttributeValue("for", "modeOfTransport-4").text() must be(messages("transport.modeOfTransport.4"))
+      createPage.getElementsByAttributeValue("for", "modeOfTransport-5").text() must be(messages("transport.modeOfTransport.5"))
+      createPage.getElementsByAttributeValue("for", "modeOfTransport-6").text() must be(messages("transport.modeOfTransport.6"))
+      createPage.getElementsByAttributeValue("for", "modeOfTransport-7").text() must be(messages("transport.modeOfTransport.7"))
+      createPage.getElementsByAttributeValue("for", "modeOfTransport-8").text() must be(messages("transport.modeOfTransport.8"))
     }
 
-    "display \"Back\" button that links to Location" in {
+    "Transport View on empty page" should {
 
-      val backButton = view.getElementById("back-link")
+      "display the correct labels and hints" in {
+        createPage.getElementsByAttributeValue("for", "transportId").text() must be(messages("transport.transportId.question"))
+        createPage.getElementById("transportId-hint").text() mustBe messages("transport.transportId.hint")
+        createPage.getElementsByAttributeValue("for", "nationality").text() must be(messages("transport.nationality.question"))
+        createPage.getElementById("nationality-hint").text() mustBe messages("transport.nationality.hint")
+      }
+
+    }
+
+    "display \"Back\" button that links to Location page" in {
+
+      val backButton = createPage.getElementById("back-link")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") mustBe routes.LocationController.displayPage().url
+      backButton must haveHref(routes.LocationController.displayPage())
     }
 
-    "display 'continue' button on page" in {
-
-      val saveButton = view.getElementById("submit")
-
+    "display 'Continue' button on page" in {
+      val saveButton = createPage.getElementsByClass("govuk-button").get(0)
       saveButton.text() must be(messages(continueCaption))
     }
   }
+
 }

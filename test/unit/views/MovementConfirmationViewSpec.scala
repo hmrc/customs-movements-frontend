@@ -41,30 +41,37 @@ class MovementConfirmationViewSpec extends ViewSpec with Injector {
 
     "have heading" in {
 
-      arrivalConfirmationView.getElementById("highlight-box-heading").text() mustBe
-        messages("movement.arrival.confirmation.heading")
+      arrivalConfirmationView.getElementsByClass("govuk-panel__title").first() must containMessage(
+        "movement.arrival.confirmation.heading",
+        "DUCR",
+        correctUcr
+      )
     }
 
     "have status information" in {
 
-      arrivalConfirmationView.getElementById("status-info").text() mustBe messages("movement.confirmation.statusInfo")
+      arrivalConfirmationView.getElementById("status-info").getElementsByClass("govuk-link").first() must haveHref(
+        routes.ChoiceController.startSpecificJourney(forms.Choice.Submissions.value)
+      )
     }
 
     "have what next section" in {
 
-      arrivalConfirmationView.getElementById("what-next").text() mustBe messages("movement.confirmation.whatNext")
+      arrivalConfirmationView.getElementById("what-next") must containMessage("movement.confirmation.whatNext")
     }
 
     "have next steps section" in {
 
-      arrivalConfirmationView.getElementById("next-steps").text() mustBe messages("movement.arrival.confirmation.nextSteps")
+      val nextSteps = arrivalConfirmationView.getElementById("next-steps").getElementsByClass("govuk-link")
+      nextSteps.first() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value))
+      nextSteps.last() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value))
     }
 
     "have back button" in {
 
-      val backButton = arrivalConfirmationView.getElementsByClass("button")
+      val backButton = arrivalConfirmationView.getElementsByClass("govuk-button")
 
-      backButton.text() mustBe messages("site.backToStart")
+      backButton.first() must containMessage("site.backToStart")
       backButton.first() must haveHref(routes.ChoiceController.displayChoiceForm())
     }
   }
@@ -76,35 +83,42 @@ class MovementConfirmationViewSpec extends ViewSpec with Injector {
 
     "have title" in {
 
-      departureConfirmationView.getElementsByTag("title").first().text() must include(messages("title.format"))
+      departureConfirmationView.getTitle must containMessage("movement.departure.confirmation.tab.heading")
     }
 
     "have heading" in {
 
-      departureConfirmationView.getElementById("highlight-box-heading").text() mustBe
-        messages("movement.departure.confirmation.heading")
+      departureConfirmationView.getElementsByClass("govuk-panel__title").first() must containMessage(
+        "movement.departure.confirmation.heading",
+        "DUCR",
+        correctUcr
+      )
     }
 
     "have status information" in {
 
-      departureConfirmationView.getElementById("status-info").text() mustBe messages("movement.confirmation.statusInfo")
+      departureConfirmationView.getElementById("status-info").getElementsByClass("govuk-link").first() must haveHref(
+        routes.ChoiceController.startSpecificJourney(forms.Choice.Submissions.value)
+      )
     }
 
     "have what next section" in {
 
-      departureConfirmationView.getElementById("what-next").text() mustBe messages("movement.confirmation.whatNext")
+      departureConfirmationView.getElementById("what-next") must containMessage("movement.confirmation.whatNext")
     }
 
     "have next steps section" in {
 
-      departureConfirmationView.getElementById("next-steps").text() mustBe messages("movement.departure.confirmation.nextSteps")
+      val nextSteps = departureConfirmationView.getElementById("next-steps").getElementsByClass("govuk-link")
+      nextSteps.first() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value))
+      nextSteps.last() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.Arrival.value))
     }
 
     "have back button" in {
 
-      val backButton = departureConfirmationView.getElementsByClass("button")
+      val backButton = departureConfirmationView.getElementsByClass("govuk-button")
 
-      backButton.text() mustBe messages("site.backToStart")
+      backButton.first() must containMessage("site.backToStart")
       backButton.first() must haveHref(routes.ChoiceController.displayChoiceForm())
     }
   }

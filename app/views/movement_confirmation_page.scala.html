@@ -14,17 +14,13 @@
  * limitations under the License.
  *@
 
+@import components.gds.gds_main_template
 @import forms.{Choice, ConsignmentReferences}
-@import views.Title
-@import forms.MucrOptions
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
-@import components.gds.{errorSummary, sectionHeader, gds_main_template}
-@import components.gds.exportsInputText
 
 @this(
         govukLayout: gds_main_template,
-        govukButton: GovukButton,
         govukPanel : GovukPanel,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
@@ -32,16 +28,16 @@
 @(choice: Choice, consignmentReferences: ConsignmentReferences)(implicit request: Request[_], messages: Messages)
 
 @associateLink = {
-  @components.gds.link("movement.arrival.confirmation.nextSteps.associate", routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value))
+  @components.gds.link(messages("movement.arrival.confirmation.nextSteps.associate"), routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value))
 }
 @departureLinkForArrival = {
-  @components.gds.link("movement.arrival.confirmation.nextSteps.depart", routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value))
+  @components.gds.link(messages("movement.arrival.confirmation.nextSteps.depart"), routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value))
 }
-@departureLinkForDeparture = {
-  @components.gds.link("movement.departure.confirmation.nextSteps.depart", routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value))
+@departureLinkForDeparture ={
+  @components.gds.link(messages("movement.departure.confirmation.nextSteps.depart"), routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value))
 }
 @arrivalLink = {
-  @components.gds.link("movement.departure.confirmation.nextSteps.arrive", routes.ChoiceController.startSpecificJourney(forms.Choice.Arrival.value))
+  @components.gds.link(messages("movement.departure.confirmation.nextSteps.arrive"), routes.ChoiceController.startSpecificJourney(forms.Choice.Arrival.value))
 }
 
 @govukLayout(title = Title(s"movement.${choice.value}.confirmation.tab.heading"), requiresBackLink = false) {

@@ -70,7 +70,7 @@ class DisassociateUcrConfirmationViewSpec extends UnitViewSpec with CommonMessag
 
     "display 'Back to start page' button on page" in {
 
-      val backButton = view.getElementsByClass("button")
+      val backButton = view.getElementsByClass("govuk-button")
 
       backButton.text() mustBe messages("site.backToStart")
       backButton.first() must haveHref(routes.ChoiceController.displayChoiceForm())

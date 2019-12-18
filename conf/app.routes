@@ -80,3 +80,7 @@ GET         /movements                             controllers.SubmissionsContro
 
 # Notifications page
 GET         /notifications/:conversationId         controllers.NotificationsController.listOfNotifications(conversationId)
+
+# Consignment Query
+GET         /consignment-query                     controllers.ConsignmentQueryController.search(query: Option[String])
+GET         /consignment-query/:id                 controllers.ConsignmentQueryController.get(id: String)

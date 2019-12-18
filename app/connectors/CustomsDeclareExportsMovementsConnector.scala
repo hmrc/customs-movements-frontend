@@ -17,7 +17,7 @@
 package connectors
 
 import config.AppConfig
-import connectors.exchanges.Consolidation
+import connectors.exchanges.{Consolidation, Query, QueryResult}
 import javax.inject.{Inject, Singleton}
 import models.notifications.Notification
 import models.requests.MovementRequest
@@ -57,6 +57,8 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
         case Failure(exception) => logFailedExchange("Submit Consolidation", exception)
       }
       .map(_ => (): Unit)
+
+  def submit(request: Query)(implicit hc: HeaderCarrier): Future[QueryResult] = ???
 
   def fetchAllSubmissions(eori: String)(implicit hc: HeaderCarrier): Future[Seq[Submission]] =
     httpClient

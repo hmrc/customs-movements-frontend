@@ -14,55 +14,97 @@
  * limitations under the License.
  *@
 
+@import components.gds.{gds_main_template, pageTitle}
 @import java.time.format.DateTimeFormatter
-
 @import models.notifications.Notification
 @import models.submissions.Submission
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 
-@this(main_template: views.html.main_template, formatter: DateTimeFormatter)
+@this(
+  govukLayout: gds_main_template,
+  pageTitle: pageTitle,
+  table: GovukTable,
+  formatter: DateTimeFormatter
+)
 
 @(submissions: Seq[(Submission, Seq[Notification])])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("submissions.title"),
-    fullWidth = true) {
+@govukLayout(
+  title = Title("submissions.title"),
+  backButtonTitle = messages("site.back.toStartPage"),
+  backButtonUrl = controllers.routes.ChoiceController.displayChoiceForm().url) {
 
-    @components.back_link(routes.ChoiceController.displayChoiceForm())
+  @pageTitle(messages("submissions.title"))
 
-    @components.page_title(Some(messages("submissions.title")))
+  <p class="govuk-body-l">@messages("submissions.summary") </p>
 
-    <div class="govuk-grid-column-two-thirds">
-        <p>@messages("submissions.summary") </p>
-        <table>
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header"id="ucr">@messages("submissions.ucr")</th>
-                <th scope="col" class="govuk-table__header"id="ucrType">@messages("submissions.submissionType")</th>
-                <th scope="col" class="govuk-table__header"id="dateOfRequest">@messages("submissions.dateOfRequest")</th>
-                <th scope="col" class="govuk-table__header"id="submissionAction">@messages("submissions.submissionAction")</th>
-            </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-            @for( (submission, notifications) <- submissions ){
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell" id="ucr-@submission.conversationId">
-                        @if(notifications.isEmpty){
-                            @components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucr))
-                        } else {
-                            <a href="@routes.NotificationsController.listOfNotifications(submission.conversationId)">
-                                @components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucr))
-                            </a>
-                        }
+  <div class="govuk-grid-column-full">
 
-                    </td>
-                    <td class="govuk-table__cell" id="ucrType-@submission.conversationId">@{components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucrType + "UCR"))}</td>
-                    <td class="govuk-table__cell" id="dateOfRequest-@submission.conversationId">
-                        @formatter.format(submission.requestTimestamp)
-                    </td>
-                    <td class="govuk-table__cell" id="submissionAction-@submission.conversationId">@messages(s"submissions.${submission.actionType.toString.toLowerCase}")</td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    </div>
+    @table(Table(
+      head = Some(List(
+        HeadCell(
+          content = Text(messages("submissions.ucr"))
+        ),
+        HeadCell(
+          content = Text(messages("submissions.submissionType"))
+        ),
+        HeadCell(
+          content = Text(messages("submissions.dateOfRequest"))
+        ),
+        HeadCell(
+          content = Text(messages("submissions.submissionAction"))
+        )
+      )),
+      firstCellIsHeader = true
+    ))
+  </div>
+
+
 }
+
+
+
+
+@* @main_template(title = Title("submissions.title"),*@
+@*    fullWidth = true) {*@
+
+@*    @components.back_link(routes.ChoiceController.displayChoiceForm())*@
+
+@*    @components.page_title(Some(messages("submissions.title")))*@
+
+@*    <div class="govuk-grid-column-two-thirds">*@
+@*        <p>@messages("submissions.summary") </p>*@
+@*        <table>*@
+@*            <thead class="govuk-table__head">*@
+@*                <tr class="govuk-table__row">*@
+@*                <th scope="col" class="govuk-table__header" id="ucr">@messages("submissions.ucr")</th>*@
+@*                <th scope="col" class="govuk-table__header" id="ucrType">@messages("submissions.submissionType")</th>*@
+@*                <th scope="col" class="govuk-table__header" id="dateOfRequest">@messages("submissions.dateOfRequest")</th>*@
+@*                <th scope="col" class="govuk-table__header" id="submissionAction">@messages("submissions.submissionAction")</th>*@
+@*            </tr>*@
+@*            </thead>*@
+@*            <tbody class="govuk-table__body">*@
+@*            @for( (submission, notifications) <- submissions ){*@
+@*                <tr class="govuk-table__row">*@
+@*                    <td class="govuk-table__cell" id="ucr-@submission.conversationId">*@
+@*                        @if(notifications.isEmpty){*@
+@*                            @components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucr))*@
+@*                        } else {*@
+@*                            <a href="@routes.NotificationsController.listOfNotifications(submission.conversationId)">*@
+@*                                @components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucr))*@
+@*                            </a>*@
+@*                        }*@
+
+@*                    </td>*@
+@*                    <td class="govuk-table__cell" id="ucrType-@submission.conversationId">@{components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucrType + "UCR"))}</td>*@
+@*                    <td class="govuk-table__cell" id="dateOfRequest-@submission.conversationId">*@
+@*                        @formatter.format(submission.requestTimestamp)*@
+@*                    </td>*@
+@*                    <td class="govuk-table__cell" id="submissionAction-@submission.conversationId">@messages(s"submissions.${submission.actionType.toString.toLowerCase}")</td>*@
+@*                </tr>*@
+@*            }*@
+@*            </tbody>*@
+@*        </table>*@
+@*    </div>*@
+@*}*@

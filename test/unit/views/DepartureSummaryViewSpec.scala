@@ -20,14 +20,13 @@ import models.cache.{ArrivalAnswers, DepartureAnswers}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.mvc.AnyContentAsEmpty
-import play.api.test.Helpers._
 import views.html.summary.departure_summary_page
 
 class DepartureSummaryViewSpec extends ViewSpec {
 
   private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())
 
-  private val page = new departure_summary_page(main_template)
+  private val page = new departure_summary_page(mainTemplate)
 
   private val answers = DepartureAnswers()
 

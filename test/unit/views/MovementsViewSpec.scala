@@ -32,11 +32,10 @@ import testdata.ConsolidationTestData
 import testdata.ConsolidationTestData._
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
-import utils.Stubs
 import views.html.movements
 import views.spec.ViewValidator
 
-class MovementsViewSpec extends BaseSpec with Stubs with ViewValidator with MessagesStub {
+class MovementsViewSpec extends BaseSpec with ViewTemplates with ViewValidator with MessagesStub {
 
   private implicit val implicitFakeRequest = FakeRequest()
 

@@ -18,6 +18,7 @@
 @import views.Title
 @import components.gds.{errorSummary, exportsInputText, gds_main_template, sectionHeader}
 @import views.Title
+@import views.components.BackButton
 @import forms.AssociateKind
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
@@ -35,8 +36,7 @@
 
 @govukLayout(
     title = Title("arrivalReference.question"),
-    backButtonTitle = messages("site.back"),
-    backButtonUrl = controllers.routes.ConsignmentReferencesController.displayPage.url) {
+    backButton = Some(BackButton(messages("site.back"), controllers.routes.ConsignmentReferencesController.displayPage))) {
 
     @formHelper(action = controllers.routes.ArrivalReferenceController.submit(), 'autoComplete -> "off") {
         @errorSummary(form.errors)

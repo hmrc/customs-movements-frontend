@@ -40,7 +40,7 @@
   @components.gds.link(messages("movement.departure.confirmation.nextSteps.arrive"), routes.ChoiceController.startSpecificJourney(forms.Choice.Arrival.value))
 }
 
-@govukLayout(title = Title(s"movement.${choice.value}.confirmation.tab.heading"), requiresBackLink = false) {
+@govukLayout(title = Title(s"movement.${choice.value}.confirmation.tab.heading")) {
 
     @govukPanel(Panel(
         title = Text(messages(

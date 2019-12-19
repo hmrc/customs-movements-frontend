@@ -32,7 +32,7 @@
 @associateLink = {@components.gds.link(messages("association.confirmation.associateOrDepart.associate"), routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value))}
 @shutMucrLink = {@components.gds.link(messages("association.confirmation.associateOrDepart.shut"), routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value))}
 
-@govukLayout(title = Title(s"${prefix}.tab.heading"), requiresBackLink = false) {
+@govukLayout(title = Title(s"${prefix}.tab.heading")) {
 
     @govukPanel(Panel(
         title = Text(messages(s"${prefix}.heading", flash.get(FlashKeys.UCR).getOrElse("-")))

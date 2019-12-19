@@ -16,46 +16,45 @@
 
 package views
 
+import base.Injector
 import controllers.routes
 import controllers.storage.FlashKeys
 import helpers.views.CommonMessages
+import models.cache.{AssociateUcrAnswers, DisassociateUcrAnswers}
 import play.api.mvc.Flash
 import play.twirl.api.Html
 import testdata.CommonTestData.correctUcr
-import views.html.disassociate_ucr_confirmation
+import views.html.{associate_ucr_confirmation, disassociate_ucr_confirmation}
 import views.spec.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class DisassociateUcrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
+class DisassociateUcrConfirmationViewSpec extends ViewSpec with Injector {
 
-  private val page = new disassociate_ucr_confirmation(mainTemplate)
-  private val view: Html = page()(request, new Flash(), messages)
-  private val viewMessage: Html =
-    page()(request, new Flash(Map(FlashKeys.UCR -> correctUcr, FlashKeys.CONSOLIDATION_KIND -> "KIND")), messagesApi.preferred(request))
+  private implicit val request = journeyRequest(DisassociateUcrAnswers())
+  private val page = instanceOf[disassociate_ucr_confirmation]
+  private val view: Html =
+    page()(request, new Flash(Map(FlashKeys.UCR -> correctUcr, FlashKeys.CONSOLIDATION_KIND -> "DUCR")), messages)
 
   "Disassociate Ucr Confirmation View" should {
 
-    "have a proper labels for messages" in {
+    "have title" in {
 
-      val messages = messagesApi.preferred(request)
-
-      messages must haveTranslationFor("disassociate.ucr.confirmation.MUCR.title")
-      messages must haveTranslationFor("disassociate.ucr.confirmation.DUCR.title")
-      messages must haveTranslationFor("disassociation.confirmation.associateOrShut")
-      messages must haveTranslationFor("disassociation.confirmation.associateOrShut.associate")
-      messages must haveTranslationFor("disassociation.confirmation.associateOrShut.shut")
+      view.getTitle must containMessage("disassociate.ucr.confirmation.DUCR.title")
     }
 
-    "display page reference" in {
+    "have heading" in {
 
-      view.getElementById("highlight-box-heading").text() mustBe messages("disassociate.ucr.confirmation.heading")
-      viewMessage.getElementById("highlight-box-heading").text() must include(s"dissociate KIND $correctUcr")
+      val x = view.getElementsByClass("govuk-panel__title")
+
+      view.getElementsByClass("govuk-panel__title").first() must containMessage("disassociate.ucr.confirmation.heading", "DUCR", correctUcr)
     }
 
     "have status information" in {
 
-      view.getElementById("status-info").text() mustBe messages("movement.confirmation.statusInfo")
+      view.getElementById("status-info").getElementsByClass("govuk-link").first() must haveHref(
+        routes.ChoiceController.startSpecificJourney(forms.Choice.Submissions.value)
+      )
     }
 
     "have what next section" in {
@@ -63,9 +62,12 @@ class DisassociateUcrConfirmationViewSpec extends UnitViewSpec with CommonMessag
       view.getElementById("what-next").text() mustBe messages("movement.confirmation.whatNext")
     }
 
-    "have next steps section" in {
+    "have next steps section which" in {
 
-      view.getElementById("next-steps").text() mustBe messages("disassociation.confirmation.associateOrShut")
+      val nextSteps = view.getElementById("next-steps").getElementsByClass("govuk-link")
+      nextSteps.first() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value))
+      nextSteps.last() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value))
+
     }
 
     "display 'Back to start page' button on page" in {

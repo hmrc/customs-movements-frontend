@@ -16,46 +16,41 @@
 
 package views
 
+import base.Injector
 import controllers.routes
 import controllers.storage.FlashKeys
-import helpers.views.CommonMessages
+import models.cache.AssociateUcrAnswers
 import play.api.mvc.Flash
 import play.twirl.api.Html
 import testdata.CommonTestData.correctUcr
 import views.html.associate_ucr_confirmation
-import views.spec.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
+class AssociateDucrConfirmationViewSpec extends ViewSpec with Injector {
 
-  private val page = new associate_ucr_confirmation(mainTemplate)
+  private implicit val request = journeyRequest(AssociateUcrAnswers())
+  private val page = instanceOf[associate_ucr_confirmation]
 
   private val view: Html = page()(request, new Flash(Map(FlashKeys.CONSOLIDATION_KIND -> "ducr", FlashKeys.UCR -> correctUcr)), messages)
 
   "Associate Ducr Confirmation View" should {
 
-    "have a proper labels for messages" in {
+    "have title" in {
 
-      val messages = messagesApi.preferred(request)
-
-      messages must haveTranslationFor("associate.ducr.confirmation.tab.heading")
-      messages must haveTranslationFor("associate.ducr.confirmation.heading")
-      messages must haveTranslationFor("associate.mucr.confirmation.tab.heading")
-      messages must haveTranslationFor("associate.mucr.confirmation.heading")
-      messages must haveTranslationFor("association.confirmation.associateOrDepart")
-      messages must haveTranslationFor("association.confirmation.associateOrDepart.associate")
-      messages must haveTranslationFor("association.confirmation.associateOrDepart.depart")
+      view.getTitle must containMessage("associate.ducr.confirmation.tab.heading")
     }
 
-    "display page reference" in {
+    "have heading" in {
 
-      view.getElementById("highlight-box-heading").text() mustBe messages("associate.ducr.confirmation.heading")
+      view.getElementsByClass("govuk-panel__title").first() must containMessage("associate.ducr.confirmation.heading", correctUcr)
     }
 
     "have status information" in {
 
-      view.getElementById("status-info").text() mustBe messages("movement.confirmation.statusInfo")
+      view.getElementById("status-info").getElementsByClass("govuk-link").first() must haveHref(
+        routes.ChoiceController.startSpecificJourney(forms.Choice.Submissions.value)
+      )
     }
 
     "have what next section" in {
@@ -63,9 +58,12 @@ class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages
       view.getElementById("what-next").text() mustBe messages("movement.confirmation.whatNext")
     }
 
-    "have next steps section" in {
+    "have next steps section which" in {
 
-      view.getElementById("next-steps").text() mustBe messages("association.confirmation.associateOrDepart")
+      val nextSteps = view.getElementById("next-steps").getElementsByClass("govuk-link")
+      nextSteps.first() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value))
+      nextSteps.last() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value))
+
     }
 
     "display 'Back to start page' button on page" in {
@@ -76,20 +74,6 @@ class AssociateDucrConfirmationViewSpec extends UnitViewSpec with CommonMessages
       backButton.first() must haveHref(routes.ChoiceController.displayChoiceForm())
     }
 
-    "link to list of submissions" in {
-      pending
-      view.getElementsByAttributeValue("href", routes.ChoiceController.startSpecificJourney(forms.Choice.Submissions.value).url) mustNot be(empty)
-    }
-
-    "link to start another association" in {
-      pending
-      view.getElementsByAttributeValue("href", routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value).url).size() mustBe >(0)
-    }
-
-    "link to shut mucr" in {
-      pending
-      view.getElementsByAttributeValue("href", routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value).url).size() mustBe >(0)
-    }
   }
 
 }

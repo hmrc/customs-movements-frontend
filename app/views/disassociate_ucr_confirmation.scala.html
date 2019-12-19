@@ -14,10 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.routes
-@import controllers.storage.FlashKeys
-@import views.Title
-@import forms.DisassociateUcr
 @import components.gds.gds_main_template
 @import controllers.routes
 @import controllers.storage.FlashKeys
@@ -34,7 +30,6 @@
 
 @associateLink = {@components.gds.link(messages("disassociation.confirmation.associateOrShut.associate"), routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value))}
 @shutMucrLink = {@components.gds.link(messages("disassociation.confirmation.associateOrShut.shut"), routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value))}
-
 @kind = @{flash.get(FlashKeys.CONSOLIDATION_KIND).getOrElse("")}
 
 @govukLayout(title = Title(s"disassociate.ucr.confirmation.$kind.title")) {
@@ -48,9 +43,7 @@
     <h2 id="what-next" class="govuk-heading-m">@messages("movement.confirmation.whatNext")</h2>
 
     <p id="next-steps" class="govuk-body">
-
-    @Html(messages("association.confirmation.associateOrShut", associateLink, shutMucrLink))
-
+        @Html(messages("association.confirmation.associateOrShut", associateLink, shutMucrLink))
     </p>
 
     @components.button_link("site.backToStart", routes.ChoiceController.displayChoiceForm())

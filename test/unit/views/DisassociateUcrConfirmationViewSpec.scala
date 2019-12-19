@@ -19,13 +19,11 @@ package views
 import base.Injector
 import controllers.routes
 import controllers.storage.FlashKeys
-import helpers.views.CommonMessages
-import models.cache.{AssociateUcrAnswers, DisassociateUcrAnswers}
+import models.cache.DisassociateUcrAnswers
 import play.api.mvc.Flash
 import play.twirl.api.Html
 import testdata.CommonTestData.correctUcr
-import views.html.{associate_ucr_confirmation, disassociate_ucr_confirmation}
-import views.spec.UnitViewSpec
+import views.html.disassociate_ucr_confirmation
 import views.tags.ViewTest
 
 @ViewTest
@@ -45,8 +43,6 @@ class DisassociateUcrConfirmationViewSpec extends ViewSpec with Injector {
 
     "have heading" in {
 
-      val x = view.getElementsByClass("govuk-panel__title")
-
       view.getElementsByClass("govuk-panel__title").first() must containMessage("disassociate.ucr.confirmation.heading", "DUCR", correctUcr)
     }
 
@@ -62,12 +58,11 @@ class DisassociateUcrConfirmationViewSpec extends ViewSpec with Injector {
       view.getElementById("what-next").text() mustBe messages("movement.confirmation.whatNext")
     }
 
-    "have next steps section which" in {
+    "have next steps section" in {
 
       val nextSteps = view.getElementById("next-steps").getElementsByClass("govuk-link")
       nextSteps.first() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value))
       nextSteps.last() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value))
-
     }
 
     "display 'Back to start page' button on page" in {

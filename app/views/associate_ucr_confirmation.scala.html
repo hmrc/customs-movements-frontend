@@ -29,8 +29,8 @@
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
 @prefix = @{ s"associate.${flash(FlashKeys.CONSOLIDATION_KIND)}.confirmation" }
-@associateLink = {@components.gds.link(messages("association.confirmation.associateOrDepart.associate"), routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value))}
-@shutMucrLink = {@components.gds.link(messages("association.confirmation.associateOrDepart.shut"), routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value))}
+@associateLink = {@components.gds.link(messages("association.confirmation.associateOrShut.associate"), routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value))}
+@shutMucrLink = {@components.gds.link(messages("association.confirmation.associateOrShut.shut"), routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value))}
 
 @govukLayout(title = Title(s"${prefix}.tab.heading")) {
 

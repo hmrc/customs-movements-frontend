@@ -17,6 +17,7 @@
 @import controllers.routes
 @import forms.Location
 @import views.Title
+@import views.components.BackButton
 @import models.requests.JourneyRequest
 @import components.gds.{errorSummary, exportsInputText, gds_main_template, sectionHeader}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -35,8 +36,7 @@
 
 @govukLayout(
     title = Title("location.question"),
-    backButtonTitle = messages("site.back"),
-    backButtonUrl = controllers.routes.MovementDetailsController.displayPage.url) {
+    backButton = Some(BackButton(messages("site.back"), controllers.routes.MovementDetailsController.displayPage))) {
     @formHelper(action = controllers.routes.LocationController.saveLocation(), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)

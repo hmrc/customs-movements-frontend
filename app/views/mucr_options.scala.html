@@ -17,6 +17,7 @@
 @import forms.MucrOptions
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
+@import views.components.BackButton
 @import components.gds.{errorSummary, sectionHeader, gds_main_template}
 @import components.gds.exportsInputText
 
@@ -36,8 +37,7 @@
 
 @govukLayout(
     title = Title("mucrOptions.title"),
-    backButtonTitle = messages("site.back.toStartPage"),
-    backButtonUrl = controllers.routes.ChoiceController.displayChoiceForm().url) {
+    backButton = Some(BackButton(messages("site.back.toStartPage"), controllers.routes.ChoiceController.displayChoiceForm))) {
 
     @formHelper(action = consolidations.routes.MucrOptionsController.save(), 'autoComplete -> "off") {
         @errorSummary(form.errors)

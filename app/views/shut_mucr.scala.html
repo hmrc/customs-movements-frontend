@@ -15,14 +15,13 @@
  *@
 
 @import forms.ShutMucr
-@import views.Title
 @import forms.ArrivalReference
-@import views.Title
 @import forms.AssociateUcr
 @import forms.MucrOptions
 @import views.components.fields.RadioOption
 @import components.gds.{exportsInputText, errorSummary, gds_main_template}
 @import views.Title
+@import views.components.BackButton
 @import forms.AssociateKind
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
@@ -37,8 +36,7 @@
 
 @govukLayout(
     title = Title("shutMucr.title"),
-    backButtonTitle = messages("site.back.toStartPage"),
-    backButtonUrl = routes.ChoiceController.displayChoiceForm.url) {
+    backButton = Some(BackButton(messages("site.back.toStartPage"), routes.ChoiceController.displayChoiceForm))) {
 
     @formHelper(action = consolidations.routes.ShutMucrController.submitForm, 'autoComplete -> "off") {
         @errorSummary(form.errors)

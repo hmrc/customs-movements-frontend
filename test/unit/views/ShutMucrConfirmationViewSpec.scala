@@ -19,13 +19,11 @@ package views
 import base.Injector
 import controllers.routes
 import controllers.storage.FlashKeys
-import helpers.views.CommonMessages
-import models.cache.{DisassociateUcrAnswers, ShutMucrAnswers}
+import models.cache.ShutMucrAnswers
 import play.api.mvc.Flash
 import play.twirl.api.Html
 import testdata.CommonTestData.correctUcr
-import views.html.{disassociate_ucr_confirmation, shut_mucr_confirmation}
-import views.spec.UnitViewSpec
+import views.html.shut_mucr_confirmation
 import views.tags.ViewTest
 
 @ViewTest

@@ -23,6 +23,7 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
+@import views.components.BackButton
 
 @this(
   govukLayout: gds_main_template,
@@ -41,8 +42,7 @@
 
 @govukLayout(
   title = Title(headerKey, Some(sectionHeaderKey)),
-  backButtonTitle = messages("site.back.toStartPage"),
-  backButtonUrl = controllers.routes.ChoiceController.displayChoiceForm().url) {
+  backButton = Some(BackButton(messages("site.back.toStartPage"), controllers.routes.ChoiceController.displayChoiceForm))) {
 
   @formHelper(action = routes.ConsignmentReferencesController.saveConsignmentReferences(), 'autoComplete -> "off") {
     @errorSummary(form.errors)

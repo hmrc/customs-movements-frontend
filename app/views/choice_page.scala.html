@@ -18,6 +18,7 @@
 @import forms.Choice._
 @import forms.Choice
 @import views.Title
+@import views.components.BackButton
 @import components.gds.{errorSummary, gds_main_template}
 
 @this(
@@ -32,8 +33,7 @@
 
 @govukLayout(
     title = Title("movement.choice.title"),
-    backButtonTitle = messages("site.back"),
-    backButtonUrl = controllers.routes.StartController.displayStartPage().url) {
+    backButton = Some(BackButton(messages("site.back"), controllers.routes.StartController.displayStartPage))) {
 
     @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
         @errorSummary(form.errors)

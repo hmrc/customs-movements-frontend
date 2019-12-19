@@ -17,6 +17,7 @@
 @import forms.DisassociateUcr
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
+@import views.components.BackButton
 @import components.gds.exportsInputText
 @import components.gds.{errorSummary, sectionHeader, gds_main_template}
 @import forms.DisassociateKind
@@ -33,8 +34,7 @@
 
 @govukLayout(
     title = Title("disassociate.ucr.title"),
-    backButtonTitle = messages("site.back.toStartPage"),
-    backButtonUrl = controllers.routes.ChoiceController.displayChoiceForm().url) {
+    backButton = Some(BackButton(messages("site.back.toStartPage"), controllers.routes.ChoiceController.displayChoiceForm))) {
 
     @formHelper(action = consolidations.routes.DisassociateUcrController.submit(), 'autoComplete -> "off") {
         @errorSummary(form.errors)

@@ -16,114 +16,109 @@
 
 package views
 
+import base.Injector
 import controllers.routes
-import forms.Choice.{Arrival, Departure}
 import forms.{Choice, ConsignmentReferences}
-import helpers.views.CommonMessages
+import models.cache.{ArrivalAnswers, DepartureAnswers}
 import testdata.CommonTestData.correctUcr
 import views.html.movement_confirmation_page
-import views.spec.UnitViewSpec
 
-class MovementConfirmationViewSpec extends UnitViewSpec with CommonMessages {
+class MovementConfirmationViewSpec extends ViewSpec with Injector {
 
-  val movementConfirmationPage = new movement_confirmation_page(mainTemplate)
+  val movementConfirmationPage = instanceOf[movement_confirmation_page]
+
   val consignmentReferences = ConsignmentReferences(ConsignmentReferences.AllowedReferences.Ducr, correctUcr)
-  val arrivalRequest = fakeJourneyRequest(Arrival)
-  val departureRequest = fakeJourneyRequest(Departure)
-  val arrivalConfirmationView = movementConfirmationPage(Choice.Arrival, consignmentReferences)(arrivalRequest, messages)
-  val departureConfirmationView = movementConfirmationPage(Choice.Departure, consignmentReferences)(departureRequest, messages)
-
-  "Movement Confirmation Page" should {
-
-    "have correct messages" in {
-
-      val messages = messagesApi.preferred(request)
-
-      messages must haveTranslationFor("movement.arrival.confirmation.tab.heading")
-      messages must haveTranslationFor("movement.arrival.confirmation.heading")
-      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps")
-      messages must haveTranslationFor("movement.arrival.confirmation.nextSteps.associate")
-      messages must haveTranslationFor("movement.departure.confirmation.tab.heading")
-      messages must haveTranslationFor("movement.departure.confirmation.heading")
-      messages must haveTranslationFor("movement.departure.confirmation.nextSteps")
-      messages must haveTranslationFor("movement.departure.confirmation.nextSteps.depart")
-      messages must haveTranslationFor("movement.departure.confirmation.nextSteps.arrive")
-      messages must haveTranslationFor("movement.confirmation.statusInfo")
-      messages must haveTranslationFor("movement.confirmation.statusInfo.submissions")
-      messages must haveTranslationFor("movement.confirmation.whatNext")
-    }
-  }
 
   "Arrival Confirmation Page" should {
 
+    implicit val request = journeyRequest(ArrivalAnswers())
+    val arrivalConfirmationView = movementConfirmationPage(Choice.Arrival, consignmentReferences)
+
     "have title" in {
 
-      arrivalConfirmationView.getElementsByTag("title").first().text() must include(messages("title.format"))
+      arrivalConfirmationView.getTitle must containMessage("movement.arrival.confirmation.tab.heading")
     }
 
     "have heading" in {
 
-      arrivalConfirmationView.getElementById("highlight-box-heading").text() mustBe
-        messages("movement.arrival.confirmation.heading")
+      arrivalConfirmationView.getElementsByClass("govuk-panel__title").first() must containMessage(
+        "movement.arrival.confirmation.heading",
+        "DUCR",
+        correctUcr
+      )
     }
 
     "have status information" in {
 
-      arrivalConfirmationView.getElementById("status-info").text() mustBe messages("movement.confirmation.statusInfo")
+      arrivalConfirmationView.getElementById("status-info").getElementsByClass("govuk-link").first() must haveHref(
+        routes.ChoiceController.startSpecificJourney(forms.Choice.Submissions.value)
+      )
     }
 
     "have what next section" in {
 
-      arrivalConfirmationView.getElementById("what-next").text() mustBe messages("movement.confirmation.whatNext")
+      arrivalConfirmationView.getElementById("what-next") must containMessage("movement.confirmation.whatNext")
     }
 
     "have next steps section" in {
 
-      arrivalConfirmationView.getElementById("next-steps").text() mustBe messages("movement.arrival.confirmation.nextSteps")
+      val nextSteps = arrivalConfirmationView.getElementById("next-steps").getElementsByClass("govuk-link")
+      nextSteps.first() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value))
+      nextSteps.last() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value))
     }
 
     "have back button" in {
 
-      val backButton = arrivalConfirmationView.getElementsByClass("button")
+      val backButton = arrivalConfirmationView.getElementsByClass("govuk-button")
 
-      backButton.text() mustBe messages("site.backToStart")
+      backButton.first() must containMessage("site.backToStart")
       backButton.first() must haveHref(routes.ChoiceController.displayChoiceForm())
     }
   }
 
   "Departure Confirmation Page" should {
 
+    implicit val request = journeyRequest(DepartureAnswers())
+    val departureConfirmationView = movementConfirmationPage(Choice.Departure, consignmentReferences)
+
     "have title" in {
 
-      departureConfirmationView.getElementsByTag("title").first().text() must include(messages("title.format"))
+      departureConfirmationView.getTitle must containMessage("movement.departure.confirmation.tab.heading")
     }
 
     "have heading" in {
 
-      departureConfirmationView.getElementById("highlight-box-heading").text() mustBe
-        messages("movement.departure.confirmation.heading")
+      departureConfirmationView.getElementsByClass("govuk-panel__title").first() must containMessage(
+        "movement.departure.confirmation.heading",
+        "DUCR",
+        correctUcr
+      )
     }
 
     "have status information" in {
 
-      departureConfirmationView.getElementById("status-info").text() mustBe messages("movement.confirmation.statusInfo")
+      departureConfirmationView.getElementById("status-info").getElementsByClass("govuk-link").first() must haveHref(
+        routes.ChoiceController.startSpecificJourney(forms.Choice.Submissions.value)
+      )
     }
 
     "have what next section" in {
 
-      departureConfirmationView.getElementById("what-next").text() mustBe messages("movement.confirmation.whatNext")
+      departureConfirmationView.getElementById("what-next") must containMessage("movement.confirmation.whatNext")
     }
 
     "have next steps section" in {
 
-      departureConfirmationView.getElementById("next-steps").text() mustBe messages("movement.departure.confirmation.nextSteps")
+      val nextSteps = departureConfirmationView.getElementById("next-steps").getElementsByClass("govuk-link")
+      nextSteps.first() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value))
+      nextSteps.last() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.Arrival.value))
     }
 
     "have back button" in {
 
-      val backButton = arrivalConfirmationView.getElementsByClass("button")
+      val backButton = departureConfirmationView.getElementsByClass("govuk-button")
 
-      backButton.text() mustBe messages("site.backToStart")
+      backButton.first() must containMessage("site.backToStart")
       backButton.first() must haveHref(routes.ChoiceController.displayChoiceForm())
     }
   }

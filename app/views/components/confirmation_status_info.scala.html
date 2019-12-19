@@ -16,8 +16,8 @@
 
 @()(implicit messages: Messages)
 
-<p id="status-info">
-    @submissionLink = {<a href="@routes.ChoiceController.startSpecificJourney(forms.Choice.Submissions.value)">@messages("movement.confirmation.statusInfo.submissions")</a>}
+<p id = "status-info" class="govuk-body">
+    @submissionLink = {<a class="govuk-link govuk-link--no-visited-state" href="@routes.ChoiceController.startSpecificJourney(forms.Choice.Submissions.value)">@messages("movement.confirmation.statusInfo.submissions")</a>}
 
     @Html(messages("movement.confirmation.statusInfo", submissionLink))
 </p>

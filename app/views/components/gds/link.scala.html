@@ -14,6 +14,6 @@
  * limitations under the License.
  *@
 
-@(messageKey: String = "", href: Call)(implicit messages: Messages)
+@(message: String = "", href: Call)
 
-<a href="@href.url" role="button" class="govuk-button">@messages(messageKey)</a>
+<a class="govuk-link govuk-link--no-visited-state" href="@href.url">@message</a>

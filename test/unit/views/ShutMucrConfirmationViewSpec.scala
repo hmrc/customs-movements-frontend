@@ -16,43 +16,40 @@
 
 package views
 
+import base.Injector
 import controllers.routes
 import controllers.storage.FlashKeys
-import helpers.views.CommonMessages
+import models.cache.ShutMucrAnswers
 import play.api.mvc.Flash
 import play.twirl.api.Html
 import testdata.CommonTestData.correctUcr
 import views.html.shut_mucr_confirmation
-import views.spec.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class ShutMucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
+class ShutMucrConfirmationViewSpec extends ViewSpec with Injector {
 
-  private val shutMucrConformationPage = new shut_mucr_confirmation(mainTemplate)
+  private implicit val request = journeyRequest(ShutMucrAnswers())
+  private val shutMucrConformationPage = instanceOf[shut_mucr_confirmation]
   private val view: Html = shutMucrConformationPage()(request, Flash(Map(FlashKeys.MUCR -> correctUcr)), messages)
 
   "Shut Mucr Confirmation View" should {
 
-    "have proper labels for messages" in {
+    "have title" in {
 
-      val messages = messagesApi.preferred(request)
-
-      messages must haveTranslationFor("shutMucr.confirmation.tab.heading")
-      messages must haveTranslationFor("shutMucr.confirmation.heading")
-      messages must haveTranslationFor("shutMucr.confirmation.nextSteps")
-      messages must haveTranslationFor("shutMucr.confirmation.nextSteps.shutMucr")
-      messages must haveTranslationFor("shutMucr.confirmation.nextSteps.depart")
+      view.getTitle must containMessage("shutMucr.confirmation.tab.heading")
     }
 
-    "display page reference" in {
+    "have heading" in {
 
-      view.getElementById("highlight-box-heading").text() mustBe messages("shutMucr.confirmation.heading")
+      view.getElementsByClass("govuk-panel__title").first() must containMessage("shutMucr.confirmation.heading", correctUcr)
     }
 
     "have status information" in {
 
-      view.getElementById("status-info").text() mustBe messages("movement.confirmation.statusInfo")
+      view.getElementById("status-info").getElementsByClass("govuk-link").first() must haveHref(
+        routes.ChoiceController.startSpecificJourney(forms.Choice.Submissions.value)
+      )
     }
 
     "have what next section" in {
@@ -62,7 +59,9 @@ class ShutMucrConfirmationViewSpec extends UnitViewSpec with CommonMessages {
 
     "have next steps section" in {
 
-      view.getElementById("next-steps").text() mustBe messages("shutMucr.confirmation.nextSteps")
+      val nextSteps = view.getElementById("next-steps").getElementsByClass("govuk-link")
+      nextSteps.first() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value))
+      nextSteps.last() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value))
     }
 
     "display 'Back to start page' button on page" in {

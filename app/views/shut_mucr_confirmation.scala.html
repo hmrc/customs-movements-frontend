@@ -14,30 +14,36 @@
  * limitations under the License.
  *@
 
+@import components.gds.gds_main_template
 @import controllers.routes
 @import controllers.storage.FlashKeys
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gds_main_template,
+        govukPanel : GovukPanel,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
-@shutMucrLink = {<a href="@routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value)">@messages("shutMucr.confirmation.nextSteps.shutMucr")</a>}
-@departureLink = {<a href="@routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value)">@messages("shutMucr.confirmation.nextSteps.depart")</a>}
+@shutMucrLink = {@components.gds.link(messages("shutMucr.confirmation.nextSteps.shutMucr"), routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value))}
+@departureLink = {@components.gds.link(messages("shutMucr.confirmation.nextSteps.depart"), routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value))}
 
-@main_template(title = Title("shutMucr.confirmation.tab.heading")) {
+@govukLayout(title = Title("shutMucr.confirmation.tab.heading")) {
 
-    @components.highlight_box_with_reference(
-        headingText = messages("shutMucr.confirmation.heading", flash.get(FlashKeys.MUCR).getOrElse("-"))
-    )
+    @govukPanel(Panel(
+        title = Text(messages("shutMucr.confirmation.heading", flash.get(FlashKeys.MUCR).getOrElse("-")))
+    ))
 
     @components.confirmation_status_info()
 
-    <h2 id="what-next">@messages("movement.confirmation.whatNext")</h2>
+    <h2 id="what-next" class="govuk-heading-m">@messages("movement.confirmation.whatNext")</h2>
 
-    <div id="next-steps">
+    <p id="next-steps" class="govuk-body">
         @Html(messages("shutMucr.confirmation.nextSteps", shutMucrLink, departureLink))
-    </div>
+    </p>
 
     @components.button_link("site.backToStart", routes.ChoiceController.displayChoiceForm())
 }

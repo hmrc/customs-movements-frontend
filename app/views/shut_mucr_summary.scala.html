@@ -29,7 +29,7 @@
 @(shutMucr: ShutMucr)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
-    title = Title("disassociate.ucr.summary.title"),
+    title = Title("shutMucr.summary.title"),
     backButton = Some(BackButton(messages("site.back"), consolidations.routes.ShutMucrController.displayPage))) {
 
     @formHelper(action = consolidations.routes.ShutMucrSummaryController.submit(), 'autoComplete -> "off") {

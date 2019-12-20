@@ -66,35 +66,3 @@ class ShutMucrSummaryViewSpec extends ViewSpec with CommonMessages with Injector
     }
   }
 }
-
-//@ViewTest
-//class DisassociateUcrSummaryViewSpec extends ViewSpec with CommonMessages with Injector {
-//
-//  private val page = instanceOf[disassociate_ucr_summary]
-//  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(DisassociateUcrAnswers())
-//
-//
-//  "Disassociate Ucr Summary View" should {
-//
-//    val view = page(DisassociateUcr(Ducr, ducr = Some("SOME-DUCR"), mucr = None))(request, messages)
-//
-//    "display 'Confirm and submit' button on page" in {
-//      view.getElementsByClass("govuk-button").text() must be(messages(confirmAndSubmitCaption))
-//    }
-//
-//    "display 'Change' link on page" in {
-//      val changeButton = view.getElementsByClass("govuk-link").first()
-//      changeButton must containMessage(changeCaption)
-//      changeButton must haveAttribute(
-//        "href",
-//        controllers.consolidations.routes.DisassociateUcrController.displayPage().url
-//      )
-//    }
-//
-//    "display 'Reference' link on page" in {
-//      view.getElementsByClass("govuk-summary-list__value").first() must containText("SOME-DUCR")
-//    }
-//
-//  }
-//
-//}

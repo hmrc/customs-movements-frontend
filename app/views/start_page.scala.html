@@ -14,77 +14,84 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import views.Title
+@import config.AppConfig
+@import components.gds.gds_main_template
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
 
-@this(main_template: views.html.main_template, appConfig: AppConfig)
+@this(  govukLayout: gds_main_template,
+        govukButton: GovukButton,
+        pageTitle: pageTitle,
+        sectionHeader: sectionHeader,
+        appConfig: AppConfig)
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("startPage.title", Some("startPage.title.sectionHeader"))) {
+@reportLink = {<a class="govuk-link" href="@{appConfig.serviceAvailabilityUrl}">@messages("startPage.problemsWithServiceNotice.link")</a>}
+@beforeYouStartLink = {<a class="govuk-link" href=@{appConfig.customsDeclarationsGoodsTakenOutOfEuUrl}>@messages("startPage.beforeYouStart.line.1.link")</a>}
+@govukLayout(title = Title("startPage.title", Some("startPage.title.sectionHeader")), useCustomContentWidth = true) {
 
-  <div class="grid-row">
-    <div class="column-full">
-      @components.heading(
-        sectionHeader = messages("startPage.title.sectionHeader"),
-        title = messages("startPage.title")
-      )
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            @sectionHeader(messages("startPage.title.sectionHeader"))
+
+            @pageTitle(messages("startPage.title"))
+
+            <p id="description" class="govuk-body-l govuk-!-margin-bottom-8"> @messages("startPage.description") </p>
+
+            <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+        </div>
     </div>
-    <div class="column-full">
-      <p id="description" class="lede">@messages("startPage.description")</p>
+
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h2 id="contents" class="govuk-heading-m">@messages("startPage.contents.header")</h2>
+            <ol id="contents-list" class="dashed-list">
+                <li class="dashed-list-item"><a class="govuk-link" href="#before-you-start">@messages("startPage.beforeYouStart.header")</a></li>
+                <li class="dashed-list-item"><a class="govuk-link" href="#information-you-need">@messages("startPage.informationYouNeed.header")</a></li>
+                <li class="dashed-list-item"><a class="govuk-link" href="#report-your-arrival-and-departure">@messages("startPage.reportYourArrivalAndDeparture.header")</a></li>
+            </ol>
+
+            <h2 class="govuk-heading-m" id="before-you-start">@messages("startPage.beforeYouStart.header")</h2>
+            <p id="before-you-start-element-1" class="govuk-body">@Html(messages("startPage.beforeYouStart.line.1", beforeYouStartLink))</p>
+            <p id="before-you-start-element-2" class="govuk-body">@messages("startPage.beforeYouStart.line.2")</p>
+            <p id="before-you-start-element-3" class="govuk-body govuk-!-margin-bottom-8">@messages("startPage.beforeYouStart.line.3")</p>
+
+
+            <h2 class="govuk-heading-m" id="information-you-need">@messages("startPage.informationYouNeed.header")</h2>
+            <p id="information-you-need-element-1" class="govuk-body">@messages("startPage.informationYouNeed.line.1")</p>
+            <ul id="information-you-need-list" class="govuk-list govuk-list--bullet govuk-!-margin-bottom-8">
+                <li>@messages("startPage.informationYouNeed.listItem.1")</li>
+                <li>@messages("startPage.informationYouNeed.listItem.2")</li>
+                <li>@messages("startPage.informationYouNeed.listItem.3")</li>
+                <li>@messages("startPage.informationYouNeed.listItem.4")</li>
+            </ul>
+
+
+            <h2 class="govuk-heading-m" id="report-your-arrival-and-departure">@messages("startPage.reportYourArrivalAndDeparture.header")</h2>
+            <div id="problems-with-service-notice" class="govuk-inset-text">@Html(messages("startPage.problemsWithServiceNotice", reportLink))</div>
+
+            @govukButton(Button(
+                href = Some(routes.ChoiceController.displayChoiceForm().url),
+                isStartButton = true,
+                content = Text(messages("startPage.buttonName"))
+            ))
+
+            <div class="app-c-contents-list-with-body__link-wrapper">
+                <div id="back-to-top" class="app-c-contents-list-with-body__link-container">
+                    <a class="govuk-link app-c-back-to-top dont-print" href="#contents">
+                        <svg class="app-c-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                            <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                        </svg>
+                        @messages("startPage.contents.header")
+                    </a>
+                </div>
+            </div>
+            <div class="govuk-grid-column-one-third">
+                <div class="gem-c-contextual-sidebar"></div>
+            </div>
+        </div>
     </div>
-  </div>
-
-  <div class="grid-row">
-    <div class="column-full">
-
-      <p id="contents">@messages("startPage.contents.header")</p>
-      <ul id="contents-list" class="dashed-list">
-        <li class="dashed-list-item"><a href="#before-you-start">@messages("startPage.beforeYouStart.header")</a></li>
-        <li class="dashed-list-item"><a href="#information-you-need">@messages("startPage.informationYouNeed.header")</a></li>
-        <li class="dashed-list-item"><a href="#report-your-arrival-and-departure">@messages("startPage.reportYourArrivalAndDeparture.header")</a></li>
-      </ul>
-
-      <h2 id="before-you-start" class="heading-medium">@messages("startPage.beforeYouStart.header")</h2>
-      <p id="before-you-start-element-1">
-        @messages("startPage.beforeYouStart.line.1") <a href=@{appConfig.customsDeclarationsGoodsTakenOutOfEuUrl}>@messages("startPage.beforeYouStart.line.1.link")</a>
-      </p>
-      <p id="before-you-start-element-2">@messages("startPage.beforeYouStart.line.2")</p>
-      <p id="before-you-start-element-3">@messages("startPage.beforeYouStart.line.3")</p>
-
-      <h2 id="information-you-need" class="heading-medium">@messages("startPage.informationYouNeed.header")</h2>
-      <p id="information-you-need-element-1">@messages("startPage.informationYouNeed.line.1")</p>
-      <ul id="information-you-need-list" class="list list-bullet">
-        <li>@messages("startPage.informationYouNeed.listItem.1")</li>
-        <li>@messages("startPage.informationYouNeed.listItem.2")</li>
-        <li>@messages("startPage.informationYouNeed.listItem.3")</li>
-        <li>@messages("startPage.informationYouNeed.listItem.4")</li>
-      </ul>
-
-      <h2 id="report-your-arrival-and-departure" class="heading-medium">@messages("startPage.reportYourArrivalAndDeparture.header")</h2>
-
-      <div class="panel panel-border-wide">
-        <p id="problems-with-service-notice">
-          @messages("startPage.problemsWithServiceNotice") <a href=@{appConfig.serviceAvailabilityUrl}>@messages("startPage.problemsWithServiceNotice.link")</a>
-        </p>
-      </div>
-
-      <br/>
-      <a id="button-start" class="button button-start" href="@routes.ChoiceController.displayChoiceForm" role="button">
-        @messages("startPage.buttonName")
-      </a>
-
-      <div class="mt-5">
-        <p id="back-to-top">
-          <a href="#contents">
-            <svg class="app-c-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
-              <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
-            </svg>
-            @messages("startPage.contents.header")
-          </a>
-        </p>
-      </div>
-
-    </div>
-  </div>
 }

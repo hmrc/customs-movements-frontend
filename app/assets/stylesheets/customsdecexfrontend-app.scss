@@ -9,7 +9,6 @@
 
 @import 'partials/_shame';
 
-@import 'lib/govuk-frontend/govuk/all';
 @import 'partials/_step-by-step-navigation';
 @import 'partials/_lists.scss';
 @import 'partials/_layout.scss';
@@ -21,3 +20,4 @@
 $govuk-assets-path: '/customs-movements/assets/';
 $govuk-images-path: "/customs-movements/assets/lib/govuk-frontend/govuk/assets/images/";
 $govuk-fonts-path: "/customs-movements/assets/lib/govuk-frontend/govuk/assets/fonts/";
+@import 'lib/govuk-frontend/govuk/all';

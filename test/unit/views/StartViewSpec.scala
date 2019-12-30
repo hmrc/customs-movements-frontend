@@ -142,5 +142,4 @@ class StartViewSpec extends UnitViewSpec with Injector {
       view.getElementById("back-to-top").child(0) must haveHref("#contents")
     }
   }
-
 }

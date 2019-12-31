@@ -34,7 +34,7 @@
 @(
   title: Title,
   backButton: Option[BackButton] = None,
-  useDefaultContentWidth: Boolean = true
+  useCustomContentWidth: Boolean = false
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @head = {
@@ -76,8 +76,8 @@
         FooterItem(href = Some("help"), text = Some("Help using GOV.UK"))
     )}
 
-@if(useDefaultContentWidth) {
-  @govukLayout(
+@if(useCustomContentWidth) {
+  @govukFlexibleLayout(
     pageTitle = Some(title.format),
     headBlock = Some(head),
     beforeContentBlock = Some(beforeContentBlock),
@@ -87,7 +87,7 @@
     footerItems = footer
   )(contentBlock)
 } else {
-  @govukFlexibleLayout(
+  @govukLayout(
     pageTitle = Some(title.format),
     headBlock = Some(head),
     beforeContentBlock = Some(beforeContentBlock),

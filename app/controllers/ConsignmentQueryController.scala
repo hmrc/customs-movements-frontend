@@ -25,13 +25,15 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import views.html.ile_query
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignmentQueryController @Inject()(
   authenticate: AuthAction,
   connector: CustomsDeclareExportsMovementsConnector,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  ileQuery: ile_query
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -39,18 +41,34 @@ class ConsignmentQueryController @Inject()(
 
   private val form: Form[String] = Form(mapping)
 
-  def search(query: Option[String]): Action[AnyContent] = authenticate.async { implicit request =>
-    query match {
-      case None    => Future.successful(Ok("What do you want to search for"))
-      case Some(ducrOrMucr) => connector.submit(Query(ducrOrMucr, request.eori)).map { response =>
-        Redirect(routes.ConsignmentQueryController.get(response.id))
-      }
-    }
+  var result = false
+
+  def searchGet(): Action[AnyContent] = authenticate { implicit request =>
+    Ok(ileQuery(form))
+  }
+
+  def search(): Action[AnyContent] = authenticate { implicit request =>
+
+    form.bindFromRequest().fold(
+      formWithErrors => Ok(ileQuery(formWithErrors)),
+      validQuery =>
+        // send query with value
+        Redirect(routes.ConsignmentQueryController.get(validQuery))
+    )
   }
 
   def get(id: String): Action[AnyContent] = authenticate { implicit request =>
-    Ok("Loading")
-    // Will be extended to call the back end by queryId
+
+    // Check if the result is, result var is just a mock for it
+
+    if (result) {
+      Ok("Result")
+    }
+    else {
+      result = true
+      Ok("Loading").withHeaders("refresh" -> "5")
+    }
+
   }
 
 }

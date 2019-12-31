@@ -324,10 +324,10 @@ associate.ucr.summary.kind.ducr = DUCR
 associate.ucr.summary.addConsignment = Add consignment
 associate.ucr.summary.masterConsignment = To master consignment
 
-submissions.title = All requests
+submissions.title = Requests
 submissions.summary = This page displays all submitted requests and any notifications related to them.
 submissions.submissionType = Type
-submissions.submissionAction = Type of request
+submissions.submissionAction = Request type
 submissions.eori = Eori
 submissions.conversationId = ConversationId
 submissions.ucr = UCR

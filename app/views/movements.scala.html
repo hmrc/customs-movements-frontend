@@ -41,6 +41,11 @@
   }
 }
 
+@ucrClass = @{"ucr"}
+@submissionTypeClass = @{"submission-type"}
+@dateOfRequestClass = @{"date-of-request"}
+@submissionActionClass = @{"submission-action"}
+
 
 @govukLayout(
   title = Title("submissions.title"),
@@ -63,25 +68,41 @@
       @table(Table(
         head = Some(Seq(
           HeadCell(
-            content = Text(messages("submissions.ucr"))
+            content = Text(messages("submissions.ucr")),
+            classes = ucrClass
           ),
           HeadCell(
-            content = Text(messages("submissions.submissionType"))
+            content = Text(messages("submissions.submissionType")),
+            classes = submissionTypeClass
           ),
           HeadCell(
-            content = Text(messages("submissions.dateOfRequest"))
+            content = Text(messages("submissions.dateOfRequest")),
+            classes = dateOfRequestClass
           ),
           HeadCell(
-            content = Text(messages("submissions.submissionAction"))
+            content = Text(messages("submissions.submissionAction")),
+            classes = submissionActionClass
           )
         )),
         firstCellIsHeader = false,
         rows = submissions.map { case (submission, notifications) =>
           Seq(
-            TableRow(content = HtmlContent(ucrCellContent(submission, notifications))),
-            TableRow(content = HtmlContent(components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucrType + "UCR")))),
-            TableRow(content = Text(formatter.format(submission.requestTimestamp))),
-            TableRow(content = Text(messages(s"submissions.${submission.actionType.toString.toLowerCase}")))
+            TableRow(
+              content = HtmlContent(ucrCellContent(submission, notifications)),
+              classes = ucrClass
+            ),
+            TableRow(
+              content = HtmlContent(components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucrType + "UCR"))),
+              classes = submissionTypeClass
+            ),
+            TableRow(
+              content = Text(formatter.format(submission.requestTimestamp)),
+              classes = dateOfRequestClass
+            ),
+            TableRow(
+              content = Text(messages(s"submissions.${submission.actionType.toString.toLowerCase}")),
+              classes = submissionActionClass
+            )
           )
         }
       ))

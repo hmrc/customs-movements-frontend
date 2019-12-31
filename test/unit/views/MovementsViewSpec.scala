@@ -26,6 +26,7 @@ import models.UcrBlock
 import models.cache.ArrivalAnswers
 import models.notifications.{Entry, Notification, ResponseType}
 import models.submissions.{ActionType, Submission}
+import org.jsoup.nodes.Document
 import play.twirl.api.Html
 import testdata.CommonTestData._
 import testdata.ConsolidationTestData._
@@ -36,11 +37,9 @@ import views.html.movements
 class MovementsViewSpec extends ViewSpec with Injector {
 
   private implicit val implicitFakeRequest = journeyRequest(ArrivalAnswers())
-
-  private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.of("Europe/London"))
-  private val dateTime: Instant = LocalDate.of(2019, 10, 31).atStartOfDay().toInstant(ZoneOffset.UTC)
-
   private val page = instanceOf[movements]
+
+  private val dateTime: Instant = LocalDate.of(2019, 10, 31).atStartOfDay().toInstant(ZoneOffset.UTC)
 
   private def createView(submissions: Seq[(Submission, Seq[Notification])] = Seq.empty): Html = page(submissions)
 
@@ -67,12 +66,12 @@ class MovementsViewSpec extends ViewSpec with Injector {
 
     "contain correct table headers" in {
 
-      val allHeaders = emptyPage.getElementsByClass("govuk-table__header")
+      val doc: Document = emptyPage
 
-      allHeaders.get(0) must containMessage("submissions.ucr")
-      allHeaders.get(1) must containMessage("submissions.submissionType")
-      allHeaders.get(2) must containMessage("submissions.dateOfRequest")
-      allHeaders.get(3) must containMessage("submissions.submissionAction")
+      doc.selectFirst(".govuk-table__header.ucr") must containMessage("submissions.ucr")
+      doc.selectFirst(".govuk-table__header.submission-type") must containMessage("submissions.submissionType")
+      doc.selectFirst(".govuk-table__header.date-of-request") must containMessage("submissions.dateOfRequest")
+      doc.selectFirst(".govuk-table__header.submission-action") must containMessage("submissions.submissionAction")
     }
 
     "contain correct submission data" in {
@@ -109,23 +108,20 @@ class MovementsViewSpec extends ViewSpec with Injector {
         )
       )
 
-      val pageWithData: Html = createView(Seq(shutMucrSubmission -> shutMucrNotifications, arrivalSubmission -> arrivalNotifications))
+      val pageWithData: Document = createView(Seq(shutMucrSubmission -> shutMucrNotifications, arrivalSubmission -> arrivalNotifications))
 
-      val allRows = pageWithData.getElementsByClass("govuk-table__row")
-      allRows.size mustBe 3
+      val firstDataRowElements = pageWithData.selectFirst(".govuk-table__body .govuk-table__row:nth-child(1)")
+      val secondDataRowElements = pageWithData.selectFirst(".govuk-table__body .govuk-table__row:nth-child(2)")
 
-      val firstDataRowElements = allRows.get(1).getElementsByClass("govuk-table__cell")
-      val secondDataRowElements = allRows.get(2).getElementsByClass("govuk-table__cell")
+      firstDataRowElements.selectFirst(".ucr").text() mustBe validMucr
+      firstDataRowElements.selectFirst(".submission-type").text() mustBe "MUCR"
+      firstDataRowElements.selectFirst(".date-of-request").text() mustBe "31 Oct 2019 at 00:00"
+      firstDataRowElements.selectFirst(".submission-action") must containMessage("submissions.shutmucr")
 
-      firstDataRowElements.get(0).text() mustBe validMucr
-      firstDataRowElements.get(1).text() mustBe "MUCR"
-      firstDataRowElements.get(2).text() mustBe "31 Oct 2019 at 00:00"
-      firstDataRowElements.get(3) must containMessage("submissions.shutmucr")
-
-      secondDataRowElements.get(0).text() mustBe validDucr
-      secondDataRowElements.get(1).text() mustBe "DUCR"
-      secondDataRowElements.get(2).text() mustBe "31 Oct 2019 at 00:31"
-      secondDataRowElements.get(3) must containMessage("submissions.arrival")
+      secondDataRowElements.selectFirst(".ucr").text() mustBe validDucr
+      secondDataRowElements.selectFirst(".submission-type").text() mustBe "DUCR"
+      secondDataRowElements.selectFirst(".date-of-request").text() mustBe "31 Oct 2019 at 00:31"
+      secondDataRowElements.selectFirst(".submission-action") must containMessage("submissions.arrival")
     }
 
     "contain MUCR and DUCR if Submission contains both" in {
@@ -138,15 +134,14 @@ class MovementsViewSpec extends ViewSpec with Injector {
         )
       )
 
-      val pageWithData: Html = createView(Seq(exampleAssociateDucrRequestSubmission -> notifications))
+      val pageWithData: Document = createView(Seq(exampleAssociateDucrRequestSubmission -> notifications))
 
-      val allRows = pageWithData.getElementsByClass("govuk-table__row")
-      val firstDataRowElements = allRows.get(1).getElementsByClass("govuk-table__cell")
+      val firstDataRowElements = pageWithData.selectFirst(".govuk-table__body .govuk-table__row:nth-child(1)")
 
-      val actualUcrs = firstDataRowElements.get(0).text()
+      val actualUcrs = firstDataRowElements.selectFirst(".ucr").text()
       actualUcrs must include(validMucr)
       actualUcrs must include(validDucr)
-      val actualUcrTypes = firstDataRowElements.get(1).text()
+      val actualUcrTypes = firstDataRowElements.selectFirst(".submission-type").text()
       actualUcrTypes must include("MUCR")
       actualUcrTypes must include("DUCR")
     }
@@ -157,12 +152,11 @@ class MovementsViewSpec extends ViewSpec with Injector {
         val submission = exampleSubmission(requestTimestamp = dateTime)
         val notifications = Seq(exampleNotificationFrontendModel(timestampReceived = dateTime.plusSeconds(3)))
 
-        val page = createView(Seq((submission, notifications)))
+        val page: Document = createView(Seq((submission, notifications)))
 
-        val allRows = page.getElementsByClass("govuk-table__row")
-        val firstDataRowUcrCell = allRows.get(1).getElementsByClass("govuk-table__cell").get(0)
+        val firstDataRowUcrCell = page.selectFirst(".govuk-table__body .govuk-table__row:nth-child(1)")
 
-        firstDataRowUcrCell.child(0) must haveHref(routes.NotificationsController.listOfNotifications(conversationId))
+        firstDataRowUcrCell.selectFirst(".ucr").child(0) must haveHref(routes.NotificationsController.listOfNotifications(conversationId))
       }
     }
   }

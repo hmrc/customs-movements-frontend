@@ -16,21 +16,11 @@
 
 package utils
 
-import com.typesafe.config.ConfigFactory
-import config.AppConfig
-import play.api.Mode.Test
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
 import play.api.i18n.{Langs, MessagesApi}
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test.NoMaterializer
-import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
-import uk.gov.hmrc.play.config.{AssetsConfig, GTMConfig, OptimizelyConfig}
-import uk.gov.hmrc.play.views.html.layouts._
-import views.html.layouts.GovUkTemplate
-import views.html.main_template
-import views.html.components.gds.govuk_wrapper
 
 import scala.concurrent.ExecutionContext
 
@@ -53,49 +43,4 @@ trait Stubs {
       fileMimeTypes,
       executionContext
     )
-
-  private val minimalConfig = ConfigFactory.parseString("""
-    |assets.url="localhost"
-    |assets.version="version"
-    |google-analytics.token=N/A
-    |google-analytics.host=localhostGoogle
-    |metrics.name=""
-    |metrics.rateUnit="SECONDS"
-    |metrics.durationUnit="SECONDS"
-    |metrics.showSamples=false
-    |metrics.jvm=false
-    |metrics.logback=false
-  """.stripMargin)
-
-  val minimalConfiguration = Configuration(minimalConfig)
-
-  private val environment = Environment.simple()
-
-  private def runMode(conf: Configuration): RunMode = new RunMode(conf, Test)
-  private def servicesConfig(conf: Configuration) = new ServicesConfig(conf, runMode(conf))
-  private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
-
-  val minimalAppConfig = appConfig(minimalConfiguration)
-
-  private val head: Head = new Head(
-    new OptimizelySnippet(new OptimizelyConfig(minimalConfiguration)),
-    new AssetsConfig(minimalConfiguration),
-    new GTMSnippet(new GTMConfig(minimalConfiguration))
-  )
-
-  private val footer: Footer = new Footer(new AssetsConfig(minimalConfiguration))
-
-  private val govukWrapper: govuk_wrapper = new govuk_wrapper(
-    head,
-    new HeaderNav(),
-    footer,
-    new ServiceInfo(),
-    new MainContentHeader(),
-    new MainContent(),
-    new FooterLinks(),
-    new GovUkTemplate(),
-    minimalAppConfig
-  )
-
-  val mainTemplate: main_template = new main_template(govukWrapper, new Sidebar(), new Article())
 }

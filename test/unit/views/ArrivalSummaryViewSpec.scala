@@ -25,7 +25,7 @@ class ArrivalSummaryViewSpec extends ViewSpec {
 
   private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())
 
-  private val page = new arrival_summary_page(main_template)
+  private val page = new arrival_summary_page(mainTemplate)
 
   private val answers = ArrivalAnswers()
 

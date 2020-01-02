@@ -129,6 +129,14 @@ class NotificationsControllerSpec extends ControllerLayerSpec with ScalaFutures 
 
         status(result) must be(OK)
       }
+
+      "return 200 (OK) with a MUCR Submssion" in {
+        when(connector.fetchSingleSubmission(any(), any())(any()))
+          .thenReturn(Future.successful(Some(exampleSubmission(ucrType = "M"))))
+        val result = controller.listOfNotifications(conversationId)(FakeRequest())
+
+        status(result) must be(OK)
+      }
     }
 
     "submission is missing UCR" should {

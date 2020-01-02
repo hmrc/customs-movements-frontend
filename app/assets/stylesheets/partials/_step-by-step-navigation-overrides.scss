@@ -1,0 +1,35 @@
+
+.exports-notifications__header {
+  padding: 15px 0 0 15px;
+  border-top: none;
+
+  &:hover .exports-notifications__circle {
+    color: unset;
+  }
+}
+
+.exports-notifications__button {
+  cursor: text;
+}
+
+.exports-notifications__step:nth-last-child(odd) {
+
+  .exports-notifications__header {
+    background-color: govuk-colour("light-grey");
+  }
+
+  .govuk-form-group {
+    background-color: govuk-colour("light-grey");
+  }
+
+  .exports-notifications__panel {
+    border-bottom: solid 2px govuk-colour("mid-grey");
+  }
+}
+
+.exports-notifications__panel .govuk-form-group {
+  @include govuk-font($size: 19);
+  margin-bottom: 0;
+  padding: 5px 5px 20px 16px;
+}
+

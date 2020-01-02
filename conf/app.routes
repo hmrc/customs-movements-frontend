@@ -85,6 +85,6 @@ GET         /notifications/:conversationId         controllers.NotificationsCont
 
 GET         /consignment-query                     controllers.ConsignmentQueryController.searchGet()
 
-POST         /consignment-query                     controllers.ConsignmentQueryController.search()
+POST        /consignment-query                     controllers.ConsignmentQueryController.search()
 
 GET         /consignment-query/:id                 controllers.ConsignmentQueryController.get(id: String)

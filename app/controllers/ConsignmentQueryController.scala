@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package controllers
 
 import connectors.CustomsDeclareExportsMovementsConnector
-import connectors.exchanges.Query
 import controllers.actions.AuthAction
 import javax.inject.Inject
 import play.api.data.Forms.text
@@ -25,15 +24,16 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.ile_query
+import views.html.{ile_loading_result, ile_query}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class ConsignmentQueryController @Inject()(
   authenticate: AuthAction,
   connector: CustomsDeclareExportsMovementsConnector,
   mcc: MessagesControllerComponents,
-  ileQuery: ile_query
+  ileQuery: ile_query,
+  ileLoadingResult: ile_loading_result
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -62,11 +62,12 @@ class ConsignmentQueryController @Inject()(
     // Check if the result is, result var is just a mock for it
 
     if (result) {
-      Ok("Result")
+      result = false
+      Ok(ileLoadingResult("Result"))
     }
     else {
       result = true
-      Ok("Loading").withHeaders("refresh" -> "5")
+      Ok(ileLoadingResult("Loading")).withHeaders("refresh" -> "5")
     }
 
   }

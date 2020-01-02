@@ -118,12 +118,16 @@ class MovementsViewSpec extends ViewSpec with Injector {
 
       firstDataRowElements.selectFirst(".ucr").text() mustBe validMucr
       firstDataRowElements.selectFirst(".submission-type").text() mustBe "MUCR"
-      firstDataRowElements.selectFirst(".date-of-request").text() mustBe LocalDateTime.of(2019,10,31,0,0).format(formatter) // "31 Oct 2019 at 00:00"
+      firstDataRowElements.selectFirst(".date-of-request").text() mustBe LocalDateTime
+        .of(2019, 10, 31, 0, 0)
+        .format(formatter) // "31 Oct 2019 at 00:00"
       firstDataRowElements.selectFirst(".submission-action") must containMessage("submissions.shutmucr")
 
       secondDataRowElements.selectFirst(".ucr").text() mustBe validDucr
       secondDataRowElements.selectFirst(".submission-type").text() mustBe "DUCR"
-      secondDataRowElements.selectFirst(".date-of-request").text() mustBe LocalDateTime.of(2019,10,31,0,31).format(formatter) //"31 Oct 2019 at 00:31"
+      secondDataRowElements.selectFirst(".date-of-request").text() mustBe LocalDateTime
+        .of(2019, 10, 31, 0, 31)
+        .format(formatter) //"31 Oct 2019 at 00:31"
       secondDataRowElements.selectFirst(".submission-action") must containMessage("submissions.arrival")
     }
 

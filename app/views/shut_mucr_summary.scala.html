@@ -14,42 +14,54 @@
  * limitations under the License.
  *@
 
-@import consolidations.routes
+@import components.gds.{gds_main_template, pageTitle}
 @import forms.ShutMucr
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
+@import views.components.BackButton
 
-@this(main_template: views.html.main_template)
+@this(  govukLayout: gds_main_template,
+        govukButton: GovukButton,
+        pageTitle: pageTitle,
+        govukSummaryList : GovukSummaryList,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
-@(shutMucr: ShutMucr)(implicit request: Request[AnyContent], messages: Messages)
+@(shutMucr: ShutMucr)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("shutMucr.summary.title"), fullWidth = true) {
+@govukLayout(
+    title = Title("shutMucr.summary.title"),
+    backButton = Some(BackButton(messages("site.back"), consolidations.routes.ShutMucrController.displayPage))) {
 
-    @helper.form(routes.ShutMucrSummaryController.submit(), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+    @formHelper(action = consolidations.routes.ShutMucrSummaryController.submit(), 'autoComplete -> "off") {
 
-        @components.back_link(routes.ShutMucrController.displayPage())
+        @pageTitle(messages("shutMucr.summary.title"))
 
-        @components.page_title(
-            title = Some(messages("shutMucr.summary.title"))
-        )
+        <h2 class="govuk-heading-m">@messages("shutMucr.summary.header") </h2>
 
-        <h2 id="shutMucr-header">@messages("shutMucr.summary.header")</h2>
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("shutMucr.summary.type"))
+                    ),
+                    value = Value(
+                        content = Text(shutMucr.mucr)
+                    ),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = s"${consolidations.routes.ShutMucrController.displayPage}",
+                                content = Text(messages("site.change")),
+                                visuallyHiddenText = Some(messages("site.change.hint.disassociate.ucr", shutMucr.mucr.toUpperCase()))
+                            )
+                        )
+                    ))
+                )
+            ),
+            classes = "govuk-!-margin-bottom-9"
+        ))
+        @govukButton(Button(content = Text(messages("site.confirmAndSubmit"))))
 
-        <table>
-            <tbody>
-                <tr>
-                    <td id="shutMucr-type">@messages("shutMucr.summary.type")</td>
-                    <td id="shutMucr-mucr">@shutMucr.mucr</td>
-                    <td class="text-right">
-                        <a id="shutMucr-change" href="@routes.ShutMucrController.displayPage()">
-                            <span aria-hidden="true">@messages("site.edit")</span>
-                            <span class="visuallyhidden">@{messages("site.change.hint.shut.mucr")}</span>
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        @components.submit_button(messages("site.confirmAndSubmit"))
     }
+
 }

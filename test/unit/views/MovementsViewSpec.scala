@@ -18,7 +18,8 @@ package views
 
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit.MINUTES
-import java.time.{Instant, LocalDate, ZoneId, ZoneOffset}
+import java.time.{Instant, LocalDate, LocalDateTime, ZoneId, ZoneOffset}
+import java.util.Date
 
 import base.Injector
 import controllers.routes
@@ -113,14 +114,20 @@ class MovementsViewSpec extends ViewSpec with Injector {
       val firstDataRowElements = pageWithData.selectFirst(".govuk-table__body .govuk-table__row:nth-child(1)")
       val secondDataRowElements = pageWithData.selectFirst(".govuk-table__body .govuk-table__row:nth-child(2)")
 
+      val formatter = DateTimeFormatter.ofPattern("dd MMM YYYY 'at' HH:mm")
+
       firstDataRowElements.selectFirst(".ucr").text() mustBe validMucr
       firstDataRowElements.selectFirst(".submission-type").text() mustBe "MUCR"
-      firstDataRowElements.selectFirst(".date-of-request").text() mustBe "31 Oct 2019 at 00:00"
+      firstDataRowElements.selectFirst(".date-of-request").text() mustBe LocalDateTime
+        .of(2019, 10, 31, 0, 0)
+        .format(formatter) // "31 Oct 2019 at 00:00"
       firstDataRowElements.selectFirst(".submission-action") must containMessage("submissions.shutmucr")
 
       secondDataRowElements.selectFirst(".ucr").text() mustBe validDucr
       secondDataRowElements.selectFirst(".submission-type").text() mustBe "DUCR"
-      secondDataRowElements.selectFirst(".date-of-request").text() mustBe "31 Oct 2019 at 00:31"
+      secondDataRowElements.selectFirst(".date-of-request").text() mustBe LocalDateTime
+        .of(2019, 10, 31, 0, 31)
+        .format(formatter) //"31 Oct 2019 at 00:31"
       secondDataRowElements.selectFirst(".submission-action") must containMessage("submissions.arrival")
     }
 

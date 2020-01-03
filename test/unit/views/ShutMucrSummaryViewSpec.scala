@@ -16,53 +16,43 @@
 
 package views
 
+import base.Injector
 import controllers.consolidations.routes
 import forms.ShutMucr
 import helpers.views.CommonMessages
-import play.twirl.api.Html
+import models.cache.ShutMucrAnswers
+import models.requests.JourneyRequest
+import play.api.mvc.AnyContentAsEmpty
 import testdata.ConsolidationTestData.validMucr
 import views.html.shut_mucr_summary
-import views.spec.UnitViewSpec
 
-class ShutMucrSummaryViewSpec extends UnitViewSpec with CommonMessages {
+class ShutMucrSummaryViewSpec extends ViewSpec with CommonMessages with Injector {
 
-  private val shutMucrSummaryPage = new shut_mucr_summary(mainTemplate)
-  private val view: Html = shutMucrSummaryPage(ShutMucr(validMucr))(request, messages)
+  private val shutMucrSummaryPage = instanceOf[shut_mucr_summary]
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ShutMucrAnswers())
 
   "Shut Mucr Summary View" should {
 
-    "have proper labels for messages" in {
-
-      val messages = messagesApi.preferred(request)
-
-      messages must haveTranslationFor("shutMucr.summary.title")
-      messages must haveTranslationFor("shutMucr.summary.header")
-      messages must haveTranslationFor("shutMucr.summary.type")
-    }
-
-    "display page title" in {
-
-      view.getElementById("title").text() mustBe messages("shutMucr.summary.title")
-    }
+    val view = shutMucrSummaryPage(ShutMucr(validMucr))(request, messages)
 
     "display page header" in {
 
-      view.getElementById("shutMucr-header").text() mustBe messages("shutMucr.summary.header")
+      view.getElementsByClass("govuk-heading-m").text() mustBe messages("shutMucr.summary.header")
     }
 
-    "display MUCR type in table row" in {
+    "display MUCR type in summary list" in {
 
-      view.getElementById("shutMucr-type").text() mustBe messages("shutMucr.summary.type")
+      view.getElementsByClass("govuk-summary-list__key").text() mustBe messages("shutMucr.summary.type")
     }
 
     "display correct mucr" in {
 
-      view.getElementById("shutMucr-mucr").text() mustBe messages(validMucr)
+      view.getElementsByClass("govuk-summary-list__value").text() mustBe validMucr
     }
 
     "display correct change button" in {
 
-      val changeButton = view.getElementById("shutMucr-change")
+      val changeButton = view.getElementsByClass("govuk-link").first()
 
       changeButton must haveHref(routes.ShutMucrController.displayPage())
       changeButton.text() must include(messages("site.edit"))
@@ -70,7 +60,7 @@ class ShutMucrSummaryViewSpec extends UnitViewSpec with CommonMessages {
 
     "display correct submit button" in {
 
-      val submitButton = view.getElementById("submit")
+      val submitButton = view.getElementsByClass("govuk-button").first()
 
       submitButton.text() mustBe messages("site.confirmAndSubmit")
     }

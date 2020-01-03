@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports Movements AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.16
+// @version      0.17
 // @description  Customs Declare Exports Movements
 // @author       You
 // @match        http*://*/customs-movements*
@@ -27,34 +27,6 @@ function createQuickButton() {
     button.innerHTML = 'Quick Submit';
     button.onclick = () => completePage();
     return button;
-}
-
-// selected can be an index or a value
-function selectFromAutoPredict(element, selected) {
-    let index = typeof selected == "number" ? selected : 0;
-    let selects = element.getElementsByTagName('select');
-    let inputs = element.getElementsByTagName('input');
-    for(let j = 0; j < selects.length; j++){
-        let options = selects[j].getElementsByTagName('option');
-        let option = options[index];
-        if(typeof selected == "string"){
-            for(let o = 0; o < options.length; o++) {
-                if(options[o].value === selected) {
-                    option = options[o];
-                }
-            }
-        }
-        option.selected = "selected";
-        selects[j].value = option.value;
-        inputs[j].value = option.value;
-    }
-}
-
-function selectRadioOption(element, index){
-    let inputs = element.getElementsByTagName('input');
-    if (inputs && index < inputs.length) {
-        inputs[index].checked = true
-    }
 }
 
 function currentPageIs(path) {

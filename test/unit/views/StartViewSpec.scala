@@ -16,15 +16,16 @@
 
 package views
 
+import base.Injector
 import play.twirl.api.Html
 import views.html.start_page
 import views.spec.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class StartViewSpec extends UnitViewSpec {
+class StartViewSpec extends UnitViewSpec with Injector {
 
-  private val page = new start_page(mainTemplate, appConfig)
+  private val page = instanceOf[start_page]
   private def createView(): Html = page()(request, messages)
 
   "Start Page view" should {
@@ -91,12 +92,12 @@ class StartViewSpec extends UnitViewSpec {
       view.getElementById("before-you-start").text() mustBe "startPage.beforeYouStart.header"
 
       view.getElementById("before-you-start-element-1").text() must include("startPage.beforeYouStart.line.1")
-      view.getElementById("before-you-start-element-1").text() must include("startPage.beforeYouStart.line.1.link")
       view.getElementById("before-you-start-element-2").text() mustBe "startPage.beforeYouStart.line.2"
       view.getElementById("before-you-start-element-3").text() mustBe "startPage.beforeYouStart.line.3"
     }
 
     "contain link to Customs Declarations Guidance in 'Before you start' section" in {
+      val view = page()(request, messagesApi.preferred(request))
       view.getElementById("before-you-start-element-1").child(0) must haveHref(
         "https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"
       )
@@ -122,18 +123,18 @@ class StartViewSpec extends UnitViewSpec {
 
     "display problems with service notice" in {
       view.getElementById("problems-with-service-notice").text() must include("startPage.problemsWithServiceNotice")
-      view.getElementById("problems-with-service-notice").text() must include("startPage.problemsWithServiceNotice.link")
     }
 
     "contain link to service availability in 'Report your arrival and departure' section" in {
+      val view = page()(request, messagesApi.preferred(request))
       view.getElementById("problems-with-service-notice").child(0) must haveHref(
         "https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
       )
     }
 
     "display 'Start now' button" in {
-      view.getElementById("button-start").text() mustBe "startPage.buttonName"
-      view.getElementById("button-start") must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+      view.getElementsByClass("govuk-button govuk-button--start").get(0).text() mustBe "startPage.buttonName"
+      view.getElementsByClass("govuk-button govuk-button--start").get(0) must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
     }
 
     "display link to go back to Contents section" in {
@@ -141,5 +142,4 @@ class StartViewSpec extends UnitViewSpec {
       view.getElementById("back-to-top").child(0) must haveHref("#contents")
     }
   }
-
 }

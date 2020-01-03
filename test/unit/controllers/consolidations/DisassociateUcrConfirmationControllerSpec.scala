@@ -17,8 +17,11 @@
 package unit.controllers.consolidations
 
 import controllers.consolidations.DisassociateUcrConfirmationController
+import controllers.storage.FlashKeys
+import models.ReturnToStartException
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.controllers.ControllerLayerSpec
@@ -35,7 +38,7 @@ class DisassociateUcrConfirmationControllerSpec extends ControllerLayerSpec {
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockDisassociateDucrConfirmationPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockDisassociateDucrConfirmationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -44,15 +47,29 @@ class DisassociateUcrConfirmationControllerSpec extends ControllerLayerSpec {
   }
 
   "Disassociate Ducr Confirmation Controller" should {
+    implicit val get = FakeRequest("GET", "/")
 
     "return 200 (OK)" when {
 
       "display page method is invoked" in {
-
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage()(get.withFlash(FlashKeys.CONSOLIDATION_KIND -> "kind", FlashKeys.UCR -> "123"))
 
         status(result) mustBe OK
-        verify(mockDisassociateDucrConfirmationPage).apply()(any(), any(), any())
+        verify(mockDisassociateDucrConfirmationPage).apply(any(), any())(any(), any())
+      }
+    }
+
+    "return to start" when {
+      "ucr kind is missing" in {
+        intercept[RuntimeException] {
+          await(controller.displayPage()(get.withFlash(FlashKeys.UCR -> "123")))
+        } mustBe ReturnToStartException
+      }
+
+      "ucr is missing" in {
+        intercept[RuntimeException] {
+          await(controller.displayPage()(get.withFlash(FlashKeys.CONSOLIDATION_KIND -> "kind")))
+        } mustBe ReturnToStartException
       }
     }
   }

@@ -18,9 +18,7 @@ package views
 
 import base.Injector
 import controllers.routes
-import controllers.storage.FlashKeys
 import models.cache.AssociateUcrAnswers
-import play.api.mvc.Flash
 import play.twirl.api.Html
 import testdata.CommonTestData.correctUcr
 import views.html.associate_ucr_confirmation
@@ -32,7 +30,7 @@ class AssociateDucrConfirmationViewSpec extends ViewSpec with Injector {
   private implicit val request = journeyRequest(AssociateUcrAnswers())
   private val page = instanceOf[associate_ucr_confirmation]
 
-  private val view: Html = page()(request, new Flash(Map(FlashKeys.CONSOLIDATION_KIND -> "ducr", FlashKeys.UCR -> correctUcr)), messages)
+  private val view: Html = page("ducr", correctUcr)(request, messages)
 
   "Associate Ducr Confirmation View" should {
 

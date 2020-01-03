@@ -14,69 +14,176 @@
  * limitations under the License.
  *@
 
+@import components.gds.{gds_main_template, pageTitle}
 @import controllers.routes
 @import forms.ConsignmentReferences.AllowedReferences
 @import models.cache.ArrivalAnswers
-@import forms._
-@import models.viewmodels.HtmlTableRow
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
+@import views.components.BackButton
 
-@this(main_template: views.html.main_template)
+@this(  govukLayout: gds_main_template,
+        govukButton: GovukButton,
+        pageTitle: pageTitle,
+        govukSummaryList : GovukSummaryList,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(data: ArrivalAnswers)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("summary.arrival.title")) {
-    @components.back_link(routes.LocationController.displayPage())
-
-    @components.page_title(Some(messages("summary.arrival.title")))
-
-    @components.summary_list(Some(messages("summary.consignmentDetails"))) {
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("summary.referenceType"),
-            value = data.consignmentReferences.map(ref =>
-                if(ref.reference.equals(AllowedReferences.Ducr)) {
-                    messages("consignmentReferences.reference.ducr")
-                } else {
-                    messages("consignmentReferences.reference.mucr")
-                }
-            )
-        ))
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("summary.referenceValue"),
-            value = data.consignmentReferences.map(_.referenceValue)
-        ))
+@referenceTypeKey = @{data.consignmentReferences.map(ref =>
+    if(ref.reference.equals(AllowedReferences.Ducr)) {
+        "consignmentReferences.reference.ducr"
+    } else {
+        "consignmentReferences.reference.mucr"
     }
+).getOrElse("")}
 
-    @data.arrivalReference.flatMap(_.reference).filter(_.nonEmpty).map { reference =>
-        @components.summary_list(Some(messages("arrivalReference"))) {
-            @components.table_row_no_change_link(HtmlTableRow(
-                label = messages("summary.arrivalReference.reference"),
-                value = reference
+@govukLayout(
+    title = Title("summary.arrival.title"),
+    backButton = Some(BackButton(messages("site.back"), routes.LocationController.displayPage))) {
+
+    @formHelper(action = routes.SummaryController.submitMovementRequest(), 'autoComplete -> "off") {
+
+        @pageTitle(messages("summary.arrival.title"))
+
+        <h2 class="govuk-heading-m">@messages("summary.consignmentDetails") </h2>
+
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("summary.referenceType"))
+                    ),
+                    value = Value(
+                        content = Text(messages(referenceTypeKey))
+                    ),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = s"${routes.ConsignmentReferencesController.displayPage}",
+                                content = Text(messages("site.change")),
+                                visuallyHiddenText = Some(messages("summary.referenceType.change"))
+                            )
+                        )
+                    ))
+                ),
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("summary.referenceValue"))
+                    ),
+                    value = Value(
+                        content = Text(data.consignmentReferences.map(_.referenceValue).getOrElse(""))
+                    ),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = s"${routes.ConsignmentReferencesController.displayPage}",
+                                content = Text(messages("site.change")),
+                                visuallyHiddenText = Some(messages("summary.referenceType.change"))
+                            )
+                        )
+                    ))
+                )
+            ),
+            classes = "govuk-!-margin-bottom-9"
+        ))
+
+        @data.arrivalReference.flatMap(_.reference).filter(_.nonEmpty).map { reference =>
+            <h2 class="govuk-heading-m">@messages("arrivalReference") </h2>
+
+            @govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("summary.arrivalReference.reference"))
+                        ),
+                        value = Value(
+                            content = Text(reference)
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${routes.ArrivalReferenceController.displayPage}",
+                                    content = Text(messages("site.change")),
+                                    visuallyHiddenText = Some(messages("summary.arrivalReference.reference.change"))
+                                )
+                            )
+                        ))
+                    )
+                ),
+                classes = "govuk-!-margin-bottom-9"
             ))
         }
-    }
 
-    @components.summary_list(Some(messages("arrivalDetails.title"))) {
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("summary.arrival.date"),
-            value = data.arrivalDetails.map(_.dateOfArrival.toString)
+        <h2 class="govuk-heading-m">@messages("arrivalDetails.title") </h2>
+
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("summary.arrival.date"))
+                    ),
+                    value = Value(
+                        content = Text(data.arrivalDetails.map(_.dateOfArrival.toString).getOrElse(""))
+                    ),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = s"${routes.MovementDetailsController.displayPage}",
+                                content = Text(messages("site.change")),
+                                visuallyHiddenText = Some(messages("summary.arrival.date.change"))
+                            )
+                        )
+                    ))
+                ),
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("summary.arrival.time"))
+                    ),
+                    value = Value(
+                        content = Text(data.arrivalDetails.map(_.timeOfArrival.toString).getOrElse(""))
+                    ),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = s"${routes.MovementDetailsController.displayPage}",
+                                content = Text(messages("site.change")),
+                                visuallyHiddenText = Some(messages("summary.arrival.time.change"))
+                            )
+                        )
+                    ))
+                )
+            ),
+            classes = "govuk-!-margin-bottom-9"
         ))
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("summary.arrival.time"),
-            value = data.arrivalDetails.map(_.timeOfArrival.toString)
+
+        <h2 class="govuk-heading-m">@messages("location.title") </h2>
+
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("summary.goodsLocation"))
+                    ),
+                    value = Value(
+                        content = Text(data.location.map(_.code).getOrElse(""))
+                    ),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = s"${routes.LocationController.displayPage}",
+                                content = Text(messages("site.change")),
+                                visuallyHiddenText = Some(messages("summary.goodsLocation.change"))
+                            )
+                        )
+                    ))
+                )
+            ),
+            classes = "govuk-!-margin-bottom-9"
         ))
+
+        @govukButton(Button(content = Text(messages("site.confirmAndSubmit"))))
+
     }
 
-    @components.summary_list(Some(messages("location.title"))) {
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("summary.goodsLocation"),
-            value = data.location.map(_.code)
-        ))
-    }
-
-    @helper.form(action = routes.SummaryController.submitMovementRequest()) {
-        @helper.CSRF.formField
-
-        @components.submit_button(messages("site.confirmAndSubmit"))
-    }
 }

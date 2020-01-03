@@ -18,6 +18,7 @@ package forms.common
 
 import java.text.DecimalFormat
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Forms, Mapping}
@@ -26,6 +27,10 @@ import play.api.libs.json.{Json, OFormat}
 import scala.util.Try
 
 case class Time(time: LocalTime) {
+
+  private val inputFormat = DateTimeFormatter.ofPattern("HH:mm")
+
+  def toInputFormat: String = time.format(inputFormat)
 
   override def toString: String = time.toString
 

@@ -34,6 +34,8 @@ case class Date(date: LocalDate) {
 
   def to102Format: String = date.format(format102)
 
+  def toInputFormat: String = date.format(inputFormat)
+
   def to304Format: String = {
     import java.time.{LocalDate, LocalTime}
     date.atTime(LocalTime.of(0, 0, 0)).format(DateTimeFormatter.ISO_DATE_TIME)

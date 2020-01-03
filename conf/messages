@@ -252,22 +252,28 @@ transport.nationality.empty = You need to provide the transport nationality
 transport.nationality.error = Nationality of transport is incorrect
 
 summary.referenceType = Consignment type
+summary.referenceType.change = Change consignment type
 summary.referenceValue = Consignment reference
+summary.referenceValue.change = Change consignment reference
 summary.consignmentDetails = Consignment details
 summary.goodsLocation = Goods location code
+summary.goodsLocation.change = Change goods location code
 summary.modeOfTransport = Transport type
 summary.transportId = Transport ID
 summary.nationality = Transport nationality
 
 summary.arrival.title = Is the information provided for this arrival correct?
 summary.arrival.date = Date of arrival
+summary.arrival.date.change = Change date of arrival
 summary.arrival.time = Time of arrival
+summary.arrival.time.change = Change time of arrival
 
 summary.departure.title = Is the information provided for this departure correct?
 summary.departure.date = Date of departure
 summary.departure.time = Time of departure
 
 summary.arrivalReference.reference = Unique reference
+summary.arrivalReference.reference.change = Change unique reference
 
 disassociate.ucr.title = Which consignment do you want to remove?
 disassociate.ucr.heading = Remove from MUCR

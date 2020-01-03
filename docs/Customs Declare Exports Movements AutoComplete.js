@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports Movements AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.14
+// @version      0.15
 // @description  Customs Declare Exports Movements
 // @author       You
 // @match        http*://*/customs-movements*
@@ -64,7 +64,7 @@ function currentPageIs(path) {
 
 function completePage() {
     if (currentPageIs('/customs-movements/start')) {
-        document.getElementsByClassName('button')[0].click()
+        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/choice")){
         document.getElementById("choice").checked = true
@@ -72,13 +72,13 @@ function completePage() {
     }
 
     if(currentPageIs("/customs-movements/consignment-references")){
-        selectRadioOption(document.getElementById("reference"), 0);
+        document.getElementById("reference").checked = true
         document.getElementById('ducrValue').value = '8GB12345' + Math.floor(Math.random() * 8999) + 100 + '-101SHIP1';
-        document.getElementsByClassName('button')[0].click()
+        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/arrival-reference")){
         document.getElementById("reference").value = "REF" + Math.floor(Math.random() * 8999) + 100;
-        document.getElementsByClassName('button')[0].click()
+        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/movement-details")){
         let title = document.title.toLowerCase();
@@ -86,59 +86,74 @@ function completePage() {
         validDate.setDate(validDate.getDate() - 1); // One day before
         if (title.indexOf('departure') != -1) {
             document.getElementById('dateOfDeparture_day').value = validDate.getDate();
-            document.getElementById('dateOfDeparture_month').value = validDate.getMonth();
+            document.getElementById('dateOfDeparture_month').value = validDate.getMonth()+1;
             document.getElementById('dateOfDeparture_year').value = validDate.getFullYear();
             document.getElementById('timeOfDeparture_hour').value = '10';
             document.getElementById('timeOfDeparture_minute').value = '00';
         }
         if (title.indexOf('arrival') != -1) {
             document.getElementById('dateOfArrival_day').value = validDate.getDate();
-            document.getElementById('dateOfArrival_month').value = validDate.getMonth();
+            document.getElementById('dateOfArrival_month').value = validDate.getMonth()+1;
             document.getElementById('dateOfArrival_year').value = validDate.getFullYear();
             document.getElementById('timeOfArrival_hour').value = '10';
             document.getElementById('timeOfArrival_minute').value = '00';
         }
-        document.getElementsByClassName('button')[0].click()
+        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/location")){
         document.getElementById('code').value = 'GBAUEMAEMAEMA';
-        document.getElementsByClassName('button')[0].click()
+        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/transport")){
-        selectRadioOption(document.getElementById("modeOfTransport"), 0);
+        document.getElementById("modeOfTransport").checked = true;
         document.getElementById('nationality').value = 'GB';
         document.getElementById('transportId').value = 'TransportReference';
-        document.getElementsByClassName('button')[0].click()
+        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/summary")){
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-movements/mucr-options")){
-        document.getElementById("mucrOptions.create").checked = true;
+        document.getElementById("createOrAdd").checked = true;
         document.getElementById("newMucr").value = "GB/1234-123ABC456DEFIIIII"
+        document.getElementsByClassName('govuk-button')[0].click()
+    }
+    if(currentPageIs("/customs-movements/associate-ucr-summary")){
         document.getElementsByClassName('button')[0].click()
     }
+    if(currentPageIs("/customs-movements/associate-ucr-confirmation")){
+        document.getElementsByClassName('govuk-button')[0].click()
+    }
     if(currentPageIs("/customs-movements/associate-ucr")){
-        document.getElementById("kind").checked = true
+        document.getElementById("kind").checked = true;
         const now = new Date()
         document.getElementById("ducr").value = `5GB123456789000-${now.valueOf()}IIIII`
         document.getElementsByClassName('govuk-button')[0].click()
     }
-    if(currentPageIs("/customs-movements/associate-ducr-summary")){
+    if(currentPageIs("/customs-movements/dissociate-ucr-summary")){
         document.getElementsByClassName('button')[0].click()
     }
-    if(currentPageIs("/customs-movements/disassociate-ucr-summary")){
-        document.getElementsByClassName('button')[0].click()
+    if(currentPageIs("/customs-movements/dissociate-ucr-confirmation")){
+        document.getElementsByClassName('govuk-button')[0].click()
     }
-    if(currentPageIs("/customs-movements/disassociate-ucr")){
-        selectRadioOption(document.getElementById("kind"), 0);
+    if(currentPageIs("/customs-movements/dissociate-ucr")){
+        document.getElementById("kind").checked = true;
         const now = new Date()
         document.getElementById("ducr").value = `5GB123456789000-${now.valueOf()}IIIII`
+        document.getElementsByClassName('govuk-button')[0].click()
+    }
+    if(currentPageIs("customs-movements/shut-mucr-summary")){
         document.getElementsByClassName('button')[0].click()
+    }
+    if(currentPageIs("customs-movements/shut-mucr-confirmation")){
+        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("customs-movements/shut-mucr")){
         const now = new Date()
         document.getElementById("mucr").value = `GB/ABCDE1234-${now.valueOf()}IIIII`
+        document.getElementsByClassName('govuk-button')[0].click()
+    }
+    if(currentPageIs("customs-movements/movement-confirmation")){
         document.getElementsByClassName('govuk-button')[0].click()
     }
 }

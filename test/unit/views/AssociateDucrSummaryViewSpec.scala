@@ -16,57 +16,70 @@
 
 package views
 
+import base.Injector
 import forms.AssociateKind._
-import forms.AssociateUcr
+import forms.{AssociateUcr, ShutMucr}
 import helpers.views.CommonMessages
+import models.cache.AssociateUcrAnswers
 import play.twirl.api.Html
 import views.spec.UnitViewSpec
 import views.tags.ViewTest
+import views.html.associate_ucr_summary
 
 @ViewTest
-class AssociateDucrSummaryViewSpec extends UnitViewSpec with CommonMessages {
+class AssociateDucrSummaryViewSpec extends ViewSpec with Injector {
 
-  private val page = new views.html.associate_ucr_summary(mainTemplate)
+  private implicit val request = journeyRequest(AssociateUcrAnswers())
+
+  private val page = instanceOf[associate_ucr_summary]
 
   private def createView(mucr: String, ducr: String): Html =
     page(AssociateUcr(Ducr, ducr), mucr)(request, messages)
 
   "Associate Ducr Confirmation View" should {
 
-    "have a proper labels for messages" in {
-      val realMessages = messagesApi.preferred(request)
-
-      realMessages must haveTranslationFor("associate.ucr.summary.title")
-      realMessages must haveTranslationFor("associate.ucr.summary.kind.mucr")
-      realMessages must haveTranslationFor("associate.ucr.summary.kind.ducr")
-      realMessages must haveTranslationFor("associate.ucr.summary.addConsignment")
-      realMessages must haveTranslationFor("associate.ucr.summary.masterConsignment")
-    }
-
     val view = createView("MUCR", "DUCR")
 
+    "render title" in {
+      view.getTitle must containMessage("associate.ucr.summary.title")
+    }
+
+    "render back button" in {
+      val backButton = view.getBackButton
+
+      backButton mustBe defined
+      backButton.foreach(button => {
+        button must haveHref(controllers.consolidations.routes.AssociateUcrController.displayPage())
+        button must containMessage("site.back")
+      })
+    }
+
     "display 'Confirm and submit' button on page" in {
-      view.getElementsByClass("button").text() mustBe messages(confirmAndSubmitCaption)
+      view.getElementsByClass("govuk-button").first() must containMessage("site.confirmAndSubmit")
     }
 
     "display 'Change' link on page for associate ucr" in {
-      view.getElementById("associate_ducr-change") must containMessage(changeCaption)
-      view.getElementById("associate_ducr-change") must haveHref(controllers.consolidations.routes.AssociateUcrController.displayPage())
+      val changeUcr = view.getElementsByClass("govuk-link").first()
+      changeUcr must containMessage("site.change")
+      changeUcr must haveHref(controllers.consolidations.routes.AssociateUcrController.displayPage())
     }
 
     "display 'Change' link on the page for mucr" in {
-
-      view.getElementById("associate_mucr-change") must containMessage(changeCaption)
-      view.getElementById("associate_mucr-change") must haveHref(controllers.consolidations.routes.MucrOptionsController.displayPage())
+      val changeMucr = view.getElementsByClass("govuk-link").last()
+      changeMucr must containMessage("site.change")
+      changeMucr must haveHref(controllers.consolidations.routes.MucrOptionsController.displayPage())
     }
 
-    "display 'Reference' link on page" in {
-      view.getElementById("associate_ucr-reference") must containText("DUCR")
+    "display 'Add consignment' type in summary list" in {
+
+      view.getElementsByClass("govuk-summary-list__key").first() must containMessage("associate.ucr.summary.kind.ducr")
+      view.getElementsByClass("govuk-summary-list__value").first().text() mustBe "DUCR"
     }
 
-    "display mucr type on the page" in {
+    "display 'To master consignment' type in summary list" in {
 
-      view.getElementById("mucr-type") must containMessage("associate.ucr.summary.kind.mucr")
+      view.getElementsByClass("govuk-summary-list__key").last() must containMessage("associate.ucr.summary.kind.mucr")
+      view.getElementsByClass("govuk-summary-list__value").last().text() mustBe "MUCR"
     }
   }
 }

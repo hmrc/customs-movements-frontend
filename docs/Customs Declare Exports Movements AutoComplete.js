@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports Movements AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.17
+// @version      0.18
 // @description  Customs Declare Exports Movements
 // @author       You
 // @match        http*://*/customs-movements*
@@ -91,7 +91,7 @@ function completePage() {
         document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/associate-ucr-summary")){
-        document.getElementsByClassName('button')[0].click()
+        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/associate-ucr-confirmation")){
         document.getElementsByClassName('govuk-button')[0].click()

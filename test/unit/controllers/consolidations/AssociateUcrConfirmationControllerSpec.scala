@@ -17,8 +17,12 @@
 package unit.controllers.consolidations
 
 import controllers.consolidations.AssociateUcrConfirmationController
+import controllers.storage.FlashKeys
+import models.ReturnToStartException
+import models.cache.JourneyType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.controllers.ControllerLayerSpec
@@ -33,7 +37,7 @@ class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec {
 
   override def beforeEach() {
     super.beforeEach()
-    when(page.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(page.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override def afterEach(): Unit = {
@@ -43,14 +47,29 @@ class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec {
   }
 
   "Associate DUCR Confirmation controller" should {
+    implicit val get = FakeRequest("GET", "/")
 
     "return 200 (OK)" when {
 
       "display page method is invoked" in {
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage()(get.withFlash(FlashKeys.CONSOLIDATION_KIND -> "kind", FlashKeys.UCR -> "123"))
 
         status(result) must be(OK)
-        verify(page).apply()(any(), any(), any())
+        verify(page).apply(any(), any())(any(), any())
+      }
+    }
+
+    "return to start" when {
+      "ucr kind is missing" in {
+        intercept[RuntimeException] {
+          await(controller.displayPage()(get.withFlash(FlashKeys.UCR -> "123")))
+        } mustBe ReturnToStartException
+      }
+
+      "ucr is missing" in {
+        intercept[RuntimeException] {
+          await(controller.displayPage()(get.withFlash(FlashKeys.CONSOLIDATION_KIND -> "kind")))
+        } mustBe ReturnToStartException
       }
     }
   }

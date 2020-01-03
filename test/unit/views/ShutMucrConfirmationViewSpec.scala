@@ -18,9 +18,7 @@ package views
 
 import base.Injector
 import controllers.routes
-import controllers.storage.FlashKeys
 import models.cache.ShutMucrAnswers
-import play.api.mvc.Flash
 import play.twirl.api.Html
 import testdata.CommonTestData.correctUcr
 import views.html.shut_mucr_confirmation
@@ -31,7 +29,7 @@ class ShutMucrConfirmationViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(ShutMucrAnswers())
   private val shutMucrConformationPage = instanceOf[shut_mucr_confirmation]
-  private val view: Html = shutMucrConformationPage()(request, Flash(Map(FlashKeys.MUCR -> correctUcr)), messages)
+  private val view: Html = shutMucrConformationPage(correctUcr)(request, messages)
 
   "Shut Mucr Confirmation View" should {
 

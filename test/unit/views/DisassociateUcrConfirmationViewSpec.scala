@@ -18,9 +18,7 @@ package views
 
 import base.Injector
 import controllers.routes
-import controllers.storage.FlashKeys
 import models.cache.DisassociateUcrAnswers
-import play.api.mvc.Flash
 import play.twirl.api.Html
 import testdata.CommonTestData.correctUcr
 import views.html.disassociate_ucr_confirmation
@@ -32,7 +30,7 @@ class DisassociateUcrConfirmationViewSpec extends ViewSpec with Injector {
   private implicit val request = journeyRequest(DisassociateUcrAnswers())
   private val page = instanceOf[disassociate_ucr_confirmation]
   private val view: Html =
-    page()(request, new Flash(Map(FlashKeys.UCR -> correctUcr, FlashKeys.CONSOLIDATION_KIND -> "DUCR")), messages)
+    page("DUCR", correctUcr)(request, messages)
 
   "Disassociate Ucr Confirmation View" should {
 

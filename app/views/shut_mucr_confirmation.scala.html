@@ -26,7 +26,7 @@
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@()(implicit request: Request[_], flash: Flash, messages: Messages)
+@(mucr: String)(implicit request: Request[_], messages: Messages)
 
 @shutMucrLink = {@components.gds.link(messages("shutMucr.confirmation.nextSteps.shutMucr"), routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value))}
 @departureLink = {@components.gds.link(messages("shutMucr.confirmation.nextSteps.depart"), routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value))}
@@ -34,7 +34,7 @@
 @govukLayout(title = Title("shutMucr.confirmation.tab.heading")) {
 
     @govukPanel(Panel(
-        title = Text(messages("shutMucr.confirmation.heading", flash.get(FlashKeys.MUCR).getOrElse("-")))
+        title = Text(messages("shutMucr.confirmation.heading", mucr))
     ))
 
     @components.confirmation_status_info()

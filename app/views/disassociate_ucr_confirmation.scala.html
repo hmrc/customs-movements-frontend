@@ -26,16 +26,15 @@
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@()(implicit request: Request[_], flash: Flash, messages: Messages)
+@(kind: String, ucr: String)(implicit request: Request[_], messages: Messages)
 
 @associateLink = {@components.gds.link(messages("disassociation.confirmation.associateOrShut.associate"), routes.ChoiceController.startSpecificJourney(forms.Choice.AssociateUCR.value))}
 @shutMucrLink = {@components.gds.link(messages("disassociation.confirmation.associateOrShut.shut"), routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value))}
-@kind = @{flash.get(FlashKeys.CONSOLIDATION_KIND).getOrElse("")}
 
 @govukLayout(title = Title(s"disassociate.ucr.confirmation.$kind.title")) {
 
     @govukPanel(Panel(
-        title = Text(messages("disassociate.ucr.confirmation.heading", kind, flash.get(FlashKeys.UCR).getOrElse("-")))
+        title = Text(messages("disassociate.ucr.confirmation.heading", kind, ucr))
     ))
 
     @components.confirmation_status_info()

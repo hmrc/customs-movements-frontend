@@ -259,8 +259,11 @@ summary.consignmentDetails = Consignment details
 summary.goodsLocation = Goods location code
 summary.goodsLocation.change = Change goods location code
 summary.modeOfTransport = Transport type
+summary.modeOfTransport.change = Change transport type
 summary.transportId = Transport ID
+summary.transportId.change = Change transport ID
 summary.nationality = Transport nationality
+summary.nationality.change = Change transport nationality
 
 summary.arrival.title = Is the information provided for this arrival correct?
 summary.arrival.date = Date of arrival
@@ -270,7 +273,9 @@ summary.arrival.time.change = Change time of arrival
 
 summary.departure.title = Is the information provided for this departure correct?
 summary.departure.date = Date of departure
+summary.departure.date.change = Change date of departure
 summary.departure.time = Time of departure
+summary.departure.time.change = Change time of departure
 
 summary.arrivalReference.reference = Unique reference
 summary.arrivalReference.reference.change = Change unique reference

@@ -14,14 +14,8 @@
  * limitations under the License.
  *@
 
-@(heading: Option[String] = None)(content: Html)
+@(heading: String)(content: Html)
 
-<table>
-    @heading.map { header =>
-        <caption class="heading-medium">@header</caption>
-    }
+<h2 class="govuk-heading-m">@heading</h2>
 
-    <tbody>
-        @content
-    </tbody>
-</table>
+@content

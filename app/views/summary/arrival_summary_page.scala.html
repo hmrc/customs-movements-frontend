@@ -46,66 +46,39 @@
 
         @pageTitle(messages("summary.arrival.title"))
 
-        <h2 class="govuk-heading-m">@messages("summary.consignmentDetails") </h2>
-
-        @govukSummaryList(SummaryList(
-            rows = Seq(
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages("summary.referenceType"))
-                    ),
-                    value = Value(
-                        content = Text(messages(referenceTypeKey))
-                    ),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = s"${routes.ConsignmentReferencesController.displayPage}",
-                                content = Text(messages("site.change")),
-                                visuallyHiddenText = Some(messages("summary.referenceType.change"))
-                            )
-                        )
-                    ))
-                ),
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages("summary.referenceValue"))
-                    ),
-                    value = Value(
-                        content = Text(data.consignmentReferences.map(_.referenceValue).getOrElse(""))
-                    ),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = s"${routes.ConsignmentReferencesController.displayPage}",
-                                content = Text(messages("site.change")),
-                                visuallyHiddenText = Some(messages("summary.referenceType.change"))
-                            )
-                        )
-                    ))
-                )
-            ),
-            classes = "govuk-!-margin-bottom-9"
-        ))
-
-        @data.arrivalReference.flatMap(_.reference).filter(_.nonEmpty).map { reference =>
-            <h2 class="govuk-heading-m">@messages("arrivalReference") </h2>
-
+        @components.summary_list(messages("summary.consignmentDetails")) {
             @govukSummaryList(SummaryList(
                 rows = Seq(
                     SummaryListRow(
                         key = Key(
-                            content = Text(messages("summary.arrivalReference.reference"))
+                            content = Text(messages("summary.referenceType"))
                         ),
                         value = Value(
-                            content = Text(reference)
+                            content = Text(messages(referenceTypeKey))
                         ),
                         actions = Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = s"${routes.ArrivalReferenceController.displayPage}",
+                                    href = s"${routes.ConsignmentReferencesController.displayPage}",
                                     content = Text(messages("site.change")),
-                                    visuallyHiddenText = Some(messages("summary.arrivalReference.reference.change"))
+                                    visuallyHiddenText = Some(messages("summary.referenceType.change"))
+                                )
+                            )
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("summary.referenceValue"))
+                        ),
+                        value = Value(
+                            content = Text(data.consignmentReferences.map(_.referenceValue).getOrElse(""))
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${routes.ConsignmentReferencesController.displayPage}",
+                                    content = Text(messages("site.change")),
+                                    visuallyHiddenText = Some(messages("summary.referenceType.change"))
                                 )
                             )
                         ))
@@ -115,72 +88,99 @@
             ))
         }
 
-        <h2 class="govuk-heading-m">@messages("arrivalDetails.title") </h2>
-
-        @govukSummaryList(SummaryList(
-            rows = Seq(
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages("summary.arrival.date"))
-                    ),
-                    value = Value(
-                        content = Text(data.arrivalDetails.map(_.dateOfArrival.toString).getOrElse(""))
-                    ),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = s"${routes.MovementDetailsController.displayPage}",
-                                content = Text(messages("site.change")),
-                                visuallyHiddenText = Some(messages("summary.arrival.date.change"))
-                            )
+        @data.arrivalReference.flatMap(_.reference).filter(_.nonEmpty).map { reference =>
+            @components.summary_list(messages("arrivalReference")) {
+                @govukSummaryList(SummaryList(
+                    rows = Seq(
+                        SummaryListRow(
+                            key = Key(
+                                content = Text(messages("summary.arrivalReference.reference"))
+                            ),
+                            value = Value(
+                                content = Text(reference)
+                            ),
+                            actions = Some(Actions(
+                                items = Seq(
+                                    ActionItem(
+                                        href = s"${routes.ArrivalReferenceController.displayPage}",
+                                        content = Text(messages("site.change")),
+                                        visuallyHiddenText = Some(messages("summary.arrivalReference.reference.change"))
+                                    )
+                                )
+                            ))
                         )
-                    ))
+                    ),
+                    classes = "govuk-!-margin-bottom-9"
+                ))
+            }
+        }
+
+        @components.summary_list(messages("arrivalDetails.title")) {
+            @govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("summary.arrival.date"))
+                        ),
+                        value = Value(
+                            content = Text(data.arrivalDetails.map(_.dateOfArrival.toString).getOrElse(""))
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${routes.MovementDetailsController.displayPage}",
+                                    content = Text(messages("site.change")),
+                                    visuallyHiddenText = Some(messages("summary.arrival.date.change"))
+                                )
+                            )
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("summary.arrival.time"))
+                        ),
+                        value = Value(
+                            content = Text(data.arrivalDetails.map(_.timeOfArrival.toString).getOrElse(""))
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${routes.MovementDetailsController.displayPage}",
+                                    content = Text(messages("site.change")),
+                                    visuallyHiddenText = Some(messages("summary.arrival.time.change"))
+                                )
+                            )
+                        ))
+                    )
                 ),
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages("summary.arrival.time"))
-                    ),
-                    value = Value(
-                        content = Text(data.arrivalDetails.map(_.timeOfArrival.toString).getOrElse(""))
-                    ),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = s"${routes.MovementDetailsController.displayPage}",
-                                content = Text(messages("site.change")),
-                                visuallyHiddenText = Some(messages("summary.arrival.time.change"))
-                            )
-                        )
-                    ))
-                )
-            ),
-            classes = "govuk-!-margin-bottom-9"
-        ))
+                classes = "govuk-!-margin-bottom-9"
+            ))
+        }
 
-        <h2 class="govuk-heading-m">@messages("location.title") </h2>
-
-        @govukSummaryList(SummaryList(
-            rows = Seq(
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages("summary.goodsLocation"))
-                    ),
-                    value = Value(
-                        content = Text(data.location.map(_.code).getOrElse(""))
-                    ),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = s"${routes.LocationController.displayPage}",
-                                content = Text(messages("site.change")),
-                                visuallyHiddenText = Some(messages("summary.goodsLocation.change"))
+        @components.summary_list(messages("location.title")) {
+            @govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("summary.goodsLocation"))
+                        ),
+                        value = Value(
+                            content = Text(data.location.map(_.code).getOrElse(""))
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${routes.LocationController.displayPage}",
+                                    content = Text(messages("site.change")),
+                                    visuallyHiddenText = Some(messages("summary.goodsLocation.change"))
+                                )
                             )
-                        )
-                    ))
-                )
-            ),
-            classes = "govuk-!-margin-bottom-9"
-        ))
+                        ))
+                    )
+                ),
+                classes = "govuk-!-margin-bottom-9"
+            ))
+        }
 
         @govukButton(Button(content = Text(messages("site.confirmAndSubmit"))))
 

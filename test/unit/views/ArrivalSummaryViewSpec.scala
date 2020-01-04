@@ -135,7 +135,7 @@ class ArrivalSummaryViewSpec extends ViewSpec with Injector {
       backButton.get must haveHref(controllers.routes.LocationController.displayPage())
     }
 
-    "display 'Confirm and submit' button on page" in {
+    "render 'Confirm and submit' button on page" in {
       view.getElementsByClass("govuk-button").first() must containMessage("site.confirmAndSubmit")
     }
   }

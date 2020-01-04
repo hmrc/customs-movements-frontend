@@ -36,30 +36,31 @@
 
         @pageTitle(messages("shutMucr.summary.title"))
 
-        <h2 class="govuk-heading-m">@messages("shutMucr.summary.header") </h2>
-
-        @govukSummaryList(SummaryList(
-            rows = Seq(
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages("shutMucr.summary.type"))
-                    ),
-                    value = Value(
-                        content = Text(shutMucr.mucr)
-                    ),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = s"${consolidations.routes.ShutMucrController.displayPage}",
-                                content = Text(messages("site.change")),
-                                visuallyHiddenText = Some(messages("site.change.hint.disassociate.ucr", shutMucr.mucr.toUpperCase()))
+        @components.summary_list(messages("shutMucr.summary.header")) {
+            @govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("shutMucr.summary.type"))
+                        ),
+                        value = Value(
+                            content = Text(shutMucr.mucr)
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${consolidations.routes.ShutMucrController.displayPage}",
+                                    content = Text(messages("site.change")),
+                                    visuallyHiddenText = Some(messages("site.change.hint.disassociate.ucr", shutMucr.mucr.toUpperCase()))
+                                )
                             )
-                        )
-                    ))
-                )
-            ),
-            classes = "govuk-!-margin-bottom-9"
-        ))
+                        ))
+                    )
+                ),
+                classes = "govuk-!-margin-bottom-9"
+            ))
+        }
+
         @govukButton(Button(content = Text(messages("site.confirmAndSubmit"))))
 
     }

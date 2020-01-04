@@ -38,55 +38,56 @@
 
         @pageTitle(messages("associate.ucr.summary.title"))
 
-        <h2 class="govuk-heading-m">@messages("associate.ucr.summary.addConsignment") </h2>
-
-        @govukSummaryList(SummaryList(
-            rows = Seq(
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages(s"associate.ucr.summary.kind.${associateUcr.kind.formValue}"))
-                    ),
-                    value = Value(
-                        content = Text(associateUcr.ucr)
-                    ),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = s"${consolidations.routes.AssociateUcrController.displayPage}",
-                                content = Text(messages("site.change")),
-                                visuallyHiddenText = Some(messages("site.change.hint.associate.ucr", associateUcr.kind.formValue.toUpperCase()))
+        @components.summary_list(messages("associate.ucr.summary.addConsignment")) {
+            @govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages(s"associate.ucr.summary.kind.${associateUcr.kind.formValue}"))
+                        ),
+                        value = Value(
+                            content = Text(associateUcr.ucr)
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${consolidations.routes.AssociateUcrController.displayPage}",
+                                    content = Text(messages("site.change")),
+                                    visuallyHiddenText = Some(messages("site.change.hint.associate.ucr", associateUcr.kind.formValue.toUpperCase()))
+                                )
                             )
-                        )
-                    ))
-                )
-            ),
-            classes = "govuk-!-margin-bottom-9"
-        ))
+                        ))
+                    )
+                ),
+                classes = "govuk-!-margin-bottom-9"
+            ))
+        }
 
-        <h2 class="govuk-heading-m">@messages("associate.ucr.summary.masterConsignment") </h2>
-
-        @govukSummaryList(SummaryList(
-            rows = Seq(
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages("associate.ucr.summary.kind.mucr"))
-                    ),
-                    value = Value(
-                        content = Text(mucr)
-                    ),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = s"${consolidations.routes.MucrOptionsController.displayPage}",
-                                content = Text(messages("site.change")),
-                                visuallyHiddenText = Some(messages("site.change.hint.associate.mucr"))
+        @components.summary_list(messages("associate.ucr.summary.masterConsignment")) {
+            @govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("associate.ucr.summary.kind.mucr"))
+                        ),
+                        value = Value(
+                            content = Text(mucr)
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${consolidations.routes.MucrOptionsController.displayPage}",
+                                    content = Text(messages("site.change")),
+                                    visuallyHiddenText = Some(messages("site.change.hint.associate.mucr"))
+                                )
                             )
-                        )
-                    ))
-                )
-            ),
-            classes = "govuk-!-margin-bottom-9"
-        ))
+                        ))
+                    )
+                ),
+                classes = "govuk-!-margin-bottom-9"
+            ))
+        }
+
         @govukButton(Button(content = Text(messages("site.confirmAndSubmit"))))
 
     }

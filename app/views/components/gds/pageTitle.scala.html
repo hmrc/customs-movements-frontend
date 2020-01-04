@@ -16,6 +16,6 @@
 
 @this()
 
-@(text: String)
+@(text: String, classes: String = "govuk-heading-l")
 
-<h1 id="title" class="govuk-heading-l">@text</h1>
+<h1 id="title" class="@{classes}">@text</h1>

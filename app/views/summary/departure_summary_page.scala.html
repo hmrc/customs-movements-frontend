@@ -14,77 +14,208 @@
  * limitations under the License.
  *@
 
+@import components.gds.{gds_main_template, pageTitle}
 @import controllers.routes
 @import forms.ConsignmentReferences.AllowedReferences
 @import models.cache.DepartureAnswers
-@import forms._
-@import models.viewmodels.HtmlTableRow
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
+@import views.components.BackButton
 
-@this(main_template: views.html.main_template)
+@this(  govukLayout: gds_main_template,
+        govukButton: GovukButton,
+        pageTitle: pageTitle,
+        govukSummaryList : GovukSummaryList,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(data: DepartureAnswers)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("summary.departure.title")) {
+@referenceTypeKey = @{data.consignmentReferences.map(ref =>
+    if(ref.reference.equals(AllowedReferences.Ducr)) {
+        "consignmentReferences.reference.ducr"
+    } else {
+        "consignmentReferences.reference.mucr"
+    }
+).getOrElse("")}
 
-    @components.back_link(routes.TransportController.displayPage())
+@govukLayout(
+    title = Title("summary.departure.title"),
+    backButton = Some(BackButton(messages("site.back"), routes.TransportController.displayPage))) {
 
-    @components.page_title(Some(messages("summary.departure.title")))
+    @formHelper(action = routes.SummaryController.submitMovementRequest(), 'autoComplete -> "off") {
 
-    @components.summary_list(Some(messages("summary.consignmentDetails"))) {
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("summary.referenceType"),
-            value = data.consignmentReferences.map(ref =>
-                if(ref.reference.equals(AllowedReferences.Ducr)) {
-                    messages("consignmentReferences.reference.ducr")
-                } else {
-                    messages("consignmentReferences.reference.mucr")
-                }
-            )
-        ))
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("summary.referenceValue"),
-            value = data.consignmentReferences.map(_.referenceValue)
-        ))
+        @pageTitle(messages("summary.departure.title"))
+
+        @components.summary_list(messages("summary.consignmentDetails")) {
+            @govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("summary.referenceType"))
+                        ),
+                        value = Value(
+                            content = Text(messages(referenceTypeKey))
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${routes.ConsignmentReferencesController.displayPage}",
+                                    content = Text(messages("site.change")),
+                                    visuallyHiddenText = Some(messages("summary.referenceType.change"))
+                                )
+                            )
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("summary.referenceValue"))
+                        ),
+                        value = Value(
+                            content = Text(data.consignmentReferences.map(_.referenceValue).getOrElse(""))
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${routes.ConsignmentReferencesController.displayPage}",
+                                    content = Text(messages("site.change")),
+                                    visuallyHiddenText = Some(messages("summary.referenceType.change"))
+                                )
+                            )
+                        ))
+                    )
+                ),
+                classes = "govuk-!-margin-bottom-9"
+            ))
+        }
+
+        @components.summary_list(messages("departureDetails.title")) {
+            @govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("summary.departure.date"))
+                        ),
+                        value = Value(
+                            content = Text(data.departureDetails.map(_.dateOfDeparture.toString).getOrElse(""))
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${routes.MovementDetailsController.displayPage}",
+                                    content = Text(messages("site.change")),
+                                    visuallyHiddenText = Some(messages("summary.departure.date.change"))
+                                )
+                            )
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("summary.departure.time"))
+                        ),
+                        value = Value(
+                            content = Text(data.departureDetails.map(_.timeOfDeparture.toString).getOrElse(""))
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${routes.MovementDetailsController.displayPage}",
+                                    content = Text(messages("site.change")),
+                                    visuallyHiddenText = Some(messages("summary.departure.time.change"))
+                                )
+                            )
+                        ))
+                    )
+                ),
+                classes = "govuk-!-margin-bottom-9"
+            ))
+        }
+
+        @components.summary_list(messages("location.title")) {
+            @govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("summary.goodsLocation"))
+                        ),
+                        value = Value(
+                            content = Text(data.location.map(_.code).getOrElse(""))
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${routes.LocationController.displayPage}",
+                                    content = Text(messages("site.change")),
+                                    visuallyHiddenText = Some(messages("summary.goodsLocation.change"))
+                                )
+                            )
+                        ))
+                    )
+                ),
+                classes = "govuk-!-margin-bottom-9"
+            ))
+        }
+
+        @components.summary_list(messages("transport.title")) {
+            @govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("summary.modeOfTransport"))
+                        ),
+                        value = Value(
+                            content = Text(data.transport.map(transport => messages(s"transport.modeOfTransport.${transport.modeOfTransport}")).getOrElse(""))
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${routes.TransportController.displayPage}",
+                                    content = Text(messages("site.change")),
+                                    visuallyHiddenText = Some(messages("summary.modeOfTransport.change"))
+                                )
+                            )
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("summary.transportId"))
+                        ),
+                        value = Value(
+                            content = Text(data.transport.map(_.transportId).getOrElse(""))
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${routes.TransportController.displayPage}",
+                                    content = Text(messages("site.change")),
+                                    visuallyHiddenText = Some(messages("summary.transportId.change"))
+                                )
+                            )
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("summary.nationality"))
+                        ),
+                        value = Value(
+                            content = Text(data.transport.map(_.nationality).getOrElse(""))
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${routes.TransportController.displayPage}",
+                                    content = Text(messages("site.change")),
+                                    visuallyHiddenText = Some(messages("summary.nationality.change"))
+                                )
+                            )
+                        ))
+                    )
+                ),
+                classes = "govuk-!-margin-bottom-9"
+            ))
+        }
+
+        @govukButton(Button(content = Text(messages("site.confirmAndSubmit"))))
+
     }
 
-    @components.summary_list(Some(messages("location.title"))) {
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("summary.goodsLocation"),
-            value = data.location.map(_.code)
-        ))
-    }
-
-    @components.summary_list(Some(messages("departureDetails.title"))) {
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("summary.departure.date"),
-            value = data.departureDetails.map(_.dateOfDeparture.toString)
-        ))
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("summary.departure.time"),
-            value = data.departureDetails.map(_.timeOfDeparture.toString)
-        ))
-    }
-
-    @components.summary_list(Some(messages("transport.title"))) {
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("summary.modeOfTransport"),
-            value = data.transport.map(transport => messages(s"transport.modeOfTransport.${transport.modeOfTransport}"))
-        ))
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("summary.transportId"),
-            value = data.transport.map(_.transportId)
-        ))
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("summary.nationality"),
-            value = data.transport.map(_.nationality)
-        ))
-    }
-
-    @helper.form(action = routes.SummaryController.submitMovementRequest()) {
-        @helper.CSRF.formField
-
-        @components.submit_button(messages("site.confirmAndSubmit"))
-
-    }
 }

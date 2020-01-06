@@ -83,7 +83,7 @@ function completePage() {
         document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/summary")){
-        document.getElementsByClassName('button')[0].click()
+        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/mucr-options")){
         document.getElementById("createOrAdd").checked = true;

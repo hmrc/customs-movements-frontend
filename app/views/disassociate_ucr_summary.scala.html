@@ -14,41 +14,56 @@
  * limitations under the License.
  *@
 
+@import components.gds.{gds_main_template, pageTitle}
 @import forms.DisassociateUcr
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
+@import views.components.BackButton
 
-@this(main_template: views.html.main_template)
+@this(  govukLayout: gds_main_template,
+        pageTitle: pageTitle,
+        table: GovukTable,
+        govukButton: GovukButton,
+        govukSummaryList : GovukSummaryList,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(disassociateUcr: DisassociateUcr)(implicit request: Request[_], messages: Messages)
 
+@govukLayout(
+    title = Title("disassociate.ucr.summary.title"),
+    backButton = Some(BackButton(messages("site.back"), consolidations.routes.DisassociateUcrController.displayPage)))  {
 
-@main_template(title = Title("disassociate.ucr.summary.title"),
-    fullWidth = true) {
-    @helper.form(consolidations.routes.DisassociateUcrSummaryController.submit(), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+    @formHelper(action = consolidations.routes.DisassociateUcrSummaryController.submit(), 'autoComplete -> "off") {
 
-        @components.back_link(consolidations.routes.DisassociateUcrController.displayPage())
+        @pageTitle(messages("disassociate.ucr.summary.title"))
 
-        @components.page_title(title = Some(messages("disassociate.ucr.summary.title")))
+        <h2 class="govuk-heading-m">@messages("disassociate.ucr.summary.table.caption") </h2>
 
-        <table>
-            <caption class="heading-medium">@messages("disassociate.ucr.summary.table.caption")</caption>
-            <tbody>
-                <tr>
-                    <td id="disassociate_ucr-type">@disassociateUcr.kind.toString.toUpperCase</td>
-                    <td id="disassociate_ucr-reference">@disassociateUcr.ucr</td>
-                    <td class="text-right">
-                        <a id="disassociate_ucr-remove" href="@consolidations.routes.DisassociateUcrController.displayPage()">
-                            <span aria-hidden="true">@messages("site.change")</span>
-                            <span class="visuallyhidden">
-                                @{messages("site.change.hint.disassociate.ucr", disassociateUcr.kind.toString.toUpperCase)}
-                            </span>
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(
+                        content = Text(disassociateUcr.kind.toString.toUpperCase)
+                    ),
+                    value = Value(
+                        content = Text(disassociateUcr.ucr)
+                    ),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = s"${consolidations.routes.DisassociateUcrController.displayPage()}",
+                                content = Text(messages("site.change")),
+                                visuallyHiddenText = Some(messages("site.change.hint.disassociate.ucr", disassociateUcr.kind.toString.toUpperCase))
+                            )
+                        )
+                    ))
+                )
+            ),
+            classes = "govuk-!-margin-bottom-9"
+        ))
+        @govukButton(Button(content = Text(messages("site.confirmAndSubmit"))))
 
-        @components.submit_button(messages("site.confirmAndSubmit"))
     }
+
 }
+

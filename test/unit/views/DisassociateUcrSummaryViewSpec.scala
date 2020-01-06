@@ -16,46 +16,37 @@
 
 package views
 
+import base.Injector
 import forms.DisassociateKind._
 import forms.DisassociateUcr
-import helpers.views.CommonMessages
-import play.twirl.api.Html
-import views.spec.UnitViewSpec
+import models.cache.DisassociateUcrAnswers
+import models.requests.JourneyRequest
+import play.api.mvc.AnyContentAsEmpty
+import views.html.disassociate_ucr_summary
 import views.tags.ViewTest
 
 @ViewTest
-class DisassociateUcrSummaryViewSpec extends UnitViewSpec with CommonMessages {
+class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector {
 
-  private val page = new views.html.disassociate_ucr_summary(mainTemplate)
-
-  private def createView(ducr: String): Html =
-    page(DisassociateUcr(Ducr, ducr = Some(ducr), mucr = None))(request, messages)
+  private val page = instanceOf[disassociate_ucr_summary]
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(DisassociateUcrAnswers())
 
   "Disassociate Ucr Summary View" should {
 
-    "have a proper labels for messages" in {
-      val realMessages = messagesApi.preferred(request)
-
-      realMessages must haveTranslationFor("disassociate.ucr.summary.title")
-      realMessages must haveTranslationFor("disassociate.ucr.summary.table.caption")
-    }
-
-    val view = createView("SOME-DUCR")
+    val view = page(DisassociateUcr(Ducr, ducr = Some("SOME-DUCR"), mucr = None))(request, messages)
 
     "display 'Confirm and submit' button on page" in {
-      view.getElementsByClass("button").text() must be(messages(confirmAndSubmitCaption))
+      view.getElementsByClass("govuk-button").text() mustBe messages("site.confirmAndSubmit")
     }
 
     "display 'Change' link on page" in {
-      view.getElementById("disassociate_ucr-remove") must containMessage(changeCaption)
-      view.getElementById("disassociate_ucr-remove") must haveAttribute(
-        "href",
-        controllers.consolidations.routes.DisassociateUcrController.displayPage().url
-      )
+      val changeButton = view.getElementsByClass("govuk-link").first()
+      changeButton must containMessage("site.change")
+      changeButton must haveAttribute("href", controllers.consolidations.routes.DisassociateUcrController.displayPage().url)
     }
 
     "display 'Reference' link on page" in {
-      view.getElementById("disassociate_ucr-reference") must containText("SOME-DUCR")
+      view.getElementsByClass("govuk-summary-list__value").first() must containText("SOME-DUCR")
     }
 
   }

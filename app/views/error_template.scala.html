@@ -14,18 +14,20 @@
  * limitations under the License.
  *@
 
-@import play.twirl.api.HtmlFormat
+@import views.html.components.gds.pageTitle
+@import views.html.components.gds.gds_main_template
+@import views.Title
 
-@this(govuk_wrapper: views.html.components.gds.govuk_wrapper)
+@this(
+  govukLayout: gds_main_template,
+  pageTitle: pageTitle
+)
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
+@(title: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
 
-@contentHeader = {
-  <h1>@heading</h1>
+@govukLayout(title = Title(title)) {
+
+  @pageTitle(text = heading, classes = "govuk-heading-xl")
+  <p class="govuk-body-m">@message</p>
+
 }
-
-@mainContent = {
-  <p>@message</p>
-}
-
-@govuk_wrapper(pageTitle, None, None, None, HtmlFormat.empty, Some(contentHeader), mainContent, HtmlFormat.empty, None)

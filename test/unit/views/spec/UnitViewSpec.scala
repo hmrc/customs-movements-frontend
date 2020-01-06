@@ -31,11 +31,10 @@ import play.twirl.api.Html
 import testdata.MovementsTestData
 import unit.base.UnitSpec
 import utils.Stubs
-import views.ViewTemplates
 
 import scala.concurrent.Future
 
-class UnitViewSpec extends UnitSpec with ViewTemplates with ViewMatchers {
+class UnitViewSpec extends UnitSpec with ViewMatchers {
 
   import utils.FakeRequestCSRFSupport._
 

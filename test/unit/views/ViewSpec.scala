@@ -28,7 +28,7 @@ import uk.gov.hmrc.auth.core.Enrolments
 import unit.controllers.CSRFSupport
 import views.spec.ViewMatchers
 
-class ViewSpec extends WordSpec with MustMatchers with ViewTemplates with ViewMatchers with MessagesStub with CSRFSupport {
+class ViewSpec extends WordSpec with MustMatchers with ViewMatchers with MessagesStub with CSRFSupport {
 
   implicit protected def htmlBodyOf(html: Html): Document = Jsoup.parse(html.toString())
 

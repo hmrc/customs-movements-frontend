@@ -14,14 +14,19 @@
  * limitations under the License.
  *@
 
+@import views.html.components.gds.gds_main_template
+@import views.html.components.gds.pageTitle
 @import views.Title
 
-@this(main_template: views.html.main_template)
+@this(
+ govukLayout: gds_main_template,
+ pageTitle: pageTitle
+)
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("unauthorised.title", None)) {
+@govukLayout(title = Title("unauthorised.title", None)) {
 
-    @components.error_heading("unauthorised.title")
+    @pageTitle(messages("unauthorised.title"))
 
 }

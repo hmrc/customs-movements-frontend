@@ -16,20 +16,18 @@
 
 package views
 
-import play.twirl.api.Html
+import base.Injector
+import play.api.test.FakeRequest
 import views.html.unauthorised
-import views.spec.UnitViewSpec
 
-class UnauthorisedViewSpec extends UnitViewSpec {
+class UnauthorisedViewSpec extends ViewSpec with Injector {
 
-  val unauthorisedPage = new unauthorised(mainTemplate)
-  val unauthorisedView: Html = unauthorisedPage()(request, messages)
+  private implicit val request = FakeRequest()
+  private val unauthorisedPage = instanceOf[unauthorised]
 
-  "Unauthorised mnessages" should {
+  "Unauthorised messages" should {
 
     "have correct content" in {
-
-      val messages = messagesApi.preferred(request)
 
       messages("unauthorised.title") mustBe "You can’t access this service with this account"
     }
@@ -39,13 +37,12 @@ class UnauthorisedViewSpec extends UnitViewSpec {
 
     "display same page title as header" in {
 
-      val view = unauthorisedPage()(request, messagesApi.preferred(request))
-      view.title() must include(view.getElementsByTag("h1").text())
+      unauthorisedPage().getTitle must containMessage("unauthorised.title")
     }
 
     "have heading" in {
 
-      unauthorisedView.getElementById("error-header").text() mustBe messages("unauthorised.title")
+      unauthorisedPage().getElementById("title") must containMessage("unauthorised.title")
     }
   }
 }

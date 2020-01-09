@@ -17,7 +17,6 @@ object AppDependencies {
     "ai.x"                 %% "play-json-extensions"          % "0.40.2",
     "uk.gov.hmrc"          %% "play-whitelist-filter"         % "3.1.0-play-26",
     "uk.gov.hmrc"          %% "simple-reactivemongo"          % "7.22.0-play-26",
-    "uk.gov.hmrc"          %% "wco-dec"                       % "0.33.0",
     "uk.gov.hmrc"          %% "play-json-union-formatter"     % "1.7.0",
     "com.github.tototoshi" %% "scala-csv"                     % "1.3.6"
   )

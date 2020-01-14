@@ -27,7 +27,7 @@ class ILEErrorSpec extends WordSpec with MustMatchers with ViewMatchers {
 
     "have correct amount of codes" in {
 
-      val expectedCodesAmount = 29
+      val expectedCodesAmount = 30
       ILEError.allErrors.size mustBe expectedCodesAmount
     }
 
@@ -53,7 +53,6 @@ class ILEErrorSpec extends WordSpec with MustMatchers with ViewMatchers {
         "UcrTypeNotMatchingUcrFormat",
         "DeclarationNotExist",
         "UcrAlreadyAssociated",
-        "PriorMovementLocationDifferentThanOnDeparture",
         "NoPriorArrivalFoundAtDepartureLocation",
         "DeclarationsMissingP2P",
         "DeclarationCancelledOrTerminated",
@@ -65,13 +64,15 @@ class ILEErrorSpec extends WordSpec with MustMatchers with ViewMatchers {
         "UcrIsNotMucr",
         "UcrNotExist",
         "UcrAlreadyDisassociated",
-        "UcrFieldCompletionNotMatchingEacAction",
         "EmptyMucr",
-        "InvalidExitMessage",
         "LocationBasedPermissionFailed",
         "InvalidGoodsLocation",
         "MucrAlreadyDeparted",
-        "UcrRejectedUponArrival"
+        "UcrRejectedUponArrival",
+        "AlreadyRetrospectiveArrived",
+        "PreviouslyArrivedDUCROrMUCR",
+        "AlreadyArrived",
+        "UCRDoesNotExist"
       )
 
       ileErrorsNames.foreach { errorName =>

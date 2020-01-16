@@ -41,7 +41,7 @@ class DepartureSummaryViewSpec extends ViewSpec with Injector {
     consignmentReferences = Some(ConsignmentReferences("D", "ref-value")),
     departureDetails = Some(DepartureDetails(date, time)),
     location = Some(Location("location-ref")),
-    transport = Some(Transport("1", "transport-nationality", "transport-id"))
+    transport = Some(Transport("1", "transport-id", "transport-nationality"))
   )
 
   private val section_consignment_details = 0

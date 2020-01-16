@@ -69,29 +69,30 @@ class TransportSpec extends BaseSpec {
 
         errors.length must be(3)
         errors(0) must be(FormError("modeOfTransport", "transport.modeOfTransport.error"))
-        errors(1) must be(FormError("nationality", "transport.nationality.empty"))
-        errors(2) must be(FormError("transportId", "transport.transportId.empty"))
+        errors(1) must be(FormError("transportId", "transport.transportId.empty"))
+        errors(2) must be(FormError("nationality", "transport.nationality.empty"))
+
       }
 
       "mode of transport, reference and nationality are incorrect" in {
 
-        val inputData = Transport("incorrect", "incorrect", createRandomAlphanumericString(36))
+        val inputData = Transport("incorrect", createRandomAlphanumericString(36), "incorrect")
         val errors = Transport.form.fillAndValidate(inputData).errors
 
         errors.length must be(3)
         errors(0) must be(FormError("modeOfTransport", "transport.modeOfTransport.error"))
-        errors(1) must be(FormError("nationality", "transport.nationality.error"))
-        errors(2) must be(FormError("transportId", "transport.transportId.error"))
+        errors(1) must be(FormError("transportId", "transport.transportId.error"))
+        errors(2) must be(FormError("nationality", "transport.nationality.error"))
       }
     }
 
     "return no error" when {
 
       "values are correct for different country codes" in {
-        val transportPoland = Transport(Sea, "PL", "Reference")
+        val transportPoland = Transport(Sea, "Reference", "PL")
         Transport.form.fillAndValidate(transportPoland).errors mustBe empty
 
-        val transportFinland = Transport(Rail, "FI", "SHIP-123")
+        val transportFinland = Transport(Rail, "SHIP-123", "FI")
         Transport.form.fillAndValidate(transportFinland).errors mustBe empty
       }
     }

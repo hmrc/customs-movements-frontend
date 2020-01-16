@@ -22,7 +22,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class Transport(modeOfTransport: String, nationality: String, transportId: String)
+case class Transport(modeOfTransport: String, transportId: String, nationality: String)
 
 object Transport {
   implicit val format = Json.format[Transport]
@@ -48,12 +48,12 @@ object Transport {
   val mapping = Forms.mapping(
     "modeOfTransport" -> requiredRadio("transport.modeOfTransport.empty")
       .verifying("transport.modeOfTransport.error", isContainedIn(allowedModeOfTransport)),
-    "nationality" -> text()
-      .verifying("transport.nationality.empty", nonEmpty)
-      .verifying("transport.nationality.error", isEmpty or isValidCountryCode),
     "transportId" -> text()
       .verifying("transport.transportId.empty", nonEmpty)
-      .verifying("transport.transportId.error", isEmpty or (noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters))
+      .verifying("transport.transportId.error", isEmpty or (noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)),
+    "nationality" -> text()
+      .verifying("transport.nationality.empty", nonEmpty)
+      .verifying("transport.nationality.error", isEmpty or isValidCountryCode)
   )(Transport.apply)(Transport.unapply)
 
   def form: Form[Transport] =

@@ -204,7 +204,7 @@ class DepartureSpec extends IntegrationSpec {
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
             departureDetails = Some(DepartureDetails(Date(date), Time(time))),
             location = Some(Location("GBAUEMAEMAEMA")),
-            transport = Some(Transport("1", "FR", "123"))
+            transport = Some(Transport("1", "123", "FR"))
           )
         )
       }
@@ -222,7 +222,7 @@ class DepartureSpec extends IntegrationSpec {
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
             departureDetails = Some(DepartureDetails(Date(date), Time(time))),
             location = Some(Location("GBAUEMAEMAEMA")),
-            transport = Some(Transport("1", "FR", "123"))
+            transport = Some(Transport("1", "123", "FR"))
           )
         )
 
@@ -244,7 +244,7 @@ class DepartureSpec extends IntegrationSpec {
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
             departureDetails = Some(DepartureDetails(Date(date), Time(time))),
             location = Some(Location("GBAUEMAEMAEMA")),
-            transport = Some(Transport("1", "FR", "123"))
+            transport = Some(Transport("1", "123", "FR"))
           )
         )
         givenTheMovementsBackendAcceptsTheMovement()
@@ -264,7 +264,7 @@ class DepartureSpec extends IntegrationSpec {
                    |"consignmentReference":{"reference":"M","referenceValue":"GB/123-12345"},
                    |"movementDetails":{"dateTime":"$datetime"},
                    |"location":{"code":"GBAUEMAEMAEMA"},
-                   |"transport":{"modeOfTransport":"1","nationality":"FR","transportId":"123"}
+                   |"transport":{"modeOfTransport":"1","transportId":"123", "nationality":"FR"}
                    |}""".stripMargin))
         )
 
@@ -275,8 +275,8 @@ class DepartureSpec extends IntegrationSpec {
           .withRequestBody(matchingJsonPath("detail.MovementDetails.dateOfDeparture.date", equalTo(date.toString)))
           .withRequestBody(matchingJsonPath("detail.MovementDetails.timeOfDeparture.time", equalTo(expectedTimeFormatted)))
           .withRequestBody(matchingJsonPath("detail.Transport.modeOfTransport", equalTo("1")))
-          .withRequestBody(matchingJsonPath("detail.Transport.nationality", equalTo("FR")))
           .withRequestBody(matchingJsonPath("detail.Transport.transportId", equalTo("123")))
+          .withRequestBody(matchingJsonPath("detail.Transport.nationality", equalTo("FR")))
           .withRequestBody(matchingJsonPath("detail.ConsignmentReferences.reference", equalTo("M")))
           .withRequestBody(matchingJsonPath("detail.ConsignmentReferences.referenceValue", equalTo("GB/123-12345")))
           .withRequestBody(matchingJsonPath("detail.Location.code", equalTo("GBAUEMAEMAEMA")))

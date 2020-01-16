@@ -19,7 +19,6 @@ package forms
 import base.BaseSpec
 import forms.Transport.ModesOfTransport._
 import play.api.data.FormError
-import utils.TestDataHelper
 import utils.TestDataHelper.createRandomAlphanumericString
 
 class TransportSpec extends BaseSpec {

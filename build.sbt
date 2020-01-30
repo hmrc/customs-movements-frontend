@@ -17,6 +17,7 @@ lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory, SbtWeb)
   .settings(
     libraryDependencies ++= AppDependencies(),
+    dependencyOverrides += "commons-codec" % "commons-codec" % "1.12",
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     majorVersion := 0,

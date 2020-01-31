@@ -97,8 +97,7 @@ class AuditServiceSpec extends UnitSpec with BeforeAndAfterEach {
           "eori" -> "eori",
           "ConsignmentReferences" -> answers.consignmentReferences,
           "Location" -> answers.location,
-          "MovementDetails" -> answers.arrivalDetails,
-          "ArrivalReference" -> answers.arrivalReference
+          "MovementDetails" -> answers.arrivalDetails
         )
         val expectedExtendedDataEvent =
           ExtendedDataEvent(auditSource = "appName", auditType = "arrival", tags = auditTags, detail = auditDetail)
@@ -197,8 +196,7 @@ class AuditServiceSpec extends UnitSpec with BeforeAndAfterEach {
           "messageCode" -> "EAL",
           "ucr" -> CommonTestData.correctUcr,
           "ucrType" -> "D",
-          "submissionResult" -> "Success",
-          "movementReference" -> "arrivalReference"
+          "submissionResult" -> "Success"
         )
         val expectedDataEvent =
           DataEvent(auditSource = "appName", auditType = "arrival", tags = auditTags, detail = auditDetail)
@@ -222,8 +220,7 @@ class AuditServiceSpec extends UnitSpec with BeforeAndAfterEach {
           "messageCode" -> "EDL",
           "ucr" -> CommonTestData.correctUcr,
           "ucrType" -> "D",
-          "submissionResult" -> "Success",
-          "movementReference" -> ""
+          "submissionResult" -> "Success"
         )
         val expectedDataEvent =
           DataEvent(auditSource = "appName", auditType = "departure", tags = auditTags, detail = auditDetail)
@@ -240,5 +237,4 @@ class AuditServiceSpec extends UnitSpec with BeforeAndAfterEach {
       }
     }
   }
-
 }

@@ -25,7 +25,6 @@ case class MovementRequest(
   consignmentReference: ConsignmentReferences,
   movementDetails: MovementDetailsRequest,
   location: Option[Location] = None,
-  arrivalReference: Option[ArrivalReference] = None,
   transport: Option[Transport] = None
 )
 

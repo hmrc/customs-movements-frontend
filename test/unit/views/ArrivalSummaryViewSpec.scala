@@ -21,7 +21,7 @@ import java.time.{LocalDate, LocalTime}
 
 import base.Injector
 import forms.common.{Date, Time}
-import forms.{ArrivalDetails, ArrivalReference, ConsignmentReferences, Location}
+import forms.{ArrivalDetails, ConsignmentReferences, Location}
 import models.cache.ArrivalAnswers
 import models.requests.JourneyRequest
 import play.api.mvc.AnyContentAsEmpty
@@ -38,22 +38,19 @@ class ArrivalSummaryViewSpec extends ViewSpec with Injector {
 
   private val answers = ArrivalAnswers(
     consignmentReferences = Some(ConsignmentReferences("D", "ref-value")),
-    arrivalReference = Some(ArrivalReference(Some("arrival-ref"))),
     arrivalDetails = Some(ArrivalDetails(date, time)),
     location = Some(Location("location-ref"))
   )
 
   private val section_consignment_details = 0
-  private val section_arrival_reference = 1
-  private val section_arrival_datetime = 2
-  private val section_location = 3
+  private val section_arrival_datetime = 1
+  private val section_location = 2
 
   private val answer_consignment_type = 0
   private val answer_consignment_reference = 1
-  private val answer_unique_reference = 2
-  private val answer_date = 3
-  private val answer_time = 4
-  private val answer_location = 5
+  private val answer_date = 2
+  private val answer_time = 3
+  private val answer_location = 4
 
   "View" should {
     val view = page(answers)
@@ -83,18 +80,6 @@ class ArrivalSummaryViewSpec extends ViewSpec with Injector {
       val changeRef = view.getElementsByClass("govuk-link").get(answer_consignment_reference)
       changeRef must containMessage("site.change")
       changeRef must haveHref(controllers.routes.ConsignmentReferencesController.displayPage())
-    }
-
-    "render 'Arrival reference' section in summary list" in {
-
-      view.getElementsByClass("govuk-heading-m").get(section_arrival_reference) must containMessage("arrivalReference")
-
-      view.getElementsByClass("govuk-summary-list__key").get(answer_unique_reference) must containMessage("summary.arrivalReference.reference")
-      view.getElementsByClass("govuk-summary-list__value").get(answer_unique_reference).text mustBe "arrival-ref"
-
-      val changeRef = view.getElementsByClass("govuk-link").get(answer_unique_reference)
-      changeRef must containMessage("site.change")
-      changeRef must haveHref(controllers.routes.ArrivalReferenceController.displayPage())
     }
 
     "render 'Arrival date and time' section in summary list" in {

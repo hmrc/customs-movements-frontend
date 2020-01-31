@@ -39,8 +39,7 @@ class MovementBuilder @Inject()(zoneId: ZoneId) {
       choice = MovementType.Arrival,
       consignmentReference = answers.consignmentReferences.getOrElse(throw ReturnToStartException),
       movementDetails = movementDetails(answers),
-      location = answers.location,
-      arrivalReference = answers.arrivalReference
+      location = answers.location
     )
 
   private def createMovementDepartureRequest(eori: String, answers: DepartureAnswers) =

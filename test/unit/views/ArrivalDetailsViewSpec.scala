@@ -62,7 +62,7 @@ class ArrivalDetailsViewSpec extends ViewSpec with Injector {
         val backButton = emptyView.getBackButton
 
         backButton mustBe defined
-        backButton.get must haveHref(controllers.routes.ArrivalReferenceController.displayPage())
+        backButton.get must haveHref(controllers.routes.ConsignmentReferencesController.displayPage())
       }
 
       "have section header" in {

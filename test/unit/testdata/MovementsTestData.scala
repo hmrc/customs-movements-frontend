@@ -56,7 +56,6 @@ object MovementsTestData {
   def validArrivalAnswers =
     ArrivalAnswers(
       consignmentReferences = Some(ConsignmentReferences(reference = "D", referenceValue = correctUcr)),
-      arrivalReference = Some(ArrivalReference(Some("arrivalReference"))),
       arrivalDetails = Some(ArrivalDetails(Date(LocalDate.now().minusDays(1)), Time(LocalTime.of(1, 1)))),
       location = Some(Location("GBAUEMAEMAEMA"))
     )
@@ -76,7 +75,6 @@ object MovementsTestData {
     choice = MovementType.Arrival,
     consignmentReference = ConsignmentReferences(reference = "D", referenceValue = correctUcr),
     location = Some(Location("GBAUEMAEMAEMA")),
-    arrivalReference = Some(ArrivalReference(Some("arrivalReference"))),
     movementDetails = MovementDetailsRequest(
       dateTimeFormatter.format(ArrivalDetails(Date(LocalDate.now().minusDays(1)), Time(LocalTime.of(1, 1))).goodsArrivalMoment(zoneId))
     )

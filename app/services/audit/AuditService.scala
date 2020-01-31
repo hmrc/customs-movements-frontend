@@ -66,7 +66,6 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
         EventData.messageCode.toString -> data.choice.toString,
         EventData.ucrType.toString -> data.consignmentReference.reference,
         EventData.ucr.toString -> data.consignmentReference.referenceValue,
-        EventData.movementReference.toString -> data.arrivalReference.flatMap(_.reference).getOrElse(""),
         EventData.submissionResult.toString -> result
       )
     )
@@ -124,8 +123,7 @@ class AuditService @Inject()(connector: AuditConnector, @Named("appName") appNam
           EventData.eori.toString -> JsString(eori),
           ConsignmentReferences.formId -> Json.toJson(arrivalAnswers.consignmentReferences),
           Location.formId -> Json.toJson(arrivalAnswers.location),
-          MovementDetails.formId -> Json.toJson(arrivalAnswers.arrivalDetails),
-          ArrivalReference.formId -> Json.toJson(arrivalAnswers.arrivalReference)
+          MovementDetails.formId -> Json.toJson(arrivalAnswers.arrivalDetails)
         )
       case departureAnswers: DepartureAnswers =>
         Map(
@@ -151,6 +149,6 @@ object AuditService {
   object EventData extends Enumeration {
     type Data = Value
 
-    val eori, mucr, ducr, ucr, ucrType, messageCode, movementReference, submissionResult, Success, Failure = Value
+    val eori, mucr, ducr, ucr, ucrType, messageCode, submissionResult, Success, Failure = Value
   }
 }

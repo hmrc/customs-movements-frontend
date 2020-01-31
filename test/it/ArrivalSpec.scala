@@ -20,7 +20,7 @@ import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
 
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
 import forms.common.{Date, Time}
-import forms.{ArrivalDetails, ArrivalReference, ConsignmentReferences, Location}
+import forms.{ArrivalDetails, ConsignmentReferences, Location}
 import models.cache.ArrivalAnswers
 import play.api.test.Helpers._
 
@@ -57,45 +57,8 @@ class ArrivalSpec extends IntegrationSpec {
 
         // Then
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.routes.ArrivalReferenceController.displayPage().url)
-        theCacheFor("eori") mustBe Some(ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
-      }
-    }
-  }
-
-  "Arrival Reference Page" when {
-    "GET" should {
-      "return 200" in {
-        // Given
-        givenAuthSuccess("eori")
-        givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
-
-        // When
-        val response = get(controllers.routes.ArrivalReferenceController.displayPage())
-
-        // TThen
-        status(response) mustBe OK
-      }
-    }
-
-    "POST" should {
-      "continue" in {
-        // Given
-        givenAuthSuccess("eori")
-        givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
-
-        // When
-        val response = post(controllers.routes.ArrivalReferenceController.submit(), "reference" -> "ABC")
-
-        // Then
-        status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(controllers.routes.MovementDetailsController.displayPage().url)
-        theCacheFor("eori") mustBe Some(
-          ArrivalAnswers(
-            consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
-            arrivalReference = Some(ArrivalReference(Some("ABC")))
-          )
-        )
+        theCacheFor("eori") mustBe Some(ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
       }
     }
   }
@@ -105,13 +68,7 @@ class ArrivalSpec extends IntegrationSpec {
       "return 200" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor(
-          "eori",
-          ArrivalAnswers(
-            consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
-            arrivalReference = Some(ArrivalReference(Some("ABC")))
-          )
-        )
+        givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
 
         // When
         val response = get(controllers.routes.MovementDetailsController.displayPage())
@@ -125,13 +82,7 @@ class ArrivalSpec extends IntegrationSpec {
       "continue" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor(
-          "eori",
-          ArrivalAnswers(
-            consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
-            arrivalReference = Some(ArrivalReference(Some("ABC")))
-          )
-        )
+        givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
 
         // When
         val response = post(
@@ -149,7 +100,6 @@ class ArrivalSpec extends IntegrationSpec {
         theCacheFor("eori") mustBe Some(
           ArrivalAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
-            arrivalReference = Some(ArrivalReference(Some("ABC"))),
             arrivalDetails = Some(ArrivalDetails(Date(date), Time(time)))
           )
         )
@@ -166,7 +116,6 @@ class ArrivalSpec extends IntegrationSpec {
           "eori",
           ArrivalAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
-            arrivalReference = Some(ArrivalReference(Some("ABC"))),
             arrivalDetails = Some(ArrivalDetails(Date(date), Time(time)))
           )
         )
@@ -187,7 +136,6 @@ class ArrivalSpec extends IntegrationSpec {
           "eori",
           ArrivalAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
-            arrivalReference = Some(ArrivalReference(Some("ABC"))),
             arrivalDetails = Some(ArrivalDetails(Date(date), Time(time)))
           )
         )
@@ -201,7 +149,6 @@ class ArrivalSpec extends IntegrationSpec {
         theCacheFor("eori") mustBe Some(
           ArrivalAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
-            arrivalReference = Some(ArrivalReference(Some("ABC"))),
             arrivalDetails = Some(ArrivalDetails(Date(date), Time(time))),
             location = Some(Location("GBAUEMAEMAEMA"))
           )
@@ -219,7 +166,6 @@ class ArrivalSpec extends IntegrationSpec {
           "eori",
           ArrivalAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
-            arrivalReference = Some(ArrivalReference(Some("ABC"))),
             arrivalDetails = Some(ArrivalDetails(Date(date), Time(time))),
             location = Some(Location("GBAUEMAEMAEMA"))
           )
@@ -241,7 +187,6 @@ class ArrivalSpec extends IntegrationSpec {
           "eori",
           ArrivalAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
-            arrivalReference = Some(ArrivalReference(Some("ABC"))),
             arrivalDetails = Some(ArrivalDetails(Date(date), Time(time))),
             location = Some(Location("GBAUEMAEMAEMA"))
           )
@@ -262,8 +207,7 @@ class ArrivalSpec extends IntegrationSpec {
                    |"choice":"EAL",
                    |"consignmentReference":{"reference":"M","referenceValue":"GB/123-12345"},
                    |"movementDetails":{"dateTime":"${datetime}"},
-                   |"location":{"code":"GBAUEMAEMAEMA"},
-                   |"arrivalReference":{"reference":"ABC"}
+                   |"location":{"code":"GBAUEMAEMAEMA"}
                    |}""".stripMargin))
         )
 
@@ -271,7 +215,6 @@ class ArrivalSpec extends IntegrationSpec {
         val submissionPayloadRequestBuilder = postRequestedForAudit()
           .withRequestBody(matchingJsonPath("auditType", equalTo("arrival")))
           .withRequestBody(matchingJsonPath("detail.eori", equalTo("eori")))
-          .withRequestBody(matchingJsonPath("detail.ArrivalReference.reference", equalTo("ABC")))
           .withRequestBody(matchingJsonPath("detail.MovementDetails.dateOfArrival.date", equalTo(date.toString)))
           .withRequestBody(matchingJsonPath("detail.MovementDetails.timeOfArrival.time", equalTo(expectedTimeFormatted)))
           .withRequestBody(matchingJsonPath("detail.ConsignmentReferences.reference", equalTo("M")))
@@ -284,7 +227,6 @@ class ArrivalSpec extends IntegrationSpec {
           .withRequestBody(matchingJsonPath("detail.ucr", equalTo("GB/123-12345")))
           .withRequestBody(matchingJsonPath("detail.ucrType", equalTo("M")))
           .withRequestBody(matchingJsonPath("detail.messageCode", equalTo("EAL")))
-          .withRequestBody(matchingJsonPath("detail.movementReference", equalTo("ABC")))
           .withRequestBody(matchingJsonPath("detail.submissionResult", equalTo("Success")))
 
         verifyEventually(submissionPayloadRequestBuilder)

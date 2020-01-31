@@ -88,33 +88,6 @@
             ))
         }
 
-        @data.arrivalReference.flatMap(_.reference).filter(_.nonEmpty).map { reference =>
-            @components.summary_list(messages("arrivalReference")) {
-                @govukSummaryList(SummaryList(
-                    rows = Seq(
-                        SummaryListRow(
-                            key = Key(
-                                content = Text(messages("summary.arrivalReference.reference"))
-                            ),
-                            value = Value(
-                                content = Text(reference)
-                            ),
-                            actions = Some(Actions(
-                                items = Seq(
-                                    ActionItem(
-                                        href = s"${routes.ArrivalReferenceController.displayPage}",
-                                        content = Text(messages("site.change")),
-                                        visuallyHiddenText = Some(messages("summary.arrivalReference.reference.change"))
-                                    )
-                                )
-                            ))
-                        )
-                    ),
-                    classes = "govuk-!-margin-bottom-9"
-                ))
-            }
-        }
-
         @components.summary_list(messages("arrivalDetails.title")) {
             @govukSummaryList(SummaryList(
                 rows = Seq(

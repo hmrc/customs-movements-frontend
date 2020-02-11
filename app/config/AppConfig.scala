@@ -21,6 +21,7 @@ import features.Feature.Feature
 import features.FeatureStatus.FeatureStatus
 import features.{Feature, FeatureStatus}
 import javax.inject.Named
+import mongobee.MongobeeConfig
 import play.api.i18n.Lang
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -37,6 +38,8 @@ class AppConfig @Inject()(
     runModeConfiguration
       .getOptional[String](key)
       .getOrElse(throw new Exception(s"Missing configuration key: $key"))
+
+  MongobeeConfig(loadConfig("mongodb.uri"))
 
   lazy val keyStoreSource: String = appName
   lazy val keyStoreUrl: String = servicesConfig.baseUrl("keystore")

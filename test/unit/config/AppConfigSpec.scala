@@ -35,6 +35,8 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
         |urls.customsDeclarationsGoodsTakenOutOfEu="https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"
         |urls.serviceAvailability="https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
         |
+        |mongodb.uri="mongodb://localhost:27017/customs-movements-frontend"
+        |
         |microservice.services.auth.host=localhostauth
         |google-analytics.token=N/A
         |google-analytics.host=localhostGoogle
@@ -61,16 +63,19 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
         |microservice.services.customs-declare-exports-movements.submit-consolidation=/consolidation
       """.stripMargin
     )
-  private val emptyAppConfig: Config = ConfigFactory.parseString("")
+  private val invalidAppConfig: Config = ConfigFactory.parseString("""
+      |mongodb.uri="mongodb://localhost:27017/customs-movements-frontend"
+      |""".stripMargin)
+
   val validServicesConfiguration = Configuration(validAppConfig)
-  private val emptyServicesConfiguration = Configuration(emptyAppConfig)
+  private val invalidServicesConfiguration = Configuration(invalidAppConfig)
 
   private def runMode(conf: Configuration): RunMode = new RunMode(conf, Test)
   private def servicesConfig(conf: Configuration) = new ServicesConfig(conf, runMode(conf))
   private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
 
   val validConfigService: AppConfig = appConfig(validServicesConfiguration)
-  val emptyConfigService: AppConfig = appConfig(emptyServicesConfiguration)
+  val emptyConfigService: AppConfig = appConfig(invalidServicesConfiguration)
 
   "The config" should {
 

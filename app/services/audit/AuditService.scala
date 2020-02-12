@@ -17,12 +17,12 @@
 package services.audit
 
 import com.google.inject.Inject
+import connectors.exchanges.MovementRequest
 import forms._
 import javax.inject.Named
 import models.cache.{Answers, ArrivalAnswers, DepartureAnswers, JourneyType}
-import models.requests.MovementRequest
 import play.api.Logger
-import play.api.libs.json.{JsObject, JsString, JsValue, Json}
+import play.api.libs.json.{JsObject, JsString, Json}
 import services.audit.AuditService.EventData
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions

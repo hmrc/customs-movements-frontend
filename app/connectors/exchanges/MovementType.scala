@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package models.requests
+package connectors.exchanges
+
 import play.api.libs.json._
 
 sealed abstract class MovementType(val value: String) {

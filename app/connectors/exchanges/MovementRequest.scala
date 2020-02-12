@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package models.external.requests
+package connectors.exchanges
 
-import play.api.libs.json.{Format, Reads, Writes}
+import forms._
+import play.api.libs.json.{Json, OFormat}
 
-object ConsolidationType extends Enumeration {
-  type ConsolidationType = Value
+case class MovementRequest(
+  eori: String,
+  choice: MovementType,
+  consignmentReference: ConsignmentReferences,
+  movementDetails: MovementDetailsRequest,
+  location: Option[Location] = None,
+  transport: Option[Transport] = None
+)
 
-  val ASSOCIATE_DUCR, ASSOCIATE_MUCR, DISASSOCIATE_DUCR, DISASSOCIATE_MUCR, SHUT_MUCR = Value
-
-  implicit val format = Format(Reads.enumNameReads(ConsolidationType), Writes.enumNameWrites)
+object MovementRequest {
+  implicit val format: OFormat[MovementRequest] = Json.format[MovementRequest]
 }

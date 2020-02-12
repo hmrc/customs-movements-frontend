@@ -18,18 +18,10 @@ package services
 
 import base.MovementsMetricsStub
 import connectors.CustomsDeclareExportsMovementsConnector
-import connectors.exchanges.{
-  AssociateDUCRRequest,
-  AssociateMUCRRequest,
-  Consolidation,
-  DisassociateDUCRRequest,
-  DisassociateMUCRRequest,
-  ShutMUCRRequest
-}
+import connectors.exchanges._
 import forms._
 import models.ReturnToStartException
 import models.cache.{AssociateUcrAnswers, DisassociateUcrAnswers, MovementAnswers, ShutMucrAnswers}
-import models.requests.MovementRequest
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.BDDMockito._
 import org.mockito.Mockito._

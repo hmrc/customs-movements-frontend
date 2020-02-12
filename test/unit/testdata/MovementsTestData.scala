@@ -19,11 +19,11 @@ package testdata
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDate, LocalTime, ZoneId}
 
+import connectors.exchanges.{MovementDetailsRequest, MovementRequest, MovementType}
 import forms.Transport.ModesOfTransport
 import forms._
 import forms.common.{Date, Time}
 import models.cache.{ArrivalAnswers, DepartureAnswers}
-import models.requests.{MovementDetailsRequest, MovementRequest, MovementType}
 import models.submissions.{ActionType, Submission}
 import models.{SignedInUser, UcrBlock}
 import testdata.CommonTestData._

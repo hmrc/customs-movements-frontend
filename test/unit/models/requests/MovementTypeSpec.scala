@@ -16,8 +16,8 @@
 
 package unit.models.requests
 
-import models.requests.MovementType
-import models.requests.MovementType._
+import connectors.exchanges.MovementType
+import connectors.exchanges.MovementType._
 import play.api.libs.json.{JsError, JsNumber, JsString, JsSuccess}
 import unit.base.UnitSpec
 

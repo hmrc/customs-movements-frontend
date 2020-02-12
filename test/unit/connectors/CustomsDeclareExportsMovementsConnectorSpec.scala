@@ -18,22 +18,20 @@ package unit.connectors
 
 import java.time.Instant
 
+import com.github.tomakehurst.wiremock.client.WireMock._
 import config.AppConfig
 import connectors.CustomsDeclareExportsMovementsConnector
-import connectors.exchanges.DisassociateDUCRRequest
+import connectors.exchanges.{DisassociateDUCRRequest, MovementDetailsRequest, MovementRequest, MovementType}
 import forms.ConsignmentReferences
+import models.UcrBlock
 import models.notifications.ResponseType.ControlResponse
-import models.requests.{MovementDetailsRequest, MovementRequest, MovementType}
+import models.submissions.{ActionType, Submission}
 import org.mockito.BDDMockito.given
 import play.api.http.Status
 import play.api.test.Helpers._
 import testdata.CommonTestData._
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalTo, get, getRequestedFor, post, postRequestedFor, urlEqualTo, verify}
-import models.UcrBlock
-import models.requests.MovementType.Arrival
-import models.submissions.{ActionType, Submission}
 
 class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
 

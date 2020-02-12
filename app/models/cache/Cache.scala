@@ -16,10 +16,26 @@
 
 package models.cache
 
-import play.api.libs.json.{Json, OFormat}
+import java.time.{Instant, ZoneOffset}
 
-case class Cache(eori: String, answers: Answers)
+import play.api.libs.json._
+
+case class Cache(eori: String, answers: Answers, updated: Instant = Instant.now())
 
 object Cache {
+  implicit private val formatInstant: OFormat[Instant] = new OFormat[Instant] {
+    override def writes(datetime: Instant): JsObject =
+      Json.obj("$date" -> datetime.toEpochMilli)
+
+    override def reads(json: JsValue): JsResult[Instant] =
+      json match {
+        case JsObject(map) if map.contains("$date") =>
+          map("$date") match {
+            case JsNumber(v) => JsSuccess(Instant.ofEpochMilli(v.toLong).atOffset(ZoneOffset.UTC).toInstant)
+            case _           => JsError("Unexpected Date Format. Expected a Number (Epoch Milliseconds)")
+          }
+        case _ => JsError("Unexpected Date Format. Expected an object containing a $date field.")
+      }
+  }
   implicit val format: OFormat[Cache] = Json.format[Cache]
 }

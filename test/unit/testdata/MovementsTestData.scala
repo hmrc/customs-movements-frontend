@@ -19,12 +19,13 @@ package testdata
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDate, LocalTime, ZoneId}
 
-import connectors.exchanges.{MovementDetailsRequest, MovementRequest, MovementType}
+import connectors.exchanges.ActionType.MovementType
+import connectors.exchanges.{ActionType, MovementDetailsRequest, MovementRequest}
 import forms.Transport.ModesOfTransport
 import forms._
 import forms.common.{Date, Time}
 import models.cache.{ArrivalAnswers, DepartureAnswers}
-import models.submissions.{ActionType, Submission}
+import models.submissions.Submission
 import models.{SignedInUser, UcrBlock}
 import testdata.CommonTestData._
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
@@ -42,7 +43,7 @@ object MovementsTestData {
     conversationId: String = conversationId,
     ucr: String = correctUcr,
     ucrType: String = "D",
-    actionType: ActionType = ActionType.Arrival,
+    actionType: ActionType = MovementType.Arrival,
     requestTimestamp: Instant = Instant.now()
   ): Submission =
     Submission(

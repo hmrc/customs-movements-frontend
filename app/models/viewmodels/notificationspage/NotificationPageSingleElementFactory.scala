@@ -18,10 +18,11 @@ package models.viewmodels.notificationspage
 
 import java.time.format.DateTimeFormatter
 
+import connectors.exchanges.ActionType.ConsolidationType._
+import connectors.exchanges.ActionType.MovementType._
 import javax.inject.{Inject, Singleton}
 import models.UcrBlock
 import models.notifications.Notification
-import models.submissions.ActionType._
 import models.submissions.Submission
 import models.viewmodels.notificationspage.converters._
 import play.api.i18n.Messages
@@ -43,13 +44,13 @@ class NotificationPageSingleElementFactory @Inject()(responseConverterProvider: 
 
     val content = HtmlFormat.fill(
       List(
-        paragraph(messages(s"notifications.elem.content.${submission.actionType.value}", ucrMessage)),
+        paragraph(messages(s"notifications.elem.content.${submission.actionType.typeName}", ucrMessage)),
         paragraph(messages("notifications.elem.content.footer"))
       )
     )
 
     NotificationsPageSingleElement(
-      title = messages(s"notifications.elem.title.${submission.actionType.value}"),
+      title = messages(s"notifications.elem.title.${submission.actionType.typeName}"),
       timestampInfo = dateTimeFormatter.format(submission.requestTimestamp),
       content = content
     )
@@ -58,7 +59,7 @@ class NotificationPageSingleElementFactory @Inject()(responseConverterProvider: 
   private def buildForDucrAssociation(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement = {
     val ducrs: List[UcrBlock] = submission.ucrBlocks.filter(_.ucrType == "D").toList
     val content = HtmlFormat.fill(
-      paragraph(messages(s"notifications.elem.content.${submission.actionType.value}")) +:
+      paragraph(messages(s"notifications.elem.content.${submission.actionType.typeName}")) +:
         ducrs.map(block => paragraph(block.ucr)) :+
         paragraph(messages("notifications.elem.content.footer"))
     )

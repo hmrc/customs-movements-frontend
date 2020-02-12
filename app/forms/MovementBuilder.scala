@@ -19,7 +19,8 @@ package forms
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-import connectors.exchanges.{MovementDetailsRequest, MovementRequest, MovementType}
+import connectors.exchanges.ActionType.MovementType
+import connectors.exchanges.{MovementDetailsRequest, MovementRequest}
 import javax.inject.Inject
 import models.ReturnToStartException
 import models.cache.{Answers, ArrivalAnswers, DepartureAnswers}

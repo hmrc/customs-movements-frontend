@@ -260,7 +260,7 @@ class DepartureSpec extends IntegrationSpec {
           postRequestedForMovement()
             .withRequestBody(equalToJson(s"""{
                    |"eori":"eori",
-                   |"choice":"EDL",
+                   |"choice":"Departure",
                    |"consignmentReference":{"reference":"M","referenceValue":"GB/123-12345"},
                    |"movementDetails":{"dateTime":"$datetime"},
                    |"location":{"code":"GBAUEMAEMAEMA"},

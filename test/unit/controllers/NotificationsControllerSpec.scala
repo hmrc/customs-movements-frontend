@@ -18,9 +18,10 @@ package unit.controllers
 
 import base.MockFactory._
 import connectors.CustomsDeclareExportsMovementsConnector
+import connectors.exchanges.ActionType.MovementType
 import controllers.NotificationsController
 import models.notifications.{Notification, ResponseType}
-import models.submissions.{ActionType, Submission}
+import models.submissions.Submission
 import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
@@ -146,7 +147,9 @@ class NotificationsControllerSpec extends ControllerLayerSpec with ScalaFutures 
         when(connector.fetchSingleSubmission(any(), any())(any()))
           .thenReturn(
             Future
-              .successful(Some(Submission(eori = user.eori, conversationId = conversationId, ucrBlocks = Seq.empty, actionType = ActionType.Arrival)))
+              .successful(
+                Some(Submission(eori = user.eori, conversationId = conversationId, ucrBlocks = Seq.empty, actionType = MovementType.Arrival))
+              )
           )
 
         val result = controller.listOfNotifications(conversationId)(FakeRequest())

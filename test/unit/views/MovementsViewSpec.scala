@@ -18,15 +18,15 @@ package views
 
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit.MINUTES
-import java.time.{Instant, LocalDate, LocalDateTime, ZoneId, ZoneOffset}
-import java.util.Date
+import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 
 import base.Injector
+import connectors.exchanges.ActionType.{ConsolidationType, MovementType}
 import controllers.routes
 import models.UcrBlock
 import models.cache.ArrivalAnswers
 import models.notifications.{Entry, Notification, ResponseType}
-import models.submissions.{ActionType, Submission}
+import models.submissions.Submission
 import org.jsoup.nodes.Document
 import play.twirl.api.Html
 import testdata.CommonTestData._
@@ -82,7 +82,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
         eori = "",
         conversationId = conversationId,
         ucrBlocks = Seq(UcrBlock(ucr = validMucr, ucrType = "M")),
-        actionType = ActionType.ShutMucr
+        actionType = ConsolidationType.ShutMucr
       )
       val shutMucrNotifications = Seq(
         exampleNotificationFrontendModel(
@@ -98,7 +98,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
         eori = "",
         conversationId = conversationId_2,
         ucrBlocks = Seq(UcrBlock(ucr = validDucr, ucrType = "D")),
-        actionType = ActionType.Arrival
+        actionType = MovementType.Arrival
       )
       val arrivalNotifications = Seq(
         exampleNotificationFrontendModel(

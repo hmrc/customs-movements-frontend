@@ -18,8 +18,9 @@ package unit.models.submissions
 
 import java.time.Instant
 
+import connectors.exchanges.ActionType.MovementType
 import models.UcrBlock
-import models.submissions.{ActionType, Submission}
+import models.submissions.Submission
 import org.scalatest.OptionValues
 import testdata.CommonTestData._
 import unit.base.UnitSpec
@@ -30,7 +31,7 @@ class SubmissionSpec extends UnitSpec with OptionValues {
     eori = validEori,
     conversationId = conversationId,
     ucrBlocks = Seq(UcrBlock(ucr = correctUcr, ucrType = "M")),
-    actionType = ActionType.Arrival,
+    actionType = MovementType.Arrival,
     requestTimestamp = Instant.now()
   )
 

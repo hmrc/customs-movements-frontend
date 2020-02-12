@@ -16,9 +16,10 @@
 
 package testdata
 
+import connectors.exchanges.ActionType.ConsolidationType
 import connectors.exchanges.{AssociateDUCRRequest, DisassociateDUCRRequest, ShutMUCRRequest}
 import models.UcrBlock
-import models.submissions.{ActionType, Submission}
+import models.submissions.Submission
 import play.api.http.{ContentTypes, HeaderNames}
 import testdata.CommonTestData._
 
@@ -33,7 +34,7 @@ object ConsolidationTestData {
   val exampleAssociateDucrRequestSubmission: Submission = Submission(
     eori = validEori,
     conversationId = conversationId,
-    actionType = ActionType.DucrAssociation,
+    actionType = ConsolidationType.DucrAssociation,
     ucrBlocks = Seq(UcrBlock(ucr = validMucr, ucrType = "M"), UcrBlock(ucr = validDucr, ucrType = "D"))
   )
 

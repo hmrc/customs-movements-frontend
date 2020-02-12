@@ -21,11 +21,12 @@ import java.time.Instant
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.AppConfig
 import connectors.CustomsDeclareExportsMovementsConnector
-import connectors.exchanges.{DisassociateDUCRRequest, MovementDetailsRequest, MovementRequest, MovementType}
+import connectors.exchanges.ActionType.MovementType
+import connectors.exchanges.{DisassociateDUCRRequest, MovementDetailsRequest, MovementRequest}
 import forms.ConsignmentReferences
 import models.UcrBlock
 import models.notifications.ResponseType.ControlResponse
-import models.submissions.{ActionType, Submission}
+import models.submissions.Submission
 import org.mockito.BDDMockito.given
 import play.api.http.Status
 import play.api.test.Helpers._
@@ -59,7 +60,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
         postRequestedFor(urlEqualTo("/movements"))
           .withRequestBody(
             equalTo(
-              """{"eori":"eori","choice":"EAL","consignmentReference":{"reference":"ref","referenceValue":"value"},"movementDetails":{"dateTime":"datetime"}}"""
+              """{"eori":"eori","choice":"Arrival","consignmentReference":{"reference":"ref","referenceValue":"value"},"movementDetails":{"dateTime":"datetime"}}"""
             )
           )
       )
@@ -82,7 +83,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
 
       verify(
         postRequestedFor(urlEqualTo("/consolidation"))
-          .withRequestBody(equalTo("""{"ucr":"ucr","consolidationType":"DISASSOCIATE_DUCR","eori":"eori"}"""))
+          .withRequestBody(equalTo("""{"ucr":"ucr","consolidationType":"DucrDisassociation","eori":"eori"}"""))
       )
     }
   }
@@ -128,7 +129,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
         eori = "eori",
         conversationId = conversationId,
         ucrBlocks = Seq(UcrBlock(ucr = "ucr", ucrType = "type")),
-        actionType = ActionType.Arrival,
+        actionType = MovementType.Arrival,
         requestTimestamp = Instant.EPOCH
       )
       val submissionJson =

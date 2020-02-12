@@ -120,7 +120,7 @@ class AssociateUcrSpec extends IntegrationSpec {
         theCacheFor("eori") mustBe None
         verify(
           postRequestedForConsolidation()
-            .withRequestBody(equalToJson("""{"eori":"eori","mucr":"GB/123-12345","ucr":"GB/321-54321","consolidationType":"ASSOCIATE_MUCR"}"""))
+            .withRequestBody(equalToJson("""{"eori":"eori","mucr":"GB/123-12345","ucr":"GB/321-54321","consolidationType":"MucrAssociation"}"""))
         )
         verifyEventually(
           postRequestedForAudit()

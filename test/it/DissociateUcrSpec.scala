@@ -92,7 +92,7 @@ class DissociateUcrSpec extends IntegrationSpec {
         theCacheFor("eori") mustBe None
         verify(
           postRequestedForConsolidation()
-            .withRequestBody(equalToJson("""{"eori":"eori","ucr":"GB/321-54321","consolidationType":"DISASSOCIATE_MUCR"}"""))
+            .withRequestBody(equalToJson("""{"eori":"eori","ucr":"GB/321-54321","consolidationType":"MucrDisassociation"}"""))
         )
         verifyEventually(
           postRequestedForAudit()

@@ -21,9 +21,10 @@ import java.time.{Instant, ZoneId}
 
 import base.BaseSpec
 import com.google.inject.Guice
+import connectors.exchanges.ActionType.{ConsolidationType, MovementType}
 import models.UcrBlock
 import models.notifications.Notification
-import models.submissions.{ActionType, Submission}
+import models.submissions.Submission
 import models.viewmodels.notificationspage.converters._
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
@@ -66,7 +67,7 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
       "provided with Arrival Submission" in {
 
         val input: Submission =
-          exampleSubmission(actionType = ActionType.Arrival, requestTimestamp = testTimestamp)
+          exampleSubmission(actionType = MovementType.Arrival, requestTimestamp = testTimestamp)
 
         val expectedTitle = messages("notifications.elem.title.Arrival")
         val expectedTimestampInfo = "31 Oct 2019 at 00:00"
@@ -80,7 +81,7 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
       "provided with Departure Submission" in {
 
         val input: Submission =
-          exampleSubmission(actionType = ActionType.Departure, requestTimestamp = testTimestamp)
+          exampleSubmission(actionType = MovementType.Departure, requestTimestamp = testTimestamp)
 
         val expectedTitle = messages("notifications.elem.title.Departure")
         val expectedTimestampInfo = "31 Oct 2019 at 00:00"
@@ -96,7 +97,7 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
         val input: Submission = Submission(
           eori = validEori,
           conversationId = conversationId,
-          actionType = ActionType.DucrAssociation,
+          actionType = ConsolidationType.DucrAssociation,
           requestTimestamp = testTimestamp,
           ucrBlocks =
             Seq(UcrBlock(ucr = correctUcr, ucrType = "M"), UcrBlock(ucr = correctUcr_2, ucrType = "D"), UcrBlock(ucr = correctUcr_3, ucrType = "D"))
@@ -116,7 +117,7 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
         val input: Submission = Submission(
           eori = validEori,
           conversationId = conversationId,
-          actionType = ActionType.MucrAssociation,
+          actionType = ConsolidationType.MucrAssociation,
           requestTimestamp = testTimestamp,
           ucrBlocks = Seq(UcrBlock(ucr = correctUcr, ucrType = "M"), UcrBlock(ucr = correctUcr_2, ucrType = "M"))
         )
@@ -133,7 +134,7 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
       "provided with DucrDisassociation Submission" in {
 
         val input: Submission =
-          exampleSubmission(actionType = ActionType.DucrDisassociation, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "D")
+          exampleSubmission(actionType = ConsolidationType.DucrDisassociation, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "D")
 
         val expectedTitle = messages("notifications.elem.title.DucrDisassociation")
         val expectedTimestampInfo = "31 Oct 2019 at 00:00"
@@ -147,7 +148,7 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
       "provided with MucrDisassociation Submission" in {
 
         val input: Submission =
-          exampleSubmission(actionType = ActionType.MucrDisassociation, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "M")
+          exampleSubmission(actionType = ConsolidationType.MucrDisassociation, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "M")
 
         val expectedTitle = messages("notifications.elem.title.MucrDisassociation")
         val expectedTimestampInfo = "31 Oct 2019 at 00:00"
@@ -161,7 +162,7 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
       "provided with ShutMucr Submission" in {
 
         val input: Submission =
-          exampleSubmission(actionType = ActionType.ShutMucr, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "M")
+          exampleSubmission(actionType = ConsolidationType.ShutMucr, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "M")
 
         val expectedTitle = messages("notifications.elem.title.ShutMucr")
         val expectedTimestampInfo = "31 Oct 2019 at 00:00"

@@ -16,6 +16,7 @@
 
 package connectors.exchanges
 
+import connectors.exchanges.ActionType.MovementType
 import forms._
 import play.api.libs.json.{Json, OFormat}
 

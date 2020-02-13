@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package models.submissions
+package connectors.exchanges
 
-import models.submissions.ActionType._
+import connectors.exchanges.ActionType.ConsolidationType._
+import connectors.exchanges.ActionType.MovementType._
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsError, JsString}
 
@@ -47,9 +48,23 @@ class ActionTypeSpec extends WordSpec with MustMatchers {
         json must equal(expectedJson)
       }
 
+      "it is MUCR Association" in {
+        val json = ActionType.format.writes(MucrAssociation)
+        val expectedJson = JsString("MucrAssociation")
+
+        json must equal(expectedJson)
+      }
+
       "it is DUCR Disassociation" in {
         val json = ActionType.format.writes(DucrDisassociation)
         val expectedJson = JsString("DucrDisassociation")
+
+        json must equal(expectedJson)
+      }
+
+      "it is MUCR Disassociation" in {
+        val json = ActionType.format.writes(MucrDisassociation)
+        val expectedJson = JsString("MucrDisassociation")
 
         json must equal(expectedJson)
       }
@@ -85,9 +100,23 @@ class ActionTypeSpec extends WordSpec with MustMatchers {
         actionType must equal(expectedActionType)
       }
 
+      "it is MUCR Association" in {
+        val actionType = ActionType.format.reads(JsString("MucrAssociation")).get
+        val expectedActionType = MucrAssociation
+
+        actionType must equal(expectedActionType)
+      }
+
       "it is DUCR Disassociation" in {
         val actionType = ActionType.format.reads(JsString("DucrDisassociation")).get
         val expectedActionType = DucrDisassociation
+
+        actionType must equal(expectedActionType)
+      }
+
+      "it is MUCR Disassociation" in {
+        val actionType = ActionType.format.reads(JsString("MucrDisassociation")).get
+        val expectedActionType = MucrDisassociation
 
         actionType must equal(expectedActionType)
       }
@@ -101,7 +130,7 @@ class ActionTypeSpec extends WordSpec with MustMatchers {
 
       "it is Unknown" in {
         val result = ActionType.format.reads(JsString("Unknown"))
-        val expectedResult = JsError("Unknown ActionType")
+        val expectedResult = JsError("Unknown ActionType: [\"Unknown\"]")
 
         result must equal(expectedResult)
       }

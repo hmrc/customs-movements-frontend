@@ -19,6 +19,7 @@ package models.submissions
 import java.time.Instant
 import java.util.UUID
 
+import connectors.exchanges.ActionType
 import models.UcrBlock
 import play.api.libs.json._
 

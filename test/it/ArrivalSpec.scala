@@ -204,7 +204,7 @@ class ArrivalSpec extends IntegrationSpec {
           postRequestedForMovement()
             .withRequestBody(equalToJson(s"""{
                    |"eori":"eori",
-                   |"choice":"EAL",
+                   |"choice":"Arrival",
                    |"consignmentReference":{"reference":"M","referenceValue":"GB/123-12345"},
                    |"movementDetails":{"dateTime":"${datetime}"},
                    |"location":{"code":"GBAUEMAEMAEMA"}

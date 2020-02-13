@@ -27,4 +27,5 @@ case class MongobeeConfig(mongoURI: String) {
   runner.setChangeLogsScanPackage("mongobee.changesets")
 
   runner.execute()
+  runner.close()
 }

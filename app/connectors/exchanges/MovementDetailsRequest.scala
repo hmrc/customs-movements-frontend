@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package models.requests
+package connectors.exchanges
 
-import forms._
 import play.api.libs.json.{Json, OFormat}
 
-case class MovementRequest(
-  eori: String,
-  choice: MovementType,
-  consignmentReference: ConsignmentReferences,
-  movementDetails: MovementDetailsRequest,
-  location: Option[Location] = None,
-  transport: Option[Transport] = None
-)
+case class MovementDetailsRequest(dateTime: String)
 
-object MovementRequest {
-  implicit val format: OFormat[MovementRequest] = Json.format[MovementRequest]
+object MovementDetailsRequest {
+  implicit val format: OFormat[MovementDetailsRequest] = Json.format[MovementDetailsRequest]
 }

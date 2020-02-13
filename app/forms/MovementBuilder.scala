@@ -19,10 +19,11 @@ package forms
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+import connectors.exchanges.ActionType.MovementType
+import connectors.exchanges.{MovementDetailsRequest, MovementRequest}
 import javax.inject.Inject
 import models.ReturnToStartException
 import models.cache.{Answers, ArrivalAnswers, DepartureAnswers}
-import models.requests.{MovementDetailsRequest, MovementRequest, MovementType}
 
 class MovementBuilder @Inject()(zoneId: ZoneId) {
 

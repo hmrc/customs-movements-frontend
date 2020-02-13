@@ -17,10 +17,9 @@
 package connectors
 
 import config.AppConfig
-import connectors.exchanges.Consolidation
+import connectors.exchanges.{Consolidation, MovementRequest}
 import javax.inject.{Inject, Singleton}
 import models.notifications.Notification
-import models.requests.MovementRequest
 import models.submissions.Submission
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}

@@ -39,7 +39,7 @@ class AppConfig @Inject()(
       .getOptional[String](key)
       .getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
-  MongobeeConfig(loadConfig("mongodb.uri"))
+//  MongobeeConfig(loadConfig("mongodb.uri"))
 
   lazy val keyStoreSource: String = appName
   lazy val keyStoreUrl: String = servicesConfig.baseUrl("keystore")

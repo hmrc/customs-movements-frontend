@@ -20,7 +20,7 @@ import java.time.{Instant, ZoneOffset}
 
 import play.api.libs.json._
 
-case class Cache(eori: String, answers: Answers, updated: Instant = Instant.now())
+case class Cache(eori: String, answers: Answers, updated: Option[Instant] = Some(Instant.now()))
 
 object Cache {
   implicit private val formatInstant: OFormat[Instant] = new OFormat[Instant] {

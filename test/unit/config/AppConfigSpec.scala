@@ -63,19 +63,17 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
         |microservice.services.customs-declare-exports-movements.submit-consolidation=/consolidation
       """.stripMargin
     )
-  private val invalidAppConfig: Config = ConfigFactory.parseString("""
-      |mongodb.uri="mongodb://localhost:27017/customs-movements-frontend"
-      |""".stripMargin)
+  private val emptyAppConfig: Config = ConfigFactory.parseString("")
 
   val validServicesConfiguration = Configuration(validAppConfig)
-  private val invalidServicesConfiguration = Configuration(invalidAppConfig)
+  private val emptyServicesConfiguration = Configuration(emptyAppConfig)
 
   private def runMode(conf: Configuration): RunMode = new RunMode(conf, Test)
   private def servicesConfig(conf: Configuration) = new ServicesConfig(conf, runMode(conf))
   private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
 
   val validConfigService: AppConfig = appConfig(validServicesConfiguration)
-  val emptyConfigService: AppConfig = appConfig(invalidServicesConfiguration)
+  val emptyConfigService: AppConfig = appConfig(emptyServicesConfiguration)
 
   "The config" should {
 

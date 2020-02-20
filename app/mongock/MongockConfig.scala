@@ -29,7 +29,7 @@ case class MongockConfig(mongoURI: String) {
 
   val runner = new MongockBuilder(client, uri.getDatabase, "mongock.changesets")
     .setLockQuickConfig()
-    .build();
+    .build()
 
   runner.execute()
   runner.close()

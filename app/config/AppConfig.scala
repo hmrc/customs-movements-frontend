@@ -92,6 +92,9 @@ class AppConfig @Inject()(
   lazy val defaultFeatureStatus: features.FeatureStatus.Value =
     FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))
 
+  lazy val ileQueryFeatureStatus: features.FeatureStatus.Value =
+    FeatureStatus.withName(loadConfig(feature2Key(Feature.ileQuery)))
+
   def featureStatus(feature: Feature): FeatureStatus =
     sys.props
       .get(feature2Key(feature))

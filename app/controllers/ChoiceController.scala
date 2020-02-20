@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.AppConfig
 import controllers.actions.AuthAction
 import forms.Choice
 import forms.Choice._
@@ -31,18 +32,26 @@ import views.html.choice_page
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ChoiceController @Inject()(authenticate: AuthAction, cache: CacheRepository, mcc: MessagesControllerComponents, choicePage: choice_page)(
-  implicit ec: ExecutionContext
-) extends FrontendController(mcc) with I18nSupport {
+class ChoiceController @Inject()(
+  authenticate: AuthAction,
+  cache: CacheRepository,
+  mcc: MessagesControllerComponents,
+  choicePage: choice_page,
+  appConfig: AppConfig
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    cache
-      .findByEori(request.eori)
-      .map(_.map(cache => Choice(cache.answers.`type`)))
-      .map {
-        case Some(choice) => Ok(choicePage(Choice.form().fill(choice)))
-        case None         => Ok(choicePage(Choice.form()))
-      }
+    {
+      System.out.println(s"ileQuery: ${appConfig.ileQueryFeatureStatus}")
+      cache
+        .findByEori(request.eori)
+        .map(_.map(cache => Choice(cache.answers.`type`)))
+        .map {
+          case Some(choice) => Ok(choicePage(Choice.form().fill(choice)))
+          case None         => Ok(choicePage(Choice.form()))
+        }
+    }
   }
 
   def startSpecificJourney(choice: String): Action[AnyContent] = authenticate.async { implicit request =>

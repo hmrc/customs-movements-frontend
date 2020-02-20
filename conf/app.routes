@@ -3,6 +3,9 @@ GET         /assets/*file                          controllers.Assets.versioned(
 
 GET         /unauthorised                          controllers.UnauthorisedController.onPageLoad
 
+# ILE Query - entry point
+GET         /consignment-query                     controllers.ileQuery.IleQueryController.displayQueryForm()
+
 # Start page
 GET         /start                                 controllers.StartController.displayStartPage()
 

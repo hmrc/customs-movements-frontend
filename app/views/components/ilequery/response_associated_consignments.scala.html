@@ -1,0 +1,64 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.notifications.queries.UcrInfo
+@import models.viewmodels.ilequery.IleQueryCodeConverter
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.ViewDates
+@import components.gds.link
+
+@this(converter: IleQueryCodeConverter,govukTable: GovukTable)
+
+@(associatedUcrs: Seq[UcrInfo])(implicit request: Request[_], messages: Messages)
+
+@if(associatedUcrs.size > 0) {
+    <div class="govuk-grid-column-full" id="associatedUcrs">
+        @govukTable(Table(
+            rows = associatedUcrs.zipWithIndex.map(indexedUcr => {
+                Seq(
+                    TableRow(
+                        content = HtmlContent(link(indexedUcr._1.ucr, controllers.ileQuery.routes.IleQueryController.submitQuery(indexedUcr._1.ucr))),
+                        attributes = Map("id" -> s"associateUcr_${indexedUcr._2}_ucr")
+                    ),
+                    TableRow(
+                        content = indexedUcr._1.entryStatus.flatMap(_.roe).map(converter.routeOfEntry(_)).getOrElse(Empty),
+                        attributes = Map("id" -> s"associateUcr_${indexedUcr._2}_roe")
+                    ),
+                    TableRow(
+                        content = indexedUcr._1.entryStatus.flatMap(_.soe).map(converter.statusOfEntryAll(_)).getOrElse(Empty),
+                        attributes = Map("id" -> s"associateUcr_${indexedUcr._2}_soe")
+                    )
+                )
+            })
+            ,
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("ileQueryResponse.associated.reference"))
+                ),
+                HeadCell(
+                    content = Text(messages("ileQueryResponse.associated.route"))
+                ),
+                HeadCell(
+                    content = Text(messages("ileQueryResponse.associated.status"))
+                )
+            )),
+            classes = "govuk-table govuk-!-margin-bottom-9",
+            caption = Some(messages("ileQueryResponse.associated")),
+            captionClasses = "govuk-table__caption govuk-heading-m",
+            firstCellIsHeader = true
+        ))
+    </div>
+}

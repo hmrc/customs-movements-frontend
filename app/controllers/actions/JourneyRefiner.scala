@@ -31,7 +31,7 @@ class JourneyRefiner @Inject()(movementRepository: CacheRepository)(implicit val
   override protected def executionContext: ExecutionContext = exc
 
   private def refiner[A](request: AuthenticatedRequest[A], types: JourneyType*): Future[Either[Result, JourneyRequest[A]]] =
-    movementRepository.findByEori(request.user.eori).map(_.map(_.answers)).map {
+    movementRepository.findByEori(request.user.eori).map(_.flatMap(_.answers)).map {
       case Some(answers: Answers) if types.isEmpty || types.contains(answers.`type`) =>
         Right(JourneyRequest(answers, request))
       case _ =>

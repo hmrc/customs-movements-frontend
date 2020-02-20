@@ -18,5 +18,9 @@ package unit.base
 
 import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
+import reactivemongo.api.commands.{LastError, WriteResult}
 
-trait UnitSpec extends WordSpec with MustMatchers with MockitoSugar
+trait UnitSpec extends WordSpec with MustMatchers with MockitoSugar {
+  val dummyWriteResultSuccess: WriteResult =
+    LastError(true, None, None, None, 0, None, false, None, None, false, None, None)
+}

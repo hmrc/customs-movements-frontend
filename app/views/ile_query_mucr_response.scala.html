@@ -1,0 +1,72 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import components.gds.gds_main_template
+@import components.ilequery.{response_buttons, response_parent, response_previous_movements, response_associated_consignments, response_mucr_summary}
+@import models.notifications.queries.{MucrInfo, UcrInfo}
+@import models.viewmodels.ilequery.IleQueryCodeConverter
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.BackButton
+@import views.Title
+
+@this(
+        converter: IleQueryCodeConverter,
+        govukLayout: gds_main_template,
+        summarySection: response_mucr_summary,
+        parentSection: response_parent,
+        previousMovementsSection: response_previous_movements,
+        associatedConsignmentsSection: response_associated_consignments,
+        responseButtons: response_buttons,
+        govukButton: GovukButton,
+        govukSummaryList : GovukSummaryList,
+        govukTable: GovukTable,
+        govukTag: GovukTag
+)
+
+@(info: MucrInfo, parentMucr: Option[MucrInfo], associatedConsignments: Seq[UcrInfo])(implicit request: Request[_], messages: Messages)
+
+@govukLayout(
+    useCustomContentWidth = true,
+    title = Title("ileQueryResponse.mucr.title"),
+    backButton = Some(BackButton(messages("site.back"), controllers.ileQuery.routes.IleQueryController.displayQueryForm()))) {
+
+    <div class="govuk-grid-row">
+
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">@messages("ileQueryResponse.mucr.title")</h1>
+            <span class="govuk-caption-xl">@info.ucr</span>
+            @if(parentMucr.isEmpty){
+                @info.isShut.map(isShut =>
+                    govukTag(Tag(
+                        attributes = Map("id" -> "isShutMucr"),
+                        content = Text(messages(s"ileQueryResponse.details.isShutMucr.$isShut"))
+                    ))
+                )
+            }
+        </div>
+
+        @summarySection(info)
+
+        @responseButtons()
+
+        @previousMovementsSection(info.movements)
+
+        @parentSection(parentMucr)
+
+        @associatedConsignmentsSection(associatedConsignments)
+
+    </div>
+}

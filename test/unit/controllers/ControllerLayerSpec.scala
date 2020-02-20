@@ -16,7 +16,8 @@
 
 package unit.controllers
 
-import controllers.actions.{AuthActionImpl, EoriWhitelist, JourneyRefiner}
+import config.AppConfig
+import controllers.actions.{AuthActionImpl, EoriWhitelist, IleQueryAction, JourneyRefiner}
 import models.SignedInUser
 import models.cache.Answers
 import models.cache.JourneyType.JourneyType
@@ -71,6 +72,13 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
   case object InValidJourney extends JourneyRefiner(mock[CacheRepository]) {
     override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
       Future.successful(Left(Results.Forbidden))
+  }
+
+  case object IleQueryEnabled extends IleQueryAction(mock[AppConfig]) {
+    override def invokeBlock[A](
+    request: AuthenticatedRequest[A],
+    block: AuthenticatedRequest[A] => Future[Result]
+  ): Future[Result] = block(request)
   }
 
 }

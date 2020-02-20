@@ -1,0 +1,62 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.notifications.queries.MovementInfo
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.ViewDates
+
+@this(govukTable: GovukTable)
+
+@(movements: Seq[MovementInfo])(implicit request: Request[_], messages: Messages)
+
+    @if(movements.nonEmpty) {
+        <div class="govuk-grid-column-full" id="previousMovements">
+        @govukTable(Table(
+            rows = movements.sortBy(_.movementDateTime).reverse.zipWithIndex.map(indexedMovement => {
+                Seq(
+                    TableRow(
+                        content = Text(messages(s"ileQueryResponse.previousMovements.type.${indexedMovement._1.messageCode.toLowerCase}")),
+                        attributes = Map("id" -> s"movement_type_${indexedMovement._2}")
+                    ),
+                    TableRow(
+                        content = Text(indexedMovement._1.movementDateTime.map(date => ViewDates.movementFormatter.format(date)).getOrElse("")),
+                        attributes = Map("id" -> s"movement_date_${indexedMovement._2}")
+                    ),
+                    TableRow(
+                        content = Text(indexedMovement._1.goodsLocation),
+                        attributes = Map("id" -> s"goods_location_${indexedMovement._2}")
+                    )
+                )
+            })
+            ,
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("ileQueryResponse.previousMovements.type"))
+                ),
+                HeadCell(
+                    content = Text(messages("ileQueryResponse.previousMovements.date"))
+                ),
+                HeadCell(
+                    content = Text(messages("ileQueryResponse.previousMovements.goodsLocation"))
+                )
+            )),
+            classes = "govuk-table govuk-!-margin-bottom-9",
+            caption = Some(messages("ileQueryResponse.previousMovements")),
+            captionClasses = "govuk-table__caption govuk-heading-m",
+            firstCellIsHeader = true
+        ))
+        </div>
+    }

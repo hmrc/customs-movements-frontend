@@ -405,3 +405,36 @@ ileQuery.ucr.empty = Enter a Unique Consignment Reference
 ileQuery.ucr.incorrect = Unique Consignment Reference is incorrect
 
 ileQuery.link.requests = View previous requests
+
+ileQuery.loading.title = Looking for consignment
+ileQuery.loading.hint = This should only take a few seconds, do not refresh the page
+
+ileQueryResponse.ducr.title = Consignment information
+ileQueryResponse.mucr.title = Consignment information
+ileQueryResponse.previousMovements = Previous movement requests
+ileQueryResponse.previousMovements.type = Type
+ileQueryResponse.previousMovements.type.eal = Arrival request (EAL)
+ileQueryResponse.previousMovements.type.edl = Departure request (EDL)
+ileQueryResponse.previousMovements.type.ret = Retrospective arrival request (RET)
+ileQueryResponse.previousMovements.date = Date and time
+ileQueryResponse.previousMovements.goodsLocation = Goods location
+ileQueryResponse.details = Queried UCR details
+ileQueryResponse.details.route = Route
+ileQueryResponse.details.entryStatus = Status
+ileQueryResponse.details.inputCustomsStatus = Input status
+ileQueryResponse.details.transport = Transport
+ileQueryResponse.details.isShutMucr.true = Shut
+ileQueryResponse.details.isShutMucr.false = Open
+ileQueryResponse.parent = Parent consignment
+ileQueryResponse.parent.reference = Reference
+ileQueryResponse.associated = This consignment contains
+ileQueryResponse.associated.reference = Reference
+ileQueryResponse.associated.route = Route
+ileQueryResponse.associated.status = Status
+ileQueryResponse.links.manageConsignment = Manage this consignment
+ileQueryResponse.links.findConsignment = Find another consignment
+
+ileQueryResponse.ucrNotFound.title = The requested UCR does not exist
+ileQueryResponse.ucrNotFound.message = {0} does not exist.
+
+ileCode.unknown = Unknown

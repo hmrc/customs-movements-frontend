@@ -3,12 +3,14 @@ GET         /assets/*file                          controllers.Assets.versioned(
 
 GET         /unauthorised                          controllers.UnauthorisedController.onPageLoad
 
+# Start page
+GET         /start                                 controllers.StartController.displayStartPage()
+
 # ILE Query - entry point
 GET         /consignment-query                     controllers.ileQuery.IleQueryController.displayQueryForm()
 POST        /consignment-query                     controllers.ileQuery.IleQueryController.submitQueryForm()
 
-# Start page
-GET         /start                                 controllers.StartController.displayStartPage()
+GET         /consignment-query/:ucr                controllers.ileQuery.IleQueryController.submitQuery(ucr: String)
 
 # ILE Query - entry point
 GET         /consignment-query                     controllers.ileQuery.FindConsignmentController.displayQueryForm()

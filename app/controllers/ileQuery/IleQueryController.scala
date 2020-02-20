@@ -18,12 +18,14 @@ package controllers.ileQuery
 
 import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.{AuthAction, IleQueryAction}
+import forms.IleQueryForm.form
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import repositories.CacheRepository
+import repositories.{CacheRepository, IleQueryRepository}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import views.html._
 
 import scala.concurrent.ExecutionContext
 
@@ -34,12 +36,19 @@ class IleQueryController @Inject()(
   mcc: MessagesControllerComponents,
   errorHandler: ErrorHandler,
   cacheRepository: CacheRepository,
-  connector: CustomsDeclareExportsMovementsConnector
+  ileQueryRepository: IleQueryRepository,
+  connector: CustomsDeclareExportsMovementsConnector,
+  ileQueryPage: ile_query
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayQueryForm(): Action[AnyContent] = (authenticate andThen ileQueryAction) { implicit request =>
-    Ok("Welcome to ILE Query")
+    Ok(ileQueryPage(form))
   }
 
+  def submitQueryForm(): Action[AnyContent] = authenticate { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(formWithErrors => BadRequest(ileQueryPage(formWithErrors)), validUcr => ???)
+  }
 }

@@ -18,7 +18,6 @@ package controllers.actions
 
 import config.AppConfig
 import javax.inject.Inject
-import models.ReturnToStartException
 import models.requests.AuthenticatedRequest
 import play.api.mvc._
 
@@ -27,6 +26,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class IleQueryAction @Inject()(appConfig: AppConfig)(implicit val exc: ExecutionContext)
     extends ActionFunction[AuthenticatedRequest, AuthenticatedRequest] {
   override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-    if (appConfig.ileQueryEnabled) block(request) else throw ReturnToStartException
+    if (appConfig.ileQueryEnabled) block(request) else Future(Results.NotFound)
   override protected def executionContext: ExecutionContext = exc
 }

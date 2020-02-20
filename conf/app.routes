@@ -5,6 +5,7 @@ GET         /unauthorised                          controllers.UnauthorisedContr
 
 # ILE Query - entry point
 GET         /consignment-query                     controllers.ileQuery.IleQueryController.displayQueryForm()
+POST        /consignment-query                     controllers.ileQuery.IleQueryController.submitQueryForm()
 
 # Start page
 GET         /start                                 controllers.StartController.displayStartPage()

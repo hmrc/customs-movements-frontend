@@ -399,3 +399,9 @@ arrivalReference.question = Give this arrival a unique reference
 arrivalReference.sectionHeading = Arrive consignment {0}
 arrivalReference.hint = This will help you identify it if you need to find it in the future. It can be up to 25 characters.
 arrivalReference.error = The reference should be no more than 25 characters.
+
+ileQuery.title = Find a consignment
+ileQuery.ucr.empty = Enter a Unique Consignment Reference
+ileQuery.ucr.incorrect = Unique Consignment Reference is incorrect
+
+ileQuery.link.requests = View previous requests

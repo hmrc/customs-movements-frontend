@@ -18,7 +18,9 @@ object AppDependencies {
     "uk.gov.hmrc"          %% "play-whitelist-filter"         % "3.1.0-play-26",
     "uk.gov.hmrc"          %% "simple-reactivemongo"          % "7.22.0-play-26",
     "uk.gov.hmrc"          %% "play-json-union-formatter"     % "1.7.0",
-    "com.github.tototoshi" %% "scala-csv"                     % "1.3.6"
+    "com.github.tototoshi" %% "scala-csv"                     % "1.3.6",
+    "com.github.cloudyrock.mongock"  %  "mongock-core"        % "2.0.2",
+    "org.mongodb"          %  "mongo-java-driver"             % "3.12.1"
   )
 
   val test = Seq(

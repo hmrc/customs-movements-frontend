@@ -39,7 +39,9 @@ class AppConfig @Inject()(
       .getOptional[String](key)
       .getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
-  MongockConfig(loadConfig("mongodb.uri"))
+  runModeConfiguration
+    .getOptional[String]("mongodb.uri")
+    .map(uri => MongockConfig(uri))
 
   lazy val keyStoreSource: String = appName
   lazy val keyStoreUrl: String = servicesConfig.baseUrl("keystore")

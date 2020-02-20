@@ -114,4 +114,10 @@ class AppConfig @Inject()(
 
   private def str2FeatureStatus(str: String): FeatureStatus =
     FeatureStatus.withName(str)
+
+  private def featureSwitch(key: String): Boolean =
+    runModeConfiguration.getOptional[Boolean](s"featureSwitches.$key").getOrElse(false)
+
+  lazy val hasQueryUcrFeature: Boolean = featureSwitch("queryUcrEnabled")
+
 }

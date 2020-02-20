@@ -83,9 +83,12 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar with BeforeAnd
         val expectedTimestampInfo = "23 Oct 2019 at 12:34"
         val expectedContentElements = Seq(
           messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe"),
+          roeKeyFromDecoder.code,
           messages(roeKeyFromDecoder.messageKey),
           messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe"),
+          soeKeyFromDecoder.code,
           messages(soeKeyFromDecoder.messageKey),
+          icsKeyFromDecoder.code,
           messages(icsKeyFromDecoder.messageKey)
         )
 

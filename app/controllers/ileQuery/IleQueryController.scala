@@ -42,7 +42,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class IleQueryController @Inject()(
   authenticate: AuthAction,
-  ileQueryAction: IleQueryAction,
+  ileQueryFeatureEnabled: IleQueryAction,
   mcc: MessagesControllerComponents,
   errorHandler: ErrorHandler,
   cacheRepository: CacheRepository,
@@ -58,11 +58,11 @@ class IleQueryController @Inject()(
 
   private val logger = Logger(this.getClass)
 
-  def displayQueryForm(): Action[AnyContent] = (authenticate andThen ileQueryAction) { implicit request =>
+  def displayQueryForm(): Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled) { implicit request =>
     Ok(ileQueryPage(form))
   }
 
-  def submitQueryForm(): Action[AnyContent] = authenticate { implicit request =>
+  def submitQueryForm(): Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled) { implicit request =>
     form
       .bindFromRequest()
       .fold(
@@ -71,7 +71,7 @@ class IleQueryController @Inject()(
       )
   }
 
-  def submitQuery(ucr: String): Action[AnyContent] = authenticate.async { implicit request =>
+  def submitQuery(ucr: String): Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled).async { implicit request =>
     ileQueryRepository.findBySessionIdAndUcr(retrieveSessionId, ucr).flatMap {
       case Some(query) =>
         connector.fetchQueryNotifications(query.conversationId, request.eori).flatMap { response =>

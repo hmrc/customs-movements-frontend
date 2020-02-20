@@ -18,10 +18,10 @@ package unit.controllers
 
 import config.AppConfig
 import controllers.actions.{AuthActionImpl, EoriWhitelist, IleQueryAction, JourneyRefiner}
-import models.SignedInUser
 import models.cache.Answers
 import models.cache.JourneyType.JourneyType
 import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.{FeatureDisabledException, SignedInUser}
 import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.Messages
 import play.api.libs.json.Writes
@@ -75,10 +75,12 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
   }
 
   case object IleQueryEnabled extends IleQueryAction(mock[AppConfig]) {
-    override def invokeBlock[A](
-    request: AuthenticatedRequest[A],
-    block: AuthenticatedRequest[A] => Future[Result]
-  ): Future[Result] = block(request)
+    override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = block(request)
+  }
+
+  case object IleQueryDisabled extends IleQueryAction(mock[AppConfig]) {
+    override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
+      throw FeatureDisabledException
   }
 
 }

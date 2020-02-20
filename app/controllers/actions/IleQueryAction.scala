@@ -18,15 +18,15 @@ package controllers.actions
 
 import config.AppConfig
 import javax.inject.Inject
+import models.FeatureDisabledException
 import models.requests.AuthenticatedRequest
 import play.api.mvc._
-import uk.gov.hmrc.http.NotFoundException
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class IleQueryAction @Inject()(appConfig: AppConfig)(implicit val exc: ExecutionContext)
     extends ActionFunction[AuthenticatedRequest, AuthenticatedRequest] {
   override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-    if (appConfig.ileQueryEnabled) block(request) else throw new NotFoundException("some message")
+    if (appConfig.ileQueryEnabled) block(request) else throw FeatureDisabledException
   override protected def executionContext: ExecutionContext = exc
 }

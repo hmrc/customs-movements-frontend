@@ -22,10 +22,10 @@ import connectors.CustomsDeclareExportsMovementsConnector
 import connectors.exchanges.IleQueryExchange
 import controllers.actions.IleQueryAction
 import handlers.ErrorHandler
-import models.UcrBlock
 import models.cache.IleQuery
 import models.notifications.queries.IleQueryResponseExchangeData.{SuccessfulResponseExchangeData, UcrNotFoundResponseExchangeData}
 import models.notifications.queries._
+import models.{FeatureDisabledException, UcrBlock}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{never, reset, verify, when}
 import play.api.libs.json.{JsString, Json}
@@ -52,20 +52,21 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
   private val ileQueryMucrResponsePage = mock[ile_query_mucr_response]
   private val consignmentNotFoundPage = mock[consignment_not_found_page]
 
-  private val controller: IleQueryController = new IleQueryController(
-    SuccessfulAuth(),
-    IleQueryEnabled,
-    stubMessagesControllerComponents(),
-    errorHandler,
-    cache,
-    ileQueryRepository,
-    connector,
-    ileQueryPage,
-    loadingScreenPage,
-    ileQueryDucrResponsePage,
-    ileQueryMucrResponsePage,
-    consignmentNotFoundPage
-  )(global)
+  private def controllerWithIleQuery(ileQueryAction: IleQueryAction): IleQueryController =
+    new IleQueryController(
+      SuccessfulAuth(),
+      ileQueryAction,
+      stubMessagesControllerComponents(),
+      errorHandler,
+      cache,
+      ileQueryRepository,
+      connector,
+      ileQueryPage,
+      loadingScreenPage,
+      ileQueryDucrResponsePage,
+      ileQueryMucrResponsePage,
+      consignmentNotFoundPage
+    )(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -85,7 +86,9 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
     super.afterEach()
   }
 
-  "Ile Query Controller" should {
+  "Ile Query Controller when ileQuery enabled" should {
+
+    val controller = controllerWithIleQuery(IleQueryEnabled)
 
     "return 200 (OK)" when {
 
@@ -285,6 +288,36 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
 
         status(result) mustBe SEE_OTHER
       }
+    }
+  }
+
+  "Ile Query Controller when ileQuery disabled" should {
+
+    val controller = controllerWithIleQuery(IleQueryDisabled)
+
+    "block access to query form" in {
+
+      intercept[RuntimeException] {
+        await(controller.displayQueryForm()(getRequest))
+      } mustBe FeatureDisabledException
+
+    }
+
+    "block access when posting query form" in {
+
+      val correctForm = Json.obj(("ucr", JsString(correctUcr)))
+
+      intercept[RuntimeException] {
+        await(controller.submitQueryForm()(postRequest(correctForm)))
+      }
+    }
+
+    "block access when getting query results" in {
+
+      intercept[RuntimeException] {
+        await(controller.submitQuery("mucr")(getRequest.withHeaders(Headers(("X-Session-ID", "123456")))))
+      } mustBe FeatureDisabledException
+
     }
   }
 }

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
-package models
+package controllers.exception
 
-case object FeatureDisabledException extends RuntimeException("Required feature is not enabled")
+trait FeatureDisabledException extends RuntimeException
+
+case object FeatureDisabledException extends FeatureDisabledException

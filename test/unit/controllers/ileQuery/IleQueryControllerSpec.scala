@@ -21,11 +21,12 @@ import java.time.Instant
 import connectors.CustomsDeclareExportsMovementsConnector
 import connectors.exchanges.IleQueryExchange
 import controllers.actions.IleQueryAction
+import controllers.exception.FeatureDisabledException
 import handlers.ErrorHandler
 import models.cache.IleQuery
 import models.notifications.queries.IleQueryResponseExchangeData.{SuccessfulResponseExchangeData, UcrNotFoundResponseExchangeData}
 import models.notifications.queries._
-import models.{FeatureDisabledException, UcrBlock}
+import models.UcrBlock
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{never, reset, verify, when}
 import play.api.libs.json.{JsString, Json}

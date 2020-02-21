@@ -17,8 +17,8 @@
 package controllers.actions
 
 import config.AppConfig
+import controllers.exception.FeatureDisabledException
 import javax.inject.Inject
-import models.FeatureDisabledException
 import models.requests.AuthenticatedRequest
 import play.api.mvc._
 

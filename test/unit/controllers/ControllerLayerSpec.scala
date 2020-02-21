@@ -18,10 +18,11 @@ package unit.controllers
 
 import config.AppConfig
 import controllers.actions.{AuthActionImpl, EoriWhitelist, IleQueryAction, JourneyRefiner}
+import controllers.exception.FeatureDisabledException
 import models.cache.Answers
 import models.cache.JourneyType.JourneyType
 import models.requests.{AuthenticatedRequest, JourneyRequest}
-import models.{FeatureDisabledException, SignedInUser}
+import models.SignedInUser
 import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.Messages
 import play.api.libs.json.Writes

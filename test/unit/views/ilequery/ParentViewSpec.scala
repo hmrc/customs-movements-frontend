@@ -54,7 +54,9 @@ class ParentViewSpec extends ViewSpec with Injector {
     "render parent consignment link" in {
       val parentRefElement = parentElement(view(parent), 0)
 
-      parentRefElement.getElementsByClass("govuk-link").first() must haveHref(controllers.ileQuery.routes.IleQueryController.submitQuery("parentUcr"))
+      parentRefElement.getElementsByClass("govuk-link").first() must haveHref(
+        controllers.ileQuery.routes.IleQueryController.getConsignmentInformation("parentUcr")
+      )
       parentRefElement.text() must be("parentUcr")
     }
 

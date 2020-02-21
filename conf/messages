@@ -438,3 +438,7 @@ ileQueryResponse.ucrNotFound.title = The requested UCR does not exist
 ileQueryResponse.ucrNotFound.message = {0} does not exist.
 
 ileCode.unknown = Unknown
+
+ileQueryResponse.timeout.title = There is a problem
+ileQueryResponse.timeout.heading = Sorry, there is a problem with the service
+ileQueryResponse.timeout.message = Try again later.

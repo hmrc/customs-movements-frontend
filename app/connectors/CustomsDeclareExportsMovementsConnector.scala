@@ -24,7 +24,7 @@ import models.submissions.Submission
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, Upstream4xxResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,6 +36,8 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
   import CustomsDeclareExportsMovementsConnector._
 
   private val logger = Logger(this.getClass)
+
+  private val FailedDependencyStatus: Int = 424
 
   private val JsonHeaders = Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.JSON, HeaderNames.ACCEPT -> ContentTypes.JSON)
 
@@ -84,7 +86,11 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
 
   def fetchQueryNotifications(conversationId: String, eori: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     httpClient
-      .GET[HttpResponse](s"${appConfig.customsDeclareExportsMovements}${appConfig.ileQueryUri}/$conversationId", eoriQueryParam(eori))
+      .GET[HttpResponse](s"${appConfig.customsDeclareExportsMovements}$IleQuery/$conversationId", eoriQueryParam(eori))
+      .recoverWith {
+        case exception: Upstream4xxResponse if exception.upstreamResponseCode == FailedDependencyStatus =>
+          Future.successful(HttpResponse(responseStatus = FailedDependencyStatus))
+      }
       .andThen {
         case Success(response)  => logSuccessfulExchange("Ile query response fetch", response.body)
         case Failure(exception) => logFailedExchange("Ile query response fetch", exception)
@@ -104,4 +110,5 @@ object CustomsDeclareExportsMovementsConnector {
   val Consolidations = "/consolidation"
   val Submissions = "/submissions"
   val Notifications = "/notifications"
+  val IleQuery = "/consignment-query"
 }

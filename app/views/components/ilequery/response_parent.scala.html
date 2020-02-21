@@ -38,7 +38,7 @@
                             content = Text(messages("ileQueryResponse.parent.reference"))
                         ),
                         value = Value(
-                            content = HtmlContent(link(parent.ucr, controllers.ileQuery.routes.IleQueryController.submitQuery(parent.ucr)))
+                            content = HtmlContent(link(parent.ucr, controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(parent.ucr)))
                         )
                     ),
                     SummaryListRow(

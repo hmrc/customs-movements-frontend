@@ -52,7 +52,9 @@ class AssociatedConsignmentsViewSpec extends ViewSpec with Injector {
 
       val elmChild = viewWithChild.getElementById("associateUcr_0_ucr")
       elmChild must containText("childUcr")
-      elmChild.getElementsByClass("govuk-link").first() must haveHref(controllers.ileQuery.routes.IleQueryController.submitQuery("childUcr"))
+      elmChild.getElementsByClass("govuk-link").first() must haveHref(
+        controllers.ileQuery.routes.IleQueryController.getConsignmentInformation("childUcr")
+      )
 
       viewWithChild.getElementById("associateUcr_0_roe") must containMessage(ROECode.DocumentaryControl.messageKey)
 

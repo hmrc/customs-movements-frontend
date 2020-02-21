@@ -34,7 +34,7 @@
 @govukLayout(
     title = Title("ileQuery.title")) {
 
-    @formHelper(action = controllers.ileQuery.routes.IleQueryController.submitQueryForm(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.ileQuery.routes.FindConsignmentController.submitQueryForm(), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 

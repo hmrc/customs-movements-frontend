@@ -36,12 +36,9 @@ class ChoiceController @Inject()(authenticate: AuthAction, cache: CacheRepositor
 ) extends FrontendController(mcc) with I18nSupport {
 
   def displayChoiceForm: Action[AnyContent] = authenticate.async { implicit request =>
-    cache.findByEori(request.eori).map {
-      case Some(cache) =>
-        cache.answers
-          .map(answers => Ok(choicePage(Choice.form().fill(Choice(answers.`type`)))))
-          .getOrElse(Ok(choicePage(Choice.form())))
-      case None => Ok(choicePage(Choice.form()))
+    cache.findByEori(request.eori).map(_.flatMap(_.answers)).map {
+      case Some(answers) => Ok(choicePage(Choice.form().fill(Choice(answers.`type`))))
+      case None          => Ok(choicePage(Choice.form()))
     }
   }
 

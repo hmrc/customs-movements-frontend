@@ -43,7 +43,7 @@ object IleQueryResponseExchangeData {
   ) extends IleQueryResponseExchangeData {
     override val typ = IleQueryResponseExchangeType.SuccessfulResponseExchange
 
-    val sortedChildrenUcrs: Seq[UcrInfo] = (childDucrs ++ childMucrs).sortBy(_.entryStatus.flatMap(_.roe).getOrElse(ROECode.NoneRoe))
+    lazy val sortedChildrenUcrs: Seq[UcrInfo] = (childDucrs ++ childMucrs).sortBy(_.entryStatus.flatMap(_.roe).getOrElse(ROECode.NoneRoe))
   }
 
   object SuccessfulResponseExchangeData {

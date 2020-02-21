@@ -46,23 +46,23 @@ class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTi
   private def findMucrEntry(entries: Seq[Entry]): Option[Entry] = entries.find(_.ucrType.contains("M"))
 
   private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[Html] = {
-    val crcCodeExplanationText = decoder.crc(crcCode).map(code => messages(code.messageKey))
+    val crcCodeExplanationText = decoder.crc(crcCode).map(crc => (crc.code, messages(crc.messageKey)))
 
-    crcCodeExplanationText.map(explanation => paragraph(explanation))
+    crcCodeExplanationText.map { case (code, explanation) => code_explanation("", code, explanation) }
   }
 
   private def buildRoeCodeExplanation(roeCode: String)(implicit messages: Messages): Option[Html] = {
     val RoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")
-    val roeCodeExplanationText = decoder.roe(roeCode).map(code => messages(code.messageKey))
+    val roeCodeExplanationText = decoder.roe(roeCode).map(roe => (roe.code, messages(roe.messageKey)))
 
-    roeCodeExplanationText.map(explanation => code_explanation(RoeCodeHeader, explanation))
+    roeCodeExplanationText.map { case (code, explanation) => code_explanation(RoeCodeHeader, code, explanation) }
   }
 
   private def buildSoeCodeExplanation(soeCode: String)(implicit messages: Messages): Option[Html] = {
     val SoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")
-    val soeCodeExplanationText = decoder.mucrSoe(soeCode).map(code => messages(code.messageKey))
+    val soeCodeExplanationText = decoder.mucrSoe(soeCode).map(soe => (soe.code, messages(soe.messageKey)))
 
-    soeCodeExplanationText.map(explanation => code_explanation(SoeCodeHeader, explanation))
+    soeCodeExplanationText.map { case (code, explanation) => code_explanation(SoeCodeHeader, code, explanation) }
   }
 
 }

@@ -1,37 +1,37 @@
 
-decoder.soe.DeclarationValidation = Declaration validation
-decoder.soe.DeclarationGoodsRelease = Declaration goods release
-decoder.soe.DeclarationClearance = Goods ready for release
-decoder.soe.DeclarationInvalidated = Declaration invalidated
-decoder.soe.DeclarationRejected = Your declaration has been rejected
+decoder.soe.DeclarationValidation = Waiting for validation
+decoder.soe.DeclarationGoodsRelease = Provisional clearance
+decoder.soe.DeclarationClearance = Cleared
+decoder.soe.DeclarationInvalidated = Invalid
+decoder.soe.DeclarationRejected = Rejected
 decoder.soe.DeclarationHandledExternally = Declaration handled externally
-decoder.soe.DeclarationCorrectionValidation = Declaration correction validation
+decoder.soe.DeclarationCorrectionValidation = Waiting for correction validation
 decoder.soe.AdvanceDeclarationRegistration = Advance declaration registration
-decoder.soe.DeclarationAcceptance = Declaration acceptance
-decoder.soe.DeclarationAcceptanceAtGoodsArrival = Declaration acceptance at goods arrival
-decoder.soe.DeclarationRejectionAtGoodsArrival = Declaration rejection at goods arrival
-decoder.soe.DeclarationCorrected = Declaration corrected
-decoder.soe.DeclarationSupplemented = Declaration supplemented
-decoder.soe.DeclarationRisked = Declaration risked
+decoder.soe.DeclarationAcceptance = Accepted
+decoder.soe.DeclarationAcceptanceAtGoodsArrival = Accepted at goods arrival
+decoder.soe.DeclarationRejectionAtGoodsArrival = Rejected at goods arrival
+decoder.soe.DeclarationCorrected = Corrected
+decoder.soe.DeclarationSupplemented = Supplemented
+decoder.soe.DeclarationRisked = Passed risking
 decoder.soe.CustomsPositionDetermined = Customs position determined
-decoder.soe.DeclarationClearanceAfterGoodsRelease = Declaration clearance after goods release
-decoder.soe.InsufficientGuarantees = Insufficient Guarantees
+decoder.soe.DeclarationClearanceAfterGoodsRelease = Cleared after goods release
+decoder.soe.InsufficientGuarantees = Insufficient guarantees
 decoder.soe.Departed = Departed
 decoder.soe.Frustrated = Frustrated
 
-decoder.soe.ConsolidationOpen = The MUCR is still open, or contains no declarations.
-decoder.soe.ConsolidationClosedWithoutP2P = Consolidation is closed but does not have P2P
-decoder.soe.ConsolidationHasP2P = Consolidation is ready to go
+decoder.soe.ConsolidationOpen = MUCR is open or empty
+decoder.soe.ConsolidationClosedWithoutP2P = MUCR is closed but does not have permission to proceed
+decoder.soe.ConsolidationHasP2P = MUCR has permission to proceed
 
-decoder.roe.DocumentaryControl = You need to provide additional documents before your goods can be released
-decoder.roe.PhysicalExternalPartyControl = We''re reviewing your declaration
-decoder.roe.NonBlockingDocumentaryControl = You need to provide additional documents after your goods have been released
-decoder.roe.NoControlRequired = The goods have passed risking
-decoder.roe.RiskingNotPerformed = Your goods need to be risked
+decoder.roe.DocumentaryControl = Additional documents needed before goods can be released
+decoder.roe.PhysicalExternalPartyControl = Subject to review
+decoder.roe.NonBlockingDocumentaryControl = Additional documents needed after goods have been released
+decoder.roe.NoControlRequired = No control needed
+decoder.roe.RiskingNotPerformed = Risking not yet performed
 decoder.roe.PrelodgePrefix = Provisional routing only
 
-decoder.icsCode.InvalidationAtTraderRequest = Declaration invalidated by trader
-decoder.icsCode.InvalidationByCustoms = Declaration invalidated by customs
+decoder.icsCode.InvalidationAtTraderRequest = Invalidated by trader
+decoder.icsCode.InvalidationByCustoms = Invalidated by customs
 
 decoder.crc.Success = Success
 decoder.crc.PrelodgedDeclarationNotArrived = Pre-lodged Declaration has not arrived

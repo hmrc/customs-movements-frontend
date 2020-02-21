@@ -7,10 +7,10 @@ GET         /unauthorised                          controllers.UnauthorisedContr
 GET         /start                                 controllers.StartController.displayStartPage()
 
 # ILE Query - entry point
-GET         /consignment-query                     controllers.ileQuery.IleQueryController.displayQueryForm()
-POST        /consignment-query                     controllers.ileQuery.IleQueryController.submitQueryForm()
+GET         /consignment-query                     controllers.ileQuery.FindConsignmentController.displayQueryForm()
+POST        /consignment-query                     controllers.ileQuery.FindConsignmentController.submitQueryForm()
 
-GET         /consignment-query/:ucr                controllers.ileQuery.IleQueryController.submitQuery(ucr: String)
+GET         /consignment-query/:ucr                controllers.ileQuery.IleQueryController.getConsignmentInformation(ucr: String)
 
 # ILE Query - entry point
 GET         /consignment-query                     controllers.ileQuery.FindConsignmentController.displayQueryForm()

@@ -17,6 +17,7 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
+import forms.ShutMucr
 import forms.ShutMucr.form
 import javax.inject.{Inject, Singleton}
 import models.cache.{Cache, JourneyType, ShutMucrAnswers}
@@ -39,7 +40,7 @@ class ShutMucrController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.SHUT_MUCR)) { implicit request =>
-    val shutMucr = request.answersAs[ShutMucrAnswers].shutMucr
+    val shutMucr: Option[ShutMucr] = request.answersAs[ShutMucrAnswers].shutMucr
     Ok(shutMucrPage(shutMucr.fold(form())(form().fill)))
   }
 
@@ -48,12 +49,16 @@ class ShutMucrController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(shutMucrPage(formWithErrors))),
-        validForm => {
-          val updatedCache = request.answersAs[ShutMucrAnswers].copy(shutMucr = Some(validForm))
-          cache.upsert(Cache(request.eori, updatedCache)).map { _ =>
-            Redirect(routes.ShutMucrSummaryController.displayPage())
-          }
-        }
+        validForm      => updateCache(request.eori, request.answersAs[ShutMucrAnswers], Some(validForm))
+                            .map { _ =>
+                              Redirect(routes.ShutMucrSummaryController.displayPage())
+                            }
       )
   }
+
+  private def updateCache(eori: String, answers: ShutMucrAnswers, shutMucr: Option[ShutMucr]): Future[Cache] = {
+    val updatedCache = answers.copy(shutMucr = shutMucr)
+    cache.upsert(Cache(eori, updatedCache))
+  }
+
 }

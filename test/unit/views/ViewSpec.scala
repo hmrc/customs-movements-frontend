@@ -17,7 +17,7 @@
 package views
 
 import models.SignedInUser
-import models.cache.Answers
+import models.cache.{Answers, Cache}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
@@ -27,13 +27,14 @@ import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.Enrolments
 import unit.controllers.CSRFSupport
 import views.spec.ViewMatchers
+import testdata.CommonTestData.validEori
 
 class ViewSpec extends WordSpec with MustMatchers with ViewMatchers with MessagesStub with CSRFSupport {
 
   implicit protected def htmlBodyOf(html: Html): Document = Jsoup.parse(html.toString())
 
   protected def journeyRequest(answers: Answers) =
-    JourneyRequest(answers, AuthenticatedRequest(FakeRequest().withCSRFToken, SignedInUser("eori", Enrolments(Set.empty))))
+    JourneyRequest(Cache(validEori, Some(answers), None), AuthenticatedRequest(FakeRequest().withCSRFToken, SignedInUser("eori", Enrolments(Set.empty))))
 
   /*
     Implicit Utility class for retrieving common elements which are on the vast majority of pages

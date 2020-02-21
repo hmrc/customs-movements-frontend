@@ -43,6 +43,7 @@ class JourneyRefinerSpec extends WordSpec with MustMatchers with MockitoSugar wi
   private val request = AuthenticatedRequest(FakeRequest(), user)
   private val answers = AssociateUcrAnswers()
   private val cache = Cache("eori", answers)
+  private val redirectResult = Results.Redirect(controllers.routes.ChoiceController.displayChoiceForm())
 
   private val refiner = new JourneyRefiner(movementRepository)
 
@@ -52,14 +53,14 @@ class JourneyRefinerSpec extends WordSpec with MustMatchers with MockitoSugar wi
   }
 
   "refine" should {
-    "permit request" when {
-      "answers found" in {
+    "add cache to the request" when {
+      "cache and answers are both not empty" in {
         given(block.apply(any())).willReturn(Future.successful(Results.Ok))
         given(movementRepository.findByEori("eori")).willReturn(Future.successful(Some(cache)))
 
         await(refiner.invokeBlock(request, block)) mustBe Results.Ok
 
-        theRequestBuilt mustBe JourneyRequest(answers, request)
+        theRequestBuilt mustBe JourneyRequest(cache, request)
       }
 
       def theRequestBuilt: JourneyRequest[_] = {
@@ -70,10 +71,16 @@ class JourneyRefinerSpec extends WordSpec with MustMatchers with MockitoSugar wi
     }
 
     "block request" when {
-      "answers not found" in {
-        given(movementRepository.findByEori("eori")).willReturn(Future.successful(None))
 
-        await(refiner.invokeBlock(request, block)) mustBe Results.Redirect(controllers.routes.ChoiceController.displayChoiceForm())
+      "cache is empty" in {
+        given(movementRepository.findByEori("eori")).willReturn(Future.successful(None))
+      }
+
+      "cached answers are empty" in {
+        val emptyCache = Cache("eori", None, None)
+        given(movementRepository.findByEori("eori")).willReturn(Future.successful(Some(emptyCache)))
+
+        await(refiner.invokeBlock(request, block)) mustBe redirectResult
       }
     }
   }

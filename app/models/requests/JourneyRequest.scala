@@ -17,17 +17,20 @@
 package models.requests
 
 import models.ReturnToStartException
-import models.cache.Answers
+import models.cache.{Answers, Cache}
 import play.api.mvc.WrappedRequest
 
-case class JourneyRequest[T](answers: Answers, request: AuthenticatedRequest[T]) extends WrappedRequest(request) {
+case class JourneyRequest[T](cache: Cache, request: AuthenticatedRequest[T]) extends WrappedRequest(request) {
 
   val eori: String = request.user.eori
 
-  def answersAre[J <: Answers]: Boolean = answers.isInstanceOf[J]
+  def answers: Answers = cache.answers.getOrElse(throw ReturnToStartException)
+
+  def answersAre[J <: Answers]: Boolean = cache.answers.isInstanceOf[J]
 
   def answersAs[J <: Answers]: J = answers match {
     case ans: J => ans
     case _      => throw ReturnToStartException
   }
+
 }

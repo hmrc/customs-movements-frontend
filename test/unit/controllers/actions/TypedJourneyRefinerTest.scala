@@ -60,7 +60,7 @@ class TypedJourneyRefinerTest extends WordSpec with MustMatchers with MockitoSug
 
           await(refiner(JourneyType.ARRIVE).invokeBlock(request, block)) mustBe Results.Ok
 
-          theRequestBuilt mustBe JourneyRequest(answers, request)
+          theRequestBuilt mustBe JourneyRequest(cache, request)
         }
 
         "on shared journey" in {
@@ -69,7 +69,7 @@ class TypedJourneyRefinerTest extends WordSpec with MustMatchers with MockitoSug
 
           await(refiner(JourneyType.DEPART, JourneyType.ARRIVE).invokeBlock(request, block)) mustBe Results.Ok
 
-          theRequestBuilt mustBe JourneyRequest(answers, request)
+          theRequestBuilt mustBe JourneyRequest(cache, request)
         }
       }
 

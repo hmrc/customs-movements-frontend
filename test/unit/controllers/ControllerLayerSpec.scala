@@ -19,7 +19,7 @@ package unit.controllers
 import config.AppConfig
 import controllers.actions.{AuthActionImpl, EoriWhitelist, IleQueryAction, JourneyRefiner}
 import controllers.exception.FeatureDisabledException
-import models.cache.Answers
+import models.cache.{Answers, Cache}
 import models.cache.JourneyType.JourneyType
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import models.SignedInUser
@@ -64,7 +64,7 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
 
   case class ValidJourney(answers: Answers) extends JourneyRefiner(mock[CacheRepository]) {
     override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
-      Future.successful(Right(JourneyRequest(answers, request)))
+      Future.successful(Right(JourneyRequest(Cache(request.eori, Some(answers), None), request)))
 
     override def apply(types: JourneyType*): ActionRefiner[AuthenticatedRequest, JourneyRequest] =
       if (types.contains(answers.`type`)) ValidJourney(answers) else InValidJourney

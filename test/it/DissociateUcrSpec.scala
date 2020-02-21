@@ -48,7 +48,7 @@ class DissociateUcrSpec extends IntegrationSpec {
         // Then
         status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage().url)
-        theCacheFor("eori") mustBe Some(
+        theAnswersFor("eori") mustBe Some(
           DisassociateUcrAnswers(ucr = Some(DisassociateUcr(kind = DisassociateKind.Mucr, mucr = Some("GB/321-54321"), ducr = None)))
         )
       }
@@ -89,7 +89,7 @@ class DissociateUcrSpec extends IntegrationSpec {
         // Then
         status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(controllers.consolidations.routes.DisassociateUcrConfirmationController.displayPage().url)
-        theCacheFor("eori") mustBe None
+        theAnswersFor("eori") mustBe None
         verify(
           postRequestedForConsolidation()
             .withRequestBody(equalToJson("""{"eori":"eori","ucr":"GB/321-54321","consolidationType":"MucrDisassociation"}"""))

@@ -31,15 +31,20 @@ import views.html.choice_page
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ChoiceController @Inject()(authenticate: AuthAction, cache: CacheRepository, mcc: MessagesControllerComponents, choicePage: choice_page)(
+class ChoiceController @Inject()(authenticate: AuthAction, cacheRepository: CacheRepository, mcc: MessagesControllerComponents, choicePage: choice_page)(
   implicit ec: ExecutionContext
 ) extends FrontendController(mcc) with I18nSupport {
 
-  def displayChoiceForm: Action[AnyContent] = authenticate.async { implicit request =>
-    cache.findByEori(request.eori).map(_.flatMap(_.answers)).map {
-      case Some(answers) => Ok(choicePage(Choice.form().fill(Choice(answers.`type`))))
-      case None          => Ok(choicePage(Choice.form()))
-    }
+  def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
+    cacheRepository
+      .findByEori(request.eori)
+      .map {
+        case Some(cache) =>
+          cache.answers
+            .map(answers => Ok(choicePage(Choice.form().fill(Choice(answers.`type`)))))
+            .getOrElse(Ok(choicePage(Choice.form())))
+        case None => Ok(choicePage(Choice.form()))  // TODO redirect to search page
+      }
   }
 
   def startSpecificJourney(choice: String): Action[AnyContent] = authenticate.async { implicit request =>
@@ -62,5 +67,5 @@ class ChoiceController @Inject()(authenticate: AuthAction, cache: CacheRepositor
   }
 
   private def saveAndRedirect(answers: Answers, call: Call)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
-    cache.upsert(Cache(request.eori, answers)).map(_ => Redirect(call))
+    cacheRepository.upsert(Cache(request.eori, answers)).map(_ => Redirect(call))
 }

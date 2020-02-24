@@ -41,7 +41,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
   override def beforeEach() {
     super.beforeEach()
-
+    givenTheCacheIsEmpty
     when(mockChoicePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -58,6 +58,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
   }
 
   "Choice Controller" should {
+
     "return 200 (OK)" when {
       "display page method is invoked with empty cache" in {
         givenTheCacheIsEmpty()
@@ -142,6 +143,10 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(routes.SubmissionsController.displayPage().url)
       }
+    }
+
+    "adapt" when {
+      // TODO
     }
   }
 

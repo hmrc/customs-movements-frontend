@@ -19,11 +19,12 @@
 @import components.gds.{errorSummary, exportsInputText, gds_main_template, sectionHeader}
 @import controllers.routes
 @import forms.ConsignmentReferences
-@import forms.ConsignmentReferences.AllowedReferences._
+@import forms.UcrType.Ducr
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 @import views.components.BackButton
+@import forms.UcrType.Mucr
 
 @this(
   govukLayout: gds_main_template,
@@ -61,13 +62,13 @@
       errorMessage = form("reference").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
       items = Seq(
         RadioItem(
-          value = Some(Ducr),
+          value = Some(Ducr.codeValue),
           content = Text(messages("consignmentReferences.reference.ducr")),
           checked = form("reference").value.contains(Ducr),
           conditionalHtml = Some(exportsInputText(form("ducrValue"), "site.inputText.ducr.label"))
         ),
         RadioItem(
-          value = Some(Mucr),
+          value = Some(Mucr.codeValue),
           content = Text(messages("consignmentReferences.reference.mucr")),
           checked = form("reference").value.contains(Mucr),
           conditionalHtml = Some(exportsInputText(form("mucrValue"), "site.inputText.mucr.label"))

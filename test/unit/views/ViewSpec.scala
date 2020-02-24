@@ -34,7 +34,10 @@ class ViewSpec extends WordSpec with MustMatchers with ViewMatchers with Message
   implicit protected def htmlBodyOf(html: Html): Document = Jsoup.parse(html.toString())
 
   protected def journeyRequest(answers: Answers) =
-    JourneyRequest(Cache(validEori, Some(answers), None), AuthenticatedRequest(FakeRequest().withCSRFToken, SignedInUser("eori", Enrolments(Set.empty))))
+    JourneyRequest(
+      Cache(validEori, Some(answers), None),
+      AuthenticatedRequest(FakeRequest().withCSRFToken, SignedInUser("eori", Enrolments(Set.empty)))
+    )
 
   /*
     Implicit Utility class for retrieving common elements which are on the vast majority of pages

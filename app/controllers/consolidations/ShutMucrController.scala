@@ -49,10 +49,10 @@ class ShutMucrController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(shutMucrPage(formWithErrors))),
-        validForm      => updateCache(request.eori, request.answersAs[ShutMucrAnswers], Some(validForm))
-                            .map { _ =>
-                              Redirect(routes.ShutMucrSummaryController.displayPage())
-                            }
+        validForm =>
+          updateCache(request.eori, request.answersAs[ShutMucrAnswers], Some(validForm)).map { _ =>
+            Redirect(routes.ShutMucrSummaryController.displayPage())
+        }
       )
   }
 

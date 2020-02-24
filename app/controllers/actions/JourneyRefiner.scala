@@ -42,9 +42,9 @@ class JourneyRefiner @Inject()(movementRepository: CacheRepository)(implicit val
   private def toJourneyRequest[A](request: AuthenticatedRequest[A], types: JourneyType*): Future[Option[JourneyRequest[A]]] =
     movementRepository.findByEori(request.user.eori).map { cacheOption =>
       for {
-        cache   <- cacheOption
+        cache <- cacheOption
         answers <- cache.answers
-        if (types.isEmpty || types.contains(answers.`type`))
+        if types.isEmpty || types.contains(answers.`type`)
       } yield JourneyRequest(cache, request)
     }
 

@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package models
+package forms
 
-import forms.UcrType
-import play.api.libs.json.Json
+sealed abstract class UcrType(val codeValue: String)
 
-final case class UcrBlock(val ucr: String, val ucrType: String) {
-
-  def is(ucrType: UcrType): Boolean = this.ucrType.equals(ucrType.codeValue)
-}
-
-object UcrBlock {
-  implicit val format = Json.format[UcrBlock]
-
-  def apply(ucr: String, ucrType: UcrType): UcrBlock = new UcrBlock(ucr, ucrType.codeValue)
-
+object UcrType {
+  case object Ducr extends UcrType("D")
+  case object Mucr extends UcrType("M")
 }

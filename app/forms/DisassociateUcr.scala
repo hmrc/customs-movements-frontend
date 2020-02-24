@@ -16,7 +16,7 @@
 
 package forms
 
-import models.ReturnToStartException
+import models.{ReturnToStartException, UcrBlock}
 import play.api.data.Forms._
 import play.api.data.format.Formatter
 import play.api.data.{Form, FormError, Forms}
@@ -54,6 +54,13 @@ case class DisassociateUcr(kind: DisassociateKind, ducr: Option[String], mucr: O
 
 object DisassociateUcr {
   import uk.gov.voa.play.form.ConditionalMappings._
+
+  def apply(ucrBlock: UcrBlock): DisassociateUcr =
+    ucrBlock.ucrType match {
+      case "M" => DisassociateUcr(DisassociateKind.Mucr, None, Some(ucrBlock.ucr))
+      case "D" => DisassociateUcr(DisassociateKind.Ducr, None, Some(ucrBlock.ucr))
+      case _   => throw new IllegalArgumentException(s"Invalid ucrBlock $ucrBlock")
+    }
 
   val formId: String = "DisassociateUcr"
 

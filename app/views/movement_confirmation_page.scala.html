@@ -18,6 +18,7 @@
 @import forms.{Choice, ConsignmentReferences}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
+@import forms.UcrType.Ducr
 
 @this(
         govukLayout: gds_main_template,
@@ -45,7 +46,7 @@
     @govukPanel(Panel(
         title = Text(messages(
             s"movement.${choice.value}.confirmation.heading",
-            if(consignmentReferences.reference == "D") "DUCR" else "MUCR",
+            if(consignmentReferences.is(Ducr)) "DUCR" else "MUCR",
             consignmentReferences.referenceValue
         ))
     ))

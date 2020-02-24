@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package forms
 
-import forms.UcrType
-import play.api.libs.json.Json
+import base.BaseSpec
 
-final case class UcrBlock(val ucr: String, val ucrType: String) {
+class UcrTypeSpec extends BaseSpec {
 
-  def is(ucrType: UcrType): Boolean = this.ucrType.equals(ucrType.codeValue)
-}
+  "UCR type model" should {
 
-object UcrBlock {
-  implicit val format = Json.format[UcrBlock]
-
-  def apply(ucr: String, ucrType: UcrType): UcrBlock = new UcrBlock(ucr, ucrType.codeValue)
+    "has correct allowed types" in {
+      UcrType.Ducr.codeValue must be("D")
+      UcrType.Mucr.codeValue must be("M")
+    }
+  }
 
 }

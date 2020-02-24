@@ -16,7 +16,7 @@
 
 package unit.controllers.consolidations
 
-import controllers.consolidations.{ShutMucrController, routes}
+import controllers.consolidations.{routes, ShutMucrController}
 import forms.ShutMucr
 import models.cache.{Cache, ShutMucrAnswers}
 import org.mockito.ArgumentCaptor
@@ -83,7 +83,6 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
         theResponseForm.value mustBe cachedForm
       }
     }
-
 
 //    "return 200 (OK) on displayPage method" when {
 //

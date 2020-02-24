@@ -24,6 +24,7 @@ import models.submissions.Submission
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.libs.json.{Format, Json}
+import play.mvc.Http.Status
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, Upstream4xxResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -37,7 +38,7 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
 
   private val logger = Logger(this.getClass)
 
-  private val FailedDependencyStatus: Int = 424
+  private val FailedDependencyStatus: Int = Status.FAILED_DEPENDENCY
 
   private val JsonHeaders = Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.JSON, HeaderNames.ACCEPT -> ContentTypes.JSON)
 

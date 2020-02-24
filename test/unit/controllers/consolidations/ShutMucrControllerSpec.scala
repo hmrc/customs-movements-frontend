@@ -84,25 +84,6 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
       }
     }
 
-//    "return 200 (OK) on displayPage method" when {
-//
-//      "cache contains shut mucr data" in {
-//        val mucr = ShutMucr("Mucr")
-//
-//        val result = controller(ShutMucrAnswers(Some(mucr))).displayPage()(getRequest())
-//
-//        status(result) mustBe OK
-//        verify(page).apply(any())(any(), any())
-//      }
-//
-//      "cache is empty" in {
-//        val result = controller(ShutMucrAnswers()).displayPage()(getRequest())
-//
-//        status(result) mustBe OK
-//        verify(page).apply(any())(any(), any())
-//      }
-//    }
-
     "return 400 (BAD_REQUEST)" when {
 
       "form is incorrect" in {

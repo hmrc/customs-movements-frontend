@@ -40,13 +40,6 @@ object ConsignmentReferences {
   def apply(ucrBlock: UcrBlock): ConsignmentReferences =
     new ConsignmentReferences(ucrBlock.ucrType, ucrBlock.ucr)
 
-  //  object AllowedReferences {
-//    val Ducr = "D"
-//    val Mucr = "M"
-//  }
-
-//  import AllowedReferences._
-
   import UcrType._
 
   val allowedReferenceAnswers: Seq[String] = Seq(Ducr, Mucr).map(_.codeValue)

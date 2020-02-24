@@ -16,6 +16,8 @@
 
 package models.notifications.queries
 
+import java.time.Instant
+
 import models.notifications.EntryStatus
 
 abstract class UcrInfo {
@@ -24,5 +26,10 @@ abstract class UcrInfo {
   val entryStatus: Option[EntryStatus]
   val movements: Seq[MovementInfo]
 
-  def transport: Option[Transport] = movements.find(_.transportDetails.isDefined).flatMap(_.transportDetails)
+  lazy val transport: Option[Transport] =
+    movements
+      .filter(_.transportDetails.isDefined)
+      .sortBy(_.movementDateTime)(Ordering.Option[Instant].reverse)
+      .headOption
+      .flatMap(_.transportDetails)
 }

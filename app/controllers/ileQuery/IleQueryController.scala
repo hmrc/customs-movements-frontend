@@ -24,8 +24,8 @@ import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import models.UcrBlock
 import models.cache.{Cache, IleQuery}
-import models.notifications.queries.IleQueryResponseExchange
 import models.notifications.queries.IleQueryResponseExchangeData.{SuccessfulResponseExchangeData, UcrNotFoundResponseExchangeData}
+import models.notifications.queries.{DucrInfo, IleQueryResponseExchange, MucrInfo}
 import models.requests.AuthenticatedRequest
 import play.api.Logger
 import play.api.i18n.I18nSupport
@@ -75,7 +75,7 @@ class IleQueryController @Inject()(
           queryResponse match {
             case Seq() => Future.successful(loadingPageResult)
             case response +: _ =>
-              ileQueryRepository.removeByConversationId(query.conversationId).map { _ =>
+              ileQueryRepository.removeByConversationId(query.conversationId).flatMap { _ =>
                 processQueryResults(response)
               }
           }
@@ -97,21 +97,30 @@ class IleQueryController @Inject()(
   private def loadingPageResult()(implicit request: Request[AnyContent]) =
     Ok(loadingScreenPage()).withHeaders("refresh" -> "5")
 
-  private def processQueryResults(queryResponse: IleQueryResponseExchange)(implicit request: AuthenticatedRequest[AnyContent]): Result =
+  private def processQueryResults(queryResponse: IleQueryResponseExchange)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     queryResponse.data match {
       case response: SuccessfulResponseExchangeData =>
-        val queriedUcr = response.queriedMucr.map(q => UcrBlock(q.ucr, "M")).orElse(response.queriedDucr.map(q => UcrBlock(q.ucr, "D")))
-        queriedUcr.foreach(ucr => cacheRepository.upsert(Cache(request.eori, ucr)))
+        response.queriedUcr match {
 
-        val ducrResult = response.queriedDucr.map(ducr => Ok(ileQueryDucrResponsePage(ducr, response.parentMucr)))
-        val mucrResult = response.queriedMucr.map(mucr => Ok(ileQueryMucrResponsePage(mucr, response.parentMucr, response.sortedChildrenUcrs)))
+          case ducrInfo: DucrInfo =>
+            val ucrBlock = UcrBlock(ucr = ducrInfo.ucr, ucrType = "D")
+            cacheRepository.upsert(Cache(request.eori, ucrBlock)).map { _ =>
+              Ok(ileQueryDucrResponsePage(ducrInfo, response.parentMucr))
+            }
 
-        ducrResult.orElse(mucrResult).getOrElse(loadingPageResult)
+          case mucrInfo: MucrInfo =>
+            val ucrBlock = UcrBlock(ucr = mucrInfo.ucr, ucrType = "M")
+            cacheRepository.upsert(Cache(request.eori, ucrBlock)).map { _ =>
+              Ok(ileQueryMucrResponsePage(mucrInfo, response.parentMucr, response.sortedChildrenUcrs))
+            }
+
+          case _ => Future.successful(loadingPageResult())
+        }
 
       case response: UcrNotFoundResponseExchangeData =>
         response.ucrBlock match {
-          case Some(UcrBlock(ucr, _)) => Ok(consignmentNotFound(ucr))
-          case _                      => InternalServerError(errorHandler.standardErrorTemplate())
+          case Some(UcrBlock(ucr, _)) => Future.successful(Ok(consignmentNotFound(ucr)))
+          case _                      => Future.successful(InternalServerError(errorHandler.standardErrorTemplate()))
         }
     }
 

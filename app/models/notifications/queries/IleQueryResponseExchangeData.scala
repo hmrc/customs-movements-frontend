@@ -45,9 +45,13 @@ object IleQueryResponseExchangeData {
 
     lazy val sortedChildrenUcrs: Seq[UcrInfo] = (childDucrs ++ childMucrs).sortBy(_.entryStatus.flatMap(_.roe).getOrElse(ROECode.NoneRoe))
 
-    lazy val queriedUcr: UcrInfo = queriedDucr
-      .orElse(queriedMucr)
-      .getOrElse(throw new IllegalStateException("SuccessfulResponseExchangeData must have either queriedDucr or queriedMucr"))
+    lazy val queriedUcr: UcrInfo = {
+      if (queriedDucr.isDefined && queriedMucr.isDefined)
+        throw new IllegalStateException("SuccessfulResponseExchangeData contains both queriedDucr and queriedMucr")
+      queriedDucr
+        .orElse(queriedMucr)
+        .getOrElse(throw new IllegalStateException("SuccessfulResponseExchangeData must have either queriedDucr or queriedMucr"))
+    }
   }
 
   object SuccessfulResponseExchangeData {

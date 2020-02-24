@@ -70,6 +70,17 @@ class IleQueryResponseExchangeDataSpec extends UnitSpec {
       }
     }
 
+    "both queriedDucr and queriedMucr are present" should {
+      "throw IllegalStateException" in {
+
+        val queriedDucrInfo = DucrInfo(ucr = "ducr", parentMucr = Some("parent-mucr"), declarationId = "declaration-id")
+        val queriedMucrInfo = MucrInfo(ucr = "mucr", parentMucr = Some("parent-mucr"))
+        val response = SuccessfulResponseExchangeData(queriedDucr = Some(queriedDucrInfo), queriedMucr = Some(queriedMucrInfo))
+
+        intercept[IllegalStateException] { response.queriedUcr }
+      }
+    }
+
     "both queriedDucr and queriedMucr are empty" should {
       "throw IllegalStateException" in {
 

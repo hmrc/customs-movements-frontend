@@ -59,4 +59,6 @@ object Countries {
 
   val allCountries: List[Country] =
     countries.filter(c => mdgCountryCodes contains c.countryCode)
+
+  def countryName(code: String) = allCountries.find(_.countryCode == code).map(_.countryName).getOrElse(code)
 }

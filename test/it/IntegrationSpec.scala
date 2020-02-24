@@ -67,7 +67,7 @@ abstract class IntegrationSpec
     route(app, request).get
   }
 
-  protected def theCacheFor(eori: String): Option[Answers] = await(cacheRepository.find(Json.obj("eori" -> eori)).one[Cache]).map(_.answers)
+  protected def theCacheFor(eori: String): Option[Answers] = await(cacheRepository.find(Json.obj("eori" -> eori)).one[Cache]).flatMap(_.answers)
 
   protected def givenCacheFor(eori: String, answers: Answers): Unit = await(cacheRepository.insert(Cache.format.writes(Cache(eori, answers))))
 

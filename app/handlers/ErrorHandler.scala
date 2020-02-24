@@ -17,12 +17,12 @@
 package handlers
 
 import config.AppConfig
-import controllers.exception.IncompleteApplication
+import controllers.exception.{FeatureDisabledException, IncompleteApplication}
 import controllers.routes
 import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.Results.{BadRequest, InternalServerError}
+import play.api.mvc.Results.{BadRequest, NotFound}
 import play.api.mvc.{Request, RequestHeader, Result, Results}
 import play.api.{Configuration, Environment}
 import play.twirl.api.Html
@@ -49,7 +49,8 @@ class ErrorHandler @Inject()(appConfig: AppConfig, override val messagesApi: Mes
         Results.SeeOther(routes.UnauthorisedController.onPageLoad().url)
       case _: IncompleteApplication | ReturnToStartException =>
         Results.Redirect(routes.StartController.displayStartPage())
-      case _ => super.resolveError(rh, ex)
+      case _: FeatureDisabledException => NotFound(notFoundTemplate(Request(rh, "")))
+      case _                           => super.resolveError(rh, ex)
     }
 
   def getBadRequestPage()(implicit request: Request[_]): Result =
@@ -60,4 +61,7 @@ class ErrorHandler @Inject()(appConfig: AppConfig, override val messagesApi: Mes
         message = Messages("global.error.message")
       )
     )
+
+  def standardErrorTemplate()(implicit request: Request[_]): Html =
+    errorTemplate("global.error.title", "global.error.heading", "global.error.message")
 }

@@ -1,0 +1,65 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import components.gds.link
+@import models.notifications.queries.MucrInfo
+@import models.viewmodels.ilequery.IleQueryCodeConverter
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+
+@this(
+        converter: IleQueryCodeConverter,
+        govukSummaryList : GovukSummaryList
+)
+
+@(parentMucr: Option[MucrInfo])(implicit request: Request[_], messages: Messages)
+
+@if(parentMucr.isDefined){
+    <div class="govuk-grid-column-two-thirds" id="parentConsignment">
+        <h2 class="govuk-heading-m">@messages("ileQueryResponse.parent")</h2>
+
+        @parentMucr.map(parent => {
+            govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("ileQueryResponse.parent.reference"))
+                        ),
+                        value = Value(
+                            content = HtmlContent(link(parent.ucr, controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(parent.ucr)))
+                        )
+                    ),
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("ileQueryResponse.details.route"))
+                        ),
+                        value = Value(
+                            content = parent.entryStatus.flatMap(_.roe).map(converter.routeOfEntry(_)).getOrElse(Empty)
+                        )
+                    ),
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("ileQueryResponse.details.entryStatus"))
+                        ),
+                        value = Value(
+                            content = parent.entryStatus.flatMap(_.soe).map(converter.statusOfEntryMucr(_)).getOrElse(Empty)
+                        )
+                    )
+                ).filterNot(_.value.content == Empty),
+                classes = "govuk-!-margin-bottom-9"
+            ))
+        })
+    </div>
+}

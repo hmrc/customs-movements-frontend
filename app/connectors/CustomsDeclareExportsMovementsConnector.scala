@@ -17,14 +17,14 @@
 package connectors
 
 import config.AppConfig
-import connectors.exchanges.{Consolidation, MovementRequest}
+import connectors.exchanges.{Consolidation, IleQueryExchange, MovementRequest}
 import javax.inject.{Inject, Singleton}
 import models.notifications.Notification
 import models.submissions.Submission
 import play.api.Logger
-import play.api.http.{ContentTypes, HeaderNames}
+import play.api.http.{ContentTypes, HeaderNames, Status}
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, Upstream4xxResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -57,6 +57,15 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
       }
       .map(_ => (): Unit)
 
+  def submit(request: IleQueryExchange)(implicit hc: HeaderCarrier): Future[String] =
+    httpClient
+      .POST[IleQueryExchange, HttpResponse](appConfig.customsDeclareExportsMovements + appConfig.ileQueryUri, request, JsonHeaders)
+      .andThen {
+        case Success(response)  => logSuccessfulExchange("Submit ILE Query", response.body)
+        case Failure(exception) => logFailedExchange("Submit ILE Query", exception)
+      }
+      .map(_.body)
+
   def fetchAllSubmissions(eori: String)(implicit hc: HeaderCarrier): Future[Seq[Submission]] =
     httpClient
       .GET[Seq[Submission]](s"${appConfig.customsDeclareExportsMovements}$Submissions", eoriQueryParam(eori))
@@ -73,6 +82,18 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
     httpClient
       .GET[Seq[Notification]](s"${appConfig.customsDeclareExportsMovements}$Notifications", eoriQueryParam(eori))
 
+  def fetchQueryNotifications(conversationId: String, eori: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
+    httpClient
+      .GET[HttpResponse](s"${appConfig.customsDeclareExportsMovements}$IleQuery/$conversationId", eoriQueryParam(eori))
+      .recoverWith {
+        case exception: Upstream4xxResponse if exception.upstreamResponseCode == Status.FAILED_DEPENDENCY =>
+          Future.successful(HttpResponse(responseStatus = Status.FAILED_DEPENDENCY))
+      }
+      .andThen {
+        case Success(response)  => logSuccessfulExchange("Ile query response fetch", response.body)
+        case Failure(exception) => logFailedExchange("Ile query response fetch", exception)
+      }
+
   private def eoriQueryParam(eori: String): Seq[(String, String)] = Seq("eori" -> eori)
 
   private def logSuccessfulExchange[T](`type`: String, payload: T)(implicit fmt: Format[T]): Unit =
@@ -87,4 +108,5 @@ object CustomsDeclareExportsMovementsConnector {
   val Consolidations = "/consolidation"
   val Submissions = "/submissions"
   val Notifications = "/notifications"
+  val IleQuery = "/consignment-query"
 }

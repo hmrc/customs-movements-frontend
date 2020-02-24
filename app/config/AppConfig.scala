@@ -84,6 +84,11 @@ class AppConfig @Inject()(
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports fetch notifications URI")
   )
 
+  lazy val ileQueryUri = servicesConfig.getConfString(
+    "customs-declare-exports-movements.ile-query",
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports ile query URI")
+  )
+
   lazy val responseErrorExplanationMode = loadConfig("microservice.services.features.response-error-explanation-mode")
 
   lazy val languageTranslationEnabled =

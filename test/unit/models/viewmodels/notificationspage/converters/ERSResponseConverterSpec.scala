@@ -146,14 +146,14 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar with BeforeAnd
         contentBuilder.convert(input)
 
         verify(decoder).ics(meq(UnknownIcsCode))
-        verify(decoder).roe(meq(UnknownRoeCode))
+        verify(decoder).roe(meq(UnknownRoeCode().code))
         verify(decoder).ducrSoe(meq(UnknownSoeCode))
       }
 
       "return NotificationsPageSingleElement without content for unknown codes" in {
 
         when(decoder.ics(meq(UnknownIcsCode))).thenReturn(None)
-        when(decoder.roe(meq(UnknownRoeCode))).thenReturn(None)
+        when(decoder.roe(meq(UnknownRoeCode().code))).thenReturn(None)
         when(decoder.ducrSoe(meq(UnknownSoeCode))).thenReturn(None)
 
         val input = ersResponseUnknownCodes
@@ -186,7 +186,7 @@ object ERSResponseConverterSpec {
     entries = Seq(
       Entry(
         ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "D")),
-        entryStatus = Some(EntryStatus(ics = Some(icsKeyFromDecoder.code), roe = Some(roeKeyFromDecoder.code), soe = Some(soeKeyFromDecoder.code)))
+        entryStatus = Some(EntryStatus(ics = Some(icsKeyFromDecoder.code), roe = Some(roeKeyFromDecoder), soe = Some(soeKeyFromDecoder.code)))
       )
     )
   )
@@ -200,7 +200,7 @@ object ERSResponseConverterSpec {
   )
 
   val UnknownIcsCode = "123"
-  val UnknownRoeCode = "456"
+  val UnknownRoeCode = ROECode.UnknownRoe
   val UnknownSoeCode = "7890"
 
   val ersResponseUnknownCodes = exampleNotificationFrontendModel(
@@ -210,7 +210,7 @@ object ERSResponseConverterSpec {
     entries = Seq(
       Entry(
         ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "D")),
-        entryStatus = Some(EntryStatus(ics = Some(UnknownIcsCode), roe = Some(UnknownRoeCode), soe = Some(UnknownSoeCode)))
+        entryStatus = Some(EntryStatus(ics = Some(UnknownIcsCode), roe = Some(UnknownRoeCode()), soe = Some(UnknownSoeCode)))
       )
     )
   )

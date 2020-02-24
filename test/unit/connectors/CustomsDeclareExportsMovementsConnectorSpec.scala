@@ -26,13 +26,17 @@ import connectors.exchanges.{DisassociateDUCRRequest, MovementDetailsRequest, Mo
 import forms.ConsignmentReferences
 import models.UcrBlock
 import models.notifications.ResponseType.ControlResponse
+import models.notifications.queries.DucrInfo
+import models.notifications.queries.IleQueryResponseExchangeData.SuccessfulResponseExchangeData
 import models.submissions.Submission
 import org.mockito.BDDMockito.given
 import play.api.http.Status
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import testdata.CommonTestData._
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
+import uk.gov.hmrc.http.Upstream5xxResponse
 
 class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
 
@@ -235,6 +239,84 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
       verify(getRequestedFor(urlEqualTo(s"/notifications/$conversationId?eori=eori")))
 
       response mustBe Seq(expectedNotification)
+    }
+  }
+
+  "fetch Query Notifications" when {
+
+    val expectedDucrInfo = DucrInfo(ucr = correctUcr, declarationId = "declarationId")
+    val expectedNotification = SuccessfulResponseExchangeData(queriedDucr = Some(expectedDucrInfo))
+    val notificationJson =
+      s"""
+         |  {
+         |    "queriedDucr": {
+         |      "ucr":"$correctUcr",
+         |      "declarationId":"declarationId",
+         |      "movements":[],
+         |      "goodsItem":[]
+         |    },
+         |    "childDucrs":[],
+         |    "childMucrs":[]
+         |  }
+         |""".stripMargin
+
+    "everything works correctly" should {
+
+      "send GET request to the backend" in {
+
+        stubFor(
+          get(s"/consignment-query/$conversationId?eori=eori")
+            .willReturn(aResponse().withStatus(OK).withBody(notificationJson))
+        )
+
+        connector.fetchQueryNotifications(conversationId, "eori").futureValue
+
+        val expectedUrl = s"/consignment-query/$conversationId?eori=eori"
+        verify(getRequestedFor(urlEqualTo(expectedUrl)))
+      }
+
+      "return HttpResponse with Ok (200) status and Notification in body" in {
+
+        stubFor(
+          get(s"/consignment-query/$conversationId?eori=eori")
+            .willReturn(aResponse().withStatus(OK).withBody(notificationJson))
+        )
+
+        val response = connector.fetchQueryNotifications(conversationId, "eori").futureValue
+
+        response.status mustBe OK
+        Json.parse(response.body).as[SuccessfulResponseExchangeData] mustBe expectedNotification
+      }
+    }
+
+    "received FailedDependency (424) response" should {
+
+      "return HttpResponse with FailedDependency status" in {
+
+        stubFor(
+          get(s"/consignment-query/$conversationId?eori=eori")
+            .willReturn(aResponse().withStatus(FAILED_DEPENDENCY))
+        )
+
+        val response = connector.fetchQueryNotifications(conversationId, "eori").futureValue
+
+        response.status mustBe FAILED_DEPENDENCY
+      }
+    }
+
+    "received InternalServerError (500) response" should {
+
+      "return failed Future" in {
+
+        stubFor(
+          get(s"/consignment-query/$conversationId?eori=eori")
+            .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
+        )
+
+        intercept[Upstream5xxResponse] {
+          await(connector.fetchQueryNotifications(conversationId, "eori"))
+        }
+      }
     }
   }
 }

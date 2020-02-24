@@ -35,14 +35,11 @@ class ChoiceController @Inject()(authenticate: AuthAction, cache: CacheRepositor
   implicit ec: ExecutionContext
 ) extends FrontendController(mcc) with I18nSupport {
 
-  def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    cache
-      .findByEori(request.eori)
-      .map(_.map(cache => Choice(cache.answers.`type`)))
-      .map {
-        case Some(choice) => Ok(choicePage(Choice.form().fill(choice)))
-        case None         => Ok(choicePage(Choice.form()))
-      }
+  def displayChoiceForm: Action[AnyContent] = authenticate.async { implicit request =>
+    cache.findByEori(request.eori).map(_.flatMap(_.answers)).map {
+      case Some(answers) => Ok(choicePage(Choice.form().fill(Choice(answers.`type`))))
+      case None          => Ok(choicePage(Choice.form()))
+    }
   }
 
   def startSpecificJourney(choice: String): Action[AnyContent] = authenticate.async { implicit request =>

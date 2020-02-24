@@ -17,8 +17,8 @@
 package controllers
 
 import controllers.actions.AuthAction
+import forms.Choice
 import forms.Choice._
-import forms.{Choice, ConsignmentReferences}
 import javax.inject.{Inject, Singleton}
 import models.UcrBlock
 import models.cache._

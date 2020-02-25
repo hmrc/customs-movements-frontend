@@ -16,7 +16,6 @@
 
 package controllers.consolidations
 
-import controllers.storage.FlashKeys
 import forms.ShutMucr
 import models.ReturnToStartException
 import models.cache.ShutMucrAnswers
@@ -41,7 +40,7 @@ class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with MockCache {
   private val page = mock[shut_mucr_summary]
 
   private def controller(answers: ShutMucrAnswers) =
-    new ShutMucrSummaryController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, submissionService, page)(global)
+    new ShutMucrSummaryController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), submissionService, page)(global)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -68,12 +67,6 @@ class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with MockCache {
           await(controller(ShutMucrAnswers()).displayPage()(getRequest()))
         } mustBe ReturnToStartException
       }
-
-      "cache is empty for submit method" in {
-        intercept[RuntimeException] {
-          await(controller(ShutMucrAnswers()).submit()(postRequest(JsObject(Seq.empty))))
-        } mustBe ReturnToStartException
-      }
     }
 
     "return 303 (SEE_OTHER)" when {
@@ -84,7 +77,6 @@ class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with MockCache {
         val result = controller(ShutMucrAnswers(Some(mucr))).submit()(postRequest(JsObject(Seq.empty)))
 
         status(result) mustBe SEE_OTHER
-        flash(result).get(FlashKeys.MUCR) mustBe Some(validMucr)
       }
     }
   }

@@ -16,58 +16,87 @@
 
 package views
 
-import base.Injector
-import controllers.routes
-import models.cache.ShutMucrAnswers
-import play.twirl.api.Html
-import testdata.CommonTestData.correctUcr
+import base.OverridableInjector
+import config.AppConfig
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject._
+import play.api.test.FakeRequest
 import views.html.shut_mucr_confirmation
 import views.tags.ViewTest
 
 @ViewTest
-class ShutMucrConfirmationViewSpec extends ViewSpec with Injector {
+class ShutMucrConfirmationViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private implicit val request = journeyRequest(ShutMucrAnswers())
-  private val shutMucrConformationPage = instanceOf[shut_mucr_confirmation]
-  private val view: Html = shutMucrConformationPage(correctUcr)(request, messages)
+  private implicit val request = FakeRequest().withCSRFToken
 
-  "Shut Mucr Confirmation View" should {
+  private val appConfig = mock[AppConfig]
+  private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))
 
-    "have title" in {
+  private val page = injector.instanceOf[shut_mucr_confirmation]
 
-      view.getTitle must containMessage("shutMucr.confirmation.tab.heading")
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(appConfig.ileQueryEnabled).thenReturn(false)
+  }
+
+  override def afterEach(): Unit = {
+    reset(appConfig)
+
+    super.afterEach()
+  }
+
+  "ShutMucrConfirmationView" should {
+
+    "render title" in {
+
+      page().getTitle must containMessage("confirmation.title.SHUT_MUCR")
     }
 
-    "have heading" in {
+    "render header" in {
 
-      view.getElementsByClass("govuk-panel__title").first() must containMessage("shutMucr.confirmation.heading", correctUcr)
+      page()
+        .getElementsByClass("govuk-heading-xl")
+        .first() must containMessage("confirmation.title.SHUT_MUCR")
     }
 
-    "have status information" in {
+    "render inset text with link to View Requests page" in {
 
-      view.getElementById("status-info").getElementsByClass("govuk-link").first() must haveHref(
-        routes.ChoiceController.startSpecificJourney(forms.Choice.Submissions.value)
-      )
+      val inset = page().getElementsByClass("govuk-inset-text").first()
+      inset must containMessage("confirmation.insetText")
+
+      val link = inset.getElementsByClass("govuk-link").first()
+      link must containMessage("confirmation.notification.timeline.link")
+      link must haveHref(controllers.routes.SubmissionsController.displayPage())
+    }
+  }
+
+  "ShutMucrConfirmationView" when {
+
+    "ileQuery feature is disabled" should {
+      "render 'Back to start' link to Choice page" in {
+
+        when(appConfig.ileQueryEnabled).thenReturn(false)
+
+        val link = page().getElementsByClass("govuk-link").get(1)
+
+        link must containMessage("confirmation.redirect.choice.link")
+        link must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+      }
     }
 
-    "have what next section" in {
+    "ileQuery feature is enabled" should {
+      "render 'Find another consignment' link to Find Consignment page" in {
 
-      view.getElementById("what-next").text() mustBe messages("movement.confirmation.whatNext")
-    }
+        when(appConfig.ileQueryEnabled).thenReturn(true)
 
-    "have next steps section" in {
+        val link = page().getElementsByClass("govuk-link").get(1)
 
-      val nextSteps = view.getElementById("next-steps").getElementsByClass("govuk-link")
-      nextSteps.first() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value))
-      nextSteps.last() must haveHref(routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value))
-    }
-
-    "display 'Back to start page' button on page" in {
-
-      val backButton = view.getElementsByClass("govuk-button")
-
-      backButton.text() mustBe messages("site.backToStart")
-      backButton.first() must haveHref(routes.ChoiceController.displayChoiceForm())
+        link must containMessage("confirmation.redirect.query.link")
+        link must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+      }
     }
   }
 

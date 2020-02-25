@@ -27,7 +27,7 @@ import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import views.html.choice_page
 import views.spec.UnitViewSpec
-import views.spec.UnitViewSpec.realMessagesApi
+import views.spec.UnitViewSpec.{realAppConfig, realMessagesApi}
 import views.tags.ViewTest
 
 @ViewTest
@@ -100,12 +100,17 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
       createView().getElementsByClass("govuk-fieldset__heading").get(0).text() must be(messages("movement.choice.title"))
     }
 
-    "display 'Back' button that links to 'Find a consignment' page" in {
+    "display 'Back' button that links to correct page" in {
 
       val backButton = createView().getElementById("back-link")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
+      backButton.attr("href") must be(
+        if (realAppConfig.ileQueryEnabled)
+          controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url
+        else
+          controllers.routes.StartController.displayStartPage().url
+      )
     }
 
     "display 6 radio buttons with labels" in {

@@ -26,7 +26,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Request, Result}
 import play.api.test.Helpers._
 import play.api.test.{CSRFTokenHelper, FakeRequest}
-import play.api.{Application, Logger}
+import play.api.{Application, Configuration}
 import reactivemongo.play.json.ImplicitBSONHandlers._
 import reactivemongo.play.json.collection.JSONCollection
 import repositories.CacheRepository
@@ -44,6 +44,9 @@ abstract class IntegrationSpec
    */
   private lazy val cacheRepository: JSONCollection = app.injector.instanceOf[CacheRepository].collection
 
+  private val ileQueryFeatureConfiguration: Configuration =
+    Configuration.from(Map("microservice.services.features.ileQuery" -> "enabled"))
+
   override lazy val port = 14681
   override def fakeApplication(): Application =
     new GuiceApplicationBuilder()
@@ -52,6 +55,7 @@ abstract class IntegrationSpec
       .configure(movementsBackendConfiguration)
       .configure(mongoConfiguration)
       .configure(auditConfiguration)
+      .configure(ileQueryFeatureConfiguration)
       .build()
 
   override def beforeEach(): Unit = {

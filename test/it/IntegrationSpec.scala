@@ -72,7 +72,7 @@ abstract class IntegrationSpec
   protected def theAnswersFor(eori: String): Option[Answers] = theCacheFor(eori).flatMap(_.answers)
 
   protected def givenCacheFor(cache: Cache): Unit = await(cacheRepository.insert(Cache.format.writes(cache)))
-  protected def givenCacheFor(eori: String, answers: Answers): Unit = givenCacheFor(Cache(eori, answers))
+  protected def givenCacheFor(eori: String, answers: Answers): Unit = givenCacheFor(Cache(eori, Some(answers), None))
 
   protected def verifyEventually(requestPatternBuilder: RequestPatternBuilder): Unit = eventually(WireMock.verify(requestPatternBuilder))
 

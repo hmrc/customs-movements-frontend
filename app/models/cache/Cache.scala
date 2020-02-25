@@ -23,7 +23,7 @@ import play.api.libs.json._
 
 case class Cache(eori: String, answers: Option[Answers], queryUcr: Option[UcrBlock], updated: Option[Instant] = Some(Instant.now())) {
 
-  def update(answers: Answers) = this.copy(answers = Some(answers), updated = Some(Instant.now()))
+  def update(answers: Answers): Cache = this.copy(answers = Some(answers), updated = Some(Instant.now()))
 }
 
 object Cache {
@@ -43,6 +43,5 @@ object Cache {
   }
   implicit val format: OFormat[Cache] = Json.format[Cache]
 
-  def apply(eori: String, answers: Answers): Cache = new Cache(eori, Some(answers), None)
   def apply(eori: String, queryUcr: UcrBlock): Cache = new Cache(eori, None, Some(queryUcr))
 }

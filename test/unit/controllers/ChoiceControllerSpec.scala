@@ -79,7 +79,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
       }
 
       "display page method is invoked with data in cache" in {
-        givenTheCacheContains(Cache("eori", ArrivalAnswers()))
+        givenTheCacheContains(Cache("eori", Some(ArrivalAnswers()), None))
         val result = controller.displayChoiceForm()(getRequest())
 
         status(result) mustBe OK
@@ -233,7 +233,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
       }
 
       "display page method is invoked with cache not containing queried URC" in {
-        givenTheCacheContains(Cache("eori", ArrivalAnswers()))
+        givenTheCacheContains(Cache("eori", Some(ArrivalAnswers()), None))
 
         val result = controller.displayChoiceForm()(getRequest())
 

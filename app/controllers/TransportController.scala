@@ -21,7 +21,7 @@ import forms.Transport
 import forms.Transport._
 import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
-import models.cache.{Cache, DepartureAnswers, JourneyType}
+import models.cache.{DepartureAnswers, JourneyType}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -56,7 +56,7 @@ class TransportController @Inject()(
         (formWithErrors: Form[Transport]) => Future.successful(BadRequest(transportPage(formWithErrors, consignmentReference))),
         validForm => {
           val movementAnswers = answers.copy(transport = Some(validForm))
-          cache.upsert(Cache(request.eori, movementAnswers)).map { _ =>
+          cache.upsert(request.cache.update(movementAnswers)).map { _ =>
             Redirect(controllers.routes.SummaryController.displayPage())
           }
         }

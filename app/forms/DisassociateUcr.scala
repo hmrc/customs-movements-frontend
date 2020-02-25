@@ -58,7 +58,7 @@ object DisassociateUcr {
   def apply(ucrBlock: UcrBlock): DisassociateUcr =
     ucrBlock.ucrType match {
       case "M" => DisassociateUcr(DisassociateKind.Mucr, None, Some(ucrBlock.ucr))
-      case "D" => DisassociateUcr(DisassociateKind.Ducr, None, Some(ucrBlock.ucr))
+      case "D" => DisassociateUcr(DisassociateKind.Ducr, Some(ucrBlock.ucr), None)
       case _   => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
     }
 

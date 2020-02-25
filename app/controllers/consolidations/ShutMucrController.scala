@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.ShutMucr
 import forms.ShutMucr.form
 import javax.inject.{Inject, Singleton}
-import models.cache.{Cache, JourneyType, ShutMucrAnswers}
+import models.cache.{JourneyType, ShutMucrAnswers}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.CacheRepository
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ShutMucrController @Inject()(
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
-  cache: CacheRepository,
+  cacheRepository: CacheRepository,
   mcc: MessagesControllerComponents,
   shutMucrPage: shut_mucr
 )(implicit ec: ExecutionContext)
@@ -49,16 +49,13 @@ class ShutMucrController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(shutMucrPage(formWithErrors))),
-        validForm =>
-          updateCache(request.eori, request.answersAs[ShutMucrAnswers], Some(validForm)).map { _ =>
+        validForm => {
+          val updatedAnswers = request.answersAs[ShutMucrAnswers].copy(shutMucr = Some(validForm))
+          cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
             Redirect(routes.ShutMucrSummaryController.displayPage())
+          }
         }
       )
-  }
-
-  private def updateCache(eori: String, answers: ShutMucrAnswers, shutMucr: Option[ShutMucr]): Future[Cache] = {
-    val updatedCache = answers.copy(shutMucr = shutMucr)
-    cache.upsert(Cache(eori, updatedCache))
   }
 
 }

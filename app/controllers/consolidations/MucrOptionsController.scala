@@ -17,9 +17,8 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
-import controllers.storage.CacheIdGenerator.movementCacheId
 import forms.MucrOptions
-import forms.MucrOptions.{form, formId}
+import forms.MucrOptions.form
 import javax.inject.{Inject, Singleton}
 import models.cache.{AssociateUcrAnswers, Cache, JourneyType}
 import play.api.i18n.I18nSupport
@@ -35,7 +34,7 @@ class MucrOptionsController @Inject()(
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
-  cache: CacheRepository,
+  cacheRepository: CacheRepository,
   page: mucr_options
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
@@ -55,10 +54,10 @@ class MucrOptionsController @Inject()(
           if (validatedForm.hasErrors) {
             Future.successful(BadRequest(page(validatedForm)))
           } else {
-            val updatedCache = request.answersAs[AssociateUcrAnswers].copy(mucrOptions = Some(validForm))
-            cache.upsert(Cache(request.eori, updatedCache)).map { _ =>
-              Redirect(routes.AssociateUcrController.displayPage())
-            }
+              val updatedAnswers = request.answersAs[AssociateUcrAnswers].copy(mucrOptions = Some(validForm))
+              cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
+                Redirect(routes.AssociateUcrController.displayPage())
+              }
           }
         }
       )

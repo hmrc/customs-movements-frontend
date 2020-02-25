@@ -18,7 +18,7 @@ package unit.controllers
 
 import controllers.consolidations.{routes => consolidationRoutes}
 import controllers.{routes, ChoiceController}
-import forms.{AssociateKind, AssociateUcr, Choice, ConsignmentReferences, DisassociateKind, DisassociateUcr, ShutMucr, UcrType}
+import forms._
 import forms.Choice._
 import models.UcrBlock
 import models.cache.{ArrivalAnswers, AssociateUcrAnswers, Cache, DepartureAnswers, DisassociateUcrAnswers, ShutMucrAnswers}

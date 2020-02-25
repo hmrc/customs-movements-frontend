@@ -59,7 +59,7 @@ object DisassociateUcr {
     ucrBlock.ucrType match {
       case "M" => DisassociateUcr(DisassociateKind.Mucr, None, Some(ucrBlock.ucr))
       case "D" => DisassociateUcr(DisassociateKind.Ducr, None, Some(ucrBlock.ucr))
-      case _   => throw new IllegalArgumentException(s"Invalid ucrBlock $ucrBlock")
+      case _   => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
     }
 
   val formId: String = "DisassociateUcr"

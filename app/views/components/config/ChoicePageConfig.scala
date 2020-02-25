@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package views.links
+package views.components.config
 
-import unit.base.UnitSpec
-import views.components.links.StartPageNextLink
+import config.AppConfig
+import javax.inject.Inject
+import models.UcrBlock
+import play.api.mvc.Call
 
-class StartPageNextLinkSpec extends UnitSpec {
-
-  "StartPageNextLink" should {
-
-    "return correct url when ileQuery enabled" in {
-      StartPageNextLink.url(ileQueryEnabled = true) must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
-    }
-
-    "return correct url when ileQuery disabled" in {
-      StartPageNextLink.url(ileQueryEnabled = false) must be(controllers.routes.ChoiceController.displayChoiceForm().url)
-    }
-
-  }
+class ChoicePageConfig @Inject()(appConfig: AppConfig) {
+  def backLink(queryUcr: Option[UcrBlock]): Call =
+    if (appConfig.ileQueryEnabled)
+      queryUcr
+        .map(block => controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(block.ucr))
+        .getOrElse(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+    else
+      controllers.routes.StartController.displayStartPage
 }

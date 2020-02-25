@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package views.components.links
-import models.UcrBlock
-import play.api.mvc.Call
+package views.components.config
+import config.AppConfig
+import javax.inject.Inject
 
-object ChoicePageBackLink {
-  def call(ileQueryEnabled: Boolean, queryUcr: Option[UcrBlock]): Call =
-    if (ileQueryEnabled)
-      queryUcr
-        .map(block => controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(block.ucr))
-        .getOrElse(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+class StartPageConfig @Inject()(appConfig: AppConfig) {
+
+  def startUrl: String =
+    if (appConfig.ileQueryEnabled)
+      controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url
     else
-      controllers.routes.StartController.displayStartPage
+      controllers.routes.ChoiceController.displayChoiceForm().url
+
+  def reportUrl = appConfig.serviceAvailabilityUrl
+  def beforeYouStartUrl = appConfig.customsDeclarationsGoodsTakenOutOfEuUrl
 }

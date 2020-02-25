@@ -21,7 +21,7 @@
 @import forms.Choice
 @import views.Title
 @import views.components.BackButton
-@import views.components.links.ChoicePageBackLink
+@import views.components.config.ChoicePageConfig
 
 @this(
   govukLayout: gds_main_template,
@@ -29,14 +29,14 @@
   govukRadios: GovukRadios,
   errorSummary: errorSummary,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-  appConfig: AppConfig
+  pageConfig: ChoicePageConfig
 )
 
 @(form: Form[Choice], queryUcr: Option[UcrBlock] = None)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
     title = Title("movement.choice.title"),
-    backButton = Some(BackButton(messages("site.back"), ChoicePageBackLink.call(appConfig.ileQueryEnabled, queryUcr)))) {
+    backButton = Some(BackButton(messages("site.back"), pageConfig.backLink(queryUcr)))) {
 
     @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
         @errorSummary(form.errors)

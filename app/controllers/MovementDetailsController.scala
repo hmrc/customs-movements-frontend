@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.{ArrivalDetails, DepartureDetails, MovementDetails}
 import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
-import models.cache.{ArrivalAnswers, Cache, DepartureAnswers, JourneyType}
+import models.cache.{ArrivalAnswers, DepartureAnswers, JourneyType}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -77,7 +77,7 @@ class MovementDetailsController @Inject()(
     boundForm.fold(
       (formWithErrors: Form[ArrivalDetails]) => Future.successful(Left(arrivalDetailsPage(formWithErrors, arrivalAnswers.consignmentReferences))),
       validForm =>
-        cache.upsert(Cache(request.eori, arrivalAnswers.copy(arrivalDetails = Some(validForm)))).map { _ =>
+        cache.upsert(request.cache.update(arrivalAnswers.copy(arrivalDetails = Some(validForm)))).map { _ =>
           Right(controllers.routes.LocationController.displayPage())
       }
     )
@@ -91,7 +91,7 @@ class MovementDetailsController @Inject()(
       .fold(
         (formWithErrors: Form[DepartureDetails]) => Future.successful(Left(departureDetailsPage(formWithErrors, consignmentReference))),
         validForm =>
-          cache.upsert(Cache(request.eori, departureAnswers.copy(departureDetails = Some(validForm)))).map { _ =>
+          cache.upsert(request.cache.update(departureAnswers.copy(departureDetails = Some(validForm)))).map { _ =>
             Right(controllers.routes.LocationController.displayPage())
         }
       )

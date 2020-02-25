@@ -15,25 +15,29 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import config.AppConfig
+@import components.gds.{errorSummary, gds_main_template}
 @import forms.Choice._
 @import forms.Choice
+@import forms.UcrType.Ducr
 @import views.Title
 @import views.components.BackButton
-@import components.gds.{errorSummary, gds_main_template}
+@import views.components.config.ChoicePageConfig
 
 @this(
   govukLayout: gds_main_template,
   govukButton: GovukButton,
   govukRadios: GovukRadios,
   errorSummary: errorSummary,
-  formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+  formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+  pageConfig: ChoicePageConfig
 )
 
-@(form: Form[Choice])(implicit request: Request[_], messages: Messages)
+@(form: Form[Choice], queryUcr: Option[UcrBlock] = None)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
     title = Title("movement.choice.title"),
-    backButton = Some(BackButton(messages("site.back"), controllers.routes.StartController.displayStartPage))) {
+    backButton = Some(BackButton(messages("site.back"), pageConfig.backLink(queryUcr)))) {
 
     @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
@@ -78,7 +82,7 @@
                     content = Text(messages(s"movement.choice.${Submissions.toString.toLowerCase}.label")),
                     checked = form("choice").value.contains(Submissions.toString.toLowerCase)
                 )
-            ),
+            ).filterNot(item => item.value.contains(ShutMUCR.value) && queryUcr.exists(_.ucrType == Ducr.codeValue)),
             errorMessage = form("choice").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
         @govukButton(Button(content = Text(messages("site.continue"))))

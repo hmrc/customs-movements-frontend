@@ -17,16 +17,17 @@
 package views
 
 import base.Injector
-import forms.Choice
 import forms.Choice._
+import forms.{Choice, UcrType}
 import helpers.views.CommonMessages
+import models.UcrBlock
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import views.html.choice_page
 import views.spec.UnitViewSpec
-import views.spec.UnitViewSpec.realMessagesApi
+import views.spec.UnitViewSpec.{realAppConfig, realMessagesApi}
 import views.tags.ViewTest
 
 @ViewTest
@@ -59,6 +60,31 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
       messages must haveTranslationFor("choicePage.input.error.empty")
       messages must haveTranslationFor("choicePage.input.error.incorrectValue")
     }
+
+    "not render 'Shut Mucr' option" when {
+      "ILE query was for a Ducr" in {
+        val view = choicePage(Choice.form(), Some(UcrBlock("DUCR", UcrType.Ducr)))
+
+        view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
+        view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.associateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.disassociateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.departure.label"))
+        view.getElementsByAttributeValue("for", "choice-5").text() must be(messages("movement.choice.submissions.label"))
+      }
+    }
+
+    "render 'Shut Mucr' option" when {
+      "ILE query was for a Mucr" in {
+        val view = choicePage(Choice.form(), Some(UcrBlock("MUCR", UcrType.Mucr)))
+
+        view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
+        view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.associateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.disassociateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.shutmucr.label"))
+        view.getElementsByAttributeValue("for", "choice-5").text() must be(messages("movement.choice.departure.label"))
+        view.getElementsByAttributeValue("for", "choice-6").text() must be(messages("movement.choice.submissions.label"))
+      }
+    }
   }
 
   "Choice View on empty page" should {
@@ -74,12 +100,17 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
       createView().getElementsByClass("govuk-fieldset__heading").get(0).text() must be(messages("movement.choice.title"))
     }
 
-    "display 'Back' button that links to 'Make an export declaration' page" in {
+    "display 'Back' button that links to correct page" in {
 
       val backButton = createView().getElementById("back-link")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be(controllers.routes.StartController.displayStartPage().url)
+      backButton.attr("href") must be(
+        if (realAppConfig.ileQueryEnabled)
+          controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url
+        else
+          controllers.routes.StartController.displayStartPage().url
+      )
     }
 
     "display 6 radio buttons with labels" in {

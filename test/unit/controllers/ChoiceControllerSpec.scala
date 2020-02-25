@@ -16,12 +16,13 @@
 
 package unit.controllers
 
+import config.AppConfig
 import controllers.consolidations.{routes => consolidationRoutes}
 import controllers.{routes, ChoiceController}
-import forms._
 import forms.Choice._
+import forms._
 import models.UcrBlock
-import models.cache.{ArrivalAnswers, AssociateUcrAnswers, Cache, DepartureAnswers, DisassociateUcrAnswers, ShutMucrAnswers}
+import models.cache._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -39,13 +40,18 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
   private val mockChoicePage = mock[choice_page]
   private val ucrBlock = UcrBlock("MUCR", UcrType.Mucr)
   private val cacheWithUcr = Cache("eori", ucrBlock)
+  private val ileQueryEnabled = mock[AppConfig]
+  private val ileQueryDisabled = mock[AppConfig]
 
-  private val controller = new ChoiceController(SuccessfulAuth(), cache, stubMessagesControllerComponents(), mockChoicePage)(global)
+  private def controllerWithConfig(appConfig: AppConfig) =
+    new ChoiceController(SuccessfulAuth(), cache, stubMessagesControllerComponents(), appConfig, mockChoicePage)(global)
 
   override def beforeEach() {
     super.beforeEach()
     givenTheCacheIsEmpty()
-    when(mockChoicePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockChoicePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(ileQueryEnabled.ileQueryEnabled).thenReturn(true)
+    when(ileQueryDisabled.ileQueryEnabled).thenReturn(false)
   }
 
   override def afterEach() {
@@ -56,11 +62,12 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
   private def theResponseForm: Form[Choice] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Choice]])
-    verify(mockChoicePage).apply(captor.capture())(any(), any())
+    verify(mockChoicePage).apply(captor.capture(), any())(any(), any())
     captor.getValue
   }
 
-  "Choice Controller" should {
+  "Choice Controller with ileQuery disabled" should {
+    val controller = controllerWithConfig(ileQueryDisabled)
 
     "return 200 (OK)" when {
       "display page method is invoked with empty cache" in {
@@ -72,7 +79,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
       }
 
       "display page method is invoked with data in cache" in {
-        givenTheCacheContains(Cache("eori", ArrivalAnswers()))
+        givenTheCacheContains(Cache("eori", Some(ArrivalAnswers()), None))
         val result = controller.displayChoiceForm()(getRequest())
 
         status(result) mustBe OK
@@ -212,8 +219,53 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
     }
   }
 
-  "Choice controller on startSpecificJourney method" should {
+  "Choice Controller with ileQuery enabled" should {
+    val controller = controllerWithConfig(ileQueryEnabled)
 
+    "redirect to find a consignment" when {
+      "display page method is invoked with cache empty" in {
+        givenTheCacheIsEmpty()
+
+        val result = controller.displayChoiceForm()(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
+      }
+
+      "display page method is invoked with cache not containing queried URC" in {
+        givenTheCacheContains(Cache("eori", Some(ArrivalAnswers()), None))
+
+        val result = controller.displayChoiceForm()(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
+      }
+    }
+
+    "return 200 (OK)" when {
+      "display page method is invoked with cache containing queried URC but no Answer" in {
+        givenTheCacheContains(Cache("eori", UcrBlock("ucr", "M")))
+
+        val result = controller.displayChoiceForm()(getRequest())
+
+        status(result) mustBe OK
+        theResponseForm.value mustBe empty
+      }
+
+      "display page method is invoked with cache containing queried URC and Answer" in {
+        givenTheCacheContains(Cache("eori", Some(ArrivalAnswers()), Some(UcrBlock("ucr", "M"))))
+
+        val result = controller.displayChoiceForm()(getRequest())
+
+        status(result) mustBe OK
+        theResponseForm.value mustBe Some(Arrival)
+      }
+    }
+
+  }
+
+  "Choice controller with ileQuery disabled on startSpecificJourney method" should {
+    val controller = controllerWithConfig(ileQueryDisabled)
     "redirect to Consignment References page" when {
       "choice is arrival" in {
         val result = controller.startSpecificJourney(Arrival.value)(getRequest())

@@ -20,6 +20,7 @@ import base.Injector
 import play.twirl.api.Html
 import views.html.start_page
 import views.spec.UnitViewSpec
+import views.spec.UnitViewSpec.realAppConfig
 import views.tags.ViewTest
 
 @ViewTest
@@ -134,7 +135,13 @@ class StartViewSpec extends UnitViewSpec with Injector {
 
     "display 'Start now' button" in {
       view.getElementsByClass("govuk-button govuk-button--start").get(0).text() mustBe "startPage.buttonName"
-      view.getElementsByClass("govuk-button govuk-button--start").get(0) must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+
+      view.getElementsByClass("govuk-button govuk-button--start").get(0) must haveHref(
+        if (realAppConfig.ileQueryEnabled)
+          controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
+        else
+          controllers.routes.ChoiceController.displayChoiceForm()
+      )
     }
 
     "display link to go back to Contents section" in {

@@ -55,8 +55,8 @@ class AssociateUcrController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(associateUcrPage(formWithErrors, mucrOptions))),
         formData => {
-          val updatedCache = request.answersAs[AssociateUcrAnswers].copy(associateUcr = Some(formData))
-          cache.upsert(Cache(request.eori, updatedCache)).map { _ =>
+          val updatedAnswers = request.answersAs[AssociateUcrAnswers].copy(associateUcr = Some(formData))
+          cache.upsert(request.cache.update(updatedAnswers)).map { _ =>
             Redirect(routes.AssociateUcrSummaryController.displayPage())
           }
         }

@@ -31,8 +31,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.CacheRepository
 import uk.gov.hmrc.auth.core.Enrolments
-import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class JourneyRefinerSpec extends WordSpec with MustMatchers with MockitoSugar with BeforeAndAfterEach {
@@ -42,7 +42,7 @@ class JourneyRefinerSpec extends WordSpec with MustMatchers with MockitoSugar wi
   private val user = SignedInUser("eori", Enrolments(Set.empty))
   private val request = AuthenticatedRequest(FakeRequest(), user)
   private val answers = AssociateUcrAnswers()
-  private val cache = Cache("eori", answers)
+  private val cache = Cache("eori", Some(answers), None)
   private val redirectResult = Results.Redirect(controllers.routes.ChoiceController.displayChoiceForm())
 
   private val refiner = new JourneyRefiner(movementRepository)

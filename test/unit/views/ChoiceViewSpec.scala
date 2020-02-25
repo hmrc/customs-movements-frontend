@@ -74,12 +74,12 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
       createView().getElementsByClass("govuk-fieldset__heading").get(0).text() must be(messages("movement.choice.title"))
     }
 
-    "display 'Back' button that links to 'Make an export declaration' page" in {
+    "display 'Back' button that links to 'Find a consignment' page" in {
 
       val backButton = createView().getElementById("back-link")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be(controllers.routes.StartController.displayStartPage().url)
+      backButton.attr("href") must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
     }
 
     "display 6 radio buttons with labels" in {

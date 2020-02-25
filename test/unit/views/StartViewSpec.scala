@@ -134,7 +134,9 @@ class StartViewSpec extends UnitViewSpec with Injector {
 
     "display 'Start now' button" in {
       view.getElementsByClass("govuk-button govuk-button--start").get(0).text() mustBe "startPage.buttonName"
-      view.getElementsByClass("govuk-button govuk-button--start").get(0) must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+      view.getElementsByClass("govuk-button govuk-button--start").get(0) must haveHref(
+        controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
+      )
     }
 
     "display link to go back to Contents section" in {

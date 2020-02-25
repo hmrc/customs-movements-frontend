@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.AppConfig
 import controllers.actions.AuthAction
 import forms.Choice
 import forms.Choice._
@@ -31,16 +32,37 @@ import views.html.choice_page
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ChoiceController @Inject()(authenticate: AuthAction, cache: CacheRepository, mcc: MessagesControllerComponents, choicePage: choice_page)(
-  implicit ec: ExecutionContext
-) extends FrontendController(mcc) with I18nSupport {
+class ChoiceController @Inject()(
+  authenticate: AuthAction,
+  cacheRepository: CacheRepository,
+  mcc: MessagesControllerComponents,
+  appConfig: AppConfig,
+  choicePage: choice_page
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayChoiceForm: Action[AnyContent] = authenticate.async { implicit request =>
-    cache.findByEori(request.eori).map(_.flatMap(_.answers)).map {
+    if (appConfig.ileQueryEnabled)
+      displayChoiceFormForIleQuery
+    else
+      displayChoiceFormForIleQueryDisabled
+  }
+
+  private def displayChoiceFormForIleQuery()(implicit request: AuthenticatedRequest[_]) =
+    cacheRepository.findByEori(request.eori).map {
+      case Some(cache) if cache.queryUcr.isDefined =>
+        cache.answers
+          .map(answers => Ok(choicePage(Choice.form().fill(Choice(answers.`type`)), cache.queryUcr)))
+          .getOrElse(Ok(choicePage(Choice.form(), cache.queryUcr)))
+      case _ =>
+        Redirect(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+    }
+
+  private def displayChoiceFormForIleQueryDisabled()(implicit request: AuthenticatedRequest[_]) =
+    cacheRepository.findByEori(request.eori).map(_.flatMap(_.answers)).map {
       case Some(answers) => Ok(choicePage(Choice.form().fill(Choice(answers.`type`))))
       case None          => Ok(choicePage(Choice.form()))
     }
-  }
 
   def startSpecificJourney(choice: String): Action[AnyContent] = authenticate.async { implicit request =>
     proceed(Choice(choice))
@@ -62,5 +84,5 @@ class ChoiceController @Inject()(authenticate: AuthAction, cache: CacheRepositor
   }
 
   private def saveAndRedirect(answers: Answers, call: Call)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
-    cache.upsert(Cache(request.eori, answers)).map(_ => Redirect(call))
+    cacheRepository.upsert(Cache(request.eori, answers)).map(_ => Redirect(call))
 }

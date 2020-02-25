@@ -15,6 +15,7 @@
  */
 
 import forms.Choice
+import models.UcrBlock
 import models.cache._
 import play.api.test.Helpers._
 
@@ -22,12 +23,22 @@ class ChoiceSpec extends IntegrationSpec {
 
   "Display Page" should {
 
-    "return 200" in {
+    "return 200 when queryUcr in cache" in {
       givenAuthSuccess("eori")
+      givenCacheFor(Cache("eori", UcrBlock("ucr", "M")))
 
       val response = get(controllers.routes.ChoiceController.displayChoiceForm())
 
       status(response) mustBe OK
+    }
+
+    "return 300 when no queryUcr in cache" in {
+      givenAuthSuccess("eori")
+
+      val response = get(controllers.routes.ChoiceController.displayChoiceForm())
+
+      status(response) mustBe SEE_OTHER
+      redirectLocation(response) mustBe Some(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
     }
   }
 

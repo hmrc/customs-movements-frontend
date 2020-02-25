@@ -21,7 +21,7 @@ import java.time.{Instant, ZoneOffset}
 import models.UcrBlock
 import play.api.libs.json._
 
-case class Cache(eori: String, answers: Option[Answers], queryUcr: Option[UcrBlock], updated: Option[Instant] = Some(Instant.now())){
+case class Cache(eori: String, answers: Option[Answers], queryUcr: Option[UcrBlock], updated: Option[Instant] = Some(Instant.now())) {
 
   def update(answers: Answers) = this.copy(answers = Some(answers), updated = Some(Instant.now()))
 }

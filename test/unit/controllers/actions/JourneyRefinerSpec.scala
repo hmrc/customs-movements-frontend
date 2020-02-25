@@ -54,7 +54,7 @@ class JourneyRefinerSpec extends WordSpec with MustMatchers with MockitoSugar wi
 
   "refine" should {
     "add cache to the request" when {
-      "cache and answers are both not empty" in {
+      "cache contains non-empty answers" in {
         given(block.apply(any())).willReturn(Future.successful(Results.Ok))
         given(movementRepository.findByEori("eori")).willReturn(Future.successful(Some(cache)))
 
@@ -74,6 +74,8 @@ class JourneyRefinerSpec extends WordSpec with MustMatchers with MockitoSugar wi
 
       "cache is empty" in {
         given(movementRepository.findByEori("eori")).willReturn(Future.successful(None))
+
+        await(refiner.invokeBlock(request, block)) mustBe redirectResult
       }
 
       "cached answers are empty" in {

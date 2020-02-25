@@ -63,25 +63,27 @@ class ChoiceController @Inject()(
   }
 
   private def proceed(choice: Choice)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
-    choice match {
-      case Arrival      => saveAndRedirect(ArrivalAnswers.fromUcr, controllers.routes.ConsignmentReferencesController.displayPage())
-      case Departure    => saveAndRedirect(DepartureAnswers.fromUcr, controllers.routes.ConsignmentReferencesController.displayPage())
-      case AssociateUCR => saveAndRedirect(AssociateUcrAnswers.fromUcr, controllers.consolidations.routes.MucrOptionsController.displayPage())
+    (choice match {
+      case Arrival =>
+        createOrUpdateCache(request.eori, ArrivalAnswers.fromUcr).map(_ => routes.ConsignmentReferencesController.displayPage())
+      case Departure =>
+        createOrUpdateCache(request.eori, DepartureAnswers.fromUcr).map(_ => routes.ConsignmentReferencesController.displayPage())
+      case AssociateUCR =>
+        createOrUpdateCache(request.eori, AssociateUcrAnswers.fromUcr).map(_ => consolidations.routes.MucrOptionsController.displayPage())
       case DisassociateUCR =>
-        saveAndRedirect(DisassociateUcrAnswers.fromUcr, controllers.consolidations.routes.DisassociateUcrController.displayPage())
-      case ShutMUCR    => saveAndRedirect(ShutMucrAnswers.fromUcr, controllers.consolidations.routes.ShutMucrController.displayPage())
-      case Submissions => Future.successful(Redirect(controllers.routes.SubmissionsController.displayPage()))
-    }
+        createOrUpdateCache(request.eori, DisassociateUcrAnswers.fromUcr).map(_ => consolidations.routes.DisassociateUcrController.displayPage())
+      case ShutMUCR =>
+        createOrUpdateCache(request.eori, ShutMucrAnswers.fromUcr).map(_ => consolidations.routes.ShutMucrController.displayPage())
+      case Submissions => Future.successful(routes.SubmissionsController.displayPage())
+    }).map(Redirect)
 
-  private def saveAndRedirect(answerProvider: Option[UcrBlock] => Answers, call: Call)(
-    implicit request: AuthenticatedRequest[AnyContent]
-  ): Future[Result] =
+  def createOrUpdateCache(eori: String, answerProvider: Option[UcrBlock] => Answers)(): Future[Cache] =
     for {
-      updatedCache: Cache <- cacheRepository.findByEori(request.eori).map {
+      updatedCache: Cache <- cacheRepository.findByEori(eori).map {
         case Some(cache) => cache.copy(answers = Some(answerProvider.apply(cache.queryUcr)))
-        case None        => Cache(request.eori, Some(answerProvider.apply(None)), None)
+        case None        => Cache(eori, Some(answerProvider.apply(None)), None)
       }
-      result <- cacheRepository.upsert(updatedCache).map(_ => Redirect(call))
-    } yield (result)
+      result <- cacheRepository.upsert(updatedCache)
+    } yield result
 
 }

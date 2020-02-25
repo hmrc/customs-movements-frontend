@@ -88,7 +88,7 @@ object ShutMucrAnswers {
   implicit val format: Format[ShutMucrAnswers] = Json.format[ShutMucrAnswers]
 
   def fromUcr(ucrBlock: Option[UcrBlock]): ShutMucrAnswers = {
-    val shutMucr = ucrBlock.map(_.ucrType).filter(_.equals("M")).map(ShutMucr.apply)
+    val shutMucr = ucrBlock.filter(_.ucrType.equals("M")).map(ucrBlock => ShutMucr(ucrBlock.ucr))
     ShutMucrAnswers(shutMucr)
   }
 }

@@ -18,10 +18,12 @@ package unit.controllers.consolidations
 
 import controllers.consolidations.{routes, ShutMucrController}
 import forms.ShutMucr
-import models.cache.ShutMucrAnswers
+import models.cache.{Cache, ShutMucrAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.OptionValues
+import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -36,12 +38,18 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
 
   private val page = mock[shut_mucr]
 
-  private def controller(answers: ShutMucrAnswers) =
+  private def controller(answers: ShutMucrAnswers = ShutMucrAnswers()) =
     new ShutMucrController(SuccessfulAuth(), ValidJourney(answers), cache, stubMessagesControllerComponents(), page)(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     when(page.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  private def theResponseForm: Form[ShutMucr] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[ShutMucr]])
+    verify(page).apply(captor.capture())(any(), any())
+    captor.getValue()
   }
 
   override protected def afterEach(): Unit = {
@@ -51,22 +59,28 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
 
   "Shut Mucr Controller" should {
 
-    "return 200 (OK) on displayPage method" when {
+    "return 200 (OK)" when {
 
-      "cache contains shut mucr data" in {
-        val mucr = ShutMucr("Mucr")
+      "GET displayPage is invoked without data in cache" in {
 
-        val result = controller(ShutMucrAnswers(Some(mucr))).displayPage()(getRequest())
+        givenTheCacheIsEmpty()
+
+        val result = controller().displayPage()(getRequest)
 
         status(result) mustBe OK
-        verify(page).apply(any())(any(), any())
+        theResponseForm.value mustBe empty
       }
 
-      "cache is empty" in {
-        val result = controller(ShutMucrAnswers()).displayPage()(getRequest())
+      "GET displayPage is invoked with data in cache" in {
+
+        val cachedForm = Some(ShutMucr("123"))
+        givenTheCacheContains(Cache("12345", Some(ShutMucrAnswers(shutMucr = cachedForm)), None))
+
+        val result = controller(ShutMucrAnswers(shutMucr = cachedForm)).displayPage()(getRequest)
 
         status(result) mustBe OK
-        verify(page).apply(any())(any(), any())
+
+        theResponseForm.value mustBe cachedForm
       }
     }
 
@@ -84,6 +98,9 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
     "return 303 (SEE_OTHER)" when {
 
       "form is correct and submission service returned ACCEPTED" in {
+
+        givenTheCacheIsEmpty()
+
         val correctForm = Json.toJson(ShutMucr(validMucr))
 
         val result = controller(ShutMucrAnswers()).submitForm()(postRequest(correctForm))

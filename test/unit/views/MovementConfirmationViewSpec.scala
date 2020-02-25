@@ -18,7 +18,7 @@ package views
 
 import base.Injector
 import controllers.routes
-import forms.{Choice, ConsignmentReferences}
+import forms.{Choice, ConsignmentReferences, UcrType}
 import models.cache.{ArrivalAnswers, DepartureAnswers}
 import testdata.CommonTestData.correctUcr
 import views.html.movement_confirmation_page
@@ -27,7 +27,7 @@ class MovementConfirmationViewSpec extends ViewSpec with Injector {
 
   val movementConfirmationPage = instanceOf[movement_confirmation_page]
 
-  val consignmentReferences = ConsignmentReferences(ConsignmentReferences.AllowedReferences.Ducr, correctUcr)
+  val consignmentReferences = ConsignmentReferences(UcrType.Ducr, correctUcr)
 
   "Arrival Confirmation Page" should {
 

@@ -16,10 +16,17 @@
 
 package models
 
+import forms.UcrType
 import play.api.libs.json.Json
 
-final case class UcrBlock(ucr: String, ucrType: String)
+final case class UcrBlock(ucr: String, ucrType: String) {
+
+  def is(ucrType: UcrType): Boolean = this.ucrType.equals(ucrType.codeValue)
+}
 
 object UcrBlock {
   implicit val format = Json.format[UcrBlock]
+
+  def apply(ucr: String, ucrType: UcrType): UcrBlock = UcrBlock(ucr, ucrType.codeValue)
+
 }

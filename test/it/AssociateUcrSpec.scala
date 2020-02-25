@@ -47,7 +47,7 @@ class AssociateUcrSpec extends IntegrationSpec {
 
         status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrController.displayPage().url)
-        theCacheFor("eori") mustBe Some(AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345"))))
+        theAnswersFor("eori") mustBe Some(AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345"))))
       }
     }
   }
@@ -73,7 +73,7 @@ class AssociateUcrSpec extends IntegrationSpec {
 
         status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrSummaryController.displayPage().url)
-        theCacheFor("eori") mustBe Some(
+        theAnswersFor("eori") mustBe Some(
           AssociateUcrAnswers(
             mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345")),
             associateUcr = Some(AssociateUcr(AssociateKind.Mucr, "GB/321-54321"))
@@ -117,7 +117,7 @@ class AssociateUcrSpec extends IntegrationSpec {
 
         status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrConfirmationController.displayPage().url)
-        theCacheFor("eori") mustBe None
+        theAnswersFor("eori") mustBe None
         verify(
           postRequestedForConsolidation()
             .withRequestBody(equalToJson("""{"eori":"eori","mucr":"GB/123-12345","ucr":"GB/321-54321","consolidationType":"MucrAssociation"}"""))

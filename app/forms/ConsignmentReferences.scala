@@ -17,42 +17,47 @@
 package forms
 
 import forms.EnhancedMapping.requiredRadio
+import models.UcrBlock
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
-case class ConsignmentReferences(reference: String, referenceValue: String)
+case class ConsignmentReferences(reference: String, referenceValue: String) {
+
+  def is(ucrType: UcrType): Boolean = this.reference.equals(ucrType.codeValue)
+}
 
 object ConsignmentReferences {
   implicit val format = Json.format[ConsignmentReferences]
 
   val formId = "ConsignmentReferences"
 
-  object AllowedReferences {
-    val Ducr = "D"
-    val Mucr = "M"
-  }
+  def apply(reference: UcrType, referenceValue: String): ConsignmentReferences =
+    new ConsignmentReferences(reference.codeValue, referenceValue)
 
-  import AllowedReferences._
+  def apply(ucrBlock: UcrBlock): ConsignmentReferences =
+    new ConsignmentReferences(ucrBlock.ucrType, ucrBlock.ucr)
 
-  val allowedReferenceAnswers: Seq[String] = Seq(Ducr, Mucr)
+  import UcrType._
+
+  val allowedReferenceAnswers: Seq[String] = Seq(Ducr, Mucr).map(_.codeValue)
 
   private def form2Model: (String, Option[String], Option[String]) => ConsignmentReferences = {
     case (reference, ducrValue, mucrValue) =>
       reference match {
-        case Ducr => ConsignmentReferences(Ducr, ducrValue.getOrElse(""))
-        case Mucr => ConsignmentReferences(Mucr, mucrValue.getOrElse(""))
+        case Ducr.codeValue => ConsignmentReferences(Ducr, ducrValue.getOrElse(""))
+        case Mucr.codeValue => ConsignmentReferences(Mucr, mucrValue.getOrElse(""))
       }
   }
 
   private def model2Form: ConsignmentReferences => Option[(String, Option[String], Option[String])] =
     model =>
       model.reference match {
-        case Ducr => Some((model.reference, Some(model.referenceValue), None))
-        case Mucr => Some((model.reference, None, Some(model.referenceValue)))
-        case _    => Some(model.reference, None, None)
+        case Ducr.codeValue => Some((model.reference, Some(model.referenceValue), None))
+        case Mucr.codeValue => Some((model.reference, None, Some(model.referenceValue)))
+        case _              => Some(model.reference, None, None)
     }
 
   val mapping = Forms
@@ -61,14 +66,14 @@ object ConsignmentReferences {
         .verifying("consignmentReferences.reference.error", isContainedIn(allowedReferenceAnswers)),
       "ducrValue" -> mandatoryIfEqual(
         "reference",
-        Ducr,
+        Ducr.codeValue,
         text()
           .verifying("consignmentReferences.reference.ducrValue.empty", nonEmpty)
           .verifying("consignmentReferences.reference.ducrValue.error", isEmpty or validDucr)
       ),
       "mucrValue" -> mandatoryIfEqual(
         "reference",
-        Mucr,
+        Mucr.codeValue,
         text()
           .verifying("consignmentReferences.reference.mucrValue.empty", nonEmpty)
           .verifying("consignmentReferences.reference.mucrValue.error", isEmpty or validMucr)

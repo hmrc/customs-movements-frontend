@@ -17,7 +17,6 @@
 package forms
 
 import base.BaseSpec
-import forms.ConsignmentReferences.AllowedReferences
 import helpers.views.ConsignmentReferencesMessages
 import play.api.data.FormError
 
@@ -27,17 +26,6 @@ class ConsignmentReferencesSpec extends BaseSpec with ConsignmentReferencesMessa
   val validMucr = "GB/ABC-12342"
 
   "Consignment References model" should {
-    "contains all allowed values" in {
-      val allowedReferences = ConsignmentReferences.allowedReferenceAnswers
-
-      allowedReferences must contain(AllowedReferences.Ducr)
-      allowedReferences must contain(AllowedReferences.Mucr)
-    }
-
-    "has correct allowed references" in {
-      ConsignmentReferences.AllowedReferences.Ducr must be("D")
-      ConsignmentReferences.AllowedReferences.Mucr must be("M")
-    }
 
     "contains formId" in {
       ConsignmentReferences.formId must be("ConsignmentReferences")

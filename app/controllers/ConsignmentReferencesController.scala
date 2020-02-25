@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConsignmentReferencesController @Inject()(
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
-  cache: CacheRepository,
+  cacheRepository: CacheRepository,
   mcc: MessagesControllerComponents,
   consignmentReferencesPage: consignment_references
 )(implicit ec: ExecutionContext)
@@ -54,11 +54,11 @@ class ConsignmentReferencesController @Inject()(
           validForm => {
             request.answers match {
               case arrivalAnswers: ArrivalAnswers =>
-                cache.upsert(Cache(request.eori, arrivalAnswers.copy(consignmentReferences = Some(validForm)))).map { _ =>
+                cacheRepository.upsert(request.cache.update(arrivalAnswers.copy(consignmentReferences = Some(validForm)))).map { _ =>
                   Redirect(controllers.routes.MovementDetailsController.displayPage())
                 }
               case departureAnswers: DepartureAnswers =>
-                cache.upsert(Cache(request.eori, departureAnswers.copy(consignmentReferences = Some(validForm)))).map { _ =>
+                cacheRepository.upsert(request.cache.update(departureAnswers.copy(consignmentReferences = Some(validForm)))).map { _ =>
                   Redirect(controllers.routes.MovementDetailsController.displayPage())
                 }
             }

@@ -58,7 +58,7 @@ class DepartureSpec extends IntegrationSpec {
         // Then
         status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(controllers.routes.MovementDetailsController.displayPage().url)
-        theCacheFor("eori") mustBe Some(DepartureAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+        theAnswersFor("eori") mustBe Some(DepartureAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
       }
     }
   }
@@ -97,7 +97,7 @@ class DepartureSpec extends IntegrationSpec {
         // Then
         status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(controllers.routes.LocationController.displayPage().url)
-        theCacheFor("eori") mustBe Some(
+        theAnswersFor("eori") mustBe Some(
           DepartureAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
             departureDetails = Some(DepartureDetails(Date(date), Time(time)))
@@ -146,7 +146,7 @@ class DepartureSpec extends IntegrationSpec {
         // Then
         status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(controllers.routes.TransportController.displayPage().url)
-        theCacheFor("eori") mustBe Some(
+        theAnswersFor("eori") mustBe Some(
           DepartureAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
             departureDetails = Some(DepartureDetails(Date(date), Time(time))),
@@ -199,7 +199,7 @@ class DepartureSpec extends IntegrationSpec {
         // Then
         status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(controllers.routes.SummaryController.displayPage().url)
-        theCacheFor("eori") mustBe Some(
+        theAnswersFor("eori") mustBe Some(
           DepartureAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
             departureDetails = Some(DepartureDetails(Date(date), Time(time))),
@@ -255,7 +255,7 @@ class DepartureSpec extends IntegrationSpec {
         // Then
         status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(controllers.routes.MovementConfirmationController.display().url)
-        theCacheFor("eori") mustBe None
+        theAnswersFor("eori") mustBe None
         verify(
           postRequestedForMovement()
             .withRequestBody(equalToJson(s"""{

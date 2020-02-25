@@ -14,23 +14,11 @@
  * limitations under the License.
  */
 
-package models.requests
+package forms
 
-import models.ReturnToStartException
-import models.cache.{Answers, Cache}
-import play.api.mvc.WrappedRequest
+sealed abstract class UcrType(val codeValue: String)
 
-case class JourneyRequest[T](cache: Cache, request: AuthenticatedRequest[T]) extends WrappedRequest(request) {
-
-  val eori: String = request.user.eori
-
-  def answers: Answers = cache.answers.getOrElse(throw ReturnToStartException)
-
-  def answersAre[J <: Answers]: Boolean = cache.answers.isInstanceOf[J]
-
-  def answersAs[J <: Answers]: J = answers match {
-    case ans: J => ans
-    case _      => throw ReturnToStartException
-  }
-
+object UcrType {
+  case object Ducr extends UcrType("D")
+  case object Mucr extends UcrType("M")
 }

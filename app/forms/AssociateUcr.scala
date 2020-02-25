@@ -17,6 +17,7 @@
 package forms
 
 import forms.AssociateKind.{Ducr, Mucr}
+import models.UcrBlock
 import play.api.data.Forms._
 import play.api.data.format.Formatter
 import play.api.data.{Form, FormError, Forms, Mapping}
@@ -50,6 +51,14 @@ object AssociateKind {
 case class AssociateUcr(kind: AssociateKind, ucr: String)
 
 object AssociateUcr {
+
+  def apply(ucrBlock: UcrBlock): AssociateUcr =
+    ucrBlock.ucrType match {
+      case "M" => AssociateUcr(AssociateKind.Mucr, ucrBlock.ucr)
+      case "D" => AssociateUcr(AssociateKind.Ducr, ucrBlock.ucr)
+      case _   => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
+    }
+
   val formId: String = "AssociateDucr"
 
   implicit val format = Json.format[AssociateUcr]

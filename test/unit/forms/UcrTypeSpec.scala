@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package models.requests
+package forms
 
-import models.ReturnToStartException
-import models.cache.{Answers, Cache}
-import play.api.mvc.WrappedRequest
+import base.BaseSpec
 
-case class JourneyRequest[T](cache: Cache, request: AuthenticatedRequest[T]) extends WrappedRequest(request) {
+class UcrTypeSpec extends BaseSpec {
 
-  val eori: String = request.user.eori
+  "UCR type model" should {
 
-  def answers: Answers = cache.answers.getOrElse(throw ReturnToStartException)
-
-  def answersAre[J <: Answers]: Boolean = cache.answers.isInstanceOf[J]
-
-  def answersAs[J <: Answers]: J = answers match {
-    case ans: J => ans
-    case _      => throw ReturnToStartException
+    "has correct allowed types" in {
+      UcrType.Ducr.codeValue must be("D")
+      UcrType.Mucr.codeValue must be("M")
+    }
   }
 
 }

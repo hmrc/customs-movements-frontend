@@ -19,7 +19,7 @@ package controllers.consolidations
 import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.DisassociateUcr
 import javax.inject.{Inject, Singleton}
-import models.cache.{Cache, DisassociateUcrAnswers, JourneyType}
+import models.cache.{DisassociateUcrAnswers, JourneyType}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.CacheRepository
@@ -33,7 +33,7 @@ class DisassociateUcrController @Inject()(
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
-  cache: CacheRepository,
+  cacheRepository: CacheRepository,
   page: disassociate_ucr
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
@@ -50,9 +50,11 @@ class DisassociateUcrController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(page(formWithErrors))),
-        answers =>
-          cache.upsert(Cache(request.eori, request.answersAs[DisassociateUcrAnswers].copy(ucr = Some(answers)))).map { _ =>
+        validForm => {
+          val updatedAnswers = request.answersAs[DisassociateUcrAnswers].copy(ucr = Some(validForm))
+          cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
             Redirect(controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage())
+          }
         }
       )
   }

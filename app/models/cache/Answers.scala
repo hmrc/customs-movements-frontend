@@ -17,6 +17,7 @@
 package models.cache
 
 import forms.{AssociateUcr, MucrOptions, _}
+import models.UcrBlock
 import models.cache.JourneyType.JourneyType
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.play.json.Union
@@ -31,6 +32,9 @@ case class ArrivalAnswers(
 
 object DepartureAnswers {
   implicit val format: Format[DepartureAnswers] = Json.format[DepartureAnswers]
+
+  def fromUcr(ucrBlock: Option[UcrBlock]): DepartureAnswers =
+    new DepartureAnswers(ucrBlock.map(ConsignmentReferences.apply), None, None, None)
 }
 
 case class DepartureAnswers(
@@ -44,6 +48,9 @@ case class DepartureAnswers(
 
 object ArrivalAnswers {
   implicit val format: Format[ArrivalAnswers] = Json.format[ArrivalAnswers]
+
+  def fromUcr(ucrBlock: Option[UcrBlock]): ArrivalAnswers =
+    new ArrivalAnswers(ucrBlock.map(ConsignmentReferences.apply), None, None)
 }
 
 trait MovementAnswers extends Answers {
@@ -57,6 +64,9 @@ case class AssociateUcrAnswers(mucrOptions: Option[MucrOptions] = None, associat
 
 object AssociateUcrAnswers {
   implicit val format: Format[AssociateUcrAnswers] = Json.format[AssociateUcrAnswers]
+
+  def fromUcr(ucrBlock: Option[UcrBlock]): AssociateUcrAnswers =
+    new AssociateUcrAnswers(None, ucrBlock.map(AssociateUcr.apply))
 }
 
 case class DisassociateUcrAnswers(ucr: Option[DisassociateUcr] = None) extends Answers {
@@ -65,6 +75,9 @@ case class DisassociateUcrAnswers(ucr: Option[DisassociateUcr] = None) extends A
 
 object DisassociateUcrAnswers {
   implicit val format: Format[DisassociateUcrAnswers] = Json.format[DisassociateUcrAnswers]
+
+  def fromUcr(ucrBlock: Option[UcrBlock]): DisassociateUcrAnswers =
+    new DisassociateUcrAnswers(ucrBlock.map(DisassociateUcr.apply))
 }
 
 case class ShutMucrAnswers(shutMucr: Option[ShutMucr] = None) extends Answers {
@@ -73,6 +86,11 @@ case class ShutMucrAnswers(shutMucr: Option[ShutMucr] = None) extends Answers {
 
 object ShutMucrAnswers {
   implicit val format: Format[ShutMucrAnswers] = Json.format[ShutMucrAnswers]
+
+  def fromUcr(ucrBlock: Option[UcrBlock]): ShutMucrAnswers = {
+    val shutMucr = ucrBlock.filter(_.ucrType.equals("M")).map(ucrBlock => ShutMucr(ucrBlock.ucr))
+    ShutMucrAnswers(shutMucr)
+  }
 }
 
 trait Answers {
@@ -88,4 +106,5 @@ object Answers {
     .and[DisassociateUcrAnswers](JourneyType.DISSOCIATE_UCR.toString)
     .and[ShutMucrAnswers](JourneyType.SHUT_MUCR.toString)
     .format
+
 }

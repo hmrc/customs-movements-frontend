@@ -17,7 +17,6 @@
 package controllers.actions
 
 import javax.inject.Inject
-import models.cache.Answers
 import models.cache.JourneyType.JourneyType
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.mvc.{ActionRefiner, Result, Results}
@@ -30,21 +29,28 @@ class JourneyRefiner @Inject()(movementRepository: CacheRepository)(implicit val
 
   override protected def executionContext: ExecutionContext = exc
 
-  private def refiner[A](request: AuthenticatedRequest[A], types: JourneyType*): Future[Either[Result, JourneyRequest[A]]] =
-    movementRepository.findByEori(request.user.eori).map(_.flatMap(_.answers)).map {
-      case Some(answers: Answers) if types.isEmpty || types.contains(answers.`type`) =>
-        Right(JourneyRequest(answers, request))
-      case _ =>
-        Left(Results.Redirect(controllers.routes.ChoiceController.displayChoiceForm()))
-    }
-
   override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
-    refiner(request, Seq.empty[JourneyType]: _*)
+    toJourneyRequest(request, Seq.empty[JourneyType]: _*).map(orRedirect)
 
   def apply(types: JourneyType*): ActionRefiner[AuthenticatedRequest, JourneyRequest] = new ActionRefiner[AuthenticatedRequest, JourneyRequest] {
     override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
-      refiner(request, types: _*)
+      toJourneyRequest(request, types: _*).map(orRedirect)
 
     override protected def executionContext: ExecutionContext = exc
   }
+
+  private def toJourneyRequest[A](request: AuthenticatedRequest[A], types: JourneyType*): Future[Option[JourneyRequest[A]]] =
+    movementRepository.findByEori(request.user.eori).map { cacheOption =>
+      for {
+        cache <- cacheOption
+        answers <- cache.answers
+        if types.isEmpty || types.contains(answers.`type`)
+      } yield JourneyRequest(cache, request)
+    }
+
+  private def orRedirect[A](journeyOption: Option[JourneyRequest[A]]): Either[Result, JourneyRequest[A]] =
+    journeyOption.toRight {
+      Results.Redirect(controllers.routes.ChoiceController.displayChoiceForm())
+    }
+
 }

@@ -16,7 +16,7 @@
 
 @import components.gds.{gds_main_template, pageTitle}
 @import controllers.routes
-@import forms.ConsignmentReferences.AllowedReferences
+@import forms.UcrType.Ducr
 @import models.cache.ArrivalAnswers
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
@@ -31,7 +31,7 @@
 @(data: ArrivalAnswers)(implicit request: Request[_], messages: Messages)
 
 @referenceTypeKey = @{data.consignmentReferences.map(ref =>
-    if(ref.reference.equals(AllowedReferences.Ducr)) {
+    if(ref.is(Ducr)) {
         "consignmentReferences.reference.ducr"
     } else {
         "consignmentReferences.reference.mucr"

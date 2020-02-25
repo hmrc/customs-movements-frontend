@@ -17,14 +17,12 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
-import controllers.storage.FlashKeys
 import forms.ShutMucr
 import javax.inject.Inject
 import models.ReturnToStartException
 import models.cache.{JourneyType, ShutMucrAnswers}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.CacheRepository
 import services.SubmissionService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.shut_mucr_summary
@@ -35,7 +33,6 @@ class ShutMucrSummaryController @Inject()(
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
-  cache: CacheRepository,
   submissionService: SubmissionService,
   page: shut_mucr_summary
 )(implicit ec: ExecutionContext)
@@ -48,10 +45,8 @@ class ShutMucrSummaryController @Inject()(
 
   def submit(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.SHUT_MUCR)).async { implicit request =>
     val answers = request.answersAs[ShutMucrAnswers]
-    val mucr = answers.shutMucr.map(_.mucr).getOrElse(throw ReturnToStartException)
     submissionService.submit(request.eori, answers).map { _ =>
       Redirect(routes.ShutMucrConfirmationController.displayPage())
-        .flashing(FlashKeys.MUCR -> mucr)
     }
   }
 }

@@ -132,11 +132,6 @@ association.confirmation.associateOrShut.shut = shut a master consignment
 disassociation.confirmation.associateOrShut = {0} a consignment, or {1}.
 disassociation.confirmation.associateOrShut.associate = Associate
 disassociation.confirmation.associateOrShut.shut = shut a master consignment
-shutMucr.confirmation.tab.heading = Shut MUCR request submitted
-shutMucr.confirmation.heading = Request to shut MUCR {0} has been submitted
-shutMucr.confirmation.nextSteps = {0} another master consignment. {1}.
-shutMucr.confirmation.nextSteps.shutMucr = Shut
-shutMucr.confirmation.nextSteps.depart = Depart a consignment
 
 movement.arrival.title = Arrival
 movement.arrival.heading = Arrival
@@ -325,6 +320,17 @@ associate.ucr.summary.kind.mucr = MUCR
 associate.ucr.summary.kind.ducr = DUCR
 associate.ucr.summary.addConsignment = Add consignment
 associate.ucr.summary.masterConsignment = To master consignment
+
+confirmation.title.ARRIVE = Your arrival request has been submitted
+confirmation.title.DEPART = Your departure request has been submitted
+confirmation.title.ASSOCIATE_UCR = Your association request has been submitted
+confirmation.title.DISSOCIATE_UCR = Your dissociation request has been submitted
+confirmation.title.SHUT_MUCR = Your request to shut a MUCR has been submitted
+confirmation.insetText = It might take a few minutes before a decision is made.
+confirmation.insetText.check = Go to the {0} to check the status.
+confirmation.notification.timeline.link = consignment’s notification timeline
+confirmation.redirect.query.link = Find another consignment
+confirmation.redirect.choice.link = Back to start
 
 submissions.title = Requests
 submissions.summary = This page displays all submitted requests and any notifications related to them.

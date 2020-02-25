@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package unit.controllers.consolidations
+package controllers.consolidations
 
-import controllers.consolidations.ShutMucrConfirmationController
-import controllers.storage.FlashKeys
-import models.ReturnToStartException
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import play.api.test.FakeRequest
@@ -38,28 +35,19 @@ class ShutMucrConfirmationControllerSpec extends ControllerLayerSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockShutMucrConfirmationPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockShutMucrConfirmationPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Shut Mucr Confirmation Controller" should {
-    implicit val get = FakeRequest("GET", "/")
 
     "return 200 (OK)" when {
 
       "display page is invoked" in {
 
-        val result = controller.displayPage()(get.withFlash(FlashKeys.MUCR -> "123"))
+        val result = controller.displayPage()(FakeRequest("GET", "/"))
 
         status(result) mustBe OK
-        verify(mockShutMucrConfirmationPage).apply(any())(any(), any())
-      }
-    }
-
-    "return to start" when {
-      "mucr is missing" in {
-        intercept[RuntimeException] {
-          await(controller.displayPage()(get.withFlash()))
-        } mustBe ReturnToStartException
+        verify(mockShutMucrConfirmationPage).apply()(any(), any())
       }
     }
   }

@@ -14,36 +14,47 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import components.gds.gds_main_template
-@import controllers.routes
-@import controllers.storage.FlashKeys
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import components.gds.pageTitle
+@import uk.gov.hmrc.govukfrontend.views.html.components.govukInsetText
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import views.html.components.confirmation_link
+@import views.html.components.gds.link
 @import views.Title
 
 @this(
-        govukLayout: gds_main_template,
-        govukPanel : GovukPanel,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+  appConfig: AppConfig,
+  govukLayout: gds_main_template,
+  pageTitle: pageTitle,
+  govukInsetText: govukInsetText,
+  confirmationLink: confirmation_link
 )
 
-@(mucr: String)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
-@shutMucrLink = {@components.gds.link(messages("shutMucr.confirmation.nextSteps.shutMucr"), routes.ChoiceController.startSpecificJourney(forms.Choice.ShutMUCR.value))}
-@departureLink = {@components.gds.link(messages("shutMucr.confirmation.nextSteps.depart"), routes.ChoiceController.startSpecificJourney(forms.Choice.Departure.value))}
+@gotoTimelineLink = @{
+  link(message = messages("confirmation.notification.timeline.link"), href = routes.SubmissionsController.displayPage())
+}
 
-@govukLayout(title = Title("shutMucr.confirmation.tab.heading")) {
+@govukLayout(title = Title("confirmation.title.SHUT_MUCR")) {
 
-    @govukPanel(Panel(
-        title = Text(messages("shutMucr.confirmation.heading", mucr))
-    ))
+  @pageTitle(text = messages("confirmation.title.SHUT_MUCR"), classes = "govuk-heading-xl")
 
-    @components.confirmation_status_info()
+  @govukInsetText(InsetText(
+    content = HtmlContent(messages("confirmation.insetText")+"<br>"+messages("confirmation.insetText.check", gotoTimelineLink))
+  ))
 
-    <h2 id="what-next" class="govuk-heading-m">@messages("movement.confirmation.whatNext")</h2>
-
-    <p id="next-steps" class="govuk-body">
-        @Html(messages("shutMucr.confirmation.nextSteps", shutMucrLink, departureLink))
-    </p>
-
-    @components.button_link("site.backToStart", routes.ChoiceController.displayChoiceForm())
+  @if(appConfig.ileQueryEnabled){
+    @confirmationLink(
+      message = messages("confirmation.redirect.query.link"),
+      linkTarget = controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
+    )
+  } else {
+    @confirmationLink(
+      message = messages("confirmation.redirect.choice.link"),
+      linkTarget = controllers.routes.ChoiceController.displayChoiceForm()
+    )
+  }
 }

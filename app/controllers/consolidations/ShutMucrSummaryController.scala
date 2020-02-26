@@ -17,6 +17,7 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.storage.FlashKeys
 import forms.ShutMucr
 import javax.inject.Inject
 import models.ReturnToStartException
@@ -45,8 +46,10 @@ class ShutMucrSummaryController @Inject()(
 
   def submit(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.SHUT_MUCR)).async { implicit request =>
     val answers = request.answersAs[ShutMucrAnswers]
+
     submissionService.submit(request.eori, answers).map { _ =>
       Redirect(routes.ShutMucrConfirmationController.displayPage())
+        .flashing(FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString)
     }
   }
 }

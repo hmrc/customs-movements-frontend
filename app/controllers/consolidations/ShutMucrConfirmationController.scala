@@ -17,23 +17,32 @@
 package controllers.consolidations
 
 import controllers.actions.AuthAction
+import controllers.storage.FlashKeys
 import javax.inject.{Inject, Singleton}
+import models.ReturnToStartException
+import models.cache.JourneyType
+import models.cache.JourneyType.{JourneyType, SHUT_MUCR}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.shutmucr.shut_mucr_confirmation
+import views.html.confirmation_page
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ShutMucrConfirmationController @Inject()(
-  authenticate: AuthAction,
-  mcc: MessagesControllerComponents,
-  shutMucrConfirmationPage: shut_mucr_confirmation
-)(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+class ShutMucrConfirmationController @Inject()(authenticate: AuthAction, mcc: MessagesControllerComponents, confirmationPage: confirmation_page)(
+  implicit ec: ExecutionContext
+) extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = authenticate { implicit request =>
-    Ok(shutMucrConfirmationPage())
+    val journeyType = extractJourneyType
+    journeyType match {
+      case SHUT_MUCR => Ok(confirmationPage(journeyType))
+      case _         => throw ReturnToStartException
+    }
   }
+
+  private def extractJourneyType(implicit request: Request[_]): JourneyType =
+    request.flash.get(FlashKeys.MOVEMENT_TYPE).map(JourneyType.withName).getOrElse(throw ReturnToStartException)
+
 }

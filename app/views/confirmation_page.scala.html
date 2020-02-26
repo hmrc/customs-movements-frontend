@@ -17,6 +17,7 @@
 @import config.AppConfig
 @import components.gds.gds_main_template
 @import components.gds.pageTitle
+@import models.cache.JourneyType.JourneyType
 @import uk.gov.hmrc.govukfrontend.views.html.components.govukInsetText
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -32,15 +33,16 @@
   confirmationLink: confirmation_link
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(journeyType: JourneyType)(implicit request: Request[_], messages: Messages)
 
 @gotoTimelineLink = @{
   link(message = messages("confirmation.notification.timeline.link"), href = routes.SubmissionsController.displayPage())
 }
 
-@govukLayout(title = Title("confirmation.title.SHUT_MUCR")) {
 
-  @pageTitle(text = messages("confirmation.title.SHUT_MUCR"), classes = "govuk-heading-xl")
+@govukLayout(title = Title(s"confirmation.title.$journeyType")) {
+
+  @pageTitle(text = messages(s"confirmation.title.$journeyType"), classes = "govuk-heading-xl")
 
   @govukInsetText(InsetText(
     content = HtmlContent(messages("confirmation.insetText")+"<br>"+messages("confirmation.insetText.check", gotoTimelineLink))

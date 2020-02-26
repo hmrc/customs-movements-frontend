@@ -26,7 +26,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.controllers.ControllerLayerSpec
-import views.html.associate_ucr_confirmation
+import views.html.associateucr.associate_ucr_confirmation
 
 class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec {
 

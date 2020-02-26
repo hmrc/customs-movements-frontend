@@ -29,7 +29,7 @@ import services.SubmissionService
 import testdata.ConsolidationTestData.validMucr
 import unit.controllers.ControllerLayerSpec
 import unit.repository.MockCache
-import views.html.shut_mucr_summary
+import views.html.shutmucr.shut_mucr_summary
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future

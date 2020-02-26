@@ -26,7 +26,7 @@ import play.api.mvc._
 import repositories.CacheRepository
 import services.SubmissionService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.associate_ucr_summary
+import views.html.associateucr.associate_ucr_summary
 
 import scala.concurrent.ExecutionContext
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.config
+package views.components.config
 
 import models.UcrBlock
 import views.components.config.ChoicePageConfig

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.disassociateucr
 
 import base.Injector
 import forms.DisassociateKind._
@@ -22,7 +22,8 @@ import forms.DisassociateUcr
 import models.cache.DisassociateUcrAnswers
 import models.requests.JourneyRequest
 import play.api.mvc.AnyContentAsEmpty
-import views.html.disassociate_ucr_summary
+import views.ViewSpec
+import views.html.disassociateucr.disassociate_ucr_summary
 import views.tags.ViewTest
 
 @ViewTest

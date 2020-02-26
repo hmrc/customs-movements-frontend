@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.shutmucr
 
 import base.Injector
 import controllers.consolidations.routes
@@ -24,7 +24,8 @@ import models.cache.ShutMucrAnswers
 import models.requests.JourneyRequest
 import play.api.mvc.AnyContentAsEmpty
 import testdata.ConsolidationTestData.validMucr
-import views.html.shut_mucr_summary
+import views.ViewSpec
+import views.html.shutmucr.shut_mucr_summary
 
 class ShutMucrSummaryViewSpec extends ViewSpec with CommonMessages with Injector {
 

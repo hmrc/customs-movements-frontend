@@ -25,7 +25,7 @@
 
 @govukLayout(
     title = Title("ileQueryResponse.timeout.title"),
-    backButton = Some(BackButton(messages("site.back"), controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(ucr)))) {
+    backButton = Some(BackButton(messages("site.back"), controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()))) {
 
   @pageTitle(text = messages("ileQueryResponse.timeout.heading"), classes = "govuk-heading-xl")
 

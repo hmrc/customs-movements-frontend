@@ -33,7 +33,8 @@
 @(form: Form[String])(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
-    title = Title("ileQuery.title"), backButton = Some(BackButton(messages("site.back"), controllers.routes.StartController.displayStartPage))) {
+    title = Title("ileQuery.title"),
+    backButton = Some(BackButton(messages("site.back"), controllers.routes.StartController.displayStartPage))) {
 
     @formHelper(action = controllers.ileQuery.routes.FindConsignmentController.submitQueryForm(), 'autoComplete -> "off") {
 

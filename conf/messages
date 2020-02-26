@@ -1,4 +1,4 @@
-service.name=Customs Movements Service
+service.name=CDS Exports Service
 
 title.format={0} - {1} - GOV.UK
 title.withSection.format={0} - {1} - {2} - GOV.UK
@@ -33,15 +33,6 @@ error.ducr.empty = DUCR number cannot be empty
 error.ducr.format = DUCR number is in incorrect format
 error.mucr.empty = MUCR number cannot be empty
 error.mucr.format = MUCR number is in incorrect format
-
-index.title =Export Declarations
-index.heading=Customs Export Declarations
-index.guidance=On this page you can declare exported items, look up earlier exports declarations and check their status
-index.how-to-access=How to access the service
-index.you-must-have=You must have a valid Government Gateway User ID and password and an EORI number. If you don't have an EORI number please request one first
-index.if-company=If you’re a company or partnership you’ll need to sign in with the user ID and password for your organisation.
-index.if-individual=If your registering as an individual, are self employed or a sole trader, then you’ll need to sign in with your own user ID and password.
-index.start-now=Start now
 
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
@@ -105,7 +96,7 @@ simpleDeclaration.title = Simple declaration
 simpleDeclaration.heading = Simple declaration
 isDeclarationForSomeoneElse.no = No - I'm making this declaration for myself
 
-global.error.title = There is a problem - Declare customs exports for customs exports - GOV.UK
+global.error.title = There is a problem - Declare customs exports for CDS Exports - GOV.UK
 global.error.heading = There is a problem with a service
 global.error.message = Please try again later.
 
@@ -165,7 +156,7 @@ movement.departure = Depart goods
 
 startPage.title.sectionHeader = Guidance
 startPage.title = Tell HMRC when goods you’re exporting arrive at or leave the UK port
-startPage.description = Use the Customs Declaration Service to tell HMRC when the goods you’re exporting out of the EU have arrived at or left the UK port.
+startPage.description = Use the CDS Esports Service to tell HMRC when the goods you’re exporting out of the EU have arrived at or left the UK port.
 startPage.contents.header = Contents
 startPage.beforeYouStart.header = Before you start
 startPage.beforeYouStart.line.1 = The goods must have already been {0}

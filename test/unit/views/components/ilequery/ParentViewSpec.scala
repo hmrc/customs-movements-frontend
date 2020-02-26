@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.ilequery
+package views.components.ilequery
 
 import base.Injector
 import models.notifications.EntryStatus

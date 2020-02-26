@@ -156,7 +156,7 @@ movement.departure = Depart goods
 
 startPage.title.sectionHeader = Guidance
 startPage.title = Tell HMRC when goods you’re exporting arrive at or leave the UK port
-startPage.description = Use the CDS Esports Service to tell HMRC when the goods you’re exporting out of the EU have arrived at or left the UK port.
+startPage.description = Use the CDS Exports Service to tell HMRC when the goods you’re exporting out of the EU have arrived at or left the UK port.
 startPage.contents.header = Contents
 startPage.beforeYouStart.header = Before you start
 startPage.beforeYouStart.line.1 = The goods must have already been {0}

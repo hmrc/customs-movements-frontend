@@ -30,7 +30,7 @@ import play.twirl.api.HtmlFormat
 import testdata.ConsolidationTestData.validMucr
 import unit.controllers.ControllerLayerSpec
 import unit.repository.MockCache
-import views.html.shut_mucr
+import views.html.shutmucr.shut_mucr
 
 import scala.concurrent.ExecutionContext.global
 

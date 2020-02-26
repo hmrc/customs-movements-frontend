@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package unit.controllers.consolidations
+package controllers.consolidations
 
-import controllers.consolidations.{routes, AssociateUcrController}
 import forms.AssociateKind._
 import forms.{AssociateUcr, MucrOptions}
 import models.ReturnToStartException
@@ -31,7 +30,7 @@ import play.twirl.api.HtmlFormat
 import testdata.ConsolidationTestData.validDucr
 import unit.controllers.ControllerLayerSpec
 import unit.repository.MockCache
-import views.html.associate_ucr
+import views.html.associateucr.associate_ucr
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

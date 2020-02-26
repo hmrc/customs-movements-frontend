@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package unit.controllers.consolidations
+package controllers.consolidations
 
-import controllers.consolidations.DisassociateUcrConfirmationController
 import controllers.storage.FlashKeys
 import models.ReturnToStartException
 import org.mockito.ArgumentMatchers.any
@@ -25,7 +24,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.controllers.ControllerLayerSpec
-import views.html.disassociate_ucr_confirmation
+import views.html.disassociateucr.disassociate_ucr_confirmation
 
 import scala.concurrent.ExecutionContext.global
 

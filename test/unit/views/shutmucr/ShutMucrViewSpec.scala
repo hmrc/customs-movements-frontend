@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package views
+package views.shutmucr
 
 import base.Injector
 import forms.ShutMucr
 import models.cache.ShutMucrAnswers
 import org.jsoup.nodes.Document
 import play.api.data.FormError
-import views.html.shut_mucr
+import views.ViewSpec
+import views.html.shutmucr.shut_mucr
 
 class ShutMucrViewSpec extends ViewSpec with Injector {
 

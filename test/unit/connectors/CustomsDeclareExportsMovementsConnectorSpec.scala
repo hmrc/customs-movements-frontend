@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package unit.connectors
+package connectors
 
 import java.time.Instant
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.AppConfig
-import connectors.CustomsDeclareExportsMovementsConnector
 import connectors.exchanges.ActionType.MovementType
 import connectors.exchanges.{DisassociateDUCRRequest, MovementDetailsRequest, MovementRequest}
 import forms.ConsignmentReferences
@@ -33,7 +32,7 @@ import org.mockito.BDDMockito.given
 import play.api.http.Status
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import testdata.CommonTestData._
+import testdata.CommonTestData.{conversationId, _}
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import uk.gov.hmrc.http.Upstream5xxResponse

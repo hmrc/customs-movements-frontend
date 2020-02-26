@@ -24,7 +24,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.disassociate_ucr
+import views.html.disassociateucr.disassociate_ucr
 
 import scala.concurrent.{ExecutionContext, Future}
 

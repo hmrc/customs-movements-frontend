@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package unit.controllers.consolidations
+package controllers.consolidations
 
-import controllers.consolidations.{routes, DisassociateUcrController}
 import forms._
 import models.cache.DisassociateUcrAnswers
 import org.mockito.ArgumentCaptor
@@ -31,7 +30,7 @@ import play.twirl.api.HtmlFormat
 import testdata.ConsolidationTestData.validDucr
 import unit.controllers.ControllerLayerSpec
 import unit.repository.MockCache
-import views.html.disassociate_ucr
+import views.html.disassociateucr.disassociate_ucr
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

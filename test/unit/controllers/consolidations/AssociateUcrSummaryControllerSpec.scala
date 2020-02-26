@@ -32,7 +32,7 @@ import play.twirl.api.HtmlFormat
 import services.SubmissionService
 import unit.controllers.ControllerLayerSpec
 import unit.repository.MockCache
-import views.html.associate_ucr_summary
+import views.html.associateucr.associate_ucr_summary
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future

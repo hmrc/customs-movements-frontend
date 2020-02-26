@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package unit.controllers.consolidations
+package controllers.consolidations
 
-import controllers.consolidations.DisassociateUcrSummaryController
 import controllers.storage.FlashKeys
 import forms.{DisassociateKind, _}
 import models.ReturnToStartException
@@ -32,7 +31,7 @@ import play.twirl.api.HtmlFormat
 import services.SubmissionService
 import unit.controllers.ControllerLayerSpec
 import unit.repository.MockCache
-import views.html.disassociate_ucr_summary
+import views.html.disassociateucr.disassociate_ucr_summary
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future

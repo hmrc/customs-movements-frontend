@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.shutmucr
 
 import base.OverridableInjector
 import config.AppConfig
@@ -23,7 +23,8 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject._
 import play.api.test.FakeRequest
-import views.html.shut_mucr_confirmation
+import views.ViewSpec
+import views.html.shutmucr.shut_mucr_confirmation
 import views.tags.ViewTest
 
 @ViewTest

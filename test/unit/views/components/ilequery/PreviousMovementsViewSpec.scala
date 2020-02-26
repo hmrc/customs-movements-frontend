@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.ilequery
+package views.components.ilequery
 
 import java.time.ZonedDateTime
 

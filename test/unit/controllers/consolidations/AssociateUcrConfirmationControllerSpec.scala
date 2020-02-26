@@ -14,61 +14,92 @@
  * limitations under the License.
  */
 
-package unit.controllers.consolidations
+package controllers.consolidations
 
-import controllers.consolidations.AssociateUcrConfirmationController
 import controllers.storage.FlashKeys
 import models.ReturnToStartException
 import models.cache.JourneyType
-import org.mockito.ArgumentMatchers.any
+import models.cache.JourneyType.JourneyType
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.controllers.ControllerLayerSpec
-import views.html.associateucr.associate_ucr_confirmation
+import views.html.confirmation_page
 
 class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec {
 
-  private val page = mock[associate_ucr_confirmation]
+  private val confirmationPage = mock[confirmation_page]
 
   private val controller =
-    new AssociateUcrConfirmationController(SuccessfulAuth(), stubMessagesControllerComponents(), page)
+    new AssociateUcrConfirmationController(SuccessfulAuth(), stubMessagesControllerComponents(), confirmationPage)
 
   override def beforeEach() {
     super.beforeEach()
-    when(page.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+
+    reset(confirmationPage)
+    when(confirmationPage.apply(any[JourneyType])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override def afterEach(): Unit = {
-    reset(page)
+    reset(confirmationPage)
 
     super.afterEach()
   }
 
   "Associate DUCR Confirmation controller" should {
-    implicit val get = FakeRequest("GET", "/")
+    val getRequest = FakeRequest("GET", "/")
 
     "return 200 (OK)" when {
 
       "display page method is invoked" in {
-        val result = controller.displayPage()(get.withFlash(FlashKeys.CONSOLIDATION_KIND -> "kind", FlashKeys.UCR -> "123"))
+        val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ASSOCIATE_UCR.toString)
+
+        val result = controller.displayPage()(request)
 
         status(result) must be(OK)
-        verify(page).apply(any(), any())(any(), any())
+        verify(confirmationPage).apply(meq(JourneyType.ASSOCIATE_UCR))(any(), any())
       }
     }
 
-    "return to start" when {
-      "ucr kind is missing" in {
+    "throw ReturnToStartException" when {
+
+      "journey type is missing" in {
         intercept[RuntimeException] {
-          await(controller.displayPage()(get.withFlash(FlashKeys.UCR -> "123")))
+          await(controller.displayPage()(getRequest))
         } mustBe ReturnToStartException
       }
 
-      "ucr is missing" in {
+      "journey type is ARRIVAL" in {
+        val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ARRIVE.toString)
+
         intercept[RuntimeException] {
-          await(controller.displayPage()(get.withFlash(FlashKeys.CONSOLIDATION_KIND -> "kind")))
+          await(controller.displayPage()(request))
+        } mustBe ReturnToStartException
+      }
+
+      "journey type is DEPART" in {
+        val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.DEPART.toString)
+
+        intercept[RuntimeException] {
+          await(controller.displayPage()(request))
+        } mustBe ReturnToStartException
+      }
+
+      "journey type is DISSOCIATE_UCR" in {
+        val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.DISSOCIATE_UCR.toString)
+
+        intercept[RuntimeException] {
+          await(controller.displayPage()(request))
+        } mustBe ReturnToStartException
+      }
+
+      "journey type is SHUT_MUCR" in {
+        val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.SHUT_MUCR.toString)
+
+        intercept[RuntimeException] {
+          await(controller.displayPage()(request))
         } mustBe ReturnToStartException
       }
     }

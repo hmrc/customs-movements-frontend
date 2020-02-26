@@ -70,7 +70,7 @@ GET         /summary                               controllers.SummaryController
 POST        /summary                               controllers.SummaryController.submitMovementRequest()
 
 # Movement confirmation page
-GET         /movement-confirmation                 controllers.MovementConfirmationController.display()
+GET         /movement-confirmation                 controllers.MovementConfirmationController.displayPage()
 
 # Shut a MUCR
 GET         /shut-mucr                             controllers.consolidations.ShutMucrController.displayPage()

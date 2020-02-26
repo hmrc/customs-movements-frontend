@@ -14,32 +14,30 @@
  * limitations under the License.
  */
 
-package unit.controllers.consolidations
+package controllers.consolidations
 
-import controllers.consolidations.AssociateUcrSummaryController
 import controllers.storage.FlashKeys
 import forms.AssociateKind._
 import forms.{AssociateUcr, MucrOptions}
 import models.ReturnToStartException
-import models.cache.AssociateUcrAnswers
+import models.cache.{AssociateUcrAnswers, JourneyType}
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
-import org.scalatest.OptionValues
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.SubmissionService
 import unit.controllers.ControllerLayerSpec
-import unit.repository.MockCache
 import views.html.associateucr.associate_ucr_summary
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with MockCache with OptionValues {
+class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with IntegrationPatience {
 
-  private val service = mock[SubmissionService]
+  private val submissionService = mock[SubmissionService]
   private val mockAssociateDucrSummaryPage = mock[associate_ucr_summary]
 
   private def controller(answers: AssociateUcrAnswers) =
@@ -47,19 +45,19 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with MockCac
       SuccessfulAuth(),
       ValidJourney(answers),
       stubMessagesControllerComponents(),
-      cache,
-      service,
+      submissionService,
       mockAssociateDucrSummaryPage
     )(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
+    reset(submissionService, mockAssociateDucrSummaryPage)
     when(mockAssociateDucrSummaryPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockAssociateDucrSummaryPage)
+    reset(submissionService, mockAssociateDucrSummaryPage)
 
     super.afterEach()
   }
@@ -71,9 +69,10 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with MockCac
     (associateDucrCaptor.getValue, mucrOptionsCaptor.getValue)
   }
 
-  "Associate Ducr Summary Controller" should {
-    val mucrOptions = MucrOptions("MUCR")
-    val associateUcr = AssociateUcr(Ducr, "DUCR")
+  private val mucrOptions = MucrOptions("MUCR")
+  private val associateUcr = AssociateUcr(Ducr, "DUCR")
+
+  "Associate Ducr Summary Controller on displayPage" should {
 
     "return 200 (OK)" when {
 
@@ -89,7 +88,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with MockCac
       }
     }
 
-    "throw an IncompleteApplication exception" when {
+    "throw an ReturnToStartException exception" when {
 
       "Mucr Options is missing during displaying page" in {
         intercept[RuntimeException] {
@@ -102,26 +101,40 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with MockCac
           await(controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = None)).displayPage()(getRequest()))
         } mustBe ReturnToStartException
       }
-
-      "Associate Ducr is missing during submitting page" in {
-        intercept[RuntimeException] {
-          await(controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = None)).submit()(postRequest(Json.obj())))
-        } mustBe ReturnToStartException
-      }
     }
+  }
 
-    "return 303 (SEE_OTHER)" when {
+  "Associate Ducr Summary Controller on submit" when {
 
-      "all mandatory data is in cache and submission service returned ACCEPTED" in {
-        when(service.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
+    "everything works correctly" should {
+
+      "call SubmissionService" in {
+        when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
+        val cachedAnswers = AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))
+
+        controller(cachedAnswers).submit()(postRequest()).futureValue
+
+        val expectedEori = SuccessfulAuth().operator.eori
+        verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers))(any())
+      }
+
+      "return SEE_OTHER (303) that redirects to AssociateUcrConfirmation" in {
+        when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
 
         val result =
           controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))).submit()(postRequest(Json.obj()))
 
         status(result) mustBe SEE_OTHER
-        flash(result).get(FlashKeys.MUCR) mustBe None
-        flash(result).get(FlashKeys.UCR).value mustBe "DUCR"
-        flash(result).get(FlashKeys.CONSOLIDATION_KIND).value mustBe Ducr.formValue
+        redirectLocation(result) mustBe Some(controllers.consolidations.routes.AssociateUcrConfirmationController.displayPage().url)
+      }
+
+      "return response with Movement Type in flash" in {
+        when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
+
+        val result =
+          controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))).submit()(postRequest(Json.obj()))
+
+        flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.ASSOCIATE_UCR.toString)
       }
     }
   }

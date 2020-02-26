@@ -84,7 +84,7 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
 
     "throw an IncompleteApplication exception" when {
 
-      "display page method is invoked and Mucr Options page is in cache" in {
+      "display page method is invoked and Mucr Options page is not in cache" in {
         val request = getRequest()
 
         intercept[RuntimeException] {

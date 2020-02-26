@@ -18,6 +18,7 @@ package views
 
 import base.Injector
 import forms.IleQueryForm
+import helpers.views.CommonMessages
 import org.jsoup.nodes.Element
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
@@ -25,7 +26,7 @@ import views.html.ile_query
 import views.tags.ViewTest
 
 @ViewTest
-class IleQueryViewSpec extends ViewSpec with Injector {
+class IleQueryViewSpec extends ViewSpec with Injector with CommonMessages {
 
   private implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
 
@@ -37,6 +38,14 @@ class IleQueryViewSpec extends ViewSpec with Injector {
     "render title" in {
 
       view.getTitle must containMessage("ileQuery.title")
+    }
+
+    "render 'Back' button that links to 'Start' page" in {
+
+      val backButton = view.getElementById("back-link")
+
+      backButton.text() must be(messages(backCaption))
+      backButton.attr("href") must be(controllers.routes.StartController.displayStartPage().url)
     }
 
     "render page header" in {

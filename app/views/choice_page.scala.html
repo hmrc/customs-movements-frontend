@@ -35,6 +35,43 @@
 
 @(form: Form[Choice], queryUcr: Option[UcrBlock] = None)(implicit request: Request[_], messages: Messages)
 
+@choices = @{
+    val commonChoices = Seq(
+        RadioItem(
+            value = Some(Arrival.value.toString),
+            content = Text(messages(s"movement.choice.${Arrival.toString.toLowerCase}.label")),
+            checked = form("choice").value.contains(Arrival.toString.toLowerCase)
+        ),
+        RadioItem(
+            value = Some(AssociateUCR.value.toString),
+            content = Text(messages(s"movement.choice.${AssociateUCR.toString.toLowerCase}.label")),
+            checked = form("choice").value.contains(AssociateUCR.value.toString)
+        ),
+        RadioItem(
+            value = Some(DisassociateUCR.value.toString),
+            content = Text(messages(s"movement.choice.${DisassociateUCR.toString.toLowerCase}.label")),
+            checked = form("choice").value.contains(DisassociateUCR.value.toString)
+        ),
+        RadioItem(
+            value = Some(ShutMUCR.value.toString),
+            content = Text(messages(s"movement.choice.${ShutMUCR.toString.toLowerCase}.label")),
+            checked = form("choice").value.contains(ShutMUCR.value.toString)
+        ),
+        RadioItem(
+            value = Some(Departure.value.toString),
+            content = Text(messages(s"movement.choice.${Departure.toString.toLowerCase}.label")),
+            checked = form("choice").value.contains(Departure.toString.toLowerCase())
+        )
+    )
+
+    if (pageConfig.isQueryEnabled) commonChoices
+    else commonChoices :+ RadioItem(
+        value = Some(Submissions.value.toString),
+        content = Text(messages(s"movement.choice.${Submissions.toString.toLowerCase}.label")),
+        checked = form("choice").value.contains(Submissions.toString.toLowerCase)
+    )
+}
+
 @govukLayout(
     title = Title("movement.choice.title"),
     backButton = Some(BackButton(messages("site.back"), pageConfig.backLink(queryUcr)))) {
@@ -51,38 +88,7 @@
                     classes = "govuk-fieldset__legend--xl"
                 ))
             )),
-            items = Seq(
-                RadioItem(
-                    value = Some(Arrival.value.toString),
-                    content = Text(messages(s"movement.choice.${Arrival.toString.toLowerCase}.label")),
-                    checked = form("choice").value.contains(Arrival.toString.toLowerCase)
-                ),
-                RadioItem(
-                    value = Some(AssociateUCR.value.toString),
-                    content = Text(messages(s"movement.choice.${AssociateUCR.toString.toLowerCase}.label")),
-                    checked = form("choice").value.contains(AssociateUCR.value.toString)
-                ),
-                RadioItem(
-                    value = Some(DisassociateUCR.value.toString),
-                    content = Text(messages(s"movement.choice.${DisassociateUCR.toString.toLowerCase}.label")),
-                    checked = form("choice").value.contains(DisassociateUCR.value.toString)
-                ),
-                RadioItem(
-                    value = Some(ShutMUCR.value.toString),
-                    content = Text(messages(s"movement.choice.${ShutMUCR.toString.toLowerCase}.label")),
-                    checked = form("choice").value.contains(ShutMUCR.value.toString)
-                ),
-                RadioItem(
-                    value = Some(Departure.value.toString),
-                    content = Text(messages(s"movement.choice.${Departure.toString.toLowerCase}.label")),
-                    checked = form("choice").value.contains(Departure.toString.toLowerCase())
-                ),
-                RadioItem(
-                    value = Some(Submissions.value.toString),
-                    content = Text(messages(s"movement.choice.${Submissions.toString.toLowerCase}.label")),
-                    checked = form("choice").value.contains(Submissions.toString.toLowerCase)
-                )
-            ).filterNot(item => item.value.contains(ShutMUCR.value) && queryUcr.exists(_.ucrType == Ducr.codeValue)),
+            items = choices.filterNot(item => item.value.contains(ShutMUCR.value) && queryUcr.exists(_.ucrType == Ducr.codeValue)),
             errorMessage = form("choice").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
         @govukButton(Button(content = Text(messages("site.continue"))))

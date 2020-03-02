@@ -24,37 +24,42 @@ import base.Injector
 import connectors.exchanges.ActionType.{ConsolidationType, MovementType}
 import controllers.routes
 import models.UcrBlock
-import models.cache.ArrivalAnswers
 import models.notifications.{Entry, Notification, ResponseType}
 import models.submissions.Submission
 import org.jsoup.nodes.Document
-import play.twirl.api.Html
 import testdata.CommonTestData._
 import testdata.ConsolidationTestData._
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import views.html.movements
+import views.spec.UnitViewSpec
+import views.spec.UnitViewSpec.realAppConfig
 
-class MovementsViewSpec extends ViewSpec with Injector {
+class MovementsViewSpec extends UnitViewSpec with Injector {
 
-  private implicit val implicitFakeRequest = journeyRequest(ArrivalAnswers())
   private val page = instanceOf[movements]
 
   private val dateTime: Instant = LocalDate.of(2019, 10, 31).atStartOfDay().toInstant(ZoneOffset.UTC)
 
-  private def createView(submissions: Seq[(Submission, Seq[Notification])] = Seq.empty): Html = page(submissions)
+  private def createView(submissions: Seq[(Submission, Seq[Notification])] = Seq.empty): Document =
+    page(submissions)(request, messages)
 
   "Movements page" should {
     val emptyPage = createView()
 
     "contain title" in {
-      emptyPage.getTitle must containMessage("submissions.title")
+      emptyPage.getElementById("title") must containMessage("submissions.title")
     }
 
     "contain back button" in {
-      emptyPage.getBackButton mustBe defined
-      emptyPage.getBackButton.get must containMessage("site.back.toStartPage")
-      emptyPage.getBackButton.get must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+
+      val backButton = emptyPage.getElementById("back-link")
+
+      backButton must containMessage("site.back.toStartPage")
+
+      if (realAppConfig.ileQueryEnabled)
+        backButton must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+      else backButton must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
     }
 
     "contain header" in {

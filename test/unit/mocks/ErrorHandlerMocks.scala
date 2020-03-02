@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package unit.mocks
+package mocks
 
 import handlers.ErrorHandler
 import org.mockito.ArgumentMatchers.{any, anyString}
@@ -22,7 +22,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.when
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.mvc.Results.{BadRequest, InternalServerError}
+import play.api.mvc.Results.BadRequest
 import play.twirl.api.HtmlFormat
 
 trait ErrorHandlerMocks extends BeforeAndAfterEach { self: MockitoSugar with Suite =>

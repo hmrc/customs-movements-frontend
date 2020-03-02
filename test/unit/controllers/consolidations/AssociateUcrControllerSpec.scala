@@ -16,6 +16,7 @@
 
 package controllers.consolidations
 
+import controllers.ControllerLayerSpec
 import forms.AssociateKind._
 import forms.{AssociateUcr, MucrOptions}
 import models.ReturnToStartException
@@ -27,9 +28,8 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import repository.MockCache
 import testdata.ConsolidationTestData.validDucr
-import unit.controllers.ControllerLayerSpec
-import unit.repository.MockCache
 import views.html.associateucr.associate_ucr
 
 import scala.concurrent.ExecutionContext.Implicits.global

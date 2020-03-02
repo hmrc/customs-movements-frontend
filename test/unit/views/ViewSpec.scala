@@ -16,6 +16,7 @@
 
 package views
 
+import controllers.CSRFSupport
 import models.SignedInUser
 import models.cache.{Answers, Cache}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
@@ -24,10 +25,9 @@ import org.jsoup.nodes.{Document, Element}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import uk.gov.hmrc.auth.core.Enrolments
-import unit.controllers.CSRFSupport
-import views.spec.ViewMatchers
 import testdata.CommonTestData.validEori
+import uk.gov.hmrc.auth.core.Enrolments
+import views.spec.ViewMatchers
 
 class ViewSpec extends WordSpec with MustMatchers with ViewMatchers with MessagesStub with CSRFSupport {
 

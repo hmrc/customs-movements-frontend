@@ -16,6 +16,7 @@
 
 package controllers.consolidations
 
+import controllers.ControllerLayerSpec
 import forms.MucrOptions
 import forms.MucrOptions.Create
 import models.cache.AssociateUcrAnswers
@@ -27,10 +28,9 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import repository.MockCache
 import testdata.CommonTestData
 import testdata.ConsolidationTestData.validMucr
-import unit.controllers.ControllerLayerSpec
-import unit.repository.MockCache
 import views.html.associateucr.mucr_options
 
 import scala.concurrent.ExecutionContext.global

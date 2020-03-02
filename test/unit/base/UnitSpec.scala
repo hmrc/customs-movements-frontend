@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package unit.base
+package base
 
 import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar

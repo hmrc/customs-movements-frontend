@@ -16,9 +16,9 @@
 
 package models.viewmodels.ilequery
 
+import base.UnitSpec
 import models.notifications.queries.Transport
 import models.viewmodels.decoder.Decoder
-import unit.base.UnitSpec
 
 class IleQueryCodeConverterSpec extends UnitSpec {
 

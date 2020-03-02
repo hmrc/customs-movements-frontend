@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package unit.controllers
+package controllers
 
-import controllers.StartController
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._

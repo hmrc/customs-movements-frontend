@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package unit.controllers.util
+package controllers.util
 
+import base.UnitSpec
 import controllers.storage.CacheIdGenerator
 import forms.Choice.Arrival
 import models.SignedInUser
 import models.requests.{AuthenticatedRequest, LegacyJourneyRequest}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
-import unit.base.UnitSpec
 
 class CacheIdGeneratorSpec extends UnitSpec {
 

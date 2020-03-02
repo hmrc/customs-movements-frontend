@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package unit.controllers.actions
+package controllers.actions
 
-import controllers.actions.EoriWhitelist
+import base.UnitSpec
 import models.SignedInUser
 import play.api.Configuration
 import testdata.MovementsTestData._
-import unit.base.UnitSpec
 
 class EoriWhitelistSpec extends UnitSpec {
 

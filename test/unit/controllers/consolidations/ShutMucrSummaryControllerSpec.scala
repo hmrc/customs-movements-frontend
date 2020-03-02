@@ -16,6 +16,7 @@
 
 package controllers.consolidations
 
+import controllers.ControllerLayerSpec
 import controllers.storage.FlashKeys
 import forms.ShutMucr
 import models.ReturnToStartException
@@ -28,7 +29,6 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.SubmissionService
 import testdata.ConsolidationTestData.validMucr
-import unit.controllers.ControllerLayerSpec
 import views.html.shutmucr.shut_mucr_summary
 
 import scala.concurrent.ExecutionContext.global

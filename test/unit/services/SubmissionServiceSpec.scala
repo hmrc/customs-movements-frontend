@@ -16,7 +16,7 @@
 
 package services
 
-import base.MovementsMetricsStub
+import base.{MovementsMetricsStub, UnitSpec}
 import connectors.CustomsDeclareExportsMovementsConnector
 import connectors.exchanges._
 import forms._
@@ -34,7 +34,6 @@ import testdata.CommonTestData._
 import testdata.MovementsTestData._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import unit.base.UnitSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

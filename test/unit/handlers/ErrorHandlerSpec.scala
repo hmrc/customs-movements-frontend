@@ -19,6 +19,7 @@ package handlers
 import java.net.URLEncoder
 
 import config.AppConfig
+import controllers.ControllerLayerSpec
 import controllers.exception.IncompleteApplication
 import models.ReturnToStartException
 import org.mockito.ArgumentMatchers._
@@ -31,7 +32,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
-import unit.controllers.ControllerLayerSpec
 
 import scala.concurrent.Future.successful
 

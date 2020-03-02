@@ -21,12 +21,14 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.BackButton
 @import views.Title
+@import views.components.config.ViewRequestsConfig
 
 @this(
   govukLayout: gds_main_template,
   pageTitle: pageTitle,
   table: GovukTable,
-  formatter: DateTimeFormatter
+  formatter: DateTimeFormatter,
+  viewRequestsConfig: ViewRequestsConfig
 )
 
 @(submissions: Seq[(Submission, Seq[Notification])])(implicit request: Request[_], messages: Messages)
@@ -51,7 +53,7 @@
   title = Title("submissions.title"),
   backButton = Some(BackButton(
     title = messages("site.back.toStartPage"),
-    call = controllers.routes.ChoiceController.displayChoiceForm()
+    call = viewRequestsConfig.backLink()
   )),
   useCustomContentWidth = true
 ) {

@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package unit.controllers
+package controllers
 
-import controllers.{routes, ConsignmentReferencesController}
 import forms.ConsignmentReferences
 import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
 import org.mockito.ArgumentCaptor
@@ -27,7 +26,7 @@ import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.repository.MockCache
+import repository.MockCache
 import views.html.consignment_references
 
 import scala.concurrent.ExecutionContext.global

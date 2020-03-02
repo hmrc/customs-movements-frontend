@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package unit.controllers
+package controllers
 
 import config.AppConfig
 import controllers.consolidations.{routes => consolidationRoutes}
-import controllers.{routes, ChoiceController}
 import forms.Choice._
 import forms._
 import models.UcrBlock
@@ -30,7 +29,7 @@ import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.repository.MockCache
+import repository.MockCache
 import views.html.choice_page
 
 import scala.concurrent.ExecutionContext.global

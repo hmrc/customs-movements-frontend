@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package unit.controllers
+package controllers
 
-import controllers.MovementConfirmationController
 import controllers.storage.FlashKeys
 import models.ReturnToStartException
 import models.cache.JourneyType

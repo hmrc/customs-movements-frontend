@@ -16,8 +16,8 @@
 
 package models.viewmodels.decoder
 
+import base.UnitSpec
 import play.api.test.FakeRequest
-import unit.base.UnitSpec
 import utils.FakeRequestCSRFSupport.CSRFFakeRequest
 import views.spec.{UnitViewSpec, ViewMatchers}
 

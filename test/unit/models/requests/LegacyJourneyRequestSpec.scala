@@ -16,11 +16,11 @@
 
 package models.requests
 
+import base.UnitSpec
 import forms.Choice.Arrival
 import models.SignedInUser
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.Enrolments
-import unit.base.UnitSpec
 
 class LegacyJourneyRequestSpec extends UnitSpec {
 

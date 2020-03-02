@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package unit.controllers
+package controllers
 
 import play.api.mvc.Request
 import play.api.test.{CSRFTokenHelper, FakeRequest}

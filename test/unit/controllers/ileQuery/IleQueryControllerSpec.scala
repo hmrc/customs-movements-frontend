@@ -20,6 +20,7 @@ import java.time.Instant
 
 import connectors.CustomsDeclareExportsMovementsConnector
 import connectors.exchanges.IleQueryExchange
+import controllers.ControllerLayerSpec
 import controllers.actions.IleQueryAction
 import controllers.exception.FeatureDisabledException
 import forms.IleQueryForm
@@ -35,11 +36,9 @@ import play.api.libs.json.Json
 import play.api.mvc.Headers
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import repository.MockIleQueryCache
+import repository.{MockCache, MockIleQueryCache}
 import testdata.CommonTestData.conversationId
 import uk.gov.hmrc.http.HttpResponse
-import unit.controllers.ControllerLayerSpec
-import unit.repository.MockCache
 import views.html._
 
 import scala.concurrent.ExecutionContext.global

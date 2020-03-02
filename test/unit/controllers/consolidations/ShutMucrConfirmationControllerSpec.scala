@@ -16,6 +16,7 @@
 
 package controllers.consolidations
 
+import controllers.ControllerLayerSpec
 import controllers.storage.FlashKeys
 import models.ReturnToStartException
 import models.cache.JourneyType
@@ -25,7 +26,6 @@ import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.controllers.ControllerLayerSpec
 import views.html.confirmation_page
 
 import scala.concurrent.ExecutionContext.global

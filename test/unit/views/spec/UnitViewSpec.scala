@@ -17,7 +17,7 @@
 package views.spec
 
 import akka.util.Timeout
-import base.Injector
+import base.{Injector, UnitSpec}
 import config.AppConfig
 import forms.Choice
 import models.requests.{AuthenticatedRequest, LegacyJourneyRequest}
@@ -29,7 +29,6 @@ import play.api.test.Helpers.contentAsString
 import play.api.test.{FakeRequest, Helpers}
 import play.twirl.api.Html
 import testdata.MovementsTestData
-import unit.base.UnitSpec
 import utils.Stubs
 
 import scala.concurrent.Future

@@ -16,12 +16,11 @@
 
 package views.components.config
 
+import base.UnitSpec
 import config.AppConfig
 import models.UcrBlock
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import unit.base.UnitSpec
-import views.components.config.ChoicePageConfig
 
 class ChoicePageConfigSpec extends UnitSpec with BeforeAndAfterEach {
 

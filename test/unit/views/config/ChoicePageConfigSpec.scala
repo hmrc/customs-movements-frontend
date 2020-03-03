@@ -39,22 +39,33 @@ class ChoicePageConfigSpec extends UnitSpec with BeforeAndAfterEach {
     val config = new ChoicePageConfig(ileQueryDisabled)
 
     "return correct url" in {
-      config.backLink(None) must be(controllers.routes.StartController.displayStartPage())
-      config.backLink(Some(queryUcr)) must be(controllers.routes.StartController.displayStartPage())
+      config.backLink(None) mustBe controllers.routes.StartController.displayStartPage()
+      config.backLink(Some(queryUcr)) mustBe controllers.routes.StartController.displayStartPage()
+    }
+
+    "return information about ile query" in {
+
+      config.isQueryEnabled mustBe false
     }
   }
 
-  "ChoicePageBackLink when ileQuery disabled" should {
+  "ChoicePageBackLink when ileQuery enabled" should {
 
     val config = new ChoicePageConfig(ileQueryEnabled)
 
     "return correct url when query ucr present" in {
-      config.backLink(Some(queryUcr)) must be(controllers.ileQuery.routes.IleQueryController.getConsignmentInformation("ucr"))
+
+      config.backLink(Some(queryUcr)) mustBe controllers.ileQuery.routes.IleQueryController.getConsignmentInformation("ucr")
     }
 
     "return correct url when query ucr not present" in {
-      config.backLink(None) must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+
+      config.backLink(None) mustBe controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
     }
 
+    "return information about ile query" in {
+
+      config.isQueryEnabled mustBe true
+    }
   }
 }

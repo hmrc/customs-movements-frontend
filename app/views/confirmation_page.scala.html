@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.govukInsetText
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import views.components.config.ConfirmationPageConfig
 @import views.html.components.confirmation_link
 @import views.html.components.gds.link
 @import views.Title
@@ -30,7 +31,7 @@
   govukLayout: gds_main_template,
   pageTitle: pageTitle,
   govukInsetText: govukInsetText,
-  confirmationLink: confirmation_link
+  confirmationPageConfig: ConfirmationPageConfig
 )
 
 @(journeyType: JourneyType)(implicit request: Request[_], messages: Messages)
@@ -48,15 +49,6 @@
     content = HtmlContent(messages("confirmation.insetText")+"<br>"+messages("confirmation.insetText.check", gotoTimelineLink))
   ))
 
-  @if(appConfig.ileQueryEnabled){
-    @confirmationLink(
-      message = messages("confirmation.redirect.query.link"),
-      linkTarget = controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
-    )
-  } else {
-    @confirmationLink(
-      message = messages("confirmation.redirect.choice.link"),
-      linkTarget = controllers.routes.ChoiceController.displayChoiceForm()
-    )
-  }
+  @confirmationPageConfig.nextStepLink()
+
 }

@@ -18,15 +18,21 @@ package views.components.config
 
 import config.AppConfig
 import javax.inject.Inject
+import play.api.i18n.Messages
+import play.twirl.api.Html
+import views.html.components.confirmation_link
 
-class StartPageConfig @Inject()(appConfig: AppConfig) {
+class ConfirmationPageConfig @Inject()(appConfig: AppConfig, confirmationLink: confirmation_link) {
 
-  def startUrl: String =
-    if (appConfig.ileQueryEnabled)
-      controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url
-    else
-      controllers.routes.ChoiceController.displayChoiceForm().url
-
-  lazy val reportUrl = appConfig.serviceAvailabilityUrl
-  lazy val beforeYouStartUrl = appConfig.customsDeclarationsGoodsTakenOutOfEuUrl
+  def nextStepLink()(implicit messages: Messages): Html = if (appConfig.ileQueryEnabled) {
+    confirmationLink(
+      message = messages("confirmation.redirect.query.link"),
+      linkTarget = controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
+    )
+  } else {
+    confirmationLink(
+      message = messages("confirmation.redirect.choice.link"),
+      linkTarget = controllers.routes.ChoiceController.displayChoiceForm()
+    )
+  }
 }

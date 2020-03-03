@@ -28,7 +28,9 @@ class ChoicePageConfigSpec extends UnitSpec with BeforeAndAfterEach {
   private val ileQueryEnabled = mock[AppConfig]
   private val ileQueryDisabled = mock[AppConfig]
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
     when(ileQueryEnabled.ileQueryEnabled).thenReturn(true)
     when(ileQueryDisabled.ileQueryEnabled).thenReturn(false)
   }

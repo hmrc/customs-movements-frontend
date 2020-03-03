@@ -15,7 +15,7 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import components.gds.{errorSummary, gds_main_template}
+@import components.gds._
 @import forms.Choice._
 @import forms.Choice
 @import forms.UcrType.Ducr
@@ -28,6 +28,7 @@
   govukButton: GovukButton,
   govukRadios: GovukRadios,
   errorSummary: errorSummary,
+  sectionHeader: sectionHeader,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
   pageConfig: ChoicePageConfig
 )
@@ -78,13 +79,17 @@
     @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
+        @if(pageConfig.isQueryEnabled) {
+            @sectionHeader(messages("movement.choice.section", queryUcr.map(_.ucr).getOrElse("")))
+        }
+
         @govukRadios(Radios(
             name = "choice",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("movement.choice.title")),
                     isPageHeading = true,
-                    classes = "govuk-fieldset__legend--xl"
+                    classes = "govuk-fieldset__legend--l"
                 ))
             )),
             items = choices.filterNot(item => item.value.contains(ShutMUCR.value) && queryUcr.exists(_.ucrType == Ducr.codeValue)),

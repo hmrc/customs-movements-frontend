@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package unit.controllers
+package controllers
 
-import controllers.{routes, TransportController}
 import forms.Transport.ModesOfTransport.Sea
 import forms.{ConsignmentReferences, Transport}
 import models.ReturnToStartException
@@ -29,7 +28,7 @@ import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.repository.MockCache
+import repository.MockCache
 import views.html.transport
 
 import scala.concurrent.ExecutionContext.global

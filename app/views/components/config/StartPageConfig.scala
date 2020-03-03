@@ -15,6 +15,7 @@
  */
 
 package views.components.config
+
 import config.AppConfig
 import javax.inject.Inject
 
@@ -26,6 +27,6 @@ class StartPageConfig @Inject()(appConfig: AppConfig) {
     else
       controllers.routes.ChoiceController.displayChoiceForm().url
 
-  def reportUrl = appConfig.serviceAvailabilityUrl
-  def beforeYouStartUrl = appConfig.customsDeclarationsGoodsTakenOutOfEuUrl
+  lazy val reportUrl = appConfig.serviceAvailabilityUrl
+  lazy val beforeYouStartUrl = appConfig.customsDeclarationsGoodsTakenOutOfEuUrl
 }

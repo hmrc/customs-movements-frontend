@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package unit.controllers
+package controllers
 
-import controllers.{routes, LocationController}
 import forms.{ConsignmentReferences, Location}
 import models.ReturnToStartException
 import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
@@ -28,7 +27,7 @@ import play.api.data.Form
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.repository.MockCache
+import repository.MockCache
 import views.html.location
 
 import scala.concurrent.ExecutionContext.global

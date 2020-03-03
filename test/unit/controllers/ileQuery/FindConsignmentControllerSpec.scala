@@ -16,18 +16,16 @@
 
 package controllers.ileQuery
 
+import controllers.ControllerLayerSpec
 import controllers.actions.IleQueryAction
 import controllers.exception.FeatureDisabledException
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.libs.json.{JsString, Json}
-import play.api.mvc.Headers
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.HtmlFormat
-import repository.MockIleQueryCache
+import repository.{MockCache, MockIleQueryCache}
 import testdata.CommonTestData.correctUcr
-import unit.controllers.ControllerLayerSpec
-import unit.repository.MockCache
 import views.html.ile_query
 
 import scala.concurrent.ExecutionContext.global

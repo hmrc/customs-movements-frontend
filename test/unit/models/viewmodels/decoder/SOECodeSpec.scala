@@ -16,8 +16,8 @@
 
 package models.viewmodels.decoder
 
+import base.UnitSpec
 import models.viewmodels.decoder.SOECode._
-import unit.base.UnitSpec
 
 class SOECodeSpec extends UnitSpec {
 

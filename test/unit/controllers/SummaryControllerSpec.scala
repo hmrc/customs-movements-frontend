@@ -14,80 +14,132 @@
  * limitations under the License.
  */
 
-package unit.controllers
+package controllers
 
-import controllers.SummaryController
 import controllers.storage.FlashKeys
 import forms.ConsignmentReferences
 import models.cache.{ArrivalAnswers, DepartureAnswers, JourneyType, MovementAnswers}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.SubmissionService
-import unit.repository.MockCache
 import views.html.summary.{arrival_summary_page, departure_summary_page}
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-class SummaryControllerSpec extends ControllerLayerSpec with MockCache {
+class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with IntegrationPatience {
 
-  private val service = mock[SubmissionService]
-  private val mockArrivalSummaryPage = mock[arrival_summary_page]
-  private val mockDepartureSummaryPage = mock[departure_summary_page]
+  private val submissionService = mock[SubmissionService]
+  private val arrivalSummaryPage = mock[arrival_summary_page]
+  private val departureSummaryPage = mock[departure_summary_page]
 
   private def controller(answers: MovementAnswers) =
     new SummaryController(
       SuccessfulAuth(),
       ValidJourney(answers),
-      cache,
-      service,
+      submissionService,
       stubMessagesControllerComponents(),
-      mockArrivalSummaryPage,
-      mockDepartureSummaryPage
+      arrivalSummaryPage,
+      departureSummaryPage
     )(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockArrivalSummaryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockDepartureSummaryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+
+    reset(submissionService, arrivalSummaryPage, departureSummaryPage)
+    when(arrivalSummaryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(departureSummaryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockArrivalSummaryPage, mockDepartureSummaryPage)
+    reset(submissionService, arrivalSummaryPage, departureSummaryPage)
+
     super.afterEach()
   }
 
   private val emptyForm = JsObject(Map("" -> JsString("")))
 
-  "Movement Summary Controller" should {
+  "Movement Summary Controller on displayPage" should {
 
     "return 200 (OK)" when {
 
-      "cache contains data and user is during arrival journey" in {
+      "cache contains data and user is during Arrival journey" in {
         val result = controller(ArrivalAnswers()).displayPage()(getRequest())
 
         status(result) mustBe OK
       }
 
-      "cache contains data and user is during departure journey" in {
+      "cache contains data and user is during Departure journey" in {
         val result = controller(DepartureAnswers()).displayPage()(getRequest())
 
         status(result) mustBe OK
       }
+    }
+  }
 
-      "submission service return ACCEPTED during submission" in {
-        when(service.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
+  "Movement Summary Controller on submitMovementRequest" when {
+
+    "everything works correctly and user is on Arrival journey" should {
+
+      "call SubmissionService" in {
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
+        val cachedAnswers = ArrivalAnswers()
+
+        controller(cachedAnswers).submitMovementRequest()(postRequest(emptyForm)).futureValue
+
+        val expectedEori = SuccessfulAuth().operator.eori
+        verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers))(any())
+      }
+
+      "return SEE_OTHER (303) that redirects to MovementConfirmationController" in {
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
 
         val result = controller(ArrivalAnswers()).submitMovementRequest()(postRequest(emptyForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.display().url)
+        redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.displayPage().url)
+      }
+
+      "return response with Movement Type in flash" in {
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
+
+        val result = controller(ArrivalAnswers()).submitMovementRequest()(postRequest(emptyForm))
+
         flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.ARRIVE.toString)
-        flash(result).get(FlashKeys.UCR_KIND) mustBe Some("ref")
-        flash(result).get(FlashKeys.UCR) mustBe Some("value")
+      }
+    }
+
+    "everything works correctly and user is on Departure journey" should {
+
+      "call SubmissionService" in {
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
+        val cachedAnswers = DepartureAnswers()
+
+        controller(cachedAnswers).submitMovementRequest()(postRequest(emptyForm)).futureValue
+
+        val expectedEori = SuccessfulAuth().operator.eori
+        verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers))(any())
+      }
+
+      "return SEE_OTHER (303) that redirects to MovementConfirmationController" in {
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
+
+        val result = controller(DepartureAnswers()).submitMovementRequest()(postRequest(emptyForm))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.displayPage().url)
+      }
+
+      "return response with Movement Type in flash" in {
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
+
+        val result = controller(DepartureAnswers()).submitMovementRequest()(postRequest(emptyForm))
+
+        flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.DEPART.toString)
       }
     }
   }

@@ -14,61 +14,119 @@
  * limitations under the License.
  */
 
-package unit.controllers.consolidations
+package controllers.consolidations
 
-import controllers.consolidations.AssociateUcrConfirmationController
-import controllers.storage.FlashKeys
+import controllers.ControllerLayerSpec
+import controllers.storage.{FlashExtractor, FlashKeys}
 import models.ReturnToStartException
 import models.cache.JourneyType
-import org.mockito.ArgumentMatchers.any
+import models.cache.JourneyType.JourneyType
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.concurrent.ScalaFutures
+import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import unit.controllers.ControllerLayerSpec
-import views.html.associate_ucr_confirmation
+import views.html.confirmation_page
 
-class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec {
+class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec with ScalaFutures {
 
-  private val page = mock[associate_ucr_confirmation]
+  private val flashExtractor = mock[FlashExtractor]
+  private val confirmationPage = mock[confirmation_page]
 
   private val controller =
-    new AssociateUcrConfirmationController(SuccessfulAuth(), stubMessagesControllerComponents(), page)
+    new AssociateUcrConfirmationController(SuccessfulAuth(), stubMessagesControllerComponents(), flashExtractor, confirmationPage)
 
   override def beforeEach() {
     super.beforeEach()
-    when(page.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+
+    reset(flashExtractor, confirmationPage)
+    when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(None)
+    when(confirmationPage.apply(any[JourneyType])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override def afterEach(): Unit = {
-    reset(page)
+    reset(flashExtractor, confirmationPage)
 
     super.afterEach()
   }
 
-  "Associate DUCR Confirmation controller" should {
-    implicit val get = FakeRequest("GET", "/")
+  "Associate DUCR Confirmation controller on displayPage" should {
+    val getRequest = FakeRequest("GET", "/")
 
-    "return 200 (OK)" when {
+    "return 200 (OK)" in {
 
-      "display page method is invoked" in {
-        val result = controller.displayPage()(get.withFlash(FlashKeys.CONSOLIDATION_KIND -> "kind", FlashKeys.UCR -> "123"))
+      when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.ASSOCIATE_UCR))
+      val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ASSOCIATE_UCR.toString)
 
-        status(result) must be(OK)
-        verify(page).apply(any(), any())(any(), any())
-      }
+      val result = controller.displayPage()(request)
+
+      status(result) must be(OK)
+      verify(confirmationPage).apply(meq(JourneyType.ASSOCIATE_UCR))(any(), any())
     }
 
-    "return to start" when {
-      "ucr kind is missing" in {
+    "call FlashValuesExtractor" in {
+
+      when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.ASSOCIATE_UCR))
+      val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ASSOCIATE_UCR.toString)
+
+      controller.displayPage()(request).futureValue
+
+      val requestCaptor: ArgumentCaptor[Request[_]] = ArgumentCaptor.forClass(classOf[Request[_]])
+      verify(flashExtractor).extractMovementType(requestCaptor.capture())
+      requestCaptor.getValue.flash.get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.ASSOCIATE_UCR.toString)
+    }
+
+    "throw ReturnToStartException" when {
+
+      "journey type is missing" in {
+
+        when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(None)
+
         intercept[RuntimeException] {
-          await(controller.displayPage()(get.withFlash(FlashKeys.UCR -> "123")))
+          await(controller.displayPage()(getRequest))
         } mustBe ReturnToStartException
       }
 
-      "ucr is missing" in {
+      "journey type is ARRIVAL" in {
+
+        when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.ARRIVE))
+        val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ARRIVE.toString)
+
         intercept[RuntimeException] {
-          await(controller.displayPage()(get.withFlash(FlashKeys.CONSOLIDATION_KIND -> "kind")))
+          await(controller.displayPage()(request))
+        } mustBe ReturnToStartException
+      }
+
+      "journey type is DEPART" in {
+
+        when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.DEPART))
+        val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.DEPART.toString)
+
+        intercept[RuntimeException] {
+          await(controller.displayPage()(request))
+        } mustBe ReturnToStartException
+      }
+
+      "journey type is DISSOCIATE_UCR" in {
+
+        when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.DISSOCIATE_UCR))
+        val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.DISSOCIATE_UCR.toString)
+
+        intercept[RuntimeException] {
+          await(controller.displayPage()(request))
+        } mustBe ReturnToStartException
+      }
+
+      "journey type is SHUT_MUCR" in {
+
+        when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.SHUT_MUCR))
+        val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.SHUT_MUCR.toString)
+
+        intercept[RuntimeException] {
+          await(controller.displayPage()(request))
         } mustBe ReturnToStartException
       }
     }

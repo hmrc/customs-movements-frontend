@@ -17,7 +17,7 @@
 package models.notifications.queries
 import java.time.ZonedDateTime
 
-import unit.base.UnitSpec
+import base.UnitSpec
 
 class UcrInfoSpec extends UnitSpec {
 

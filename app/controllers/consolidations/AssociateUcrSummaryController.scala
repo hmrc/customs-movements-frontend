@@ -20,13 +20,12 @@ import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.storage.FlashKeys
 import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
-import models.cache.AssociateUcrAnswers
+import models.cache.{AssociateUcrAnswers, JourneyType}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import repositories.CacheRepository
 import services.SubmissionService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.associate_ucr_summary
+import views.html.associateucr.associate_ucr_summary
 
 import scala.concurrent.ExecutionContext
 
@@ -35,26 +34,24 @@ class AssociateUcrSummaryController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyRefiner,
   mcc: MessagesControllerComponents,
-  cache: CacheRepository,
   submissionService: SubmissionService,
   associateUcrSummaryPage: associate_ucr_summary
 )(implicit executionContext: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ASSOCIATE_UCR)) { implicit request =>
     val answers = request.answersAs[AssociateUcrAnswers]
     val mucrOptions = answers.mucrOptions.getOrElse(throw ReturnToStartException)
     val ucr = answers.associateUcr.getOrElse(throw ReturnToStartException)
     Ok(associateUcrSummaryPage(ucr, mucrOptions.mucr))
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ASSOCIATE_UCR)).async { implicit request =>
     val answers = request.answersAs[AssociateUcrAnswers]
-    val associateUcr = answers.associateUcr.getOrElse(throw ReturnToStartException)
 
     submissionService.submit(request.eori, answers).map { _ =>
       Redirect(controllers.consolidations.routes.AssociateUcrConfirmationController.displayPage())
-        .flashing(FlashKeys.CONSOLIDATION_KIND -> associateUcr.kind.formValue, FlashKeys.UCR -> associateUcr.ucr)
+        .flashing(FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString)
     }
   }
 }

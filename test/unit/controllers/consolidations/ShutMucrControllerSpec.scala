@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package unit.controllers.consolidations
+package controllers.consolidations
 
-import controllers.consolidations.{routes, ShutMucrController}
+import controllers.ControllerLayerSpec
 import forms.ShutMucr
 import models.cache.{Cache, ShutMucrAnswers}
 import org.mockito.ArgumentCaptor
@@ -27,10 +27,9 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import repository.MockCache
 import testdata.ConsolidationTestData.validMucr
-import unit.controllers.ControllerLayerSpec
-import unit.repository.MockCache
-import views.html.shut_mucr
+import views.html.shutmucr.shut_mucr
 
 import scala.concurrent.ExecutionContext.global
 

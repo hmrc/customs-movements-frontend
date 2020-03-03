@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package views
+package views.associateucr
 
 import base.Injector
 import forms.MucrOptions
 import models.cache.ArrivalAnswers
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
-import views.html.mucr_options
+import views.ViewSpec
+import views.html.associateucr.mucr_options
 
 class MucrOptionsViewSpec extends ViewSpec with Injector {
 

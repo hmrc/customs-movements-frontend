@@ -23,10 +23,9 @@ import models.ReturnToStartException
 import models.cache.{DisassociateUcrAnswers, JourneyType}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import repositories.CacheRepository
 import services.SubmissionService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.disassociate_ucr_summary
+import views.html.disassociateucr.disassociate_ucr_summary
 
 import scala.concurrent.ExecutionContext
 
@@ -35,7 +34,6 @@ class DisassociateUcrSummaryController @Inject()(
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
-  cache: CacheRepository,
   submissionService: SubmissionService,
   page: disassociate_ucr_summary
 )(implicit executionContext: ExecutionContext)
@@ -50,12 +48,10 @@ class DisassociateUcrSummaryController @Inject()(
 
   def submit(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DISSOCIATE_UCR)).async { implicit request =>
     val answers = request.answersAs[DisassociateUcrAnswers]
-    val ucr = answers.ucr.map(_.ucr).getOrElse(throw ReturnToStartException)
-    val kind = answers.ucr.map(_.kind).getOrElse(throw ReturnToStartException)
 
     submissionService.submit(request.eori, answers).map { _ =>
       Redirect(routes.DisassociateUcrConfirmationController.displayPage())
-        .flashing(FlashKeys.UCR -> ucr, FlashKeys.CONSOLIDATION_KIND -> kind.formValue.toUpperCase())
+        .flashing(FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString)
     }
   }
 }

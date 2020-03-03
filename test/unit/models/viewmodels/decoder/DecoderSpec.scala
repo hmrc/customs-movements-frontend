@@ -16,11 +16,11 @@
 
 package models.viewmodels.decoder
 
+import base.UnitSpec
 import models.viewmodels.decoder.CRCCode.Success
 import models.viewmodels.decoder.ICSCode.InvalidationAtTraderRequest
 import models.viewmodels.decoder.ROECode.DocumentaryControl
 import models.viewmodels.decoder.SOECode.{ConsolidationOpen, Departed}
-import unit.base.UnitSpec
 
 class DecoderSpec extends UnitSpec {
 

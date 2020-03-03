@@ -1,0 +1,54 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import components.gds.gds_main_template
+@import components.gds.pageTitle
+@import models.cache.JourneyType.JourneyType
+@import uk.gov.hmrc.govukfrontend.views.html.components.govukInsetText
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import views.components.config.ConfirmationPageConfig
+@import views.html.components.confirmation_link
+@import views.html.components.gds.link
+@import views.Title
+
+@this(
+  appConfig: AppConfig,
+  govukLayout: gds_main_template,
+  pageTitle: pageTitle,
+  govukInsetText: govukInsetText,
+  confirmationPageConfig: ConfirmationPageConfig
+)
+
+@(journeyType: JourneyType)(implicit request: Request[_], messages: Messages)
+
+@gotoTimelineLink = @{
+  link(message = messages("confirmation.notification.timeline.link"), href = routes.SubmissionsController.displayPage())
+}
+
+
+@govukLayout(title = Title(s"confirmation.title.$journeyType")) {
+
+  @pageTitle(text = messages(s"confirmation.title.$journeyType"), classes = "govuk-heading-xl")
+
+  @govukInsetText(InsetText(
+    content = HtmlContent(messages("confirmation.insetText")+"<br>"+messages("confirmation.insetText.check", gotoTimelineLink))
+  ))
+
+  @confirmationPageConfig.nextStepLink()
+
+}

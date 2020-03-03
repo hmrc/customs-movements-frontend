@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package unit.controllers
+package controllers
 
 import java.time.{LocalDate, LocalDateTime, LocalTime}
 
-import controllers._
 import forms.common.{Date, Time}
 import forms.{ArrivalDetails, ConsignmentReferences, DepartureDetails}
 import models.ReturnToStartException
@@ -31,8 +30,8 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import repository.MockCache
 import testdata.MovementsTestData
-import unit.repository.MockCache
 import views.html.{arrival_details, departure_details}
 
 import scala.concurrent.ExecutionContext.global

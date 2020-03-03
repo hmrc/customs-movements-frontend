@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package unit.controllers.consolidations
+package controllers.consolidations
 
-import controllers.consolidations.{routes, AssociateUcrController}
+import controllers.ControllerLayerSpec
 import forms.AssociateKind._
 import forms.{AssociateUcr, MucrOptions}
 import models.ReturnToStartException
@@ -28,10 +28,9 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import repository.MockCache
 import testdata.ConsolidationTestData.validDucr
-import unit.controllers.ControllerLayerSpec
-import unit.repository.MockCache
-import views.html.associate_ucr
+import views.html.associateucr.associate_ucr
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -85,7 +84,7 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
 
     "throw an IncompleteApplication exception" when {
 
-      "display page method is invoked and Mucr Options page is in cache" in {
+      "display page method is invoked and Mucr Options page is not in cache" in {
         val request = getRequest()
 
         intercept[RuntimeException] {

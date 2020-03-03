@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package unit.models.submissions
+package models.submissions
 
 import java.time.Instant
 
+import base.UnitSpec
 import connectors.exchanges.ActionType.MovementType
 import models.UcrBlock
-import models.submissions.Submission
 import org.scalatest.OptionValues
 import testdata.CommonTestData._
-import unit.base.UnitSpec
 
 class SubmissionSpec extends UnitSpec with OptionValues {
 

@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package unit.controllers
+package controllers
 
 import base.MockFactory._
 import connectors.CustomsDeclareExportsMovementsConnector
 import connectors.exchanges.ActionType.MovementType
-import controllers.NotificationsController
 import models.notifications.{Notification, ResponseType}
 import models.submissions.Submission
 import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}

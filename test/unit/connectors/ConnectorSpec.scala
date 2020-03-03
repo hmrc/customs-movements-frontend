@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package unit.connectors
+package connectors
 
 import base.Injector
 import org.scalatest.concurrent.ScalaFutures

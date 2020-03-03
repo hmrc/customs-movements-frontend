@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.disassociateucr
 
 import base.Injector
 import forms.DisassociateKind.{Ducr, Mucr}
@@ -23,7 +23,8 @@ import models.cache.DisassociateUcrAnswers
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.disassociate_ucr
+import views.ViewSpec
+import views.html.disassociateucr.disassociate_ucr
 import views.tags.ViewTest
 
 @ViewTest

@@ -254,7 +254,7 @@ class DepartureSpec extends IntegrationSpec {
 
         // Then
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.routes.MovementConfirmationController.display().url)
+        redirectLocation(response) mustBe Some(controllers.routes.MovementConfirmationController.displayPage().url)
         theAnswersFor("eori") mustBe None
         verify(
           postRequestedForMovement()

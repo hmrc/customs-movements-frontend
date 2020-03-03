@@ -14,10 +14,12 @@
  * limitations under the License.
  *@
 
-@()(implicit messages: Messages)
+@import views.html.components.gds.link
 
-<p id = "status-info" class="govuk-body">
-    @submissionLink = {<a class="govuk-link govuk-link--no-visited-state" href="@routes.ChoiceController.startSpecificJourney(forms.Choice.Submissions.value)">@messages("movement.confirmation.statusInfo.submissions")</a>}
+@this()
 
-    @Html(messages("movement.confirmation.statusInfo", submissionLink))
+@(message: String, linkTarget: Call)
+
+<p class="govuk-body">
+    @link(message = message, href = linkTarget)
 </p>

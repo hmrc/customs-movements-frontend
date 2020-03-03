@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package unit.controllers
+package controllers
 
 import java.time.Instant
 
 import connectors.CustomsDeclareExportsMovementsConnector
-import controllers.SubmissionsController
 import models.notifications.Notification
 import models.submissions.Submission
 import org.mockito.ArgumentCaptor

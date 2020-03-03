@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package unit.controllers
+package controllers
 
+import base.UnitSpec
 import config.AppConfig
 import controllers.actions.{AuthActionImpl, EoriWhitelist, IleQueryAction, JourneyRefiner}
 import controllers.exception.FeatureDisabledException
-import models.cache.{Answers, Cache}
-import models.cache.JourneyType.JourneyType
-import models.requests.{AuthenticatedRequest, JourneyRequest}
 import models.SignedInUser
+import models.cache.JourneyType.JourneyType
+import models.cache.{Answers, Cache}
+import models.requests.{AuthenticatedRequest, JourneyRequest}
 import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.Messages
 import play.api.libs.json.Writes
@@ -32,7 +33,6 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import repositories.CacheRepository
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolments}
-import unit.base.UnitSpec
 import utils.Stubs
 
 import scala.concurrent.ExecutionContext.Implicits.global

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.associateucr
 
 import base.Injector
 import forms.AssociateKind._
@@ -23,7 +23,7 @@ import helpers.views.{AssociateDucrMessages, CommonMessages}
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import play.twirl.api.Html
-import views.html.associate_ucr
+import views.html.associateucr.associate_ucr
 import views.spec.{UnitViewSpec, ViewMatchers}
 import views.tags.ViewTest
 

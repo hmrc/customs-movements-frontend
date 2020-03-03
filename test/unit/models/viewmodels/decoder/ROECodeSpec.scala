@@ -16,9 +16,9 @@
 
 package models.viewmodels.decoder
 
+import base.UnitSpec
 import models.viewmodels.decoder.ROECode._
 import play.api.libs.json.{JsNumber, JsString, JsSuccess}
-import unit.base.UnitSpec
 
 class ROECodeSpec extends UnitSpec {
 

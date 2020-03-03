@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package unit.controllers.actions
+package controllers.actions
 
-import controllers.actions.JourneyRefiner
 import models.SignedInUser
 import models.cache.{ArrivalAnswers, Cache, JourneyType}
 import models.requests.{AuthenticatedRequest, JourneyRequest}

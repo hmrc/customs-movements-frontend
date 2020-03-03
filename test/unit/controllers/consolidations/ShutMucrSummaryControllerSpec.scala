@@ -16,45 +16,47 @@
 
 package controllers.consolidations
 
+import controllers.ControllerLayerSpec
 import controllers.storage.FlashKeys
 import forms.ShutMucr
 import models.ReturnToStartException
-import models.cache.ShutMucrAnswers
-import org.mockito.ArgumentMatchers.any
-import org.mockito.BDDMockito._
-import org.mockito.Mockito.{verify, when}
+import models.cache.{JourneyType, ShutMucrAnswers}
+import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.libs.json.JsObject
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.SubmissionService
 import testdata.ConsolidationTestData.validMucr
-import unit.controllers.ControllerLayerSpec
-import unit.repository.MockCache
-import views.html.shut_mucr_summary
+import views.html.shutmucr.shut_mucr_summary
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with MockCache {
+class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with IntegrationPatience {
 
   private val submissionService = mock[SubmissionService]
   private val page = mock[shut_mucr_summary]
 
   private def controller(answers: ShutMucrAnswers) =
-    new ShutMucrSummaryController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, submissionService, page)(global)
+    new ShutMucrSummaryController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), submissionService, page)(global)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+
+    reset(submissionService, page)
     when(page.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
-  "Shut Mucr Summary Controller" should {
-    val mucr = ShutMucr(validMucr)
+  private val shutMucr = ShutMucr(validMucr)
+
+  "Shut Mucr Summary Controller on displayPage" should {
 
     "return 200 (OK)" when {
 
       "cache contains information from shut mucr page" in {
-        val result = controller(ShutMucrAnswers(Some(mucr))).displayPage()(getRequest())
+        val result = controller(ShutMucrAnswers(Some(shutMucr))).displayPage()(getRequest())
 
         status(result) mustBe OK
         verify(page).apply(any())(any(), any())
@@ -68,23 +70,38 @@ class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with MockCache {
           await(controller(ShutMucrAnswers()).displayPage()(getRequest()))
         } mustBe ReturnToStartException
       }
-
-      "cache is empty for submit method" in {
-        intercept[RuntimeException] {
-          await(controller(ShutMucrAnswers()).submit()(postRequest(JsObject(Seq.empty))))
-        } mustBe ReturnToStartException
-      }
     }
+  }
 
-    "return 303 (SEE_OTHER)" when {
+  "Shut Mucr Summary Controller on submit" when {
 
-      "cache contains shut mucr data and submission is successfully" in {
-        given(submissionService.submit(any(), any[ShutMucrAnswers])(any())).willReturn(Future.successful((): Unit))
+    "everything works correctly" should {
 
-        val result = controller(ShutMucrAnswers(Some(mucr))).submit()(postRequest(JsObject(Seq.empty)))
+      "call SubmissionService" in {
+        when(submissionService.submit(any(), any[ShutMucrAnswers])(any())).thenReturn(Future.successful((): Unit))
+        val cachedAnswers = ShutMucrAnswers(shutMucr = Some(shutMucr))
+
+        controller(cachedAnswers).submit()(postRequest()).futureValue
+
+        val expectedEori = SuccessfulAuth().operator.eori
+        verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers))(any())
+      }
+
+      "return 303 (SEE_OTHER) that redirects to ShutMucrConfirmationController" in {
+        when(submissionService.submit(any(), any[ShutMucrAnswers])(any())).thenReturn(Future.successful((): Unit))
+
+        val result = controller(ShutMucrAnswers(Some(shutMucr))).submit()(postRequest(JsObject(Seq.empty)))
 
         status(result) mustBe SEE_OTHER
-        flash(result).get(FlashKeys.MUCR) mustBe Some(validMucr)
+        redirectLocation(result) mustBe Some(controllers.consolidations.routes.ShutMucrConfirmationController.displayPage().url)
+      }
+
+      "return response with Movement Type in flash" in {
+        when(submissionService.submit(any(), any[ShutMucrAnswers])(any())).thenReturn(Future.successful((): Unit))
+
+        val result = controller(ShutMucrAnswers(Some(shutMucr))).submit()(postRequest(JsObject(Seq.empty)))
+
+        flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.SHUT_MUCR.toString)
       }
     }
   }

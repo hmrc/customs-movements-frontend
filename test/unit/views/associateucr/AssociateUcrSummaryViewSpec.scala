@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package views
+package views.associateucr
 
 import base.Injector
 import forms.AssociateKind._
-import forms.{AssociateUcr, ShutMucr}
-import helpers.views.CommonMessages
+import forms.AssociateUcr
 import models.cache.AssociateUcrAnswers
 import play.twirl.api.Html
-import views.spec.UnitViewSpec
+import views.ViewSpec
+import views.html.associateucr.associate_ucr_summary
 import views.tags.ViewTest
-import views.html.associate_ucr_summary
 
 @ViewTest
-class AssociateDucrSummaryViewSpec extends ViewSpec with Injector {
+class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(AssociateUcrAnswers())
 

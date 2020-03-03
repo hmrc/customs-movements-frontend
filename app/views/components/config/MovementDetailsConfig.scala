@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package views.config
+package views.components.config
 
-import views.components.config.StartPageConfig
+import config.AppConfig
+import javax.inject.Inject
+import play.api.mvc.Call
 
-class StartPageConfigSpec extends IleQueryFeatureConfigSpec {
+class MovementDetailsConfig @Inject()(appConfig: AppConfig) {
 
-  "StartPageConfig" should {
-
-    "return correct url when ileQuery enabled" in {
-      val config = new StartPageConfig(ileQueryEnabled)
-      config.startUrl must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
-    }
-
-    "return correct url when ileQuery disabled" in {
-      val config = new StartPageConfig(ileQueryDisabled)
-      config.startUrl must be(controllers.routes.ChoiceController.displayChoiceForm().url)
-    }
-
-  }
+  def backUrl: Call =
+    if (appConfig.ileQueryEnabled)
+      controllers.routes.ChoiceController.displayChoiceForm()
+    else
+      controllers.routes.ConsignmentReferencesController.displayPage()
 }

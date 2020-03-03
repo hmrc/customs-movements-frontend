@@ -20,21 +20,24 @@ import java.text.DecimalFormat
 import java.time.{LocalDate, LocalTime}
 
 import base.Injector
+import forms.DepartureDetails
 import forms.common.{Date, Time}
-import forms.{ConsignmentReferences, DepartureDetails}
 import models.cache.ArrivalAnswers
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
-import testdata.CommonTestData.correctUcr
 import testdata.MovementsTestData
 import views.html.departure_details
+import views.spec.UnitViewSpec
+import views.spec.UnitViewSpec.realAppConfig
 
 class DepartureDetailsViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(ArrivalAnswers())
   private val movementDetails = MovementsTestData.movementDetails
   private val page = instanceOf[departure_details]
+
+  val appConfig = UnitViewSpec.realAppConfig
 
   private val consignmentReferences = "M-ref"
   private def createView(form: Form[DepartureDetails]): Html = page(form, consignmentReferences)(request, messages)
@@ -62,7 +65,12 @@ class DepartureDetailsViewSpec extends ViewSpec with Injector {
         val backButton = emptyView.getBackButton
 
         backButton mustBe defined
-        backButton.get must haveHref(controllers.routes.ConsignmentReferencesController.displayPage())
+        backButton.get must haveHref(
+          if (realAppConfig.ileQueryEnabled)
+            controllers.routes.ChoiceController.displayChoiceForm()
+          else
+            controllers.routes.ConsignmentReferencesController.displayPage()
+        )
       }
 
       "have section header" in {

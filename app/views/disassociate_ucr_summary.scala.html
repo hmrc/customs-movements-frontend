@@ -19,19 +19,21 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 @import views.components.BackButton
+@import views.components.config.DissociateSummaryConfig
 
 @this(  govukLayout: gds_main_template,
         pageTitle: pageTitle,
         table: GovukTable,
         govukButton: GovukButton,
         govukSummaryList : GovukSummaryList,
+        pageConfig: DissociateSummaryConfig,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(disassociateUcr: DisassociateUcr)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
     title = Title("disassociate.ucr.summary.title"),
-    backButton = Some(BackButton(messages("site.back"), consolidations.routes.DisassociateUcrController.displayPage)))  {
+    backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl)))  {
 
     @formHelper(action = consolidations.routes.DisassociateUcrSummaryController.submit(), 'autoComplete -> "off") {
 

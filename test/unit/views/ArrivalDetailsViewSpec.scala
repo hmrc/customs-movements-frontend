@@ -29,12 +29,16 @@ import play.twirl.api.Html
 import testdata.CommonTestData.correctUcr
 import testdata.MovementsTestData
 import views.html.arrival_details
+import views.spec.UnitViewSpec
+import views.spec.UnitViewSpec.realAppConfig
 
 class ArrivalDetailsViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(ArrivalAnswers())
   private val movementDetails = MovementsTestData.movementDetails
   private val page = instanceOf[arrival_details]
+
+  val appConfig = UnitViewSpec.realAppConfig
 
   private val consignmentReferences = ConsignmentReferences(reference = "M", referenceValue = correctUcr)
   private def createView(form: Form[ArrivalDetails]): Html = page(form, Some(consignmentReferences))(request, messages)
@@ -62,7 +66,12 @@ class ArrivalDetailsViewSpec extends ViewSpec with Injector {
         val backButton = emptyView.getBackButton
 
         backButton mustBe defined
-        backButton.get must haveHref(controllers.routes.ConsignmentReferencesController.displayPage())
+        backButton.get must haveHref(
+          if (realAppConfig.ileQueryEnabled)
+            controllers.routes.ChoiceController.displayChoiceForm()
+          else
+            controllers.routes.ConsignmentReferencesController.displayPage()
+        )
       }
 
       "have section header" in {

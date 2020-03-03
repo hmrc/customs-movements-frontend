@@ -16,20 +16,25 @@
 
 package views.config
 
-import views.components.config.StartPageConfig
+import views.components.config.MovementDetailsConfig
 
-class StartPageConfigSpec extends IleQueryFeatureConfigSpec {
+class MovementDetailsConfigSpec extends IleQueryFeatureConfigSpec {
 
-  "StartPageConfig" should {
+  "MovementDetailsConfig when ileQuery disabled" should {
 
-    "return correct url when ileQuery enabled" in {
-      val config = new StartPageConfig(ileQueryEnabled)
-      config.startUrl must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
+    val config = new MovementDetailsConfig(ileQueryDisabled)
+
+    "return correct url" in {
+      config.backUrl must be(controllers.routes.ConsignmentReferencesController.displayPage())
     }
+  }
 
-    "return correct url when ileQuery disabled" in {
-      val config = new StartPageConfig(ileQueryDisabled)
-      config.startUrl must be(controllers.routes.ChoiceController.displayChoiceForm().url)
+  "MovementDetailsConfig when ileQuery enabled" should {
+
+    val config = new MovementDetailsConfig(ileQueryEnabled)
+
+    "return correct url when query ucr present" in {
+      config.backUrl must be(controllers.routes.ChoiceController.displayChoiceForm())
     }
 
   }

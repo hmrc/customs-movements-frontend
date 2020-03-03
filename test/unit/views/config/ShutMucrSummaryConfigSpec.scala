@@ -16,20 +16,25 @@
 
 package views.config
 
-import views.components.config.StartPageConfig
+import views.components.config.ShutMucrSummaryConfig
 
-class StartPageConfigSpec extends IleQueryFeatureConfigSpec {
+class ShutMucrSummaryConfigSpec extends IleQueryFeatureConfigSpec {
 
-  "StartPageConfig" should {
+  "ShutMucrSummaryConfig when ileQuery disabled" should {
 
-    "return correct url when ileQuery enabled" in {
-      val config = new StartPageConfig(ileQueryEnabled)
-      config.startUrl must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
+    val config = new ShutMucrSummaryConfig(ileQueryDisabled)
+
+    "return correct url" in {
+      config.backUrl must be(controllers.consolidations.routes.ShutMucrController.displayPage())
     }
+  }
 
-    "return correct url when ileQuery disabled" in {
-      val config = new StartPageConfig(ileQueryDisabled)
-      config.startUrl must be(controllers.routes.ChoiceController.displayChoiceForm().url)
+  "ShutMucrSummaryConfig when ileQuery enabled" should {
+
+    val config = new ShutMucrSummaryConfig(ileQueryEnabled)
+
+    "return correct url when query ucr present" in {
+      config.backUrl must be(controllers.routes.ChoiceController.displayChoiceForm())
     }
 
   }

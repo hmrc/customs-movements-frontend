@@ -16,6 +16,15 @@
 
 package controllers.storage
 
-object FlashKeys {
-  val MOVEMENT_TYPE = "MOVEMENT_TYPE"
+import models.cache.JourneyType
+import models.cache.JourneyType.JourneyType
+import play.api.mvc.Request
+
+class FlashExtractor {
+
+  def extractValue(key: String, request: Request[_]): Option[String] = request.flash.get(key)
+
+  def extractMovementType(request: Request[_]): Option[JourneyType] =
+    extractValue(FlashKeys.MOVEMENT_TYPE, request).map(JourneyType.withName)
+
 }

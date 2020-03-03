@@ -24,15 +24,13 @@ import views.html.components.confirmation_link
 
 class ConfirmationPageConfig @Inject()(appConfig: AppConfig, confirmationLink: confirmation_link) {
 
-  def nextStepLink()(implicit messages: Messages): Html = if (appConfig.ileQueryEnabled) {
-    confirmationLink(
-      message = messages("confirmation.redirect.query.link"),
-      linkTarget = controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
-    )
-  } else {
-    confirmationLink(
-      message = messages("confirmation.redirect.choice.link"),
-      linkTarget = controllers.routes.ChoiceController.displayChoiceForm()
-    )
-  }
+  def nextStepLink()(implicit messages: Messages): Html =
+    if (appConfig.ileQueryEnabled) {
+      confirmationLink(
+        message = messages("confirmation.redirect.query.link"),
+        linkTarget = controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
+      )
+    } else {
+      confirmationLink(message = messages("confirmation.redirect.choice.link"), linkTarget = controllers.routes.ChoiceController.displayChoiceForm())
+    }
 }

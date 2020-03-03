@@ -16,10 +16,10 @@
 
 package views.components.config
 
+import base.UnitSpec
 import config.AppConfig
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import unit.base.UnitSpec
 
 class ViewRequestsConfigSpec extends UnitSpec with BeforeAndAfterEach {
 

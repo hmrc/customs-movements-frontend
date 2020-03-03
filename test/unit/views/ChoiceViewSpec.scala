@@ -22,25 +22,52 @@ import forms.{Choice, UcrType}
 import helpers.views.CommonMessages
 import models.UcrBlock
 import org.jsoup.nodes.Document
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios}
+import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+import views.components.config.ChoicePageConfig
 import views.html.choice_page
+import views.html.components.gds.{errorSummary, gds_main_template}
 import views.spec.UnitViewSpec
 import views.spec.UnitViewSpec.{realAppConfig, realMessagesApi}
 import views.tags.ViewTest
 
 @ViewTest
-class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
+class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with BeforeAndAfterEach {
 
   private val form: Form[Choice] = Choice.form()
-  private val choicePage = instanceOf[choice_page]
+
+  private val govukLayout = instanceOf[gds_main_template]
+  private val govukButton = instanceOf[GovukButton]
+  private val govukRadios = instanceOf[GovukRadios]
+  private val errorSummary = instanceOf[errorSummary]
+  private val formHelper = instanceOf[FormWithCSRF]
+  private val pageConfig = mock[ChoicePageConfig]
+
+  def isIleQueryEnabled(enabled: Boolean): Unit = {
+    when(pageConfig.backLink(any())).thenReturn(
+      if (enabled) controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
+      else controllers.routes.StartController.displayStartPage
+    )
+    when(pageConfig.isQueryEnabled).thenReturn(enabled)
+  }
+
+  private val choicePage = new choice_page(govukLayout, govukButton, govukRadios, errorSummary, formHelper, pageConfig)
   private def createView(form: Form[Choice] = form, messages: Messages = stubMessages()): Document =
     choicePage(form)(request, messages)
+
+  override def afterEach(): Unit =
+    reset(pageConfig)
 
   "Choice View" should {
 
     "have proper labels for messages" in {
+      isIleQueryEnabled(true)
 
       val messages = messagesApi.preferred(request)
 
@@ -54,6 +81,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
     }
 
     "have proper labels for error messages" in {
+      isIleQueryEnabled(true)
 
       val messages = messagesApi.preferred(request)
 
@@ -62,7 +90,10 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
     }
 
     "not render 'Shut Mucr' option" when {
+
       "ILE query was for a Ducr" in {
+        isIleQueryEnabled(true)
+
         val view = choicePage(Choice.form(), Some(UcrBlock("DUCR", UcrType.Ducr)))
 
         view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
@@ -73,7 +104,10 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
     }
 
     "render 'Shut Mucr' option" when {
+
       "ILE query was for a Mucr" in {
+        isIleQueryEnabled(true)
+
         val view = choicePage(Choice.form(), Some(UcrBlock("MUCR", UcrType.Mucr)))
 
         view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
@@ -88,17 +122,20 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
   "Choice View on empty page" should {
 
     "display same page title as header" in {
+      isIleQueryEnabled(true)
 
       val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
       viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
     "display header with hint" in {
+      isIleQueryEnabled(true)
 
       createView().getElementsByClass("govuk-fieldset__heading").get(0).text() must be(messages("movement.choice.title"))
     }
 
     "display 'Back' button that links to correct page" in {
+      isIleQueryEnabled(true)
 
       val backButton = createView().getElementById("back-link")
 
@@ -111,7 +148,8 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
       )
     }
 
-    "display 6 radio buttons with labels" in {
+    "display 5 radio buttons with labels when ileQuery is enabled" in {
+      isIleQueryEnabled(true)
 
       val view = createView(Choice.form())
 
@@ -120,13 +158,23 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
       view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.disassociateucr.label"))
       view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.shutmucr.label"))
       view.getElementsByAttributeValue("for", "choice-5").text() must be(messages("movement.choice.departure.label"))
+    }
 
-      if (!realAppConfig.ileQueryEnabled) {
-        view.getElementsByAttributeValue("for", "choice-6").text() must be(messages("movement.choice.submissions.label"))
-      }
+    "display 6 radio buttons with labels when ileQuery is disabled" in {
+      isIleQueryEnabled(false)
+
+      val view = createView(Choice.form())
+
+      view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
+      view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.associateucr.label"))
+      view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.disassociateucr.label"))
+      view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.shutmucr.label"))
+      view.getElementsByAttributeValue("for", "choice-5").text() must be(messages("movement.choice.departure.label"))
+      view.getElementsByAttributeValue("for", "choice-6").text() must be(messages("movement.choice.submissions.label"))
     }
 
     "display 4 unchecked radio buttons" in {
+      isIleQueryEnabled(true)
 
       val view = createView(Choice.form())
 
@@ -137,6 +185,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
     }
 
     "display 'Save and continue' button on page" in {
+      isIleQueryEnabled(true)
 
       val view = createView()
 
@@ -148,6 +197,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
   "Choice View for invalid input" should {
 
     "display error when no choice is made" in {
+      isIleQueryEnabled(true)
 
       val view = createView(Choice.form().bind(Map[String, String]()))
 
@@ -158,6 +208,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
     }
 
     "display error when choice is incorrect" in {
+      isIleQueryEnabled(true)
 
       val view = createView(Choice.form().bind(Map("choice" -> "incorrect")))
 
@@ -171,6 +222,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
   "Choice View when filled" should {
 
     "display selected 1st radio button - Arrival (EAL)" in {
+      isIleQueryEnabled(true)
 
       val view = createView(Choice.form().fill(Arrival))
 
@@ -181,6 +233,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
     }
 
     "display selected 2nd radio button - Associate (EDL)" in {
+      isIleQueryEnabled(true)
 
       val view = createView(Choice.form().fill(AssociateUCR))
 
@@ -191,6 +244,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
     }
 
     "display selected 3rd radio button - Disassociate (EAC)" in {
+      isIleQueryEnabled(true)
 
       val view = createView(Choice.form().fill(DisassociateUCR))
 
@@ -201,6 +255,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
     }
 
     "display selected 4th radio button - Shut a MUCR (CST)" in {
+      isIleQueryEnabled(true)
 
       val view = createView(Choice.form().fill(ShutMUCR))
 

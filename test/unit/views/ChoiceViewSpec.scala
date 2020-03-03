@@ -32,7 +32,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios
 import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 import views.components.config.ChoicePageConfig
 import views.html.choice_page
-import views.html.components.gds.{errorSummary, gds_main_template}
+import views.html.components.gds.{errorSummary, gds_main_template, sectionHeader}
 import views.spec.UnitViewSpec
 import views.spec.UnitViewSpec.{realAppConfig, realMessagesApi}
 import views.tags.ViewTest
@@ -46,6 +46,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
   private val govukButton = instanceOf[GovukButton]
   private val govukRadios = instanceOf[GovukRadios]
   private val errorSummary = instanceOf[errorSummary]
+  private val sectionHeader = instanceOf[sectionHeader]
   private val formHelper = instanceOf[FormWithCSRF]
   private val pageConfig = mock[ChoicePageConfig]
 
@@ -57,7 +58,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
     when(pageConfig.isQueryEnabled).thenReturn(enabled)
   }
 
-  private val choicePage = new choice_page(govukLayout, govukButton, govukRadios, errorSummary, formHelper, pageConfig)
+  private val choicePage = new choice_page(govukLayout, govukButton, govukRadios, errorSummary, sectionHeader, formHelper, pageConfig)
   private def createView(form: Form[Choice] = form, messages: Messages = stubMessages()): Document =
     choicePage(form)(request, messages)
 

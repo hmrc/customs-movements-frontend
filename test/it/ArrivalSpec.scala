@@ -42,9 +42,9 @@ class ArrivalSpec extends IntegrationSpec {
         val response = get(controllers.routes.ConsignmentReferencesController.displayPage())
 
         // Then
-        intercept[RuntimeException] {
-          status(response)
-        } mustBe FeatureDisabledException
+        intercept[FeatureDisabledException] {
+          await(response)
+        }
       }
     }
 
@@ -59,9 +59,9 @@ class ArrivalSpec extends IntegrationSpec {
           post(controllers.routes.ConsignmentReferencesController.saveConsignmentReferences(), "reference" -> "M", "mucrValue" -> "GB/123-12345")
 
         // Then
-        intercept[RuntimeException] {
-          status(response)
-        } mustBe FeatureDisabledException
+        intercept[FeatureDisabledException] {
+          await(response)
+        }
       }
     }
   }

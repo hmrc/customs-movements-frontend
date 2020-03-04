@@ -16,9 +16,13 @@
 
 import forms.ShutMucr
 import models.cache.ShutMucrAnswers
+import play.api.Configuration
 import play.api.test.Helpers._
 
-class ShutMucrSpecWithIleQueryDisabled extends IntegrationSpec with IleQueryDisabled {
+class ShutMucrSpecWithIleQueryDisabled extends IntegrationSpec {
+
+  override def ileQueryFeatureConfiguration: Configuration =
+    Configuration.from(Map("microservice.services.features.ileQuery" -> "disabled"))
 
   "Enter MUCR Page" when {
     "GET" should {

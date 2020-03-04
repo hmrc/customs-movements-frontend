@@ -16,9 +16,13 @@
 
 import forms.{DisassociateKind, DisassociateUcr}
 import models.cache.DisassociateUcrAnswers
+import play.api.Configuration
 import play.api.test.Helpers._
 
-class DissociateUcrSpecWithIleQueryDisabled extends IntegrationSpec with IleQueryDisabled {
+class DissociateUcrSpecWithIleQueryDisabled extends IntegrationSpec {
+
+  override def ileQueryFeatureConfiguration: Configuration =
+    Configuration.from(Map("microservice.services.features.ileQuery" -> "disabled"))
 
   "Dissociate UCR Page" when {
     "GET" should {

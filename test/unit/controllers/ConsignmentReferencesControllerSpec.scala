@@ -56,8 +56,7 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockConsignmentReferencePage)
-    reset(config)
+    reset(mockConsignmentReferencePage, config)
     super.afterEach()
   }
 

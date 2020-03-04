@@ -19,6 +19,7 @@ import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
 
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
+import controllers.exception.FeatureDisabledException
 import forms._
 import forms.common.{Date, Time}
 import models.cache.DepartureAnswers
@@ -41,8 +42,8 @@ class DepartureSpec extends IntegrationSpec {
         val response = get(controllers.routes.ConsignmentReferencesController.displayPage())
 
         // Then
-        intercept[RuntimeException] {
-          status(response)
+        intercept[FeatureDisabledException] {
+          await(response)
         }
       }
     }
@@ -58,8 +59,8 @@ class DepartureSpec extends IntegrationSpec {
           post(controllers.routes.ConsignmentReferencesController.saveConsignmentReferences(), "reference" -> "M", "mucrValue" -> "GB/123-12345")
 
         // Then
-        intercept[RuntimeException] {
-          status(response)
+        intercept[FeatureDisabledException] {
+          await(response)
         }
       }
     }

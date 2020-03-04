@@ -19,9 +19,13 @@ import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
 
 import forms.ConsignmentReferences
 import models.cache.ArrivalAnswers
+import play.api.Configuration
 import play.api.test.Helpers._
 
-class ArrivalSpecWithIleQueryDisabled extends IntegrationSpec with IleQueryDisabled {
+class ArrivalSpecWithIleQueryDisabled extends IntegrationSpec {
+
+  override def ileQueryFeatureConfiguration: Configuration =
+    Configuration.from(Map("microservice.services.features.ileQuery" -> "disabled"))
 
   private val date = LocalDate.now()
   private val time = LocalTime.now().truncatedTo(ChronoUnit.MINUTES)

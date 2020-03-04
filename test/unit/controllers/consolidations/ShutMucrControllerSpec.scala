@@ -57,8 +57,7 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
   }
 
   override protected def afterEach(): Unit = {
-    reset(page)
-    reset(config)
+    reset(page, config)
     super.afterEach()
   }
 

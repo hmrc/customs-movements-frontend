@@ -62,8 +62,7 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
   }
 
   override protected def afterEach(): Unit = {
-    reset(page)
-    reset(config)
+    reset(page, config)
     super.afterEach()
   }
 

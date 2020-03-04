@@ -16,9 +16,22 @@
 
 package views.components.config
 
-import views.components.config.StartPageConfig
+import base.UnitSpec
+import config.AppConfig
+import org.mockito.Mockito.when
+import org.scalatest.BeforeAndAfterEach
 
-class StartPageConfigSpec extends IleQueryFeatureConfigSpec {
+class StartPageConfigSpec extends UnitSpec with BeforeAndAfterEach {
+
+  private val ileQueryEnabled = mock[AppConfig]
+  private val ileQueryDisabled = mock[AppConfig]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(ileQueryEnabled.ileQueryEnabled).thenReturn(true)
+    when(ileQueryDisabled.ileQueryEnabled).thenReturn(false)
+  }
 
   "StartPageConfig" should {
 

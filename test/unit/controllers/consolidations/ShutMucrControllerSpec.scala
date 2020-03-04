@@ -18,7 +18,6 @@ package controllers.consolidations
 
 import config.AppConfig
 import controllers.ControllerLayerSpec
-import controllers.actions.NonIleQueryAction
 import controllers.exception.FeatureDisabledException
 import forms.ShutMucr
 import models.cache.{Cache, ShutMucrAnswers}

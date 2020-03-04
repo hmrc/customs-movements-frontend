@@ -17,7 +17,6 @@
 package views.components.config
 
 import models.UcrBlock
-import views.components.config.ChoicePageConfig
 
 class ChoicePageConfigSpec extends IleQueryFeatureConfigSpec {
 

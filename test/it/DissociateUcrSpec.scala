@@ -15,7 +15,7 @@
  */
 
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
-import controllers.exception.FeatureDisabledException
+import controllers.exception.InvalidFeatureStateException
 import forms.{DisassociateKind, DisassociateUcr}
 import models.cache.DisassociateUcrAnswers
 import play.api.test.Helpers._
@@ -33,7 +33,7 @@ class DissociateUcrSpec extends IntegrationSpec {
         val response = get(controllers.consolidations.routes.DisassociateUcrController.displayPage())
 
         // Then
-        intercept[FeatureDisabledException] {
+        intercept[InvalidFeatureStateException] {
           await(response)
         }
       }
@@ -49,7 +49,7 @@ class DissociateUcrSpec extends IntegrationSpec {
         val response = post(controllers.consolidations.routes.DisassociateUcrController.submit(), "kind" -> "mucr", "mucr" -> "GB/321-54321")
 
         // Then
-        intercept[FeatureDisabledException] {
+        intercept[InvalidFeatureStateException] {
           await(response)
         }
       }

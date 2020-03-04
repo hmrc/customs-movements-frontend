@@ -19,7 +19,7 @@ package controllers
 import base.UnitSpec
 import config.AppConfig
 import controllers.actions._
-import controllers.exception.FeatureDisabledException
+import controllers.exception.InvalidFeatureStateException
 import models.SignedInUser
 import models.cache.JourneyType.JourneyType
 import models.cache.{Answers, Cache}
@@ -81,6 +81,6 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
 
   case object IleQueryDisabled extends IleQueryAction(mock[AppConfig]) {
     override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      throw FeatureDisabledException
+      throw InvalidFeatureStateException
   }
 }

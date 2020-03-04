@@ -17,7 +17,7 @@
 package controllers.actions
 
 import config.AppConfig
-import controllers.exception.FeatureDisabledException
+import controllers.exception.InvalidFeatureStateException
 import javax.inject.Inject
 import models.requests.AuthenticatedRequest
 import play.api.mvc._
@@ -28,7 +28,7 @@ class NonIleQueryAction @Inject()(appConfig: AppConfig)(implicit val exc: Execut
     extends ActionFunction[AuthenticatedRequest, AuthenticatedRequest] {
 
   override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-    if (appConfig.ileQueryEnabled) throw FeatureDisabledException else block(request)
+    if (appConfig.ileQueryEnabled) throw InvalidFeatureStateException else block(request)
 
   override protected def executionContext: ExecutionContext = exc
 }

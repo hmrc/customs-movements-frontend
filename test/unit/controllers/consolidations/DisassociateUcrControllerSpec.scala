@@ -19,7 +19,7 @@ package controllers.consolidations
 import config.AppConfig
 import controllers.ControllerLayerSpec
 import controllers.actions.NonIleQueryAction
-import controllers.exception.FeatureDisabledException
+import controllers.exception.InvalidFeatureStateException
 import forms._
 import models.cache.DisassociateUcrAnswers
 import org.mockito.ArgumentCaptor
@@ -112,7 +112,7 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
 
         intercept[RuntimeException] {
           await(controller(DisassociateUcrAnswers()).displayPage()(getRequest()))
-        } mustBe FeatureDisabledException
+        } mustBe InvalidFeatureStateException
       }
     }
   }

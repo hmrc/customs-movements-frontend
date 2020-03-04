@@ -16,6 +16,6 @@
 
 package controllers.exception
 
-trait FeatureDisabledException extends RuntimeException
+trait InvalidFeatureStateException extends RuntimeException
 
-case object FeatureDisabledException extends FeatureDisabledException
+case object InvalidFeatureStateException extends InvalidFeatureStateException

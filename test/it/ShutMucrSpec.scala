@@ -15,7 +15,7 @@
  */
 
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
-import controllers.exception.FeatureDisabledException
+import controllers.exception.InvalidFeatureStateException
 import forms.ShutMucr
 import models.cache.ShutMucrAnswers
 import play.api.test.Helpers._
@@ -33,7 +33,7 @@ class ShutMucrSpec extends IntegrationSpec {
         val response = get(controllers.consolidations.routes.ShutMucrController.displayPage())
 
         // Then
-        intercept[FeatureDisabledException] {
+        intercept[InvalidFeatureStateException] {
           await(response)
         }
       }
@@ -49,7 +49,7 @@ class ShutMucrSpec extends IntegrationSpec {
         val response = post(controllers.consolidations.routes.ShutMucrController.submitForm(), "mucr" -> "GB/123-12345")
 
         // Then
-        intercept[FeatureDisabledException] {
+        intercept[InvalidFeatureStateException] {
           await(response)
         }
       }

@@ -18,7 +18,7 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.NonIleQueryAction
-import controllers.exception.FeatureDisabledException
+import controllers.exception.InvalidFeatureStateException
 import forms.ConsignmentReferences
 import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
 import org.mockito.ArgumentCaptor
@@ -153,7 +153,7 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
 
         intercept[RuntimeException] {
           await(controller().displayPage()(getRequest))
-        } mustBe FeatureDisabledException
+        } mustBe InvalidFeatureStateException
       }
     }
   }

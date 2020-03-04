@@ -16,7 +16,10 @@
 
 package controllers.consolidations
 
+import config.AppConfig
 import controllers.ControllerLayerSpec
+import controllers.actions.NonIleQueryAction
+import controllers.exception.FeatureDisabledException
 import forms.ShutMucr
 import models.cache.{Cache, ShutMucrAnswers}
 import org.mockito.ArgumentCaptor
@@ -31,18 +34,20 @@ import repository.MockCache
 import testdata.ConsolidationTestData.validMucr
 import views.html.shutmucr.shut_mucr
 
-import scala.concurrent.ExecutionContext.global
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with OptionValues {
 
   private val page = mock[shut_mucr]
+  private val config = mock[AppConfig]
 
   private def controller(answers: ShutMucrAnswers = ShutMucrAnswers()) =
-    new ShutMucrController(SuccessfulAuth(), ValidJourney(answers), cache, stubMessagesControllerComponents(), page)(global)
+    new ShutMucrController(SuccessfulAuth(), ValidJourney(answers), new NonIleQueryAction(config), cache, stubMessagesControllerComponents(), page)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     when(page.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(config.ileQueryEnabled) thenReturn false
   }
 
   private def theResponseForm: Form[ShutMucr] = {
@@ -53,6 +58,7 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
 
   override protected def afterEach(): Unit = {
     reset(page)
+    reset(config)
     super.afterEach()
   }
 
@@ -106,6 +112,16 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.ShutMucrSummaryController.displayPage().url
+      }
+    }
+
+    "block access" when {
+      "ileQuery enabled" in {
+        when(config.ileQueryEnabled) thenReturn true
+
+        intercept[RuntimeException] {
+          await(controller().displayPage()(getRequest))
+        } mustBe FeatureDisabledException
       }
     }
   }

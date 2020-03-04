@@ -16,6 +16,9 @@
 
 package controllers
 
+import config.AppConfig
+import controllers.actions.NonIleQueryAction
+import controllers.exception.FeatureDisabledException
 import forms.ConsignmentReferences
 import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
 import org.mockito.ArgumentCaptor
@@ -29,28 +32,32 @@ import play.twirl.api.HtmlFormat
 import repository.MockCache
 import views.html.consignment_references
 
-import scala.concurrent.ExecutionContext.global
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockCache with OptionValues {
 
   private val mockConsignmentReferencePage = mock[consignment_references]
+  private val config = mock[AppConfig]
 
   private def controller(answers: MovementAnswers = ArrivalAnswers()) =
     new ConsignmentReferencesController(
       SuccessfulAuth(),
       ValidJourney(answers),
+      new NonIleQueryAction(config),
       cache,
       stubMessagesControllerComponents(),
       mockConsignmentReferencePage
-    )(global)
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     when(mockConsignmentReferencePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(config.ileQueryEnabled) thenReturn false
   }
 
   override protected def afterEach(): Unit = {
     reset(mockConsignmentReferencePage)
+    reset(config)
     super.afterEach()
   }
 
@@ -138,6 +145,16 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.MovementDetailsController.displayPage().url
+      }
+    }
+
+    "block access" when {
+      "ileQuery enabled" in {
+        when(config.ileQueryEnabled) thenReturn true
+
+        intercept[RuntimeException] {
+          await(controller().displayPage()(getRequest))
+        } mustBe FeatureDisabledException
       }
     }
   }

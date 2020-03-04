@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package views.config
+package views.components.config
 
-import views.components.config.DissociateSummaryConfig
+class MovementDetailsConfigSpec extends IleQueryFeatureConfigSpec {
 
-class DissociateSummaryConfigSpec extends IleQueryFeatureConfigSpec {
+  "MovementDetailsConfig when ileQuery disabled" should {
 
-  "DissociateSummaryConfig when ileQuery disabled" should {
-
-    val config = new DissociateSummaryConfig(ileQueryDisabled)
+    val config = new MovementDetailsConfig(ileQueryDisabled)
 
     "return correct url" in {
-      config.backUrl must be(controllers.consolidations.routes.DisassociateUcrController.displayPage())
+      config.backUrl must be(controllers.routes.ConsignmentReferencesController.displayPage())
     }
   }
 
-  "DissociateSummaryConfig when ileQuery enabled" should {
+  "MovementDetailsConfig when ileQuery enabled" should {
 
-    val config = new DissociateSummaryConfig(ileQueryEnabled)
+    val config = new MovementDetailsConfig(ileQueryEnabled)
 
     "return correct url when query ucr present" in {
       config.backUrl must be(controllers.routes.ChoiceController.displayChoiceForm())

@@ -16,7 +16,10 @@
 
 package controllers.consolidations
 
+import config.AppConfig
 import controllers.ControllerLayerSpec
+import controllers.actions.NonIleQueryAction
+import controllers.exception.FeatureDisabledException
 import forms._
 import models.cache.DisassociateUcrAnswers
 import org.mockito.ArgumentCaptor
@@ -37,20 +40,30 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache with ScalaFutures with OptionValues {
 
   private val page = mock[disassociate_ucr]
+  private val config = mock[AppConfig]
 
   private def controller(answers: DisassociateUcrAnswers) =
-    new DisassociateUcrController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, page)
+    new DisassociateUcrController(
+      SuccessfulAuth(),
+      ValidJourney(answers),
+      new NonIleQueryAction(config),
+      stubMessagesControllerComponents(),
+      cache,
+      page
+    )
 
   private val correctForm = Json.toJson(DisassociateUcr(DisassociateKind.Ducr, Some(validDucr), Some("")))
   private val incorrectForm = Json.toJson(DisassociateUcr(DisassociateKind.Ducr, Some("abc"), None))
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    when(page.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(page.apply(any())(any(), any())) thenReturn HtmlFormat.empty
+    when(config.ileQueryEnabled) thenReturn false
   }
 
   override protected def afterEach(): Unit = {
     reset(page)
+    reset(config)
     super.afterEach()
   }
 
@@ -93,5 +106,16 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
         redirectLocation(result).value mustBe routes.DisassociateUcrSummaryController.displayPage().url
       }
     }
+
+    "block access" when {
+      "ileQuery enabled" in {
+        when(config.ileQueryEnabled) thenReturn true
+
+        intercept[RuntimeException] {
+          await(controller(DisassociateUcrAnswers()).displayPage()(getRequest()))
+        } mustBe FeatureDisabledException
+      }
+    }
   }
+
 }

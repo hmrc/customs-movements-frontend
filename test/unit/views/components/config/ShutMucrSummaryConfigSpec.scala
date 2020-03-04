@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package views.config
+package views.components.config
 
-import views.components.config.MovementDetailsConfig
+class ShutMucrSummaryConfigSpec extends IleQueryFeatureConfigSpec {
 
-class MovementDetailsConfigSpec extends IleQueryFeatureConfigSpec {
+  "ShutMucrSummaryConfig when ileQuery disabled" should {
 
-  "MovementDetailsConfig when ileQuery disabled" should {
-
-    val config = new MovementDetailsConfig(ileQueryDisabled)
+    val config = new ShutMucrSummaryConfig(ileQueryDisabled)
 
     "return correct url" in {
-      config.backUrl must be(controllers.routes.ConsignmentReferencesController.displayPage())
+      config.backUrl must be(controllers.consolidations.routes.ShutMucrController.displayPage())
     }
   }
 
-  "MovementDetailsConfig when ileQuery enabled" should {
+  "ShutMucrSummaryConfig when ileQuery enabled" should {
 
-    val config = new MovementDetailsConfig(ileQueryEnabled)
+    val config = new ShutMucrSummaryConfig(ileQueryEnabled)
 
     "return correct url when query ucr present" in {
       config.backUrl must be(controllers.routes.ChoiceController.displayChoiceForm())

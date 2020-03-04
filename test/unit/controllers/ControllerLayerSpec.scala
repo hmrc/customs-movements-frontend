@@ -18,7 +18,7 @@ package controllers
 
 import base.UnitSpec
 import config.AppConfig
-import controllers.actions.{AuthActionImpl, EoriWhitelist, IleQueryAction, JourneyRefiner}
+import controllers.actions._
 import controllers.exception.FeatureDisabledException
 import models.SignedInUser
 import models.cache.JourneyType.JourneyType
@@ -83,5 +83,4 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
     override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       throw FeatureDisabledException
   }
-
 }

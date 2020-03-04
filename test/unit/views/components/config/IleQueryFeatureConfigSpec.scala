@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package views.config
-
+package views.components.config
+import base.UnitSpec
 import config.AppConfig
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import unit.base.UnitSpec
 
 trait IleQueryFeatureConfigSpec extends UnitSpec with BeforeAndAfterEach {
 
@@ -27,6 +26,8 @@ trait IleQueryFeatureConfigSpec extends UnitSpec with BeforeAndAfterEach {
   val ileQueryDisabled = mock[AppConfig]
 
   override def beforeEach() {
+    super.beforeEach()
+
     when(ileQueryEnabled.ileQueryEnabled).thenReturn(true)
     when(ileQueryDisabled.ileQueryEnabled).thenReturn(false)
   }

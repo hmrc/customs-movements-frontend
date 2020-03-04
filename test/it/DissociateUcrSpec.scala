@@ -23,7 +23,7 @@ class DissociateUcrSpec extends IntegrationSpec {
 
   "Dissociate UCR Page" when {
     "GET" should {
-      "return 200" in {
+      "throw feature disabled" in {
         // Given
         givenAuthSuccess("eori")
         givenCacheFor("eori", DisassociateUcrAnswers())
@@ -32,12 +32,14 @@ class DissociateUcrSpec extends IntegrationSpec {
         val response = get(controllers.consolidations.routes.DisassociateUcrController.displayPage())
 
         // Then
-        status(response) mustBe OK
+        intercept[RuntimeException] {
+          status(response)
+        }
       }
     }
 
     "POST" should {
-      "continue" in {
+      "throw feature disabled" in {
         // Given
         givenAuthSuccess("eori")
         givenCacheFor("eori", DisassociateUcrAnswers())
@@ -46,11 +48,9 @@ class DissociateUcrSpec extends IntegrationSpec {
         val response = post(controllers.consolidations.routes.DisassociateUcrController.submit(), "kind" -> "mucr", "mucr" -> "GB/321-54321")
 
         // Then
-        status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage().url)
-        theAnswersFor("eori") mustBe Some(
-          DisassociateUcrAnswers(ucr = Some(DisassociateUcr(kind = DisassociateKind.Mucr, mucr = Some("GB/321-54321"), ducr = None)))
-        )
+        intercept[RuntimeException] {
+          status(response)
+        }
       }
     }
   }

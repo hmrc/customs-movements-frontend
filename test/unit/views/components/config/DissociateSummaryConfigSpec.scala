@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package views.config
+package views.components.config
 
-import views.components.config.ShutMucrSummaryConfig
+class DissociateSummaryConfigSpec extends IleQueryFeatureConfigSpec {
 
-class ShutMucrSummaryConfigSpec extends IleQueryFeatureConfigSpec {
+  "DissociateSummaryConfig when ileQuery disabled" should {
 
-  "ShutMucrSummaryConfig when ileQuery disabled" should {
-
-    val config = new ShutMucrSummaryConfig(ileQueryDisabled)
+    val config = new DissociateSummaryConfig(ileQueryDisabled)
 
     "return correct url" in {
-      config.backUrl must be(controllers.consolidations.routes.ShutMucrController.displayPage())
+      config.backUrl must be(controllers.consolidations.routes.DisassociateUcrController.displayPage())
     }
   }
 
-  "ShutMucrSummaryConfig when ileQuery enabled" should {
+  "DissociateSummaryConfig when ileQuery enabled" should {
 
-    val config = new ShutMucrSummaryConfig(ileQueryEnabled)
+    val config = new DissociateSummaryConfig(ileQueryEnabled)
 
     "return correct url when query ucr present" in {
       config.backUrl must be(controllers.routes.ChoiceController.displayChoiceForm())

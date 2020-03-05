@@ -27,28 +27,31 @@ import models.UcrBlock
 import models.notifications.{Entry, Notification, ResponseType}
 import models.submissions.Submission
 import org.jsoup.nodes.Document
+import play.api.mvc.{AnyContent, Request}
+import play.api.test.FakeRequest
+import play.twirl.api.Html
 import testdata.CommonTestData._
 import testdata.ConsolidationTestData._
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import views.html.movements
-import views.spec.UnitViewSpec
 import views.spec.UnitViewSpec.realAppConfig
 
-class MovementsViewSpec extends UnitViewSpec with Injector {
+class MovementsViewSpec extends ViewSpec with Injector {
+
+  implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
 
   private val page = instanceOf[movements]
-
   private val dateTime: Instant = LocalDate.of(2019, 10, 31).atStartOfDay().toInstant(ZoneOffset.UTC)
 
-  private def createView(submissions: Seq[(Submission, Seq[Notification])] = Seq.empty): Document =
+  private def createView(submissions: Seq[(Submission, Seq[Notification])] = Seq.empty): Html =
     page(submissions)(request, messages)
 
   "Movements page" should {
     val emptyPage = createView()
 
     "contain title" in {
-      emptyPage.getElementById("title") must containMessage("submissions.title")
+      emptyPage.getTitle must containMessage("submissions.title")
     }
 
     "contain back button" in {

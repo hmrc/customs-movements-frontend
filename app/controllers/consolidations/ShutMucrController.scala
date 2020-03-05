@@ -16,7 +16,7 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.actions.{AuthAction, JourneyRefiner, NonIleQueryAction}
 import forms.ShutMucr
 import forms.ShutMucr.form
 import javax.inject.{Inject, Singleton}
@@ -33,29 +33,32 @@ import scala.concurrent.{ExecutionContext, Future}
 class ShutMucrController @Inject()(
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
+  ileQueryFeatureDisabled: NonIleQueryAction,
   cacheRepository: CacheRepository,
   mcc: MessagesControllerComponents,
   shutMucrPage: shut_mucr
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.SHUT_MUCR)) { implicit request =>
-    val shutMucr: Option[ShutMucr] = request.answersAs[ShutMucrAnswers].shutMucr
-    Ok(shutMucrPage(shutMucr.fold(form())(form().fill)))
+  def displayPage(): Action[AnyContent] = (authenticate andThen ileQueryFeatureDisabled andThen getJourney(JourneyType.SHUT_MUCR)) {
+    implicit request =>
+      val shutMucr: Option[ShutMucr] = request.answersAs[ShutMucrAnswers].shutMucr
+      Ok(shutMucrPage(shutMucr.fold(form())(form().fill)))
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.SHUT_MUCR)).async { implicit request =>
-    form()
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(shutMucrPage(formWithErrors))),
-        validForm => {
-          val updatedAnswers = request.answersAs[ShutMucrAnswers].copy(shutMucr = Some(validForm))
-          cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
-            Redirect(routes.ShutMucrSummaryController.displayPage())
+  def submitForm(): Action[AnyContent] = (authenticate andThen ileQueryFeatureDisabled andThen getJourney(JourneyType.SHUT_MUCR)).async {
+    implicit request =>
+      form()
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(shutMucrPage(formWithErrors))),
+          validForm => {
+            val updatedAnswers = request.answersAs[ShutMucrAnswers].copy(shutMucr = Some(validForm))
+            cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
+              Redirect(routes.ShutMucrSummaryController.displayPage())
+            }
           }
-        }
-      )
+        )
   }
 
 }

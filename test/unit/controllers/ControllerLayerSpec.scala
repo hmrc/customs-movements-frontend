@@ -18,8 +18,8 @@ package controllers
 
 import base.UnitSpec
 import config.AppConfig
-import controllers.actions.{AuthActionImpl, EoriWhitelist, IleQueryAction, JourneyRefiner}
-import controllers.exception.FeatureDisabledException
+import controllers.actions._
+import controllers.exception.InvalidFeatureStateException
 import models.SignedInUser
 import models.cache.JourneyType.JourneyType
 import models.cache.{Answers, Cache}
@@ -81,7 +81,15 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
 
   case object IleQueryDisabled extends IleQueryAction(mock[AppConfig]) {
     override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      throw FeatureDisabledException
+      throw InvalidFeatureStateException
   }
 
+  case object NotValidForIleQuery extends NonIleQueryAction(mock[AppConfig]) {
+    override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
+      throw InvalidFeatureStateException
+  }
+
+  case object ValidForIleQuery extends NonIleQueryAction(mock[AppConfig]) {
+    override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = block(request)
+  }
 }

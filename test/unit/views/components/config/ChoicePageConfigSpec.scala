@@ -17,23 +17,11 @@
 package views.components.config
 
 import base.UnitSpec
-import config.AppConfig
 import models.UcrBlock
-import org.mockito.Mockito.when
-import org.scalatest.BeforeAndAfterEach
 
-class ChoicePageConfigSpec extends UnitSpec with BeforeAndAfterEach {
+class ChoicePageConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
 
   private val queryUcr = UcrBlock("ucr", "D")
-  private val ileQueryEnabled = mock[AppConfig]
-  private val ileQueryDisabled = mock[AppConfig]
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-
-    when(ileQueryEnabled.ileQueryEnabled).thenReturn(true)
-    when(ileQueryDisabled.ileQueryEnabled).thenReturn(false)
-  }
 
   "ChoicePageBackLink when ileQuery disabled" should {
 

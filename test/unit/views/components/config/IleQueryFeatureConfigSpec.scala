@@ -15,22 +15,27 @@
  */
 
 package views.components.config
-
 import base.UnitSpec
+import config.AppConfig
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 
-class StartPageConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
+trait IleQueryFeatureConfigSpec extends BeforeAndAfterEach { self: UnitSpec =>
 
-  "StartPageConfig" should {
+  val ileQueryEnabled = mock[AppConfig]
+  val ileQueryDisabled = mock[AppConfig]
 
-    "return correct url when ileQuery enabled" in {
-      val config = new StartPageConfig(ileQueryEnabled)
-      config.startUrl must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
-    }
+  override def beforeEach() {
+    super.beforeEach()
 
-    "return correct url when ileQuery disabled" in {
-      val config = new StartPageConfig(ileQueryDisabled)
-      config.startUrl must be(controllers.routes.ChoiceController.displayChoiceForm().url)
-    }
-
+    when(ileQueryEnabled.ileQueryEnabled).thenReturn(true)
+    when(ileQueryDisabled.ileQueryEnabled).thenReturn(false)
   }
+
+  override def afterEach(): Unit = {
+
+    reset(ileQueryEnabled, ileQueryDisabled)
+    super.afterEach()
+  }
+
 }

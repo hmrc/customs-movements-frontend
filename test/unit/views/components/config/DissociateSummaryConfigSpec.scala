@@ -15,21 +15,25 @@
  */
 
 package views.components.config
-
 import base.UnitSpec
 
-class StartPageConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
+class DissociateSummaryConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
 
-  "StartPageConfig" should {
+  "DissociateSummaryConfig when ileQuery disabled" should {
 
-    "return correct url when ileQuery enabled" in {
-      val config = new StartPageConfig(ileQueryEnabled)
-      config.startUrl must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
+    val config = new DissociateSummaryConfig(ileQueryDisabled)
+
+    "return correct url" in {
+      config.backUrl must be(controllers.consolidations.routes.DisassociateUcrController.displayPage())
     }
+  }
 
-    "return correct url when ileQuery disabled" in {
-      val config = new StartPageConfig(ileQueryDisabled)
-      config.startUrl must be(controllers.routes.ChoiceController.displayChoiceForm().url)
+  "DissociateSummaryConfig when ileQuery enabled" should {
+
+    val config = new DissociateSummaryConfig(ileQueryEnabled)
+
+    "return correct url when query ucr present" in {
+      config.backUrl must be(controllers.routes.ChoiceController.displayChoiceForm())
     }
 
   }

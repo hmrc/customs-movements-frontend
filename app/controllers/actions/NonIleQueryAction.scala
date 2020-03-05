@@ -24,11 +24,11 @@ import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IleQueryAction @Inject()(appConfig: AppConfig)(implicit val exc: ExecutionContext)
+class NonIleQueryAction @Inject()(appConfig: AppConfig)(implicit val exc: ExecutionContext)
     extends ActionFunction[AuthenticatedRequest, AuthenticatedRequest] {
 
   override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-    if (appConfig.ileQueryEnabled) block(request) else throw InvalidFeatureStateException
+    if (appConfig.ileQueryEnabled) throw InvalidFeatureStateException else block(request)
 
   override protected def executionContext: ExecutionContext = exc
 }

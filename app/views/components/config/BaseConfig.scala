@@ -16,21 +16,11 @@
 
 package views.components.config
 
-import base.UnitSpec
+import config.AppConfig
+import javax.inject.Inject
 
-class StartPageConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
+class BaseConfig @Inject()(val appConfig: AppConfig) {
 
-  "StartPageConfig" should {
+  def ileQueryEnabled: Boolean = appConfig.ileQueryEnabled
 
-    "return correct url when ileQuery enabled" in {
-      val config = new StartPageConfig(ileQueryEnabled)
-      config.startUrl must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
-    }
-
-    "return correct url when ileQuery disabled" in {
-      val config = new StartPageConfig(ileQueryDisabled)
-      config.startUrl must be(controllers.routes.ChoiceController.displayChoiceForm().url)
-    }
-
-  }
 }

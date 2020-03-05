@@ -75,20 +75,33 @@ class ChoiceController @Inject()(
       .fold(formWithErrors => Future.successful(BadRequest(choicePage(formWithErrors))), proceed)
   }
 
-  private def proceed(choice: Choice)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
+  private def proceed(choice: Choice)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
+    def movementFirstPage =
+      if (appConfig.ileQueryEnabled) controllers.routes.MovementDetailsController.displayPage()
+      else routes.ConsignmentReferencesController.displayPage()
+
+    def dissociateFirstPage =
+      if (appConfig.ileQueryEnabled) controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage()
+      else consolidations.routes.DisassociateUcrController.displayPage()
+
+    def shutFirstPage =
+      if (appConfig.ileQueryEnabled) controllers.consolidations.routes.ShutMucrSummaryController.displayPage()
+      else consolidations.routes.ShutMucrController.displayPage()
+
     (choice match {
       case Arrival =>
-        createOrUpdateCache(request.eori, ArrivalAnswers.fromUcr).map(_ => routes.ConsignmentReferencesController.displayPage())
+        createOrUpdateCache(request.eori, ArrivalAnswers.fromUcr).map(_ => movementFirstPage)
       case Departure =>
-        createOrUpdateCache(request.eori, DepartureAnswers.fromUcr).map(_ => routes.ConsignmentReferencesController.displayPage())
+        createOrUpdateCache(request.eori, DepartureAnswers.fromUcr).map(_ => movementFirstPage)
       case AssociateUCR =>
         createOrUpdateCache(request.eori, AssociateUcrAnswers.fromUcr).map(_ => consolidations.routes.MucrOptionsController.displayPage())
       case DisassociateUCR =>
-        createOrUpdateCache(request.eori, DisassociateUcrAnswers.fromUcr).map(_ => consolidations.routes.DisassociateUcrController.displayPage())
+        createOrUpdateCache(request.eori, DisassociateUcrAnswers.fromUcr).map(_ => dissociateFirstPage)
       case ShutMUCR =>
-        createOrUpdateCache(request.eori, ShutMucrAnswers.fromUcr).map(_ => consolidations.routes.ShutMucrController.displayPage())
+        createOrUpdateCache(request.eori, ShutMucrAnswers.fromUcr).map(_ => shutFirstPage)
       case Submissions => Future.successful(routes.SubmissionsController.displayPage())
     }).map(Redirect)
+  }
 
   def createOrUpdateCache(eori: String, answerProvider: Option[UcrBlock] => Answers)(): Future[Cache] =
     for {

@@ -22,7 +22,7 @@ import connectors.CustomsDeclareExportsMovementsConnector
 import connectors.exchanges.IleQueryExchange
 import controllers.ControllerLayerSpec
 import controllers.actions.IleQueryAction
-import controllers.exception.FeatureDisabledException
+import controllers.exception.InvalidFeatureStateException
 import forms.IleQueryForm
 import handlers.ErrorHandler
 import models.UcrBlock
@@ -527,7 +527,7 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
 
       intercept[RuntimeException] {
         await(controllerIleQueryDisabled.getConsignmentInformation("mucr")(getRequest.withHeaders(Headers(("X-Session-ID", "123456")))))
-      } mustBe FeatureDisabledException
+      } mustBe InvalidFeatureStateException
 
     }
   }

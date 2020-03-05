@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.actions.{AuthAction, JourneyRefiner, NonIleQueryAction}
 import forms.ConsignmentReferences
 import forms.ConsignmentReferences._
 import javax.inject.{Inject, Singleton}
@@ -34,19 +34,21 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConsignmentReferencesController @Inject()(
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
+  ileQueryFeatureDisabled: NonIleQueryAction,
   cacheRepository: CacheRepository,
   mcc: MessagesControllerComponents,
   consignmentReferencesPage: consignment_references
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)) { implicit request =>
-    val references = request.answersAs[MovementAnswers].consignmentReferences
-    Ok(consignmentReferencesPage(references.fold(form())(form().fill(_))))
+  def displayPage(): Action[AnyContent] = (authenticate andThen ileQueryFeatureDisabled andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)) {
+    implicit request =>
+      val references = request.answersAs[MovementAnswers].consignmentReferences
+      Ok(consignmentReferencesPage(references.fold(form())(form().fill(_))))
   }
 
-  def saveConsignmentReferences(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)).async {
-    implicit request =>
+  def saveConsignmentReferences(): Action[AnyContent] =
+    (authenticate andThen ileQueryFeatureDisabled andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)).async { implicit request =>
       form()
         .bindFromRequest()
         .fold(
@@ -64,5 +66,5 @@ class ConsignmentReferencesController @Inject()(
             }
           }
         )
-  }
+    }
 }

@@ -44,7 +44,7 @@ abstract class IntegrationSpec
    */
   private lazy val cacheRepository: JSONCollection = app.injector.instanceOf[CacheRepository].collection
 
-  private val ileQueryFeatureConfiguration: Configuration =
+  def ileQueryFeatureConfiguration: Configuration =
     Configuration.from(Map("microservice.services.features.ileQuery" -> "enabled"))
 
   override lazy val port = 14681

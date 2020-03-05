@@ -40,17 +40,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache with ScalaFutures with OptionValues {
 
   private val page = mock[disassociate_ucr]
-  private val config = mock[AppConfig]
 
-  private def controller(answers: DisassociateUcrAnswers) =
-    new DisassociateUcrController(
-      SuccessfulAuth(),
-      ValidJourney(answers),
-      new NonIleQueryAction(config),
-      stubMessagesControllerComponents(),
-      cache,
-      page
-    )
+  private def controller(answers: DisassociateUcrAnswers, nonIleQueryAction: NonIleQueryAction) =
+    new DisassociateUcrController(SuccessfulAuth(), ValidJourney(answers), nonIleQueryAction, stubMessagesControllerComponents(), cache, page)
 
   private val correctForm = Json.toJson(DisassociateUcr(DisassociateKind.Ducr, Some(validDucr), Some("")))
   private val incorrectForm = Json.toJson(DisassociateUcr(DisassociateKind.Ducr, Some("abc"), None))
@@ -58,11 +50,10 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     when(page.apply(any())(any(), any())) thenReturn HtmlFormat.empty
-    when(config.ileQueryEnabled) thenReturn false
   }
 
   override protected def afterEach(): Unit = {
-    reset(page, config)
+    reset(page)
     super.afterEach()
   }
 
@@ -75,7 +66,7 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
   "Disassociate Ucr Controller" should {
     "return 200 (OK)" when {
       "display page is invoked" in {
-        val result = controller(DisassociateUcrAnswers()).displayPage()(getRequest())
+        val result = controller(DisassociateUcrAnswers(), ValidForIleQuery).displayPage()(getRequest())
 
         status(result) mustBe OK
         theFormDisplayed.value mustBe empty
@@ -83,7 +74,7 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
 
       "display page is invoked with data" in {
         val ucr = DisassociateUcr(DisassociateKind.Ducr, Some("ducr"), None)
-        val result = controller(DisassociateUcrAnswers(Some(ucr))).displayPage()(getRequest())
+        val result = controller(DisassociateUcrAnswers(Some(ucr)), ValidForIleQuery).displayPage()(getRequest())
 
         status(result) mustBe OK
         theFormDisplayed.value mustBe Some(ucr)
@@ -92,7 +83,7 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
 
     "return 400 (BAD_REQUEST)" when {
       "incorrect form is submitted" in {
-        val result = controller(DisassociateUcrAnswers()).submit()(postRequest(incorrectForm))
+        val result = controller(DisassociateUcrAnswers(), ValidForIleQuery).submit()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -100,7 +91,7 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
 
     "return 303 (SEE_OTHER)" when {
       "form is correct" in {
-        val result = controller(DisassociateUcrAnswers()).submit()(postRequest(correctForm))
+        val result = controller(DisassociateUcrAnswers(), ValidForIleQuery).submit()(postRequest(correctForm))
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.DisassociateUcrSummaryController.displayPage().url
       }
@@ -108,10 +99,8 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
 
     "block access" when {
       "ileQuery enabled" in {
-        when(config.ileQueryEnabled) thenReturn true
-
         intercept[RuntimeException] {
-          await(controller(DisassociateUcrAnswers()).displayPage()(getRequest()))
+          await(controller(DisassociateUcrAnswers(), NotValidForIleQuery).displayPage()(getRequest()))
         } mustBe InvalidFeatureStateException
       }
     }

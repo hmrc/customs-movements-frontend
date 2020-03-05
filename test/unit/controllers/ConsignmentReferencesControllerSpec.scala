@@ -37,13 +37,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockCache with OptionValues {
 
   private val mockConsignmentReferencePage = mock[consignment_references]
-  private val config = mock[AppConfig]
 
-  private def controller(answers: MovementAnswers = ArrivalAnswers()) =
+  private def controller(answers: MovementAnswers, nonIleQueryAction: NonIleQueryAction) =
     new ConsignmentReferencesController(
       SuccessfulAuth(),
       ValidJourney(answers),
-      new NonIleQueryAction(config),
+      nonIleQueryAction,
       cache,
       stubMessagesControllerComponents(),
       mockConsignmentReferencePage
@@ -52,11 +51,10 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     when(mockConsignmentReferencePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(config.ileQueryEnabled) thenReturn false
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockConsignmentReferencePage, config)
+    reset(mockConsignmentReferencePage)
     super.afterEach()
   }
 
@@ -69,7 +67,7 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
   "Consignment Reference Controller" should {
     "return 200 (OK)" when {
       "display page method is invoked and cache is empty" in {
-        val result = controller(ArrivalAnswers()).displayPage()(getRequest())
+        val result = controller(ArrivalAnswers(), ValidForIleQuery).displayPage()(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value mustBe empty
@@ -80,7 +78,7 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
           val cachedData = ConsignmentReferences("D", "123456")
 
           val answers = ArrivalAnswers(Some(cachedData))
-          val result = controller(answers).displayPage()(getRequest())
+          val result = controller(answers, ValidForIleQuery).displayPage()(getRequest())
 
           status(result) mustBe OK
           theResponseForm.value.value mustBe cachedData
@@ -90,7 +88,7 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
           val cachedData = ConsignmentReferences("D", "123456")
 
           val answers = DepartureAnswers(Some(cachedData))
-          val result = controller(answers).displayPage()(getRequest())
+          val result = controller(answers, ValidForIleQuery).displayPage()(getRequest())
 
           status(result) mustBe OK
           theResponseForm.value.value mustBe cachedData
@@ -103,7 +101,7 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
         val incorrectForm: JsValue =
           JsObject(Map("eori" -> JsString("GB717572504502811"), "reference" -> JsString("reference"), "referenceValue" -> JsString("")))
 
-        val result = controller().saveConsignmentReferences()(postRequest(incorrectForm))
+        val result = controller(ArrivalAnswers(), ValidForIleQuery).saveConsignmentReferences()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -121,7 +119,7 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
             )
           )
 
-        val result = controller(ArrivalAnswers()).saveConsignmentReferences()(postRequest(correctForm))
+        val result = controller(ArrivalAnswers(), ValidForIleQuery).saveConsignmentReferences()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.MovementDetailsController.displayPage().url
@@ -140,7 +138,7 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
             )
           )
 
-        val result = controller(DepartureAnswers()).saveConsignmentReferences()(postRequest(correctForm))
+        val result = controller(DepartureAnswers(), ValidForIleQuery).saveConsignmentReferences()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.MovementDetailsController.displayPage().url
@@ -149,10 +147,8 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
 
     "block access" when {
       "ileQuery enabled" in {
-        when(config.ileQueryEnabled) thenReturn true
-
         intercept[RuntimeException] {
-          await(controller().displayPage()(getRequest))
+          await(controller(ArrivalAnswers(), NotValidForIleQuery).displayPage()(getRequest))
         } mustBe InvalidFeatureStateException
       }
     }

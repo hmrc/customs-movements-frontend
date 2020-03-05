@@ -15,8 +15,9 @@
  */
 
 package views.components.config
+import base.UnitSpec
 
-class ShutMucrSummaryConfigSpec extends IleQueryFeatureConfigSpec {
+class ShutMucrSummaryConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
 
   "ShutMucrSummaryConfig when ileQuery disabled" should {
 

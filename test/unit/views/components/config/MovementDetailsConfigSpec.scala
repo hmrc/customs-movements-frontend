@@ -15,8 +15,9 @@
  */
 
 package views.components.config
+import base.UnitSpec
 
-class MovementDetailsConfigSpec extends IleQueryFeatureConfigSpec {
+class MovementDetailsConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
 
   "MovementDetailsConfig when ileQuery disabled" should {
 

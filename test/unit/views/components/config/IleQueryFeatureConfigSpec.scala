@@ -17,10 +17,10 @@
 package views.components.config
 import base.UnitSpec
 import config.AppConfig
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 
-trait IleQueryFeatureConfigSpec extends UnitSpec with BeforeAndAfterEach {
+trait IleQueryFeatureConfigSpec extends BeforeAndAfterEach { self: UnitSpec =>
 
   val ileQueryEnabled = mock[AppConfig]
   val ileQueryDisabled = mock[AppConfig]
@@ -30,6 +30,12 @@ trait IleQueryFeatureConfigSpec extends UnitSpec with BeforeAndAfterEach {
 
     when(ileQueryEnabled.ileQueryEnabled).thenReturn(true)
     when(ileQueryDisabled.ileQueryEnabled).thenReturn(false)
+  }
+
+  override def afterEach(): Unit = {
+
+    reset(ileQueryEnabled, ileQueryDisabled)
+    super.afterEach()
   }
 
 }

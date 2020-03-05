@@ -15,8 +15,9 @@
  */
 
 package views.components.config
+import base.UnitSpec
 
-class DissociateSummaryConfigSpec extends IleQueryFeatureConfigSpec {
+class DissociateSummaryConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
 
   "DissociateSummaryConfig when ileQuery disabled" should {
 

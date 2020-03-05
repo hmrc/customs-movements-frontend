@@ -83,4 +83,13 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
     override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       throw InvalidFeatureStateException
   }
+
+  case object NotValidForIleQuery extends NonIleQueryAction(mock[AppConfig]) {
+    override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
+      throw InvalidFeatureStateException
+  }
+
+  case object ValidForIleQuery extends NonIleQueryAction(mock[AppConfig]) {
+    override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = block(request)
+  }
 }

@@ -15,8 +15,9 @@
  */
 
 package views.components.config
+import base.UnitSpec
 
-class ViewRequestsConfigSpec extends IleQueryFeatureConfigSpec {
+class ViewRequestsConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
 
   "View requests back link" should {
 

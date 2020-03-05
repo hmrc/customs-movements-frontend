@@ -16,7 +16,6 @@
 
 package controllers.consolidations
 
-import config.AppConfig
 import controllers.ControllerLayerSpec
 import controllers.actions.NonIleQueryAction
 import controllers.exception.InvalidFeatureStateException
@@ -39,15 +38,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with OptionValues {
 
   private val page = mock[shut_mucr]
-  private val config = mock[AppConfig]
 
-  private def controller(answers: ShutMucrAnswers = ShutMucrAnswers()) =
-    new ShutMucrController(SuccessfulAuth(), ValidJourney(answers), new NonIleQueryAction(config), cache, stubMessagesControllerComponents(), page)
+  private def controller(answers: ShutMucrAnswers, nonIleQueryAction: NonIleQueryAction) =
+    new ShutMucrController(SuccessfulAuth(), ValidJourney(answers), nonIleQueryAction, cache, stubMessagesControllerComponents(), page)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     when(page.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(config.ileQueryEnabled) thenReturn false
   }
 
   private def theResponseForm: Form[ShutMucr] = {
@@ -57,7 +54,7 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
   }
 
   override protected def afterEach(): Unit = {
-    reset(page, config)
+    reset(page)
     super.afterEach()
   }
 
@@ -69,7 +66,7 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
 
         givenTheCacheIsEmpty()
 
-        val result = controller().displayPage()(getRequest)
+        val result = controller(ShutMucrAnswers(), ValidForIleQuery).displayPage()(getRequest)
 
         status(result) mustBe OK
         theResponseForm.value mustBe empty
@@ -80,7 +77,7 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
         val cachedForm = Some(ShutMucr("123"))
         givenTheCacheContains(Cache("12345", Some(ShutMucrAnswers(shutMucr = cachedForm)), None))
 
-        val result = controller(ShutMucrAnswers(shutMucr = cachedForm)).displayPage()(getRequest)
+        val result = controller(ShutMucrAnswers(shutMucr = cachedForm), ValidForIleQuery).displayPage()(getRequest)
 
         status(result) mustBe OK
 
@@ -93,7 +90,7 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
       "form is incorrect" in {
         val incorrectForm = Json.toJson(ShutMucr(""))
 
-        val result = controller(ShutMucrAnswers()).submitForm()(postRequest(incorrectForm))
+        val result = controller(ShutMucrAnswers(), ValidForIleQuery).submitForm()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -107,7 +104,7 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
 
         val correctForm = Json.toJson(ShutMucr(validMucr))
 
-        val result = controller(ShutMucrAnswers()).submitForm()(postRequest(correctForm))
+        val result = controller(ShutMucrAnswers(), ValidForIleQuery).submitForm()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.ShutMucrSummaryController.displayPage().url
@@ -116,10 +113,8 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
 
     "block access" when {
       "ileQuery enabled" in {
-        when(config.ileQueryEnabled) thenReturn true
-
         intercept[RuntimeException] {
-          await(controller().displayPage()(getRequest))
+          await(controller(ShutMucrAnswers(), NotValidForIleQuery).displayPage()(getRequest))
         } mustBe InvalidFeatureStateException
       }
     }

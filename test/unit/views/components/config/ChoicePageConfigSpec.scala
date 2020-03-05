@@ -16,9 +16,10 @@
 
 package views.components.config
 
+import base.UnitSpec
 import models.UcrBlock
 
-class ChoicePageConfigSpec extends IleQueryFeatureConfigSpec {
+class ChoicePageConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
 
   private val queryUcr = UcrBlock("ucr", "D")
 

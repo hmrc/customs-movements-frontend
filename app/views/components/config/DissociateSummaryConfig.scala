@@ -20,7 +20,7 @@ import config.AppConfig
 import javax.inject.Inject
 import play.api.mvc.Call
 
-class DissociateSummaryConfig @Inject()(appConfig: AppConfig) {
+class DissociateSummaryConfig @Inject()(appConfig: AppConfig) extends BaseConfig(appConfig) {
 
   def backUrl: Call =
     if (appConfig.ileQueryEnabled)

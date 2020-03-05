@@ -50,7 +50,7 @@
                     value = Value(
                         content = Text(disassociateUcr.ucr)
                     ),
-                    actions = Some(Actions(
+                    actions = if(pageConfig.ileQueryEnabled) None else Some(Actions(
                         items = Seq(
                             ActionItem(
                                 href = s"${consolidations.routes.DisassociateUcrController.displayPage()}",

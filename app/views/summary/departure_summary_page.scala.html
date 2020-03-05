@@ -21,11 +21,13 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 @import views.components.BackButton
+@import views.components.config.BaseConfig
 
 @this(  govukLayout: gds_main_template,
         govukButton: GovukButton,
         pageTitle: pageTitle,
         govukSummaryList : GovukSummaryList,
+        ileQueryFeature: BaseConfig,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(data: DepartureAnswers)(implicit request: Request[_], messages: Messages)
@@ -56,7 +58,8 @@
                         value = Value(
                             content = Text(messages(referenceTypeKey))
                         ),
-                        actions = Some(Actions(
+                        actions = if(ileQueryFeature.ileQueryEnabled) None else
+                            Some(Actions(
                             items = Seq(
                                 ActionItem(
                                     href = s"${routes.ConsignmentReferencesController.displayPage}",
@@ -73,7 +76,8 @@
                         value = Value(
                             content = Text(data.consignmentReferences.map(_.referenceValue).getOrElse(""))
                         ),
-                        actions = Some(Actions(
+                        actions = if(ileQueryFeature.ileQueryEnabled) None else
+                            Some(Actions(
                             items = Seq(
                                 ActionItem(
                                     href = s"${routes.ConsignmentReferencesController.displayPage}",

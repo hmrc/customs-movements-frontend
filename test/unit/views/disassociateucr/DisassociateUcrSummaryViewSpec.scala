@@ -16,38 +16,70 @@
 
 package views.disassociateucr
 
-import base.Injector
+import base.OverridableInjector
+import config.AppConfig
 import forms.DisassociateKind._
 import forms.DisassociateUcr
-import models.cache.DisassociateUcrAnswers
-import models.requests.JourneyRequest
-import play.api.mvc.AnyContentAsEmpty
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
+import play.api.test.FakeRequest
 import views.ViewSpec
 import views.html.disassociateucr.disassociate_ucr_summary
 import views.tags.ViewTest
 
 @ViewTest
-class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector {
+class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private val page = instanceOf[disassociate_ucr_summary]
-  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(DisassociateUcrAnswers())
+  private implicit val request = FakeRequest().withCSRFToken
+
+  private val appConfig = mock[AppConfig]
+  private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))
+
+  private val page = injector.instanceOf[disassociate_ucr_summary]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(appConfig.ileQueryEnabled).thenReturn(true)
+  }
+
+  override def afterEach(): Unit = {
+    reset(appConfig)
+
+    super.afterEach()
+  }
+
+  val disassociateUcr = DisassociateUcr(Ducr, ducr = Some("SOME-DUCR"), mucr = None)
 
   "Disassociate Ucr Summary View" should {
 
-    val view = page(DisassociateUcr(Ducr, ducr = Some("SOME-DUCR"), mucr = None))(request, messages)
-
     "display 'Confirm and submit' button on page" in {
+      val view = page(disassociateUcr)
       view.getElementsByClass("govuk-button").text() mustBe messages("site.confirmAndSubmit")
     }
 
-    "display 'Change' link on page" in {
+    "display 'Reference' link on page" in {
+      val view = page(disassociateUcr)
+      view.getElementsByClass("govuk-summary-list__value").first() must containText("SOME-DUCR")
+    }
+
+    "display 'Change' link on page when ileQuery disabled" in {
+      when(appConfig.ileQueryEnabled).thenReturn(false)
+
+      val view = page(disassociateUcr)
       val changeButton = view.getElementsByClass("govuk-link").first()
       changeButton must containMessage("site.change")
       changeButton must haveAttribute("href", controllers.consolidations.routes.DisassociateUcrController.displayPage().url)
     }
 
-    "display 'Reference' link on page" in {
-      view.getElementsByClass("govuk-summary-list__value").first() must containText("SOME-DUCR")
+    "not display 'Change' link when ileQuery enabled" in {
+      when(appConfig.ileQueryEnabled).thenReturn(true)
+
+      val links = page(disassociateUcr).getElementsByClass("govuk-link")
+
+      links mustBe empty
     }
 
   }

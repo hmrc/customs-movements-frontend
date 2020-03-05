@@ -19,19 +19,38 @@ package views
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalTime}
 
-import base.Injector
+import base.OverridableInjector
+import config.AppConfig
 import forms.common.{Date, Time}
 import forms.{ArrivalDetails, ConsignmentReferences, Location}
 import models.cache.ArrivalAnswers
-import models.requests.JourneyRequest
-import play.api.mvc.AnyContentAsEmpty
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
+import play.api.test.FakeRequest
 import views.html.summary.arrival_summary_page
 
-class ArrivalSummaryViewSpec extends ViewSpec with Injector {
+class ArrivalSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())
+  private implicit val request = FakeRequest().withCSRFToken
 
-  private val page = instanceOf[arrival_summary_page]
+  private val appConfig = mock[AppConfig]
+  private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))
+
+  private val page = injector.instanceOf[arrival_summary_page]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(appConfig.ileQueryEnabled).thenReturn(false)
+  }
+
+  override def afterEach(): Unit = {
+    reset(appConfig)
+
+    super.afterEach()
+  }
 
   private val date = Date(LocalDate.now())
   private val time = Time(LocalTime.now().truncatedTo(ChronoUnit.MINUTES))
@@ -53,18 +72,17 @@ class ArrivalSummaryViewSpec extends ViewSpec with Injector {
   private val answer_location = 4
 
   "View" should {
-    val view = page(answers)
 
     "render title" in {
-      view.getTitle must containMessage("summary.arrival.title")
+      page(answers).getTitle must containMessage("summary.arrival.title")
     }
 
     "render heading" in {
-      view.getElementById("title") must containMessage("summary.arrival.title")
+      page(answers).getElementById("title") must containMessage("summary.arrival.title")
     }
 
     "render 'Consignment details' section in summary list" in {
-
+      val view = page(answers)
       view.getElementsByClass("govuk-heading-m").get(section_consignment_details) must containMessage("summary.consignmentDetails")
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_consignment_type) must containMessage("summary.referenceType")
@@ -83,7 +101,7 @@ class ArrivalSummaryViewSpec extends ViewSpec with Injector {
     }
 
     "render 'Arrival date and time' section in summary list" in {
-
+      val view = page(answers)
       view.getElementsByClass("govuk-heading-m").get(section_arrival_datetime) must containMessage("arrivalDetails.title")
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_date) must containMessage("summary.arrival.date")
@@ -102,7 +120,7 @@ class ArrivalSummaryViewSpec extends ViewSpec with Injector {
     }
 
     "render 'Location' section in summary list" in {
-
+      val view = page(answers)
       view.getElementsByClass("govuk-heading-m").get(section_location) must containMessage("location.title")
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_location) must containMessage("summary.goodsLocation")
@@ -114,14 +132,30 @@ class ArrivalSummaryViewSpec extends ViewSpec with Injector {
     }
 
     "render back button" in {
-      val backButton = view.getBackButton
+      val backButton = page(answers).getBackButton
 
       backButton mustBe defined
       backButton.get must haveHref(controllers.routes.LocationController.displayPage())
     }
 
     "render 'Confirm and submit' button on page" in {
-      view.getElementsByClass("govuk-button").first() must containMessage("site.confirmAndSubmit")
+      page(answers).getElementsByClass("govuk-button").first() must containMessage("site.confirmAndSubmit")
+    }
+
+    "render change consignment links when ileQuery disabled" in {
+      when(appConfig.ileQueryEnabled).thenReturn(false)
+
+      val links = page(answers).getElementsByClass("govuk-link")
+
+      links.toString must include(controllers.routes.ConsignmentReferencesController.displayPage().url)
+    }
+
+    "not render change consignment links when ileQuery enabled" in {
+      when(appConfig.ileQueryEnabled).thenReturn(true)
+
+      val links = page(answers).getElementsByClass("govuk-link")
+
+      links.toString must not include controllers.routes.ConsignmentReferencesController.displayPage().url
     }
   }
 

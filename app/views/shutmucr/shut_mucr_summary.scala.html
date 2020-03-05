@@ -48,7 +48,7 @@
                         value = Value(
                             content = Text(shutMucr.mucr)
                         ),
-                        actions = Some(Actions(
+                        actions = if(pageConfig.ileQueryEnabled) None else Some(Actions(
                             items = Seq(
                                 ActionItem(
                                     href = s"${consolidations.routes.ShutMucrController.displayPage}",

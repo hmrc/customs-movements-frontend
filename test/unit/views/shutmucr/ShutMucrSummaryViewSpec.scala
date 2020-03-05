@@ -92,5 +92,23 @@ class ShutMucrSummaryViewSpec extends ViewSpec with CommonMessages with MockitoS
       changeButton.text() must include(messages("site.edit"))
     }
 
+    "have 'Back' button when ileQuery enabled" in {
+      when(appConfig.ileQueryEnabled).thenReturn(true)
+
+      val backButton = shutMucrSummaryPage(shutMucr).getBackButton
+
+      backButton mustBe defined
+      backButton.get must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+    }
+
+    "have 'Back' button when ileQuery disabled" in {
+      when(appConfig.ileQueryEnabled).thenReturn(false)
+
+      val backButton = shutMucrSummaryPage(shutMucr).getBackButton
+
+      backButton mustBe defined
+      backButton.get must haveHref(routes.ShutMucrController.displayPage())
+    }
+
   }
 }

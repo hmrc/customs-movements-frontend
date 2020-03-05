@@ -19,26 +19,44 @@ package views
 import java.text.DecimalFormat
 import java.time.{LocalDate, LocalTime}
 
-import base.Injector
+import base.OverridableInjector
+import config.AppConfig
 import forms.common.{Date, Time}
 import forms.{ArrivalDetails, ConsignmentReferences}
-import models.cache.ArrivalAnswers
 import org.jsoup.nodes.Document
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
+import play.api.inject.bind
+import play.api.test.FakeRequest
 import play.twirl.api.Html
 import testdata.CommonTestData.correctUcr
 import testdata.MovementsTestData
 import views.html.arrival_details
-import views.spec.UnitViewSpec
-import views.spec.UnitViewSpec.realAppConfig
 
-class ArrivalDetailsViewSpec extends ViewSpec with Injector {
+class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private implicit val request = journeyRequest(ArrivalAnswers())
+  private implicit val request = FakeRequest().withCSRFToken
+
+  private val appConfig = mock[AppConfig]
+  private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))
+
+  private val page = injector.instanceOf[arrival_details]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(appConfig.ileQueryEnabled).thenReturn(true)
+  }
+
+  override def afterEach(): Unit = {
+    reset(appConfig)
+
+    super.afterEach()
+  }
+
   private val movementDetails = MovementsTestData.movementDetails
-  private val page = instanceOf[arrival_details]
-
-  val appConfig = UnitViewSpec.realAppConfig
 
   private val consignmentReferences = ConsignmentReferences(reference = "M", referenceValue = correctUcr)
   private def createView(form: Form[ArrivalDetails]): Html = page(form, Some(consignmentReferences))(request, messages)
@@ -62,16 +80,22 @@ class ArrivalDetailsViewSpec extends ViewSpec with Injector {
         emptyView.getTitle must containMessage("arrivalDetails.header")
       }
 
-      "have 'Back' button" in {
-        val backButton = emptyView.getBackButton
+      "have 'Back' button when ileQuery enabled" in {
+        when(appConfig.ileQueryEnabled).thenReturn(true)
+
+        val backButton = createView(movementDetails.arrivalForm()).getBackButton
 
         backButton mustBe defined
-        backButton.get must haveHref(
-          if (realAppConfig.ileQueryEnabled)
-            controllers.routes.ChoiceController.displayChoiceForm()
-          else
-            controllers.routes.ConsignmentReferencesController.displayPage()
-        )
+        backButton.get must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+      }
+
+      "have 'Back' button when ileQuery disabled" in {
+        when(appConfig.ileQueryEnabled).thenReturn(false)
+
+        val backButton = createView(movementDetails.arrivalForm()).getBackButton
+
+        backButton mustBe defined
+        backButton.get must haveHref(controllers.routes.ConsignmentReferencesController.displayPage())
       }
 
       "have section header" in {

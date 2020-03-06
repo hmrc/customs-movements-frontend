@@ -159,7 +159,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(consolidationRoutes.MucrOptionsController.displayPage().url)
-          theCacheUpserted.answers mustBe Some(AssociateUcrAnswers(None, Some(AssociateUcr(AssociateKind.Mucr, ucrBlock.ucr))))
+          theCacheUpserted.answers mustBe Some(AssociateUcrAnswers(None, None, Some(AssociateUcr(AssociateKind.Mucr, ucrBlock.ucr))))
         }
       }
 

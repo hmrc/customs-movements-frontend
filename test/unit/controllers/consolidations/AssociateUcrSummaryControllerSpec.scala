@@ -16,6 +16,7 @@
 
 package controllers.consolidations
 
+import config.AppConfig
 import controllers.ControllerLayerSpec
 import controllers.storage.FlashKeys
 import forms.AssociateKind._
@@ -30,7 +31,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.SubmissionService
-import views.html.associateucr.associate_ucr_summary
+import views.html.associateucr.{associate_ucr_summary, associate_ucr_summary_no_change}
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
@@ -39,6 +40,9 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
 
   private val submissionService = mock[SubmissionService]
   private val mockAssociateDucrSummaryPage = mock[associate_ucr_summary]
+  private val mockAssociateDucrSummaryNoChangePage = mock[associate_ucr_summary_no_change]
+
+  private val appConfig = mock[AppConfig]
 
   private def controller(answers: AssociateUcrAnswers) =
     new AssociateUcrSummaryController(
@@ -46,7 +50,9 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
       ValidJourney(answers),
       stubMessagesControllerComponents(),
       submissionService,
-      mockAssociateDucrSummaryPage
+      appConfig,
+      mockAssociateDucrSummaryPage,
+      mockAssociateDucrSummaryNoChangePage
     )(global)
 
   override protected def beforeEach(): Unit = {
@@ -77,7 +83,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
     "return 200 (OK)" when {
 
       "display page is invoked with data in cache" in {
-        val result = controller(AssociateUcrAnswers(Some(mucrOptions), Some(associateUcr))).displayPage()(getRequest())
+        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions), Some(associateUcr))).displayPage()(getRequest())
 
         status(result) mustBe OK
         verify(mockAssociateDucrSummaryPage).apply(any(), any())(any(), any())

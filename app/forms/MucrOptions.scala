@@ -16,6 +16,7 @@
 
 package forms
 
+import models.UcrBlock
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -36,6 +37,12 @@ object MucrOptions {
 
   val Create = "create"
   val Add = "add"
+
+  def apply(ucrBlock: UcrBlock): MucrOptions =
+    ucrBlock.ucrType match {
+      case "M" => MucrOptions("", ucrBlock.ucr, MucrOptions.Add)
+      case _   => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
+    }
 
   def form2Model: (String, String, String) => MucrOptions = {
     case (createOrAdd, newMucr, existingMucr) =>

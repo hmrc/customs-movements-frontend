@@ -20,6 +20,8 @@
 @import views.components.BackButton
 @import components.gds.{errorSummary, sectionHeader, gds_main_template}
 @import components.gds.exportsInputText
+@import views.components.config.MucrOptionsConfig
+@import models.requests.JourneyRequest
 
 
 @this(
@@ -30,19 +32,20 @@
   errorSummary: errorSummary,
   exportsInputText: exportsInputText,
   sectionHeader: sectionHeader,
+  pageConfig: MucrOptionsConfig,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(form: Form[MucrOptions])(implicit request: Request[_], messages: Messages)
+@(form: Form[MucrOptions], queryUcr: Option[UcrBlock])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("mucrOptions.title"),
-    backButton = Some(BackButton(messages("site.back.toStartPage"), controllers.routes.ChoiceController.displayChoiceForm))) {
+    backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl()))) {
 
     @formHelper(action = consolidations.routes.MucrOptionsController.save(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("mucrOptions.heading"))
+        @sectionHeader(messages("mucrOptions.heading", queryUcr.map(_.ucr).getOrElse("")))
 
         @govukRadios(Radios(
             name = "createOrAdd",

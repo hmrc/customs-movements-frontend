@@ -58,7 +58,11 @@ trait MovementAnswers extends Answers {
   val location: Option[Location]
 }
 
-case class AssociateUcrAnswers(mucrOptions: Option[MucrOptions] = None, associateUcr: Option[AssociateUcr] = None) extends Answers {
+case class AssociateUcrAnswers(
+  manageMucrChoice: Option[ManageMucrChoice] = None,
+  mucrOptions: Option[MucrOptions] = None,
+  associateUcr: Option[AssociateUcr] = None
+) extends Answers {
   override val `type`: JourneyType.Value = JourneyType.ASSOCIATE_UCR
 }
 
@@ -66,7 +70,7 @@ object AssociateUcrAnswers {
   implicit val format: Format[AssociateUcrAnswers] = Json.format[AssociateUcrAnswers]
 
   def fromUcr(ucrBlock: Option[UcrBlock]): AssociateUcrAnswers =
-    new AssociateUcrAnswers(None, ucrBlock.map(AssociateUcr.apply))
+    new AssociateUcrAnswers(None, None, ucrBlock.map(AssociateUcr.apply))
 }
 
 case class DisassociateUcrAnswers(ucr: Option[DisassociateUcr] = None) extends Answers {

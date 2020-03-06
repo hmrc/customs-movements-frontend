@@ -66,7 +66,7 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
       "display page method is invoked and Mucr Options page has data" in {
         val request = getRequest()
 
-        val result = controller(AssociateUcrAnswers(Some(mucrOptions))).displayPage()(request)
+        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions))).displayPage()(request)
 
         status(result) must be(OK)
         theFormRendered.value mustBe empty
@@ -75,7 +75,7 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
       "display previously gathered data" in {
         val request = getRequest()
 
-        val result = controller(AssociateUcrAnswers(Some(mucrOptions), Some(associateUcr))).displayPage()(request)
+        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions), Some(associateUcr))).displayPage()(request)
 
         status(result) must be(OK)
         theFormRendered.value.get mustBe AssociateUcr(Ducr, "DUCR")
@@ -101,7 +101,7 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
 
     "return 400 (BAD_REQUEST)" when {
       "form is incorrect and cache contains data from previous page" in {
-        val result = controller(AssociateUcrAnswers(Some(mucrOptions))).submit()(postRequest(Json.obj()))
+        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions))).submit()(postRequest(Json.obj()))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -111,7 +111,7 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
       "form is correct" in {
         val validDUCR = AssociateUcr.mapping.unbind(AssociateUcr(Ducr, validDucr))
 
-        val result = controller(AssociateUcrAnswers(Some(mucrOptions))).submit()(postRequest(validDUCR))
+        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions))).submit()(postRequest(validDUCR))
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(routes.AssociateUcrSummaryController.displayPage().url)
       }

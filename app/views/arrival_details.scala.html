@@ -15,7 +15,7 @@
  *@
 
 @import controllers.routes
-@import forms.{ArrivalDetails, ConsignmentReferences}
+@import forms.ArrivalDetails
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 @import views.components.BackButton
@@ -34,7 +34,7 @@
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(form: Form[ArrivalDetails], consignmentReferences: Option[ConsignmentReferences])(implicit request: Request[_], messages: Messages)
+@(form: Form[ArrivalDetails], consignmentReferenceValue: String)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
   title = Title("arrivalDetails.header"),
@@ -43,7 +43,7 @@
   @formHelper(action = routes.MovementDetailsController.saveMovementDetails(), 'autoComplete -> "off") {
     @errorSummary(form.errors)
 
-    @sectionHeader(messages("arrivalDetails.sectionHeading", consignmentReferences.map(_.referenceValue).getOrElse("")))
+    @sectionHeader(messages("arrivalDetails.sectionHeading", consignmentReferenceValue))
 
     @pageTitle(messages("arrivalDetails.header"))
 

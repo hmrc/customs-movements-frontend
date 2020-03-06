@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import forms.ManageMucrChoice
 @import forms.MucrOptions
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
@@ -36,11 +37,11 @@
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(form: Form[MucrOptions], queryUcr: Option[UcrBlock])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[MucrOptions], queryUcr: Option[UcrBlock], manageMucrChoice: Option[ManageMucrChoice])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("mucrOptions.title"),
-    backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl()))) {
+    backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl(manageMucrChoice)))) {
 
     @formHelper(action = consolidations.routes.MucrOptionsController.save(), 'autoComplete -> "off") {
         @errorSummary(form.errors)

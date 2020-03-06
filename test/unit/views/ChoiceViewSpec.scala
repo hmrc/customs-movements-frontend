@@ -55,7 +55,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
       if (enabled) controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
       else controllers.routes.StartController.displayStartPage
     )
-    when(pageConfig.isQueryEnabled).thenReturn(enabled)
+    when(pageConfig.ileQueryEnabled).thenReturn(enabled)
   }
 
   private val choicePage = new choice_page(govukLayout, govukButton, govukRadios, errorSummary, sectionHeader, formHelper, pageConfig)

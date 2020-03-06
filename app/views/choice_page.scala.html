@@ -64,7 +64,7 @@
         )
     )
 
-    if (pageConfig.isQueryEnabled) commonChoices
+    if (pageConfig.ileQueryEnabled) commonChoices
     else commonChoices :+ RadioItem(
         value = Some(Submissions.value.toString),
         content = Text(messages(s"movement.choice.${Submissions.toString.toLowerCase}.label")),
@@ -79,7 +79,7 @@
     @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @if(pageConfig.isQueryEnabled) {
+        @if(pageConfig.ileQueryEnabled) {
             @sectionHeader(messages("movement.choice.section", queryUcr.map(_.ucr).getOrElse("")))
         }
 

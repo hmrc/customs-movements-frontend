@@ -17,16 +17,15 @@
 package views.components.config
 
 import config.AppConfig
+import forms.ManageMucrChoice
 import javax.inject.Inject
-import models.cache.AssociateUcrAnswers
-import models.requests.JourneyRequest
 import play.api.mvc.Call
 
 class MucrOptionsConfig @Inject()(appConfig: AppConfig) extends BaseConfig(appConfig) {
 
-  def backUrl()(implicit request: JourneyRequest[_]): Call =
+  def backUrl(manageMucrChoice: Option[ManageMucrChoice] = None): Call =
     if (appConfig.ileQueryEnabled)
-      if (request.answersAs[AssociateUcrAnswers].manageMucrChoice.isDefined)
+      if (manageMucrChoice.isDefined)
         controllers.consolidations.routes.ManageMucrController.displayPage()
       else
         controllers.routes.ChoiceController.displayChoiceForm()

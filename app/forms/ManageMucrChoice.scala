@@ -26,8 +26,8 @@ object ManageMucrChoice {
 
   implicit val format = Json.format[ManageMucrChoice]
 
-  val AssociateThisMucr = "thisMucr"
-  val AssociateAnotherMucr = "anotherMucr"
+  val AssociateThisMucr = "associateThisMucr"
+  val AssociateAnotherMucr = "associateAnotherMucr"
 
   val allChoices = Seq(AssociateThisMucr, AssociateAnotherMucr)
 

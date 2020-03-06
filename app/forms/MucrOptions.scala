@@ -40,8 +40,8 @@ object MucrOptions {
 
   def apply(ucrBlock: UcrBlock): MucrOptions =
     ucrBlock.ucrType match {
-      case "M" => MucrOptions("", ucrBlock.ucr, MucrOptions.Add)
-      case _   => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
+      case UcrType.Mucr.codeValue => MucrOptions("", ucrBlock.ucr, MucrOptions.Add)
+      case _                      => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
     }
 
   def form2Model: (String, String, String) => MucrOptions = {

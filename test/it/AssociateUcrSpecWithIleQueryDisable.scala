@@ -15,59 +15,15 @@
  */
 
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
-import forms._
-import models.UcrBlock
-import models.cache.{AssociateUcrAnswers, Cache}
+import forms.{AssociateKind, AssociateUcr, MucrOptions}
+import models.cache.AssociateUcrAnswers
+import play.api.Configuration
 import play.api.test.Helpers._
 
-class AssociateUcrSpec extends IntegrationSpec {
+class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
 
-  "Manage Mucr Page" when {
-    "GET" should {
-      "return 200 when queried mucr" in {
-        givenAuthSuccess("eori")
-        givenCacheFor(Cache("eori", Some(AssociateUcrAnswers()), Some(UcrBlock("mucr", UcrType.Mucr))))
-
-        val response = get(controllers.consolidations.routes.ManageMucrController.displayPage())
-
-        status(response) mustBe OK
-      }
-
-      "return 303 when queried ducr" in {
-        givenAuthSuccess("eori")
-        givenCacheFor(Cache("eori", Some(AssociateUcrAnswers()), Some(UcrBlock("ducr", UcrType.Ducr))))
-
-        val response = get(controllers.consolidations.routes.ManageMucrController.displayPage())
-
-        status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.MucrOptionsController.displayPage().url)
-      }
-    }
-
-    "POST" should {
-      "continue for associate this mucr" in {
-        givenAuthSuccess("eori")
-        givenCacheFor("eori", AssociateUcrAnswers())
-
-        val response = post(controllers.consolidations.routes.ManageMucrController.submit(), "choice" -> ManageMucrChoice.AssociateThisMucr)
-
-        status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.MucrOptionsController.displayPage().url)
-        theAnswersFor("eori") mustBe Some(AssociateUcrAnswers(manageMucrChoice = Some(ManageMucrChoice(ManageMucrChoice.AssociateThisMucr))))
-      }
-
-      "continue for associate another mucr" in {
-        givenAuthSuccess("eori")
-        givenCacheFor("eori", AssociateUcrAnswers())
-
-        val response = post(controllers.consolidations.routes.ManageMucrController.submit(), "choice" -> ManageMucrChoice.AssociateAnotherMucr)
-
-        status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrController.displayPage().url)
-        theAnswersFor("eori") mustBe Some(AssociateUcrAnswers(manageMucrChoice = Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr))))
-      }
-    }
-  }
+  override def ileQueryFeatureConfiguration: Configuration =
+    Configuration.from(Map("microservice.services.features.ileQuery" -> "disabled"))
 
   "UCR Options Page" when {
     "GET" should {
@@ -94,7 +50,7 @@ class AssociateUcrSpec extends IntegrationSpec {
         )
 
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrSummaryController.displayPage().url)
+        redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrController.displayPage().url)
         theAnswersFor("eori") mustBe Some(AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345"))))
       }
     }

@@ -40,7 +40,7 @@ class TransportControllerSpec extends ControllerLayerSpec with MockCache with Op
   private def controller(answers: DepartureAnswers) =
     new TransportController(SuccessfulAuth(), ValidJourney(answers), cache, stubMessagesControllerComponents(), mockTransportPage)(global)
 
-  private val consignmentReferences = Some(ConsignmentReferences("reference", "referenceValue"))
+  private val consignmentReferences = ConsignmentReferences("reference", "referenceValue")
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -58,14 +58,25 @@ class TransportControllerSpec extends ControllerLayerSpec with MockCache with Op
     captor.getValue
   }
 
-  "Transport Controller" should {
+  "Transport Controller on displayPage" should {
 
     "return 200 (OK)" when {
 
-      "display page method is invoked and cache contains data" in {
-        val cachedData = Transport(Sea, "PL", "")
+      "display page method is invoked and cache is empty" in {
 
-        val answers = DepartureAnswers(transport = Some(cachedData), consignmentReferences = consignmentReferences)
+        val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
+
+        val result = controller(answers).displayPage()(getRequest())
+
+        status(result) mustBe OK
+        theResponseForm.value mustBe empty
+      }
+
+      "display page method is invoked and cache contains data" in {
+
+        val cachedData = Transport(Sea, "PL", "")
+        val answers = DepartureAnswers(transport = Some(cachedData), consignmentReferences = Some(consignmentReferences))
+
         val result = controller(answers).displayPage()(getRequest())
 
         status(result) mustBe OK
@@ -76,36 +87,56 @@ class TransportControllerSpec extends ControllerLayerSpec with MockCache with Op
     "return to start" when {
 
       "consignment reference is missing" in {
+
         intercept[RuntimeException] {
           await(controller(DepartureAnswers()).displayPage()(getRequest()))
         } mustBe ReturnToStartException
       }
-
     }
+  }
 
-    "return 400 (BAD_REQUEST)" when {
-
-      "form is incorrect" in {
-        val incorrectForm: JsValue =
-          JsObject(Map("modeOfTransport" -> JsString("transport"), "nationality" -> JsString("Country")))
-
-        val result = controller(DepartureAnswers(consignmentReferences = consignmentReferences)).saveTransport()(postRequest(incorrectForm))
-
-        status(result) mustBe BAD_REQUEST
-      }
-    }
+  "Transport Controller on saveTransport" should {
 
     "return 303 (SEE_OTHER) and redirect to summary page" when {
 
       "form is correct" in {
-        val incorrectForm: JsValue =
-          JsObject(Map("modeOfTransport" -> JsString(Sea), "nationality" -> JsString("PL"), "transportId" -> JsString("someReference")))
 
-        val result = controller(DepartureAnswers()).saveTransport()(postRequest(incorrectForm))
+        val correctForm: JsValue =
+          JsObject(Map("modeOfTransport" -> JsString(Sea), "nationality" -> JsString("PL"), "transportId" -> JsString("someReference")))
+        val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
+
+        val result = controller(answers).saveTransport()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.SummaryController.displayPage().url
       }
     }
+
+    "return 400 (BAD_REQUEST)" when {
+
+      "form is incorrect" in {
+
+        val incorrectForm: JsValue = JsObject(Map("modeOfTransport" -> JsString("transport"), "nationality" -> JsString("Country")))
+        val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
+
+        val result = controller(answers).saveTransport()(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+      }
+    }
+
+    "return to start" when {
+
+      "consignment reference is missing" in {
+
+        val correctForm: JsValue =
+          JsObject(Map("modeOfTransport" -> JsString(Sea), "nationality" -> JsString("PL"), "transportId" -> JsString("someReference")))
+
+        intercept[RuntimeException] {
+          await(controller(DepartureAnswers()).saveTransport()(postRequest(correctForm)))
+        } mustBe ReturnToStartException
+      }
+    }
   }
+
 }

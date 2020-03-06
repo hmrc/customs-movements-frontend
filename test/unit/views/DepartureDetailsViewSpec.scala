@@ -57,8 +57,8 @@ class DepartureDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
   private val movementDetails = MovementsTestData.movementDetails
 
-  private val consignmentReferences = "M-ref"
-  private def createView(form: Form[DepartureDetails]): Html = page(form, consignmentReferences)(request, messages)
+  private val consignmentReferencesValue = "M-ref"
+  private def createView(form: Form[DepartureDetails]): Html = page(form, consignmentReferencesValue)(request, messages)
 
   private def convertIntoTwoDigitFormat(input: Int): String = {
     val formatter = new DecimalFormat("00")
@@ -98,7 +98,7 @@ class DepartureDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       }
 
       "have section header" in {
-        emptyView.getElementById("section-header") must containMessage("departureDetails.sectionHeading", consignmentReferences)
+        emptyView.getElementById("section-header") must containMessage("departureDetails.sectionHeading", consignmentReferencesValue)
       }
 
       "have heading" in {

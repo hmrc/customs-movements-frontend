@@ -21,8 +21,8 @@ import java.time.{LocalDate, LocalTime}
 
 import base.OverridableInjector
 import config.AppConfig
+import forms.ArrivalDetails
 import forms.common.{Date, Time}
-import forms.{ArrivalDetails, ConsignmentReferences}
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -31,7 +31,6 @@ import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import testdata.CommonTestData.correctUcr
 import testdata.MovementsTestData
 import views.html.arrival_details
 
@@ -58,8 +57,8 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
 
   private val movementDetails = MovementsTestData.movementDetails
 
-  private val consignmentReferences = ConsignmentReferences(reference = "M", referenceValue = correctUcr)
-  private def createView(form: Form[ArrivalDetails]): Html = page(form, Some(consignmentReferences))(request, messages)
+  private val consignmentReferencesValue = "M-ref"
+  private def createView(form: Form[ArrivalDetails]): Html = page(form, consignmentReferencesValue)(request, messages)
 
   private def convertIntoTwoDigitFormat(input: Int): String = {
     val formatter = new DecimalFormat("00")
@@ -99,7 +98,7 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
       }
 
       "have section header" in {
-        emptyView.getElementById("section-header") must containMessage("arrivalDetails.sectionHeading", consignmentReferences.referenceValue)
+        emptyView.getElementById("section-header") must containMessage("arrivalDetails.sectionHeading", consignmentReferencesValue)
       }
 
       "have heading" in {

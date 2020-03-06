@@ -40,7 +40,7 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
   private val mockArrivalDetailsPage = mock[arrival_details]
   private val mockDepartureDetailsPage = mock[departure_details]
-  private val consignmentReferences = Some(ConsignmentReferences("reference", "referenceValue"))
+  private val consignmentReferences = ConsignmentReferences("reference", "referenceValue")
 
   private val yesterday = LocalDateTime.now().minusDays(1)
 
@@ -79,96 +79,149 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
   }
 
   "Movement Details Controller for arrival journey" should {
-    "return 200 (OK)" when {
-      "display page method is invoked and cache is empty" in {
-        val result = controller(ArrivalAnswers()).displayPage()(getRequest())
 
-        status(result) mustBe OK
-        arrivalResponseForm.value mustBe empty
+    "displayPage is called" should {
+
+      "return 200 (OK)" when {
+
+        "display page method is invoked and cache is empty" in {
+
+          val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences))
+
+          val result = controller(answers).displayPage()(getRequest())
+
+          status(result) mustBe OK
+          arrivalResponseForm.value mustBe empty
+        }
+
+        "display page method is invoked and cache contains data" in {
+
+          val cachedData = ArrivalDetails(Date(LocalDate.of(2019, 2, 10)), Time(LocalTime.of(10, 10)))
+          val answers = ArrivalAnswers(arrivalDetails = Some(cachedData), consignmentReferences = Some(consignmentReferences))
+
+          val result = controller(answers).displayPage()(getRequest())
+
+          status(result) mustBe OK
+          arrivalResponseForm.value.value mustBe cachedData
+        }
       }
 
-      "display page method is invoked and cache contains data" in {
-        val cachedData = ArrivalDetails(Date(LocalDate.of(2019, 2, 10)), Time(LocalTime.of(10, 10)))
+      "return to start" when {
 
-        val answers = ArrivalAnswers(arrivalDetails = Some(cachedData))
-        val result = controller(answers).displayPage()(getRequest())
+        "consignment reference is missing" in {
 
-        status(result) mustBe OK
-        arrivalResponseForm.value.value mustBe cachedData
+          intercept[RuntimeException] {
+            await(controller(ArrivalAnswers()).displayPage()(getRequest()))
+          } mustBe ReturnToStartException
+        }
       }
     }
 
-    "return 400 (BAD_REQUEST)" when {
-      "form is incorrect" in {
-        val incorrectForm: JsValue = JsObject(Map("dateOfArrival" -> JsString("")))
+    "saveMovementDetails is called" should {
 
-        val result = controller(ArrivalAnswers()).saveMovementDetails()(postRequest(incorrectForm))
+      "return 303 (SEE_OTHER) and redirect to location page" when {
 
-        status(result) mustBe BAD_REQUEST
+        "form is correct" in {
+
+          val correctForm = Json.obj(
+            "dateOfArrival" -> Json.obj("day" -> yesterday.getDayOfMonth, "month" -> yesterday.getMonthValue, "year" -> yesterday.getYear),
+            "timeOfArrival" -> Json.obj("hour" -> yesterday.getHour, "minute" -> yesterday.getMinute)
+          )
+          val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences))
+
+          val result = controller(answers).saveMovementDetails()(postRequest(correctForm))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).value mustBe routes.LocationController.displayPage().url
+        }
+      }
+
+      "return 400 (BAD_REQUEST)" when {
+
+        "form is incorrect" in {
+
+          val incorrectForm: JsValue = JsObject(Map("dateOfArrival" -> JsString("")))
+          val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences))
+
+          val result = controller(answers).saveMovementDetails()(postRequest(incorrectForm))
+
+          status(result) mustBe BAD_REQUEST
+        }
+      }
+    }
+  }
+
+  "Movement Details Controller for departure journey" when {
+
+    "displayPage is called" should {
+
+      "return 200 (OK)" when {
+
+        "display page method is invoked and cache is empty" in {
+
+          val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
+
+          val result = controller(answers).displayPage()(getRequest())
+
+          status(result) mustBe OK
+          departureResponseForm.value mustBe empty
+        }
+
+        "display page method is invoked and cache contains data" in {
+
+          val cachedData = DepartureDetails(Date(LocalDate.of(2019, 2, 10)), Time(LocalTime.now()))
+          val answers = DepartureAnswers(departureDetails = Some(cachedData), consignmentReferences = Some(consignmentReferences))
+
+          val result = controller(answers).displayPage()(getRequest())
+
+          status(result) mustBe OK
+          departureResponseForm.value.value mustBe cachedData
+        }
+      }
+
+      "return to start" when {
+
+        "consignment reference is missing" in {
+
+          intercept[RuntimeException] {
+            await(controller(DepartureAnswers()).displayPage()(getRequest()))
+          } mustBe ReturnToStartException
+        }
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to location page" when {
-      "form is correct" in {
-        val correctForm = Json.obj(
-          "dateOfArrival" -> Json.obj("day" -> yesterday.getDayOfMonth, "month" -> yesterday.getMonthValue, "year" -> yesterday.getYear),
-          "timeOfArrival" -> Json.obj("hour" -> yesterday.getHour, "minute" -> yesterday.getMinute)
-        )
+    "saveMovementDetails is called" should {
 
-        val result = controller(ArrivalAnswers()).saveMovementDetails()(postRequest(correctForm))
+      "return 303 (SEE_OTHER) and redirect to location page" when {
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.LocationController.displayPage().url
+        "form is correct" in {
+
+          val correctForm = Json.obj(
+            "dateOfDeparture" -> Json.obj("day" -> yesterday.getDayOfMonth, "month" -> yesterday.getMonthValue, "year" -> yesterday.getYear),
+            "timeOfDeparture" -> Json.obj("hour" -> yesterday.getHour, "minute" -> yesterday.getMinute)
+          )
+          val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
+
+          val result = controller(answers).saveMovementDetails()(postRequest(correctForm))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).value mustBe routes.LocationController.displayPage().url
+        }
+      }
+
+      "return 400 (BAD_REQUEST)" when {
+
+        "form is incorrect" in {
+
+          val incorrectForm: JsValue = JsObject(Map("dateOfDeparture" -> JsString("")))
+          val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
+
+          val result = controller(answers).saveMovementDetails()(postRequest(incorrectForm))
+
+          status(result) mustBe BAD_REQUEST
+        }
       }
     }
   }
 
-  "Movement Details Controller for departure journey" should {
-    "return 200 (OK)" when {
-
-      "display page method is invoked and cache contains data" in {
-        val cachedData = DepartureDetails(Date(LocalDate.of(2019, 2, 10)), Time(LocalTime.now()))
-
-        val answers = DepartureAnswers(departureDetails = Some(cachedData), consignmentReferences = consignmentReferences)
-        val result = controller(answers).displayPage()(getRequest())
-
-        status(result) mustBe OK
-        departureResponseForm.value.value mustBe cachedData
-      }
-    }
-
-    "return to start" when {
-
-      "consignment reference is missing" in {
-        intercept[RuntimeException] {
-          await(controller(DepartureAnswers()).displayPage()(getRequest()))
-        } mustBe ReturnToStartException
-      }
-
-    }
-
-    "return 400 (BAD_REQUEST)" when {
-      "form is incorrect" in {
-        val incorrectForm: JsValue = JsObject(Map("dateOfDeparture" -> JsString("")))
-
-        val result = controller(DepartureAnswers(consignmentReferences = consignmentReferences)).saveMovementDetails()(postRequest(incorrectForm))
-
-        status(result) mustBe BAD_REQUEST
-      }
-    }
-
-    "return 303 (SEE_OTHER) and redirect to location page" when {
-      "form is correct" in {
-        val correctForm = Json.obj(
-          "dateOfDeparture" -> Json.obj("day" -> yesterday.getDayOfMonth, "month" -> yesterday.getMonthValue, "year" -> yesterday.getYear),
-          "timeOfDeparture" -> Json.obj("hour" -> yesterday.getHour, "minute" -> yesterday.getMinute)
-        )
-
-        val result = controller(DepartureAnswers()).saveMovementDetails()(postRequest(correctForm))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.LocationController.displayPage().url
-      }
-    }
-  }
 }

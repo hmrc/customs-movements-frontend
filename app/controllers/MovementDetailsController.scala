@@ -52,7 +52,10 @@ class MovementDetailsController @Inject()(
   }
 
   private def arrivalPage(arrivalAnswers: ArrivalAnswers)(implicit request: JourneyRequest[AnyContent]): Html =
-    arrivalDetailsPage(arrivalAnswers.arrivalDetails.fold(details.arrivalForm())(details.arrivalForm().fill(_)), arrivalAnswers.consignmentReferences)
+    arrivalDetailsPage(
+      arrivalAnswers.arrivalDetails.fold(details.arrivalForm())(details.arrivalForm().fill(_)),
+      arrivalAnswers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException)
+    )
 
   private def departurePage(departureAnswers: DepartureAnswers)(implicit request: JourneyRequest[AnyContent]): Html =
     departureDetailsPage(
@@ -72,24 +75,26 @@ class MovementDetailsController @Inject()(
   }
 
   private def handleSavingArrival(arrivalAnswers: ArrivalAnswers)(implicit request: JourneyRequest[AnyContent]): Future[Either[Html, Call]] = {
-    val boundForm = details.arrivalForm().bindFromRequest()
-
-    boundForm.fold(
-      (formWithErrors: Form[ArrivalDetails]) => Future.successful(Left(arrivalDetailsPage(formWithErrors, arrivalAnswers.consignmentReferences))),
-      validForm =>
-        cache.upsert(request.cache.update(arrivalAnswers.copy(arrivalDetails = Some(validForm)))).map { _ =>
-          Right(controllers.routes.LocationController.displayPage())
-      }
-    )
+    val consignmentReferenceValue = arrivalAnswers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException)
+    details
+      .arrivalForm()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[ArrivalDetails]) => Future.successful(Left(arrivalDetailsPage(formWithErrors, consignmentReferenceValue))),
+        validForm =>
+          cache.upsert(request.cache.update(arrivalAnswers.copy(arrivalDetails = Some(validForm)))).map { _ =>
+            Right(controllers.routes.LocationController.displayPage())
+        }
+      )
   }
 
   private def handleSavingDeparture(departureAnswers: DepartureAnswers)(implicit request: JourneyRequest[AnyContent]): Future[Either[Html, Call]] = {
-    def consignmentReference = departureAnswers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException)
+    val consignmentReferenceValue = departureAnswers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException)
     details
       .departureForm()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DepartureDetails]) => Future.successful(Left(departureDetailsPage(formWithErrors, consignmentReference))),
+        (formWithErrors: Form[DepartureDetails]) => Future.successful(Left(departureDetailsPage(formWithErrors, consignmentReferenceValue))),
         validForm =>
           cache.upsert(request.cache.update(departureAnswers.copy(departureDetails = Some(validForm)))).map { _ =>
             Right(controllers.routes.LocationController.displayPage())

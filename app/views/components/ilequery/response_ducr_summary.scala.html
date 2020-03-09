@@ -62,6 +62,14 @@
                 value = Value(
                     content = info.entryStatus.flatMap(_.ics).map(converter.inputCustomsStatus(_)).getOrElse(Empty)
                 )
+            ),
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages("ileQueryResponse.details.MRN"))
+                ),
+                value = Value(
+                    content = HtmlContent(info.declarationId)
+                )
             )
         ).filterNot(_.value.content == Empty),
         classes = "govuk-!-margin-bottom-9"

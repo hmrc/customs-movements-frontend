@@ -84,12 +84,17 @@ class DucrSummaryViewSpec extends ViewSpec with Injector {
       summaryElement(summaryView, 3) must containMessage("ileCode.unknown")
     }
 
+    "render MRN" in {
+      summaryElement(view(), 4).text() must include(ducrInfo.declarationId)
+    }
+
     "render all rows" in {
       val summaryText = view().text()
       summaryText must include("Route")
       summaryText must include("Status")
       summaryText must include("Transport")
       summaryText must include("Input status")
+      summaryText must include("MRN")
     }
 
     "not render rows when codes and transport missing" in {

@@ -24,11 +24,8 @@ import play.api.mvc.Call
 class MucrOptionsConfig @Inject()(appConfig: AppConfig) extends BaseConfig(appConfig) {
 
   def backUrl(manageMucrChoice: Option[ManageMucrChoice] = None): Call =
-    if (appConfig.ileQueryEnabled)
-      if (manageMucrChoice.isDefined)
-        controllers.consolidations.routes.ManageMucrController.displayPage()
-      else
-        controllers.routes.ChoiceController.displayChoiceForm()
+    if (appConfig.ileQueryEnabled && manageMucrChoice.isDefined)
+      controllers.consolidations.routes.ManageMucrController.displayPage()
     else
       controllers.routes.ChoiceController.displayChoiceForm()
 }

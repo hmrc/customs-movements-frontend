@@ -19,7 +19,7 @@ package controllers.consolidations
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.storage.FlashKeys
-import forms.{AssociateKind, ManageMucrChoice}
+import forms.AssociateKind
 import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
 import models.cache.{AssociateUcrAnswers, JourneyType}
@@ -49,8 +49,7 @@ class AssociateUcrSummaryController @Inject()(
     val associateUcr = answers.associateUcr.getOrElse(throw ReturnToStartException)
 
     if (appConfig.ileQueryEnabled) {
-      val associateAnotherMucr = answers.manageMucrChoice.exists(_.choice == ManageMucrChoice.AssociateAnotherMucr)
-      if (associateAnotherMucr)
+      if (answers.isAssociateAnotherMucr)
         Ok(associateUcrSummaryNoChangePage(mucrOptions.mucr, associateUcr.ucr, associateUcr.kind, answers.manageMucrChoice))
       else
         Ok(associateUcrSummaryNoChangePage(associateUcr.ucr, mucrOptions.mucr, AssociateKind.Mucr, answers.manageMucrChoice))

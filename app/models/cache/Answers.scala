@@ -64,6 +64,8 @@ case class AssociateUcrAnswers(
   associateUcr: Option[AssociateUcr] = None
 ) extends Answers {
   override val `type`: JourneyType.Value = JourneyType.ASSOCIATE_UCR
+
+  def isAssociateAnotherMucr: Boolean = manageMucrChoice.exists(_.choice == ManageMucrChoice.AssociateAnotherMucr)
 }
 
 object AssociateUcrAnswers {

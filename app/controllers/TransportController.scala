@@ -49,7 +49,7 @@ class TransportController @Inject()(
 
   def saveTransport(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DEPART)).async { implicit request =>
     val answers = request.answersAs[DepartureAnswers]
-    def consignmentReference = answers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException)
+    val consignmentReference = answers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException)
     form
       .bindFromRequest()
       .fold(

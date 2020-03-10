@@ -15,21 +15,9 @@
  */
 
 package views.components.config
-
 import base.UnitSpec
-import config.AppConfig
-import org.mockito.Mockito.when
-import org.scalatest.BeforeAndAfterEach
 
-class ViewRequestsConfigSpec extends UnitSpec with BeforeAndAfterEach {
-
-  private val ileQueryEnabled = mock[AppConfig]
-  private val ileQueryDisabled = mock[AppConfig]
-
-  override def beforeEach() {
-    when(ileQueryEnabled.ileQueryEnabled).thenReturn(true)
-    when(ileQueryDisabled.ileQueryEnabled).thenReturn(false)
-  }
+class ViewRequestsConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
 
   "View requests back link" should {
 

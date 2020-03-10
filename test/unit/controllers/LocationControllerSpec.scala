@@ -35,7 +35,7 @@ import scala.concurrent.ExecutionContext.global
 class LocationControllerSpec extends ControllerLayerSpec with MockCache with OptionValues {
 
   private val mockLocationPage = mock[location]
-  private val consignmentRefereces = Some(ConsignmentReferences("reference", "referenceValue"))
+  private val consignmentReferences = ConsignmentReferences("reference", "referenceValue")
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -56,13 +56,25 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
     captor.getValue
   }
 
-  "Location Controller" should {
+  "Location Controller on displayPage" should {
+
     "return 200 (OK)" when {
 
-      "display page method is invoked and cache contains data" in {
-        val cachedData = Location("PLAYlocationCode")
+      "display page method is invoked and cache is empty" in {
 
-        val answers = ArrivalAnswers(location = Some(cachedData), consignmentReferences = consignmentRefereces)
+        val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences))
+
+        val result = controller(answers).displayPage()(getRequest())
+
+        status(result) mustBe OK
+        theResponseForm.value mustBe empty
+      }
+
+      "display page method is invoked and cache contains data" in {
+
+        val cachedData = Location("PLAYlocationCode")
+        val answers = ArrivalAnswers(location = Some(cachedData), consignmentReferences = Some(consignmentReferences))
+
         val result = controller(answers).displayPage()(getRequest())
 
         status(result) mustBe OK
@@ -70,34 +82,27 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
       }
     }
 
-    "return 400 (BAD_REQUEST)" when {
-
-      "form is incorrect" in {
-        val incorrectForm: JsValue = Json.toJson(Location("PLincorrectYlocationCode"))
-
-        val answers = ArrivalAnswers(consignmentReferences = consignmentRefereces)
-        val result = controller(answers).saveLocation()(postRequest(incorrectForm))
-
-        status(result) mustBe BAD_REQUEST
-      }
-    }
-
     "return to start" when {
 
       "consignment reference is missing" in {
+
         intercept[RuntimeException] {
           await(controller().displayPage()(getRequest()))
         } mustBe ReturnToStartException
       }
-
     }
+  }
+
+  "Location Controller on saveLocation" should {
 
     "return 303 (SEE_OTHER) and redirect to summary page" when {
 
       "form is correct and user is during arrival journey" in {
-        val correctForm: JsValue = Json.toJson(Location("PLAYlocationCode"))
 
-        val result = controller(ArrivalAnswers()).saveLocation()(postRequest(correctForm))
+        val correctForm: JsValue = Json.toJson(Location("PLAYlocationCode"))
+        val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences))
+
+        val result = controller(answers).saveLocation()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.SummaryController.displayPage().url
@@ -107,13 +112,41 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
     "return 303 (SEE_OTHER) and redirect to transport page" when {
 
       "form is correct and user is during departure journey" in {
-        val correctForm: JsValue = Json.toJson(Location("PLAYlocationCode"))
 
-        val result = controller(DepartureAnswers()).saveLocation()(postRequest(correctForm))
+        val correctForm: JsValue = Json.toJson(Location("PLAYlocationCode"))
+        val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
+
+        val result = controller(answers).saveLocation()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.TransportController.displayPage().url
       }
     }
+
+    "return 400 (BAD_REQUEST)" when {
+
+      "form is incorrect" in {
+
+        val incorrectForm: JsValue = Json.toJson(Location("PLincorrectYlocationCode"))
+        val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences))
+
+        val result = controller(answers).saveLocation()(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+      }
+    }
+
+    "return to start" when {
+
+      "consignment reference is missing" in {
+
+        val correctForm: JsValue = Json.toJson(Location("PLAYlocationCode"))
+
+        intercept[RuntimeException] {
+          await(controller(DepartureAnswers()).saveLocation()(postRequest(correctForm)))
+        } mustBe ReturnToStartException
+      }
+    }
   }
+
 }

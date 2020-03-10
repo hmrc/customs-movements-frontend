@@ -17,10 +17,8 @@
 package testdata
 
 import connectors.exchanges.ActionType.ConsolidationType
-import connectors.exchanges.{AssociateDUCRRequest, DisassociateDUCRRequest, ShutMUCRRequest}
 import models.UcrBlock
 import models.submissions.Submission
-import play.api.http.{ContentTypes, HeaderNames}
 import testdata.CommonTestData._
 
 object ConsolidationTestData {
@@ -28,23 +26,11 @@ object ConsolidationTestData {
   val validMucr = "GB/1234567890-MUCR"
   val validDucr = "4GB123456789000-DUCR"
 
-  val exampleAssociateDucrRequest: AssociateDUCRRequest =
-    AssociateDUCRRequest(eori = validEori, mucr = validMucr, ucr = validDucr)
-
   val exampleAssociateDucrRequestSubmission: Submission = Submission(
     eori = validEori,
     conversationId = conversationId,
     actionType = ConsolidationType.DucrAssociation,
     ucrBlocks = Seq(UcrBlock(ucr = validMucr, ucrType = "M"), UcrBlock(ucr = validDucr, ucrType = "D"))
   )
-
-  val exampleDisassociateDucrRequest: DisassociateDUCRRequest =
-    DisassociateDUCRRequest(eori = validEori, ucr = validDucr)
-
-  val exampleShutMucrRequest: ShutMUCRRequest =
-    ShutMUCRRequest(eori = validEori, mucr = validMucr)
-
-  val validConsolidationRequestHeaders: Seq[(String, String)] =
-    Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.JSON, HeaderNames.ACCEPT -> ContentTypes.JSON)
 
 }

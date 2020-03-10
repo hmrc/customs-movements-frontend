@@ -15,11 +15,12 @@
  *@
 
 @import controllers.routes
-@import forms.{ConsignmentReferences, DepartureDetails}
+@import forms.DepartureDetails
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 @import views.components.BackButton
 @import views.html.components.gds._
+@import views.components.config.MovementDetailsConfig
 
 @this(
   govukLayout: gds_main_template,
@@ -29,19 +30,20 @@
   sectionHeader: sectionHeader,
   inputDate: inputDate,
   inputTime: inputTime,
+  pageConfig: MovementDetailsConfig,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(form: Form[DepartureDetails], consignmentReferences: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[DepartureDetails], consignmentReferenceValue: String)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
   title = Title("departureDetails.header"),
-  backButton = Some(BackButton(messages("site.back"), controllers.routes.ConsignmentReferencesController.displayPage))) {
+  backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl))) {
 
   @formHelper(action = routes.MovementDetailsController.saveMovementDetails(), 'autoComplete -> "off") {
     @errorSummary(form.errors)
 
-    @sectionHeader(messages("departureDetails.sectionHeading", consignmentReferences))
+    @sectionHeader(messages("departureDetails.sectionHeading", consignmentReferenceValue))
 
     @pageTitle(messages("departureDetails.header"))
 

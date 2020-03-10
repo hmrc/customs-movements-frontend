@@ -17,7 +17,7 @@
 package handlers
 
 import config.AppConfig
-import controllers.exception.{FeatureDisabledException, IncompleteApplication}
+import controllers.exception.{IncompleteApplication, InvalidFeatureStateException}
 import controllers.routes
 import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
@@ -49,8 +49,8 @@ class ErrorHandler @Inject()(appConfig: AppConfig, override val messagesApi: Mes
         Results.SeeOther(routes.UnauthorisedController.onPageLoad().url)
       case _: IncompleteApplication | ReturnToStartException =>
         Results.Redirect(routes.StartController.displayStartPage())
-      case _: FeatureDisabledException => NotFound(notFoundTemplate(Request(rh, "")))
-      case _                           => super.resolveError(rh, ex)
+      case _: InvalidFeatureStateException => NotFound(notFoundTemplate(Request(rh, "")))
+      case _                               => super.resolveError(rh, ex)
     }
 
   def getBadRequestPage()(implicit request: Request[_]): Result =

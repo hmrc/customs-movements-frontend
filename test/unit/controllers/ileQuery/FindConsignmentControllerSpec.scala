@@ -18,7 +18,7 @@ package controllers.ileQuery
 
 import controllers.ControllerLayerSpec
 import controllers.actions.IleQueryAction
-import controllers.exception.FeatureDisabledException
+import controllers.exception.InvalidFeatureStateException
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.libs.json.{JsString, Json}
@@ -107,7 +107,7 @@ class FindConsignmentControllerSpec extends ControllerLayerSpec with MockIleQuer
 
       intercept[RuntimeException] {
         await(controllerIleQueryDisabled.displayQueryForm()(getRequest))
-      } mustBe FeatureDisabledException
+      } mustBe InvalidFeatureStateException
 
     }
 

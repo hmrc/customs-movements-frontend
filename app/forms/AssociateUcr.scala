@@ -54,9 +54,9 @@ object AssociateUcr {
 
   def apply(ucrBlock: UcrBlock): AssociateUcr =
     ucrBlock.ucrType match {
-      case "M" => AssociateUcr(AssociateKind.Mucr, ucrBlock.ucr)
-      case "D" => AssociateUcr(AssociateKind.Ducr, ucrBlock.ucr)
-      case _   => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
+      case UcrType.Mucr.codeValue => AssociateUcr(AssociateKind.Mucr, ucrBlock.ucr)
+      case UcrType.Ducr.codeValue => AssociateUcr(AssociateKind.Ducr, ucrBlock.ucr)
+      case _                      => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
     }
 
   val formId: String = "AssociateDucr"

@@ -21,7 +21,7 @@ import javax.inject.Inject
 import models.UcrBlock
 import play.api.mvc.Call
 
-class ChoicePageConfig @Inject()(appConfig: AppConfig) {
+class ChoicePageConfig @Inject()(appConfig: AppConfig) extends BaseConfig(appConfig) {
   def backLink(queryUcr: Option[UcrBlock]): Call =
     if (appConfig.ileQueryEnabled)
       queryUcr
@@ -29,6 +29,4 @@ class ChoicePageConfig @Inject()(appConfig: AppConfig) {
         .getOrElse(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
     else
       controllers.routes.StartController.displayStartPage
-
-  def isQueryEnabled: Boolean = appConfig.ileQueryEnabled
 }

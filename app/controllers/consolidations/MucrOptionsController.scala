@@ -16,11 +16,14 @@
 
 package controllers.consolidations
 
+import config.AppConfig
 import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.MucrOptions
 import forms.MucrOptions.form
 import javax.inject.{Inject, Singleton}
-import models.cache.{AssociateUcrAnswers, Cache, JourneyType}
+import models.cache.{AssociateUcrAnswers, JourneyType}
+import models.requests.JourneyRequest
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.CacheRepository
@@ -35,31 +38,38 @@ class MucrOptionsController @Inject()(
   getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
   cacheRepository: CacheRepository,
+  appConfig: AppConfig,
   page: mucr_options
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ASSOCIATE_UCR)) { implicit request =>
     val mucrOptions = request.answersAs[AssociateUcrAnswers].mucrOptions
-    Ok(page(mucrOptions.fold(form)(form.fill)))
+    Ok(buildPage(mucrOptions.fold(form)(form.fill)))
   }
 
   def save(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ASSOCIATE_UCR)).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(page(formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(buildPage(formWithErrors))),
         validForm => {
           val validatedForm = MucrOptions.validateForm(form.fill(validForm))
           if (validatedForm.hasErrors) {
-            Future.successful(BadRequest(page(validatedForm)))
+            Future.successful(BadRequest(buildPage(validatedForm)))
           } else {
             val updatedAnswers = request.answersAs[AssociateUcrAnswers].copy(mucrOptions = Some(validForm))
             cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
-              Redirect(routes.AssociateUcrController.displayPage())
+              if (appConfig.ileQueryEnabled)
+                Redirect(routes.AssociateUcrSummaryController.displayPage())
+              else
+                Redirect(routes.AssociateUcrController.displayPage())
             }
           }
         }
       )
   }
+
+  private def buildPage(form: Form[MucrOptions])(implicit request: JourneyRequest[_]) =
+    page(form, request.cache.queryUcr, request.answersAs[AssociateUcrAnswers].manageMucrChoice)
 }

@@ -16,6 +16,7 @@
 
 package controllers.consolidations
 
+import config.AppConfig
 import controllers.ControllerLayerSpec
 import forms.MucrOptions
 import forms.MucrOptions.Create
@@ -39,22 +40,24 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
 
   private val page = mock[mucr_options]
 
+  private val appConfig = mock[AppConfig]
+
   private def controller(answers: AssociateUcrAnswers) =
-    new MucrOptionsController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, page)(global)
+    new MucrOptionsController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, appConfig, page)(global)
 
   override def beforeEach() {
     super.beforeEach()
-    when(page.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(page.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override def afterEach(): Unit = {
-    reset(page)
+    reset(page, appConfig)
     super.afterEach()
   }
 
   private def theFormRendered: Form[MucrOptions] = {
     val captor: ArgumentCaptor[Form[MucrOptions]] = ArgumentCaptor.forClass(classOf[Form[MucrOptions]])
-    verify(page).apply(captor.capture())(any(), any())
+    verify(page).apply(captor.capture(), any(), any())(any(), any())
     captor.getValue
   }
 
@@ -72,7 +75,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
       "display page with filled data" in {
         val mucrOptions = MucrOptions(CommonTestData.correctUcr)
 
-        val result = controller(AssociateUcrAnswers(Some(mucrOptions))).displayPage()(getRequest())
+        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions), None)).displayPage()(getRequest())
 
         status(result) mustBe OK
         theFormRendered.value.get.mucr mustBe CommonTestData.correctUcr
@@ -87,7 +90,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
         val result = controller(AssociateUcrAnswers()).save()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(page).apply(any())(any(), any())
+        verify(page).apply(any(), any(), any())(any(), any())
       }
 
       "form is incorrect during saving on second validation" in {
@@ -96,19 +99,32 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
         val result = controller(AssociateUcrAnswers()).save()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(page).apply(any())(any(), any())
+        verify(page).apply(any(), any(), any())(any(), any())
       }
     }
 
     "return 303 (SEE_OTHER)" when {
 
-      "form is correct" in {
+      "form is correct when ileQuery disabled" in {
+        when(appConfig.ileQueryEnabled).thenReturn(false)
+
         val correctForm = Json.toJson(MucrOptions(validMucr, "", Create))
 
         val result = controller(AssociateUcrAnswers()).save()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.AssociateUcrController.displayPage().url
+      }
+
+      "form is correct when ileQuery enabled" in {
+        when(appConfig.ileQueryEnabled).thenReturn(true)
+
+        val correctForm = Json.toJson(MucrOptions(validMucr, "", Create))
+
+        val result = controller(AssociateUcrAnswers()).save()(postRequest(correctForm))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.AssociateUcrSummaryController.displayPage().url
       }
     }
   }

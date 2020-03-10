@@ -88,13 +88,18 @@ class ChoiceController @Inject()(
       if (appConfig.ileQueryEnabled) controllers.consolidations.routes.ShutMucrSummaryController.displayPage()
       else consolidations.routes.ShutMucrController.displayPage()
 
+    def associateFirstPage =
+      if (appConfig.ileQueryEnabled)
+        consolidations.routes.ManageMucrController.displayPage()
+      else consolidations.routes.MucrOptionsController.displayPage()
+
     (choice match {
       case Arrival =>
         createOrUpdateCache(request.eori, ArrivalAnswers.fromUcr).map(_ => movementFirstPage)
       case Departure =>
         createOrUpdateCache(request.eori, DepartureAnswers.fromUcr).map(_ => movementFirstPage)
       case AssociateUCR =>
-        createOrUpdateCache(request.eori, AssociateUcrAnswers.fromUcr).map(_ => consolidations.routes.MucrOptionsController.displayPage())
+        createOrUpdateCache(request.eori, AssociateUcrAnswers.fromUcr).map(_ => associateFirstPage)
       case DisassociateUCR =>
         createOrUpdateCache(request.eori, DisassociateUcrAnswers.fromUcr).map(_ => dissociateFirstPage)
       case ShutMUCR =>

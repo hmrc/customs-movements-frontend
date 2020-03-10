@@ -34,7 +34,7 @@ class ChoicePageConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
 
     "return information about ile query" in {
 
-      config.isQueryEnabled mustBe false
+      config.ileQueryEnabled mustBe false
     }
   }
 
@@ -54,7 +54,7 @@ class ChoicePageConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
 
     "return information about ile query" in {
 
-      config.isQueryEnabled mustBe true
+      config.ileQueryEnabled mustBe true
     }
   }
 }

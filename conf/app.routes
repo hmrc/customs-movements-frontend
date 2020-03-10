@@ -27,6 +27,10 @@ POST        /choice                                controllers.ChoiceController.
 GET         /mucr-options                          controllers.consolidations.MucrOptionsController.displayPage()
 POST        /mucr-options                          controllers.consolidations.MucrOptionsController.save()
 
+#Manage MUCR
+GET         /manage-mucr                          controllers.consolidations.ManageMucrController.displayPage()
+POST        /manage-mucr                          controllers.consolidations.ManageMucrController.submit()
+
 #Associate UCR
 GET         /associate-ucr                        controllers.consolidations.AssociateUcrController.displayPage()
 POST        /associate-ucr                        controllers.consolidations.AssociateUcrController.submit()

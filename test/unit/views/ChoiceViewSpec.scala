@@ -55,7 +55,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
       if (enabled) controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
       else controllers.routes.StartController.displayStartPage
     )
-    when(pageConfig.isQueryEnabled).thenReturn(enabled)
+    when(pageConfig.ileQueryEnabled).thenReturn(enabled)
   }
 
   private val choicePage = new choice_page(govukLayout, govukButton, govukRadios, errorSummary, sectionHeader, formHelper, pageConfig)
@@ -159,6 +159,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
       view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.disassociateucr.label"))
       view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.shutmucr.label"))
       view.getElementsByAttributeValue("for", "choice-5").text() must be(messages("movement.choice.departure.label"))
+      view.getElementsByAttributeValue("for", "choice-6") must be(empty)
     }
 
     "display 6 radio buttons with labels when ileQuery is disabled" in {

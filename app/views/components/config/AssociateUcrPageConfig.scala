@@ -18,15 +18,13 @@ package views.components.config
 
 import config.AppConfig
 import javax.inject.Inject
-import models.UcrBlock
 import play.api.mvc.Call
 
-class ChoicePageConfig @Inject()(appConfig: AppConfig) extends BaseConfig(appConfig) {
-  def backLink(queryUcr: Option[UcrBlock]): Call =
+class AssociateUcrPageConfig @Inject()(appConfig: AppConfig) {
+
+  def backUrl: Call =
     if (appConfig.ileQueryEnabled)
-      queryUcr
-        .map(block => controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(block.ucr))
-        .getOrElse(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+      controllers.consolidations.routes.ManageMucrController.displayPage()
     else
-      controllers.routes.StartController.displayStartPage
+      controllers.consolidations.routes.MucrOptionsController.displayPage()
 }

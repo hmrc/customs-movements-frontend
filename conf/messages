@@ -61,7 +61,8 @@ site.remove = Remove
 site.change = Change
 site.change.hint.disassociate.ucr = Change {0} dissociation
 site.change.hint.associate.ucr = Change {0} to be added
-site.change.hint.associate.mucr = Change MUCR to be associated to
+site.change.hint.associate.mucr = Change MUCR
+site.change.hint.associate.ducr = Change DUCR
 site.change.hint.shut.mucr = Change MUCR
 site.add.item= Add item
 
@@ -264,7 +265,7 @@ shutMucr.summary.header = Shut master consignment
 shutMucr.summary.type = MUCR
 
 associate.heading = Add to MUCR {0}
-mucrOptions.heading = Add to MUCR
+mucrOptions.heading = Associate consignment {0}
 mucrOptions.title = Create or enter a Master Consignment Reference (MUCR) to associate with
 mucrOptions.create = Create a new Master Consignment Reference (MUCR)
 mucrOptions.add = Add to an existing Master Consignment Reference (MUCR)
@@ -273,6 +274,13 @@ mucrOptions.add.reference = Which MUCR do you want to add to?
 mucrOptions.createAdd.value.empty = Please select an option
 mucrOptions.reference.value.empty = Please enter a reference
 mucrOptions.reference.value.error = Please enter a valid reference
+
+manageMucr.title = What do you want to associate?
+manageMucr.heading = Associate consignment {0}
+manageMucr.input.error.empty = Please, choose what do you want to do
+manageMucr.input.error.incorrectValue = Please, choose valid option
+manageMucr.associate.this.consignment = Associate this consignment to another
+manageMucr.associate.other.consignment = Associate another consignment to this one
 
 ducr.error.empty = Please provide Declaration Unique Consignment Reference
 ducr.error.format = Declaration Unique Consignment Reference is in incorrect format
@@ -288,6 +296,9 @@ associate.ucr.mucr.label = Master Unique Consignment Reference
 associate.ucr.hint = You may want to keep a record of which consignments you have added to this MUCR.
 
 associate.ucr.summary.title = Is the information provided for this association request correct?
+associate.ucr.summary.consignmentReference = Consignment reference
+associate.ucr.summary.associate.with.mucr = Associate with MUCR
+associate.ucr.summary.associate.with.ducr = Associate with DUCR
 associate.ucr.summary.kind.mucr = MUCR
 associate.ucr.summary.kind.ducr = DUCR
 associate.ucr.summary.addConsignment = Add consignment

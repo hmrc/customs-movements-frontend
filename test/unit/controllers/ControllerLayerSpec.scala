@@ -20,7 +20,7 @@ import base.UnitSpec
 import config.AppConfig
 import controllers.actions._
 import controllers.exception.InvalidFeatureStateException
-import models.SignedInUser
+import models.{SignedInUser, UcrBlock}
 import models.cache.JourneyType.JourneyType
 import models.cache.{Answers, Cache}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
@@ -62,12 +62,12 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
       Future.successful(Results.Forbidden)
   }
 
-  case class ValidJourney(answers: Answers) extends JourneyRefiner(mock[CacheRepository]) {
+  case class ValidJourney(answers: Answers, queryUcr: Option[UcrBlock] = None) extends JourneyRefiner(mock[CacheRepository]) {
     override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
-      Future.successful(Right(JourneyRequest(Cache(request.eori, Some(answers), None), request)))
+      Future.successful(Right(JourneyRequest(Cache(request.eori, Some(answers), queryUcr), request)))
 
     override def apply(types: JourneyType*): ActionRefiner[AuthenticatedRequest, JourneyRequest] =
-      if (types.contains(answers.`type`)) ValidJourney(answers) else InValidJourney
+      if (types.contains(answers.`type`)) ValidJourney(answers, queryUcr) else InValidJourney
   }
 
   case object InValidJourney extends JourneyRefiner(mock[CacheRepository]) {

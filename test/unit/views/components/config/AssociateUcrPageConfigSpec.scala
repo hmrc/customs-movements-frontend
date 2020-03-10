@@ -16,17 +16,27 @@
 
 package views.components.config
 
-import config.AppConfig
-import javax.inject.Inject
+import base.UnitSpec
 import models.UcrBlock
-import play.api.mvc.Call
 
-class ChoicePageConfig @Inject()(appConfig: AppConfig) extends BaseConfig(appConfig) {
-  def backLink(queryUcr: Option[UcrBlock]): Call =
-    if (appConfig.ileQueryEnabled)
-      queryUcr
-        .map(block => controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(block.ucr))
-        .getOrElse(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
-    else
-      controllers.routes.StartController.displayStartPage
+class AssociateUcrPageConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
+
+  "AssociateUcrPageConfig when ileQuery disabled" should {
+
+    val config = new AssociateUcrPageConfig(ileQueryDisabled)
+
+    "return correct back url" in {
+      config.backUrl mustBe controllers.consolidations.routes.MucrOptionsController.displayPage()
+    }
+  }
+
+  "AssociateUcrPageConfig when ileQuery enabled" should {
+
+    val config = new AssociateUcrPageConfig(ileQueryEnabled)
+
+    "return correct back url" in {
+
+      config.backUrl mustBe controllers.consolidations.routes.ManageMucrController.displayPage()
+    }
+  }
 }

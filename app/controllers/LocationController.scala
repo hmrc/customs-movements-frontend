@@ -22,6 +22,7 @@ import forms.Location._
 import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
 import models.cache._
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -42,10 +43,8 @@ class LocationController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ARRIVE, JourneyType.DEPART)) { implicit request =>
-    val answers = request.answersAs[MovementAnswers]
-    val location = answers.location
-    val consignmentReference = answers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException)
-    Ok(locationPage(location.fold(form())(form().fill(_)), consignmentReference))
+    val location = request.answersAs[MovementAnswers].location
+    Ok(buildPage(location.fold(form())(form().fill(_))))
   }
 
   def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ARRIVE, JourneyType.DEPART)).async { implicit request =>
@@ -54,7 +53,7 @@ class LocationController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Location]) => Future.successful(BadRequest(locationPage(formWithErrors, consignmentReference))),
+        (formWithErrors: Form[Location]) => Future.successful(BadRequest(buildPage(formWithErrors))),
         validForm => {
           request.answers match {
             case arrivalAnswers: ArrivalAnswers =>
@@ -68,5 +67,10 @@ class LocationController @Inject()(
           }
         }
       )
+  }
+
+  private def buildPage(form: Form[Location])(implicit request: JourneyRequest[_]) = {
+    val answers = request.answersAs[MovementAnswers]
+    locationPage(form, answers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException), answers.specificDateTimeChoice)
   }
 }

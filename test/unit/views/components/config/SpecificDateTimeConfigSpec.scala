@@ -17,20 +17,20 @@
 package views.components.config
 import base.UnitSpec
 
-class MovementDetailsConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
+class SpecificDateTimeConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
 
-  "MovementDetailsConfig when ileQuery disabled" should {
+  "SpecificDateTimeConfig when ileQuery disabled" should {
 
-    val config = new MovementDetailsConfig(ileQueryDisabled)
+    val config = new SpecificDateTimeConfig(ileQueryDisabled)
 
     "return correct url" in {
       config.backUrl must be(controllers.routes.ConsignmentReferencesController.displayPage())
     }
   }
 
-  "MovementDetailsConfig when ileQuery enabled" should {
+  "SpecificDateTimeConfig when ileQuery enabled" should {
 
-    val config = new MovementDetailsConfig(ileQueryEnabled)
+    val config = new SpecificDateTimeConfig(ileQueryEnabled)
 
     "return correct url when query ucr present" in {
       config.backUrl must be(controllers.routes.ChoiceController.displayChoiceForm())

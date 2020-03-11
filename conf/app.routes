@@ -54,12 +54,16 @@ POST        /dissociate-ucr-summary              controllers.consolidations.Disa
 GET         /dissociate-ucr-confirmation         controllers.consolidations.DisassociateUcrConfirmationController.displayPage()
 
 # Enter DUCR page
-GET         /consignment-references                controllers.ConsignmentReferencesController.displayPage()
-POST        /consignment-references                controllers.ConsignmentReferencesController.saveConsignmentReferences()
+GET         /consignment-references               controllers.ConsignmentReferencesController.displayPage()
+POST        /consignment-references               controllers.ConsignmentReferencesController.saveConsignmentReferences()
 
 # Movement details page
-GET         /movement-details                      controllers.MovementDetailsController.displayPage()
-POST        /movement-details                      controllers.MovementDetailsController.saveMovementDetails()
+GET         /movement-details                     controllers.MovementDetailsController.displayPage()
+POST        /movement-details                     controllers.MovementDetailsController.saveMovementDetails()
+
+# Specific date-time page
+GET         /specific-date-and-time               controllers.SpecificDateTimeController.displayPage()
+POST        /specific-date-and-time               controllers.SpecificDateTimeController.submit()
 
 # Goods location page
 GET         /location                              controllers.LocationController.displayPage()

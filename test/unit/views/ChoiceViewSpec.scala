@@ -172,7 +172,10 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
       view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.disassociateucr.label"))
       view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.shutmucr.label"))
       view.getElementsByAttributeValue("for", "choice-5").text() must be(messages("movement.choice.departure.label"))
-      view.getElementsByAttributeValue("for", "choice-6").text() must be(messages("movement.choice.submissions.label"))
+
+      if (!realAppConfig.ileQueryEnabled) {
+        view.getElementsByAttributeValue("for", "choice-6").text() must be(messages("movement.choice.submissions.label"))
+      }
     }
 
     "display 4 unchecked radio buttons" in {

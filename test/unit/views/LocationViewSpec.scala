@@ -30,7 +30,7 @@ class LocationViewSpec extends ViewSpec with Injector {
   private val locationPage = instanceOf[location]
   private implicit val request = journeyRequest(ArrivalAnswers())
 
-  private val view: Html = locationPage(form, "some-reference")
+  private val view: Html = locationPage(form, "some-reference", None)
 
   "Location View on empty page" should {
 
@@ -46,7 +46,7 @@ class LocationViewSpec extends ViewSpec with Injector {
 
     "have the correct section header for the Departure journey" in {
 
-      val departureView = locationPage(form, "some-reference")(journeyRequest(DepartureAnswers()), messages)
+      val departureView = locationPage(form, "some-reference", None)(journeyRequest(DepartureAnswers()), messages)
       departureView.getElementById("section-header") must containMessage("movement.sectionHeading", "Depart", "some-reference")
     }
 

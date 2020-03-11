@@ -21,7 +21,7 @@ import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
 import controllers.exception.InvalidFeatureStateException
 import forms.common.{Date, Time}
-import forms.{ArrivalDetails, ConsignmentReferences, Location}
+import forms.{ArrivalDetails, ConsignmentReferences, Location, SpecificDateTimeChoice}
 import models.cache.ArrivalAnswers
 import play.api.test.Helpers._
 
@@ -61,6 +61,64 @@ class ArrivalSpec extends IntegrationSpec {
         // Then
         intercept[InvalidFeatureStateException] {
           await(response)
+        }
+      }
+    }
+  }
+
+  "Specific Date/Time Page" when {
+    "GET" should {
+      "return 200" in {
+        // Given
+        givenAuthSuccess("eori")
+        givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+
+        // When
+        val response = get(controllers.routes.SpecificDateTimeController.displayPage())
+
+        // Then
+        status(response) mustBe OK
+      }
+    }
+
+    "POST" should {
+      "continue" when {
+        "user elects to enter date time" in {
+          // Given
+          givenAuthSuccess("eori")
+          givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+
+          // When
+          val response = post(controllers.routes.SpecificDateTimeController.submit(), "choice" -> SpecificDateTimeChoice.UserDateTime)
+
+          // Then
+          status(response) mustBe SEE_OTHER
+          redirectLocation(response) mustBe Some(controllers.routes.MovementDetailsController.displayPage().url)
+          theAnswersFor("eori") mustBe Some(
+            ArrivalAnswers(
+              consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
+              specificDateTimeChoice = Some(SpecificDateTimeChoice(SpecificDateTimeChoice.UserDateTime))
+            )
+          )
+        }
+        "user elects to current date time" in {
+          // Given
+          givenAuthSuccess("eori")
+          givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+
+          // When
+          val response = post(controllers.routes.SpecificDateTimeController.submit(), "choice" -> SpecificDateTimeChoice.CurrentDateTime)
+
+          // Then
+          status(response) mustBe SEE_OTHER
+          redirectLocation(response) mustBe Some(controllers.routes.LocationController.displayPage().url)
+          theAnswersFor("eori") mustBe Some(
+            ArrivalAnswers(
+              consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
+              arrivalDetails = Some(ArrivalDetails(dateTimeProvider.dateNow, dateTimeProvider.timeNow)),
+              specificDateTimeChoice = Some(SpecificDateTimeChoice(SpecificDateTimeChoice.CurrentDateTime))
+            )
+          )
         }
       }
     }

@@ -77,7 +77,7 @@ class ChoiceController @Inject()(
 
   private def proceed(choice: Choice)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     def movementFirstPage =
-      if (appConfig.ileQueryEnabled) controllers.routes.MovementDetailsController.displayPage()
+      if (appConfig.ileQueryEnabled) controllers.routes.SpecificDateTimeController.displayPage()
       else routes.ConsignmentReferencesController.displayPage()
 
     def dissociateFirstPage =

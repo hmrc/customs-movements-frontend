@@ -25,9 +25,26 @@ import uk.gov.hmrc.play.json.Union
 case class ArrivalAnswers(
   override val consignmentReferences: Option[ConsignmentReferences] = None,
   arrivalDetails: Option[ArrivalDetails] = None,
-  override val location: Option[Location] = None
+  override val location: Option[Location] = None,
+  override val specificDateTimeChoice: Option[SpecificDateTimeChoice] = None
 ) extends MovementAnswers {
   override val `type`: JourneyType.Value = JourneyType.ARRIVE
+}
+
+object ArrivalAnswers {
+  implicit val format: Format[ArrivalAnswers] = Json.format[ArrivalAnswers]
+
+  def fromUcr(ucrBlock: Option[UcrBlock]): ArrivalAnswers =
+    new ArrivalAnswers(ucrBlock.map(ConsignmentReferences.apply), None, None)
+}
+case class DepartureAnswers(
+  override val consignmentReferences: Option[ConsignmentReferences] = None,
+  departureDetails: Option[DepartureDetails] = None,
+  override val location: Option[Location] = None,
+  override val specificDateTimeChoice: Option[SpecificDateTimeChoice] = None,
+  transport: Option[Transport] = None
+) extends MovementAnswers {
+  override val `type`: JourneyType.Value = JourneyType.DEPART
 }
 
 object DepartureAnswers {
@@ -37,25 +54,10 @@ object DepartureAnswers {
     new DepartureAnswers(ucrBlock.map(ConsignmentReferences.apply), None, None, None)
 }
 
-case class DepartureAnswers(
-  override val consignmentReferences: Option[ConsignmentReferences] = None,
-  departureDetails: Option[DepartureDetails] = None,
-  override val location: Option[Location] = None,
-  transport: Option[Transport] = None
-) extends MovementAnswers {
-  override val `type`: JourneyType.Value = JourneyType.DEPART
-}
-
-object ArrivalAnswers {
-  implicit val format: Format[ArrivalAnswers] = Json.format[ArrivalAnswers]
-
-  def fromUcr(ucrBlock: Option[UcrBlock]): ArrivalAnswers =
-    new ArrivalAnswers(ucrBlock.map(ConsignmentReferences.apply), None, None)
-}
-
 trait MovementAnswers extends Answers {
   val consignmentReferences: Option[ConsignmentReferences]
   val location: Option[Location]
+  val specificDateTimeChoice: Option[SpecificDateTimeChoice]
 }
 
 case class AssociateUcrAnswers(

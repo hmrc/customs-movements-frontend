@@ -163,6 +163,14 @@ consignmentReferences.reference.ducrValue.empty = Enter a Declaration Unique Con
 consignmentReferences.reference.mucrValue.error = Master Unique Consignment Reference is incorrect
 consignmentReferences.reference.ducrValue.error = Declaration Unique Consignment Reference is incorrect
 
+specific.datetime.heading = Do you need to add a specific date and time for this request?
+specific.datetime.arrive.heading = Arrive consignment {0}
+specific.datetime.depart.heading = Depart consignment {0}
+specific.datetime.userDateTime = Yes
+specific.datetime.currentDateTime = No, use the current date and time
+specific.datetime.input.error.empty = Please, choose what do you want to do
+specific.datetime.input.error.incorrectValue = Please, choose valid option
+
 arrivalDetails.title = Arrival date and time
 arrivalDetails.sectionHeading = Arrive consignment {0}
 arrivalDetails.header = Enter date and time of arrival

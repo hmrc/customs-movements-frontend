@@ -21,6 +21,7 @@
 @import models.requests.JourneyRequest
 @import components.gds.{errorSummary, exportsInputText, gds_main_template, sectionHeader}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import forms.SpecificDateTimeChoice
 
 @this(
   govukLayout: gds_main_template,
@@ -32,11 +33,16 @@
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(form: Form[Location], consignmentReference: String)(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[Location], consignmentReference: String, specificDateTimeChoice: Option[SpecificDateTimeChoice])(implicit request: JourneyRequest[_], messages: Messages)
+
+@backCall = @{specificDateTimeChoice.map(_.choice) match {
+    case Some(SpecificDateTimeChoice.CurrentDateTime) => controllers.routes.SpecificDateTimeController.displayPage
+    case _ => controllers.routes.MovementDetailsController.displayPage
+}}
 
 @govukLayout(
     title = Title("location.question"),
-    backButton = Some(BackButton(messages("site.back"), controllers.routes.MovementDetailsController.displayPage))) {
+    backButton = Some(BackButton(messages("site.back"), backCall))) {
     @formHelper(action = controllers.routes.LocationController.saveLocation(), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)

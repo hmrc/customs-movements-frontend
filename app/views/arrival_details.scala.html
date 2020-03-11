@@ -19,7 +19,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 @import views.components.BackButton
-@import views.components.config.MovementDetailsConfig
+@import views.components.config.SpecificDateTimeConfig
 @import views.html.components.gds._
 
 @this(
@@ -30,7 +30,6 @@
   sectionHeader: sectionHeader,
   inputDate: inputDate,
   inputTime: inputTime,
-  pageConfig: MovementDetailsConfig,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
@@ -38,7 +37,7 @@
 
 @govukLayout(
   title = Title("arrivalDetails.header"),
-  backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl))) {
+  backButton = Some(BackButton(messages("site.back"), controllers.routes.SpecificDateTimeController.displayPage()))) {
 
   @formHelper(action = routes.MovementDetailsController.saveMovementDetails(), 'autoComplete -> "off") {
     @errorSummary(form.errors)

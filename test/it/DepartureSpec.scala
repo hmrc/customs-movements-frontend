@@ -66,6 +66,64 @@ class DepartureSpec extends IntegrationSpec {
     }
   }
 
+  "Specific Date/Time Page" when {
+    "GET" should {
+      "return 200" in {
+        // Given
+        givenAuthSuccess("eori")
+        givenCacheFor("eori", DepartureAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+
+        // When
+        val response = get(controllers.routes.SpecificDateTimeController.displayPage())
+
+        // Then
+        status(response) mustBe OK
+      }
+    }
+
+    "POST" should {
+      "continue" when {
+        "user elects to enter date time" in {
+          // Given
+          givenAuthSuccess("eori")
+          givenCacheFor("eori", DepartureAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+
+          // When
+          val response = post(controllers.routes.SpecificDateTimeController.submit(), "choice" -> SpecificDateTimeChoice.UserDateTime)
+
+          // Then
+          status(response) mustBe SEE_OTHER
+          redirectLocation(response) mustBe Some(controllers.routes.MovementDetailsController.displayPage().url)
+          theAnswersFor("eori") mustBe Some(
+            DepartureAnswers(
+              consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
+              specificDateTimeChoice = Some(SpecificDateTimeChoice(SpecificDateTimeChoice.UserDateTime))
+            )
+          )
+        }
+        "user elects to current date time" in {
+          // Given
+          givenAuthSuccess("eori")
+          givenCacheFor("eori", DepartureAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+
+          // When
+          val response = post(controllers.routes.SpecificDateTimeController.submit(), "choice" -> SpecificDateTimeChoice.CurrentDateTime)
+
+          // Then
+          status(response) mustBe SEE_OTHER
+          redirectLocation(response) mustBe Some(controllers.routes.LocationController.displayPage().url)
+          theAnswersFor("eori") mustBe Some(
+            DepartureAnswers(
+              consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
+              departureDetails = Some(DepartureDetails(dateTimeProvider.dateNow, dateTimeProvider.timeNow)),
+              specificDateTimeChoice = Some(SpecificDateTimeChoice(SpecificDateTimeChoice.CurrentDateTime))
+            )
+          )
+        }
+      }
+    }
+  }
+
   "Movement Details Page" when {
     "GET" should {
       "return 200" in {

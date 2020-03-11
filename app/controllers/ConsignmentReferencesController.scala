@@ -57,11 +57,11 @@ class ConsignmentReferencesController @Inject()(
             request.answers match {
               case arrivalAnswers: ArrivalAnswers =>
                 cacheRepository.upsert(request.cache.update(arrivalAnswers.copy(consignmentReferences = Some(validForm)))).map { _ =>
-                  Redirect(controllers.routes.MovementDetailsController.displayPage())
+                  Redirect(controllers.routes.SpecificDateTimeController.displayPage())
                 }
               case departureAnswers: DepartureAnswers =>
                 cacheRepository.upsert(request.cache.update(departureAnswers.copy(consignmentReferences = Some(validForm)))).map { _ =>
-                  Redirect(controllers.routes.MovementDetailsController.displayPage())
+                  Redirect(controllers.routes.SpecificDateTimeController.displayPage())
                 }
             }
           }

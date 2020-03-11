@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
+import java.time.{Clock, LocalDateTime, ZoneOffset}
+
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder
 import connectors.{AuditWiremockTestServer, AuthWiremockTestServer, MovementsBackendWiremockTestServer}
+import models.DateTimeProvider
 import models.cache.{Answers, Cache}
 import org.scalatest.concurrent.Eventually
 import org.scalatest.{BeforeAndAfterEach, MustMatchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Request, Result}
@@ -47,6 +51,8 @@ abstract class IntegrationSpec
   def ileQueryFeatureConfiguration: Configuration =
     Configuration.from(Map("microservice.services.features.ileQuery" -> "enabled"))
 
+  val dateTimeProvider = new DateTimeProvider(Clock.fixed(LocalDateTime.now().toInstant(ZoneOffset.UTC), ZoneOffset.UTC))
+
   override lazy val port = 14681
   override def fakeApplication(): Application =
     new GuiceApplicationBuilder()
@@ -56,6 +62,7 @@ abstract class IntegrationSpec
       .configure(mongoConfiguration)
       .configure(auditConfiguration)
       .configure(ileQueryFeatureConfiguration)
+      .overrides(bind[DateTimeProvider].toInstance(dateTimeProvider))
       .build()
 
   override def beforeEach(): Unit = {

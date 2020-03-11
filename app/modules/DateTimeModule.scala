@@ -16,7 +16,7 @@
 
 package modules
 
-import java.time.ZoneId
+import java.time.{Clock, ZoneId}
 import java.time.format.DateTimeFormatter
 
 import com.google.inject.AbstractModule
@@ -28,6 +28,7 @@ class DateTimeModule extends AbstractModule {
   override def configure(): Unit = {
     bind(classOf[ZoneId]).toInstance(timezone)
     bind(classOf[DateTimeFormatter]).toProvider(classOf[DateTimeFormatterProvider])
+    bind(classOf[Clock]).toInstance(Clock.system(timezone))
   }
 }
 

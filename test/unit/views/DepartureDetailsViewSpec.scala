@@ -85,7 +85,7 @@ class DepartureDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
         val backButton = createView(movementDetails.departureForm()).getBackButton
 
         backButton mustBe defined
-        backButton.get must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+        backButton.get must haveHref(controllers.routes.SpecificDateTimeController.displayPage())
       }
 
       "have 'Back' button when ileQuery disabled" in {
@@ -94,7 +94,7 @@ class DepartureDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
         val backButton = createView(movementDetails.departureForm()).getBackButton
 
         backButton mustBe defined
-        backButton.get must haveHref(controllers.routes.ConsignmentReferencesController.displayPage())
+        backButton.get must haveHref(controllers.routes.SpecificDateTimeController.displayPage())
       }
 
       "have section header" in {

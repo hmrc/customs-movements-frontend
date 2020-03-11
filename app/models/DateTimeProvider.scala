@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package views.components.config
+package models
 
-import config.AppConfig
+import java.time.temporal.ChronoUnit
+import java.time.{Clock, LocalDate, LocalTime}
+
+import forms.common.{Date, Time}
 import javax.inject.Inject
-import play.api.mvc.Call
 
-class MovementDetailsConfig @Inject()(appConfig: AppConfig) {
-
-  def backUrl: Call =
-    if (appConfig.ileQueryEnabled)
-      controllers.routes.ChoiceController.displayChoiceForm()
-    else
-      controllers.routes.ConsignmentReferencesController.displayPage()
+class DateTimeProvider @Inject()(clock: Clock) {
+  def dateNow: Date = Date(LocalDate.now(clock))
+  def timeNow: Time = Time(LocalTime.now(clock).truncatedTo(ChronoUnit.MINUTES))
 }

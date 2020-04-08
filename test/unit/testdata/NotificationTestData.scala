@@ -16,17 +16,17 @@
 
 package testdata
 
-import java.time.format.DateTimeFormatter
-import java.time.{Instant, ZoneId, ZonedDateTime}
+import java.time.{Instant, LocalDateTime}
 
 import models.UcrBlock
 import models.notifications.{Entry, Notification, ResponseType}
+import modules.DateTimeModule
 import testdata.CommonTestData._
 
 object NotificationTestData {
 
-  private val testTimestampString = "2019-10-23T12:34:18Z"
-  val testTimestamp = ZonedDateTime.parse(testTimestampString).toInstant
+  private val testTimestampString = "2019-10-23T12:34:18"
+  val testTimestamp: Instant = LocalDateTime.parse(testTimestampString).atZone(DateTimeModule.timezone).toInstant
 
   def exampleNotificationFrontendModel(
     conversationId: String = conversationId,

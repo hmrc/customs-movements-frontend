@@ -16,20 +16,21 @@
 
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
+import java.time.{LocalDate, LocalDateTime, LocalTime}
 
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
 import controllers.exception.InvalidFeatureStateException
 import forms.common.{Date, Time}
 import forms.{ArrivalDetails, ConsignmentReferences, Location, SpecificDateTimeChoice}
 import models.cache.ArrivalAnswers
+import modules.DateTimeModule
 import play.api.test.Helpers._
 
 class ArrivalSpec extends IntegrationSpec {
 
   private val date = LocalDate.now()
   private val time = LocalTime.now().truncatedTo(ChronoUnit.MINUTES)
-  private val datetime = LocalDateTime.of(date, time).toInstant(ZoneOffset.UTC)
+  private val datetime = LocalDateTime.of(date, time).atZone(DateTimeModule.timezone).toInstant
 
   "Consignment References Page" when {
     "GET" should {

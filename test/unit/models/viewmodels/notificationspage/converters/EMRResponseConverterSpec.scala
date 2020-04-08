@@ -16,8 +16,6 @@
 
 package models.viewmodels.notificationspage.converters
 
-import java.time.ZonedDateTime
-
 import base.BaseSpec
 import com.google.inject.{AbstractModule, Guice}
 import models.UcrBlock
@@ -33,7 +31,7 @@ import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import testdata.CommonTestData.correctUcr
-import testdata.NotificationTestData.exampleNotificationFrontendModel
+import testdata.NotificationTestData.{exampleNotificationFrontendModel, testTimestamp}
 import utils.DateTimeTestModule
 
 class EMRResponseConverterSpec extends BaseSpec with MockitoSugar with BeforeAndAfterEach {
@@ -171,9 +169,6 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar with BeforeAnd
 }
 
 object EMRResponseConverterSpec {
-
-  private val testTimestampString = "2019-10-23T12:34+00:00"
-  val testTimestamp = ZonedDateTime.parse(testTimestampString).toInstant
 
   val crcKeyFromDecoder = CRCCode.Success
   val roeKeyFromDecoder = ROECode.DocumentaryControl

@@ -16,7 +16,6 @@
 
 package controllers.consolidations
 
-import config.AppConfig
 import controllers.ControllerLayerSpec
 import controllers.actions.NonIleQueryAction
 import controllers.exception.InvalidFeatureStateException
@@ -44,8 +43,8 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
   private def controller(answers: DisassociateUcrAnswers, nonIleQueryAction: NonIleQueryAction) =
     new DisassociateUcrController(SuccessfulAuth(), ValidJourney(answers), nonIleQueryAction, stubMessagesControllerComponents(), cache, page)
 
-  private val correctForm = Json.toJson(DisassociateUcr(DisassociateKind.Ducr, Some(validDucr), Some("")))
-  private val incorrectForm = Json.toJson(DisassociateUcr(DisassociateKind.Ducr, Some("abc"), None))
+  private val correctForm = Json.toJson(DisassociateUcr(UcrType.Ducr, Some(validDucr), Some("")))
+  private val incorrectForm = Json.toJson(DisassociateUcr(UcrType.Ducr, Some("abc"), None))
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -73,7 +72,7 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
       }
 
       "display page is invoked with data" in {
-        val ucr = DisassociateUcr(DisassociateKind.Ducr, Some("ducr"), None)
+        val ucr = DisassociateUcr(UcrType.Ducr, Some("ducr"), None)
         val result = controller(DisassociateUcrAnswers(Some(ucr)), ValidForIleQuery).displayPage()(getRequest())
 
         status(result) mustBe OK

@@ -25,12 +25,12 @@ class AssociateUcrSpec extends BaseSpec {
 
     "apply UcrBlock for Mucr" in {
 
-      AssociateUcr.apply(UcrBlock("ucr", UcrType.Mucr)) mustBe AssociateUcr(AssociateKind.Mucr, "ucr")
+      AssociateUcr.apply(UcrBlock("ucr", UcrType.Mucr)) mustBe AssociateUcr(UcrType.Mucr, "ucr")
     }
 
     "apply UcrBlock for Ducr" in {
 
-      AssociateUcr.apply(UcrBlock("ucr", UcrType.Ducr)) mustBe AssociateUcr(AssociateKind.Ducr, "ucr")
+      AssociateUcr.apply(UcrBlock("ucr", UcrType.Ducr)) mustBe AssociateUcr(UcrType.Ducr, "ucr")
     }
   }
 

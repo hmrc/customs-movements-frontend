@@ -21,5 +21,5 @@ import java.time.ZoneId
 import modules.DateTimeModule
 
 class DateTimeTestModule extends DateTimeModule {
-  override def timezone: ZoneId = ZoneId.of("UTC")
+  lazy val timezone: ZoneId = DateTimeModule.timezone
 }

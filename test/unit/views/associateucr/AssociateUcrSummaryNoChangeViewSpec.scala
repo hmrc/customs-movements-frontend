@@ -17,7 +17,7 @@
 package views.associateucr
 
 import base.Injector
-import forms.{AssociateKind, ManageMucrChoice}
+import forms.{ManageMucrChoice, UcrType}
 import models.cache.AssociateUcrAnswers
 import org.jsoup.nodes.Element
 import play.api.mvc.Call
@@ -33,23 +33,18 @@ class AssociateUcrSummaryNoChangeViewSpec extends ViewSpec with Injector {
 
   private val page = instanceOf[associate_ucr_summary_no_change]
 
-  private def createView(
-    consignmentRef: String,
-    associateWith: String,
-    associateKind: AssociateKind,
-    manageMucrChoice: Option[ManageMucrChoice]
-  ): Html =
+  private def createView(consignmentRef: String, associateWith: String, associateKind: UcrType, manageMucrChoice: Option[ManageMucrChoice]): Html =
     page(consignmentRef, associateWith, associateKind, manageMucrChoice)(request, messages)
 
   "AssociateUcrSummaryNoChange View" should {
 
     "render title" in {
-      val view = createView("DUCR", "MUCR", AssociateKind.Mucr, None)
+      val view = createView("DUCR", "MUCR", UcrType.Mucr, None)
       view.getTitle must containMessage("associate.ucr.summary.title")
     }
 
     "display 'Confirm and submit' button on page" in {
-      val view = createView("DUCR", "MUCR", AssociateKind.Mucr, None)
+      val view = createView("DUCR", "MUCR", UcrType.Mucr, None)
       view.getElementsByClass("govuk-button").first() must containMessage("site.confirmAndSubmit")
     }
 
@@ -64,17 +59,17 @@ class AssociateUcrSummaryNoChangeViewSpec extends ViewSpec with Injector {
       }
 
       "query Ducr" in {
-        val view = createView("DUCR", "MUCR", AssociateKind.Mucr, None)
+        val view = createView("DUCR", "MUCR", UcrType.Mucr, None)
         validateBackButton(view.getBackButton, controllers.consolidations.routes.MucrOptionsController.displayPage())
       }
 
       "query Mucr and Associate this consignment to another" in {
-        val view = createView("MUCR", "MUCR", AssociateKind.Mucr, Some(ManageMucrChoice(ManageMucrChoice.AssociateThisMucr)))
+        val view = createView("MUCR", "MUCR", UcrType.Mucr, Some(ManageMucrChoice(ManageMucrChoice.AssociateThisMucr)))
         validateBackButton(view.getBackButton, controllers.consolidations.routes.MucrOptionsController.displayPage())
       }
 
       "query Mucr and Associate another consignment to this one" in {
-        val view = createView("MUCR", "MUCR", AssociateKind.Mucr, Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr)))
+        val view = createView("MUCR", "MUCR", UcrType.Mucr, Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr)))
         validateBackButton(view.getBackButton, controllers.consolidations.routes.AssociateUcrController.displayPage())
       }
     }
@@ -88,17 +83,17 @@ class AssociateUcrSummaryNoChangeViewSpec extends ViewSpec with Injector {
       }
 
       "query Ducr" in {
-        val view = createView("DUCR", "MUCR", AssociateKind.Mucr, None)
+        val view = createView("DUCR", "MUCR", UcrType.Mucr, None)
         validateChangeLink(view, controllers.consolidations.routes.MucrOptionsController.displayPage())
       }
 
       "query Mucr and Associate this consignment to another" in {
-        val view = createView("MUCR", "MUCR", AssociateKind.Mucr, Some(ManageMucrChoice(ManageMucrChoice.AssociateThisMucr)))
+        val view = createView("MUCR", "MUCR", UcrType.Mucr, Some(ManageMucrChoice(ManageMucrChoice.AssociateThisMucr)))
         validateChangeLink(view, controllers.consolidations.routes.MucrOptionsController.displayPage())
       }
 
       "query Mucr and Associate another consignment to this one" in {
-        val view = createView("MUCR", "MUCR", AssociateKind.Mucr, Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr)))
+        val view = createView("MUCR", "MUCR", UcrType.Mucr, Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr)))
         validateChangeLink(view, controllers.consolidations.routes.AssociateUcrController.displayPage())
       }
     }

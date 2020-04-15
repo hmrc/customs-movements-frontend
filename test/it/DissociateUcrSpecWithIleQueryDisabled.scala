@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import forms.{DisassociateKind, DisassociateUcr}
+import forms.{DisassociateUcr, UcrType}
 import models.cache.DisassociateUcrAnswers
 import play.api.Configuration
 import play.api.test.Helpers._
@@ -52,7 +52,7 @@ class DissociateUcrSpecWithIleQueryDisabled extends IntegrationSpec {
         status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage().url)
         theAnswersFor("eori") mustBe Some(
-          DisassociateUcrAnswers(ucr = Some(DisassociateUcr(kind = DisassociateKind.Mucr, mucr = Some("GB/321-54321"), ducr = None)))
+          DisassociateUcrAnswers(ucr = Some(DisassociateUcr(kind = UcrType.Mucr, mucr = Some("GB/321-54321"), ducr = None)))
         )
       }
     }

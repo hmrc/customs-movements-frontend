@@ -25,12 +25,12 @@ class DisassociateUcrSpec extends BaseSpec {
 
     "apply UcrBlock for Mucr" in {
 
-      DisassociateUcr.apply(UcrBlock("ucr", UcrType.Mucr)) mustBe DisassociateUcr(DisassociateKind.Mucr, None, Some("ucr"))
+      DisassociateUcr.apply(UcrBlock("ucr", UcrType.Mucr)) mustBe DisassociateUcr(UcrType.Mucr, None, Some("ucr"))
     }
 
     "apply UcrBlock for Ducr" in {
 
-      DisassociateUcr.apply(UcrBlock("ucr", UcrType.Ducr)) mustBe DisassociateUcr(DisassociateKind.Ducr, Some("ucr"), None)
+      DisassociateUcr.apply(UcrBlock("ucr", UcrType.Ducr)) mustBe DisassociateUcr(UcrType.Ducr, Some("ucr"), None)
     }
   }
 

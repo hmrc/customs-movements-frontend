@@ -19,7 +19,7 @@ package controllers.consolidations
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.storage.FlashKeys
-import forms.AssociateKind
+import forms.UcrType
 import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
 import models.cache.{AssociateUcrAnswers, JourneyType}
@@ -52,7 +52,7 @@ class AssociateUcrSummaryController @Inject()(
       if (answers.isAssociateAnotherMucr)
         Ok(associateUcrSummaryNoChangePage(mucrOptions.mucr, associateUcr.ucr, associateUcr.kind, answers.manageMucrChoice))
       else
-        Ok(associateUcrSummaryNoChangePage(associateUcr.ucr, mucrOptions.mucr, AssociateKind.Mucr, answers.manageMucrChoice))
+        Ok(associateUcrSummaryNoChangePage(associateUcr.ucr, mucrOptions.mucr, UcrType.Mucr, answers.manageMucrChoice))
     } else
       Ok(associateUcrSummaryPage(associateUcr, mucrOptions.mucr))
 

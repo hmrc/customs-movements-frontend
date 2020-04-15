@@ -19,7 +19,7 @@ package controllers.consolidations
 import config.AppConfig
 import controllers.ControllerLayerSpec
 import controllers.storage.FlashKeys
-import forms.AssociateKind._
+import forms.UcrType._
 import forms._
 import models.ReturnToStartException
 import models.cache.{AssociateUcrAnswers, JourneyType}
@@ -76,10 +76,10 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
     (associateDucrCaptor.getValue, mucrOptionsCaptor.getValue)
   }
 
-  private def theResponseDataIleQueryEnabled: (String, String, AssociateKind) = {
+  private def theResponseDataIleQueryEnabled: (String, String, UcrType) = {
     val consignmentRefCaptor = ArgumentCaptor.forClass(classOf[String])
     val associateWithCaptor = ArgumentCaptor.forClass(classOf[String])
-    val associateKindCaptor = ArgumentCaptor.forClass(classOf[AssociateKind])
+    val associateKindCaptor = ArgumentCaptor.forClass(classOf[UcrType])
     verify(mockAssociateDucrSummaryNoChangePage).apply(
       consignmentRefCaptor.capture(),
       associateWithCaptor.capture(),
@@ -119,7 +119,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
         val (consignmentRef, associateWith, associateKind) = theResponseDataIleQueryEnabled
         consignmentRef mustBe "Queried DUCR"
         associateWith mustBe "MUCR"
-        associateKind mustBe AssociateKind.Mucr
+        associateKind mustBe UcrType.Mucr
       }
 
       "display page when queried mucr and 'Associate this consignment to another'" in {
@@ -138,7 +138,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
         val (consignmentRef, associateWith, associateKind) = theResponseDataIleQueryEnabled
         consignmentRef mustBe "Queried MUCR"
         associateWith mustBe "MUCR"
-        associateKind mustBe AssociateKind.Mucr
+        associateKind mustBe UcrType.Mucr
       }
 
       "display page when queried mucr and 'Associate another consignment to this one'" in {
@@ -157,7 +157,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
         val (consignmentRef, associateWith, associateKind) = theResponseDataIleQueryEnabled
         consignmentRef mustBe "Queried MUCR"
         associateWith mustBe "DUCR"
-        associateKind mustBe AssociateKind.Ducr
+        associateKind mustBe UcrType.Ducr
       }
     }
 

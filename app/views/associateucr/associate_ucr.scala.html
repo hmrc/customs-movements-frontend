@@ -15,7 +15,7 @@
  *@
 
 @import components.gds.{errorSummary, exportsInputText, gds_main_template, sectionHeader}
-@import forms.{AssociateKind, AssociateUcr, MucrOptions}
+@import forms.{UcrType, AssociateUcr, MucrOptions}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 @import views.components.BackButton
@@ -56,15 +56,15 @@
             )),
             items = Seq(
                 RadioItem(
-                    value = Some(AssociateKind.Ducr.formValue),
+                    value = Some(UcrType.Ducr.formValue),
                     content = Text(messages("associate.ucr.ducr")),
-                    checked = form("kind").value.contains(AssociateKind.Ducr.formValue),
+                    checked = form("kind").value.contains(UcrType.Ducr.formValue),
                     conditionalHtml = Some(exportsInputText(form("ducr"), "site.inputText.ducr.label"))
                 ),
                 RadioItem(
-                    value = Some(AssociateKind.Mucr.formValue),
+                    value = Some(UcrType.Mucr.formValue),
                     content = Text(messages("associate.ucr.mucr")),
-                    checked = form("kind").value.contains(AssociateKind.Mucr.formValue),
+                    checked = form("kind").value.contains(UcrType.Mucr.formValue),
                     conditionalHtml = Some(exportsInputText(form("mucr"), "site.inputText.mucr.label"))
                 )
             ),

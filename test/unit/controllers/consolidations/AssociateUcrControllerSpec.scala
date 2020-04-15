@@ -17,7 +17,7 @@
 package controllers.consolidations
 
 import controllers.ControllerLayerSpec
-import forms.AssociateKind._
+import forms.UcrType._
 import forms.{AssociateUcr, MucrOptions}
 import models.ReturnToStartException
 import models.cache.AssociateUcrAnswers

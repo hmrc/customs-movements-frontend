@@ -16,9 +16,32 @@
 
 package forms
 
-sealed abstract class UcrType(val codeValue: String)
+import play.api.data.FormError
+import play.api.data.format.Formatter
+import play.api.libs.json._
+
+sealed abstract class UcrType(val formValue: String, val codeValue: String)
 
 object UcrType {
-  case object Ducr extends UcrType("D")
-  case object Mucr extends UcrType("M")
+  case object Mucr extends UcrType("mucr", "M")
+  case object Ducr extends UcrType("ducr", "D")
+
+  private val lookup = PartialFunction[String, UcrType] {
+    case Mucr.formValue => Mucr
+    case Ducr.formValue => Ducr
+  }
+
+  val formatter: Formatter[UcrType] = new Formatter[UcrType] {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], UcrType] = {
+      data.get(key).map { typ =>
+        lookup.andThen(Right.apply).applyOrElse(typ, (_: String) => Left(Seq(FormError(key, "error.unknown"))))
+      }
+    }.getOrElse(Left(Seq(FormError(key, "error.required"))))
+
+    override def unbind(key: String, value: UcrType): Map[String, String] = Map(key -> value.formValue)
+  }
+
+  // TODO: Before JSON formats can be updated to store the whole object, there needs to be an update in BE and DB migration performed
+  implicit val format =
+    Format[UcrType](Reads.StringReads.collect(JsonValidationError("error.unknown"))(lookup), Writes(ucrType => JsString(ucrType.formValue)))
 }

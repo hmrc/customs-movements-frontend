@@ -18,7 +18,7 @@ package views.disassociateucr
 
 import base.OverridableInjector
 import config.AppConfig
-import forms.DisassociateKind._
+import forms.UcrType.Ducr
 import forms.DisassociateUcr
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach

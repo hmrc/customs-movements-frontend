@@ -21,7 +21,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 @import views.components.BackButton
-@import forms.AssociateKind
+@import forms.UcrType
 @import forms.ManageMucrChoice
 
 @this(  govukLayout: gds_main_template,
@@ -30,7 +30,7 @@ pageTitle: pageTitle,
 govukSummaryList : GovukSummaryList,
 formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
-@(consignmentRef: String, associateWith: String, associateKind: AssociateKind, manageMucrChoice: Option[ManageMucrChoice])(implicit request: Request[_], messages: Messages)
+@(consignmentRef: String, associateWith: String, associateKind: UcrType, manageMucrChoice: Option[ManageMucrChoice])(implicit request: Request[_], messages: Messages)
 
 @backCall = @{
     manageMucrChoice.map(_.choice) match {

@@ -17,7 +17,7 @@
 package views.associateucr
 
 import base.Injector
-import forms.AssociateKind._
+import forms.UcrType._
 import forms.{AssociateUcr, MucrOptions}
 import helpers.views.{AssociateDucrMessages, CommonMessages}
 import org.jsoup.nodes.Document

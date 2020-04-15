@@ -17,7 +17,7 @@
 package views.disassociateucr
 
 import base.Injector
-import forms.DisassociateKind.{Ducr, Mucr}
+import forms.UcrType.{Ducr, Mucr}
 import forms.DisassociateUcr
 import models.cache.DisassociateUcrAnswers
 import org.jsoup.nodes.Document

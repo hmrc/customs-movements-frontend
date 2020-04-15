@@ -16,59 +16,26 @@
 
 package forms
 
+import forms.UcrType.{Ducr, Mucr}
 import models.{ReturnToStartException, UcrBlock}
 import play.api.data.Forms._
-import play.api.data.format.Formatter
-import play.api.data.{Form, FormError, Forms}
+import play.api.data.{Form, Forms}
 import play.api.libs.json._
+import uk.gov.voa.play.form.ConditionalMappings._
 import utils.validators.forms.FieldValidator._
 
-sealed abstract class DisassociateKind(val formValue: String)
-
-object DisassociateKind {
-  case object Mucr extends DisassociateKind("mucr")
-  case object Ducr extends DisassociateKind("ducr")
-
-  private val lookup = PartialFunction[String, DisassociateKind] {
-    case Mucr.formValue => Mucr
-    case Ducr.formValue => Ducr
-  }
-
-  implicit val formatter: Formatter[DisassociateKind] = new Formatter[DisassociateKind] {
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], DisassociateKind] = {
-      data.get(key).map { kind =>
-        lookup.andThen(Right.apply).applyOrElse(kind, (_: String) => Left(Seq(FormError(key, "error.unknown"))))
-      }
-    }.getOrElse(Left(Seq(FormError(key, "error.required"))))
-
-    override def unbind(key: String, value: DisassociateKind): Map[String, String] = Map(key -> value.formValue)
-  }
-
-  implicit val format =
-    Format[DisassociateKind](Reads.StringReads.collect(JsonValidationError("error.unknown"))(lookup), Writes(kind => JsString(kind.formValue)))
-}
-
-case class DisassociateUcr(kind: DisassociateKind, ducr: Option[String], mucr: Option[String]) {
+case class DisassociateUcr(kind: UcrType, ducr: Option[String], mucr: Option[String]) {
   def ucr: String = ducr.orElse(mucr).getOrElse(throw ReturnToStartException)
 }
 
 object DisassociateUcr {
-  import uk.gov.voa.play.form.ConditionalMappings._
-
-  def apply(ucrBlock: UcrBlock): DisassociateUcr =
-    ucrBlock.ucrType match {
-      case "M" => DisassociateUcr(DisassociateKind.Mucr, None, Some(ucrBlock.ucr))
-      case "D" => DisassociateUcr(DisassociateKind.Ducr, Some(ucrBlock.ucr), None)
-      case _   => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
-    }
-
   val formId: String = "DisassociateUcr"
 
   implicit val format = Json.format[DisassociateUcr]
 
   val mapping =
     Forms.mapping(
-      "kind" -> of[DisassociateKind],
+      "kind" -> of[UcrType](UcrType.formatter),
       "ducr" -> mandatoryIfEqual(
         "kind",
         "ducr",
@@ -82,4 +49,11 @@ object DisassociateUcr {
     )(DisassociateUcr.apply)(DisassociateUcr.unapply)
 
   val form: Form[DisassociateUcr] = Form(mapping)
+
+  def apply(ucrBlock: UcrBlock): DisassociateUcr =
+    ucrBlock.ucrType match {
+      case Mucr.codeValue => DisassociateUcr(Mucr, None, Some(ucrBlock.ucr))
+      case Ducr.codeValue => DisassociateUcr(Ducr, Some(ucrBlock.ucr), None)
+      case _              => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
+    }
 }

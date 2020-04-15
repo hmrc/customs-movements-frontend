@@ -16,11 +16,13 @@
 
 package models.viewmodels.notificationspage.converters
 
-import base.BaseSpec
+import base.{BaseSpec, OverridableInjector}
 import com.google.inject.Guice
 import models.notifications.ResponseType
 import models.viewmodels.decoder.ActionCode
+import modules.DateTimeModule
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import testdata.NotificationTestData
 import testdata.NotificationTestData.exampleNotificationFrontendModel
@@ -33,8 +35,8 @@ class ControlResponseAcknowledgedConverterSpec extends BaseSpec with MockitoSuga
 
   private implicit val fakeRequest = FakeRequest()
 
-  private val injector = Guice.createInjector(new DateTimeTestModule())
-  private val converter = injector.getInstance(classOf[ControlResponseAcknowledgedConverter])
+  private val injector = new OverridableInjector(bind[DateTimeModule].toInstance(new DateTimeTestModule))
+  private val converter = injector.instanceOf[ControlResponseAcknowledgedConverter]
 
   "ControlResponseAcknowledgedConverter on convert" should {
 

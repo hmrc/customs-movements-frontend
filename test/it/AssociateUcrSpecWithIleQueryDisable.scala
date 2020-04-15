@@ -15,7 +15,7 @@
  */
 
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
-import forms.{AssociateKind, AssociateUcr, MucrOptions}
+import forms.{AssociateUcr, MucrOptions, UcrType}
 import models.cache.AssociateUcrAnswers
 import play.api.Configuration
 import play.api.test.Helpers._
@@ -80,7 +80,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
         theAnswersFor("eori") mustBe Some(
           AssociateUcrAnswers(
             mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345")),
-            associateUcr = Some(AssociateUcr(AssociateKind.Mucr, "GB/321-54321"))
+            associateUcr = Some(AssociateUcr(UcrType.Mucr, "GB/321-54321"))
           )
         )
       }
@@ -95,7 +95,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
           "eori",
           AssociateUcrAnswers(
             mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345")),
-            associateUcr = Some(AssociateUcr(AssociateKind.Mucr, "GB/321-54321"))
+            associateUcr = Some(AssociateUcr(UcrType.Mucr, "GB/321-54321"))
           )
         )
 
@@ -112,7 +112,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
           "eori",
           AssociateUcrAnswers(
             mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345")),
-            associateUcr = Some(AssociateUcr(AssociateKind.Mucr, "GB/321-54321"))
+            associateUcr = Some(AssociateUcr(UcrType.Mucr, "GB/321-54321"))
           )
         )
         givenMovementsBackendAcceptsTheConsolidation()

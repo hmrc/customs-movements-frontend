@@ -16,15 +16,17 @@
 
 package models.viewmodels.notificationspage.converters
 
-import base.BaseSpec
+import base.{BaseSpec, OverridableInjector}
 import com.google.inject.{AbstractModule, Guice}
 import models.notifications.ResponseType
 import models.viewmodels.decoder.{ActionCode, Decoder, ILEError}
+import modules.DateTimeModule
 import org.mockito.ArgumentMatchers.{anyString, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
+import play.api.inject.bind
 import play.api.test.Helpers.stubMessages
 import testdata.NotificationTestData
 import testdata.NotificationTestData.exampleNotificationFrontendModel
@@ -34,15 +36,11 @@ class ControlResponseRejectedConverterSpec extends BaseSpec with MockitoSugar wi
 
   import ControlResponseRejectedConverterSpec._
 
-  implicit val messages: Messages = stubMessages()
+  private implicit val messages: Messages = stubMessages()
 
-  val decoder: Decoder = mock[Decoder]
-
-  private val injector = Guice.createInjector(new DateTimeTestModule, new AbstractModule {
-    override def configure(): Unit = bind(classOf[Decoder]).toInstance(decoder)
-  })
-
-  val converter = injector.getInstance(classOf[ControlResponseRejectedConverter])
+  private val decoder: Decoder = mock[Decoder]
+  private val injector = new OverridableInjector(bind[DateTimeModule].toInstance(new DateTimeTestModule), bind[Decoder].toInstance(decoder))
+  private val converter = injector.instanceOf[ControlResponseRejectedConverter]
 
   override def beforeEach(): Unit = {
     super.beforeEach()

@@ -124,7 +124,7 @@ class AssociateUcrSpec extends IntegrationSpec {
         theAnswersFor("eori") mustBe Some(
           AssociateUcrAnswers(
             mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345")),
-            associateUcr = Some(AssociateUcr(AssociateKind.Mucr, "GB/321-54321"))
+            associateUcr = Some(AssociateUcr(UcrType.Mucr, "GB/321-54321"))
           )
         )
       }
@@ -139,7 +139,7 @@ class AssociateUcrSpec extends IntegrationSpec {
           "eori",
           AssociateUcrAnswers(
             mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345")),
-            associateUcr = Some(AssociateUcr(AssociateKind.Mucr, "GB/321-54321"))
+            associateUcr = Some(AssociateUcr(UcrType.Mucr, "GB/321-54321"))
           )
         )
 
@@ -156,7 +156,7 @@ class AssociateUcrSpec extends IntegrationSpec {
           "eori",
           AssociateUcrAnswers(
             mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345")),
-            associateUcr = Some(AssociateUcr(AssociateKind.Mucr, "GB/321-54321"))
+            associateUcr = Some(AssociateUcr(UcrType.Mucr, "GB/321-54321"))
           )
         )
         givenMovementsBackendAcceptsTheConsolidation()

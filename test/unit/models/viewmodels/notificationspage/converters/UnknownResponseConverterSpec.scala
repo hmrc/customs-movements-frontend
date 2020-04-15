@@ -16,33 +16,28 @@
 
 package models.viewmodels.notificationspage.converters
 
-import java.time.ZonedDateTime
-
-import base.BaseSpec
-import com.google.inject.Guice
+import base.{BaseSpec, Injector}
 import models.notifications.ResponseType.MovementTotalsResponse
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
+import testdata.NotificationTestData
 import testdata.NotificationTestData.exampleNotificationFrontendModel
-import utils.DateTimeTestModule
 
-class UnknownResponseConverterSpec extends BaseSpec {
-
-  private val testTimestampString = "2019-10-23T12:34+00:00"
-  private val testTimestamp = ZonedDateTime.parse(testTimestampString).toInstant
+class UnknownResponseConverterSpec extends BaseSpec with Injector {
 
   private implicit val messages: Messages = stubMessages()
-
-  private val injector = Guice.createInjector(new DateTimeTestModule())
-
-  private val converter = injector.getInstance(classOf[UnknownResponseConverter])
+  private val converter = instanceOf[UnknownResponseConverter]
 
   "UnknownResponseConverter on convert" should {
 
     "return generic NotificationsPageSingleElement" in {
 
-      val input = exampleNotificationFrontendModel(responseType = MovementTotalsResponse, messageCode = "UNKNOWN", timestampReceived = testTimestamp)
+      val input = exampleNotificationFrontendModel(
+        responseType = MovementTotalsResponse,
+        messageCode = "UNKNOWN",
+        timestampReceived = NotificationTestData.testTimestamp
+      )
 
       val result = converter.convert(input)
 

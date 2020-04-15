@@ -16,7 +16,7 @@
 
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
 import controllers.exception.InvalidFeatureStateException
-import forms.{DisassociateKind, DisassociateUcr}
+import forms.{DisassociateUcr, UcrType}
 import models.cache.DisassociateUcrAnswers
 import play.api.test.Helpers._
 
@@ -61,10 +61,7 @@ class DissociateUcrSpec extends IntegrationSpec {
       "return 200" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor(
-          "eori",
-          DisassociateUcrAnswers(ucr = Some(DisassociateUcr(kind = DisassociateKind.Mucr, mucr = Some("GB/321-54321"), ducr = None)))
-        )
+        givenCacheFor("eori", DisassociateUcrAnswers(ucr = Some(DisassociateUcr(kind = UcrType.Mucr, mucr = Some("GB/321-54321"), ducr = None))))
 
         // When
         val response = get(controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage())
@@ -78,10 +75,7 @@ class DissociateUcrSpec extends IntegrationSpec {
       "continue" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor(
-          "eori",
-          DisassociateUcrAnswers(ucr = Some(DisassociateUcr(kind = DisassociateKind.Mucr, mucr = Some("GB/321-54321"), ducr = None)))
-        )
+        givenCacheFor("eori", DisassociateUcrAnswers(ucr = Some(DisassociateUcr(kind = UcrType.Mucr, mucr = Some("GB/321-54321"), ducr = None))))
         givenMovementsBackendAcceptsTheConsolidation()
 
         // When

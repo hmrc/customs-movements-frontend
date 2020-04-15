@@ -20,7 +20,7 @@
 @import views.components.BackButton
 @import components.gds.exportsInputText
 @import components.gds.{errorSummary, sectionHeader, gds_main_template}
-@import forms.DisassociateKind
+@import forms.UcrType
 
 @this(govukLayout: gds_main_template,
         govukButton: GovukButton,
@@ -53,15 +53,15 @@
             errorMessage = form("kind").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*)))),
             items = Seq(
                 RadioItem(
-                    value = Some(DisassociateKind.Ducr.formValue),
+                    value = Some(UcrType.Ducr.formValue),
                     content = Text(messages("disassociate.ucr.ducr")),
-                    checked = form("kind").value.contains(DisassociateKind.Ducr.formValue),
+                    checked = form("kind").value.contains(UcrType.Ducr.formValue),
                     conditionalHtml = Some(exportsInputText(form("ducr"), "site.inputText.ducr.label"))
                 ),
                 RadioItem(
-                    value = Some(DisassociateKind.Mucr.formValue),
+                    value = Some(UcrType.Mucr.formValue),
                     content = Text(messages("disassociate.ucr.mucr")),
-                    checked = form("kind").value.contains(DisassociateKind.Mucr.formValue),
+                    checked = form("kind").value.contains(UcrType.Mucr.formValue),
                     conditionalHtml = Some(exportsInputText(form("mucr"), "site.inputText.mucr.label"))
                 ))
         ))

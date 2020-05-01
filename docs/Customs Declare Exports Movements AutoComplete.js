@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports Movements AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.18
+// @version      0.19
 // @description  Customs Declare Exports Movements
 // @author       You
 // @match        http*://*/customs-movements*
@@ -78,17 +78,13 @@ function completePage() {
         document.getElementById('transportId').value = 'TransportReference';
         document.getElementsByClassName('govuk-button')[0].click()
     }
-    if(currentPageIs("/customs-movements/summary")){
-        document.getElementsByClassName('govuk-button')[0].click()
-    }
+    if(currentPageIs("/customs-movements/summary")){}
     if(currentPageIs("/customs-movements/mucr-options")){
         document.getElementById("createOrAdd").checked = true;
         document.getElementById("newMucr").value = "GB/1234-123ABC456DEFIIIII"
         document.getElementsByClassName('govuk-button')[0].click()
     }
-    if(currentPageIs("/customs-movements/associate-ucr-summary")){
-        document.getElementsByClassName('govuk-button')[0].click()
-    }
+    if(currentPageIs("/customs-movements/associate-ucr-summary")){}
     if(currentPageIs("/customs-movements/associate-ucr-confirmation")){
         document.getElementsByClassName('govuk-button')[0].click()
     }
@@ -98,9 +94,7 @@ function completePage() {
         document.getElementById("ducr").value = `5GB123456789000-${now.valueOf()}IIIII`
         document.getElementsByClassName('govuk-button')[0].click()
     }
-    if(currentPageIs("/customs-movements/dissociate-ucr-summary")){
-        document.getElementsByClassName('button')[0].click()
-    }
+    if(currentPageIs("/customs-movements/dissociate-ucr-summary")){}
     if(currentPageIs("/customs-movements/dissociate-ucr-confirmation")){
         document.getElementsByClassName('govuk-button')[0].click()
     }
@@ -110,9 +104,7 @@ function completePage() {
         document.getElementById("ducr").value = `5GB123456789000-${now.valueOf()}IIIII`
         document.getElementsByClassName('govuk-button')[0].click()
     }
-    if(currentPageIs("customs-movements/shut-mucr-summary")){
-        document.getElementsByClassName('govuk-button')[0].click()
-    }
+    if(currentPageIs("customs-movements/shut-mucr-summary")){}
     if(currentPageIs("customs-movements/shut-mucr-confirmation")){
         document.getElementsByClassName('govuk-button')[0].click()
     }

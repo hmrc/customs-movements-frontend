@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.storage
+package config
 
-import models.requests.{AuthenticatedRequest, LegacyJourneyRequest}
+import javax.inject.{Inject, Singleton}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-object CacheIdGenerator {
+import scala.concurrent.duration.{Duration, FiniteDuration}
 
-  def eoriCacheId()(implicit request: LegacyJourneyRequest[_]): String =
-    request.authenticatedRequest.user.eori
+@Singleton
+class TimeoutDialogConfig @Inject()(config: ServicesConfig) {
 
-  def cacheId()(implicit request: AuthenticatedRequest[_]): String =
-    request.user.eori
-
-  def movementCacheId()(implicit request: LegacyJourneyRequest[_]): String =
-    s"${request.choice.value}-${request.authenticatedRequest.user.eori}"
+  val timeout: Duration = config.getDuration("timeoutDialog.timeout").asInstanceOf[FiniteDuration]
+  val countdown: Duration = config.getDuration("timeoutDialog.countdown").asInstanceOf[FiniteDuration]
 }

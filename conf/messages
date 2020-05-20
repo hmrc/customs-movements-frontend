@@ -431,3 +431,13 @@ ileCode.unknown = Unknown
 ileQueryResponse.timeout.title = There is a problem
 ileQueryResponse.timeout.heading = Sorry, there is a problem with the service
 ileQueryResponse.timeout.message = Try again later.
+
+sessionTimout.title = For your security, we signed you out
+sessionTimout.paragraph.saved = We saved your answers.
+sessionTimout.signin.button = Sign in
+sessionTimout.back.button = Back to GOV.UK
+
+timeoutDialog.title = Your session will timeout soon
+timeoutDialog.message = For your security, we will sign you out in
+timeoutDialog.keepAlive.text= Stay signed in
+timeoutDialog.signout.text= Sign out 

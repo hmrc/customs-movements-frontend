@@ -34,7 +34,7 @@ object Location {
     * Country is in two first characters in Location Code
     */
   private val validateCountry: String => Boolean = (input: String) => {
-    val countryCode = input.take(2)
+    val countryCode = input.take(2).toUpperCase
     allCountries.exists(_.countryCode == countryCode)
   }
 
@@ -43,7 +43,7 @@ object Location {
     */
   private val validateLocationType: String => Boolean = (input: String) => {
     val correctLocationType: Set[String] = Set("A", "B", "C", "D")
-    val predicate = isContainedIn(correctLocationType)
+    val predicate = isContainedInIgnoreCase(correctLocationType)
     input.drop(2).headOption.map(_.toString).exists(predicate)
   }
 
@@ -52,9 +52,11 @@ object Location {
     */
   private val validateQualifierCode: String => Boolean = (input: String) => {
     val correctQualifierCode: Set[String] = Set("U", "Y")
-    val predicate = isContainedIn(correctQualifierCode)
+    val predicate = isContainedInIgnoreCase(correctQualifierCode)
     input.drop(3).headOption.map(_.toString).exists(predicate)
   }
+
+  private def form2Data(code: String): Location = Location(code.toUpperCase)
 
   val mapping = Forms.mapping(
     "code" -> text()
@@ -65,7 +67,7 @@ object Location {
           validateCountry and validateLocationType and validateQualifierCode and noShorterThan(10) and noLongerThan(17)
         )
       )
-  )(Location.apply)(Location.unapply)
+  )(form2Data)(Location.unapply)
 
   def form(): Form[Location] = Form(mapping)
 

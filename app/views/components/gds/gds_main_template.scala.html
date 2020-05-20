@@ -14,12 +14,15 @@
  * limitations under the License.
  *@
 
+@import config.TimeoutDialogConfig
+@import models.requests.{AuthenticatedRequest, JourneyRequest}
 @import components.gds.{phaseBanner, siteHeader}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import views.Title
 @import views.components.BackButton
 @import views.html.components.gds.govukFlexibleLayout
+@import views.html.components.gds.{govukFlexibleLayout, timeoutDialog}
 
 @this(
   govukHeader: GovukHeader,
@@ -28,7 +31,8 @@
   govukPhaseBanner: GovukPhaseBanner,
   govukBackLink: GovukBackLink,
   siteHeader: siteHeader,
-  phaseBanner: phaseBanner
+  phaseBanner: phaseBanner,
+  timeoutDialogConfig: TimeoutDialogConfig
 )
 
 @(
@@ -36,6 +40,8 @@
   backButton: Option[BackButton] = None,
   useCustomContentWidth: Boolean = false
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+
+@useTimeoutDialog = @{ request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]]}
 
 @head = {
     <link rel="shortcut icon" href='@routes.Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />
@@ -48,7 +54,13 @@
   <script src='@routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
   <script src='@routes.Assets.versioned("javascripts/google.tag.manager.min.js")'> </script>
   <script src="@routes.Assets.versioned("javascripts/show-hide-content.js")" type="text/javascript"></script>
-  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/vendor/jquery-ui.min.css")' type="text/css" >
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/vendor/jquery-ui.min.css")' type="text/css">
+
+  @if(useTimeoutDialog) {
+      <script src='@routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
+      <script src='@routes.Assets.versioned("javascripts/timeoutDialog.js")'> </script>
+  }
+
   <script>window.GOVUKFrontend.initAll();</script>
 }
 
@@ -58,6 +70,10 @@
     <!-- End Google Tag Manager (noscript) -->
 
     @phaseBanner("beta")
+
+    @if(useTimeoutDialog) {
+        @timeoutDialog(request.uri, timeoutDialogConfig.timeout, timeoutDialogConfig.countdown)
+    }
 
     @backButton.map(back =>
         govukBackLink(BackLink(

@@ -20,7 +20,7 @@ import akka.util.Timeout
 import base.{Injector, UnitSpec}
 import config.AppConfig
 import forms.Choice
-import models.requests.{AuthenticatedRequest, LegacyJourneyRequest}
+import models.requests.AuthenticatedRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.{Messages, MessagesApi}
@@ -38,9 +38,6 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
   import utils.FakeRequestCSRFSupport._
 
   implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
-
-  def fakeJourneyRequest(choice: Choice): LegacyJourneyRequest[AnyContentAsEmpty.type] =
-    LegacyJourneyRequest(AuthenticatedRequest(FakeRequest("", "").withCSRFToken, MovementsTestData.newUser("")), choice)
 
   implicit val messages: Messages = Helpers.stubMessages()
 

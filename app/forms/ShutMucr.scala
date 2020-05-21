@@ -19,7 +19,7 @@ package forms
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.{isEmpty, nonEmpty, validMucr, PredicateOpsForFunctions}
+import utils.validators.forms.FieldValidator.{isEmpty, nonEmpty, validMucrIgnoreCase, PredicateOpsForFunctions}
 
 case class ShutMucr(mucr: String)
 
@@ -31,7 +31,7 @@ object ShutMucr {
   val mapping = Forms.mapping(
     "mucr" -> text()
       .verifying("error.mucr.empty", nonEmpty)
-      .verifying("error.mucr.format", isEmpty or validMucr)
+      .verifying("error.mucr.format", isEmpty or validMucrIgnoreCase)
   )(form2Data)(ShutMucr.unapply)
 
   def form2Data(mucr: String): ShutMucr = ShutMucr(mucr.toUpperCase)

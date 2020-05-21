@@ -27,7 +27,7 @@ object IleQueryForm {
       .single(
         "ucr" -> text()
           .verifying("ileQuery.ucr.empty", nonEmpty)
-          .verifying("ileQuery.ucr.incorrect", isEmpty or validDucr or validMucr)
+          .verifying("ileQuery.ucr.incorrect", isEmpty or validDucrIgnoreCase or validMucrIgnoreCase)
           .transform(input => input.toUpperCase, (output: String) => output)
       )
   )

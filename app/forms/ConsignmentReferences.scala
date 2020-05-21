@@ -69,14 +69,14 @@ object ConsignmentReferences {
         Ducr.codeValue,
         text()
           .verifying("consignmentReferences.reference.ducrValue.empty", nonEmpty)
-          .verifying("consignmentReferences.reference.ducrValue.error", isEmpty or validDucr)
+          .verifying("consignmentReferences.reference.ducrValue.error", isEmpty or validDucrIgnoreCase)
       ),
       "mucrValue" -> mandatoryIfEqual(
         "reference",
         Mucr.codeValue,
         text()
           .verifying("consignmentReferences.reference.mucrValue.empty", nonEmpty)
-          .verifying("consignmentReferences.reference.mucrValue.error", isEmpty or validMucr)
+          .verifying("consignmentReferences.reference.mucrValue.error", isEmpty or validMucrIgnoreCase)
       )
     )(form2Model)(model2Form)
 

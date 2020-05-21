@@ -23,10 +23,12 @@ import utils.validators.forms.FieldValidator._
 object IleQueryForm {
 
   val form: Form[String] = Form(
-    Forms.single(
-      "ucr" -> text()
-        .verifying("ileQuery.ucr.empty", nonEmpty)
-        .verifying("ileQuery.ucr.incorrect", isEmpty or validDucr or validMucr)
-    )
+    Forms
+      .single(
+        "ucr" -> text()
+          .verifying("ileQuery.ucr.empty", nonEmpty)
+          .verifying("ileQuery.ucr.incorrect", isEmpty or validDucrIgnoreCase or validMucrIgnoreCase)
+          .transform(input => input.toUpperCase, (output: String) => output)
+      )
   )
 }

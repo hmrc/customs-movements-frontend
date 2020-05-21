@@ -47,8 +47,8 @@ object ConsignmentReferences {
   private def form2Model: (String, Option[String], Option[String]) => ConsignmentReferences = {
     case (reference, ducrValue, mucrValue) =>
       reference match {
-        case Ducr.codeValue => ConsignmentReferences(Ducr, ducrValue.getOrElse(""))
-        case Mucr.codeValue => ConsignmentReferences(Mucr, mucrValue.getOrElse(""))
+        case Ducr.codeValue => ConsignmentReferences(Ducr, ducrValue.map(_.toUpperCase).getOrElse(""))
+        case Mucr.codeValue => ConsignmentReferences(Mucr, mucrValue.map(_.toUpperCase).getOrElse(""))
       }
   }
 
@@ -69,14 +69,14 @@ object ConsignmentReferences {
         Ducr.codeValue,
         text()
           .verifying("consignmentReferences.reference.ducrValue.empty", nonEmpty)
-          .verifying("consignmentReferences.reference.ducrValue.error", isEmpty or validDucr)
+          .verifying("consignmentReferences.reference.ducrValue.error", isEmpty or validDucrIgnoreCase)
       ),
       "mucrValue" -> mandatoryIfEqual(
         "reference",
         Mucr.codeValue,
         text()
           .verifying("consignmentReferences.reference.mucrValue.empty", nonEmpty)
-          .verifying("consignmentReferences.reference.mucrValue.error", isEmpty or validMucr)
+          .verifying("consignmentReferences.reference.mucrValue.error", isEmpty or validMucrIgnoreCase)
       )
     )(form2Model)(model2Form)
 

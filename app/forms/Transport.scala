@@ -53,8 +53,11 @@ object Transport {
       .verifying("transport.transportId.error", isEmpty or (noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters)),
     "nationality" -> text()
       .verifying("transport.nationality.empty", nonEmpty)
-      .verifying("transport.nationality.error", isEmpty or isValidCountryCode)
-  )(Transport.apply)(Transport.unapply)
+      .verifying("transport.nationality.error", isEmpty or (input => isValidCountryCode(input.toUpperCase)))
+  )(form2Data)(Transport.unapply)
+
+  private def form2Data(modeOfTransport: String, transportId: String, nationality: String): Transport =
+    new Transport(modeOfTransport, transportId, nationality.toUpperCase)
 
   def form: Form[Transport] =
     Form(mapping)

@@ -34,8 +34,8 @@ object AssociateUcr {
   val mapping: Mapping[AssociateUcr] = {
     def bind(associateKind: UcrType, ducr: Option[String], mucr: Option[String]): AssociateUcr =
       associateKind match {
-        case Ducr => AssociateUcr(Ducr, ducr.get)
-        case Mucr => AssociateUcr(Mucr, mucr.get)
+        case Ducr => AssociateUcr(Ducr, ducr.get.toUpperCase)
+        case Mucr => AssociateUcr(Mucr, mucr.get.toUpperCase)
       }
 
     def unbind(value: AssociateUcr): Option[(UcrType, Option[String], Option[String])] =
@@ -47,8 +47,8 @@ object AssociateUcr {
 
     Forms.mapping(
       "kind" -> of[UcrType](UcrType.formatter),
-      "ducr" -> mandatoryIfEqual("kind", Ducr.formValue, text().verifying("ducr.error.format", validDucr)),
-      "mucr" -> mandatoryIfEqual("kind", Mucr.formValue, text().verifying("mucr.error.format", validMucr))
+      "ducr" -> mandatoryIfEqual("kind", Ducr.formValue, text().verifying("ducr.error.format", validDucrIgnoreCase)),
+      "mucr" -> mandatoryIfEqual("kind", Mucr.formValue, text().verifying("mucr.error.format", validMucrIgnoreCase))
     )(bind)(unbind)
   }
 

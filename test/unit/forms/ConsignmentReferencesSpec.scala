@@ -19,6 +19,7 @@ package forms
 import base.BaseSpec
 import helpers.views.ConsignmentReferencesMessages
 import play.api.data.FormError
+import play.api.libs.json.{JsObject, JsString}
 
 class ConsignmentReferencesSpec extends BaseSpec with ConsignmentReferencesMessages {
 
@@ -71,6 +72,22 @@ class ConsignmentReferencesSpec extends BaseSpec with ConsignmentReferencesMessa
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
       errors must be(Seq(FormError("mucrValue", referenceMucrError)))
+    }
+
+    "convert ducr to upper case" in {
+
+      val form = ConsignmentReferences.form.bind(JsObject(Map("reference" -> JsString("D"), "ducrValue" -> JsString("8gb123457359100-test0001"))))
+
+      form.errors mustBe (empty)
+      form.value.map(_.referenceValue) must be(Some("8GB123457359100-TEST0001"))
+    }
+
+    "convert mucr to upper case" in {
+
+      val form = ConsignmentReferences.form.bind(JsObject(Map("reference" -> JsString("M"), "mucrValue" -> JsString("gb/abced1234-15804test"))))
+
+      form.errors mustBe (empty)
+      form.value.map(_.referenceValue) must be(Some("GB/ABCED1234-15804TEST"))
     }
   }
 }

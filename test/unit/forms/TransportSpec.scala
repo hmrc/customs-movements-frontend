@@ -19,6 +19,7 @@ package forms
 import base.BaseSpec
 import forms.Transport.ModesOfTransport._
 import play.api.data.FormError
+import play.api.libs.json.{JsObject, JsString}
 import utils.TestDataHelper.createRandomAlphanumericString
 
 class TransportSpec extends BaseSpec {
@@ -93,6 +94,20 @@ class TransportSpec extends BaseSpec {
 
         val transportFinland = Transport(Rail, "SHIP-123", "FI")
         Transport.form.fillAndValidate(transportFinland).errors mustBe empty
+      }
+    }
+
+    "convert to upper case" when {
+
+      "country is lower case" in {
+        val form = Transport.form.bind(
+          JsObject(Map("modeOfTransport" -> JsString("2"), "transportId" -> JsString("xwercwrxwy"), "nationality" -> JsString("pl")))
+        )
+
+        form.errors mustBe (empty)
+        form.value.map(_.modeOfTransport) must be(Some("2"))
+        form.value.map(_.transportId) must be(Some("xwercwrxwy"))
+        form.value.map(_.nationality) must be(Some("PL"))
       }
     }
   }

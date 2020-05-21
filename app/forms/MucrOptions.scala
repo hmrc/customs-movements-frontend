@@ -47,8 +47,8 @@ object MucrOptions {
   def form2Model: (String, String, String) => MucrOptions = {
     case (createOrAdd, newMucr, existingMucr) =>
       createOrAdd match {
-        case Create => MucrOptions(newMucr, "", Create)
-        case Add    => MucrOptions("", existingMucr, Add)
+        case Create => MucrOptions(newMucr.toUpperCase, "", Create)
+        case Add    => MucrOptions("", existingMucr.toUpperCase, Add)
       }
   }
 

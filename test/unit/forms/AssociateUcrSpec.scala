@@ -18,6 +18,7 @@ package forms
 
 import base.BaseSpec
 import models.UcrBlock
+import play.api.libs.json.{JsObject, JsString}
 
 class AssociateUcrSpec extends BaseSpec {
 
@@ -32,6 +33,23 @@ class AssociateUcrSpec extends BaseSpec {
 
       AssociateUcr.apply(UcrBlock("ucr", UcrType.Ducr)) mustBe AssociateUcr(UcrType.Ducr, "ucr")
     }
+
+    "convert ducr to upper case" in {
+
+      val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("ducr"), "ducr" -> JsString("8gb123457359100-test0001"))))
+
+      form.errors mustBe (empty)
+      form.value.map(_.ucr) must be(Some("8GB123457359100-TEST0001"))
+    }
+
+    "convert mucr to upper case" in {
+
+      val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString("gb/abced1234-15804test"))))
+
+      form.errors mustBe (empty)
+      form.value.map(_.ucr) must be(Some("GB/ABCED1234-15804TEST"))
+    }
+
   }
 
 }

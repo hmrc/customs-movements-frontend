@@ -46,7 +46,10 @@ object DisassociateUcr {
         "mucr",
         text().verifying("disassociate.ucr.mucr.empty", nonEmpty).verifying("disassociate.ucr.mucr.error", isEmpty or validMucr)
       )
-    )(DisassociateUcr.apply)(DisassociateUcr.unapply)
+    )(form2Data)(DisassociateUcr.unapply)
+
+  def form2Data(kind: UcrType, ducr: Option[String], mucr: Option[String]): DisassociateUcr =
+    new DisassociateUcr(kind, ducr.map(_.toUpperCase), mucr.map(_.toUpperCase))
 
   val form: Form[DisassociateUcr] = Form(mapping)
 

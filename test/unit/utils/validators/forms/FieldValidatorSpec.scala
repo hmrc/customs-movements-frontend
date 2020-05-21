@@ -890,25 +890,6 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidator validEori" should {
-
-    "return true" when {
-
-      "eori is valid" in {
-
-        validEori("GB122314") mustBe true
-      }
-    }
-
-    "return false" when {
-
-      "eori is incorrect" in {
-
-        validEori("123456789") mustBe false
-      }
-    }
-  }
-
   "FormFieldValidator lengthInRagnge" should {
 
     "return true" when {

@@ -37,10 +37,13 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
 
   private val page = injector.instanceOf[mucr_options]
 
+  private val tradeTariffUrl = "http://trade-tariff"
+
   override def beforeEach(): Unit = {
     super.beforeEach()
 
     when(appConfig.ileQueryEnabled).thenReturn(true)
+    when(appConfig.tradeTariffUrl).thenReturn(tradeTariffUrl)
   }
 
   override def afterEach(): Unit = {
@@ -66,6 +69,14 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
 
     "have the correct heading" in {
       createView().getElementById("section-header") must containMessage("mucrOptions.heading", "mucr")
+    }
+
+    "have the page hint" in {
+      val hint = createView().getElementById("createOrAdd-hint")
+
+      hint must containMessage("mucrOptions.hint", "")
+      hint must containMessage("mucrOptions.hint.link")
+      hint.getElementsByTag("a").first() must haveHref(tradeTariffUrl)
     }
 
     "render the correct labels and hints" in {

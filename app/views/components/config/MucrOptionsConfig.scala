@@ -28,4 +28,6 @@ class MucrOptionsConfig @Inject()(appConfig: AppConfig) extends BaseConfig(appCo
       controllers.consolidations.routes.ManageMucrController.displayPage()
     else
       controllers.routes.ChoiceController.displayChoiceForm()
+
+  def tradeTariffUrl: String = appConfig.tradeTariffUrl
 }

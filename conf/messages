@@ -126,8 +126,8 @@ movement.arrival = Arrive goods
 movement.departure = Depart goods
 
 startPage.title.sectionHeader = Guidance
-startPage.title = Tell HMRC when goods you’re exporting arrive at or leave the UK port
-startPage.description = Use the CDS Exports Service to tell HMRC when the goods you’re exporting out of the EU have arrived at or left the UK port.
+startPage.title = Tell HMRC when goods arrive at or leave a UK port
+startPage.description = Use the Customs Declaration Service to tell HMRC when goods to be exported out of the EU have arrived at or left a UK port.
 startPage.contents.header = Contents
 startPage.beforeYouStart.header = Before you start
 startPage.beforeYouStart.line.1 = The goods must have already been {0}
@@ -274,6 +274,8 @@ shutMucr.summary.type = MUCR
 
 associate.heading = Add to MUCR {0}
 mucrOptions.heading = Associate consignment {0}
+mucrOptions.hint = Enter a MUCR in one of the correct formats displayed under {0}
+mucrOptions.hint.link = DE 2/1 in the UK Trade Tariff
 mucrOptions.title = Create or enter a Master Consignment Reference (MUCR) to associate with
 mucrOptions.create = Create a new Master Consignment Reference (MUCR)
 mucrOptions.add = Add to an existing Master Consignment Reference (MUCR)
@@ -389,6 +391,7 @@ arrivalReference.hint = This will help you identify it if you need to find it in
 arrivalReference.error = The reference should be no more than 25 characters.
 
 ileQuery.title = Find a consignment
+ileQuery.hint = Search by DUCR or MUCR
 ileQuery.ucr.empty = Enter a Unique Consignment Reference
 ileQuery.ucr.incorrect = Unique Consignment Reference is incorrect
 

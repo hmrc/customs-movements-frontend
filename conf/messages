@@ -277,8 +277,8 @@ mucrOptions.heading = Associate consignment {0}
 mucrOptions.hint = Enter a MUCR in one of the correct formats displayed under {0}
 mucrOptions.hint.link = DE 2/1 in the UK Trade Tariff
 mucrOptions.title = Create or enter a Master Consignment Reference (MUCR) to associate with
-mucrOptions.create = Create a new Master Consignment Reference (MUCR)
-mucrOptions.add = Add to an existing Master Consignment Reference (MUCR)
+mucrOptions.create = Create a MUCR
+mucrOptions.add = Add to an existing MUCR
 mucrOptions.create.reference = Enter an alphanumeric reference
 mucrOptions.add.reference = Which MUCR do you want to add to?
 mucrOptions.createAdd.value.empty = Please select an option
@@ -391,7 +391,7 @@ arrivalReference.hint = This will help you identify it if you need to find it in
 arrivalReference.error = The reference should be no more than 25 characters.
 
 ileQuery.title = Find a consignment
-ileQuery.hint = Search by DUCR or MUCR
+ileQuery.hint = Search by Master Consignment Reference (MUCR) or Declaration Consignment Reference (DUCR)
 ileQuery.ucr.empty = Enter a Unique Consignment Reference
 ileQuery.ucr.incorrect = Unique Consignment Reference is incorrect
 

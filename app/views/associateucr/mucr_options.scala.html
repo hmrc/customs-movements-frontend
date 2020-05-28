@@ -39,6 +39,8 @@
 
 @(form: Form[MucrOptions], queryUcr: Option[UcrBlock], manageMucrChoice: Option[ManageMucrChoice])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tradeTariffLink = {<a target="_blank" href=@pageConfig.tradeTariffUrl>@messages("mucrOptions.hint.link")</a>}
+
 @govukLayout(
     title = Title("mucrOptions.title"),
     backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl(manageMucrChoice)))) {
@@ -56,6 +58,9 @@
                     isPageHeading = true,
                     classes = "govuk-fieldset__legend--l"
                 ))
+            )),
+            hint = Some(Hint(
+                content = HtmlContent(Html(messages("mucrOptions.hint", tradeTariffLink)))
             )),
             items = Seq(
                 RadioItem(

@@ -77,6 +77,11 @@ class IleQueryViewSpec extends ViewSpec with Injector with CommonMessages {
       Option(view.getElementById("ucr")) mustBe defined
     }
 
+    "contains input field hint" in {
+
+      view.getElementById("ucr-hint").text() mustBe messages("ileQuery.hint")
+    }
+
     "contains submit button" in {
 
       view.getElementsByClass("govuk-button").first().text() mustBe messages("site.continue")

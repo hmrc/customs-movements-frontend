@@ -97,7 +97,8 @@ GET         /movements                             controllers.SubmissionsContro
 # Notifications page
 GET         /notifications/:conversationId         controllers.NotificationsController.listOfNotifications(conversationId)
 
-# Session timeout
+# Sign out
+GET         /sign-out                              controllers.SignOutController.signOut(signOutReason: models.SignOutReason)
 
-GET         /sign-out                              controllers.SessionTimeoutController.signOut()
-GET         /we-signed-you-out                     controllers.SessionTimeoutController.signedOut()
+GET         /we-signed-you-out                     controllers.SignOutController.sessionTimeoutSignedOut()
+GET         /you-have-signed-out                   controllers.SignOutController.userSignedOut()

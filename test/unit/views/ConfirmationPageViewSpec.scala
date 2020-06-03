@@ -135,7 +135,7 @@ class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
         when(appConfig.ileQueryEnabled).thenReturn(false)
 
-        val link = page(JourneyType.ARRIVE).getElementsByClass("govuk-link").get(1)
+        val link = page(JourneyType.ARRIVE).getElementsByClass("govuk-link").get(2)
 
         link must containMessage("confirmation.redirect.choice.link")
         link must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
@@ -147,7 +147,7 @@ class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
         when(appConfig.ileQueryEnabled).thenReturn(true)
 
-        val link = page(JourneyType.ARRIVE).getElementsByClass("govuk-link").get(1)
+        val link = page(JourneyType.ARRIVE).getElementsByClass("govuk-link").get(2)
 
         link must containMessage("confirmation.redirect.query.link")
         link must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())

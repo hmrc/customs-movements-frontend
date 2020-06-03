@@ -27,7 +27,7 @@ class SiteHeaderSpec extends ViewSpec with Injector {
   private val page = instanceOf[siteHeader]
   private implicit val request = FakeRequest()
 
-  private def createHeader(): Html = page()(request, messages)
+  private def createHeader(): Html = page()(messages)
 
   "Site header" should {
     val siteHeader = createHeader()

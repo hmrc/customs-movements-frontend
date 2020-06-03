@@ -56,33 +56,38 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with Bef
   "Disassociate Ucr Summary View" should {
 
     "display 'Confirm and submit' button on page" in {
+
       val view = page(disassociateUcr)
       view.getElementsByClass("govuk-button").text() mustBe messages("site.confirmAndSubmit")
     }
 
     "display 'Reference' link on page" in {
+
       val view = page(disassociateUcr)
       view.getElementsByClass("govuk-summary-list__value").first() must containText("SOME-DUCR")
     }
 
     "display 'Change' link on page when ileQuery disabled" in {
+
       when(appConfig.ileQueryEnabled).thenReturn(false)
 
       val view = page(disassociateUcr)
-      val changeButton = view.getElementsByClass("govuk-link").first()
+      val changeButton = view.getElementsByClass("govuk-link").get(1)
       changeButton must containMessage("site.change")
       changeButton must haveAttribute("href", controllers.consolidations.routes.DisassociateUcrController.displayPage().url)
     }
 
-    "not display 'Change' link when ileQuery enabled" in {
+    "not display 'Change' link when ileQuery enabled (Sign out link only)" in {
+
       when(appConfig.ileQueryEnabled).thenReturn(true)
 
       val links = page(disassociateUcr).getElementsByClass("govuk-link")
 
-      links mustBe empty
+      links.size() mustBe 1
     }
 
     "have 'Back' button when ileQuery enabled" in {
+
       when(appConfig.ileQueryEnabled).thenReturn(true)
 
       val backButton = page(disassociateUcr).getBackButton
@@ -92,6 +97,7 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with Bef
     }
 
     "have 'Back' button when ileQuery disabled" in {
+
       when(appConfig.ileQueryEnabled).thenReturn(false)
 
       val backButton = page(disassociateUcr).getBackButton

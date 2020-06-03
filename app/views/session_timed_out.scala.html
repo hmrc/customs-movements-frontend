@@ -28,12 +28,12 @@
 
 @govukLink = {
     <p class="govuk-body">
-        <a class="govuk-link govuk-link--no-visited-state" href="https://www.gov.uk/">@messages("sessionTimout.back.button")</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="https://www.gov.uk/">@messages("site.link.backToGovUk")</a>
     </p>
 }
 
 @govukLayout(
-    title = Title("sessionTimout.title")) {
+    title = Title("sessionTimout.title"), showSignOutLink = false) {
 
     @pageTitle(messages("sessionTimout.title"))
 

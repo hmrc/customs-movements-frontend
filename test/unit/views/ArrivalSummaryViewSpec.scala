@@ -74,64 +74,78 @@ class ArrivalSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
   "View" should {
 
     "render title" in {
+
       page(answers).getTitle must containMessage("summary.arrival.title")
     }
 
     "render heading" in {
+
       page(answers).getElementById("title") must containMessage("summary.arrival.title")
     }
 
     "render 'Consignment details' section in summary list" in {
+
+      val answer_consignment_type_link_index = answer_consignment_type + 1
+      val answer_consignment_reference_link_index = answer_consignment_reference + 1
+
       val view = page(answers)
       view.getElementsByClass("govuk-heading-m").get(section_consignment_details) must containMessage("summary.consignmentDetails")
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_consignment_type) must containMessage("summary.referenceType")
       view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_type) must containMessage("consignmentReferences.reference.ducr")
 
-      val changeType = view.getElementsByClass("govuk-link").get(answer_consignment_type)
+      val changeType = view.getElementsByClass("govuk-link").get(answer_consignment_type_link_index)
       changeType must containMessage("site.change")
       changeType must haveHref(controllers.routes.ConsignmentReferencesController.displayPage())
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_consignment_reference) must containMessage("summary.referenceValue")
       view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_reference).text() mustBe "ref-value"
 
-      val changeRef = view.getElementsByClass("govuk-link").get(answer_consignment_reference)
+      val changeRef = view.getElementsByClass("govuk-link").get(answer_consignment_reference_link_index)
       changeRef must containMessage("site.change")
       changeRef must haveHref(controllers.routes.ConsignmentReferencesController.displayPage())
     }
 
     "render 'Arrival date and time' section in summary list" in {
+
+      val answer_date_link_index = answer_date + 1
+      val answer_time_link_index = answer_time + 1
+
       val view = page(answers)
       view.getElementsByClass("govuk-heading-m").get(section_arrival_datetime) must containMessage("arrivalDetails.title")
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_date) must containMessage("summary.arrival.date")
       view.getElementsByClass("govuk-summary-list__value").get(answer_date).text mustBe date.toInputFormat
 
-      val changeDate = view.getElementsByClass("govuk-link").get(answer_date)
+      val changeDate = view.getElementsByClass("govuk-link").get(answer_date_link_index)
       changeDate must containMessage("site.change")
       changeDate must haveHref(controllers.routes.MovementDetailsController.displayPage())
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_time) must containMessage("summary.arrival.time")
       view.getElementsByClass("govuk-summary-list__value").get(answer_time).text mustBe time.toInputFormat
 
-      val changeTime = view.getElementsByClass("govuk-link").get(answer_time)
+      val changeTime = view.getElementsByClass("govuk-link").get(answer_time_link_index)
       changeTime must containMessage("site.change")
       changeTime must haveHref(controllers.routes.MovementDetailsController.displayPage())
     }
 
     "render 'Location' section in summary list" in {
+
+      val answer_location_link_index = answer_location + 1
+
       val view = page(answers)
       view.getElementsByClass("govuk-heading-m").get(section_location) must containMessage("location.title")
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_location) must containMessage("summary.goodsLocation")
       view.getElementsByClass("govuk-summary-list__value").get(answer_location).text mustBe "location-ref"
 
-      val changeDate = view.getElementsByClass("govuk-link").get(answer_location)
+      val changeDate = view.getElementsByClass("govuk-link").get(answer_location_link_index)
       changeDate must containMessage("site.change")
       changeDate must haveHref(controllers.routes.LocationController.displayPage())
     }
 
     "render back button" in {
+
       val backButton = page(answers).getBackButton
 
       backButton mustBe defined
@@ -139,10 +153,12 @@ class ArrivalSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
     }
 
     "render 'Confirm and submit' button on page" in {
+
       page(answers).getElementsByClass("govuk-button").first() must containMessage("site.confirmAndSubmit")
     }
 
     "render change consignment links when ileQuery disabled" in {
+
       when(appConfig.ileQueryEnabled).thenReturn(false)
 
       val links = page(answers).getElementsByClass("govuk-link")
@@ -151,6 +167,7 @@ class ArrivalSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
     }
 
     "not render change consignment links when ileQuery enabled" in {
+
       when(appConfig.ileQueryEnabled).thenReturn(true)
 
       val links = page(answers).getElementsByClass("govuk-link")

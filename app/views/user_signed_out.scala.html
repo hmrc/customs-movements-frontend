@@ -14,19 +14,33 @@
  * limitations under the License.
  *@
 
-@import views.html.components.gds.gds_main_template
-@import views.html.components.gds.pageTitle
 @import views.Title
+@import views.html.components.gds._
 
 @this(
- govukLayout: gds_main_template,
- pageTitle: pageTitle
+    gdsTemplate: gds_main_template,
+    pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
+    linkButton: linkButton
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title("unauthorised.title", None), showSignOutLink = false) {
+@govukLink = {
+    <p class="govuk-body govuk-!-margin-top-9">
+        <a class="govuk-link govuk-link--no-visited-state" href="https://www.gov.uk/">@messages("site.link.backToGovUk")</a>
+    </p>
+}
 
-    @pageTitle(messages("unauthorised.title"))
+@gdsTemplate(title = Title("userSignedOut.title"), showSignOutLink = false) {
 
+  @pageTitle(messages("userSignedOut.title"))
+
+  @paragraphBody(messages("userSignedOut.information"))
+
+  <p class="govuk-body">
+    @link(messages("userSignedOut.startPageLink"), controllers.routes.StartController.displayStartPage())
+  </p>
+
+  @govukLink
 }

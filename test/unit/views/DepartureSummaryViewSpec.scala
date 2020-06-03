@@ -33,7 +33,7 @@ import views.html.summary.departure_summary_page
 
 class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private implicit val request = FakeRequest().withCSRFToken
+  private implicit val request = journeyRequest(DepartureAnswers())
 
   private val appConfig = mock[AppConfig]
   private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))

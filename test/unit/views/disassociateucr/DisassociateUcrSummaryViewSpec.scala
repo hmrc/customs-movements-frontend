@@ -18,13 +18,13 @@ package views.disassociateucr
 
 import base.OverridableInjector
 import config.AppConfig
-import forms.UcrType.Ducr
 import forms.DisassociateUcr
+import forms.UcrType.Ducr
+import models.cache.DisassociateUcrAnswers
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
-import play.api.test.FakeRequest
 import views.ViewSpec
 import views.html.disassociateucr.disassociate_ucr_summary
 import views.tags.ViewTest
@@ -32,7 +32,7 @@ import views.tags.ViewTest
 @ViewTest
 class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private implicit val request = FakeRequest().withCSRFToken
+  private implicit val request = journeyRequest(DisassociateUcrAnswers())
 
   private val appConfig = mock[AppConfig]
   private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))

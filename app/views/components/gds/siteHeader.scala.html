@@ -14,13 +14,15 @@
  * limitations under the License.
  *@
 
+@import models.requests.AuthenticatedRequest
+@import models.requests.JourneyRequest
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcHeader
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.Header
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language
 
 @this(hmrcHeader: HmrcHeader)
 
-@(showSignOut: Boolean = true)(implicit messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @languageSelected = @{ if(messages.lang.code == "cy")
     language.Cy
@@ -29,7 +31,7 @@ else
 }
 
 @signOutHref = @{
-  if (showSignOut)
+  if (request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]])
     Some(controllers.routes.SignOutController.signOut(models.SignOutReason.UserAction).url)
   else
     None

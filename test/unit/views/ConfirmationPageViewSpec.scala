@@ -18,19 +18,16 @@ package views
 
 import base.OverridableInjector
 import config.AppConfig
-import models.cache.JourneyType
+import models.cache._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
-import play.api.test.FakeRequest
 import views.html.confirmation_page
 import views.tags.ViewTest
 
 @ViewTest
 class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
-
-  private implicit val request = FakeRequest().withCSRFToken
 
   private val appConfig = mock[AppConfig]
   private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))
@@ -55,25 +52,35 @@ class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
       "provided with ARRIVE Journey Type" in {
 
+        implicit val request = journeyRequest(ArrivalAnswers())
+
         page(JourneyType.ARRIVE).getTitle must containMessage("confirmation.title.ARRIVE")
       }
 
       "provided with DEPART Journey Type" in {
+
+        implicit val request = journeyRequest(DepartureAnswers())
 
         page(JourneyType.DEPART).getTitle must containMessage("confirmation.title.DEPART")
       }
 
       "provided with ASSOCIATE_UCR Journey Type" in {
 
+        implicit val request = journeyRequest(AssociateUcrAnswers())
+
         page(JourneyType.ASSOCIATE_UCR).getTitle must containMessage("confirmation.title.ASSOCIATE_UCR")
       }
 
       "provided with DISSOCIATE_UCR Journey Type" in {
 
+        implicit val request = journeyRequest(DisassociateUcrAnswers())
+
         page(JourneyType.DISSOCIATE_UCR).getTitle must containMessage("confirmation.title.DISSOCIATE_UCR")
       }
 
       "provided with SHUT_MUCR Journey Type" in {
+
+        implicit val request = journeyRequest(ShutMucrAnswers())
 
         page(JourneyType.SHUT_MUCR).getTitle must containMessage("confirmation.title.SHUT_MUCR")
       }
@@ -83,12 +90,16 @@ class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
       "provided with ARRIVE Journey Type" in {
 
+        implicit val request = journeyRequest(ArrivalAnswers())
+
         page(JourneyType.ARRIVE)
           .getElementsByClass("govuk-heading-xl")
           .first() must containMessage("confirmation.title.ARRIVE")
       }
 
       "provided with DEPART Journey Type" in {
+
+        implicit val request = journeyRequest(DepartureAnswers())
 
         page(JourneyType.DEPART)
           .getElementsByClass("govuk-heading-xl")
@@ -97,12 +108,16 @@ class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
       "provided with ASSOCIATE_UCR Journey Type" in {
 
+        implicit val request = journeyRequest(AssociateUcrAnswers())
+
         page(JourneyType.ASSOCIATE_UCR)
           .getElementsByClass("govuk-heading-xl")
           .first() must containMessage("confirmation.title.ASSOCIATE_UCR")
       }
 
       "provided with DISSOCIATE_UCR Journey Type" in {
+
+        implicit val request = journeyRequest(DisassociateUcrAnswers())
 
         page(JourneyType.DISSOCIATE_UCR)
           .getElementsByClass("govuk-heading-xl")
@@ -111,6 +126,8 @@ class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
       "provided with SHUT_MUCR Journey Type" in {
 
+        implicit val request = journeyRequest(ShutMucrAnswers())
+
         page(JourneyType.SHUT_MUCR)
           .getElementsByClass("govuk-heading-xl")
           .first() must containMessage("confirmation.title.SHUT_MUCR")
@@ -118,6 +135,8 @@ class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
     }
 
     "render inset text with link to View Requests page" in {
+
+      implicit val request = journeyRequest(ArrivalAnswers())
 
       val inset = page(JourneyType.ARRIVE).getElementsByClass("govuk-inset-text").first()
       inset must containMessage("confirmation.insetText")
@@ -133,6 +152,8 @@ class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
     "ileQuery feature is disabled" should {
       "render 'Back to start' link to Choice page" in {
 
+        implicit val request = journeyRequest(ArrivalAnswers())
+
         when(appConfig.ileQueryEnabled).thenReturn(false)
 
         val link = page(JourneyType.ARRIVE).getElementsByClass("govuk-link").get(2)
@@ -144,6 +165,8 @@ class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
     "ileQuery feature is enabled" should {
       "render 'Find another consignment' link to Find Consignment page" in {
+
+        implicit val request = journeyRequest(ArrivalAnswers())
 
         when(appConfig.ileQueryEnabled).thenReturn(true)
 

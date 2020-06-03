@@ -38,8 +38,7 @@
 @(
   title: Title,
   backButton: Option[BackButton] = None,
-  useCustomContentWidth: Boolean = false,
-  showSignOutLink: Boolean = true
+  useCustomContentWidth: Boolean = false
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @useTimeoutDialog = @{ request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]]}
@@ -100,7 +99,7 @@
     beforeContentBlock = Some(beforeContentBlock),
     bodyEndBlock = None,
     scriptsBlock = Some(scripts),
-    headerBlock = Some(siteHeader(showSignOutLink)),
+    headerBlock = Some(siteHeader()),
     footerItems = footer
   )(contentBlock)
 } else {
@@ -110,7 +109,7 @@
     beforeContentBlock = Some(beforeContentBlock),
     bodyEndBlock = None,
     scriptsBlock = Some(scripts),
-    headerBlock = Some(siteHeader(showSignOutLink)),
+    headerBlock = Some(siteHeader()),
     footerItems = footer
   )(contentBlock)
 }

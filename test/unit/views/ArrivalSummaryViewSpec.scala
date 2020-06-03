@@ -28,12 +28,11 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
-import play.api.test.FakeRequest
 import views.html.summary.arrival_summary_page
 
 class ArrivalSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private implicit val request = FakeRequest().withCSRFToken
+  private implicit val request = journeyRequest(ArrivalAnswers())
 
   private val appConfig = mock[AppConfig]
   private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))

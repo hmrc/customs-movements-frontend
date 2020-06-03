@@ -17,14 +17,14 @@
 package views
 
 import base.Injector
-import models.cache.AssociateUcrAnswers
 import play.api.i18n.MessagesApi
+import play.api.test.FakeRequest
 import play.twirl.api.Html
 import views.html.session_timed_out
 
 class SessionTimedOutViewSpec extends ViewSpec with Injector {
 
-  private implicit val request = journeyRequest(AssociateUcrAnswers())
+  private implicit val request = FakeRequest().withCSRFToken
   private val page = instanceOf[session_timed_out]
   private def createView(): Html = page()
 

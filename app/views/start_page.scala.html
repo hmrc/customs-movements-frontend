@@ -31,7 +31,7 @@
 
 @reportLink = {<a class="govuk-link" href="@{pageConfig.reportUrl}">@messages("startPage.problemsWithServiceNotice.link")</a>}
 @beforeYouStartLink = {<a class="govuk-link" href=@{pageConfig.beforeYouStartUrl}>@messages("startPage.beforeYouStart.line.1.link")</a>}
-@govukLayout(title = Title("startPage.title", Some("startPage.title.sectionHeader")), useCustomContentWidth = true, showSignOutLink = false) {
+@govukLayout(title = Title("startPage.title", Some("startPage.title.sectionHeader")), useCustomContentWidth = true) {
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">

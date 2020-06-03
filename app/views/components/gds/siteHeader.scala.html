@@ -24,12 +24,6 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@languageSelected = @{ if(messages.lang.code == "cy")
-    language.Cy
-else
-    language.En
-}
-
 @signOutHref = @{
   if (request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]])
     Some(controllers.routes.SignOutController.signOut(models.SignOutReason.UserAction).url)
@@ -40,7 +34,7 @@ else
 @hmrcHeader(Header(
     homepageUrl = "https://www.gov.uk",
     serviceName = Some(messages("service.name")),
-    language = languageSelected,
+    language = language.En,
     containerClasses = "govuk-width-container",
     signOutHref = signOutHref
 ))

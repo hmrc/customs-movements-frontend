@@ -19,7 +19,10 @@
 $govuk-assets-path: '/customs-movements/assets/';
 $govuk-images-path: "/customs-movements/assets/lib/govuk-frontend/govuk/assets/images/";
 $govuk-fonts-path: "/customs-movements/assets/lib/govuk-frontend/govuk/assets/fonts/";
+$hmrc-assets-path: "/customs-movements/assets/lib/hmrc-frontend/hmrc/assets/";
+
 @import 'lib/govuk-frontend/govuk/all';
+@import "lib/hmrc-frontend/hmrc/all";
 
 @import 'partials/_step-by-step-navigation';
 @import 'partials/_timeout-dialog.scss';

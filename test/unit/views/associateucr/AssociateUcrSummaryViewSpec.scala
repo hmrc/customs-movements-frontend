@@ -40,10 +40,12 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
     val view = createView("MUCR", "DUCR")
 
     "render title" in {
+
       view.getTitle must containMessage("associate.ucr.summary.title")
     }
 
     "render back button" in {
+
       val backButton = view.getBackButton
 
       backButton mustBe defined
@@ -54,16 +56,19 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
     }
 
     "display 'Confirm and submit' button on page" in {
+
       view.getElementsByClass("govuk-button").first() must containMessage("site.confirmAndSubmit")
     }
 
     "display 'Change' link on page for associate ucr" in {
-      val changeUcr = view.getElementsByClass("govuk-link").first()
+
+      val changeUcr = view.getElementsByClass("govuk-link").get(1)
       changeUcr must containMessage("site.change")
       changeUcr must haveHref(controllers.consolidations.routes.AssociateUcrController.displayPage())
     }
 
     "display 'Change' link on the page for mucr" in {
+
       val changeMucr = view.getElementsByClass("govuk-link").last()
       changeMucr must containMessage("site.change")
       changeMucr must haveHref(controllers.consolidations.routes.MucrOptionsController.displayPage())

@@ -18,7 +18,7 @@
 @import views.html.components.gds._
 
 @this(
-    govukLayout: gds_main_template,
+    gdsTemplate: gds_main_template,
     pageTitle: pageTitle,
     paragraphBody: paragraphBody,
     linkButton: linkButton
@@ -27,19 +27,20 @@
 @()(implicit request: Request[_], messages: Messages)
 
 @govukLink = {
-    <p class="govuk-body">
+    <p class="govuk-body govuk-!-margin-top-9">
         <a class="govuk-link govuk-link--no-visited-state" href="https://www.gov.uk/">@messages("site.link.backToGovUk")</a>
     </p>
 }
 
-@govukLayout(
-    title = Title("sessionTimout.title")) {
+@gdsTemplate(title = Title("userSignedOut.title")) {
 
-    @pageTitle(messages("sessionTimout.title"))
+  @pageTitle(messages("userSignedOut.title"))
 
-    @paragraphBody(messages("sessionTimout.paragraph.saved"))
+  @paragraphBody(messages("userSignedOut.information"))
 
-    @linkButton("sessionTimout.signin.button", controllers.routes.ChoiceController.displayChoiceForm())
+  <p class="govuk-body">
+    @link(messages("userSignedOut.startPageLink", request.host), controllers.routes.StartController.displayStartPage())
+  </p>
 
-    @govukLink
+  @govukLink
 }

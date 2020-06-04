@@ -21,18 +21,18 @@ import config.AppConfig
 import controllers.consolidations.routes
 import forms.ShutMucr
 import helpers.views.CommonMessages
+import models.cache.ShutMucrAnswers
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
-import play.api.test.FakeRequest
 import testdata.ConsolidationTestData.validMucr
 import views.ViewSpec
 import views.html.shutmucr.shut_mucr_summary
 
 class ShutMucrSummaryViewSpec extends ViewSpec with CommonMessages with MockitoSugar with BeforeAndAfterEach {
 
-  private implicit val request = FakeRequest().withCSRFToken
+  private implicit val request = journeyRequest(ShutMucrAnswers())
 
   private val appConfig = mock[AppConfig]
   private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))
@@ -77,22 +77,25 @@ class ShutMucrSummaryViewSpec extends ViewSpec with CommonMessages with MockitoS
       submitButton.text() mustBe messages("site.confirmAndSubmit")
     }
 
-    "not display change button when ileQuery enabled" in {
+    "not display change button when ileQuery enabled (Sign out link only)" in {
+
       when(appConfig.ileQueryEnabled).thenReturn(true)
 
-      shutMucrSummaryPage(shutMucr).getElementsByClass("govuk-link") mustBe empty
+      shutMucrSummaryPage(shutMucr).getElementsByClass("govuk-link").size() mustBe 1
     }
 
     "display correct change button when ileQuery disabled" in {
+
       when(appConfig.ileQueryEnabled).thenReturn(false)
 
-      val changeButton = shutMucrSummaryPage(shutMucr).getElementsByClass("govuk-link").first()
+      val changeButton = shutMucrSummaryPage(shutMucr).getElementsByClass("govuk-link").get(1)
 
       changeButton must haveHref(routes.ShutMucrController.displayPage())
       changeButton.text() must include(messages("site.edit"))
     }
 
     "have 'Back' button when ileQuery enabled" in {
+
       when(appConfig.ileQueryEnabled).thenReturn(true)
 
       val backButton = shutMucrSummaryPage(shutMucr).getBackButton
@@ -102,6 +105,7 @@ class ShutMucrSummaryViewSpec extends ViewSpec with CommonMessages with MockitoS
     }
 
     "have 'Back' button when ileQuery disabled" in {
+
       when(appConfig.ileQueryEnabled).thenReturn(false)
 
       val backButton = shutMucrSummaryPage(shutMucr).getBackButton

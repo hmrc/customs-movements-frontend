@@ -447,4 +447,4 @@ timeoutDialog.signout.text= Sign out
 
 userSignedOut.title = We have saved your answers and signed you out
 userSignedOut.information = To continue the declaration later, save this link:
-userSignedOut.startPageLink = https://www.tax.service.gov.uk/customs-movements/start
+userSignedOut.startPageLink = {0}/customs-movements/start

@@ -39,7 +39,7 @@
   @paragraphBody(messages("userSignedOut.information"))
 
   <p class="govuk-body">
-    @link(messages("userSignedOut.startPageLink"), controllers.routes.StartController.displayStartPage())
+    @link(messages("userSignedOut.startPageLink", request.host), controllers.routes.StartController.displayStartPage())
   </p>
 
   @govukLink

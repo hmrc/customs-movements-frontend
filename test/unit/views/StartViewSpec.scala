@@ -42,6 +42,7 @@ class StartViewSpec extends UnitViewSpec with Injector {
       messages must haveTranslationFor("startPage.beforeYouStart.line.1.link")
       messages must haveTranslationFor("startPage.beforeYouStart.line.2")
       messages must haveTranslationFor("startPage.beforeYouStart.line.3")
+      messages must haveTranslationFor("startPage.information")
       messages must haveTranslationFor("startPage.informationYouNeed.header")
       messages must haveTranslationFor("startPage.informationYouNeed.line.1")
       messages must haveTranslationFor("startPage.informationYouNeed.listItem.1")
@@ -95,6 +96,10 @@ class StartViewSpec extends UnitViewSpec with Injector {
       view.getElementById("before-you-start-element-1").text() must include("startPage.beforeYouStart.line.1")
       view.getElementById("before-you-start-element-2").text() mustBe "startPage.beforeYouStart.line.2"
       view.getElementById("before-you-start-element-3").text() mustBe "startPage.beforeYouStart.line.3"
+    }
+
+    "display time zone information" in {
+      view.getElementById("time-zone-information").text() must include("startPage.information")
     }
 
     "contain link to Customs Declarations Guidance in 'Before you start' section" in {

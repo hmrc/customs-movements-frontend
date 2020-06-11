@@ -42,6 +42,7 @@ class StartViewSpec extends UnitViewSpec with Injector {
       messages must haveTranslationFor("startPage.beforeYouStart.line.1.link")
       messages must haveTranslationFor("startPage.beforeYouStart.line.2")
       messages must haveTranslationFor("startPage.beforeYouStart.line.3")
+      messages must haveTranslationFor("startPage.information")
       messages must haveTranslationFor("startPage.informationYouNeed.header")
       messages must haveTranslationFor("startPage.informationYouNeed.line.1")
       messages must haveTranslationFor("startPage.informationYouNeed.listItem.1")

@@ -98,6 +98,10 @@ class StartViewSpec extends UnitViewSpec with Injector {
       view.getElementById("before-you-start-element-3").text() mustBe "startPage.beforeYouStart.line.3"
     }
 
+    "display time zone information" in {
+      view.getElementById("time-zone-information").text() must include("startPage.information")
+    }
+
     "contain link to Customs Declarations Guidance in 'Before you start' section" in {
       val view = page()(request, messagesApi.preferred(request))
       view.getElementById("before-you-start-element-1").child(0) must haveHref(

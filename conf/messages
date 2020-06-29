@@ -115,7 +115,8 @@ movement.arrival.heading = Arrival
 movement.departure.title = Departure
 movement.departure.heading = Departure
 
-movement.choice.title = What do you want to do with this consignment?
+movement.choice.title = What do you want to do?
+movement.choice.title.consignment = What do you want to do with this consignment?
 movement.choice.section = Consignment {0}
 movement.choice.arrival.label = Arrive
 movement.choice.departure.label = Depart

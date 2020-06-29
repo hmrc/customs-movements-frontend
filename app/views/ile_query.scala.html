@@ -34,7 +34,7 @@
 
 @govukLayout(
     title = Title("ileQuery.title"),
-    backButton = Some(BackButton(messages("site.back"), controllers.routes.StartController.displayStartPage))) {
+    backButton = None) {
 
     @formHelper(action = controllers.ileQuery.routes.FindConsignmentController.submitQueryForm(), 'autoComplete -> "off") {
 

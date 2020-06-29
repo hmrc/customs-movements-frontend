@@ -72,9 +72,16 @@
     )
 }
 
+@titleKey = @{
+  if(pageConfig.ileQueryEnabled)
+    "movement.choice.title.consignment"
+  else
+    "movement.choice.title"
+}
+
 @govukLayout(
-    title = Title("movement.choice.title"),
-    backButton = Some(BackButton(messages("site.back"), pageConfig.backLink(queryUcr)))) {
+    title = Title(titleKey),
+    backButton = pageConfig.backLink(queryUcr).map(call => BackButton(messages("site.back"), call))) {
 
     @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
@@ -87,7 +94,7 @@
             name = "choice",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("movement.choice.title")),
+                    content = Text(messages(titleKey)),
                     isPageHeading = true,
                     classes = "govuk-fieldset__legend--l"
                 ))

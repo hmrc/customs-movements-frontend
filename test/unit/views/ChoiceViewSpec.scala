@@ -52,8 +52,8 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
 
   def isIleQueryEnabled(enabled: Boolean): Unit = {
     when(pageConfig.backLink(any())).thenReturn(
-      if (enabled) controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
-      else controllers.routes.StartController.displayStartPage
+      if (enabled) Some(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+      else None
     )
     when(pageConfig.ileQueryEnabled).thenReturn(enabled)
   }
@@ -122,31 +122,47 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
 
   "Choice View on empty page" should {
 
-    "display same page title as header" in {
+    "display same page title as header with ile query disabled" in {
+      isIleQueryEnabled(false)
+
+      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+    }
+
+    "display same page title as header with ile query enabled" in {
       isIleQueryEnabled(true)
 
       val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
       viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
-    "display header with hint" in {
-      isIleQueryEnabled(true)
+    "display header with ile query disabled" in {
+      isIleQueryEnabled(false)
 
       createView().getElementsByClass("govuk-fieldset__heading").get(0).text() must be(messages("movement.choice.title"))
     }
 
-    "display 'Back' button that links to correct page" in {
+    "display header with ile query enabled" in {
+      isIleQueryEnabled(true)
+
+      createView().getElementsByClass("govuk-fieldset__heading").get(0).text() must be(messages("movement.choice.title.consignment"))
+    }
+
+    "display 'Back' button when ile query enabled" in {
       isIleQueryEnabled(true)
 
       val backButton = createView().getElementById("back-link")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be(
-        if (realAppConfig.ileQueryEnabled)
-          controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url
-        else
-          controllers.routes.StartController.displayStartPage().url
-      )
+      backButton.attr("href") must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
+    }
+
+    "not display 'Back' button when ile query disabled" in {
+      isIleQueryEnabled(false)
+
+      val backButton = createView().getElementById("back-link")
+
+      backButton must be(null)
     }
 
     "display 5 radio buttons with labels when ileQuery is enabled" in {
@@ -172,10 +188,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
       view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.disassociateucr.label"))
       view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.shutmucr.label"))
       view.getElementsByAttributeValue("for", "choice-5").text() must be(messages("movement.choice.departure.label"))
-
-      if (!realAppConfig.ileQueryEnabled) {
-        view.getElementsByAttributeValue("for", "choice-6").text() must be(messages("movement.choice.submissions.label"))
-      }
+      view.getElementsByAttributeValue("for", "choice-6").text() must be(messages("movement.choice.submissions.label"))
     }
 
     "display 4 unchecked radio buttons" in {

@@ -40,12 +40,11 @@ class IleQueryViewSpec extends ViewSpec with Injector with CommonMessages {
       view.getTitle must containMessage("ileQuery.title")
     }
 
-    "render 'Back' button that links to 'Start' page" in {
+    "not render 'Back' button" in {
 
       val backButton = view.getElementById("back-link")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be(controllers.routes.StartController.displayStartPage().url)
+      backButton must be(null)
     }
 
     "render page header" in {

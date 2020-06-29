@@ -28,8 +28,8 @@ class ChoicePageConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
     val config = new ChoicePageConfig(ileQueryDisabled)
 
     "return correct url" in {
-      config.backLink(None) mustBe controllers.routes.StartController.displayStartPage()
-      config.backLink(Some(queryUcr)) mustBe controllers.routes.StartController.displayStartPage()
+      config.backLink(None) mustBe None
+      config.backLink(Some(queryUcr)) mustBe None
     }
 
     "return information about ile query" in {
@@ -44,12 +44,12 @@ class ChoicePageConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
 
     "return correct url when query ucr present" in {
 
-      config.backLink(Some(queryUcr)) mustBe controllers.ileQuery.routes.IleQueryController.getConsignmentInformation("ucr")
+      config.backLink(Some(queryUcr)) mustBe Some(controllers.ileQuery.routes.IleQueryController.getConsignmentInformation("ucr"))
     }
 
     "return correct url when query ucr not present" in {
 
-      config.backLink(None) mustBe controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
+      config.backLink(None) mustBe Some(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
     }
 
     "return information about ile query" in {

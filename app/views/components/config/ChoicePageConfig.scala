@@ -22,11 +22,13 @@ import models.UcrBlock
 import play.api.mvc.Call
 
 class ChoicePageConfig @Inject()(appConfig: AppConfig) extends BaseConfig(appConfig) {
-  def backLink(queryUcr: Option[UcrBlock]): Call =
+  def backLink(queryUcr: Option[UcrBlock]): Option[Call] =
     if (appConfig.ileQueryEnabled)
-      queryUcr
-        .map(block => controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(block.ucr))
-        .getOrElse(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+      Some(
+        queryUcr
+          .map(block => controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(block.ucr))
+          .getOrElse(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+      )
     else
-      controllers.routes.StartController.displayStartPage
+      None
 }

@@ -67,13 +67,26 @@
                     value = Some("create"),
                     content = Text(messages("mucrOptions.create")),
                     checked = form("createOrAdd").value.contains("create"),
-                    conditionalHtml = Some(exportsInputText(form("newMucr"), "site.inputText.newMucr.label", Some("site.inputText.newMucr.label.hint")))
+                    conditionalHtml = Some(
+                        exportsInputText(
+                            field = form("newMucr"),
+                            labelKey = "site.inputText.newMucr.label",
+                            hintKey = Some("site.inputText.newMucr.label.hint"),
+                            inputClasses = "govuk-input govuk-input--width-20"
+                        )
+                    )
                 ),
                 RadioItem(
                     value = Some("add"),
                     content = Text(messages("mucrOptions.add")),
                     checked = form("createOrAdd").value.contains("add"),
-                    conditionalHtml = Some(exportsInputText(form("existingMucr"), "site.inputText.mucr.label"))
+                    conditionalHtml = Some(
+                        exportsInputText(
+                            field = form("existingMucr"),
+                            labelKey = "site.inputText.mucr.label",
+                            inputClasses = "govuk-input govuk-input--width-20"
+                        )
+                    )
                 )
             ),
             errorMessage = form("createOrAdd").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))

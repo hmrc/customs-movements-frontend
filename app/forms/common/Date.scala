@@ -30,14 +30,10 @@ case class Date(date: LocalDate) {
 
   private val format102 = DateTimeFormatter.ofPattern("yyyyMMdd")
 
-  private val inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-
   def to102Format: String = date.format(format102)
 
-  def toInputFormat: String = date.format(inputFormat)
-
   def to304Format: String = {
-    import java.time.{LocalDate, LocalTime}
+    import java.time.LocalTime
     date.atTime(LocalTime.of(0, 0, 0)).format(DateTimeFormatter.ISO_DATE_TIME)
 
   }

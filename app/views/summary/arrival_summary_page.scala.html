@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import components.gds.{gds_main_template, pageTitle}
+@import components.gds.{gds_main_template, linkContent, pageTitle}
 @import controllers.routes
 @import forms.UcrType.Ducr
 @import models.cache.ArrivalAnswers
@@ -22,12 +22,14 @@
 @import views.Title
 @import views.components.BackButton
 @import views.components.config.BaseConfig
+@import views.ViewDates
 
 @this(  govukLayout: gds_main_template,
         govukButton: GovukButton,
         pageTitle: pageTitle,
         govukSummaryList : GovukSummaryList,
         ileQueryFeature: BaseConfig,
+        linkContent: linkContent,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(data: ArrivalAnswers)(implicit request: Request[_], messages: Messages)
@@ -63,7 +65,7 @@
                             items = Seq(
                                 ActionItem(
                                     href = s"${routes.ConsignmentReferencesController.displayPage}",
-                                    content = Text(messages("site.change")),
+                                    content = HtmlContent(linkContent(messages("site.change"))),
                                     visuallyHiddenText = Some(messages("summary.referenceType.change"))
                                 )
                             )
@@ -81,8 +83,8 @@
                             items = Seq(
                                 ActionItem(
                                     href = s"${routes.ConsignmentReferencesController.displayPage}",
-                                    content = Text(messages("site.change")),
-                                    visuallyHiddenText = Some(messages("summary.referenceType.change"))
+                                    content = HtmlContent(linkContent(messages("site.change"))),
+                                    visuallyHiddenText = Some(messages("summary.referenceValue.change"))
                                 )
                             )
                         ))
@@ -100,13 +102,13 @@
                             content = Text(messages("summary.arrival.date"))
                         ),
                         value = Value(
-                            content = Text(data.arrivalDetails.map(_.dateOfArrival.toString).getOrElse(""))
+                            content = Text(data.arrivalDetails.map(arrival => ViewDates.dateFormatter.format(arrival.dateOfArrival.date)).getOrElse(""))
                         ),
                         actions = Some(Actions(
                             items = Seq(
                                 ActionItem(
                                     href = s"${routes.MovementDetailsController.displayPage}",
-                                    content = Text(messages("site.change")),
+                                    content = HtmlContent(linkContent(messages("site.change"))),
                                     visuallyHiddenText = Some(messages("summary.arrival.date.change"))
                                 )
                             )
@@ -123,7 +125,7 @@
                             items = Seq(
                                 ActionItem(
                                     href = s"${routes.MovementDetailsController.displayPage}",
-                                    content = Text(messages("site.change")),
+                                    content = HtmlContent(linkContent(messages("site.change"))),
                                     visuallyHiddenText = Some(messages("summary.arrival.time.change"))
                                 )
                             )
@@ -148,7 +150,7 @@
                             items = Seq(
                                 ActionItem(
                                     href = s"${routes.LocationController.displayPage}",
-                                    content = Text(messages("site.change")),
+                                    content = HtmlContent(linkContent(messages("site.change"))),
                                     visuallyHiddenText = Some(messages("summary.goodsLocation.change"))
                                 )
                             )

@@ -22,12 +22,12 @@
 @import views.components.BackButton
 @import views.Title
 @import views.components.config.ViewRequestsConfig
+@import views.ViewDates
 
 @this(
   govukLayout: gds_main_template,
   pageTitle: pageTitle,
   table: GovukTable,
-  formatter: DateTimeFormatter,
   viewRequestsConfig: ViewRequestsConfig
 )
 
@@ -98,7 +98,7 @@
               classes = submissionTypeClass
             ),
             TableRow(
-              content = Text(formatter.format(submission.requestTimestamp)),
+              content = Text(ViewDates.dateAtTimeFormatter.format(submission.requestTimestamp)),
               classes = dateOfRequestClass
             ),
             TableRow(

@@ -114,7 +114,7 @@ class ArrivalSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
       view.getElementsByClass("govuk-heading-m").get(section_arrival_datetime) must containMessage("arrivalDetails.title")
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_date) must containMessage("summary.arrival.date")
-      view.getElementsByClass("govuk-summary-list__value").get(answer_date).text mustBe date.toInputFormat
+      view.getElementsByClass("govuk-summary-list__value").get(answer_date).text mustBe date.date.format(ViewDates.dateFormatter)
 
       val changeDate = view.getElementsByClass("govuk-link").get(answer_date_link_index)
       changeDate must containMessage("site.change")

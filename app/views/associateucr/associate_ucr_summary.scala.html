@@ -16,16 +16,15 @@
 
 @import forms.AssociateUcr
 @import views.Title
-@import components.gds.{gds_main_template, pageTitle}
-@import forms.ShutMucr
+@import components.gds.{gds_main_template, linkContent, pageTitle}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.Title
 @import views.components.BackButton
 
 @this(  govukLayout: gds_main_template,
         govukButton: GovukButton,
         pageTitle: pageTitle,
         govukSummaryList : GovukSummaryList,
+        linkContent: linkContent,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(associateUcr: AssociateUcr, mucr: String)(implicit request: Request[_], messages: Messages)
@@ -52,7 +51,7 @@
                             items = Seq(
                                 ActionItem(
                                     href = s"${consolidations.routes.AssociateUcrController.displayPage}",
-                                    content = Text(messages("site.change")),
+                                    content = HtmlContent(linkContent(messages("site.change"))),
                                     visuallyHiddenText = Some(messages("site.change.hint.associate.ucr", associateUcr.kind.formValue.toUpperCase()))
                                 )
                             )
@@ -77,7 +76,7 @@
                             items = Seq(
                                 ActionItem(
                                     href = s"${consolidations.routes.MucrOptionsController.displayPage}",
-                                    content = Text(messages("site.change")),
+                                    content = HtmlContent(linkContent(messages("site.change"))),
                                     visuallyHiddenText = Some(messages("site.change.hint.associate.mucr"))
                                 )
                             )

@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter
 object ViewDates {
   def timezone = ZoneId.of("Europe/London")
 
-  val movementFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu 'at' HH:mm").withZone(timezone)
+  val dateAtTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu 'at' HH:mm").withZone(timezone)
+  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu").withZone(timezone)
 
 }

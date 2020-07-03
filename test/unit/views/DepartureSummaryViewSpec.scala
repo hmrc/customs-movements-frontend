@@ -28,7 +28,6 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
-import play.api.test.FakeRequest
 import views.html.summary.departure_summary_page
 
 class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
@@ -120,7 +119,7 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       view.getElementsByClass("govuk-heading-m").get(section_depart_datetime) must containMessage("departureDetails.title")
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_date) must containMessage("summary.departure.date")
-      view.getElementsByClass("govuk-summary-list__value").get(answer_date).text mustBe date.toInputFormat
+      view.getElementsByClass("govuk-summary-list__value").get(answer_date).text mustBe date.date.format(ViewDates.dateFormatter)
 
       val changeDate = view.getElementsByClass("govuk-link").get(answer_date_link_index)
       changeDate must containMessage("site.change")

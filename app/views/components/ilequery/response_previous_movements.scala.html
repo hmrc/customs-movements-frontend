@@ -32,7 +32,7 @@
                         attributes = Map("id" -> s"movement_type_${indexedMovement._2}")
                     ),
                     TableRow(
-                        content = Text(indexedMovement._1.movementDateTime.map(date => ViewDates.movementFormatter.format(date)).getOrElse("")),
+                        content = Text(indexedMovement._1.movementDateTime.map(date => ViewDates.dateAtTimeFormatter.format(date)).getOrElse("")),
                         attributes = Map("id" -> s"movement_date_${indexedMovement._2}")
                     ),
                     TableRow(

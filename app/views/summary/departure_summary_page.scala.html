@@ -22,6 +22,7 @@
 @import views.Title
 @import views.components.BackButton
 @import views.components.config.BaseConfig
+@import views.ViewDates
 
 @this(  govukLayout: gds_main_template,
         govukButton: GovukButton,
@@ -100,7 +101,7 @@
                             content = Text(messages("summary.departure.date"))
                         ),
                         value = Value(
-                            content = Text(data.departureDetails.map(_.dateOfDeparture.toString).getOrElse(""))
+                            content = Text(data.departureDetails.map(departure => ViewDates.dateFormatter.format(departure.dateOfDeparture.date)).getOrElse(""))
                         ),
                         actions = Some(Actions(
                             items = Seq(

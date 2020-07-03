@@ -16,7 +16,6 @@
 
 package views
 
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit.MINUTES
 import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 
@@ -122,7 +121,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
       val firstDataRowElements = pageWithData.selectFirst(".govuk-table__body .govuk-table__row:nth-child(1)")
       val secondDataRowElements = pageWithData.selectFirst(".govuk-table__body .govuk-table__row:nth-child(2)")
 
-      val formatter = DateTimeFormatter.ofPattern("dd MMM YYYY 'at' HH:mm")
+      val formatter = ViewDates.dateAtTimeFormatter
 
       firstDataRowElements.selectFirst(".ucr").text() mustBe validMucr
       firstDataRowElements.selectFirst(".submission-type").text() mustBe "MUCR"

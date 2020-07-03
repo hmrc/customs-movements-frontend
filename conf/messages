@@ -60,11 +60,11 @@ site.backToStartPage = Back to start page
 site.add = Add
 site.remove = Remove
 site.change = Change
-site.change.hint.disassociate.ucr = Change {0} dissociation
+site.change.hint.disassociate.ucr = Change {0} to be removed
 site.change.hint.associate.ucr = Change {0} to be added
 site.change.hint.associate.mucr = Change MUCR
 site.change.hint.associate.ducr = Change DUCR
-site.change.hint.shut.mucr = Change MUCR
+site.change.hint.shut.mucr = Change MUCR to be shut
 site.add.item= Add item
 
 site.inputText.ducr.label = Enter an existing DUCR

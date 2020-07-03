@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import components.gds.{gds_main_template, pageTitle}
+@import components.gds.{gds_main_template, linkContent, pageTitle}
 @import forms.ShutMucr
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
@@ -25,6 +25,7 @@
         govukButton: GovukButton,
         pageTitle: pageTitle,
         govukSummaryList : GovukSummaryList,
+        linkContent: linkContent,
         pageConfig: ShutMucrSummaryConfig,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
@@ -52,8 +53,8 @@
                             items = Seq(
                                 ActionItem(
                                     href = s"${consolidations.routes.ShutMucrController.displayPage}",
-                                    content = Text(messages("site.change")),
-                                    visuallyHiddenText = Some(messages("site.change.hint.disassociate.ucr", shutMucr.mucr.toUpperCase()))
+                                    content = HtmlContent(linkContent(messages("site.change"))),
+                                    visuallyHiddenText = Some(messages("site.change.hint.shut.mucr"))
                                 )
                             )
                         ))

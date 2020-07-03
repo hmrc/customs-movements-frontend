@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import components.gds.{gds_main_template, pageTitle}
+@import components.gds.{gds_main_template, linkContent, pageTitle}
 @import forms.DisassociateUcr
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
@@ -26,6 +26,7 @@
         table: GovukTable,
         govukButton: GovukButton,
         govukSummaryList : GovukSummaryList,
+        linkContent: linkContent,
         pageConfig: DissociateSummaryConfig,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
@@ -54,7 +55,7 @@
                         items = Seq(
                             ActionItem(
                                 href = s"${consolidations.routes.DisassociateUcrController.displayPage()}",
-                                content = Text(messages("site.change")),
+                                content = HtmlContent(linkContent(messages("site.change"))),
                                 visuallyHiddenText = Some(messages("site.change.hint.disassociate.ucr", disassociateUcr.kind.toString.toUpperCase))
                             )
                         )

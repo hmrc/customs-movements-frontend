@@ -14,21 +14,21 @@
  * limitations under the License.
  *@
 
-@import forms.AssociateUcr
 @import views.Title
-@import components.gds.{gds_main_template, pageTitle}
-@import forms.ShutMucr
+@import components.gds.{gds_main_template, linkContent, pageTitle}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.Title
 @import views.components.BackButton
 @import forms.UcrType
 @import forms.ManageMucrChoice
 
-@this(  govukLayout: gds_main_template,
-govukButton: GovukButton,
-pageTitle: pageTitle,
-govukSummaryList : GovukSummaryList,
-formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@this(
+    govukLayout: gds_main_template,
+    govukButton: GovukButton,
+    pageTitle: pageTitle,
+    govukSummaryList : GovukSummaryList,
+    linkContent: linkContent,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(consignmentRef: String, associateWith: String, associateKind: UcrType, manageMucrChoice: Option[ManageMucrChoice])(implicit request: Request[_], messages: Messages)
 
@@ -76,7 +76,7 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
                         items = Seq(
                             ActionItem(
                                 href = changeUrl,
-                                content = Text(messages("site.change")),
+                                content = HtmlContent(linkContent(messages("site.change"))),
                                 visuallyHiddenText = Some(messages(s"site.change.hint.associate.${associateKind.formValue}"))
                             )
                         )

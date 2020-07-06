@@ -314,8 +314,6 @@ associate.ucr.summary.associate.with.mucr = Associate with MUCR
 associate.ucr.summary.associate.with.ducr = Associate with DUCR
 associate.ucr.summary.kind.mucr = MUCR
 associate.ucr.summary.kind.ducr = DUCR
-associate.ucr.summary.addConsignment = Add consignment
-associate.ucr.summary.masterConsignment = To master consignment
 
 confirmation.title.ARRIVE = Your arrival request has been submitted
 confirmation.title.DEPART = Your departure request has been submitted

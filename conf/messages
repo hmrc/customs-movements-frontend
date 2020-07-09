@@ -14,49 +14,23 @@ time.hour = Hour
 time.minute = Minute
 
 error.boolean = Please give an answer
-error.invalid_date = Give a correct date
-error.date.day_blank = Enter a day
-error.date.day_invalid = Give a correct day using numbers 1 to 31
-error.date.month_blank = Enter a month
-error.date.month_invalid = Give a correct month using numbers 1 to 12
-error.date.year_blank = Enter a year
-error.date.year_invalid = Give a correct year
-error.integer = Give an answer in whole numbers
-error.non_numeric = Give a value using only numbers
 error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There’s been a problem
 error.summary.text = Check the following
-error.consignment = Please answer on the question
 error.ducr = Incorrect DUCR
 error.ducr.empty = DUCR number cannot be empty
-error.ducr.format = DUCR number is in incorrect format
 error.mucr.empty = MUCR number cannot be empty
 error.mucr.format = MUCR number is in incorrect format
 
-session_expired.title = For your security, this service has been reset
-session_expired.heading = For your security, this service has been reset
-session_expired.guidance = The details you have given have been deleted because you did not continue the service for 1 hour.
-
 site.back = Back
 site.back.toStartPage = Back to selection page
-site.delete = Remove
-site.link.delete = Delete
 site.link.backToGovUk = Back to GOV.UK
 site.edit = Change
-site.hidden-delete = Delete {0}
-site.hidden-edit = Change {0}
-site.no = No
-site.yes = Yes
 site.save_and_continue = Save and continue
 site.continue = Continue
-site.acceptAndSend = Accept and send
 site.confirmAndSubmit = Confirm and submit
-site.save_and_come_back_later = Save and come back later
-site.textarea.char_limit = (Limit is {0} characters)
 site.submit = Submit
-site.backToStart = Back to start
-site.backToStartPage = Back to start page
 site.add = Add
 site.remove = Remove
 site.change = Change
@@ -65,7 +39,6 @@ site.change.hint.associate.ucr = Change {0} to be added
 site.change.hint.associate.mucr = Change MUCR
 site.change.hint.associate.ducr = Change DUCR
 site.change.hint.shut.mucr = Change MUCR to be shut
-site.add.item= Add item
 
 site.inputText.ducr.label = Enter an existing DUCR
 site.inputText.mucr.label = Enter an existing MUCR
@@ -73,47 +46,16 @@ site.inputText.newMucr.label = Enter a new MUCR
 site.inputText.newMucr.label.hint = For example ‘GB/123456789100-AB123’
 
 
-general.inquiries.help.link = General enquires help
-
 unauthorised.title = You can’t access this service with this account
 
 date.error.invalid = Date is incorrect
 time.error.invalid = Time is incorrect
 
-address.fullName = Full name
-address.buildingAndStreet = Building and street
-address.city = Town or city
-address.county = County (optional)
-address.postcode = Postcode
-address.country = Country
-address.error.required.fullName = Enter full name
-address.error.required.building = Enter building
-address.error.required.street = Enter street
-address.error.required.townOrCity = Enter town or city
-address.error.required.postcode = Enter postcode
-address.error.required.country = Enter country
-
-simpleDeclaration.title = Simple declaration
-simpleDeclaration.heading = Simple declaration
-isDeclarationForSomeoneElse.no = No - I'm making this declaration for myself
-
 global.error.title = There is a problem - Declare customs exports for CDS Exports - GOV.UK
 global.error.heading = There is a problem with a service
 global.error.message = Please try again later.
 
-confirmationPage.title = Confirmation page
-
-arrivals.confirmation = Arrival confirmation
-arrivals.title = Arrivals
-arrivals.heading = Arrivals
-arrivals.ducr = DUCR
-
 movement.sectionHeading = {0} consignment {1}
-
-movement.arrival.title = Arrival
-movement.arrival.heading = Arrival
-movement.departure.title = Departure
-movement.departure.heading = Departure
 
 movement.choice.title = What do you want to do?
 movement.choice.title.consignment = What do you want to do with this consignment?
@@ -250,9 +192,6 @@ summary.departure.date.change = Change date of departure
 summary.departure.time = Time of departure
 summary.departure.time.change = Change time of departure
 
-summary.arrivalReference.reference = Unique reference
-summary.arrivalReference.reference.change = Change unique reference
-
 disassociate.ucr.title = Which consignment do you want to remove?
 disassociate.ucr.heading = Remove from MUCR
 disassociate.ucr.ducr = Declaration Consignment Reference (DUCR)
@@ -263,10 +202,6 @@ disassociate.ucr.ducr.error = Declaration Consignment Reference is incorrect
 disassociate.ucr.ducr.empty = Enter a Declaration Consignment Reference
 disassociate.ucr.mucr.error = Master Consignment Reference is incorrect
 disassociate.ucr.mucr.empty = Enter a Master Consignment Reference
-
-disassociateDucr.title = Which DUCR do you want to remove?
-disassociateDucr.ducr.empty = Please enter DUCR
-disassociateDucr.ducr.error = Incorrect DUCR
 
 shutMucr.tabTitle = Shut a MUCR
 shutMucr.title = Which master consignment do you want to shut?
@@ -282,10 +217,7 @@ mucrOptions.hint.link = DE 2/1 in the UK Trade Tariff
 mucrOptions.title = Create or enter a Master Consignment Reference (MUCR) to associate with
 mucrOptions.create = Create a MUCR
 mucrOptions.add = Add to an existing MUCR
-mucrOptions.create.reference = Enter an alphanumeric reference
-mucrOptions.add.reference = Which MUCR do you want to add to?
 mucrOptions.createAdd.value.empty = Please select an option
-mucrOptions.reference.value.empty = Please enter a reference
 mucrOptions.reference.value.error = Please enter a valid reference
 
 manageMucr.title = What do you want to associate?
@@ -302,9 +234,7 @@ mucr.error.format = Master Unique Consignment Reference is in incorrect format
 
 associate.ucr.title = Which consignment do you want to add?
 associate.ucr.ducr = Declaration Consignment Reference (DUCR)
-associate.ucr.ducr.label = Declaration Unique Consignment Reference
 associate.ucr.mucr = Master Consignment Reference (MUCR)
-associate.ucr.mucr.label = Master Unique Consignment Reference
 
 associate.ucr.hint = You may want to keep a record of which consignments you have added to this MUCR.
 
@@ -334,8 +264,6 @@ submissions.eori = Eori
 submissions.conversationId = ConversationId
 submissions.ucr = UCR
 submissions.dateOfRequest = Date of request
-submissions.dateOfUpdate = Date of update
-submissions.status = Status
 
 submissions.shutmucr = Shut
 submissions.arrival = Arrive
@@ -383,13 +311,6 @@ notifications.elem.content.inventoryLinkingMovementResponse.crc = CRC:
 
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Route of entry is:
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Status of entry is:
-
-arrivalReference = Arrival reference
-arrivalReference.question = Give this arrival a unique reference
-
-arrivalReference.sectionHeading = Arrive consignment {0}
-arrivalReference.hint = This will help you identify it if you need to find it in the future. It can be up to 25 characters.
-arrivalReference.error = The reference should be no more than 25 characters.
 
 ileQuery.title = Find a consignment
 ileQuery.hint = Search by Master Consignment Reference (MUCR) or Declaration Consignment Reference (DUCR)

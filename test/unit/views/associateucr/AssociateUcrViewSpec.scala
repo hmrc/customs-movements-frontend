@@ -19,7 +19,6 @@ package views.associateucr
 import base.Injector
 import forms.UcrType._
 import forms.{AssociateUcr, MucrOptions}
-import helpers.views.{AssociateDucrMessages, CommonMessages}
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import play.twirl.api.Html
@@ -28,7 +27,7 @@ import views.spec.{UnitViewSpec, ViewMatchers}
 import views.tags.ViewTest
 
 @ViewTest
-class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with CommonMessages with ViewMatchers with Injector {
+class AssociateUcrViewSpec extends UnitViewSpec with ViewMatchers with Injector {
 
   private val page = instanceOf[associate_ucr]
 
@@ -41,8 +40,8 @@ class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with 
 
     "have a proper labels for messages" in {
       val messages = messagesApi.preferred(request)
-      messages must haveTranslationFor(title)
-      messages must haveTranslationFor(hint)
+      messages must haveTranslationFor("associate.ucr.title")
+      messages must haveTranslationFor("associate.ucr.hint")
     }
 
     "form is empty" should {
@@ -73,7 +72,7 @@ class AssociateUcrViewSpec extends UnitViewSpec with AssociateDucrMessages with 
       }
 
       "display 'Continue' button on page" in {
-        emptyView.getElementsByClass("govuk-button").text() mustBe continueCaption
+        emptyView.getElementsByClass("govuk-button").text() mustBe "site.continue"
       }
     }
 

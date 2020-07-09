@@ -18,7 +18,6 @@ package views
 
 import base.Injector
 import forms.IleQueryForm
-import helpers.views.CommonMessages
 import org.jsoup.nodes.Element
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
@@ -26,7 +25,7 @@ import views.html.ile_query
 import views.tags.ViewTest
 
 @ViewTest
-class IleQueryViewSpec extends ViewSpec with Injector with CommonMessages {
+class IleQueryViewSpec extends ViewSpec with Injector {
 
   private implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
 

@@ -19,7 +19,6 @@ package views
 import base.Injector
 import controllers.routes
 import forms.Transport
-import helpers.views.CommonMessages
 import models.cache.ArrivalAnswers
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -27,7 +26,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.twirl.api.Html
 import views.html.transport
 
-class TransportViewSpec extends ViewSpec with CommonMessages with Injector {
+class TransportViewSpec extends ViewSpec with Injector {
 
   private val form: Form[Transport] = Transport.form
   private val transportPage = instanceOf[transport]
@@ -76,13 +75,13 @@ class TransportViewSpec extends ViewSpec with CommonMessages with Injector {
 
       val backButton = createPage.getElementById("back-link")
 
-      backButton.text() must be(messages(backCaption))
+      backButton.text() must be(messages("site.back"))
       backButton must haveHref(routes.LocationController.displayPage())
     }
 
     "display 'Continue' button on page" in {
       val saveButton = createPage.getElementsByClass("govuk-button").get(0)
-      saveButton.text() must be(messages(continueCaption))
+      saveButton.text() must be(messages("site.continue"))
     }
   }
 

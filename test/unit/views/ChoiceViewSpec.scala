@@ -19,7 +19,6 @@ package views
 import base.Injector
 import forms.Choice._
 import forms.{Choice, UcrType}
-import helpers.views.CommonMessages
 import models.UcrBlock
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
@@ -38,7 +37,7 @@ import views.spec.UnitViewSpec.{realAppConfig, realMessagesApi}
 import views.tags.ViewTest
 
 @ViewTest
-class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with BeforeAndAfterEach {
+class ChoiceViewSpec extends UnitViewSpec with Injector with BeforeAndAfterEach {
 
   private val form: Form[Choice] = Choice.form()
 
@@ -153,7 +152,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
 
       val backButton = createView().getElementById("back-link")
 
-      backButton.text() must be(messages(backCaption))
+      backButton.text() must be(messages("site.back"))
       backButton.attr("href") must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
     }
 
@@ -208,7 +207,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
       val view = createView()
 
       val saveButton = view.getElementsByClass("govuk-button").get(0)
-      saveButton.text() must be(messages(continueCaption))
+      saveButton.text() must be(messages("site.continue"))
     }
   }
 

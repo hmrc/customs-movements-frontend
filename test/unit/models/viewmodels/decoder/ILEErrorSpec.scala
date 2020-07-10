@@ -16,12 +16,14 @@
 
 package models.viewmodels.decoder
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.MustMatchers
 import play.api.test.FakeRequest
-import utils.FakeRequestCSRFSupport.CSRFFakeRequest
-import views.spec.{UnitViewSpec, ViewMatchers}
+import views.ViewSpec
+import views.spec.ViewMatchers
 
-class ILEErrorSpec extends WordSpec with MustMatchers with ViewMatchers {
+class ILEErrorSpec extends ViewSpec with MustMatchers with ViewMatchers {
+
+  private implicit val request = FakeRequest().withCSRFToken
 
   "ILE Error" should {
 
@@ -40,7 +42,6 @@ class ILEErrorSpec extends WordSpec with MustMatchers with ViewMatchers {
     }
 
     "have translations for all errors" in {
-      val messages = UnitViewSpec.realMessagesApi.preferred(FakeRequest().withCSRFToken)
 
       val ileErrorsNames = Seq(
         "InvalidUcrFormat",

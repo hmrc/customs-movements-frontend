@@ -20,6 +20,7 @@ import java.time.temporal.ChronoUnit.MINUTES
 import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 
 import base.Injector
+import config.AppConfigSpec
 import connectors.exchanges.ActionType.{ConsolidationType, MovementType}
 import controllers.routes
 import models.UcrBlock
@@ -34,7 +35,6 @@ import testdata.ConsolidationTestData._
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import views.html.movements
-import views.spec.UnitViewSpec.realAppConfig
 
 class MovementsViewSpec extends ViewSpec with Injector {
 
@@ -59,7 +59,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
 
       backButton must containMessage("site.back.toStartPage")
 
-      if (realAppConfig.ileQueryEnabled)
+      if (AppConfigSpec.realAppConfig.ileQueryEnabled)
         backButton must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
       else backButton must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
     }

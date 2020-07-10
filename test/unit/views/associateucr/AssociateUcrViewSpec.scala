@@ -19,15 +19,18 @@ package views.associateucr
 import base.Injector
 import forms.UcrType._
 import forms.{AssociateUcr, MucrOptions}
+import models.cache.AssociateUcrAnswers
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import play.twirl.api.Html
+import views.ViewSpec
 import views.html.associateucr.associate_ucr
-import views.spec.{UnitViewSpec, ViewMatchers}
 import views.tags.ViewTest
 
 @ViewTest
-class AssociateUcrViewSpec extends UnitViewSpec with ViewMatchers with Injector {
+class AssociateUcrViewSpec extends ViewSpec with Injector {
+
+  private implicit val request = journeyRequest(AssociateUcrAnswers())
 
   private val page = instanceOf[associate_ucr]
 
@@ -39,7 +42,6 @@ class AssociateUcrViewSpec extends UnitViewSpec with ViewMatchers with Injector 
   "Associate Ucr View" when {
 
     "have a proper labels for messages" in {
-      val messages = messagesApi.preferred(request)
       messages must haveTranslationFor("associate.ucr.title")
       messages must haveTranslationFor("associate.ucr.hint")
     }
@@ -52,7 +54,7 @@ class AssociateUcrViewSpec extends UnitViewSpec with ViewMatchers with Injector 
         }
 
         "display label" in {
-          emptyView.getElementsByAttributeValue("for", "kind").text() mustBe "associate.ucr.ducr"
+          emptyView.getElementsByAttributeValue("for", "kind").text() mustBe messages("associate.ucr.ducr")
         }
         "have input for value" in {
           emptyView.getElementById("ducr").`val`() mustBe empty
@@ -64,7 +66,7 @@ class AssociateUcrViewSpec extends UnitViewSpec with ViewMatchers with Injector 
           emptyView.getElementById("kind-2") mustBe unchecked
         }
         "display label" in {
-          emptyView.getElementsByAttributeValue("for", "kind-2").text() mustBe "associate.ucr.mucr"
+          emptyView.getElementsByAttributeValue("for", "kind-2").text() mustBe messages("associate.ucr.mucr")
         }
         "have input" in {
           emptyView.getElementById("mucr").`val`() mustBe empty
@@ -72,7 +74,7 @@ class AssociateUcrViewSpec extends UnitViewSpec with ViewMatchers with Injector 
       }
 
       "display 'Continue' button on page" in {
-        emptyView.getElementsByClass("govuk-button").text() mustBe "site.continue"
+        emptyView.getElementsByClass("govuk-button").text() mustBe messages("site.continue")
       }
     }
 
@@ -102,7 +104,7 @@ class AssociateUcrViewSpec extends UnitViewSpec with ViewMatchers with Injector 
       val view: Document = createView(mucrOptions, value)
 
       view must haveGovUkGlobalErrorSummary
-      view must haveGovUkFieldError("ducr", "ducr.error.empty")
+      view must haveGovUkFieldError("ducr", messages("ducr.error.empty"))
     }
   }
 

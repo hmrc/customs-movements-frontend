@@ -17,14 +17,16 @@
 package views
 
 import base.Injector
+import config.AppConfigSpec
+import play.api.test.FakeRequest
 import play.twirl.api.Html
 import views.html.start_page
-import views.spec.UnitViewSpec
-import views.spec.UnitViewSpec.realAppConfig
 import views.tags.ViewTest
 
 @ViewTest
-class StartViewSpec extends UnitViewSpec with Injector {
+class StartViewSpec extends ViewSpec with Injector {
+
+  private implicit val request = FakeRequest().withCSRFToken
 
   private val page = instanceOf[start_page]
   private def createView(): Html = page()(request, messages)
@@ -32,7 +34,6 @@ class StartViewSpec extends UnitViewSpec with Injector {
   "Start Page view" should {
 
     "have proper messages for labels" in {
-      val messages = messagesApi.preferred(request)
       messages must haveTranslationFor("startPage.title.sectionHeader")
       messages must haveTranslationFor("startPage.title")
       messages must haveTranslationFor("startPage.description")
@@ -59,29 +60,29 @@ class StartViewSpec extends UnitViewSpec with Injector {
 
     "display same page title as header" in {
 
-      val view = page()(request, messagesApi.preferred(request))
+      val view = page()
       view.title() must include(view.getElementsByTag("h1").text())
     }
 
     "display section header" in {
-      view.getElementById("section-header").text() mustBe "startPage.title.sectionHeader"
+      view.getElementById("section-header").text() mustBe messages("startPage.title.sectionHeader")
     }
 
     "display header" in {
-      view.getElementById("title").text() mustBe "startPage.title"
+      view.getElementById("title").text() mustBe messages("startPage.title")
     }
 
     "display general description" in {
-      view.getElementById("description").text() mustBe "startPage.description"
+      view.getElementById("description").text() mustBe messages("startPage.description")
     }
 
     "display Contents section" in {
-      view.getElementById("contents").text() mustBe "startPage.contents.header"
+      view.getElementById("contents").text() mustBe messages("startPage.contents.header")
 
       view.getElementById("contents-list") must haveChildCount(3)
-      view.getElementById("contents-list").child(0).text() mustBe "startPage.beforeYouStart.header"
-      view.getElementById("contents-list").child(1).text() mustBe "startPage.informationYouNeed.header"
-      view.getElementById("contents-list").child(2).text() mustBe "startPage.reportYourArrivalAndDeparture.header"
+      view.getElementById("contents-list").child(0).text() mustBe messages("startPage.beforeYouStart.header")
+      view.getElementById("contents-list").child(1).text() mustBe messages("startPage.informationYouNeed.header")
+      view.getElementById("contents-list").child(2).text() mustBe messages("startPage.reportYourArrivalAndDeparture.header")
     }
 
     "contain links in Contents section" in {
@@ -91,58 +92,58 @@ class StartViewSpec extends UnitViewSpec with Injector {
     }
 
     "display 'Before you start' section" in {
-      view.getElementById("before-you-start").text() mustBe "startPage.beforeYouStart.header"
+      view.getElementById("before-you-start").text() mustBe messages("startPage.beforeYouStart.header")
 
-      view.getElementById("before-you-start-element-1").text() must include("startPage.beforeYouStart.line.1")
-      view.getElementById("before-you-start-element-2").text() mustBe "startPage.beforeYouStart.line.2"
-      view.getElementById("before-you-start-element-3").text() mustBe "startPage.beforeYouStart.line.3"
+      view.getElementById("before-you-start-element-1").text() must include(messages("startPage.beforeYouStart.line.1", ""))
+      view.getElementById("before-you-start-element-2").text() mustBe messages("startPage.beforeYouStart.line.2")
+      view.getElementById("before-you-start-element-3").text() mustBe messages("startPage.beforeYouStart.line.3")
     }
 
     "display time zone information" in {
-      view.getElementById("time-zone-information").text() must include("startPage.information")
+      view.getElementById("time-zone-information").text() must include(messages("startPage.information"))
     }
 
     "contain link to Customs Declarations Guidance in 'Before you start' section" in {
-      val view = page()(request, messagesApi.preferred(request))
+      val view = page()
       view.getElementById("before-you-start-element-1").child(0) must haveHref(
         "https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"
       )
     }
 
     "display 'Information you need' section" in {
-      view.getElementById("information-you-need").text() mustBe "startPage.informationYouNeed.header"
+      view.getElementById("information-you-need").text() mustBe messages("startPage.informationYouNeed.header")
 
-      view.getElementById("information-you-need-element-1").text() mustBe "startPage.informationYouNeed.line.1"
+      view.getElementById("information-you-need-element-1").text() mustBe messages("startPage.informationYouNeed.line.1")
 
       view.getElementById("information-you-need-list") must haveChildCount(4)
-      view.getElementById("information-you-need-list").child(0).text() mustBe "startPage.informationYouNeed.listItem.1"
-      view.getElementById("information-you-need-list").child(1).text() mustBe "startPage.informationYouNeed.listItem.2"
-      view.getElementById("information-you-need-list").child(2).text() mustBe "startPage.informationYouNeed.listItem.3"
-      view.getElementById("information-you-need-list").child(3).text() mustBe "startPage.informationYouNeed.listItem.4"
+      view.getElementById("information-you-need-list").child(0).text() mustBe messages("startPage.informationYouNeed.listItem.1")
+      view.getElementById("information-you-need-list").child(1).text() mustBe messages("startPage.informationYouNeed.listItem.2")
+      view.getElementById("information-you-need-list").child(2).text() mustBe messages("startPage.informationYouNeed.listItem.3")
+      view.getElementById("information-you-need-list").child(3).text() mustBe messages("startPage.informationYouNeed.listItem.4")
     }
 
     "display 'Report your arrival and departure' section" in {
       view
         .getElementById("report-your-arrival-and-departure")
-        .text() mustBe "startPage.reportYourArrivalAndDeparture.header"
+        .text() mustBe messages("startPage.reportYourArrivalAndDeparture.header")
     }
 
     "display problems with service notice" in {
-      view.getElementById("problems-with-service-notice").text() must include("startPage.problemsWithServiceNotice")
+      view.getElementById("problems-with-service-notice").text() must include(messages("startPage.problemsWithServiceNotice", ""))
     }
 
     "contain link to service availability in 'Report your arrival and departure' section" in {
-      val view = page()(request, messagesApi.preferred(request))
+      val view = page()
       view.getElementById("problems-with-service-notice").child(0) must haveHref(
         "https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
       )
     }
 
     "display 'Start now' button" in {
-      view.getElementsByClass("govuk-button govuk-button--start").get(0).text() mustBe "startPage.buttonName"
+      view.getElementsByClass("govuk-button govuk-button--start").get(0).text() mustBe messages("startPage.buttonName")
 
       view.getElementsByClass("govuk-button govuk-button--start").get(0) must haveHref(
-        if (realAppConfig.ileQueryEnabled)
+        if (AppConfigSpec.realAppConfig.ileQueryEnabled)
           controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
         else
           controllers.routes.ChoiceController.displayChoiceForm()
@@ -150,7 +151,7 @@ class StartViewSpec extends UnitViewSpec with Injector {
     }
 
     "display link to go back to Contents section" in {
-      view.getElementById("back-to-top").text() mustBe "startPage.contents.header"
+      view.getElementById("back-to-top").text() mustBe messages("startPage.contents.header")
       view.getElementById("back-to-top").child(0) must haveHref("#contents")
     }
   }

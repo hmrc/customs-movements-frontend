@@ -34,15 +34,16 @@ object AssociateUcr {
   val mapping: Mapping[AssociateUcr] = {
     def bind(associateKind: UcrType, ducr: Option[String], mucr: Option[String]): AssociateUcr =
       associateKind match {
-        case Ducr => AssociateUcr(Ducr, ducr.get.toUpperCase)
-        case Mucr => AssociateUcr(Mucr, mucr.get.toUpperCase)
+        case Ducr     => AssociateUcr(Ducr, ducr.get.toUpperCase)
+        case DucrPart => AssociateUcr(DucrPart, ducr.get.toUpperCase)
+        case Mucr     => AssociateUcr(Mucr, mucr.get.toUpperCase)
       }
 
     def unbind(value: AssociateUcr): Option[(UcrType, Option[String], Option[String])] =
       value.kind match {
-        case Ducr => Some((value.kind, Some(value.ucr), None))
-        case Mucr => Some((value.kind, None, Some(value.ucr)))
-        case _    => None
+        case Ducr | DucrPart => Some((value.kind, Some(value.ucr), None))
+        case Mucr            => Some((value.kind, None, Some(value.ucr)))
+        case _               => None
       }
 
     Forms.mapping(
@@ -56,8 +57,9 @@ object AssociateUcr {
 
   def apply(ucrBlock: UcrBlock): AssociateUcr =
     AssociateUcr(ucr = ucrBlock.ucr, kind = ucrBlock.ucrType match {
-      case Mucr.codeValue => Mucr
-      case Ducr.codeValue => Ducr
-      case _              => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
+      case Mucr.codeValue     => Mucr
+      case Ducr.codeValue     => Ducr
+      case DucrPart.codeValue => DucrPart
+      case _                  => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
     })
 }

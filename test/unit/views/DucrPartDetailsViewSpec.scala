@@ -43,17 +43,17 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with Injector {
 
       "render title" in {
 
-        view.getTitle must containMessage("ducrParts.title")
+        view.getTitle must containMessage("ducrPartDetails.title")
       }
 
       "render heading" in {
 
-        view.getElementById("title") must containMessage("ducrParts.title")
+        view.getElementById("title") must containMessage("ducrPartDetails.title")
       }
 
       "render section header" in {
 
-        view.getElementById("section-header") must containMessage("ducrParts.heading")
+        view.getElementById("section-header") must containMessage("ducrPartDetails.heading")
       }
 
       "render 'Back' button leading to 'Find a consignment' page" in {
@@ -64,12 +64,12 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with Injector {
 
       "render DUCR input field label" in {
 
-        view.getElementsByAttributeValue("for", "ducr").first() must containMessage("ducrParts.ducr")
+        view.getElementsByAttributeValue("for", "ducr").first() must containMessage("ducrPartDetails.ducr")
       }
 
       "render DUCR input field hint" in {
 
-        view.getElementById("ducr-hint") must containMessage("ducrParts.ducr.hint")
+        view.getElementById("ducr-hint") must containMessage("ducrPartDetails.ducr.hint")
       }
 
       "render empty DUCR input field" in {
@@ -79,12 +79,12 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with Injector {
 
       "render DUCR Part ID input field label" in {
 
-        view.getElementsByAttributeValue("for", "ducrPartId").first() must containMessage("ducrParts.ducrPartId")
+        view.getElementsByAttributeValue("for", "ducrPartId").first() must containMessage("ducrPartDetails.ducrPartId")
       }
 
       "render DUCR Part ID input field hint" in {
 
-        view.getElementById("ducrPartId-hint") must containMessage("ducrParts.ducrPartId.hint")
+        view.getElementById("ducrPartId-hint") must containMessage("ducrPartDetails.ducrPartId.hint")
       }
 
       "render empty DUCR Part ID input field" in {
@@ -117,7 +117,7 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with Injector {
 
     "provided with form containing DUCR error" should {
 
-      val form = DucrPartDetails.form().withError(FormError("ducr", "ducrParts.ducr.error"))
+      val form = DucrPartDetails.form().withError(FormError("ducr", "ducrPartDetails.ducr.error"))
       val view: Document = createView(form)
 
       "render error summary" in {
@@ -127,13 +127,13 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with Injector {
 
       "render field error" in {
 
-        view must haveGovUkFieldError("ducr", messages("ducrParts.ducr.error"))
+        view must haveGovUkFieldError("ducr", messages("ducrPartDetails.ducr.error"))
       }
     }
 
     "provided with form containing DUCR Part ID error" should {
 
-      val form = DucrPartDetails.form().withError(FormError("ducrPartId", "ducrParts.ducrPartId.error"))
+      val form = DucrPartDetails.form().withError(FormError("ducrPartId", "ducrPartDetails.ducrPartId.error"))
       val view: Document = createView(form)
 
       "render error summary" in {
@@ -143,7 +143,7 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with Injector {
 
       "render field error" in {
 
-        view must haveGovUkFieldError("ducrPartId", messages("ducrParts.ducrPartId.error"))
+        view must haveGovUkFieldError("ducrPartId", messages("ducrPartDetails.ducrPartId.error"))
       }
     }
   }

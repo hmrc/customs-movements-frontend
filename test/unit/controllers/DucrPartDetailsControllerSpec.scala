@@ -113,7 +113,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
         "call DucrPartDetails view" in {
 
           val cacheContents =
-            Cache(eori = "eori", answers = None, queryUcr = Some(UcrBlock(ucrType = UcrType.DucrParts.codeValue, ucr = validWholeDucrParts)))
+            Cache(eori = "eori", answers = None, queryUcr = Some(UcrBlock(ucrType = UcrType.DucrPart.codeValue, ucr = validWholeDucrParts)))
           givenTheCacheContains(cacheContents)
 
           controller().displayPage()(getRequest()).futureValue
@@ -124,7 +124,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
         "pass data from CacheRepository to DucrPartDetails view" in {
 
           val cacheContents =
-            Cache(eori = "eori", answers = None, queryUcr = Some(UcrBlock(ucrType = UcrType.DucrParts.codeValue, ucr = validWholeDucrParts)))
+            Cache(eori = "eori", answers = None, queryUcr = Some(UcrBlock(ucrType = UcrType.DucrPart.codeValue, ucr = validWholeDucrParts)))
           givenTheCacheContains(cacheContents)
 
           controller().displayPage()(getRequest()).futureValue
@@ -208,7 +208,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
           controller().submitDucrPartDetails()(postRequest(inputData)).futureValue
 
-          val expectedUcrBlock = UcrBlock(ucrType = UcrType.DucrParts, ucr = validWholeDucrParts)
+          val expectedUcrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts)
           theCacheUpserted.queryUcr mustBe defined
           theCacheUpserted.queryUcr.get mustBe expectedUcrBlock
         }

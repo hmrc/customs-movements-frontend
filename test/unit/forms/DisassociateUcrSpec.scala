@@ -24,30 +24,41 @@ class DisassociateUcrSpec extends BaseSpec {
 
   "DisassociateUcr" should {
 
-    "apply UcrBlock for Mucr" in {
+    "apply UcrBlock" when {
 
-      DisassociateUcr.apply(UcrBlock("ucr", UcrType.Mucr)) mustBe DisassociateUcr(UcrType.Mucr, None, Some("ucr"))
+      "provided with Mucr" in {
+
+        DisassociateUcr.apply(UcrBlock("ucr", UcrType.Mucr)) mustBe DisassociateUcr(UcrType.Mucr, None, Some("ucr"))
+      }
+
+      "provided with Ducr" in {
+
+        DisassociateUcr.apply(UcrBlock("ucr", UcrType.Ducr)) mustBe DisassociateUcr(UcrType.Ducr, Some("ucr"), None)
+      }
+
+      "provided with Ducr Part" in {
+
+        DisassociateUcr.apply(UcrBlock("ucr", UcrType.DucrPart)) mustBe DisassociateUcr(UcrType.DucrPart, Some("ucr"), None)
+      }
     }
 
-    "apply UcrBlock for Ducr" in {
+    "convert to upper case" when {
 
-      DisassociateUcr.apply(UcrBlock("ucr", UcrType.Ducr)) mustBe DisassociateUcr(UcrType.Ducr, Some("ucr"), None)
-    }
+      "provided with Mucr" in {
 
-    "convert ducr to upper case" in {
+        val form = DisassociateUcr.form.bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString("gb/abced1234-15804test"))))
 
-      val form = DisassociateUcr.form.bind(JsObject(Map("kind" -> JsString("ducr"), "ducr" -> JsString("8gb123457359100-test0001"))))
+        form.errors mustBe empty
+        form.value.map(_.ucr) must be(Some("GB/ABCED1234-15804TEST"))
+      }
 
-      form.errors mustBe (empty)
-      form.value.map(_.ucr) must be(Some("8GB123457359100-TEST0001"))
-    }
+      "provided with Ducr" in {
 
-    "convert mucr to upper case" in {
+        val form = DisassociateUcr.form.bind(JsObject(Map("kind" -> JsString("ducr"), "ducr" -> JsString("8gb123457359100-test0001"))))
 
-      val form = DisassociateUcr.form.bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString("gb/abced1234-15804test"))))
-
-      form.errors mustBe (empty)
-      form.value.map(_.ucr) must be(Some("GB/ABCED1234-15804TEST"))
+        form.errors mustBe empty
+        form.value.map(_.ucr) must be(Some("8GB123457359100-TEST0001"))
+      }
     }
   }
 

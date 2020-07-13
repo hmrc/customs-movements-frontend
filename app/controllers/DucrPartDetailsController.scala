@@ -42,7 +42,7 @@ class DucrPartDetailsController @Inject()(
     cacheRepository
       .findByEori(request.eori)
       .map {
-        case Some(cache) if cache.queryUcr.exists(_.ucrType == UcrType.DucrParts.codeValue) =>
+        case Some(cache) if cache.queryUcr.exists(_.ucrType == UcrType.DucrPart.codeValue) =>
           cache.queryUcr.map(ucrBlock => getEmptyForm.fill(DucrPartDetails(ucrBlock))).getOrElse(getEmptyForm)
 
         case _ => getEmptyForm

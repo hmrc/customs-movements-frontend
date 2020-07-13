@@ -26,21 +26,21 @@ import utils.validators.forms.FieldValidator.{isValidDucrPartIdIgnoreCase, valid
 case class DucrPartDetails(ducr: String, ducrPartId: String) {
 
   def toUcrBlock: UcrBlock = {
-    val ucr = s"$ducr$separator$ducrPartId"
-    UcrBlock(ucr = ucr, ucrType = UcrType.DucrParts)
+    val ucr = s"$ducr$Separator$ducrPartId"
+    UcrBlock(ucr = ucr, ucrType = UcrType.DucrPart)
   }
 }
 
 object DucrPartDetails {
   implicit val format: OFormat[DucrPartDetails] = Json.format[DucrPartDetails]
 
-  private val separator = "-"
+  val Separator = "-"
 
   def apply(ucrBlock: UcrBlock): DucrPartDetails =
-    if (ucrBlock.ucrType != UcrType.DucrParts.codeValue)
+    if (ucrBlock.ucrType != UcrType.DucrPart.codeValue)
       throw new IllegalArgumentException(s"Cannot create DucrPartDetails instance from UcrBlock of type: [${ucrBlock.ucrType}]")
     else {
-      val separatorIndex = ucrBlock.ucr.lastIndexOf(separator)
+      val separatorIndex = ucrBlock.ucr.lastIndexOf(Separator)
       val (ducr, ducrPartId) = ucrBlock.ucr.splitAt(separatorIndex)
       val ducrPartIdWithoutSeparator = ducrPartId.tail
 
@@ -51,8 +51,8 @@ object DucrPartDetails {
     def bind(ducr: String, ducrPartId: String): DucrPartDetails = DucrPartDetails(ducr.toUpperCase, ducrPartId.toUpperCase)
 
     Forms.mapping(
-      "ducr" -> text().verifying("ducrParts.ducr.error", validDucrIgnoreCase),
-      "ducrPartId" -> text().verifying("ducrParts.ducrPartId.error", isValidDucrPartIdIgnoreCase)
+      "ducr" -> text().verifying("ducrPartDetails.ducr.error", validDucrIgnoreCase),
+      "ducrPartId" -> text().verifying("ducrPartDetails.ducrPartId.error", isValidDucrPartIdIgnoreCase)
     )(bind)(unapply)
   }
 

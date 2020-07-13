@@ -31,7 +31,7 @@ import play.twirl.api.HtmlFormat
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class DucrPartsActionSpec extends UnitSpec with BeforeAndAfterEach with ScalaFutures {
+class DucrPartActionSpec extends UnitSpec with BeforeAndAfterEach with ScalaFutures {
 
   private val ducrPartsConfig = mock[DucrPartsConfig]
   private val request = mock[AuthenticatedRequest[_]]

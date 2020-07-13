@@ -99,12 +99,12 @@ class AssociateUcrViewSpec extends ViewSpec with Injector {
     }
 
     "display DUCR Form errors" in {
-      val value = AssociateUcr.form.withError(FormError("ducr", "ducr.error.empty"))
+      val value = AssociateUcr.form.withError(FormError("ducr", "ducr.error.format"))
 
       val view: Document = createView(mucrOptions, value)
 
       view must haveGovUkGlobalErrorSummary
-      view must haveGovUkFieldError("ducr", messages("ducr.error.empty"))
+      view must haveGovUkFieldError("ducr", messages("ducr.error.format"))
     }
   }
 

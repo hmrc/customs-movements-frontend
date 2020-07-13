@@ -33,7 +33,7 @@
 @(form: Form[DucrPartDetails])(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
-  title = Title("ducrParts.title", Some("ducrParts.heading")),
+  title = Title("ducrPartDetails.title", Some("ducrPartDetails.heading")),
   backButton = Some(BackButton(messages("site.back"), controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()))
 ) {
 
@@ -41,20 +41,20 @@
 
     @errorSummary(form.errors)
 
-    @sectionHeader(messages("ducrParts.heading"))
+    @sectionHeader(messages("ducrPartDetails.heading"))
 
-    @pageTitle(messages("ducrParts.title"))
+    @pageTitle(messages("ducrPartDetails.title"))
 
     @exportsInputText(
       field = form("ducr"),
-      labelKey = "ducrParts.ducr",
-      hintKey = Some("ducrParts.ducr.hint")
+      labelKey = "ducrPartDetails.ducr",
+      hintKey = Some("ducrPartDetails.ducr.hint")
     )
 
     @exportsInputText(
       field = form("ducrPartId"),
-      labelKey = "ducrParts.ducrPartId",
-      hintKey = Some("ducrParts.ducrPartId.hint")
+      labelKey = "ducrPartDetails.ducrPartId",
+      hintKey = Some("ducrPartDetails.ducrPartId.hint")
     )
 
     @govukButton(Button(content = Text(messages("site.continue"))))

@@ -22,7 +22,7 @@ import java.time.{LocalDate, LocalTime}
 import base.OverridableInjector
 import config.IleQueryConfig
 import forms.common.{Date, Time}
-import forms.{ConsignmentReferences, DepartureDetails, Location, Transport}
+import forms._
 import models.cache.DepartureAnswers
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -108,6 +108,32 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       val changeRef = view.getElementsByClass("govuk-link").get(answer_consignment_reference_link_index)
       changeRef must containMessage("site.change")
       changeRef must haveHref(controllers.routes.ConsignmentReferencesController.displayPage())
+    }
+
+    "render correct Consignment type" when {
+
+      "provided with DUCR" in {
+
+        val view = page(answers.copy(consignmentReferences = Some(ConsignmentReferences(reference = UcrType.Ducr, "ref-value"))))
+
+        view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_type) must containMessage("consignmentReferences.reference.ducr")
+      }
+
+      "provided with MUCR" in {
+
+        val view = page(answers.copy(consignmentReferences = Some(ConsignmentReferences(reference = UcrType.Mucr, "ref-value"))))
+
+        view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_type) must containMessage("consignmentReferences.reference.mucr")
+      }
+
+      "provided with DUCR Part" in {
+
+        val view = page(answers.copy(consignmentReferences = Some(ConsignmentReferences(reference = UcrType.DucrPart, "ref-value"))))
+
+        view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_type) must containMessage(
+          "consignmentReferences.reference.ducrPart"
+        )
+      }
     }
 
     "render 'Departure date and time' section in summary list" in {

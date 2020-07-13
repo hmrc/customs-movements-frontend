@@ -25,12 +25,12 @@ sealed abstract class UcrType(val formValue: String, val codeValue: String)
 object UcrType {
   case object Mucr extends UcrType("mucr", "M")
   case object Ducr extends UcrType("ducr", "D")
-  case object DucrParts extends UcrType("ducrParts", "DP")
+  case object DucrPart extends UcrType("ducrPart", "DP")
 
   private val lookup = PartialFunction[String, UcrType] {
-    case Mucr.formValue      => Mucr
-    case Ducr.formValue      => Ducr
-    case DucrParts.formValue => DucrParts
+    case Mucr.formValue     => Mucr
+    case Ducr.formValue     => Ducr
+    case DucrPart.formValue => DucrPart
   }
 
   val formatter: Formatter[UcrType] = new Formatter[UcrType] {

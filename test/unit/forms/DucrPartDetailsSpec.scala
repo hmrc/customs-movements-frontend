@@ -27,8 +27,8 @@ class DucrPartDetailsSpec extends BaseSpec {
 
     "return errors" when {
 
-      val expectedDucrError = FormError("ducr", Seq("ducrParts.ducr.error"))
-      val expectedDucrPartIdError = FormError("ducrPartId", Seq("ducrParts.ducrPartId.error"))
+      val expectedDucrError = FormError("ducr", Seq("ducrPartDetails.ducr.error"))
+      val expectedDucrPartIdError = FormError("ducrPartId", Seq("ducrPartDetails.ducrPartId.error"))
 
       "provided with empty DUCR" in {
 
@@ -125,7 +125,7 @@ class DucrPartDetailsSpec extends BaseSpec {
     "return UcrBlock with correct type field" in {
 
       val ducrPartDetails = DucrPartDetails(ducr = validDucr, ducrPartId = validDucrPartId)
-      val expectedType = UcrType.DucrParts.codeValue
+      val expectedType = UcrType.DucrPart.codeValue
 
       ducrPartDetails.toUcrBlock.ucrType mustBe expectedType
     }
@@ -153,7 +153,7 @@ class DucrPartDetailsSpec extends BaseSpec {
 
     "return DucrPartDetails with correct ducr" in {
 
-      val ucrBlock = UcrBlock(ucrType = UcrType.DucrParts, ucr = validWholeDucrParts)
+      val ucrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts)
       val expectedDucr = validDucr
 
       DucrPartDetails(ucrBlock).ducr mustBe expectedDucr
@@ -161,7 +161,7 @@ class DucrPartDetailsSpec extends BaseSpec {
 
     "return DucrPartDetails with correct ducrPartId" in {
 
-      val ucrBlock = UcrBlock(ucrType = UcrType.DucrParts, ucr = validWholeDucrParts)
+      val ucrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts)
       val expectedDucrPartId = validDucrPartId
 
       DucrPartDetails(ucrBlock).ducrPartId mustBe expectedDucrPartId

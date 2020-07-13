@@ -44,7 +44,7 @@ class ManageMucrController @Inject()(
 
   def displayPage(): Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled andThen getJourney(JourneyType.ASSOCIATE_UCR)) {
     implicit request =>
-      if (request.cache.queryUcr.map(_.is(UcrType.Ducr)).getOrElse(throw InvalidFeatureStateException)) {
+      if (request.cache.queryUcr.map(!_.is(UcrType.Mucr)).getOrElse(throw InvalidFeatureStateException)) {
         Redirect(consolidations.routes.MucrOptionsController.displayPage())
       } else {
         val mucrOptions = request.answersAs[AssociateUcrAnswers].manageMucrChoice

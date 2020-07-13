@@ -16,12 +16,13 @@
 
 package models.viewmodels.decoder
 
-import base.UnitSpec
 import play.api.test.FakeRequest
-import utils.FakeRequestCSRFSupport.CSRFFakeRequest
-import views.spec.{UnitViewSpec, ViewMatchers}
+import views.ViewSpec
+import views.spec.ViewMatchers
 
-class CHIEFErrorSpec extends UnitSpec with ViewMatchers {
+class CHIEFErrorSpec extends ViewSpec with ViewMatchers {
+
+  private implicit val request = FakeRequest().withCSRFToken
 
   val expectedCHIEFError = CHIEFError("E408", "error.chief.UcrNotExist")
 
@@ -42,7 +43,6 @@ class CHIEFErrorSpec extends UnitSpec with ViewMatchers {
     }
 
     "have translations for all errors" in {
-      val messages = UnitViewSpec.realMessagesApi.preferred(FakeRequest().withCSRFToken)
 
       val chiefErrorsNames = Seq(
         "MucrAlreadyShut",

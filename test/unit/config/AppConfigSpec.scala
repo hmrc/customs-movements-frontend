@@ -16,6 +16,7 @@
 
 package config
 
+import base.Injector
 import com.typesafe.config.{Config, ConfigFactory}
 import features.{Feature, FeatureStatus}
 import org.scalatest.{MustMatchers, WordSpec}
@@ -224,4 +225,8 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
     )
   }
 
+}
+
+object AppConfigSpec extends Injector {
+  val realAppConfig = instanceOf[AppConfig]
 }

@@ -20,7 +20,6 @@ import base.OverridableInjector
 import config.AppConfig
 import controllers.consolidations.routes
 import forms.ShutMucr
-import helpers.views.CommonMessages
 import models.cache.ShutMucrAnswers
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -30,7 +29,7 @@ import testdata.ConsolidationTestData.validMucr
 import views.ViewSpec
 import views.html.shutmucr.shut_mucr_summary
 
-class ShutMucrSummaryViewSpec extends ViewSpec with CommonMessages with MockitoSugar with BeforeAndAfterEach {
+class ShutMucrSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   private implicit val request = journeyRequest(ShutMucrAnswers())
 

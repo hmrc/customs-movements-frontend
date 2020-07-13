@@ -17,11 +17,10 @@
 package forms
 
 import base.BaseSpec
-import helpers.views.ConsignmentReferencesMessages
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 
-class ConsignmentReferencesSpec extends BaseSpec with ConsignmentReferencesMessages {
+class ConsignmentReferencesSpec extends BaseSpec {
 
   val validDucr = "9GB123456"
   val validMucr = "GB/ABC-12342"
@@ -38,7 +37,7 @@ class ConsignmentReferencesSpec extends BaseSpec with ConsignmentReferencesMessa
       val inputData = ConsignmentReferences("", "")
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
-      errors must be(Seq(FormError("reference", referenceError)))
+      errors must be(Seq(FormError("reference", "consignmentReferences.reference.error")))
     }
 
     "no errors for complete fields " in {
@@ -50,28 +49,28 @@ class ConsignmentReferencesSpec extends BaseSpec with ConsignmentReferencesMessa
       val inputData = ConsignmentReferences("D", "")
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
-      errors must be(Seq(FormError("ducrValue", referenceDucrEmpty)))
+      errors must be(Seq(FormError("ducrValue", "consignmentReferences.reference.ducrValue.empty")))
     }
 
     "have error for missing Mucr" in {
       val inputData = ConsignmentReferences("M", "")
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
-      errors must be(Seq(FormError("mucrValue", referenceMucrEmpty)))
+      errors must be(Seq(FormError("mucrValue", "consignmentReferences.reference.mucrValue.empty")))
     }
 
     "have error for invalid Ducr" in {
       val inputData = ConsignmentReferences("D", "ABC")
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
-      errors must be(Seq(FormError("ducrValue", referenceDucrError)))
+      errors must be(Seq(FormError("ducrValue", "consignmentReferences.reference.ducrValue.error")))
     }
 
     "have error for invalid Mucr" in {
       val inputData = ConsignmentReferences("M", "ABC")
       val errors = ConsignmentReferences.form().fillAndValidate(inputData).errors
 
-      errors must be(Seq(FormError("mucrValue", referenceMucrError)))
+      errors must be(Seq(FormError("mucrValue", "consignmentReferences.reference.mucrValue.error")))
     }
 
     "convert ducr to upper case" in {

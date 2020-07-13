@@ -19,26 +19,25 @@ package views
 import base.Injector
 import forms.Choice._
 import forms.{Choice, UcrType}
-import helpers.views.CommonMessages
 import models.UcrBlock
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.test.Helpers.stubMessages
+import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios}
 import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 import views.components.config.ChoicePageConfig
 import views.html.choice_page
 import views.html.components.gds.{errorSummary, gds_main_template, sectionHeader}
-import views.spec.UnitViewSpec
-import views.spec.UnitViewSpec.{realAppConfig, realMessagesApi}
 import views.tags.ViewTest
 
 @ViewTest
-class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with BeforeAndAfterEach {
+class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with BeforeAndAfterEach {
+
+  private implicit val request = FakeRequest().withCSRFToken
 
   private val form: Form[Choice] = Choice.form()
 
@@ -59,7 +58,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
   }
 
   private val choicePage = new choice_page(govukLayout, govukButton, govukRadios, errorSummary, sectionHeader, formHelper, pageConfig)
-  private def createView(form: Form[Choice] = form, messages: Messages = stubMessages()): Document =
+  private def createView(form: Form[Choice] = form): Document =
     choicePage(form)(request, messages)
 
   override def afterEach(): Unit =
@@ -69,8 +68,6 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
 
     "have proper labels for messages" in {
       isIleQueryEnabled(true)
-
-      val messages = messagesApi.preferred(request)
 
       messages must haveTranslationFor("movement.choice.title")
       messages must haveTranslationFor("movement.choice.arrival.label")
@@ -83,8 +80,6 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
 
     "have proper labels for error messages" in {
       isIleQueryEnabled(true)
-
-      val messages = messagesApi.preferred(request)
 
       messages must haveTranslationFor("choicePage.input.error.empty")
       messages must haveTranslationFor("choicePage.input.error.incorrectValue")
@@ -125,14 +120,14 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
     "display same page title as header with ile query disabled" in {
       isIleQueryEnabled(false)
 
-      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+      val viewWithMessage = createView()
       viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
     "display same page title as header with ile query enabled" in {
       isIleQueryEnabled(true)
 
-      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+      val viewWithMessage = createView()
       viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
@@ -153,7 +148,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
 
       val backButton = createView().getElementById("back-link")
 
-      backButton.text() must be(messages(backCaption))
+      backButton.text() must be(messages("site.back"))
       backButton.attr("href") must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
     }
 
@@ -208,7 +203,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector with
       val view = createView()
 
       val saveButton = view.getElementsByClass("govuk-button").get(0)
-      saveButton.text() must be(messages(continueCaption))
+      saveButton.text() must be(messages("site.continue"))
     }
   }
 

@@ -16,7 +16,6 @@
 
 package forms
 
-import forms.DucrPartDetails.Separator
 import forms.UcrType.{Ducr, DucrPart, Mucr}
 import models.{ReturnToStartException, UcrBlock}
 import play.api.data.Forms._
@@ -24,8 +23,6 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json._
 import uk.gov.voa.play.form.ConditionalMappings._
 import utils.validators.forms.FieldValidator._
-
-import scala.util.Try
 
 case class DisassociateUcr(kind: UcrType, ducr: Option[String], mucr: Option[String]) {
   def ucr: String = ducr.orElse(mucr).getOrElse(throw ReturnToStartException)

@@ -140,7 +140,7 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
 
       "provided with correct DUCR" should {
 
-        val correctDucr = "9GB123456-QWERTY7890"
+        val correctDucr = "9GB123456789012-QWERTY7890"
 
         "call Backend Connector to submit IleQuery, passing constructed IleQuery object" in {
 

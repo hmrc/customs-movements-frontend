@@ -55,6 +55,10 @@ object FieldValidator {
 
   val validMucrIgnoreCase: String => Boolean = (input: String) => validMucr(input.toUpperCase)
 
+  val isValidDucrPartId: String => Boolean = (input: String) => input.matches("""[0-9]{1,3}[A-Z]""")
+
+  val isValidDucrPartIdIgnoreCase: String => Boolean = (input: String) => isValidDucrPartId(input.toUpperCase)
+
   private val zerosOnlyRegexValue = "[0]+"
   private val noMoreDecimalPlacesThanRegexValue: Int => String =
     (decimalPlaces: Int) => s"^([0-9]*)([\\.]{0,1}[0-9]{0,$decimalPlaces})$$"

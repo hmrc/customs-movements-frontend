@@ -17,7 +17,7 @@
 package controllers
 
 import base.UnitSpec
-import config.IleQueryConfig
+import config.{DucrPartsConfig, IleQueryConfig}
 import controllers.actions._
 import controllers.exception.InvalidFeatureStateException
 import models.cache.JourneyType.JourneyType
@@ -91,5 +91,14 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
 
   case object ValidForIleQuery extends NonIleQueryAction(mock[IleQueryConfig]) {
     override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = block(request)
+  }
+
+  case object DucrPartsEnabled extends DucrPartsAction(mock[DucrPartsConfig]) {
+    override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = block(request)
+  }
+
+  case object DucrPartsDisabled extends DucrPartsAction(mock[DucrPartsConfig]) {
+    override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
+      throw InvalidFeatureStateException
   }
 }

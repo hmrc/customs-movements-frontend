@@ -49,7 +49,7 @@ class ViewSpec extends WordSpec with MustMatchers with ViewMatchers with Message
 
     def getBackButton: Option[Element] = Option(document.getElementById("back-link"))
 
-    def getSubmitButton: Option[Element] = Option(document.getElementById("submit"))
+    def getSubmitButton: Option[Element] = Option(document.getElementsByClass("govuk-button").first())
 
     def getErrorSummary: Option[Element] = Option(document.getElementById("error-summary"))
 

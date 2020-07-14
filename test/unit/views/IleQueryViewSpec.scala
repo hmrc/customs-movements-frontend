@@ -82,7 +82,8 @@ class IleQueryViewSpec extends ViewSpec with Injector {
 
     "contains submit button" in {
 
-      view.getElementsByClass("govuk-button").first().text() mustBe messages("site.continue")
+      view.getSubmitButton mustBe defined
+      view.getSubmitButton.get must containMessage("site.continue")
     }
 
     "contains link to view previous requests" in {

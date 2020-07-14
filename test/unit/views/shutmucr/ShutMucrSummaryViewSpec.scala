@@ -25,7 +25,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
-import testdata.ConsolidationTestData.validMucr
+import testdata.CommonTestData.validMucr
 import views.ViewSpec
 import views.html.shutmucr.shut_mucr_summary
 

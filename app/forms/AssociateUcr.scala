@@ -52,7 +52,7 @@ object AssociateUcr {
     )(bind)(unbind)
   }
 
-  val form: Form[AssociateUcr] = Form(mapping)
+  def form: Form[AssociateUcr] = Form(mapping)
 
   def apply(ucrBlock: UcrBlock): AssociateUcr =
     AssociateUcr(ucr = ucrBlock.ucr, kind = ucrBlock.ucrType match {

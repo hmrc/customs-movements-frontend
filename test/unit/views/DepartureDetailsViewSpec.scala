@@ -161,7 +161,8 @@ class DepartureDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       }
 
       "have 'Continue' button" in {
-        emptyView.getElementsByClass("govuk-button").first() must containMessage("site.continue")
+        emptyView.getSubmitButton mustBe defined
+        emptyView.getSubmitButton.get must containMessage("site.continue")
       }
     }
 

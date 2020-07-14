@@ -116,7 +116,8 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
     }
 
     "display 'Continue' button on page" in {
-      createView().getElementsByClass("govuk-button").first() must containMessage("site.continue")
+      createView().getSubmitButton mustBe defined
+      createView().getSubmitButton.get must containMessage("site.continue")
     }
 
     "render error summary" when {

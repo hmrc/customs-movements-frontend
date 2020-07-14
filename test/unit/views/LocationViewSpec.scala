@@ -65,7 +65,9 @@ class LocationViewSpec extends ViewSpec with Injector {
     }
 
     "display 'Continue' button on page" in {
-      view.getElementsByClass("govuk-button").first() must containMessage("site.continue")
+
+      view.getSubmitButton mustBe defined
+      view.getSubmitButton.get must containMessage("site.continue")
     }
   }
 }

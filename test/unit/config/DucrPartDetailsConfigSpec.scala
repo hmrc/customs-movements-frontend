@@ -20,7 +20,7 @@ import base.UnitSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import play.api.Configuration
 
-class DucrPartsConfigSpec extends UnitSpec {
+class DucrPartDetailsConfigSpec extends UnitSpec {
 
   "DucrPartsConfig on isDucrPartsEnabled" should {
 

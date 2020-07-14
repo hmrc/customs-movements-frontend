@@ -19,7 +19,7 @@ package views.components.config
 import base.UnitSpec
 import config.AppConfig
 
-class StartPageConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
+class StartPageConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
   private val appConfig = mock[AppConfig]
 

@@ -21,7 +21,7 @@ import config.AppConfig
 import forms.ManageMucrChoice
 import forms.ManageMucrChoice.AssociateAnotherMucr
 
-class MucrOptionsConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
+class MucrOptionsConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
   private val appConfig = mock[AppConfig]
 

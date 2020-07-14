@@ -19,7 +19,7 @@ package views.components.config
 import base.UnitSpec
 import models.UcrBlock
 
-class AssociateUcrPageConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
+class AssociateUcrPageConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
   "AssociateUcrPageConfig when ileQuery disabled" should {
 

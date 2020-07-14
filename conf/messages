@@ -320,6 +320,7 @@ ileQuery.ucr.empty = Enter a Unique Consignment Reference
 ileQuery.ucr.incorrect = Unique Consignment Reference is incorrect
 
 ileQuery.link.requests = View previous requests
+ileQuery.link.ducrPart = Enter a DUCR Part
 
 ileQuery.loading.title = Looking for consignment
 ileQuery.loading.hint = This should only take a few seconds, do not refresh the page

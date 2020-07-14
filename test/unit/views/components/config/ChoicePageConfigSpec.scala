@@ -17,44 +17,84 @@
 package views.components.config
 
 import base.UnitSpec
+import forms.UcrType.{Ducr, DucrPart}
 import models.UcrBlock
+import testdata.CommonTestData.validWholeDucrParts
 
-class ChoicePageConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
+class ChoicePageConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
-  private val queryUcr = UcrBlock("ucr", "D")
+  private val queryUcr = UcrBlock(ucrType = Ducr.codeValue, ucr = "ucr")
 
-  "ChoicePageBackLink when ileQuery disabled" should {
+  "ChoicePageConfig on backLink" when {
 
-    val config = new ChoicePageConfig(ileQueryDisabled)
+    "ileQuery disabled" should {
 
-    "return correct url" in {
-      config.backLink(None) mustBe None
-      config.backLink(Some(queryUcr)) mustBe None
+      val config = new ChoicePageConfig(ileQueryDisabled, ducrPartDisabled)
+
+      "return correct url" in {
+
+        config.backLink(None) mustBe None
+        config.backLink(Some(queryUcr)) mustBe None
+      }
+
+      "return information about ile query" in {
+
+        config.ileQueryEnabled mustBe false
+      }
     }
 
-    "return information about ile query" in {
+    "ileQuery enabled" when {
 
-      config.ileQueryEnabled mustBe false
-    }
-  }
+      "ducrPart disabled" should {
 
-  "ChoicePageBackLink when ileQuery enabled" should {
+        val config = new ChoicePageConfig(ileQueryEnabled, ducrPartDisabled)
 
-    val config = new ChoicePageConfig(ileQueryEnabled)
+        "return correct url when query ucr present" in {
 
-    "return correct url when query ucr present" in {
+          config.backLink(Some(queryUcr)) mustBe Some(controllers.ileQuery.routes.IleQueryController.getConsignmentInformation("ucr"))
+        }
 
-      config.backLink(Some(queryUcr)) mustBe Some(controllers.ileQuery.routes.IleQueryController.getConsignmentInformation("ucr"))
-    }
+        "return correct url when query ucr not present" in {
 
-    "return correct url when query ucr not present" in {
+          config.backLink(None) mustBe Some(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+        }
 
-      config.backLink(None) mustBe Some(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
-    }
+        "return information about ile query" in {
 
-    "return information about ile query" in {
+          config.ileQueryEnabled mustBe true
+        }
+      }
 
-      config.ileQueryEnabled mustBe true
+      "ducrPart enabled" when {
+
+        val config = new ChoicePageConfig(ileQueryEnabled, ducrPartEnabled)
+
+        "query ucr is not present" should {
+          "return url to 'Find Consignment' page" in {
+
+            config.backLink(None) mustBe Some(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+          }
+        }
+
+        "query ucr is present" when {
+
+          "it is not DUCR Part" should {
+            "return url to 'ILE Query' page" in {
+
+              config.backLink(Some(queryUcr)) mustBe Some(controllers.ileQuery.routes.IleQueryController.getConsignmentInformation("ucr"))
+            }
+          }
+
+          "it is DUCR Part" should {
+            "return url to 'DUCR Part Details' page" in {
+
+              val ducrPartQueryUcr = UcrBlock(ucrType = DucrPart.codeValue, ucr = validWholeDucrParts)
+
+              config.backLink(Some(ducrPartQueryUcr)) mustBe Some(controllers.routes.DucrPartDetailsController.displayPage())
+            }
+          }
+        }
+      }
     }
   }
 }

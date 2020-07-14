@@ -873,19 +873,19 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
         validDucr(CommonTestData.validDucr) mustBe true
       }
       "is minimum acceptable example" in {
-        validDucr("9GB123456") mustBe true
+        validDucr("9GB123456789012-1") mustBe true
       }
       "is maximum acceptable example" in {
-        validDucr("9GB12345678901234567890123456789012") mustBe true
+        validDucr("9GB123456789012-1234567890123456789") mustBe true
       }
       "contains dash" in {
-        validDucr("9GB123456-VALID-MUCR") mustBe true
+        validDucr("9GB123456789012-VALID-MUCR") mustBe true
       }
       "post-hyphen contains forward-slash" in {
-        validDucr("""9GB123456-VALID/MUCR""") mustBe true
+        validDucr("""9GB123456789012-VALID/MUCR""") mustBe true
       }
       "post-hyphen contains parentheses" in {
-        validDucr("9GB123456-VALID(MUCR)") mustBe true
+        validDucr("9GB123456789012-VALID(MUCR)") mustBe true
       }
     }
   }

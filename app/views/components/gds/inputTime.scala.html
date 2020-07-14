@@ -30,7 +30,7 @@
 @minuteField = @{form(s"$fieldName.${minuteKey}")}
 
 @dateInput(DateInput(
-  id = Some(fieldName),
+  id = fieldName,
   fieldset = Some(Fieldset(
     legend = Some(Legend(
       content = Text(label),
@@ -39,20 +39,20 @@
   )),
   hint = hint.map(h => Hint(content = Text(h))),
   errorMessage = form(fieldName).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
-  items = Some(Seq(
+  items = Seq(
     InputItem(
-      id = Some(s"${fieldName}_$hourKey"),
+      id = s"${fieldName}_$hourKey",
       name = hourField.name,
       label = Some(messages("time.hour")),
       value = hourField.value,
       classes = "govuk-input--width-2"
     ),
     InputItem(
-      id = Some(s"${fieldName}_$minuteKey"),
+      id = s"${fieldName}_$minuteKey",
       name = minuteField.name,
       label = Some(messages("time.minute")),
       value = minuteField.value,
       classes = "govuk-input--width-2"
     )
-  ))
+  )
 ))

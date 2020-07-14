@@ -35,7 +35,6 @@ import play.api.test.Helpers._
 import testdata.CommonTestData.{conversationId, _}
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
-import uk.gov.hmrc.http.Upstream5xxResponse
 
 class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
 
@@ -305,16 +304,16 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
 
     "received InternalServerError (500) response" should {
 
-      "return failed Future" in {
+      "return Internal server error" in {
 
         stubFor(
           get(s"/consignment-query/$conversationId?eori=eori")
             .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
         )
 
-        intercept[Upstream5xxResponse] {
-          await(connector.fetchQueryNotifications(conversationId, "eori"))
-        }
+        val response = connector.fetchQueryNotifications(conversationId, "eori").futureValue
+
+        response.status mustBe INTERNAL_SERVER_ERROR
       }
     }
   }

@@ -16,8 +16,8 @@
 
 package views
 
-import base.{Injector, OverridableInjector}
-import config.DucrPartsConfig
+import base.OverridableInjector
+import config.DucrPartConfig
 import forms.IleQueryForm
 import org.jsoup.nodes.Element
 import org.mockito.Mockito._
@@ -31,12 +31,12 @@ import views.html.ile_query
 import views.tags.ViewTest
 
 @ViewTest
-class IleQueryViewSpec extends ViewSpec with Injector with MockitoSugar with BeforeAndAfterEach {
+class IleQueryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   private implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
 
-  private val ducrPartsConfig = mock[DucrPartsConfig]
-  private val injector = new OverridableInjector(bind[DucrPartsConfig].to(ducrPartsConfig))
+  private val ducrPartsConfig = mock[DucrPartConfig]
+  private val injector = new OverridableInjector(bind[DucrPartConfig].to(ducrPartsConfig))
 
   private val page = injector.instanceOf[ile_query]
   private def view: Html = page(IleQueryForm.form)
@@ -142,4 +142,5 @@ class IleQueryViewSpec extends ViewSpec with Injector with MockitoSugar with Bef
       }
     }
   }
+
 }

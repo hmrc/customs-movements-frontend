@@ -16,7 +16,7 @@
 
 package views.components.config
 import base.UnitSpec
-import config.{DucrPartsConfig, IleQueryConfig}
+import config.{DucrPartConfig, IleQueryConfig}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 
@@ -25,8 +25,8 @@ trait ViewConfigFeaturesSpec extends BeforeAndAfterEach { self: UnitSpec =>
   val ileQueryEnabled = mock[IleQueryConfig]
   val ileQueryDisabled = mock[IleQueryConfig]
 
-  val ducrPartEnabled = mock[DucrPartsConfig]
-  val ducrPartDisabled = mock[DucrPartsConfig]
+  val ducrPartEnabled = mock[DucrPartConfig]
+  val ducrPartDisabled = mock[DucrPartConfig]
 
   override def beforeEach() {
     super.beforeEach()

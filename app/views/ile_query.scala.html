@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import config.DucrPartsConfig
+@import config.DucrPartConfig
 @import views.Title
 @import views.html.components.gds.link
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -29,7 +29,7 @@
     errorSummary: errorSummary,
     pageTitle: pageTitle,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-    ducrPartsConfig: DucrPartsConfig
+    ducrPartsConfig: DucrPartConfig
 )
 
 @(form: Form[String])(implicit request: Request[_], messages: Messages)

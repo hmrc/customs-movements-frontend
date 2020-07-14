@@ -18,7 +18,7 @@ package controllers.actions
 
 import base.UnitSpec
 import play.api.mvc._
-import config.DucrPartsConfig
+import config.DucrPartConfig
 import controllers.exception.InvalidFeatureStateException
 import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -33,7 +33,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class DucrPartActionSpec extends UnitSpec with BeforeAndAfterEach with ScalaFutures {
 
-  private val ducrPartsConfig = mock[DucrPartsConfig]
+  private val ducrPartsConfig = mock[DucrPartConfig]
   private val request = mock[AuthenticatedRequest[_]]
   private val functionBlock = mock[AuthenticatedRequest[_] => Future[Result]]
   private val controllerResult = mock[Result]

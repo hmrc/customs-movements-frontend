@@ -20,7 +20,7 @@ import features.{Feature, FeatureStatus}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DucrPartsConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+class DucrPartConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
 
-  def isDucrPartsEnabled: Boolean = featureSwitchConfig.featureStatus(Feature.ducrParts) == FeatureStatus.enabled
+  def isDucrPartsEnabled: Boolean = featureSwitchConfig.featureStatus(Feature.ducrPart) == FeatureStatus.enabled
 }

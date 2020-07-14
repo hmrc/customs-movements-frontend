@@ -28,9 +28,9 @@ class DucrPartDetailsConfigSpec extends UnitSpec {
 
       "FeatureSwitchConfig returns FeatureStatus enabled" in {
 
-        val config: Config = ConfigFactory.parseString("microservice.services.features.ducrParts=enabled")
+        val config: Config = ConfigFactory.parseString("microservice.services.features.ducrPart=enabled")
         val featureSwitchConfig = new FeatureSwitchConfig(Configuration(config))
-        val ducrPartsConfig = new DucrPartsConfig(featureSwitchConfig)
+        val ducrPartsConfig = new DucrPartConfig(featureSwitchConfig)
 
         ducrPartsConfig.isDucrPartsEnabled mustBe true
       }
@@ -40,9 +40,9 @@ class DucrPartDetailsConfigSpec extends UnitSpec {
 
       "FeatureSwitchConfig returns FeatureStatus disabled" in {
 
-        val config: Config = ConfigFactory.parseString("microservice.services.features.ducrParts=disabled")
+        val config: Config = ConfigFactory.parseString("microservice.services.features.ducrPart=disabled")
         val featureSwitchConfig = new FeatureSwitchConfig(Configuration(config))
-        val ducrPartsConfig = new DucrPartsConfig(featureSwitchConfig)
+        val ducrPartsConfig = new DucrPartConfig(featureSwitchConfig)
 
         ducrPartsConfig.isDucrPartsEnabled mustBe false
       }

@@ -17,7 +17,7 @@
 package controllers
 
 import base.UnitSpec
-import config.{DucrPartsConfig, IleQueryConfig}
+import config.{DucrPartConfig, IleQueryConfig}
 import controllers.actions._
 import controllers.exception.InvalidFeatureStateException
 import models.cache.JourneyType.JourneyType
@@ -93,11 +93,11 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
     override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = block(request)
   }
 
-  case object DucrPartsEnabled extends DucrPartsAction(mock[DucrPartsConfig]) {
+  case object DucrPartsEnabled extends DucrPartsAction(mock[DucrPartConfig]) {
     override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = block(request)
   }
 
-  case object DucrPartsDisabled extends DucrPartsAction(mock[DucrPartsConfig]) {
+  case object DucrPartsDisabled extends DucrPartsAction(mock[DucrPartConfig]) {
     override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       throw InvalidFeatureStateException
   }

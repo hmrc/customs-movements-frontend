@@ -16,13 +16,13 @@
 
 package views.components.config
 
-import config.{DucrPartsConfig, IleQueryConfig}
+import config.{DucrPartConfig, IleQueryConfig}
 import forms.UcrType.DucrPart
 import javax.inject.Inject
 import models.UcrBlock
 import play.api.mvc.Call
 
-class ChoicePageConfig @Inject()(ileQueryConfig: IleQueryConfig, ducrPartsConfig: DucrPartsConfig) extends BaseConfig(ileQueryConfig) {
+class ChoicePageConfig @Inject()(ileQueryConfig: IleQueryConfig, ducrPartsConfig: DucrPartConfig) extends BaseConfig(ileQueryConfig) {
 
   def backLink(queryUcr: Option[UcrBlock]): Option[Call] =
     if (ileQueryConfig.isIleQueryEnabled)

@@ -16,21 +16,43 @@
 
 package views
 
-import base.Injector
+import base.OverridableInjector
+import config.DucrPartConfig
 import forms.IleQueryForm
 import org.jsoup.nodes.Element
+import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
+import play.twirl.api.Html
 import views.html.ile_query
 import views.tags.ViewTest
 
 @ViewTest
-class IleQueryViewSpec extends ViewSpec with Injector {
+class IleQueryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   private implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
 
-  private val page = instanceOf[ile_query]
-  private val view = page(IleQueryForm.form)
+  private val ducrPartsConfig = mock[DucrPartConfig]
+  private val injector = new OverridableInjector(bind[DucrPartConfig].to(ducrPartsConfig))
+
+  private val page = injector.instanceOf[ile_query]
+  private def view: Html = page(IleQueryForm.form)
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+
+    reset(ducrPartsConfig)
+    when(ducrPartsConfig.isDucrPartsEnabled).thenReturn(false)
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(ducrPartsConfig)
+
+    super.afterEach()
+  }
 
   "Ile Query page" should {
 
@@ -70,28 +92,55 @@ class IleQueryViewSpec extends ViewSpec with Injector {
       }
     }
 
-    "contains input field" in {
+    "contain input field" in {
 
       Option(view.getElementById("ucr")) mustBe defined
     }
 
-    "contains input field hint" in {
+    "contain input field hint" in {
 
       view.getElementById("ucr-hint").text() mustBe messages("ileQuery.hint")
     }
 
-    "contains submit button" in {
+    "contain submit button" in {
 
-      view.getElementsByClass("govuk-button").first().text() mustBe messages("site.continue")
+      view.getSubmitButton mustBe defined
+      view.getSubmitButton.get must containMessage("site.continue")
     }
 
-    "contains link to view previous requests" in {
+    "contain link to view previous requests" in {
       val govukListElement = view.getElementsByClass("govuk-list").first()
 
       val previousRequests = govukListElement.getElementsByClass("govuk-link").get(0)
 
-      previousRequests.text() mustBe messages("ileQuery.link.requests")
+      previousRequests must containMessage("ileQuery.link.requests")
       previousRequests must haveHref(controllers.routes.SubmissionsController.displayPage())
     }
+
+    "contain link to 'DUCR Part Details' page" when {
+
+      "DucrPart feature is enabled" in {
+        when(ducrPartsConfig.isDucrPartsEnabled).thenReturn(true)
+        val govukListElement = view.getElementsByClass("govuk-list").first()
+
+        val ducrPartDetailsLink = govukListElement.getElementsByClass("govuk-link").get(1)
+
+        ducrPartDetailsLink must containMessage("ileQuery.link.ducrPart")
+        ducrPartDetailsLink must haveHref(controllers.routes.DucrPartDetailsController.displayPage())
+      }
+    }
+
+    "not contain link 'DUCR Part Details' page" when {
+
+      "DucrPart feature is disabled" in {
+        when(ducrPartsConfig.isDucrPartsEnabled).thenReturn(false)
+        val govukListElement = view.getElementsByClass("govuk-list").first()
+
+        govukListElement.getElementsByClass("govuk-link").size() mustBe 1
+        val soleLink = govukListElement.getElementsByClass("govuk-link").get(0)
+        soleLink must containMessage("ileQuery.link.requests")
+      }
+    }
   }
+
 }

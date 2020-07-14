@@ -46,15 +46,6 @@ object FieldValidator {
     def or(second: Boolean): Boolean = first || second
   }
 
-  val validDucr: String => Boolean = (input: String) => input.matches("""[0-9][A-Z][A-Z][0-9A-Z\(\)\-/]{6,32}""")
-
-  val validDucrIgnoreCase: String => Boolean = (input: String) => validDucr(input.toUpperCase)
-
-  val validMucr: String => Boolean = (input: String) =>
-    input.matches("""GB/[0-9A-Z]{3,4}-[0-9A-Z]{5,28}|GB/[0-9A-Z]{9,12}-[0-9A-Z]{1,23}|A:[0-9A-Z]{3}[0-9]{8}|C:[A-Z]{3}[0-9A-Z]{3,30}""")
-
-  val validMucrIgnoreCase: String => Boolean = (input: String) => validMucr(input.toUpperCase)
-
   private val zerosOnlyRegexValue = "[0]+"
   private val noMoreDecimalPlacesThanRegexValue: Int => String =
     (decimalPlaces: Int) => s"^([0-9]*)([\\.]{0,1}[0-9]{0,$decimalPlaces})$$"
@@ -122,4 +113,16 @@ object FieldValidator {
   val areAllElementsUnique: Iterable[_] => Boolean = (input: Iterable[_]) => input.toSet.size == input.size
 
   val ofPattern: String => String => Boolean = (pattern: String) => (input: String) => input.matches(pattern)
+
+  val validDucr: String => Boolean = (input: String) => input.matches("""[0-9][A-Z][A-Z][0-9A-Z\(\)\-/]{6,32}""")
+
+  val validDucrIgnoreCase: String => Boolean = (input: String) => validDucr(input.toUpperCase)
+
+  val validMucr: String => Boolean = (input: String) =>
+    input.matches("""GB/[0-9A-Z]{3,4}-[0-9A-Z]{5,28}|GB/[0-9A-Z]{9,12}-[0-9A-Z]{1,23}|A:[0-9A-Z]{3}[0-9]{8}|C:[A-Z]{3}[0-9A-Z]{3,30}""")
+
+  val validMucrIgnoreCase: String => Boolean = (input: String) => validMucr(input.toUpperCase)
+
+  val isValidDucrPartId: String => Boolean = (input: String) => lengthInRange(1)(3)(input) && input.forall(_.isDigit)
+
 }

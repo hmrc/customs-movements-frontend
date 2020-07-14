@@ -16,7 +16,7 @@
 
 package forms
 
-import forms.UcrType.{Ducr, Mucr}
+import forms.UcrType.{Ducr, DucrPart, Mucr}
 import models.{ReturnToStartException, UcrBlock}
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
@@ -38,12 +38,12 @@ object DisassociateUcr {
       "kind" -> of[UcrType](UcrType.formatter),
       "ducr" -> mandatoryIfEqual(
         "kind",
-        "ducr",
+        Ducr.formValue,
         text().verifying("disassociate.ucr.ducr.empty", nonEmpty).verifying("disassociate.ucr.ducr.error", isEmpty or validDucrIgnoreCase)
       ),
       "mucr" -> mandatoryIfEqual(
         "kind",
-        "mucr",
+        Mucr.formValue,
         text().verifying("disassociate.ucr.mucr.empty", nonEmpty).verifying("disassociate.ucr.mucr.error", isEmpty or validMucrIgnoreCase)
       )
     )(form2Data)(DisassociateUcr.unapply)
@@ -55,8 +55,9 @@ object DisassociateUcr {
 
   def apply(ucrBlock: UcrBlock): DisassociateUcr =
     ucrBlock.ucrType match {
-      case Mucr.codeValue => DisassociateUcr(Mucr, None, Some(ucrBlock.ucr))
-      case Ducr.codeValue => DisassociateUcr(Ducr, Some(ucrBlock.ucr), None)
-      case _              => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
+      case Mucr.codeValue     => DisassociateUcr(Mucr, None, Some(ucrBlock.ucr))
+      case Ducr.codeValue     => DisassociateUcr(Ducr, Some(ucrBlock.ucr), None)
+      case DucrPart.codeValue => DisassociateUcr(DucrPart, Some(ucrBlock.ucr), None)
+      case _                  => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
     }
 }

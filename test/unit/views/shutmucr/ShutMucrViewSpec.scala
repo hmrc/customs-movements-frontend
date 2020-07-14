@@ -63,6 +63,14 @@ class ShutMucrViewSpec extends ViewSpec with Injector {
         view must haveGovUkFieldError("mucr", messages("error.mucr.empty"))
       }
     }
+
+    "render submit button" in {
+
+      val view = page(ShutMucr.form())
+
+      view.getSubmitButton mustBe defined
+      view.getSubmitButton.get must containMessage("site.continue")
+    }
   }
 
 }

@@ -17,7 +17,7 @@
 package utils.validators.forms
 
 import org.scalatest.{MustMatchers, WordSpec}
-import testdata.ConsolidationTestData
+import testdata.CommonTestData
 import utils.TestDataHelper
 import utils.validators.forms.FieldValidator._
 
@@ -810,7 +810,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
 
     "return true" when {
       "using test constant" in {
-        validMucr(ConsolidationTestData.validMucr) mustBe true
+        validMucr(CommonTestData.validMucr) mustBe true
       }
       "is minimum first format" in {
         validMucr("GB/123-ABCDE") mustBe true
@@ -870,7 +870,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
 
     "return true" when {
       "using test constant" in {
-        validDucr(ConsolidationTestData.validDucr) mustBe true
+        validDucr(CommonTestData.validDucr) mustBe true
       }
       "is minimum acceptable example" in {
         validDucr("9GB123456") mustBe true
@@ -890,7 +890,81 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidator lengthInRagnge" should {
+  "FormFieldValidator isValidDucrPartId" should {
+
+    "return true" when {
+
+      "provided with DucrPartId containing one digit" in {
+
+        val input = "1"
+        isValidDucrPartId(input) mustBe true
+      }
+
+      "provided with DucrPartId containing two digits" in {
+
+        val input = "12"
+        isValidDucrPartId(input) mustBe true
+      }
+
+      "provided with DucrPartId containing three digits" in {
+
+        val input = "123"
+        isValidDucrPartId(input) mustBe true
+      }
+    }
+
+    "return false" when {
+
+      "provided with empty DucrPartId" in {
+
+        val input = ""
+        isValidDucrPartId(input) mustBe false
+      }
+
+      "provided with DucrPartId containing only single letter" in {
+
+        val input = "X"
+        isValidDucrPartId(input) mustBe false
+      }
+
+      "provided with DucrPartId containing only letters" in {
+
+        val input = "XYZ"
+        isValidDucrPartId(input) mustBe false
+      }
+
+      "provided with DucrPartId starting with letter" in {
+
+        val input = "X12"
+        isValidDucrPartId(input) mustBe false
+      }
+
+      "provided with DucrPartId containing letter in the middle" in {
+
+        val input = "1X2"
+        isValidDucrPartId(input) mustBe false
+      }
+
+      "provided with DucrPartId ending with letter" in {
+
+        val input = "12X"
+        isValidDucrPartId(input) mustBe false
+      }
+
+      "provided with DucrPartId containing 4 digits" in {
+
+        val input = "1234"
+        isValidDucrPartId(input) mustBe false
+      }
+
+      "provided with DucrPartId containing 2 letters at the end" in {
+        val input = "1XY"
+        isValidDucrPartId(input) mustBe false
+      }
+    }
+  }
+
+  "FormFieldValidator lengthInRange" should {
 
     "return true" when {
 

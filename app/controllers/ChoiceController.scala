@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.AppConfig
+import config.IleQueryConfig
 import controllers.actions.AuthAction
 import forms.Choice
 import forms.Choice._
@@ -37,13 +37,13 @@ class ChoiceController @Inject()(
   authenticate: AuthAction,
   cacheRepository: CacheRepository,
   mcc: MessagesControllerComponents,
-  appConfig: AppConfig,
+  ileQueryConfig: IleQueryConfig,
   choicePage: choice_page
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayChoiceForm: Action[AnyContent] = authenticate.async { implicit request =>
-    if (appConfig.ileQueryEnabled)
+    if (ileQueryConfig.isIleQueryEnabled)
       displayChoiceFormForIleQuery
     else
       displayChoiceFormForIleQueryDisabled
@@ -77,19 +77,19 @@ class ChoiceController @Inject()(
 
   private def proceed(choice: Choice)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     def movementFirstPage =
-      if (appConfig.ileQueryEnabled) controllers.routes.SpecificDateTimeController.displayPage()
+      if (ileQueryConfig.isIleQueryEnabled) controllers.routes.SpecificDateTimeController.displayPage()
       else routes.ConsignmentReferencesController.displayPage()
 
     def dissociateFirstPage =
-      if (appConfig.ileQueryEnabled) controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage()
+      if (ileQueryConfig.isIleQueryEnabled) controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage()
       else consolidations.routes.DisassociateUcrController.displayPage()
 
     def shutFirstPage =
-      if (appConfig.ileQueryEnabled) controllers.consolidations.routes.ShutMucrSummaryController.displayPage()
+      if (ileQueryConfig.isIleQueryEnabled) controllers.consolidations.routes.ShutMucrSummaryController.displayPage()
       else consolidations.routes.ShutMucrController.displayPage()
 
     def associateFirstPage =
-      if (appConfig.ileQueryEnabled)
+      if (ileQueryConfig.isIleQueryEnabled)
         consolidations.routes.ManageMucrController.displayPage()
       else consolidations.routes.MucrOptionsController.displayPage()
 

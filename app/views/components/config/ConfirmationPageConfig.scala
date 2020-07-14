@@ -16,16 +16,16 @@
 
 package views.components.config
 
-import config.AppConfig
+import config.IleQueryConfig
 import javax.inject.Inject
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import views.html.components.confirmation_link
 
-class ConfirmationPageConfig @Inject()(appConfig: AppConfig, confirmationLink: confirmation_link) {
+class ConfirmationPageConfig @Inject()(ileQueryConfig: IleQueryConfig, confirmationLink: confirmation_link) {
 
   def nextStepLink()(implicit messages: Messages): Html =
-    if (appConfig.ileQueryEnabled) {
+    if (ileQueryConfig.isIleQueryEnabled) {
       confirmationLink(
         message = messages("confirmation.redirect.query.link"),
         linkTarget = controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()

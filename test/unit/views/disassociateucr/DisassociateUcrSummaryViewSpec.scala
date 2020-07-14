@@ -17,7 +17,7 @@
 package views.disassociateucr
 
 import base.OverridableInjector
-import config.AppConfig
+import config.IleQueryConfig
 import forms.DisassociateUcr
 import forms.UcrType.Ducr
 import models.cache.DisassociateUcrAnswers
@@ -34,19 +34,19 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with Bef
 
   private implicit val request = journeyRequest(DisassociateUcrAnswers())
 
-  private val appConfig = mock[AppConfig]
-  private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))
+  private val ileQueryConfig = mock[IleQueryConfig]
+  private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
 
   private val page = injector.instanceOf[disassociate_ucr_summary]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(appConfig.ileQueryEnabled).thenReturn(true)
+    when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
   }
 
   override def afterEach(): Unit = {
-    reset(appConfig)
+    reset(ileQueryConfig)
 
     super.afterEach()
   }
@@ -69,7 +69,7 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with Bef
 
     "display 'Change' link on page when ileQuery disabled" in {
 
-      when(appConfig.ileQueryEnabled).thenReturn(false)
+      when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
 
       val view = page(disassociateUcr)
       val changeButton = view.getElementsByClass("govuk-link").get(1)
@@ -79,7 +79,7 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with Bef
 
     "not display 'Change' link when ileQuery enabled (Sign out link only)" in {
 
-      when(appConfig.ileQueryEnabled).thenReturn(true)
+      when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
 
       val links = page(disassociateUcr).getElementsByClass("govuk-link")
 
@@ -88,7 +88,7 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with Bef
 
     "have 'Back' button when ileQuery enabled" in {
 
-      when(appConfig.ileQueryEnabled).thenReturn(true)
+      when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
 
       val backButton = page(disassociateUcr).getBackButton
 
@@ -98,7 +98,7 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with Bef
 
     "have 'Back' button when ileQuery disabled" in {
 
-      when(appConfig.ileQueryEnabled).thenReturn(false)
+      when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
 
       val backButton = page(disassociateUcr).getBackButton
 

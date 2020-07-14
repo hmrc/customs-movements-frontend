@@ -16,7 +16,7 @@
 
 package controllers.consolidations
 
-import config.AppConfig
+import config.IleQueryConfig
 import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.storage.FlashKeys
 import forms.UcrType
@@ -37,7 +37,7 @@ class AssociateUcrSummaryController @Inject()(
   journeyType: JourneyRefiner,
   mcc: MessagesControllerComponents,
   submissionService: SubmissionService,
-  appConfig: AppConfig,
+  ileQueryConfig: IleQueryConfig,
   associateUcrSummaryPage: associate_ucr_summary,
   associateUcrSummaryNoChangePage: associate_ucr_summary_no_change
 )(implicit executionContext: ExecutionContext)
@@ -48,7 +48,7 @@ class AssociateUcrSummaryController @Inject()(
     val mucrOptions = answers.mucrOptions.getOrElse(throw ReturnToStartException)
     val associateUcr = answers.associateUcr.getOrElse(throw ReturnToStartException)
 
-    if (appConfig.ileQueryEnabled) {
+    if (ileQueryConfig.isIleQueryEnabled) {
       if (answers.isAssociateAnotherMucr)
         Ok(associateUcrSummaryNoChangePage(mucrOptions.mucr, associateUcr.ucr, associateUcr.kind, answers.manageMucrChoice))
       else

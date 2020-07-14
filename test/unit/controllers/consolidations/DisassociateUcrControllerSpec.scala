@@ -31,7 +31,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import repository.MockCache
-import testdata.ConsolidationTestData.validDucr
+import testdata.CommonTestData.validDucr
 import views.html.disassociateucr.disassociate_ucr
 
 import scala.concurrent.ExecutionContext.Implicits.global

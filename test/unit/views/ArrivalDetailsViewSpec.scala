@@ -20,7 +20,7 @@ import java.text.DecimalFormat
 import java.time.{LocalDate, LocalTime}
 
 import base.OverridableInjector
-import config.AppConfig
+import config.IleQueryConfig
 import forms.ArrivalDetails
 import forms.common.{Date, Time}
 import org.jsoup.nodes.Document
@@ -38,19 +38,19 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
 
   private implicit val request = FakeRequest().withCSRFToken
 
-  private val appConfig = mock[AppConfig]
-  private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))
+  private val ileQueryConfig = mock[IleQueryConfig]
+  private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
 
   private val page = injector.instanceOf[arrival_details]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(appConfig.ileQueryEnabled).thenReturn(true)
+    when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
   }
 
   override def afterEach(): Unit = {
-    reset(appConfig)
+    reset(ileQueryConfig)
 
     super.afterEach()
   }
@@ -80,7 +80,7 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
       }
 
       "have 'Back' button when ileQuery enabled" in {
-        when(appConfig.ileQueryEnabled).thenReturn(true)
+        when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
 
         val backButton = createView(movementDetails.arrivalForm()).getBackButton
 
@@ -89,7 +89,7 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
       }
 
       "have 'Back' button when ileQuery disabled" in {
-        when(appConfig.ileQueryEnabled).thenReturn(false)
+        when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
 
         val backButton = createView(movementDetails.arrivalForm()).getBackButton
 
@@ -161,7 +161,8 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
       }
 
       "have 'Continue' button" in {
-        emptyView.getElementsByClass("govuk-button").first() must containMessage("site.continue")
+        emptyView.getSubmitButton mustBe defined
+        emptyView.getSubmitButton.get must containMessage("site.continue")
       }
     }
 

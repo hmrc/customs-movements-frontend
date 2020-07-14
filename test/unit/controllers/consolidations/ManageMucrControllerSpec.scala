@@ -104,6 +104,13 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
         redirectLocation(result).value mustBe routes.MucrOptionsController.displayPage().url
       }
 
+      "queried ucr was Ducr Part" in {
+        val result = controller(AssociateUcrAnswers(), queryUcr = Some(UcrBlock("ducrPart", UcrType.DucrPart))).displayPage()(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.MucrOptionsController.displayPage().url
+      }
+
       "form is correct with AssociateAnotherMucr option" in {
         val correctForm = Json.toJson(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr))
 

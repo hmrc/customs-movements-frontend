@@ -16,9 +16,8 @@
 
 package views
 
-import base.{Injector, OverridableInjector}
-import config.AppConfig
-import controllers.routes
+import base.OverridableInjector
+import config.IleQueryConfig
 import forms.SpecificDateTimeChoice
 import models.cache.{ArrivalAnswers, DepartureAnswers}
 import org.mockito.Mockito.{reset, when}
@@ -27,20 +26,19 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
 import play.twirl.api.Html
-import views.html.associateucr.mucr_options
 import views.html.specific_date_and_time
 
 class SpecificDateTimeViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private val appConfig = mock[AppConfig]
-  private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))
+  private val appConfig = mock[IleQueryConfig]
+  private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(appConfig))
 
   private val page = injector.instanceOf[specific_date_and_time]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(appConfig.ileQueryEnabled).thenReturn(true)
+    when(appConfig.isIleQueryEnabled).thenReturn(true)
   }
 
   override def afterEach(): Unit = {
@@ -73,7 +71,7 @@ class SpecificDateTimeViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
     }
 
     "display 'Back' button that links to Consignment References when ileQuery disabled" in {
-      when(appConfig.ileQueryEnabled).thenReturn(false)
+      when(appConfig.isIleQueryEnabled).thenReturn(false)
       val backButton = createView.getBackButton
 
       backButton mustBe defined
@@ -84,7 +82,7 @@ class SpecificDateTimeViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
     }
 
     "display 'Back' button that links to Choice when ileQuery enabled" in {
-      when(appConfig.ileQueryEnabled).thenReturn(true)
+      when(appConfig.isIleQueryEnabled).thenReturn(true)
       val backButton = createView.getBackButton
 
       backButton mustBe defined
@@ -95,7 +93,8 @@ class SpecificDateTimeViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
     }
 
     "display 'Continue' button on page" in {
-      createView.getElementsByClass("govuk-button").first() must containMessage("site.continue")
+      createView.getSubmitButton mustBe defined
+      createView.getSubmitButton.get must containMessage("site.continue")
     }
   }
 }

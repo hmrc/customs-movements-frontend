@@ -16,14 +16,14 @@
 
 package views.components.config
 
-import config.AppConfig
+import config.IleQueryConfig
 import javax.inject.Inject
 import play.api.mvc.Call
 
-class ShutMucrSummaryConfig @Inject()(appConfig: AppConfig) extends BaseConfig(appConfig) {
+class ShutMucrSummaryConfig @Inject()(ileQueryConfig: IleQueryConfig) extends BaseConfig(ileQueryConfig) {
 
   def backUrl: Call =
-    if (appConfig.ileQueryEnabled)
+    if (ileQueryConfig.isIleQueryEnabled)
       controllers.routes.ChoiceController.displayChoiceForm()
     else
       controllers.consolidations.routes.ShutMucrController.displayPage()

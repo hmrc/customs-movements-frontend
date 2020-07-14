@@ -16,7 +16,7 @@
 
 @import components.gds.{gds_main_template, linkContent, pageTitle}
 @import controllers.routes
-@import forms.UcrType.Ducr
+@import forms.UcrType._
 @import models.cache.DepartureAnswers
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
@@ -34,13 +34,15 @@
 
 @(data: DepartureAnswers)(implicit request: Request[_], messages: Messages)
 
-@referenceTypeKey = @{data.consignmentReferences.map(ref =>
+@referenceTypeKey = @{data.consignmentReferences.map { ref =>
     if(ref.is(Ducr)) {
         "consignmentReferences.reference.ducr"
+    } else if(ref.is(DucrPart)) {
+        "consignmentReferences.reference.ducrPart"
     } else {
         "consignmentReferences.reference.mucr"
     }
-).getOrElse("")}
+}.getOrElse("")}
 
 @govukLayout(
     title = Title("summary.departure.title"),

@@ -20,7 +20,7 @@ import java.time.temporal.ChronoUnit.MINUTES
 import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 
 import base.Injector
-import config.AppConfigSpec
+import config.IleQueryConfig
 import connectors.exchanges.ActionType.{ConsolidationType, MovementType}
 import controllers.routes
 import models.UcrBlock
@@ -39,6 +39,8 @@ import views.html.movements
 class MovementsViewSpec extends ViewSpec with Injector {
 
   implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
+
+  private val realIleQueryConfig = instanceOf[IleQueryConfig]
 
   private val page = instanceOf[movements]
   private val dateTime: Instant = LocalDate.of(2019, 10, 31).atStartOfDay().toInstant(ZoneOffset.UTC)
@@ -59,7 +61,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
 
       backButton must containMessage("site.back.toStartPage")
 
-      if (AppConfigSpec.realAppConfig.ileQueryEnabled)
+      if (realIleQueryConfig.isIleQueryEnabled)
         backButton must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
       else backButton must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
     }

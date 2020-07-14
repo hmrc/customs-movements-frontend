@@ -17,7 +17,7 @@
 package views
 
 import base.Injector
-import config.AppConfigSpec
+import config.IleQueryConfig
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import views.html.start_page
@@ -27,6 +27,8 @@ import views.tags.ViewTest
 class StartViewSpec extends ViewSpec with Injector {
 
   private implicit val request = FakeRequest().withCSRFToken
+
+  private val realIleQueryConfig = instanceOf[IleQueryConfig]
 
   private val page = instanceOf[start_page]
   private def createView(): Html = page()(request, messages)
@@ -143,7 +145,7 @@ class StartViewSpec extends ViewSpec with Injector {
       view.getElementsByClass("govuk-button govuk-button--start").get(0).text() mustBe messages("startPage.buttonName")
 
       view.getElementsByClass("govuk-button govuk-button--start").get(0) must haveHref(
-        if (AppConfigSpec.realAppConfig.ileQueryEnabled)
+        if (realIleQueryConfig.isIleQueryEnabled)
           controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
         else
           controllers.routes.ChoiceController.displayChoiceForm()

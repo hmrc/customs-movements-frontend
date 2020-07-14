@@ -16,7 +16,7 @@
 
 package controllers.consolidations
 
-import config.AppConfig
+import config.IleQueryConfig
 import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.MucrOptions
 import forms.MucrOptions.form
@@ -38,7 +38,7 @@ class MucrOptionsController @Inject()(
   getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
   cacheRepository: CacheRepository,
-  appConfig: AppConfig,
+  ileQueryConfig: IleQueryConfig,
   page: mucr_options
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
@@ -60,7 +60,7 @@ class MucrOptionsController @Inject()(
           } else {
             val updatedAnswers = request.answersAs[AssociateUcrAnswers].copy(mucrOptions = Some(validForm))
             cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
-              if (appConfig.ileQueryEnabled)
+              if (ileQueryConfig.isIleQueryEnabled)
                 Redirect(routes.AssociateUcrSummaryController.displayPage())
               else
                 Redirect(routes.AssociateUcrController.displayPage())

@@ -17,18 +17,21 @@
 package views.components.config
 
 import base.UnitSpec
+import config.AppConfig
 
-class StartPageConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
+class StartPageConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
+
+  private val appConfig = mock[AppConfig]
 
   "StartPageConfig" should {
 
     "return correct url when ileQuery enabled" in {
-      val config = new StartPageConfig(ileQueryEnabled)
+      val config = new StartPageConfig(appConfig, ileQueryEnabled)
       config.startUrl must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
     }
 
     "return correct url when ileQuery disabled" in {
-      val config = new StartPageConfig(ileQueryDisabled)
+      val config = new StartPageConfig(appConfig, ileQueryDisabled)
       config.startUrl must be(controllers.routes.ChoiceController.displayChoiceForm().url)
     }
 

@@ -17,31 +17,33 @@
 package views
 
 import base.OverridableInjector
-import config.AppConfig
 import models.cache._
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
+import play.twirl.api.{Html, HtmlFormat}
+import views.components.config.ConfirmationPageConfig
 import views.html.confirmation_page
 import views.tags.ViewTest
 
 @ViewTest
 class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private val appConfig = mock[AppConfig]
-  private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))
+  private val confirmationPageConfig = mock[ConfirmationPageConfig]
+  private val injector = new OverridableInjector(bind[ConfirmationPageConfig].toInstance(confirmationPageConfig))
 
   private val page = injector.instanceOf[confirmation_page]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(appConfig.ileQueryEnabled).thenReturn(false)
+    when(confirmationPageConfig.nextStepLink()(any())).thenReturn(HtmlFormat.empty)
   }
 
   override def afterEach(): Unit = {
-    reset(appConfig)
+    reset(confirmationPageConfig)
 
     super.afterEach()
   }
@@ -145,36 +147,17 @@ class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       link must containMessage("confirmation.notification.timeline.link")
       link must haveHref(controllers.routes.SubmissionsController.displayPage())
     }
-  }
 
-  "ShutMucrConfirmationView" when {
+    "render link returned by ConfirmationPageConfig" in {
 
-    "ileQuery feature is disabled" should {
-      "render 'Back to start' link to Choice page" in {
+      implicit val request = journeyRequest(ArrivalAnswers())
 
-        implicit val request = journeyRequest(ArrivalAnswers())
+      val testConfirmationLink = Html("""<div class="govuk-link">Test Confirmation Link</div>""")
+      when(confirmationPageConfig.nextStepLink()(any())).thenReturn(testConfirmationLink)
 
-        when(appConfig.ileQueryEnabled).thenReturn(false)
+      val link = page(JourneyType.ARRIVE).getElementsByClass("govuk-link").get(2)
 
-        val link = page(JourneyType.ARRIVE).getElementsByClass("govuk-link").get(2)
-
-        link must containMessage("confirmation.redirect.choice.link")
-        link must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
-      }
-    }
-
-    "ileQuery feature is enabled" should {
-      "render 'Find another consignment' link to Find Consignment page" in {
-
-        implicit val request = journeyRequest(ArrivalAnswers())
-
-        when(appConfig.ileQueryEnabled).thenReturn(true)
-
-        val link = page(JourneyType.ARRIVE).getElementsByClass("govuk-link").get(2)
-
-        link must containMessage("confirmation.redirect.query.link")
-        link must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
-      }
+      link.text must include("Test Confirmation Link")
     }
   }
 

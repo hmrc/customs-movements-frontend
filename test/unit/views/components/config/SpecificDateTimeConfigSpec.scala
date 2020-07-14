@@ -17,7 +17,7 @@
 package views.components.config
 import base.UnitSpec
 
-class SpecificDateTimeConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
+class SpecificDateTimeConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
   "SpecificDateTimeConfig when ileQuery disabled" should {
 

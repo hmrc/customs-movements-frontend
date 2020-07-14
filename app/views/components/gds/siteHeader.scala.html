@@ -14,14 +14,12 @@
  * limitations under the License.
  *@
 
-@import models.requests.AuthenticatedRequest
-@import models.requests.JourneyRequest
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcHeader
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.Header
+@import config.IleQueryConfig
+@import models.requests.{AuthenticatedRequest, JourneyRequest}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.{Header, HmrcHeader}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language
-@import config.AppConfig
 
-@this(hmrcHeader: HmrcHeader, appConfig: AppConfig)
+@this(hmrcHeader: HmrcHeader, ileQueryConfig: IleQueryConfig)
 
 @()(implicit request: Request[_], messages: Messages)
 
@@ -33,7 +31,7 @@
 }
 
 @serviceNameLink = @{
-    if (appConfig.ileQueryEnabled)
+    if (ileQueryConfig.isIleQueryEnabled)
         controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url
     else
         controllers.routes.ChoiceController.displayChoiceForm().url

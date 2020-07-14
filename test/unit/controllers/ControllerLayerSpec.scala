@@ -17,13 +17,13 @@
 package controllers
 
 import base.UnitSpec
-import config.AppConfig
+import config.{DucrPartConfig, IleQueryConfig}
 import controllers.actions._
 import controllers.exception.InvalidFeatureStateException
-import models.{SignedInUser, UcrBlock}
 import models.cache.JourneyType.JourneyType
 import models.cache.{Answers, Cache}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.{SignedInUser, UcrBlock}
 import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.Messages
 import play.api.libs.json.Writes
@@ -75,21 +75,30 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
       Future.successful(Left(Results.Forbidden))
   }
 
-  case object IleQueryEnabled extends IleQueryAction(mock[AppConfig]) {
+  case object IleQueryEnabled extends IleQueryAction(mock[IleQueryConfig]) {
     override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = block(request)
   }
 
-  case object IleQueryDisabled extends IleQueryAction(mock[AppConfig]) {
+  case object IleQueryDisabled extends IleQueryAction(mock[IleQueryConfig]) {
     override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       throw InvalidFeatureStateException
   }
 
-  case object NotValidForIleQuery extends NonIleQueryAction(mock[AppConfig]) {
+  case object NotValidForIleQuery extends NonIleQueryAction(mock[IleQueryConfig]) {
     override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       throw InvalidFeatureStateException
   }
 
-  case object ValidForIleQuery extends NonIleQueryAction(mock[AppConfig]) {
+  case object ValidForIleQuery extends NonIleQueryAction(mock[IleQueryConfig]) {
     override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = block(request)
+  }
+
+  case object DucrPartsEnabled extends DucrPartsAction(mock[DucrPartConfig]) {
+    override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = block(request)
+  }
+
+  case object DucrPartsDisabled extends DucrPartsAction(mock[DucrPartConfig]) {
+    override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
+      throw InvalidFeatureStateException
   }
 }

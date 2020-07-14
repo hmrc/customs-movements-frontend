@@ -16,14 +16,14 @@
 
 package views.components.config
 
-import config.AppConfig
+import config.IleQueryConfig
 import javax.inject.Inject
 import play.api.mvc.Call
 
-class SpecificDateTimeConfig @Inject()(appConfig: AppConfig) {
+class SpecificDateTimeConfig @Inject()(ileQueryConfig: IleQueryConfig) {
 
   def backUrl: Call =
-    if (appConfig.ileQueryEnabled)
+    if (ileQueryConfig.isIleQueryEnabled)
       controllers.routes.ChoiceController.displayChoiceForm()
     else
       controllers.routes.ConsignmentReferencesController.displayPage()

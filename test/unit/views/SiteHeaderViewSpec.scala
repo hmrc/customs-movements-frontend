@@ -17,7 +17,7 @@
 package views
 
 import base.{Injector, OverridableInjector}
-import config.AppConfig
+import config.IleQueryConfig
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -27,12 +27,12 @@ import views.html.components.gds.siteHeader
 
 class SiteHeaderViewSpec extends ViewSpec with BeforeAndAfterEach with MockitoSugar with Injector {
 
-  private val appConfig = mock[AppConfig]
-  private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))
+  private val ileQueryConfig = mock[IleQueryConfig]
+  private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
   private implicit val request = FakeRequest().withCSRFToken
 
   override def afterEach(): Unit = {
-    reset(appConfig)
+    reset(ileQueryConfig)
     super.afterEach()
   }
 
@@ -42,7 +42,7 @@ class SiteHeaderViewSpec extends ViewSpec with BeforeAndAfterEach with MockitoSu
 
     "render service name with link to 'Choice' page" in {
 
-      when(appConfig.ileQueryEnabled).thenReturn(false)
+      when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
 
       val serviceNameLink = headerComponent()
         .getElementsByClass("govuk-header__link--service-name")
@@ -53,7 +53,7 @@ class SiteHeaderViewSpec extends ViewSpec with BeforeAndAfterEach with MockitoSu
 
     "render service name with link to 'Find Consignment' page" in {
 
-      when(appConfig.ileQueryEnabled).thenReturn(true)
+      when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
 
       val serviceNameLink = headerComponent()
         .getElementsByClass("govuk-header__link--service-name")

@@ -96,7 +96,8 @@ class DisassociateUcrViewSpec extends ViewSpec with Injector {
       }
 
       "display 'Continue' button on page" in {
-        emptyView.getElementsByClass("govuk-button").first() must containMessage("site.continue")
+        emptyView.getSubmitButton mustBe defined
+        emptyView.getSubmitButton.get must containMessage("site.continue")
       }
     }
 

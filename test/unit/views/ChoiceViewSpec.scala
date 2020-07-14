@@ -97,6 +97,17 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
         view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.disassociateucr.label"))
         view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.departure.label"))
       }
+
+      "user entered Choice page through Ducr Part Details page" in {
+        isIleQueryEnabled(true)
+
+        val view = choicePage(Choice.form(), Some(UcrBlock("DUCR-123X", UcrType.DucrPart)))
+
+        view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
+        view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.associateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.disassociateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.departure.label"))
+      }
     }
 
     "render 'Shut Mucr' option" when {
@@ -186,7 +197,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
       view.getElementsByAttributeValue("for", "choice-6").text() must be(messages("movement.choice.submissions.label"))
     }
 
-    "display 4 unchecked radio buttons" in {
+    "display 5 unchecked radio buttons when ileQuery is enabled" in {
       isIleQueryEnabled(true)
 
       val view = createView(Choice.form())
@@ -195,6 +206,20 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
       ensureRadioIsUnChecked(view, "choice-2")
       ensureRadioIsUnChecked(view, "choice-3")
       ensureRadioIsUnChecked(view, "choice-4")
+      ensureRadioIsUnChecked(view, "choice-5")
+    }
+
+    "display 6 unchecked radio buttons when ileQuery is disabled" in {
+      isIleQueryEnabled(false)
+
+      val view = createView(Choice.form())
+
+      ensureRadioIsUnChecked(view, "choice")
+      ensureRadioIsUnChecked(view, "choice-2")
+      ensureRadioIsUnChecked(view, "choice-3")
+      ensureRadioIsUnChecked(view, "choice-4")
+      ensureRadioIsUnChecked(view, "choice-5")
+      ensureRadioIsUnChecked(view, "choice-6")
     }
 
     "display 'Save and continue' button on page" in {

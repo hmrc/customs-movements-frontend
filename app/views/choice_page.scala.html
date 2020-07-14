@@ -18,7 +18,7 @@
 @import components.gds._
 @import forms.Choice._
 @import forms.Choice
-@import forms.UcrType.Ducr
+@import forms.UcrType.Mucr
 @import views.Title
 @import views.components.BackButton
 @import views.components.config.ChoicePageConfig
@@ -64,12 +64,14 @@
         )
     )
 
-    if (pageConfig.ileQueryEnabled) commonChoices
+    val choicesBasedOnFeature = if (pageConfig.ileQueryEnabled) commonChoices
     else commonChoices :+ RadioItem(
         value = Some(Submissions.value.toString),
         content = Text(messages(s"movement.choice.${Submissions.toString.toLowerCase}.label")),
         checked = form("choice").value.contains(Submissions.toString.toLowerCase)
     )
+
+    choicesBasedOnFeature.filterNot(item => item.value.contains(ShutMUCR.value) && queryUcr.exists(_.ucrType != Mucr.codeValue))
 }
 
 @titleKey = @{
@@ -99,7 +101,7 @@
                     classes = "govuk-fieldset__legend--l"
                 ))
             )),
-            items = choices.filterNot(item => item.value.contains(ShutMUCR.value) && queryUcr.exists(_.ucrType == Ducr.codeValue)),
+            items = choices,
             errorMessage = form("choice").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
         @govukButton(Button(content = Text(messages("site.continue"))))

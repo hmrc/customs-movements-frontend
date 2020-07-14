@@ -12,6 +12,11 @@ POST        /consignment-query                     controllers.ileQuery.FindCons
 
 GET         /consignment-query/:ucr                controllers.ileQuery.IleQueryController.getConsignmentInformation(ucr: String)
 
+# DUCR Part details page
+GET         /ducr-part-details                     controllers.DucrPartDetailsController.displayPage()
+POST        /ducr-part-details                     controllers.DucrPartDetailsController.submitDucrPartDetails()
+
+
 # Declaration choice page
 GET         /choice                                controllers.ChoiceController.displayChoiceForm()
 GET         /choice/:journey                       controllers.ChoiceController.startSpecificJourney(journey)

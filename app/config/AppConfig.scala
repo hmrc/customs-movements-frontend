@@ -17,9 +17,6 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
-import features.Feature.Feature
-import features.FeatureStatus.FeatureStatus
-import features.{Feature, FeatureStatus}
 import javax.inject.Named
 import mongock.MongockConfig
 import play.api.i18n.Lang
@@ -100,31 +97,4 @@ class AppConfig @Inject()(
   def languageMap: Map[String, Lang] =
     Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
 
-  lazy val defaultFeatureStatus: features.FeatureStatus.Value =
-    FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))
-
-  def ileQueryEnabled: Boolean = featureStatus(Feature.ileQuery) == FeatureStatus.enabled
-
-  def featureStatus(feature: Feature): FeatureStatus =
-    sys.props
-      .get(feature2Key(feature))
-      .map(str2FeatureStatus)
-      .getOrElse(
-        runModeConfiguration
-          .getOptional[String](feature2Key(feature))
-          .map(str2FeatureStatus)
-          .getOrElse(defaultFeatureStatus)
-      )
-
-  def isFeatureOn(feature: Feature): Boolean =
-    featureStatus(feature) == FeatureStatus.enabled
-
-  def setFeatureStatus(feature: Feature, status: FeatureStatus): Unit =
-    sys.props += (feature2Key(feature) -> status.toString)
-
-  private def feature2Key(feature: Feature): String =
-    s"microservice.services.features.$feature"
-
-  private def str2FeatureStatus(str: String): FeatureStatus =
-    FeatureStatus.withName(str)
 }

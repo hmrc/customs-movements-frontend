@@ -17,7 +17,7 @@
 package views.associateucr
 
 import base.OverridableInjector
-import config.AppConfig
+import config.{AppConfig, IleQueryConfig}
 import forms.{ManageMucrChoice, MucrOptions}
 import models.UcrBlock
 import models.cache.AssociateUcrAnswers
@@ -32,8 +32,9 @@ import views.html.associateucr.mucr_options
 
 class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
+  private val ileQueryConfig = mock[IleQueryConfig]
   private val appConfig = mock[AppConfig]
-  private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))
+  private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig), bind[IleQueryConfig].toInstance(ileQueryConfig))
 
   private val page = injector.instanceOf[mucr_options]
 
@@ -42,12 +43,12 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(appConfig.ileQueryEnabled).thenReturn(true)
+    when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
     when(appConfig.tradeTariffUrl).thenReturn(tradeTariffUrl)
   }
 
   override def afterEach(): Unit = {
-    reset(appConfig)
+    reset(ileQueryConfig)
 
     super.afterEach()
   }
@@ -93,7 +94,7 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
     }
 
     "display 'Back' button that links to start page when ileQuery disabled" in {
-      when(appConfig.ileQueryEnabled).thenReturn(false)
+      when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
       val backButton = createView().getBackButton
 
       backButton mustBe defined
@@ -104,7 +105,7 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
     }
 
     "display 'Back' button that links to 'manage mucr page when ileQuery enabled" in {
-      when(appConfig.ileQueryEnabled).thenReturn(true)
+      when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
       val backButton = createView().getBackButton
 
       backButton mustBe defined
@@ -115,7 +116,8 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
     }
 
     "display 'Continue' button on page" in {
-      createView().getElementsByClass("govuk-button").first() must containMessage("site.continue")
+      createView().getSubmitButton mustBe defined
+      createView().getSubmitButton.get must containMessage("site.continue")
     }
 
     "render error summary" when {

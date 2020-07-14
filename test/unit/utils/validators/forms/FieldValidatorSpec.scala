@@ -896,19 +896,19 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
 
       "provided with DucrPartId containing one digit" in {
 
-        val input = "1X"
+        val input = "1"
         isValidDucrPartId(input) mustBe true
       }
 
       "provided with DucrPartId containing two digits" in {
 
-        val input = "12X"
+        val input = "12"
         isValidDucrPartId(input) mustBe true
       }
 
       "provided with DucrPartId containing three digits" in {
 
-        val input = "123X"
+        val input = "123"
         isValidDucrPartId(input) mustBe true
       }
     }
@@ -918,12 +918,6 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
       "provided with empty DucrPartId" in {
 
         val input = ""
-        isValidDucrPartId(input) mustBe false
-      }
-
-      "provided with DucrPartId containing only digits" in {
-
-        val input = "123"
         isValidDucrPartId(input) mustBe false
       }
 
@@ -941,13 +935,19 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
 
       "provided with DucrPartId starting with letter" in {
 
-        val input = "X123"
+        val input = "X12"
         isValidDucrPartId(input) mustBe false
       }
 
       "provided with DucrPartId containing letter in the middle" in {
 
-        val input = "12X3"
+        val input = "1X2"
+        isValidDucrPartId(input) mustBe false
+      }
+
+      "provided with DucrPartId ending with letter" in {
+
+        val input = "12X"
         isValidDucrPartId(input) mustBe false
       }
 
@@ -958,31 +958,13 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
       }
 
       "provided with DucrPartId containing 2 letters at the end" in {
-        val input = "12XY"
+        val input = "1XY"
         isValidDucrPartId(input) mustBe false
       }
     }
-
-    "provided with DucrPartId containing lowercase letter" in {
-
-      val input = "123x"
-      isValidDucrPartId(input) mustBe false
-    }
   }
 
-  "FormFieldValidator isValidDucrPartId" should {
-
-    "return true" when {
-
-      "provided with DucrPartId containing lowercase letter" in {
-
-        val input = "123x"
-        isValidDucrPartIdIgnoreCase(input) mustBe true
-      }
-    }
-  }
-
-  "FormFieldValidator lengthInRagnge" should {
+  "FormFieldValidator lengthInRange" should {
 
     "return true" when {
 

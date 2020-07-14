@@ -29,7 +29,7 @@ object CommonTestData {
 
   val validMucr = "GB/1234567890-MUCR"
   val validDucr = "4GB123456789000-DUCR"
-  val validDucrPartId = "123X"
+  val validDucrPartId = "123"
   val validWholeDucrParts = s"${validDucr}-${validDucrPartId}"
 
   val conversationId: String = "93feaae9-5043-4569-9fc5-ff04bfea0d11"

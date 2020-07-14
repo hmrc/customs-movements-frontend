@@ -21,7 +21,7 @@ import models.UcrBlock
 import play.api.data.Forms._
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
-import utils.validators.forms.FieldValidator.{isValidDucrPartIdIgnoreCase, validDucrIgnoreCase}
+import utils.validators.forms.FieldValidator.{isValidDucrPartId, validDucrIgnoreCase}
 
 case class DucrPartDetails(ducr: String, ducrPartId: String) {
 
@@ -52,7 +52,7 @@ object DucrPartDetails {
 
     Forms.mapping(
       "ducr" -> text().verifying("ducrPartDetails.ducr.error", validDucrIgnoreCase),
-      "ducrPartId" -> text().verifying("ducrPartDetails.ducrPartId.error", isValidDucrPartIdIgnoreCase)
+      "ducrPartId" -> text().verifying("ducrPartDetails.ducrPartId.error", isValidDucrPartId)
     )(bind)(unapply)
   }
 

@@ -33,7 +33,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
 import org.mockito.Mockito._
 import play.api.libs.json.Json
-import play.api.mvc.Headers
+import play.api.mvc.{AnyContent, Headers, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import repository.{MockCache, MockIleQueryCache}
@@ -101,7 +101,8 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
 
     super.afterEach()
   }
-  val request = postRequest.withHeaders(Headers(("X-Session-ID", "sessionId")))
+
+  private val request: Request[AnyContent] = getRequest().withHeaders(Headers(("X-Session-ID", "sessionId")))
 
   private val mucrInfo = MucrInfo(ucr = "mucr")
   private val parentMucrInfo = MucrInfo("parentMucr")

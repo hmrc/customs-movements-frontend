@@ -16,11 +16,11 @@
 
 package views.components.config
 
-import config.AppConfig
+import config.IleQueryConfig
 import javax.inject.Inject
 
-class BaseConfig @Inject()(val appConfig: AppConfig) {
+class BaseConfig @Inject()(val ileQueryConfig: IleQueryConfig) {
 
-  def ileQueryEnabled: Boolean = appConfig.ileQueryEnabled
+  def ileQueryEnabled: Boolean = ileQueryConfig.isIleQueryEnabled
 
 }

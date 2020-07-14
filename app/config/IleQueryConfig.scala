@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package views.components.config
+package config
 
-import config.IleQueryConfig
-import javax.inject.Inject
-import models.UcrBlock
-import play.api.mvc.Call
+import features.{Feature, FeatureStatus}
+import javax.inject.{Inject, Singleton}
 
-class ChoicePageConfig @Inject()(ileQueryConfig: IleQueryConfig) extends BaseConfig(ileQueryConfig) {
-  def backLink(queryUcr: Option[UcrBlock]): Option[Call] =
-    if (ileQueryConfig.isIleQueryEnabled)
-      Some(
-        queryUcr
-          .map(block => controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(block.ucr))
-          .getOrElse(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
-      )
-    else
-      None
+@Singleton
+class IleQueryConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+
+  def isIleQueryEnabled: Boolean = featureSwitchConfig.featureStatus(Feature.ileQuery) == FeatureStatus.enabled
 }

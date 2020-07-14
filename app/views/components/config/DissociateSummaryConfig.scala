@@ -16,14 +16,14 @@
 
 package views.components.config
 
-import config.AppConfig
+import config.IleQueryConfig
 import javax.inject.Inject
 import play.api.mvc.Call
 
-class DissociateSummaryConfig @Inject()(appConfig: AppConfig) extends BaseConfig(appConfig) {
+class DissociateSummaryConfig @Inject()(ileQueryConfig: IleQueryConfig) extends BaseConfig(ileQueryConfig) {
 
   def backUrl: Call =
-    if (appConfig.ileQueryEnabled)
+    if (ileQueryConfig.isIleQueryEnabled)
       controllers.routes.ChoiceController.displayChoiceForm()
     else
       controllers.consolidations.routes.DisassociateUcrController.displayPage()

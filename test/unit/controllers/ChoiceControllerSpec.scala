@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.AppConfig
+import config.IleQueryConfig
 import controllers.consolidations.{routes => consolidationRoutes}
 import forms.Choice._
 import forms._
@@ -39,18 +39,18 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
   private val mockChoicePage = mock[choice_page]
   private val ucrBlock = UcrBlock("MUCR", UcrType.Mucr)
   private val cacheWithUcr = Cache("eori", ucrBlock)
-  private val ileQueryEnabled = mock[AppConfig]
-  private val ileQueryDisabled = mock[AppConfig]
+  private val ileQueryEnabled = mock[IleQueryConfig]
+  private val ileQueryDisabled = mock[IleQueryConfig]
 
-  private def controllerWithConfig(appConfig: AppConfig) =
-    new ChoiceController(SuccessfulAuth(), cache, stubMessagesControllerComponents(), appConfig, mockChoicePage)(global)
+  private def controllerWithConfig(ileQueryConfig: IleQueryConfig) =
+    new ChoiceController(SuccessfulAuth(), cache, stubMessagesControllerComponents(), ileQueryConfig, mockChoicePage)(global)
 
   override def beforeEach() {
     super.beforeEach()
     givenTheCacheIsEmpty()
     when(mockChoicePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(ileQueryEnabled.ileQueryEnabled).thenReturn(true)
-    when(ileQueryDisabled.ileQueryEnabled).thenReturn(false)
+    when(ileQueryEnabled.isIleQueryEnabled).thenReturn(true)
+    when(ileQueryDisabled.isIleQueryEnabled).thenReturn(false)
   }
 
   override def afterEach() {

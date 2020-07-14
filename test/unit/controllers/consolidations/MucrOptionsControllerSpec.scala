@@ -16,7 +16,7 @@
 
 package controllers.consolidations
 
-import config.AppConfig
+import config.IleQueryConfig
 import controllers.ControllerLayerSpec
 import forms.MucrOptions
 import forms.MucrOptions.Create
@@ -40,10 +40,10 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
 
   private val page = mock[mucr_options]
 
-  private val appConfig = mock[AppConfig]
+  private val ileQueryConfig = mock[IleQueryConfig]
 
   private def controller(answers: AssociateUcrAnswers) =
-    new MucrOptionsController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, appConfig, page)(global)
+    new MucrOptionsController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, ileQueryConfig, page)(global)
 
   override def beforeEach() {
     super.beforeEach()
@@ -51,7 +51,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
   }
 
   override def afterEach(): Unit = {
-    reset(page, appConfig)
+    reset(page, ileQueryConfig)
     super.afterEach()
   }
 
@@ -106,7 +106,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
     "return 303 (SEE_OTHER)" when {
 
       "form is correct when ileQuery disabled" in {
-        when(appConfig.ileQueryEnabled).thenReturn(false)
+        when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
 
         val correctForm = Json.toJson(MucrOptions(validMucr, "", Create))
 
@@ -117,7 +117,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
       }
 
       "form is correct when ileQuery enabled" in {
-        when(appConfig.ileQueryEnabled).thenReturn(true)
+        when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
 
         val correctForm = Json.toJson(MucrOptions(validMucr, "", Create))
 

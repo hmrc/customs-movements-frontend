@@ -17,14 +17,17 @@
 package views.components.config
 
 import base.UnitSpec
+import config.AppConfig
 import forms.ManageMucrChoice
 import forms.ManageMucrChoice.AssociateAnotherMucr
 
 class MucrOptionsConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
 
+  private val appConfig = mock[AppConfig]
+
   "MucrOptionsConfig when ileQuery disabled" should {
 
-    val config = new MucrOptionsConfig(ileQueryDisabled)
+    val config = new MucrOptionsConfig(appConfig, ileQueryDisabled)
 
     "return correct back url" in {
       config.backUrl() mustBe controllers.routes.ChoiceController.displayChoiceForm()
@@ -33,7 +36,7 @@ class MucrOptionsConfigSpec extends UnitSpec with IleQueryFeatureConfigSpec {
 
   "MucrOptionsConfig when ileQuery enabled" should {
 
-    val config = new MucrOptionsConfig(ileQueryEnabled)
+    val config = new MucrOptionsConfig(appConfig, ileQueryEnabled)
 
     "return correct back url" when {
 

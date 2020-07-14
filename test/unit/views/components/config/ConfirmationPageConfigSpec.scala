@@ -17,7 +17,7 @@
 package views.components.config
 
 import base.Injector
-import config.AppConfig
+import config.IleQueryConfig
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request}
@@ -29,9 +29,9 @@ class ConfirmationPageConfigSpec extends ViewSpec with MockitoSugar with Injecto
 
   private implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
 
-  private val appConfig = mock[AppConfig]
+  private val ileQueryConfig = mock[IleQueryConfig]
   private val confirmationLink = instanceOf[confirmation_link]
-  private val confirmationPageConfig = new ConfirmationPageConfig(appConfig, confirmationLink)
+  private val confirmationPageConfig = new ConfirmationPageConfig(ileQueryConfig, confirmationLink)
 
   "ConfirmationPageConfig on nextStepLink" when {
 
@@ -39,7 +39,7 @@ class ConfirmationPageConfigSpec extends ViewSpec with MockitoSugar with Injecto
 
       "return confirmation link to Choice page" in {
 
-        when(appConfig.ileQueryEnabled).thenReturn(false)
+        when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
 
         val nextStepLink = confirmationPageConfig.nextStepLink
 
@@ -55,7 +55,7 @@ class ConfirmationPageConfigSpec extends ViewSpec with MockitoSugar with Injecto
 
       "return confirmation link to Find Consignment page" in {
 
-        when(appConfig.ileQueryEnabled).thenReturn(true)
+        when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
 
         val nextStepLink = confirmationPageConfig.nextStepLink
 

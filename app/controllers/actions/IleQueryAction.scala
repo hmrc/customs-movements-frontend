@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import config.AppConfig
+import config.IleQueryConfig
 import controllers.exception.InvalidFeatureStateException
 import javax.inject.Inject
 import models.requests.AuthenticatedRequest
@@ -24,11 +24,11 @@ import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IleQueryAction @Inject()(appConfig: AppConfig)(implicit val exc: ExecutionContext)
+class IleQueryAction @Inject()(ileQueryConfig: IleQueryConfig)(implicit val exc: ExecutionContext)
     extends ActionFunction[AuthenticatedRequest, AuthenticatedRequest] {
 
   override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-    if (appConfig.ileQueryEnabled) block(request) else throw InvalidFeatureStateException
+    if (ileQueryConfig.isIleQueryEnabled) block(request) else throw InvalidFeatureStateException
 
   override protected def executionContext: ExecutionContext = exc
 }

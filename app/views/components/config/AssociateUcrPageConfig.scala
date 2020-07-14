@@ -16,14 +16,14 @@
 
 package views.components.config
 
-import config.AppConfig
+import config.IleQueryConfig
 import javax.inject.Inject
 import play.api.mvc.Call
 
-class AssociateUcrPageConfig @Inject()(appConfig: AppConfig) {
+class AssociateUcrPageConfig @Inject()(ileQueryConfig: IleQueryConfig) {
 
   def backUrl: Call =
-    if (appConfig.ileQueryEnabled)
+    if (ileQueryConfig.isIleQueryEnabled)
       controllers.consolidations.routes.ManageMucrController.displayPage()
     else
       controllers.consolidations.routes.MucrOptionsController.displayPage()

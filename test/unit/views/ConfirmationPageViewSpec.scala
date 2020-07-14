@@ -17,7 +17,7 @@
 package views
 
 import base.OverridableInjector
-import config.AppConfig
+import config.IleQueryConfig
 import models.cache._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -29,19 +29,19 @@ import views.tags.ViewTest
 @ViewTest
 class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private val appConfig = mock[AppConfig]
-  private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))
+  private val ileQueryConfig = mock[IleQueryConfig]
+  private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
 
   private val page = injector.instanceOf[confirmation_page]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(appConfig.ileQueryEnabled).thenReturn(false)
+    when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
   }
 
   override def afterEach(): Unit = {
-    reset(appConfig)
+    reset(ileQueryConfig)
 
     super.afterEach()
   }
@@ -154,7 +154,7 @@ class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
         implicit val request = journeyRequest(ArrivalAnswers())
 
-        when(appConfig.ileQueryEnabled).thenReturn(false)
+        when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
 
         val link = page(JourneyType.ARRIVE).getElementsByClass("govuk-link").get(2)
 
@@ -168,7 +168,7 @@ class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
         implicit val request = journeyRequest(ArrivalAnswers())
 
-        when(appConfig.ileQueryEnabled).thenReturn(true)
+        when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
 
         val link = page(JourneyType.ARRIVE).getElementsByClass("govuk-link").get(2)
 

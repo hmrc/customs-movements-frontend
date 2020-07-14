@@ -20,7 +20,7 @@ import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalTime}
 
 import base.OverridableInjector
-import config.AppConfig
+import config.IleQueryConfig
 import forms.common.{Date, Time}
 import forms.{ArrivalDetails, ConsignmentReferences, Location}
 import models.cache.ArrivalAnswers
@@ -34,15 +34,15 @@ class ArrivalSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
 
   private implicit val request = journeyRequest(ArrivalAnswers())
 
-  private val appConfig = mock[AppConfig]
-  private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))
+  private val appConfig = mock[IleQueryConfig]
+  private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(appConfig))
 
   private val page = injector.instanceOf[arrival_summary_page]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(appConfig.ileQueryEnabled).thenReturn(false)
+    when(appConfig.isIleQueryEnabled).thenReturn(false)
   }
 
   override def afterEach(): Unit = {
@@ -158,7 +158,7 @@ class ArrivalSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
 
     "render change consignment links when ileQuery disabled" in {
 
-      when(appConfig.ileQueryEnabled).thenReturn(false)
+      when(appConfig.isIleQueryEnabled).thenReturn(false)
 
       val links = page(answers).getElementsByClass("govuk-link")
 
@@ -167,7 +167,7 @@ class ArrivalSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
 
     "not render change consignment links when ileQuery enabled" in {
 
-      when(appConfig.ileQueryEnabled).thenReturn(true)
+      when(appConfig.isIleQueryEnabled).thenReturn(true)
 
       val links = page(answers).getElementsByClass("govuk-link")
 

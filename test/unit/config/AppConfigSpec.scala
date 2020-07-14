@@ -16,9 +16,7 @@
 
 package config
 
-import base.Injector
 import com.typesafe.config.{Config, ConfigFactory}
-import features.{Feature, FeatureStatus}
 import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Mode.Test
@@ -125,18 +123,6 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
       validConfigService.languageMap.get("cymraeg").isDefined must be(true)
     }
 
-    "have default feature status" in {
-      validConfigService.defaultFeatureStatus must be(FeatureStatus.disabled)
-    }
-
-    "return correct value for feature" in {
-      validConfigService.featureStatus(Feature.default) must be(FeatureStatus.disabled)
-    }
-
-    "return correct value for isFeatureOn method" in {
-      validConfigService.isFeatureOn(Feature.default) must be(false)
-    }
-
     "have movements backend hostname " in {
       validConfigService.customsDeclareExportsMovements must be("http://localhost:9876")
     }
@@ -183,12 +169,6 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
     intercept[Exception](emptyConfigService.loginContinueUrl).getMessage must be("Missing configuration key: urls.loginContinue")
   }
 
-  "throw an exception when microservice.services.features.default is missing" in {
-    intercept[Exception](emptyConfigService.defaultFeatureStatus).getMessage must be(
-      "Missing configuration key: microservice.services.features.default"
-    )
-  }
-
   "throw an exception when customs-declare-exports-movements.host is missing" in {
     intercept[Exception](emptyConfigService.customsDeclareExportsMovements).getMessage must be(
       "Could not find config customs-declare-exports-movements.host"
@@ -225,8 +205,4 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
     )
   }
 
-}
-
-object AppConfigSpec extends Injector {
-  val realAppConfig = instanceOf[AppConfig]
 }

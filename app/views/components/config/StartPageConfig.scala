@@ -16,13 +16,13 @@
 
 package views.components.config
 
-import config.AppConfig
+import config.{AppConfig, IleQueryConfig}
 import javax.inject.Inject
 
-class StartPageConfig @Inject()(appConfig: AppConfig) {
+class StartPageConfig @Inject()(appConfig: AppConfig, ileQueryConfig: IleQueryConfig) {
 
   def startUrl: String =
-    if (appConfig.ileQueryEnabled)
+    if (ileQueryConfig.isIleQueryEnabled)
       controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url
     else
       controllers.routes.ChoiceController.displayChoiceForm().url

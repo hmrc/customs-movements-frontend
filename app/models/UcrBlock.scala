@@ -22,6 +22,8 @@ import play.api.libs.json.Json
 final case class UcrBlock(ucr: String, ucrType: String) {
 
   def is(ucrType: UcrType): Boolean = this.ucrType.equals(ucrType.codeValue)
+
+  def isNot(ucrType: UcrType): Boolean = !is(ucrType)
 }
 
 object UcrBlock {

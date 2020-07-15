@@ -23,6 +23,7 @@ import base.Injector
 import config.IleQueryConfig
 import connectors.exchanges.ActionType.{ConsolidationType, MovementType}
 import controllers.routes
+import forms.UcrType
 import models.UcrBlock
 import models.notifications.{Entry, Notification, ResponseType}
 import models.submissions.Submission
@@ -90,7 +91,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
         requestTimestamp = dateTime,
         eori = "",
         conversationId = conversationId,
-        ucrBlocks = Seq(UcrBlock(ucr = validMucr, ucrType = "M")),
+        ucrBlocks = Seq(UcrBlock(ucr = validMucr, ucrType = UcrType.Mucr.codeValue)),
         actionType = ConsolidationType.ShutMucr
       )
       val shutMucrNotifications = Seq(
@@ -98,7 +99,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
           timestampReceived = dateTime.plus(10, MINUTES),
           conversationId = conversationId,
           responseType = ResponseType.ControlResponse,
-          entries = Seq(Entry(ucrBlock = Some(UcrBlock(ucr = validMucr, ucrType = "M"))))
+          entries = Seq(Entry(ucrBlock = Some(UcrBlock(ucr = validMucr, ucrType = UcrType.Mucr.codeValue))))
         )
       )
 
@@ -106,7 +107,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
         requestTimestamp = dateTime.plus(31, MINUTES),
         eori = "",
         conversationId = conversationId_2,
-        ucrBlocks = Seq(UcrBlock(ucr = validDucr, ucrType = "D")),
+        ucrBlocks = Seq(UcrBlock(ucr = validDucr, ucrType = UcrType.Ducr.codeValue)),
         actionType = MovementType.Arrival
       )
       val arrivalNotifications = Seq(
@@ -114,30 +115,56 @@ class MovementsViewSpec extends ViewSpec with Injector {
           timestampReceived = dateTime.plus(35, MINUTES),
           conversationId = conversationId_2,
           responseType = ResponseType.ControlResponse,
-          entries = Seq(Entry(ucrBlock = Some(UcrBlock(ucr = validDucr, ucrType = "D"))))
+          entries = Seq(Entry(ucrBlock = Some(UcrBlock(ucr = validDucr, ucrType = UcrType.Ducr.codeValue))))
         )
       )
 
-      val pageWithData: Document = createView(Seq(shutMucrSubmission -> shutMucrNotifications, arrivalSubmission -> arrivalNotifications))
+      val departureSubmission = Submission(
+        requestTimestamp = dateTime.plus(33, MINUTES),
+        eori = "",
+        conversationId = conversationId_3,
+        ucrBlocks = Seq(UcrBlock(ucr = validWholeDucrParts, ucrType = UcrType.DucrPart.codeValue)),
+        actionType = MovementType.Departure
+      )
+      val departureNotifications = Seq(
+        exampleNotificationFrontendModel(
+          timestampReceived = dateTime.plus(37, MINUTES),
+          conversationId = conversationId_3,
+          responseType = ResponseType.ControlResponse,
+          entries = Seq(Entry(ucrBlock = Some(UcrBlock(ucr = validWholeDucrParts, ucrType = UcrType.DucrPart.codeValue))))
+        )
+      )
+
+      val pageWithData: Document = createView(
+        Seq(shutMucrSubmission -> shutMucrNotifications, arrivalSubmission -> arrivalNotifications, departureSubmission -> departureNotifications)
+      )
 
       val firstDataRowElements = pageWithData.selectFirst(".govuk-table__body .govuk-table__row:nth-child(1)")
       val secondDataRowElements = pageWithData.selectFirst(".govuk-table__body .govuk-table__row:nth-child(2)")
+      val thirdDataRowElements = pageWithData.selectFirst(".govuk-table__body .govuk-table__row:nth-child(3)")
 
       val formatter = ViewDates.dateAtTimeFormatter
 
       firstDataRowElements.selectFirst(".ucr").text() mustBe validMucr
-      firstDataRowElements.selectFirst(".submission-type").text() mustBe "MUCR"
+      firstDataRowElements.selectFirst(".submission-type") must containMessage("submissions.submissionType.M")
       firstDataRowElements.selectFirst(".date-of-request").text() mustBe LocalDateTime
         .of(2019, 10, 31, 0, 0)
         .format(formatter) // "31 Oct 2019 at 00:00"
       firstDataRowElements.selectFirst(".submission-action") must containMessage("submissions.shutmucr")
 
       secondDataRowElements.selectFirst(".ucr").text() mustBe validDucr
-      secondDataRowElements.selectFirst(".submission-type").text() mustBe "DUCR"
+      secondDataRowElements.selectFirst(".submission-type") must containMessage("submissions.submissionType.D")
       secondDataRowElements.selectFirst(".date-of-request").text() mustBe LocalDateTime
         .of(2019, 10, 31, 0, 31)
         .format(formatter) //"31 Oct 2019 at 00:31"
       secondDataRowElements.selectFirst(".submission-action") must containMessage("submissions.arrival")
+
+      thirdDataRowElements.selectFirst(".ucr").text() mustBe validWholeDucrParts
+      thirdDataRowElements.selectFirst(".submission-type") must containMessage("submissions.submissionType.DP")
+      thirdDataRowElements.selectFirst(".date-of-request").text() mustBe LocalDateTime
+        .of(2019, 10, 31, 0, 33)
+        .format(formatter) //"31 Oct 2019 at 00:33"
+      thirdDataRowElements.selectFirst(".submission-action") must containMessage("submissions.departure")
     }
 
     "contain MUCR and DUCR if Submission contains both" in {

@@ -94,7 +94,7 @@
               classes = ucrClass
             ),
             TableRow(
-              content = HtmlContent(components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucrType + "UCR"))),
+              content = HtmlContent(components.elements_in_separate_lines(submission.ucrBlocks.map(ucrBlock => messages(s"submissions.submissionType.${ucrBlock.ucrType}")))),
               classes = submissionTypeClass
             ),
             TableRow(

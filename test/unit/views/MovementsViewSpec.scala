@@ -143,27 +143,28 @@ class MovementsViewSpec extends ViewSpec with Injector {
       val secondDataRowElements = pageWithData.selectFirst(".govuk-table__body .govuk-table__row:nth-child(2)")
       val thirdDataRowElements = pageWithData.selectFirst(".govuk-table__body .govuk-table__row:nth-child(3)")
 
-      val formatter = ViewDates.dateAtTimeFormatter
-
       firstDataRowElements.selectFirst(".ucr").text() mustBe validMucr
       firstDataRowElements.selectFirst(".submission-type") must containMessage("submissions.submissionType.M")
-      firstDataRowElements.selectFirst(".date-of-request").text() mustBe LocalDateTime
-        .of(2019, 10, 31, 0, 0)
-        .format(formatter) // "31 Oct 2019 at 00:00"
+      firstDataRowElements.selectFirst(".date-of-request").text() mustBe ViewDates.formatDateAtTime(
+        LocalDateTime
+          .of(2019, 10, 31, 0, 0)
+      ) // "31 Oct 2019 at 00:00"
       firstDataRowElements.selectFirst(".submission-action") must containMessage("submissions.shutmucr")
 
       secondDataRowElements.selectFirst(".ucr").text() mustBe validDucr
       secondDataRowElements.selectFirst(".submission-type") must containMessage("submissions.submissionType.D")
-      secondDataRowElements.selectFirst(".date-of-request").text() mustBe LocalDateTime
-        .of(2019, 10, 31, 0, 31)
-        .format(formatter) //"31 Oct 2019 at 00:31"
+      secondDataRowElements.selectFirst(".date-of-request").text() mustBe ViewDates.formatDateAtTime(
+        LocalDateTime
+          .of(2019, 10, 31, 0, 31)
+      ) //"31 Oct 2019 at 00:31"
       secondDataRowElements.selectFirst(".submission-action") must containMessage("submissions.arrival")
 
       thirdDataRowElements.selectFirst(".ucr").text() mustBe validWholeDucrParts
       thirdDataRowElements.selectFirst(".submission-type") must containMessage("submissions.submissionType.DP")
-      thirdDataRowElements.selectFirst(".date-of-request").text() mustBe LocalDateTime
-        .of(2019, 10, 31, 0, 33)
-        .format(formatter) //"31 Oct 2019 at 00:33"
+      thirdDataRowElements.selectFirst(".date-of-request").text() mustBe ViewDates.formatDateAtTime(
+        LocalDateTime
+          .of(2019, 10, 31, 0, 33)
+      ) //"31 Oct 2019 at 00:33"
       thirdDataRowElements.selectFirst(".submission-action") must containMessage("submissions.departure")
     }
 

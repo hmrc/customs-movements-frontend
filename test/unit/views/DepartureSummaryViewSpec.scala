@@ -21,8 +21,8 @@ import java.time.{LocalDate, LocalTime}
 
 import base.OverridableInjector
 import config.IleQueryConfig
-import forms.common.{Date, Time}
 import forms._
+import forms.common.{Date, Time}
 import models.cache.DepartureAnswers
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -145,7 +145,7 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       view.getElementsByClass("govuk-heading-m").get(section_depart_datetime) must containMessage("departureDetails.title")
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_date) must containMessage("summary.departure.date")
-      view.getElementsByClass("govuk-summary-list__value").get(answer_date).text mustBe date.date.format(ViewDates.dateFormatter)
+      view.getElementsByClass("govuk-summary-list__value").get(answer_date).text mustBe ViewDates.formatDate(date.date)
 
       val changeDate = view.getElementsByClass("govuk-link").get(answer_date_link_index)
       changeDate must containMessage("site.change")

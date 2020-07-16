@@ -104,7 +104,7 @@
                             content = Text(messages("summary.departure.date"))
                         ),
                         value = Value(
-                            content = Text(data.departureDetails.map(departure => ViewDates.dateFormatter.format(departure.dateOfDeparture.date)).getOrElse(""))
+                            content = Text(data.departureDetails.map(departure => ViewDates.formatDate(departure.dateOfDeparture.date)).getOrElse(""))
                         ),
                         actions = Some(Actions(
                             items = Seq(

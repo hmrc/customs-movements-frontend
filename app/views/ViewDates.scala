@@ -18,11 +18,19 @@ package views
 
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalAccessor
 
 object ViewDates {
   def timezone = ZoneId.of("Europe/London")
 
-  val dateAtTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu 'at' HH:mm").withZone(timezone)
-  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu").withZone(timezone)
+  private val dateAtTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu 'at' h:mma").withZone(timezone)
+  private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu").withZone(timezone)
 
+  def formatDateAtTime(temporal: TemporalAccessor): String =
+    dateAtTimeFormatter
+      .format(temporal)
+      .replace("AM", "am")
+      .replace("PM", "pm")
+
+  def formatDate(temporal: TemporalAccessor): String = dateFormatter.format(temporal)
 }

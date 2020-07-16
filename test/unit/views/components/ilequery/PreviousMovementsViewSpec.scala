@@ -55,29 +55,29 @@ class PreviousMovementsViewSpec extends ViewSpec with Injector {
     "render arrival movement" in {
       val arrivalView = view(movements = Seq(arrival))
       arrivalView.getElementById("movement_type_0") must containMessage("ileQueryResponse.previousMovements.type.eal")
-      arrivalView.getElementById("movement_date_0").text() must be("23 October 2019 at 13:34")
+      arrivalView.getElementById("movement_date_0").text() must be("23 October 2019 at 1:34pm")
       arrivalView.getElementById("goods_location_0").text() must be("GBAUFXTFXTFXT")
     }
 
     "render departure movement" in {
       val arrivalView = view(movements = Seq(depart))
       arrivalView.getElementById("movement_type_0") must containMessage("ileQueryResponse.previousMovements.type.edl")
-      arrivalView.getElementById("movement_date_0").text() must be("30 October 2019 at 09:17")
+      arrivalView.getElementById("movement_date_0").text() must be("30 October 2019 at 9:17am")
       arrivalView.getElementById("goods_location_0").text() must be("GBAUFDSASFDFDF")
     }
 
     "render retrospective arrival" in {
       val arrivalView = view(movements = Seq(retro))
       arrivalView.getElementById("movement_type_0") must containMessage("ileQueryResponse.previousMovements.type.ret")
-      arrivalView.getElementById("movement_date_0").text() must be("4 November 2019 at 16:27")
+      arrivalView.getElementById("movement_date_0").text() must be("4 November 2019 at 4:27pm")
       arrivalView.getElementById("goods_location_0").text() must be("GBAUDFGFSHFKD")
     }
 
     "render movements by date order" in {
       val movementsView = view(movements = Seq(arrival, retro, depart))
-      movementsView.getElementById("movement_date_0").text() must be("4 November 2019 at 16:27")
-      movementsView.getElementById("movement_date_1").text() must be("30 October 2019 at 09:17")
-      movementsView.getElementById("movement_date_2").text() must be("23 October 2019 at 13:34")
+      movementsView.getElementById("movement_date_0").text() must be("4 November 2019 at 4:27pm")
+      movementsView.getElementById("movement_date_1").text() must be("30 October 2019 at 9:17am")
+      movementsView.getElementById("movement_date_2").text() must be("23 October 2019 at 1:34pm")
     }
 
   }

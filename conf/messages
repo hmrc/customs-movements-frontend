@@ -34,16 +34,16 @@ site.submit = Submit
 site.add = Add
 site.remove = Remove
 site.change = Change
-site.change.hint.disassociate.ucr = Change {0} to be removed
-site.change.hint.associate.ucr = Change {0} to be added
-site.change.hint.associate.mucr = Change MUCR
-site.change.hint.associate.ducr = Change DUCR
-site.change.hint.shut.mucr = Change MUCR to be shut
+site.change.hint.disassociate.ucr = Change {0} to be removed.
+site.change.hint.associate.ucr = Change {0} to be added.
+site.change.hint.associate.mucr = Change MUCR.
+site.change.hint.associate.ducr = Change DUCR.
+site.change.hint.shut.mucr = Change MUCR to be shut.
 
 site.inputText.ducr.label = Enter an existing DUCR
 site.inputText.mucr.label = Enter an existing MUCR
 site.inputText.newMucr.label = Enter a new MUCR
-site.inputText.newMucr.label.hint = For example ‘GB/123456789100-AB123’
+site.inputText.newMucr.label.hint = For example ‘GB/123456789100-AB123’.
 
 
 unauthorised.title = You can’t access this service with this account
@@ -121,9 +121,9 @@ arrivalDetails.title = Arrival date and time
 arrivalDetails.sectionHeading = Arrive consignment {0}
 arrivalDetails.header = Enter date and time of arrival
 arrivalDetails.date.question = Date of arrival
-arrivalDetails.date.hint = For example, 01 08 2007
+arrivalDetails.date.hint = For example, 01 08 2007.
 arrivalDetails.time.question = Time of arrival
-arrivalDetails.time.hint = Enter the time in 24 hour format. For example, 13 30
+arrivalDetails.time.hint = Enter the time in 24 hour format. For example, 13 30.
 
 arrival.details.error.overdue = Time of Arrival cannot be more than 60 days in the past
 arrival.details.error.future = Time of Arrival cannot be in the future
@@ -132,16 +132,16 @@ departureDetails.title = Departure date and time
 departureDetails.sectionHeading = Depart consignment {0}
 departureDetails.header = Enter date and time of departure
 departureDetails.date.question = Date of departure
-departureDetails.date.hint = For example, 01 08 2007
+departureDetails.date.hint = For example, 01 08 2007.
 departureDetails.time.question = Time of departure
-departureDetails.time.hint = Enter the time in 24 hour format. For example, 13 30
+departureDetails.time.hint = Enter the time in 24 hour format. For example, 13 30.
 
 departure.details.error.overdue = Time of Departure cannot be more than 60 days in the past
 departure.details.error.future = Time of Departure cannot be in the future
 
 location.title = Location
 location.question = What is the goods location code?
-location.hint = The is an alphanumeric code. For example, GBAUEMAEMAEMA
+location.hint = The is an alphanumeric code. For example, GBAUEMAEMAEMA.
 location.code.empty = Goods location code cannot be empty
 location.code.error = Goods location code is incorrect
 
@@ -216,7 +216,7 @@ shutMucr.summary.type = MUCR
 
 associate.heading = Add to MUCR {0}
 mucrOptions.heading = Associate consignment {0}
-mucrOptions.hint = Enter a MUCR in one of the correct formats displayed under {0}
+mucrOptions.hint = Enter a MUCR in one of the correct formats displayed under {0}.
 mucrOptions.hint.link = DE 2/1 in the UK Trade Tariff
 mucrOptions.title = Create or enter a Master Consignment Reference (MUCR) to associate with
 mucrOptions.create = Create a MUCR
@@ -318,7 +318,7 @@ notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Route of
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Status of entry is:
 
 ileQuery.title = Find a consignment
-ileQuery.hint = Search by Master Consignment Reference (MUCR) or Declaration Consignment Reference (DUCR)
+ileQuery.hint = Search by Master Consignment Reference (MUCR) or Declaration Consignment Reference (DUCR).
 ileQuery.ucr.empty = Enter a Unique Consignment Reference
 ileQuery.ucr.incorrect = Unique Consignment Reference is incorrect
 
@@ -326,7 +326,7 @@ ileQuery.link.requests = View previous requests
 ileQuery.link.ducrPart = Enter a DUCR Part
 
 ileQuery.loading.title = Looking for consignment
-ileQuery.loading.hint = This should only take a few seconds, do not refresh the page
+ileQuery.loading.hint = This should only take a few seconds, do not refresh the page.
 
 ileQueryResponse.ducr.title = Consignment information
 ileQueryResponse.mucr.title = Consignment information
@@ -366,7 +366,7 @@ ileQueryResponse.timeout.message = Try again later.
 ducrPartDetails.title = DUCR Part details
 ducrPartDetails.heading = You can use this service if your original declaration was made in CHIEF
 ducrPartDetails.ducr = Enter DUCR
-ducrPartDetails.ducr.hint = For example 9GB123999746000-DUCR12345
+ducrPartDetails.ducr.hint = For example 9GB123999746000-DUCR12345.
 ducrPartDetails.ducr.error = Enter a DUCR in the correct format
 ducrPartDetails.ducrPartId = Enter DUCR Part ID
 ducrPartDetails.ducrPartId.hint = This can be up to 3 digits. For example 123.

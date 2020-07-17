@@ -22,12 +22,13 @@ import javax.inject.{Inject, Singleton}
 import models.notifications.{Entry, Notification}
 import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
+import modules.DateWithTimeFormatter
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import views.html.components.{code_explanation, paragraph}
 
 @Singleton
-class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter) extends NotificationPageSingleElementConverter {
+class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateWithTimeFormatter) extends NotificationPageSingleElementConverter {
 
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement = {
     val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation).getOrElse(HtmlFormat.empty)

@@ -22,13 +22,14 @@ import javax.inject.{Inject, Singleton}
 import models.notifications.Notification
 import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
+import modules.DateWithTimeFormatter
 import play.api.Logger
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import views.html.components.{notification_errors, paragraph}
 
 @Singleton
-class ControlResponseBlockedConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
+class ControlResponseBlockedConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateWithTimeFormatter)
     extends NotificationPageSingleElementConverter {
 
   private val logger = Logger(this.getClass)

@@ -21,12 +21,13 @@ import java.time.format.DateTimeFormatter
 import javax.inject.{Inject, Singleton}
 import models.notifications.Notification
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
+import modules.DateWithTimeFormatter
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import views.html.components.paragraph
 
 @Singleton
-class ControlResponseAcknowledgedConverter @Inject()(dateTimeFormatter: DateTimeFormatter) extends NotificationPageSingleElementConverter {
+class ControlResponseAcknowledgedConverter @Inject()(dateTimeFormatter: DateWithTimeFormatter) extends NotificationPageSingleElementConverter {
 
   private val TitleMessagesKey = "notifications.elem.title.inventoryLinkingControlResponse.AcknowledgedAndProcessed"
   private val ContentHeaderMessagesKey = "notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed"

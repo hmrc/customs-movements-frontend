@@ -25,12 +25,13 @@ import models.UcrBlock
 import models.notifications.Notification
 import models.submissions.Submission
 import models.viewmodels.notificationspage.converters._
+import modules.DateWithTimeFormatter
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import views.html.components.paragraph
 
 @Singleton
-class NotificationPageSingleElementFactory @Inject()(responseConverterProvider: ResponseConverterProvider, dateTimeFormatter: DateTimeFormatter) {
+class NotificationPageSingleElementFactory @Inject()(responseConverterProvider: ResponseConverterProvider, dateTimeFormatter: DateWithTimeFormatter) {
 
   def build(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement =
     submission.actionType match {

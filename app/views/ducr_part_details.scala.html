@@ -57,7 +57,8 @@
     @exportsInputText(
       field = form("ducrPartId"),
       labelKey = "ducrPartDetails.ducrPartId",
-      hintKey = Some("ducrPartDetails.ducrPartId.hint")
+      hintKey = Some("ducrPartDetails.ducrPartId.hint"),
+      inputClasses = "govuk-input--width-3"
     )
 
     @govukButton(Button(content = Text(messages("site.continue"))))

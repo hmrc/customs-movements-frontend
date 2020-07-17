@@ -78,7 +78,7 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar with BeforeAnd
 
         val input = emrResponseAllCodes
         val expectedTitle = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
-        val expectedTimestampInfo = "23 Oct 2019 at 12:34"
+        val expectedTimestampInfo = "23 October 2019 at 12:34pm"
         val expectedContentElements = Seq(
           crcKeyFromDecoder.code,
           messages(crcKeyFromDecoder.messageKey),
@@ -119,7 +119,7 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar with BeforeAnd
 
         val input = emrResponseMissingCodes
         val expectedTitle = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
-        val expectedTimestampInfo = "23 Oct 2019 at 12:34"
+        val expectedTimestampInfo = "23 October 2019 at 12:34pm"
         val expectedContentElements =
           Seq(messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe"), messages(roeKeyFromDecoder.messageKey))
 
@@ -157,7 +157,7 @@ class EMRResponseConverterSpec extends BaseSpec with MockitoSugar with BeforeAnd
         val input = emrResponseUnknownCodes
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-          timestampInfo = "23 Oct 2019 at 12:34",
+          timestampInfo = "23 October 2019 at 12:34pm",
           content = Html("")
         )
 

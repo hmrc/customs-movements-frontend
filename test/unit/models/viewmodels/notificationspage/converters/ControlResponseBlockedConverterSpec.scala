@@ -64,7 +64,7 @@ class ControlResponseBlockedConverterSpec extends BaseSpec with MockitoSugar wit
     "return NotificationsPageSingleElement with correct timestampInfo" in {
 
       val input = BlockedControlResponseSingleError
-      val expectedTimestampInfo = "23 Oct 2019 at 12:34"
+      val expectedTimestampInfo = "23 October 2019 at 12:34pm"
 
       val result = converter.convert(input)
 

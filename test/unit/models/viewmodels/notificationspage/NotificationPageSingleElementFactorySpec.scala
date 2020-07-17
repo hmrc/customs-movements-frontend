@@ -26,7 +26,6 @@ import models.UcrBlock
 import models.notifications.Notification
 import models.submissions.Submission
 import models.viewmodels.notificationspage.converters._
-import modules.DateWithTimeFormatter
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -38,7 +37,7 @@ import testdata.CommonTestData._
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import utils.DateTimeTestModule
-import views.MessagesStub
+import views.{MessagesStub, ViewDates}
 
 class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSugar with MessagesStub with BeforeAndAfterEach {
 
@@ -47,7 +46,7 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
   private implicit val fakeRequest = FakeRequest()
 
   private val responseConverterProvider = mock[ResponseConverterProvider]
-  private val formatter = new DateWithTimeFormatter
+  private val formatter = new ViewDates
   private val factory = new NotificationPageSingleElementFactory(responseConverterProvider, formatter)
 
   private val injector = Guice.createInjector(new DateTimeTestModule())

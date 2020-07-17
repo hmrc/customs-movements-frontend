@@ -21,17 +21,17 @@ import java.time.format.DateTimeFormatter
 import javax.inject.{Inject, Singleton}
 import models.notifications.Notification
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
-import modules.DateWithTimeFormatter
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import views.ViewDates
 
 @Singleton
-class UnknownResponseConverter @Inject()(dateTimeFormatter: DateWithTimeFormatter) extends NotificationPageSingleElementConverter {
+class UnknownResponseConverter @Inject()(viewDates: ViewDates) extends NotificationPageSingleElementConverter {
 
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
       title = messages("notifications.elem.title.unknown"),
-      timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
+      timestampInfo = viewDates.formatDateAtTime(notification.timestampReceived),
       content = HtmlFormat.empty
     )
 }

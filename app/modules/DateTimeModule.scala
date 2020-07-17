@@ -28,21 +28,10 @@ import views.ViewDates
 class DateTimeModule extends AbstractModule {
   override def configure(): Unit = {
     bind(classOf[ZoneId]).toInstance(timezone)
-    bind(classOf[DateWithTimeFormatter]).toProvider(classOf[DateWithTimeFormatterProvider])
     bind(classOf[Clock]).toInstance(Clock.system(timezone))
   }
 }
 
 object DateTimeModule {
   lazy val timezone: ZoneId = ZoneId.of("Europe/London")
-}
-
-@Singleton
-class DateWithTimeFormatterProvider extends Provider[DateWithTimeFormatter] {
-  override def get(): DateWithTimeFormatter =
-    new DateWithTimeFormatter()
-}
-
-class DateWithTimeFormatter {
-  def format(dateTime: TemporalAccessor): String = ViewDates.formatDateAtTime(dateTime)
 }

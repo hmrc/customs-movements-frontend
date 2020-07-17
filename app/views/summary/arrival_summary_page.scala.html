@@ -30,6 +30,7 @@
         govukSummaryList : GovukSummaryList,
         ileQueryFeature: BaseConfig,
         linkContent: linkContent,
+        viewDates: ViewDates,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(data: ArrivalAnswers)(implicit request: Request[_], messages: Messages)
@@ -104,7 +105,7 @@
                             content = Text(messages("summary.arrival.date"))
                         ),
                         value = Value(
-                            content = Text(data.arrivalDetails.map(arrival => ViewDates.formatDate(arrival.dateOfArrival.date)).getOrElse(""))
+                            content = Text(data.arrivalDetails.map(arrival => viewDates.formatDate(arrival.dateOfArrival.date)).getOrElse(""))
                         ),
                         actions = Some(Actions(
                             items = Seq(

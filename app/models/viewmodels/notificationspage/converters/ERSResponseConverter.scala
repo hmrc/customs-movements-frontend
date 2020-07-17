@@ -22,13 +22,13 @@ import javax.inject.{Inject, Singleton}
 import models.notifications.{Entry, Notification}
 import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
-import modules.DateWithTimeFormatter
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
+import views.ViewDates
 import views.html.components.{code_explanation, paragraph}
 
 @Singleton
-class ERSResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateWithTimeFormatter) extends NotificationPageSingleElementConverter {
+class ERSResponseConverter @Inject()(decoder: Decoder, viewDates: ViewDates) extends NotificationPageSingleElementConverter {
 
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement = {
 
@@ -41,7 +41,7 @@ class ERSResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateWi
 
     NotificationsPageSingleElement(
       title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-      timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
+      timestampInfo = viewDates.formatDateAtTime(notification.timestampReceived),
       content = new Html(List(roeCodeExplanation, soeCodeExplanation, icsCodeExplanation))
     )
   }

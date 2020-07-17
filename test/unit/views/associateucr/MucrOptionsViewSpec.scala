@@ -75,8 +75,7 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
     "have the page hint" in {
       val hint = createView().getElementById("createOrAdd-hint")
 
-      hint must containMessage("mucrOptions.hint", "")
-      hint must containMessage("mucrOptions.hint.link")
+      hint must containMessage("mucrOptions.hint", messages("mucrOptions.hint.link"))
       hint.getElementsByTag("a").first() must haveHref(tradeTariffUrl)
     }
 

@@ -26,11 +26,14 @@
   exportsInputText: exportsInputText,
   errorSummary: errorSummary,
   pageTitle: pageTitle,
-  sectionHeader: sectionHeader,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(form: Form[DucrPartDetails])(implicit request: Request[_], messages: Messages)
+
+@pageHint = {
+  <span id="page-hint" class="govuk-hint">@messages("ducrPartDetails.heading")</span>
+}
 
 @govukLayout(
   title = Title("ducrPartDetails.title", Some("ducrPartDetails.heading")),
@@ -41,9 +44,9 @@
 
     @errorSummary(form.errors)
 
-    @sectionHeader(messages("ducrPartDetails.heading"))
-
     @pageTitle(messages("ducrPartDetails.title"))
+
+    @pageHint
 
     @exportsInputText(
       field = form("ducr"),

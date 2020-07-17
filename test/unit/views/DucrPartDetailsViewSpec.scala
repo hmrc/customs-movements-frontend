@@ -51,9 +51,9 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with Injector {
         view.getElementById("title") must containMessage("ducrPartDetails.title")
       }
 
-      "render section header" in {
+      "render page hint" in {
 
-        view.getElementById("section-header") must containMessage("ducrPartDetails.heading")
+        view.getElementById("page-hint") must containMessage("ducrPartDetails.heading")
       }
 
       "render 'Back' button leading to 'Find a consignment' page" in {

@@ -364,12 +364,12 @@ ileQueryResponse.timeout.heading = Sorry, there is a problem with the service
 ileQueryResponse.timeout.message = Try again later.
 
 ducrPartDetails.title = DUCR Part details
-ducrPartDetails.heading = You can use this service if your original declaration was made in CHIEF
+ducrPartDetails.heading = You can use this service if your original declaration was made in CHIEF.
 ducrPartDetails.ducr = Enter DUCR
-ducrPartDetails.ducr.hint = For example 9GB123999746000-DUCR12345.
+ducrPartDetails.ducr.hint = For example, 9GB123999746000-DUCR12345.
 ducrPartDetails.ducr.error = Enter a DUCR in the correct format
 ducrPartDetails.ducrPartId = Enter DUCR Part ID
-ducrPartDetails.ducrPartId.hint = This can be up to 3 digits. For example 123.
+ducrPartDetails.ducrPartId.hint = This can be up to 3 digits. For example, 123.
 ducrPartDetails.ducrPartId.error = Enter a DUCR Part ID in the correct format
 
 sessionTimout.title = For your security, we signed you out

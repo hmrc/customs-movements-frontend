@@ -19,6 +19,7 @@ package controllers
 import config.IleQueryConfig
 import controllers.consolidations.{routes => consolidationRoutes}
 import forms.Choice._
+import forms.UcrType.Mucr
 import forms._
 import models.UcrBlock
 import models.cache._
@@ -243,7 +244,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
     "return 200 (OK)" when {
       "display page method is invoked with cache containing queried URC but no Answer" in {
-        givenTheCacheContains(Cache("eori", UcrBlock("ucr", "M")))
+        givenTheCacheContains(Cache("eori", UcrBlock(ucr = "ucr", ucrType = Mucr)))
 
         val result = controller.displayChoiceForm()(getRequest())
 
@@ -252,7 +253,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
       }
 
       "display page method is invoked with cache containing queried URC and Answer" in {
-        givenTheCacheContains(Cache("eori", Some(ArrivalAnswers()), Some(UcrBlock("ucr", "M"))))
+        givenTheCacheContains(Cache("eori", Some(ArrivalAnswers()), Some(UcrBlock(ucr = "ucr", ucrType = Mucr))))
 
         val result = controller.displayChoiceForm()(getRequest())
 

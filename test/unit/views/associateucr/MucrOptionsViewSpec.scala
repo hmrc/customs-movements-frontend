@@ -18,6 +18,7 @@ package views.associateucr
 
 import base.OverridableInjector
 import config.{AppConfig, IleQueryConfig}
+import forms.UcrType.Mucr
 import forms.{ManageMucrChoice, MucrOptions}
 import models.UcrBlock
 import models.cache.AssociateUcrAnswers
@@ -57,7 +58,7 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
 
   private val form: Form[MucrOptions] = MucrOptions.form
 
-  private val queryUcr = Some(UcrBlock("mucr", "m"))
+  private val queryUcr = Some(UcrBlock(ucr = "mucr", ucrType = Mucr))
   private val manageMucr = Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr))
 
   private def createView(form: Form[MucrOptions] = form) = page(form, queryUcr, manageMucr)

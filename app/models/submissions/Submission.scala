@@ -20,6 +20,7 @@ import java.time.Instant
 import java.util.UUID
 
 import connectors.exchanges.ActionType
+import forms.UcrType.Mucr
 import models.UcrBlock
 import play.api.libs.json._
 
@@ -32,11 +33,11 @@ case class Submission(
   requestTimestamp: Instant = Instant.now()
 ) {
 
-  def hasMucr: Boolean = ucrBlocks.exists(_.ucrType == "M")
+  def hasMucr: Boolean = ucrBlocks.exists(_.ucrType == Mucr.codeValue)
 
-  def extractMucr: Option[String] = ucrBlocks.find(_.ucrType == "M").map(_.ucr)
+  def extractMucr: Option[String] = ucrBlocks.find(_.ucrType == Mucr.codeValue).map(_.fullUcr)
 
-  def extractFirstUcr: Option[String] = ucrBlocks.headOption.map(_.ucr)
+  def extractFirstUcr: Option[String] = ucrBlocks.headOption.map(_.fullUcr)
 }
 
 object Submission {

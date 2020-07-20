@@ -18,6 +18,7 @@ package views.associateucr
 
 import base.Injector
 import forms.ManageMucrChoice
+import forms.UcrType.Mucr
 import models.UcrBlock
 import models.cache.AssociateUcrAnswers
 import org.jsoup.nodes.Document
@@ -30,9 +31,9 @@ class ManageMucrViewSpec extends ViewSpec with Injector {
   private implicit val request = journeyRequest(AssociateUcrAnswers())
 
   private val page = instanceOf[manage_mucr]
-  private val form: Form[ManageMucrChoice] = ManageMucrChoice.form
+  private val form: Form[ManageMucrChoice] = ManageMucrChoice.form()
 
-  private val queryUcr = Some(UcrBlock("mucr", "m"))
+  private val queryUcr = Some(UcrBlock(ucr = "mucr", ucrType = Mucr))
 
   "MUCR options" should {
 

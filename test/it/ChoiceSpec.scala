@@ -15,6 +15,7 @@
  */
 
 import forms.Choice
+import forms.UcrType.Mucr
 import models.UcrBlock
 import models.cache._
 import play.api.test.Helpers._
@@ -25,7 +26,7 @@ class ChoiceSpec extends IntegrationSpec {
 
     "return 200 when queryUcr in cache" in {
       givenAuthSuccess("eori")
-      givenCacheFor(Cache("eori", UcrBlock("ucr", "M")))
+      givenCacheFor(Cache("eori", UcrBlock(ucr = "ucr", ucrType = Mucr)))
 
       val response = get(controllers.routes.ChoiceController.displayChoiceForm())
 

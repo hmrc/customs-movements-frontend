@@ -20,6 +20,7 @@ import connectors.CustomsDeclareExportsMovementsConnector
 import connectors.exchanges.IleQueryExchange
 import controllers.actions.{AuthAction, IleQueryAction}
 import forms.IleQueryForm.form
+import forms.UcrType._
 import handlers.ErrorHandler
 import javax.inject.{Inject, Singleton}
 import models.UcrBlock
@@ -103,13 +104,13 @@ class IleQueryController @Inject()(
         response.queriedUcr match {
 
           case ducrInfo: DucrInfo =>
-            val ucrBlock = UcrBlock(ucr = ducrInfo.ucr, ucrType = "D")
+            val ucrBlock = UcrBlock(ucr = ducrInfo.ucr, ucrType = Ducr)
             cacheRepository.upsert(Cache(request.eori, ucrBlock)).map { _ =>
               Ok(ileQueryDucrResponsePage(ducrInfo, response.parentMucr))
             }
 
           case mucrInfo: MucrInfo =>
-            val ucrBlock = UcrBlock(ucr = mucrInfo.ucr, ucrType = "M")
+            val ucrBlock = UcrBlock(ucr = mucrInfo.ucr, ucrType = Mucr)
             cacheRepository.upsert(Cache(request.eori, ucrBlock)).map { _ =>
               Ok(ileQueryMucrResponsePage(mucrInfo, response.parentMucr, response.sortedChildrenUcrs))
             }
@@ -119,8 +120,8 @@ class IleQueryController @Inject()(
 
       case response: UcrNotFoundResponseExchangeData =>
         response.ucrBlock match {
-          case Some(UcrBlock(ucr, _)) => Future.successful(Ok(consignmentNotFound(ucr)))
-          case _                      => Future.successful(InternalServerError(errorHandler.standardErrorTemplate()))
+          case Some(UcrBlock(ucr, _, _)) => Future.successful(Ok(consignmentNotFound(ucr)))
+          case _                         => Future.successful(InternalServerError(errorHandler.standardErrorTemplate()))
         }
     }
 
@@ -143,9 +144,9 @@ class IleQueryController @Inject()(
       )
 
   private def buildIleQuery(eori: String, ucr: String): IleQueryExchange = {
-    val ucrType = if (validDucr(ucr)) "D" else "M"
+    val ucrType = if (validDucr(ucr)) Ducr.codeValue else Mucr.codeValue
 
-    val ucrBlock = UcrBlock(ucr, ucrType)
+    val ucrBlock = UcrBlock(ucr = ucr, ucrType = ucrType)
 
     IleQueryExchange(eori, ucrBlock)
   }

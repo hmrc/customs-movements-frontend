@@ -24,6 +24,7 @@ import controllers.ControllerLayerSpec
 import controllers.actions.IleQueryAction
 import controllers.exception.InvalidFeatureStateException
 import forms.IleQueryForm
+import forms.UcrType.Mucr
 import handlers.ErrorHandler
 import models.UcrBlock
 import models.cache.{Cache, IleQuery}
@@ -115,7 +116,8 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
   private val successfulDucrResponseExchange =
     IleQueryResponseExchange(Instant.now(), conversationId, "inventoryLinkingQueryResponse", successfulDucrResponseData)
 
-  private val ucrNotFoundResponseData = UcrNotFoundResponseExchangeData(messageCode = "QUE", actionCode = "1", ucrBlock = Some(UcrBlock("mucr", "M")))
+  private val ucrNotFoundResponseData =
+    UcrNotFoundResponseExchangeData(messageCode = "QUE", actionCode = "1", ucrBlock = Some(UcrBlock(ucr = "mucr", ucrType = Mucr)))
   private val ucrNotFoundResponseExchange =
     IleQueryResponseExchange(Instant.now(), conversationId, "inventoryLinkingControlResponse", ucrNotFoundResponseData)
 

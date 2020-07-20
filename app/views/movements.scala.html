@@ -36,10 +36,10 @@
 
 @ucrCellContent(submission: Submission, notifications: Seq[Notification]) = {
   @if(notifications.isEmpty){
-    @components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucr))
+    @components.elements_in_separate_lines(submission.ucrBlocks.map(_.fullUcr))
   } else {
     <a href="@routes.NotificationsController.listOfNotifications(submission.conversationId)">
-      @components.elements_in_separate_lines(submission.ucrBlocks.map(_.ucr))
+      @components.elements_in_separate_lines(submission.ucrBlocks.map(_.fullUcr))
     </a>
   }
 }

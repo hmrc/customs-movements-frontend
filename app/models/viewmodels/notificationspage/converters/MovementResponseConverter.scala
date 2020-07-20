@@ -24,10 +24,11 @@ import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
+import views.ViewDates
 import views.html.components.paragraph
 
 @Singleton
-class MovementResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter) extends NotificationPageSingleElementConverter {
+class MovementResponseConverter @Inject()(decoder: Decoder, viewDates: ViewDates) extends NotificationPageSingleElementConverter {
 
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement = {
 
@@ -35,7 +36,7 @@ class MovementResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: D
 
     NotificationsPageSingleElement(
       title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
-      timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
+      timestampInfo = viewDates.formatDateAtTime(notification.timestampReceived),
       content = crcCodeExplanation
     )
   }

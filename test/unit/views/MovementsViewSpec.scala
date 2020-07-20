@@ -40,6 +40,7 @@ import views.html.movements
 class MovementsViewSpec extends ViewSpec with Injector {
 
   implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
+  private val viewDates = new ViewDates()
 
   private val realIleQueryConfig = instanceOf[IleQueryConfig]
 
@@ -145,7 +146,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
 
       firstDataRowElements.selectFirst(".ucr").text() mustBe validMucr
       firstDataRowElements.selectFirst(".submission-type") must containMessage("submissions.submissionType.M")
-      firstDataRowElements.selectFirst(".date-of-request").text() mustBe ViewDates.formatDateAtTime(
+      firstDataRowElements.selectFirst(".date-of-request").text() mustBe viewDates.formatDateAtTime(
         LocalDateTime
           .of(2019, 10, 31, 0, 0)
       ) // "31 Oct 2019 at 00:00"
@@ -153,7 +154,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
 
       secondDataRowElements.selectFirst(".ucr").text() mustBe validDucr
       secondDataRowElements.selectFirst(".submission-type") must containMessage("submissions.submissionType.D")
-      secondDataRowElements.selectFirst(".date-of-request").text() mustBe ViewDates.formatDateAtTime(
+      secondDataRowElements.selectFirst(".date-of-request").text() mustBe viewDates.formatDateAtTime(
         LocalDateTime
           .of(2019, 10, 31, 0, 31)
       ) //"31 Oct 2019 at 00:31"
@@ -161,7 +162,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
 
       thirdDataRowElements.selectFirst(".ucr").text() mustBe validWholeDucrParts
       thirdDataRowElements.selectFirst(".submission-type") must containMessage("submissions.submissionType.DP")
-      thirdDataRowElements.selectFirst(".date-of-request").text() mustBe ViewDates.formatDateAtTime(
+      thirdDataRowElements.selectFirst(".date-of-request").text() mustBe viewDates.formatDateAtTime(
         LocalDateTime
           .of(2019, 10, 31, 0, 33)
       ) //"31 Oct 2019 at 00:33"

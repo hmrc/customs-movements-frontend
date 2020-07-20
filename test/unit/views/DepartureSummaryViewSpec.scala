@@ -36,6 +36,7 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
   private val ileQueryConfig = mock[IleQueryConfig]
   private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
+  private val viewDates = new ViewDates()
 
   private val page = injector.instanceOf[departure_summary_page]
 
@@ -145,7 +146,7 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       view.getElementsByClass("govuk-heading-m").get(section_depart_datetime) must containMessage("departureDetails.title")
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_date) must containMessage("summary.departure.date")
-      view.getElementsByClass("govuk-summary-list__value").get(answer_date).text mustBe ViewDates.formatDate(date.date)
+      view.getElementsByClass("govuk-summary-list__value").get(answer_date).text mustBe viewDates.formatDate(date.date)
 
       val changeDate = view.getElementsByClass("govuk-link").get(answer_date_link_index)
       changeDate must containMessage("site.change")

@@ -28,7 +28,8 @@
   govukLayout: gds_main_template,
   pageTitle: pageTitle,
   table: GovukTable,
-  viewRequestsConfig: ViewRequestsConfig
+  viewRequestsConfig: ViewRequestsConfig,
+  viewDates: ViewDates
 )
 
 @(submissions: Seq[(Submission, Seq[Notification])])(implicit request: Request[_], messages: Messages)
@@ -98,7 +99,7 @@
               classes = submissionTypeClass
             ),
             TableRow(
-              content = Text(ViewDates.formatDateAtTime(submission.requestTimestamp)),
+              content = Text(viewDates.formatDateAtTime(submission.requestTimestamp)),
               classes = dateOfRequestClass
             ),
             TableRow(

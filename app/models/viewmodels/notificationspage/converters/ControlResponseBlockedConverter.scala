@@ -25,11 +25,11 @@ import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.Logger
 import play.api.i18n.Messages
 import play.twirl.api.Html
+import views.ViewDates
 import views.html.components.{notification_errors, paragraph}
 
 @Singleton
-class ControlResponseBlockedConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter)
-    extends NotificationPageSingleElementConverter {
+class ControlResponseBlockedConverter @Inject()(decoder: Decoder, viewDates: ViewDates) extends NotificationPageSingleElementConverter {
 
   private val logger = Logger(this.getClass)
 
@@ -39,7 +39,7 @@ class ControlResponseBlockedConverter @Inject()(decoder: Decoder, dateTimeFormat
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
       title = messages(TitleMessagesKey),
-      timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
+      timestampInfo = viewDates.formatDateAtTime(notification.timestampReceived),
       content = buildContent(notification)
     )
 

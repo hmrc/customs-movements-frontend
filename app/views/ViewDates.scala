@@ -20,7 +20,10 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAccessor
 
-object ViewDates {
+import javax.inject.Singleton
+
+@Singleton
+class ViewDates() {
   def timezone = ZoneId.of("Europe/London")
 
   private val dateAtTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu 'at' h:mma").withZone(timezone)

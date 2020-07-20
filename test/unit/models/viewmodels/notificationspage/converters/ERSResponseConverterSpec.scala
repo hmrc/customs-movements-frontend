@@ -78,7 +78,7 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar with BeforeAnd
 
         val input = ersResponseAllCodes
         val expectedTitle = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
-        val expectedTimestampInfo = "23 Oct 2019 at 12:34"
+        val expectedTimestampInfo = "23 October 2019 at 12:34pm"
         val expectedContentElements = Seq(
           messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe"),
           roeKeyFromDecoder.code,
@@ -119,7 +119,7 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar with BeforeAnd
 
         val input = ersResponseMissingCodes
         val expectedTitle = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
-        val expectedTimestampInfo = "23 Oct 2019 at 12:34"
+        val expectedTimestampInfo = "23 October 2019 at 12:34pm"
         val expectedContentElements =
           Seq(messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe"), messages(soeKeyFromDecoder.messageKey))
 
@@ -157,7 +157,7 @@ class ERSResponseConverterSpec extends BaseSpec with MockitoSugar with BeforeAnd
         val input = ersResponseUnknownCodes
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-          timestampInfo = "23 Oct 2019 at 12:34",
+          timestampInfo = "23 October 2019 at 12:34pm",
           content = Html("")
         )
 

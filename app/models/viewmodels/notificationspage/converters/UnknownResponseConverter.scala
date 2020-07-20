@@ -23,14 +23,15 @@ import models.notifications.Notification
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import views.ViewDates
 
 @Singleton
-class UnknownResponseConverter @Inject()(dateTimeFormatter: DateTimeFormatter) extends NotificationPageSingleElementConverter {
+class UnknownResponseConverter @Inject()(viewDates: ViewDates) extends NotificationPageSingleElementConverter {
 
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
       title = messages("notifications.elem.title.unknown"),
-      timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
+      timestampInfo = viewDates.formatDateAtTime(notification.timestampReceived),
       content = HtmlFormat.empty
     )
 }

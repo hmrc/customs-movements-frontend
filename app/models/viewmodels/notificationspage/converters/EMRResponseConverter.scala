@@ -24,10 +24,11 @@ import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
+import views.ViewDates
 import views.html.components.{code_explanation, paragraph}
 
 @Singleton
-class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTimeFormatter) extends NotificationPageSingleElementConverter {
+class EMRResponseConverter @Inject()(decoder: Decoder, viewDates: ViewDates) extends NotificationPageSingleElementConverter {
 
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement = {
     val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation).getOrElse(HtmlFormat.empty)
@@ -38,7 +39,7 @@ class EMRResponseConverter @Inject()(decoder: Decoder, dateTimeFormatter: DateTi
 
     NotificationsPageSingleElement(
       title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-      timestampInfo = dateTimeFormatter.format(notification.timestampReceived),
+      timestampInfo = viewDates.formatDateAtTime(notification.timestampReceived),
       content = new Html(List(crcCodeExplanation, roeCodeExplanation, soeCodeExplanation))
     )
   }

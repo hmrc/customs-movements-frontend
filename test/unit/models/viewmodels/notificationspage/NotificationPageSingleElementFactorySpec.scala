@@ -37,7 +37,7 @@ import testdata.CommonTestData._
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import utils.DateTimeTestModule
-import views.MessagesStub
+import views.{MessagesStub, ViewDates}
 
 class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSugar with MessagesStub with BeforeAndAfterEach {
 
@@ -46,7 +46,7 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
   private implicit val fakeRequest = FakeRequest()
 
   private val responseConverterProvider = mock[ResponseConverterProvider]
-  private val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy 'at' HH:mm").withZone(ZoneId.of("Europe/London"))
+  private val formatter = new ViewDates
   private val factory = new NotificationPageSingleElementFactory(responseConverterProvider, formatter)
 
   private val injector = Guice.createInjector(new DateTimeTestModule())
@@ -70,7 +70,7 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
           exampleSubmission(actionType = MovementType.Arrival, requestTimestamp = testTimestamp)
 
         val expectedTitle = messages("notifications.elem.title.Arrival")
-        val expectedTimestampInfo = "31 Oct 2019 at 00:00"
+        val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.Arrival", "DUCR"), messages("notifications.elem.content.footer"))
 
         val result = factory.build(input)
@@ -84,7 +84,7 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
           exampleSubmission(actionType = MovementType.Departure, requestTimestamp = testTimestamp)
 
         val expectedTitle = messages("notifications.elem.title.Departure")
-        val expectedTimestampInfo = "31 Oct 2019 at 00:00"
+        val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.Departure", "DUCR"), messages("notifications.elem.content.footer"))
 
         val result = factory.build(input)
@@ -104,7 +104,7 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
         )
 
         val expectedTitle = messages("notifications.elem.title.DucrAssociation")
-        val expectedTimestampInfo = "31 Oct 2019 at 00:00"
+        val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.DucrAssociation"), messages("notifications.elem.content.footer"))
 
         val result = factory.build(input)
@@ -123,7 +123,7 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
         )
 
         val expectedTitle = messages("notifications.elem.title.MucrAssociation")
-        val expectedTimestampInfo = "31 Oct 2019 at 00:00"
+        val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.MucrAssociation"), messages("notifications.elem.content.footer"))
 
         val result = factory.build(input)
@@ -137,7 +137,7 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
           exampleSubmission(actionType = ConsolidationType.DucrDisassociation, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "D")
 
         val expectedTitle = messages("notifications.elem.title.DucrDisassociation")
-        val expectedTimestampInfo = "31 Oct 2019 at 00:00"
+        val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.DucrDisassociation"), messages("notifications.elem.content.footer"))
 
         val result = factory.build(input)
@@ -151,7 +151,7 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
           exampleSubmission(actionType = ConsolidationType.MucrDisassociation, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "M")
 
         val expectedTitle = messages("notifications.elem.title.MucrDisassociation")
-        val expectedTimestampInfo = "31 Oct 2019 at 00:00"
+        val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.MucrDisassociation"), messages("notifications.elem.content.footer"))
 
         val result = factory.build(input)
@@ -165,7 +165,7 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
           exampleSubmission(actionType = ConsolidationType.ShutMucr, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "M")
 
         val expectedTitle = messages("notifications.elem.title.ShutMucr")
-        val expectedTimestampInfo = "31 Oct 2019 at 00:00"
+        val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.ShutMucr"), messages("notifications.elem.content.footer"))
 
         val result = factory.build(input)

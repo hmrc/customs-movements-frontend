@@ -18,7 +18,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.ViewDates
 
-@this(govukTable: GovukTable)
+@this(govukTable: GovukTable, viewDates: ViewDates)
 
 @(movements: Seq[MovementInfo])(implicit request: Request[_], messages: Messages)
 
@@ -32,7 +32,7 @@
                         attributes = Map("id" -> s"movement_type_${indexedMovement._2}")
                     ),
                     TableRow(
-                        content = Text(indexedMovement._1.movementDateTime.map(date => ViewDates.formatDateAtTime(date)).getOrElse("")),
+                        content = Text(indexedMovement._1.movementDateTime.map(date => viewDates.formatDateAtTime(date)).getOrElse("")),
                         attributes = Map("id" -> s"movement_date_${indexedMovement._2}")
                     ),
                     TableRow(

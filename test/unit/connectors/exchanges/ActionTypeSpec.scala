@@ -55,6 +55,13 @@ class ActionTypeSpec extends WordSpec with MustMatchers {
         json must equal(expectedJson)
       }
 
+      "it is DUCR Parts Association" in {
+        val json = ActionType.format.writes(DucrPartAssociation)
+        val expectedJson = JsString("DucrPartAssociation")
+
+        json must equal(expectedJson)
+      }
+
       "it is DUCR Disassociation" in {
         val json = ActionType.format.writes(DucrDisassociation)
         val expectedJson = JsString("DucrDisassociation")
@@ -65,6 +72,13 @@ class ActionTypeSpec extends WordSpec with MustMatchers {
       "it is MUCR Disassociation" in {
         val json = ActionType.format.writes(MucrDisassociation)
         val expectedJson = JsString("MucrDisassociation")
+
+        json must equal(expectedJson)
+      }
+
+      "it is DUCR Parts Disassociation" in {
+        val json = ActionType.format.writes(DucrPartDisassociation)
+        val expectedJson = JsString("DucrPartDisassociation")
 
         json must equal(expectedJson)
       }
@@ -81,51 +95,56 @@ class ActionTypeSpec extends WordSpec with MustMatchers {
 
       "it is Arrival" in {
         val actionType = ActionType.format.reads(JsString("Arrival")).get
-        val expectedActionType = Arrival
 
-        actionType must equal(expectedActionType)
+        actionType must equal(Arrival)
       }
 
       "it is Departure" in {
         val actionType = ActionType.format.reads(JsString("Departure")).get
-        val expectedActionType = Departure
 
-        actionType must equal(expectedActionType)
+        actionType must equal(Departure)
       }
 
       "it is DUCR Association" in {
         val actionType = ActionType.format.reads(JsString("DucrAssociation")).get
-        val expectedActionType = DucrAssociation
 
-        actionType must equal(expectedActionType)
+        actionType must equal(DucrAssociation)
       }
 
       "it is MUCR Association" in {
         val actionType = ActionType.format.reads(JsString("MucrAssociation")).get
-        val expectedActionType = MucrAssociation
 
-        actionType must equal(expectedActionType)
+        actionType must equal(MucrAssociation)
+      }
+
+      "it is DUCR Part Association" in {
+        val actionType = ActionType.format.reads(JsString("DucrPartAssociation")).get
+
+        actionType must equal(DucrPartAssociation)
       }
 
       "it is DUCR Disassociation" in {
         val actionType = ActionType.format.reads(JsString("DucrDisassociation")).get
-        val expectedActionType = DucrDisassociation
 
-        actionType must equal(expectedActionType)
+        actionType must equal(DucrDisassociation)
       }
 
       "it is MUCR Disassociation" in {
         val actionType = ActionType.format.reads(JsString("MucrDisassociation")).get
-        val expectedActionType = MucrDisassociation
 
-        actionType must equal(expectedActionType)
+        actionType must equal(MucrDisassociation)
+      }
+
+      "it is DUCR Part Disassociation" in {
+        val actionType = ActionType.format.reads(JsString("DucrPartDisassociation")).get
+
+        actionType must equal(DucrPartDisassociation)
       }
 
       "it is Shut MUCR" in {
         val actionType = ActionType.format.reads(JsString("ShutMucr")).get
-        val expectedActionType = ShutMucr
 
-        actionType must equal(expectedActionType)
+        actionType must equal(ShutMucr)
       }
 
       "it is Unknown" in {
@@ -136,5 +155,4 @@ class ActionTypeSpec extends WordSpec with MustMatchers {
       }
     }
   }
-
 }

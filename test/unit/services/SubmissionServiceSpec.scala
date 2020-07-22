@@ -83,6 +83,18 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
         verify(repository).removeByEori(validEori)
         verify(audit).auditAssociate(validEori, mucr, ucr, "Success")
       }
+
+      "Associate DUCR Part" in {
+        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful((): Unit))
+        given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
+
+        val answers = AssociateUcrAnswers(None, Some(MucrOptions(mucr)), Some(AssociateUcr(UcrType.DucrPart, ucr)))
+        await(service.submit(validEori, answers))
+
+        theAssociationSubmitted mustBe AssociateDUCRPartRequest(validEori, mucr, ucr)
+        verify(repository).removeByEori(validEori)
+        verify(audit).auditAssociate(validEori, mucr, ucr, "Success")
+      }
     }
 
     "audit when failed" in {
@@ -142,6 +154,18 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
         verify(repository).removeByEori(validEori)
         verify(audit).auditDisassociate(validEori, ucr, "Success")
       }
+
+      "Disassociate DUCR Part" in {
+        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful((): Unit))
+        given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
+
+        val answers = DisassociateUcrAnswers(Some(DisassociateUcr(UcrType.DucrPart, Some(ucr), None)))
+        await(service.submit(validEori, answers))
+
+        theDisassociationSubmitted mustBe DisassociateDUCRPartRequest(validEori, ucr)
+        verify(repository).removeByEori(validEori)
+        verify(audit).auditDisassociate(validEori, ucr, "Success")
+      }
     }
 
     "audit when failed" in {
@@ -183,6 +207,16 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
         "Disassociate DUCR" in {
           val answers = DisassociateUcrAnswers(Some(DisassociateUcr(UcrType.Ducr, None, None)))
+          intercept[Throwable] {
+            await(service.submit(validEori, answers))
+          } mustBe ReturnToStartException
+
+          verifyZeroInteractions(repository)
+          verifyZeroInteractions(audit)
+        }
+
+        "Disassociate DUCR Part" in {
+          val answers = DisassociateUcrAnswers(Some(DisassociateUcr(UcrType.DucrPart, None, None)))
           intercept[Throwable] {
             await(service.submit(validEori, answers))
           } mustBe ReturnToStartException
@@ -454,5 +488,4 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
       }
     }
   }
-
 }

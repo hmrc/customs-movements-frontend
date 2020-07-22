@@ -140,8 +140,8 @@ departure.details.error.overdue = Time of Departure cannot be more than 60 days 
 departure.details.error.future = Time of Departure cannot be in the future
 
 location.title = Location
-location.question = What is the goods location code?
-location.hint = The is an alphanumeric code. For example, GBAUEMAEMAEMA.
+location.question = What is the code for the location of the goods when they are declared?
+location.hint = This is usually the port they are leaving from and is officially known as the Goods Location Code. For example, if they were at Felixstowe, it would be GBAUFXTFXTFXT.
 location.code.empty = Goods location code cannot be empty
 location.code.error = Goods location code is incorrect
 

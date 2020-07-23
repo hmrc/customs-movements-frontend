@@ -51,6 +51,5 @@ class SummaryController @Inject()(
         Redirect(controllers.routes.MovementConfirmationController.displayPage())
           .flashing(FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString)
       }
-
   }
 }

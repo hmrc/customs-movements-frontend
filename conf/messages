@@ -274,8 +274,10 @@ submissions.shutmucr = Shut
 submissions.arrival = Arrive
 submissions.departure = Depart
 submissions.ducrassociation = Associate DUCR
+submissions.ducrpartassociation = Associate DUCR Part
 submissions.mucrassociation = Associate MUCR
 submissions.ducrdisassociation = Disassociate DUCR
+submissions.ducrpartdisassociation = Disassociate DUCR Part
 submissions.mucrdisassociation = Disassociate MUCR
 
 # This part uses ActionType instances' values to differentiate between messages

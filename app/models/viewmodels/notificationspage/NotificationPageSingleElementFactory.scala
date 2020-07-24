@@ -16,8 +16,6 @@
 
 package models.viewmodels.notificationspage
 
-import java.time.format.DateTimeFormatter
-
 import connectors.exchanges.ActionType.ConsolidationType._
 import connectors.exchanges.ActionType.MovementType._
 import javax.inject.{Inject, Singleton}
@@ -35,13 +33,14 @@ class NotificationPageSingleElementFactory @Inject()(responseConverterProvider: 
 
   def build(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement =
     submission.actionType match {
-      case Arrival | Departure | DucrDisassociation | MucrAssociation | MucrDisassociation | ShutMucr => buildForRequest(submission)
-      case DucrAssociation                                                                            => buildForDucrAssociation(submission)
+      case Arrival | Departure | DucrDisassociation | DucrPartDisassociation | MucrAssociation | MucrDisassociation | ShutMucr =>
+        buildForRequest(submission)
+      case DucrAssociation | DucrPartAssociation => buildForDucrAssociation(submission)
     }
 
   private def buildForRequest(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement = {
 
-    val ucrMessage = if (submission.hasMucr) "MUCR" else "DUCR"
+    val ucrMessage = if (submission.hasMucr) "MUCR" else if (submission.hasDucrPart) "DUCR Part" else "DUCR"
 
     val content = HtmlFormat.fill(
       List(

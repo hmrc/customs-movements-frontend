@@ -287,8 +287,10 @@ notifications.title = Notifications relating to {0}
 notifications.elem.title.Arrival = Request to arrive has been received
 notifications.elem.title.Departure = Request to depart has been received
 notifications.elem.title.DucrAssociation = Request to associate this DUCR has been received
+notifications.elem.title.DucrPartAssociation = Request to associate this DUCR Part has been received
 notifications.elem.title.MucrAssociation = Request to associate this MUCR has been received
 notifications.elem.title.DucrDisassociation = Request to dissociate this DUCR has been received
+notifications.elem.title.DucrPartDisassociation = Request to dissociate this DUCR Part has been received
 notifications.elem.title.MucrDisassociation = Request to dissociate this MUCR has been received
 notifications.elem.title.ShutMucr = Shut MUCR request has been received
 
@@ -301,9 +303,11 @@ notifications.elem.title.unknown = Update message
 
 notifications.elem.content.Arrival = Your request to arrive this {0} has been received.
 notifications.elem.content.Departure = Your request to depart this {0} has been received.
-notifications.elem.content.DucrAssociation = Your request to consolidate these DUCRs into this MUCR has been received:
+notifications.elem.content.DucrAssociation = Your request to consolidate this DUCR into this MUCR has been received:
+notifications.elem.content.DucrPartAssociation = Your request to consolidate this DUCR Part into this MUCR has been received:
 notifications.elem.content.MucrAssociation = Your request to consolidate MUCR into this MUCR has been received.
 notifications.elem.content.DucrDisassociation = Your request to disassociate this DUCR has been received.
+notifications.elem.content.DucrPartDisassociation = Your request to disassociate this DUCR Part has been received.
 notifications.elem.content.MucrDisassociation = Your request to disassociate this MUCR has been received.
 notifications.elem.content.ShutMucr = Your request to shut this MUCR has been received.
 notifications.elem.content.footer = We will notify you when it has been successful.

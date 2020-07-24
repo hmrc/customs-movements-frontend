@@ -26,7 +26,8 @@ case class ArrivalAnswers(
   override val consignmentReferences: Option[ConsignmentReferences] = None,
   arrivalDetails: Option[ArrivalDetails] = None,
   override val location: Option[Location] = None,
-  override val specificDateTimeChoice: Option[SpecificDateTimeChoice] = None
+  override val specificDateTimeChoice: Option[SpecificDateTimeChoice] = None,
+  override val ducrPartChiefChoice: Option[DucrPartChiefChoice] = None
 ) extends MovementAnswers {
   override val `type`: JourneyType.Value = JourneyType.ARRIVE
 }
@@ -42,7 +43,8 @@ case class DepartureAnswers(
   departureDetails: Option[DepartureDetails] = None,
   override val location: Option[Location] = None,
   override val specificDateTimeChoice: Option[SpecificDateTimeChoice] = None,
-  transport: Option[Transport] = None
+  transport: Option[Transport] = None,
+  override val ducrPartChiefChoice: Option[DucrPartChiefChoice] = None
 ) extends MovementAnswers {
   override val `type`: JourneyType.Value = JourneyType.DEPART
 }
@@ -54,17 +56,23 @@ object DepartureAnswers {
     new DepartureAnswers(ucrBlock.map(ConsignmentReferences.apply), None, None, None)
 }
 
-trait MovementAnswers extends Answers {
+trait MovementAnswers extends DucrPartChiefAnswers {
   val consignmentReferences: Option[ConsignmentReferences]
   val location: Option[Location]
   val specificDateTimeChoice: Option[SpecificDateTimeChoice]
 }
 
+trait DucrPartChiefAnswers extends Answers {
+  val ducrPartChiefChoice: Option[DucrPartChiefChoice]
+  def isDucrPartChief: Boolean = ducrPartChiefChoice.exists(_.isDucrPart)
+}
+
 case class AssociateUcrAnswers(
   manageMucrChoice: Option[ManageMucrChoice] = None,
   mucrOptions: Option[MucrOptions] = None,
-  associateUcr: Option[AssociateUcr] = None
-) extends Answers {
+  associateUcr: Option[AssociateUcr] = None,
+  override val ducrPartChiefChoice: Option[DucrPartChiefChoice] = None
+) extends DucrPartChiefAnswers {
   override val `type`: JourneyType.Value = JourneyType.ASSOCIATE_UCR
 
   def isAssociateAnotherMucr: Boolean = manageMucrChoice.exists(_.choice == ManageMucrChoice.AssociateAnotherMucr)
@@ -77,7 +85,8 @@ object AssociateUcrAnswers {
     new AssociateUcrAnswers(None, None, ucrBlock.map(AssociateUcr.apply))
 }
 
-case class DisassociateUcrAnswers(ucr: Option[DisassociateUcr] = None) extends Answers {
+case class DisassociateUcrAnswers(ucr: Option[DisassociateUcr] = None, override val ducrPartChiefChoice: Option[DucrPartChiefChoice] = None)
+    extends DucrPartChiefAnswers {
   override val `type`: JourneyType.Value = JourneyType.DISSOCIATE_UCR
 }
 

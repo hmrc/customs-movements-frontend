@@ -19,13 +19,19 @@ package views.components.config
 import config.{AppConfig, IleQueryConfig}
 import forms.ManageMucrChoice
 import javax.inject.Inject
+import models.cache.DucrPartChiefAnswers
+import models.requests.JourneyRequest
 import play.api.mvc.Call
 
 class MucrOptionsConfig @Inject()(appConfig: AppConfig, ileQueryConfig: IleQueryConfig) extends BaseConfig(ileQueryConfig) {
 
-  def backUrl(manageMucrChoice: Option[ManageMucrChoice] = None): Call =
+  def backUrl(manageMucrChoice: Option[ManageMucrChoice] = None)(implicit request: JourneyRequest[_]): Call =
     if (ileQueryConfig.isIleQueryEnabled && manageMucrChoice.isDefined)
       controllers.consolidations.routes.ManageMucrController.displayPage()
+    else if (request.answersAs[DucrPartChiefAnswers].ducrPartChiefChoice.exists(_.isDucrPart))
+      controllers.routes.DucrPartDetailsController.displayPage()
+    else if (request.answersAs[DucrPartChiefAnswers].ducrPartChiefChoice.isDefined)
+      controllers.routes.DucrPartChiefController.displayPage()
     else
       controllers.routes.ChoiceController.displayChoiceForm()
 

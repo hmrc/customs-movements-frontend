@@ -20,6 +20,7 @@
 @import views.Title
 @import views.components.BackButton
 @import views.components.config.DissociateSummaryConfig
+@import models.requests.JourneyRequest
 
 @this(  govukLayout: gds_main_template,
         pageTitle: pageTitle,
@@ -30,7 +31,7 @@
         pageConfig: DissociateSummaryConfig,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
-@(disassociateUcr: DisassociateUcr)(implicit request: Request[_], messages: Messages)
+@(disassociateUcr: DisassociateUcr)(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("disassociate.ucr.summary.title"),
@@ -54,7 +55,7 @@
                     actions = if(pageConfig.ileQueryEnabled) None else Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = s"${consolidations.routes.DisassociateUcrController.displayPage()}",
+                                href = s"${if(disassociateUcr.kind.isDucrPart) routes.DucrPartDetailsController.displayPage else consolidations.routes.DisassociateUcrController.displayPage()}",
                                 content = HtmlContent(linkContent(messages("site.change"))),
                                 visuallyHiddenText = Some(messages("site.change.hint.disassociate.ucr", disassociateUcr.kind.toString.toUpperCase))
                             )

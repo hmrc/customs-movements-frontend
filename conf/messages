@@ -246,6 +246,7 @@ associate.ucr.summary.associate.with.mucr = Associate with MUCR
 associate.ucr.summary.associate.with.ducr = Associate with DUCR
 associate.ucr.summary.kind.mucr = MUCR
 associate.ucr.summary.kind.ducr = DUCR
+associate.ucr.summary.kind.ducrPart = DUCR Part
 
 confirmation.title.ARRIVE = Your arrival request has been submitted
 confirmation.title.DEPART = Your departure request has been submitted
@@ -373,6 +374,22 @@ ducrPartDetails.ducr.error = Enter a DUCR in the correct format
 ducrPartDetails.ducrPartId = Enter DUCR Part ID
 ducrPartDetails.ducrPartId.hint = This can be up to 3 digits. For example, 123.
 ducrPartDetails.ducrPartId.error = Enter a DUCR Part ID in the correct format
+
+ducrPartChief.ARRIVE.heading = Arrive consignment
+ducrPartChief.ARRIVE.question = Do you want to arrive a DUCR Part which was created in CHIEF?
+ducrPartChief.DEPART.heading = Depart consignment
+ducrPartChief.DEPART.question = Do you want to depart a DUCR Part which was created in CHIEF?
+ducrPartChief.ASSOCIATE_UCR.heading = Associate consignment
+ducrPartChief.ASSOCIATE_UCR.question = Do you want to associate a DUCR Part which was created in CHIEF?
+ducrPartChief.DISSOCIATE_UCR.heading = Dissociate consignment
+ducrPartChief.DISSOCIATE_UCR.question = Do you want to dissociate a DUCR Part which was created in CHIEF?
+ducrPartChief.isDucrPart = Yes
+ducrPartChief.ARRIVE.notDucrPart = No. The consignment I want to arrive is not a DUCR Part
+ducrPartChief.DEPART.notDucrPart = No. The consignment I want to depart is not a DUCR Part
+ducrPartChief.ASSOCIATE_UCR.notDucrPart = No. The consignment I want to associate is not a DUCR Part
+ducrPartChief.DISSOCIATE_UCR.notDucrPart = No. The consignment I want to dissociate is not a DUCR Part
+ducrPartChief.input.error.empty = Please, choose what do you want to do
+ducrPartChief.input.error.incorrectValue = Please, choose valid option
 
 sessionTimout.title = For your security, we signed you out
 sessionTimout.paragraph.saved = We saved your answers.

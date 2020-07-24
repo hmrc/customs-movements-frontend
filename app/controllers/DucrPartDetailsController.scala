@@ -16,10 +16,11 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, DucrPartsAction}
-import forms.{DucrPartDetails, UcrType}
+import config.IleQueryConfig
+import controllers.actions.{AuthAction, DucrPartsAction, JourneyRefiner, NonIleQueryAction}
+import forms._
 import javax.inject.Inject
-import models.cache.Cache
+import models.cache._
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,8 +33,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class DucrPartDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   authenticate: AuthAction,
+  getJourney: JourneyRefiner,
   isDucrPartsFeatureEnabled: DucrPartsAction,
+  ileQueryFeatureDisabled: NonIleQueryAction,
   cacheRepository: CacheRepository,
+  ileQueryConfig: IleQueryConfig,
   ducrPartsDetailsPage: ducr_part_details
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
@@ -62,5 +66,65 @@ class DucrPartDetailsController @Inject()(
       )
   }
 
+  def submitDucrPartDetailsJourney(): Action[AnyContent] =
+    (authenticate andThen isDucrPartsFeatureEnabled andThen ileQueryFeatureDisabled andThen getJourney(
+      JourneyType.ARRIVE,
+      JourneyType.DEPART,
+      JourneyType.ASSOCIATE_UCR,
+      JourneyType.DISSOCIATE_UCR
+    )).async { implicit request =>
+      getEmptyForm
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(ducrPartsDetailsPage(formWithErrors))),
+          validDucrPartDetails => {
+            val ucrBlock = Some(validDucrPartDetails.toUcrBlock)
+            request.answers.`type` match {
+              case JourneyType.ARRIVE =>
+                val answers = request.answersAs[ArrivalAnswers]
+                cacheRepository
+                  .upsert(
+                    request.cache
+                      .copy(queryUcr = ucrBlock, answers = Some(answers.copy(consignmentReferences = ucrBlock.map(ConsignmentReferences.apply))))
+                  )
+                  .map { _ =>
+                    Redirect(controllers.routes.SpecificDateTimeController.displayPage())
+                  }
+              case JourneyType.DEPART =>
+                val answers = request.answersAs[DepartureAnswers]
+                cacheRepository
+                  .upsert(
+                    request.cache
+                      .copy(queryUcr = ucrBlock, answers = Some(answers.copy(consignmentReferences = ucrBlock.map(ConsignmentReferences.apply))))
+                  )
+                  .map { _ =>
+                    Redirect(controllers.routes.SpecificDateTimeController.displayPage())
+                  }
+              case JourneyType.ASSOCIATE_UCR =>
+                val answers = request.answersAs[AssociateUcrAnswers]
+                cacheRepository
+                  .upsert(
+                    request.cache
+                      .copy(queryUcr = ucrBlock, answers = Some(answers.copy(associateUcr = ucrBlock.map(AssociateUcr.apply))))
+                  )
+                  .map { _ =>
+                    Redirect(consolidations.routes.MucrOptionsController.displayPage())
+                  }
+              case JourneyType.DISSOCIATE_UCR =>
+                val answers = request.answersAs[DisassociateUcrAnswers]
+                cacheRepository
+                  .upsert(
+                    request.cache
+                      .copy(queryUcr = ucrBlock, answers = Some(answers.copy(ucr = ucrBlock.map(DisassociateUcr.apply))))
+                  )
+                  .map { _ =>
+                    Redirect(controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage())
+                  }
+            }
+          }
+        )
+    }
+
   private def getEmptyForm: Form[DucrPartDetails] = DucrPartDetails.form()
+
 }

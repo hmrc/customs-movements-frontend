@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 @import views.components.BackButton
+@import views.components.config.DucrPartDetailsConfig
 
 @this(
   govukLayout: gds_main_template,
@@ -26,6 +27,7 @@
   exportsInputText: exportsInputText,
   errorSummary: errorSummary,
   pageTitle: pageTitle,
+  pageConfig: DucrPartDetailsConfig,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
@@ -37,10 +39,10 @@
 
 @govukLayout(
   title = Title("ducrPartDetails.title", Some("ducrPartDetails.heading")),
-  backButton = Some(BackButton(messages("site.back"), controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()))
+  backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl))
 ) {
 
-  @formHelper(action = controllers.routes.DucrPartDetailsController.submitDucrPartDetails(), 'autoComplete -> "off") {
+  @formHelper(action = pageConfig.action, 'autoComplete -> "off") {
 
     @errorSummary(form.errors)
 

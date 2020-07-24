@@ -18,13 +18,19 @@ package views.components.config
 
 import config.IleQueryConfig
 import javax.inject.Inject
+import models.cache.DucrPartChiefAnswers
+import models.requests.JourneyRequest
 import play.api.mvc.Call
 
 class DissociateSummaryConfig @Inject()(ileQueryConfig: IleQueryConfig) extends BaseConfig(ileQueryConfig) {
 
-  def backUrl: Call =
+  def backUrl(implicit request: JourneyRequest[_]): Call =
     if (ileQueryConfig.isIleQueryEnabled)
       controllers.routes.ChoiceController.displayChoiceForm()
+    else if (request.answersAs[DucrPartChiefAnswers].ducrPartChiefChoice.exists(_.isDucrPart))
+      controllers.routes.DucrPartDetailsController.displayPage()
+    else if (request.answersAs[DucrPartChiefAnswers].ducrPartChiefChoice.isDefined)
+      controllers.routes.DucrPartChiefController.displayPage()
     else
       controllers.consolidations.routes.DisassociateUcrController.displayPage()
 }

@@ -21,7 +21,7 @@ import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.MucrOptions
 import forms.MucrOptions.form
 import javax.inject.{Inject, Singleton}
-import models.cache.{AssociateUcrAnswers, JourneyType}
+import models.cache.{AssociateUcrAnswers, DucrPartChiefAnswers, JourneyType}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -60,7 +60,7 @@ class MucrOptionsController @Inject()(
           } else {
             val updatedAnswers = request.answersAs[AssociateUcrAnswers].copy(mucrOptions = Some(validForm))
             cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
-              if (ileQueryConfig.isIleQueryEnabled)
+              if (ileQueryConfig.isIleQueryEnabled || request.answersAs[DucrPartChiefAnswers].isDucrPartChief)
                 Redirect(routes.AssociateUcrSummaryController.displayPage())
               else
                 Redirect(routes.AssociateUcrController.displayPage())

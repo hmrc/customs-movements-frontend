@@ -67,7 +67,7 @@
                             Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = s"${routes.ConsignmentReferencesController.displayPage}",
+                                    href = s"${if(data.isDucrPartChief) routes.DucrPartChiefController.displayPage else routes.ConsignmentReferencesController.displayPage}",
                                     content = HtmlContent(linkContent(messages("site.change"))),
                                     visuallyHiddenText = Some(messages("summary.referenceType.change"))
                                 )
@@ -85,7 +85,7 @@
                             Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = s"${routes.ConsignmentReferencesController.displayPage}",
+                                    href = s"${if(data.isDucrPartChief) routes.DucrPartDetailsController.displayPage else routes.ConsignmentReferencesController.displayPage}",
                                     content = HtmlContent(linkContent(messages("site.change"))),
                                     visuallyHiddenText = Some(messages("summary.referenceValue.change"))
                                 )

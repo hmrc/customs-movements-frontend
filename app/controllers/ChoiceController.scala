@@ -116,7 +116,7 @@ class ChoiceController @Inject()(
     for {
       updatedCache: Cache <- cacheRepository.findByEori(eori).map {
         case Some(cache) => cache.copy(answers = Some(answerProvider.apply(cache.queryUcr)))
-        case None        => Cache(eori, Some(answerProvider.apply(None)), None)
+        case None        => Cache(eori, Some(answerProvider.apply(None)), None, None)
       }
       result <- cacheRepository.upsert(updatedCache)
     } yield result

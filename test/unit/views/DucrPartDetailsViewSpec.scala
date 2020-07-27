@@ -16,10 +16,15 @@
 
 package views
 
-import base.Injector
+import base.OverridableInjector
+import config.IleQueryConfig
 import forms.DucrPartDetails
 import org.jsoup.nodes.Document
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.{Form, FormError}
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import testdata.CommonTestData._
@@ -28,12 +33,25 @@ import views.spec.ViewMatchers
 import views.tags.ViewTest
 
 @ViewTest
-class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with Injector {
+class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with MockitoSugar with BeforeAndAfterEach {
+
+  private val appConfig = mock[IleQueryConfig]
+  private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(appConfig))
 
   private implicit val request = FakeRequest().withCSRFToken
-  private val page = instanceOf[ducr_part_details]
+  private val page = injector.instanceOf[ducr_part_details]
 
   private def createView(form: Form[DucrPartDetails]): Html = page(form)
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    when(appConfig.isIleQueryEnabled).thenReturn(true)
+  }
+
+  override def afterEach(): Unit = {
+    reset(appConfig)
+    super.afterEach()
+  }
 
   "DucrPartDetails view" when {
 
@@ -56,10 +74,20 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with Injector {
         view.getElementById("page-hint") must containMessage("ducrPartDetails.heading")
       }
 
-      "render 'Back' button leading to 'Find a consignment' page" in {
+      "render 'Back' button leading to 'Find a consignment' page when ileQuery enabled" in {
+        when(appConfig.isIleQueryEnabled).thenReturn(true)
+        val view = createView(DucrPartDetails.form())
 
         view.getBackButton mustBe defined
         view.getBackButton.get must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+      }
+
+      "render 'Back' button leading to 'Ducr Part Chief' page when ileQuery disabled" in {
+        when(appConfig.isIleQueryEnabled).thenReturn(false)
+        val view = createView(DucrPartDetails.form())
+
+        view.getBackButton mustBe defined
+        view.getBackButton.get must haveHref(controllers.routes.DucrPartChiefController.displayPage())
       }
 
       "render DUCR input field label" in {

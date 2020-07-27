@@ -17,18 +17,17 @@
 package views.components.config
 
 import config.IleQueryConfig
+import forms.DucrPartChiefChoice
 import javax.inject.Inject
-import models.cache.DucrPartChiefAnswers
-import models.requests.JourneyRequest
 import play.api.mvc.Call
 
 class SpecificDateTimeConfig @Inject()(ileQueryConfig: IleQueryConfig) {
 
-  def backUrl(implicit request: JourneyRequest[_]): Call =
+  def backUrl(ducrPartChiefChoice: Option[DucrPartChiefChoice]): Call =
     if (ileQueryConfig.isIleQueryEnabled)
       controllers.routes.ChoiceController.displayChoiceForm()
     else {
-      if (request.answersAs[DucrPartChiefAnswers].ducrPartChiefChoice.exists(_.isDucrPart))
+      if (ducrPartChiefChoice.exists(_.isDucrPart))
         controllers.routes.DucrPartDetailsController.displayPage()
       else
         controllers.routes.ConsignmentReferencesController.displayPage()

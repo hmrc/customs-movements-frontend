@@ -16,6 +16,7 @@
 
 package views.components.config
 import base.UnitSpec
+import forms.DucrPartChiefChoice
 
 class SpecificDateTimeConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
@@ -23,8 +24,18 @@ class SpecificDateTimeConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
     val config = new SpecificDateTimeConfig(ileQueryDisabled)
 
-    "return correct url" in {
-      config.backUrl must be(controllers.routes.ConsignmentReferencesController.displayPage())
+    "return correct back url" in {
+      config.backUrl(None) must be(controllers.routes.ConsignmentReferencesController.displayPage())
+    }
+
+    "return correct back url when when it is a Ducr Part" in {
+      config.backUrl(Some(DucrPartChiefChoice(DucrPartChiefChoice.IsDucrPart))) mustBe controllers.routes.DucrPartDetailsController
+        .displayPage()
+    }
+
+    "return correct back url when when its not a Ducr Part" in {
+      config.backUrl(Some(DucrPartChiefChoice(DucrPartChiefChoice.NotDucrPart))) mustBe controllers.routes.ConsignmentReferencesController
+        .displayPage()
     }
   }
 
@@ -33,7 +44,7 @@ class SpecificDateTimeConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
     val config = new SpecificDateTimeConfig(ileQueryEnabled)
 
     "return correct url when query ucr present" in {
-      config.backUrl must be(controllers.routes.ChoiceController.displayChoiceForm())
+      config.backUrl(None) must be(controllers.routes.ChoiceController.displayChoiceForm())
     }
 
   }

@@ -22,6 +22,7 @@
 @import components.gds.{errorSummary, sectionHeader, gds_main_template}
 @import forms.UcrType
 @import models.requests.JourneyRequest
+@import views.components.config.DissociateUcrConfig
 
 @this(govukLayout: gds_main_template,
         govukButton: GovukButton,
@@ -29,13 +30,14 @@
         exportsInputText: exportsInputText,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
+        pageConfig: DissociateUcrConfig,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(form: Form[DisassociateUcr])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("disassociate.ucr.title"),
-    backButton = Some(BackButton(messages("site.back"), controllers.routes.DucrPartChiefController.displayPage()))) {
+    backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl))) {
 
     @formHelper(action = consolidations.routes.DisassociateUcrController.submit(), 'autoComplete -> "off") {
         @errorSummary(form.errors)

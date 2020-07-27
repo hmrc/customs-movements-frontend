@@ -18,12 +18,21 @@ package models.cache
 
 import java.time.{Instant, ZoneOffset}
 
+import forms.DucrPartChiefChoice
 import models.UcrBlock
 import play.api.libs.json._
 
-case class Cache(eori: String, answers: Option[Answers], queryUcr: Option[UcrBlock], updated: Option[Instant] = Some(Instant.now())) {
+case class Cache(
+  eori: String,
+  answers: Option[Answers],
+  queryUcr: Option[UcrBlock],
+  ducrPartChiefChoice: Option[DucrPartChiefChoice],
+  updated: Option[Instant] = Some(Instant.now())
+) {
 
   def update(answers: Answers): Cache = this.copy(answers = Some(answers), updated = Some(Instant.now()))
+
+  def isDucrPartChief: Boolean = ducrPartChiefChoice.exists(_.isDucrPart)
 }
 
 object Cache {
@@ -43,5 +52,5 @@ object Cache {
   }
   implicit val format: OFormat[Cache] = Json.format[Cache]
 
-  def apply(eori: String, queryUcr: UcrBlock): Cache = new Cache(eori, None, Some(queryUcr))
+  def apply(eori: String, queryUcr: UcrBlock): Cache = new Cache(eori, None, Some(queryUcr), None)
 }

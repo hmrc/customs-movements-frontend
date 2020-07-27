@@ -20,10 +20,12 @@ import config.IleQueryConfig
 import controllers.actions.{AuthAction, DucrPartsAction, JourneyRefiner, NonIleQueryAction}
 import forms._
 import javax.inject.Inject
+import models.UcrBlock
 import models.cache._
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.ducr_part_details
@@ -37,7 +39,6 @@ class DucrPartDetailsController @Inject()(
   isDucrPartsFeatureEnabled: DucrPartsAction,
   ileQueryFeatureDisabled: NonIleQueryAction,
   cacheRepository: CacheRepository,
-  ileQueryConfig: IleQueryConfig,
   ducrPartsDetailsPage: ducr_part_details
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
@@ -80,50 +81,53 @@ class DucrPartDetailsController @Inject()(
           validDucrPartDetails => {
             val ucrBlock = Some(validDucrPartDetails.toUcrBlock)
             request.answers.`type` match {
-              case JourneyType.ARRIVE =>
-                val answers = request.answersAs[ArrivalAnswers]
-                cacheRepository
-                  .upsert(
-                    request.cache
-                      .copy(queryUcr = ucrBlock, answers = Some(answers.copy(consignmentReferences = ucrBlock.map(ConsignmentReferences.apply))))
-                  )
-                  .map { _ =>
-                    Redirect(controllers.routes.SpecificDateTimeController.displayPage())
-                  }
-              case JourneyType.DEPART =>
-                val answers = request.answersAs[DepartureAnswers]
-                cacheRepository
-                  .upsert(
-                    request.cache
-                      .copy(queryUcr = ucrBlock, answers = Some(answers.copy(consignmentReferences = ucrBlock.map(ConsignmentReferences.apply))))
-                  )
-                  .map { _ =>
-                    Redirect(controllers.routes.SpecificDateTimeController.displayPage())
-                  }
-              case JourneyType.ASSOCIATE_UCR =>
-                val answers = request.answersAs[AssociateUcrAnswers]
-                cacheRepository
-                  .upsert(
-                    request.cache
-                      .copy(queryUcr = ucrBlock, answers = Some(answers.copy(associateUcr = ucrBlock.map(AssociateUcr.apply))))
-                  )
-                  .map { _ =>
-                    Redirect(consolidations.routes.MucrOptionsController.displayPage())
-                  }
-              case JourneyType.DISSOCIATE_UCR =>
-                val answers = request.answersAs[DisassociateUcrAnswers]
-                cacheRepository
-                  .upsert(
-                    request.cache
-                      .copy(queryUcr = ucrBlock, answers = Some(answers.copy(ucr = ucrBlock.map(DisassociateUcr.apply))))
-                  )
-                  .map { _ =>
-                    Redirect(controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage())
-                  }
+              case JourneyType.ARRIVE         => handleArrival(ucrBlock)
+              case JourneyType.DEPART         => handleDeparture(ucrBlock)
+              case JourneyType.ASSOCIATE_UCR  => handleAssociate(ucrBlock)
+              case JourneyType.DISSOCIATE_UCR => handleDissociate(ucrBlock)
             }
           }
         )
     }
+
+  private def handleArrival(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]) =
+    saveAndContinue(
+      request.cache
+        .copy(
+          queryUcr = ucrBlock,
+          answers = Some(request.answersAs[ArrivalAnswers].copy(consignmentReferences = ucrBlock.map(ConsignmentReferences.apply)))
+        ),
+      controllers.routes.SpecificDateTimeController.displayPage()
+    )
+
+  private def handleDeparture(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]) =
+    saveAndContinue(
+      request.cache
+        .copy(
+          queryUcr = ucrBlock,
+          answers = Some(request.answersAs[DepartureAnswers].copy(consignmentReferences = ucrBlock.map(ConsignmentReferences.apply)))
+        ),
+      controllers.routes.SpecificDateTimeController.displayPage()
+    )
+
+  private def handleAssociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]) =
+    saveAndContinue(
+      request.cache
+        .copy(queryUcr = ucrBlock, answers = Some(request.answersAs[AssociateUcrAnswers].copy(associateUcr = ucrBlock.map(AssociateUcr.apply)))),
+      consolidations.routes.MucrOptionsController.displayPage()
+    )
+
+  private def handleDissociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]) =
+    saveAndContinue(
+      request.cache
+        .copy(queryUcr = ucrBlock, answers = Some(request.answersAs[DisassociateUcrAnswers].copy(ucr = ucrBlock.map(DisassociateUcr.apply)))),
+      controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage()
+    )
+
+  private def saveAndContinue(cache: Cache, nextPage: Call) =
+    cacheRepository
+      .upsert(cache)
+      .map(_ => Redirect(nextPage))
 
   private def getEmptyForm: Form[DucrPartDetails] = DucrPartDetails.form()
 

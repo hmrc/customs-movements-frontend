@@ -35,7 +35,7 @@ class ViewSpec extends WordSpec with MustMatchers with ViewMatchers with Message
 
   protected def journeyRequest(answers: Answers) =
     JourneyRequest(
-      Cache(validEori, Some(answers), None),
+      Cache(validEori, Some(answers), None, None),
       AuthenticatedRequest(FakeRequest().withCSRFToken, SignedInUser(validEori, Enrolments(Set.empty)))
     )
 

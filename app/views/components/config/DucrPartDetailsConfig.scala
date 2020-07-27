@@ -28,7 +28,6 @@ class DucrPartDetailsConfig @Inject()(ileQueryConfig: IleQueryConfig) {
     else
       controllers.routes.DucrPartChiefController.displayPage()
 
-
   def action: Call =
     if (ileQueryConfig.isIleQueryEnabled)
       controllers.routes.DucrPartDetailsController.submitDucrPartDetails()

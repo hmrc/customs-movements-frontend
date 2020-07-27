@@ -43,7 +43,7 @@
 
 @govukLayout(
     title = Title("mucrOptions.title"),
-    backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl(manageMucrChoice)))) {
+    backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl(manageMucrChoice, request.cache.ducrPartChiefChoice)))) {
 
     @formHelper(action = consolidations.routes.MucrOptionsController.save(), 'autoComplete -> "off") {
         @errorSummary(form.errors)

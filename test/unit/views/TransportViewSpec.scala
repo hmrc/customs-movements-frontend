@@ -66,7 +66,6 @@ class TransportViewSpec extends ViewSpec with Injector {
         createPage.getElementsByAttributeValue("for", "transportId").text() must be(messages("transport.transportId.question"))
         createPage.getElementById("transportId-hint").text() mustBe messages("transport.transportId.hint")
         createPage.getElementsByAttributeValue("for", "nationality").text() must be(messages("transport.nationality.question"))
-        createPage.getElementById("nationality-hint").text() mustBe messages("transport.nationality.hint")
       }
 
     }

@@ -28,8 +28,6 @@ class DissociateSummaryConfig @Inject()(ileQueryConfig: IleQueryConfig) extends 
       controllers.routes.ChoiceController.displayChoiceForm()
     else if (ducrPartChiefChoice.exists(_.isDucrPart))
       controllers.routes.DucrPartDetailsController.displayPage()
-    else if (ducrPartChiefChoice.isDefined)
-      controllers.routes.DucrPartChiefController.displayPage()
     else
       controllers.consolidations.routes.DisassociateUcrController.displayPage()
 }

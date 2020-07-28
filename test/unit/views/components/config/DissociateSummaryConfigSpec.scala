@@ -29,7 +29,9 @@ class DissociateSummaryConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
     }
 
     "return correct back url when its not a Ducr Part" in {
-      config.backUrl(Some(DucrPartChiefChoice(DucrPartChiefChoice.NotDucrPart))) must be(controllers.routes.DucrPartChiefController.displayPage())
+      config.backUrl(Some(DucrPartChiefChoice(DucrPartChiefChoice.NotDucrPart))) must be(
+        controllers.consolidations.routes.DisassociateUcrController.displayPage()
+      )
     }
 
     "return correct back url when it is a Ducr Part" in {

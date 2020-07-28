@@ -17,17 +17,20 @@
 package views.components.config
 
 import config.IleQueryConfig
-import forms.DucrPartChiefChoice
 import javax.inject.Inject
 import play.api.mvc.Call
 
-class DissociateSummaryConfig @Inject()(ileQueryConfig: IleQueryConfig) extends BaseConfig(ileQueryConfig) {
+class DucrPartDetailsConfig @Inject()(ileQueryConfig: IleQueryConfig) {
 
-  def backUrl(ducrPartChiefChoice: Option[DucrPartChiefChoice]): Call =
+  def backUrl: Call =
     if (ileQueryConfig.isIleQueryEnabled)
-      controllers.routes.ChoiceController.displayChoiceForm()
-    else if (ducrPartChiefChoice.exists(_.isDucrPart))
-      controllers.routes.DucrPartDetailsController.displayPage()
+      controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
     else
-      controllers.consolidations.routes.DisassociateUcrController.displayPage()
+      controllers.routes.DucrPartChiefController.displayPage()
+
+  def action: Call =
+    if (ileQueryConfig.isIleQueryEnabled)
+      controllers.routes.DucrPartDetailsController.submitDucrPartDetails()
+    else
+      controllers.routes.DucrPartDetailsController.submitDucrPartDetailsJourney()
 }

@@ -140,8 +140,8 @@ departure.details.error.overdue = Time of Departure cannot be more than 60 days 
 departure.details.error.future = Time of Departure cannot be in the future
 
 location.title = Location
-location.question = What is the goods location code?
-location.hint = The is an alphanumeric code. For example, GBAUEMAEMAEMA.
+location.question = What is the code for the location of the goods when they are declared?
+location.hint = This is usually the port they are leaving from and is officially known as the Goods Location Code. For example, if they were at Felixstowe, it would be GBAUFXTFXTFXT.
 location.code.empty = Goods location code cannot be empty
 location.code.error = Goods location code is incorrect
 
@@ -246,6 +246,7 @@ associate.ucr.summary.associate.with.mucr = Associate with MUCR
 associate.ucr.summary.associate.with.ducr = Associate with DUCR
 associate.ucr.summary.kind.mucr = MUCR
 associate.ucr.summary.kind.ducr = DUCR
+associate.ucr.summary.kind.ducrPart = DUCR Part
 
 confirmation.title.ARRIVE = Your arrival request has been submitted
 confirmation.title.DEPART = Your departure request has been submitted
@@ -274,8 +275,10 @@ submissions.shutmucr = Shut
 submissions.arrival = Arrive
 submissions.departure = Depart
 submissions.ducrassociation = Associate DUCR
+submissions.ducrpartassociation = Associate DUCR Part
 submissions.mucrassociation = Associate MUCR
 submissions.ducrdisassociation = Disassociate DUCR
+submissions.ducrpartdisassociation = Disassociate DUCR Part
 submissions.mucrdisassociation = Disassociate MUCR
 
 # This part uses ActionType instances' values to differentiate between messages
@@ -285,8 +288,10 @@ notifications.title = Notifications relating to {0}
 notifications.elem.title.Arrival = Request to arrive has been received
 notifications.elem.title.Departure = Request to depart has been received
 notifications.elem.title.DucrAssociation = Request to associate this DUCR has been received
+notifications.elem.title.DucrPartAssociation = Request to associate this DUCR Part has been received
 notifications.elem.title.MucrAssociation = Request to associate this MUCR has been received
 notifications.elem.title.DucrDisassociation = Request to dissociate this DUCR has been received
+notifications.elem.title.DucrPartDisassociation = Request to dissociate this DUCR Part has been received
 notifications.elem.title.MucrDisassociation = Request to dissociate this MUCR has been received
 notifications.elem.title.ShutMucr = Shut MUCR request has been received
 
@@ -299,9 +304,11 @@ notifications.elem.title.unknown = Update message
 
 notifications.elem.content.Arrival = Your request to arrive this {0} has been received.
 notifications.elem.content.Departure = Your request to depart this {0} has been received.
-notifications.elem.content.DucrAssociation = Your request to consolidate these DUCRs into this MUCR has been received:
+notifications.elem.content.DucrAssociation = Your request to consolidate this DUCR into this MUCR has been received:
+notifications.elem.content.DucrPartAssociation = Your request to consolidate this DUCR Part into this MUCR has been received:
 notifications.elem.content.MucrAssociation = Your request to consolidate MUCR into this MUCR has been received.
 notifications.elem.content.DucrDisassociation = Your request to disassociate this DUCR has been received.
+notifications.elem.content.DucrPartDisassociation = Your request to disassociate this DUCR Part has been received.
 notifications.elem.content.MucrDisassociation = Your request to disassociate this MUCR has been received.
 notifications.elem.content.ShutMucr = Your request to shut this MUCR has been received.
 notifications.elem.content.footer = We will notify you when it has been successful.
@@ -371,6 +378,22 @@ ducrPartDetails.ducr.error = Enter a DUCR in the correct format
 ducrPartDetails.ducrPartId = Enter DUCR Part ID
 ducrPartDetails.ducrPartId.hint = This can be up to 3 digits. For example, 123.
 ducrPartDetails.ducrPartId.error = Enter a DUCR Part ID in the correct format
+
+ducrPartChief.ARRIVE.heading = Arrive consignment
+ducrPartChief.ARRIVE.question = Do you want to arrive a DUCR Part which was created in CHIEF?
+ducrPartChief.DEPART.heading = Depart consignment
+ducrPartChief.DEPART.question = Do you want to depart a DUCR Part which was created in CHIEF?
+ducrPartChief.ASSOCIATE_UCR.heading = Associate consignment
+ducrPartChief.ASSOCIATE_UCR.question = Do you want to associate a DUCR Part which was created in CHIEF?
+ducrPartChief.DISSOCIATE_UCR.heading = Dissociate consignment
+ducrPartChief.DISSOCIATE_UCR.question = Do you want to dissociate a DUCR Part which was created in CHIEF?
+ducrPartChief.isDucrPart = Yes
+ducrPartChief.ARRIVE.notDucrPart = No. The consignment I want to arrive is not a DUCR Part
+ducrPartChief.DEPART.notDucrPart = No. The consignment I want to depart is not a DUCR Part
+ducrPartChief.ASSOCIATE_UCR.notDucrPart = No. The consignment I want to associate is not a DUCR Part
+ducrPartChief.DISSOCIATE_UCR.notDucrPart = No. The consignment I want to dissociate is not a DUCR Part
+ducrPartChief.input.error.empty = Please, choose what do you want to do
+ducrPartChief.input.error.incorrectValue = Please, choose valid option
 
 sessionTimout.title = For your security, we signed you out
 sessionTimout.paragraph.saved = We saved your answers.

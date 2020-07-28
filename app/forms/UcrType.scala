@@ -20,7 +20,9 @@ import play.api.data.FormError
 import play.api.data.format.Formatter
 import play.api.libs.json._
 
-sealed abstract class UcrType(val formValue: String, val codeValue: String)
+sealed abstract class UcrType(val formValue: String, val codeValue: String) {
+  def isDucrPart = codeValue == "DP"
+}
 
 object UcrType {
   case object Mucr extends UcrType("mucr", "M")

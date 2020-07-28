@@ -25,6 +25,7 @@
 @import views.Title
 @import views.components.BackButton
 @import forms.UcrType.Mucr
+@import views.components.config.ConsignmentReferenceConfig
 
 @this(
   govukLayout: gds_main_template,
@@ -33,6 +34,7 @@
   exportsInputText: exportsInputText,
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
+  pageConfig: ConsignmentReferenceConfig,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
@@ -43,7 +45,7 @@
 
 @govukLayout(
   title = Title(headerKey, Some(sectionHeaderKey)),
-  backButton = Some(BackButton(messages("site.back.toStartPage"), controllers.routes.ChoiceController.displayChoiceForm))) {
+  backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl))) {
 
   @formHelper(action = routes.ConsignmentReferencesController.saveConsignmentReferences(), 'autoComplete -> "off") {
     @errorSummary(form.errors)

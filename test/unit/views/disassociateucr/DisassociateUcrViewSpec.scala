@@ -16,23 +16,30 @@
 
 package views.disassociateucr
 
-import base.Injector
-import forms.UcrType.{Ducr, Mucr}
+import base.OverridableInjector
+import config.DucrPartConfig
 import forms.DisassociateUcr
+import forms.UcrType.{Ducr, Mucr}
 import models.cache.DisassociateUcrAnswers
 import org.jsoup.nodes.Document
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
+import play.api.inject.bind
 import play.twirl.api.Html
 import views.ViewSpec
 import views.html.disassociateucr.disassociate_ucr
 import views.tags.ViewTest
 
 @ViewTest
-class DisassociateUcrViewSpec extends ViewSpec with Injector {
+class DisassociateUcrViewSpec extends ViewSpec with MockitoSugar {
+
+  private val config = mock[DucrPartConfig]
+  private val injector = new OverridableInjector(bind[DucrPartConfig].toInstance(config))
 
   private implicit val request = journeyRequest(DisassociateUcrAnswers())
 
-  private val disassociatePage: disassociate_ucr = instanceOf[disassociate_ucr]
+  private val disassociatePage: disassociate_ucr = injector.instanceOf[disassociate_ucr]
 
   private def createView(form: Form[DisassociateUcr]): Html = disassociatePage(form)(request, messages)
 
@@ -45,13 +52,25 @@ class DisassociateUcrViewSpec extends ViewSpec with Injector {
       messages must haveTranslationFor("disassociate.ucr.mucr")
     }
 
-    "display 'Back' button that links to start page" in {
+    "display 'Back' button that links to Choice when ducrPart disabled" in {
+      when(config.isDucrPartsEnabled).thenReturn(false)
       val backButton = createView(DisassociateUcr.form).getBackButton
 
       backButton mustBe defined
       backButton.foreach(button => {
         button must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
-        button must containMessage("site.back.toStartPage")
+        button must containMessage("site.back")
+      })
+    }
+
+    "display 'Back' button that links to Ducr Part Chief when ducrPart enabled" in {
+      when(config.isDucrPartsEnabled).thenReturn(true)
+      val backButton = createView(DisassociateUcr.form).getBackButton
+
+      backButton mustBe defined
+      backButton.foreach(button => {
+        button must haveHref(controllers.routes.DucrPartChiefController.displayPage())
+        button must containMessage("site.back")
       })
     }
 

@@ -112,6 +112,26 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
         assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
 
+      "provided with DucrPartAssociation Submission" in {
+
+        val input: Submission = Submission(
+          eori = validEori,
+          conversationId = conversationId,
+          actionType = ConsolidationType.DucrPartAssociation,
+          requestTimestamp = testTimestamp,
+          ucrBlocks =
+            Seq(UcrBlock(ucr = correctUcr, ucrType = "M"), UcrBlock(ucr = correctUcr_2, ucrType = "DP"), UcrBlock(ucr = correctUcr_3, ucrType = "DP"))
+        )
+
+        val expectedTitle = messages("notifications.elem.title.DucrPartAssociation")
+        val expectedTimestampInfo = "31 October 2019 at 12:00am"
+        val expectedContent = Seq(messages("notifications.elem.content.DucrPartAssociation"), messages("notifications.elem.content.footer"))
+
+        val result = factory.build(input)
+
+        assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
+      }
+
       "provided with MucrAssociation Submission" in {
 
         val input: Submission = Submission(
@@ -139,6 +159,20 @@ class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSuga
         val expectedTitle = messages("notifications.elem.title.DucrDisassociation")
         val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.DucrDisassociation"), messages("notifications.elem.content.footer"))
+
+        val result = factory.build(input)
+
+        assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
+      }
+
+      "provided with DucrPartDisassociation Submission" in {
+
+        val input: Submission =
+          exampleSubmission(actionType = ConsolidationType.DucrPartDisassociation, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "DP")
+
+        val expectedTitle = messages("notifications.elem.title.DucrPartDisassociation")
+        val expectedTimestampInfo = "31 October 2019 at 12:00am"
+        val expectedContent = Seq(messages("notifications.elem.content.DucrPartDisassociation"), messages("notifications.elem.content.footer"))
 
         val result = factory.build(input)
 

@@ -16,10 +16,10 @@
 
 package controllers.consolidations
 
-import config.IleQueryConfig
 import controllers.ControllerLayerSpec
 import forms.MucrOptions
 import forms.MucrOptions.Create
+import models.UcrBlock
 import models.cache.AssociateUcrAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -40,10 +40,10 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
 
   private val page = mock[mucr_options]
 
-  private val ileQueryConfig = mock[IleQueryConfig]
+  private val queryUcr = UcrBlock(ucr = "ducr", ucrType = "D")
 
-  private def controller(answers: AssociateUcrAnswers) =
-    new MucrOptionsController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, ileQueryConfig, page)(global)
+  private def controller(answers: AssociateUcrAnswers, queryUcr: Option[UcrBlock] = None) =
+    new MucrOptionsController(SuccessfulAuth(), ValidJourney(answers, queryUcr), stubMessagesControllerComponents(), cache, page)(global)
 
   override def beforeEach() {
     super.beforeEach()
@@ -51,7 +51,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
   }
 
   override def afterEach(): Unit = {
-    reset(page, ileQueryConfig)
+    reset(page)
     super.afterEach()
   }
 
@@ -105,23 +105,20 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
 
     "return 303 (SEE_OTHER)" when {
 
-      "form is correct when ileQuery disabled" in {
-        when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
-
+      "form is correct when queryUcr not present" in {
         val correctForm = Json.toJson(MucrOptions(validMucr, "", Create))
 
-        val result = controller(AssociateUcrAnswers()).save()(postRequest(correctForm))
+        val result = controller(AssociateUcrAnswers(), queryUcr = None).save()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.AssociateUcrController.displayPage().url
       }
 
-      "form is correct when ileQuery enabled" in {
-        when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
+      "form is correct when queryUcr present" in {
 
         val correctForm = Json.toJson(MucrOptions(validMucr, "", Create))
 
-        val result = controller(AssociateUcrAnswers()).save()(postRequest(correctForm))
+        val result = controller(AssociateUcrAnswers(), queryUcr = Some(queryUcr)).save()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.AssociateUcrSummaryController.displayPage().url

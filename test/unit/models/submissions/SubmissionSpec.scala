@@ -29,7 +29,7 @@ class SubmissionSpec extends UnitSpec with OptionValues {
   val submission = Submission(
     eori = validEori,
     conversationId = conversationId,
-    ucrBlocks = Seq(UcrBlock(ucr = correctUcr, ucrType = "M")),
+    ucrBlocks = Seq(UcrBlock(ucr = correctUcr, ucrType = "M"), UcrBlock(ucr = correctUcr_2, ucrType = "DP")),
     actionType = MovementType.Arrival,
     requestTimestamp = Instant.now()
   )
@@ -39,6 +39,11 @@ class SubmissionSpec extends UnitSpec with OptionValues {
     "return correct value for hasMucr method" in {
 
       submission.hasMucr mustBe true
+    }
+
+    "return correct value for hasDucrPart method" in {
+
+      submission.hasDucrPart mustBe true
     }
 
     "extract MUCR correctly" in {

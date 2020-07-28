@@ -20,7 +20,7 @@ import java.time.Instant
 import java.util.UUID
 
 import connectors.exchanges.ActionType
-import forms.UcrType.Mucr
+import forms.UcrType.{DucrPart, Mucr}
 import models.UcrBlock
 import play.api.libs.json._
 
@@ -34,6 +34,8 @@ case class Submission(
 ) {
 
   def hasMucr: Boolean = ucrBlocks.exists(_.ucrType == Mucr.codeValue)
+
+  def hasDucrPart: Boolean = ucrBlocks.exists(_.ucrType == DucrPart.codeValue)
 
   def extractMucr: Option[String] = ucrBlocks.find(_.ucrType == Mucr.codeValue).map(_.fullUcr)
 

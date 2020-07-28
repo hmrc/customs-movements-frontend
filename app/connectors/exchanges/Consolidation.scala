@@ -17,6 +17,7 @@
 package connectors.exchanges
 
 import connectors.exchanges.ActionType.ConsolidationType
+import connectors.exchanges.ActionType.ConsolidationType.DucrPartDisassociation
 import play.api.libs.json._
 import uk.gov.hmrc.play.json.Union
 
@@ -28,16 +29,20 @@ trait Consolidation {
 object Consolidation {
   implicit val associateDucrFormat = Json.format[AssociateDUCRRequest]
   implicit val associateMucrFormat = Json.format[AssociateMUCRRequest]
+  implicit val associateDucrPartFormat = Json.format[AssociateDUCRPartRequest]
   implicit val disassociateDucrFormat = Json.format[DisassociateDUCRRequest]
   implicit val disassociateMucrFormat = Json.format[DisassociateMUCRRequest]
+  implicit val disassociateDucrPartFormat = Json.format[DisassociateDUCRPartRequest]
   implicit val shutMucrFormat = Json.format[ShutMUCRRequest]
 
   implicit val format: Format[Consolidation] = Union
     .from[Consolidation](typeField = "consolidationType")
     .and[AssociateDUCRRequest](typeTag = ConsolidationType.DucrAssociation.typeName)
     .and[AssociateMUCRRequest](typeTag = ConsolidationType.MucrAssociation.typeName)
+    .and[AssociateDUCRPartRequest](typeTag = ConsolidationType.DucrPartAssociation.typeName)
     .and[DisassociateDUCRRequest](typeTag = ConsolidationType.DucrDisassociation.typeName)
     .and[DisassociateMUCRRequest](typeTag = ConsolidationType.MucrDisassociation.typeName)
+    .and[DisassociateDUCRPartRequest](typeTag = ConsolidationType.DucrPartDisassociation.typeName)
     .and[ShutMUCRRequest](typeTag = ConsolidationType.ShutMucr.typeName)
     .format
 }
@@ -50,12 +55,20 @@ case class AssociateMUCRRequest(override val eori: String, mucr: String, ucr: St
   override val consolidationType: ConsolidationType = ConsolidationType.MucrAssociation
 }
 
+case class AssociateDUCRPartRequest(override val eori: String, mucr: String, ucr: String) extends Consolidation {
+  override val consolidationType: ConsolidationType = ConsolidationType.DucrPartDisassociation
+}
+
 case class DisassociateDUCRRequest(override val eori: String, ucr: String) extends Consolidation {
   override val consolidationType: ConsolidationType = ConsolidationType.DucrDisassociation
 }
 
 case class DisassociateMUCRRequest(override val eori: String, ucr: String) extends Consolidation {
   override val consolidationType: ConsolidationType = ConsolidationType.MucrDisassociation
+}
+
+case class DisassociateDUCRPartRequest(override val eori: String, ucr: String) extends Consolidation {
+  override val consolidationType: ConsolidationType = ConsolidationType.DucrPartDisassociation
 }
 
 case class ShutMUCRRequest(override val eori: String, mucr: String) extends Consolidation {

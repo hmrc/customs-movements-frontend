@@ -19,7 +19,7 @@ import java.time.{Clock, LocalDateTime, ZoneOffset}
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder
 import connectors.{AuditWiremockTestServer, AuthWiremockTestServer, MovementsBackendWiremockTestServer}
-import models.DateTimeProvider
+import models.{DateTimeProvider, UcrBlock}
 import models.cache.{Answers, Cache}
 import org.scalatest.concurrent.Eventually
 import org.scalatest.{BeforeAndAfterEach, MustMatchers, WordSpec}
@@ -83,7 +83,9 @@ abstract class IntegrationSpec
   protected def theAnswersFor(eori: String): Option[Answers] = theCacheFor(eori).flatMap(_.answers)
 
   protected def givenCacheFor(cache: Cache): Unit = await(cacheRepository.insert(Cache.format.writes(cache)))
-  protected def givenCacheFor(eori: String, answers: Answers): Unit = givenCacheFor(Cache(eori, Some(answers), None))
+  protected def givenCacheFor(eori: String, answers: Answers): Unit = givenCacheFor(Cache(eori, Some(answers), None, None))
+  protected def givenCacheFor(eori: String, answers: Answers, queryUcr: UcrBlock): Unit =
+    givenCacheFor(Cache(eori, Some(answers), Some(queryUcr), None))
 
   protected def verifyEventually(requestPatternBuilder: RequestPatternBuilder): Unit = eventually(WireMock.verify(requestPatternBuilder))
 

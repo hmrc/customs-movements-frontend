@@ -75,7 +75,7 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
       "GET displayPage is invoked with data in cache" in {
 
         val cachedForm = Some(ShutMucr("123"))
-        givenTheCacheContains(Cache("12345", Some(ShutMucrAnswers(shutMucr = cachedForm)), None))
+        givenTheCacheContains(Cache("12345", Some(ShutMucrAnswers(shutMucr = cachedForm)), None, None))
 
         val result = controller(ShutMucrAnswers(shutMucr = cachedForm), ValidForIleQuery).displayPage()(getRequest)
 

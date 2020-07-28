@@ -41,7 +41,7 @@ class TypedJourneyRefinerTest extends WordSpec with MustMatchers with MockitoSug
   private val user = SignedInUser("eori", Enrolments(Set.empty))
   private val request = AuthenticatedRequest(FakeRequest(), user)
   private val answers = ArrivalAnswers()
-  private val cache = Cache("eori", Some(answers), None)
+  private val cache = Cache("eori", Some(answers), None, None)
 
   private val refiner = new JourneyRefiner(movementRepository)
 

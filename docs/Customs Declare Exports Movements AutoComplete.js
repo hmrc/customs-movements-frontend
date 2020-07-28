@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports Movements AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.19
+// @version      0.20
 // @description  Customs Declare Exports Movements
 // @author       You
 // @match        http*://*/customs-movements*
@@ -42,7 +42,19 @@ function completePage() {
         document.getElementById("choice").checked = true
         document.getElementsByClassName('govuk-button')[0].click()
     }
-
+    if(currentPageIs("/customs-movements/ducr-part-created-chief")){
+        document.getElementById("choice").checked = true
+        document.getElementsByClassName('govuk-button')[0].click()
+    }
+    if(currentPageIs("/customs-movements/ducr-part-details")){
+        document.getElementById("ducr").value = "9GB123999746000-DUCR12345"
+        document.getElementById("ducrPartId").value = "123"
+        document.getElementsByClassName('govuk-button')[0].click()
+    }
+    if(currentPageIs("/customs-movements/specific-date-and-time")){
+        document.getElementById("choice").checked = true
+        document.getElementsByClassName('govuk-button')[0].click()
+    }
     if(currentPageIs("/customs-movements/consignment-references")){
         document.getElementById("reference").checked = true
         document.getElementById('ducrValue').value = '8GB12345' + Math.floor(Math.random() * 8999) + 100 + '-101SHIP1';

@@ -16,6 +16,7 @@
 
 package views.components.config
 import base.UnitSpec
+import forms.DucrPartChiefChoice
 
 class DissociateSummaryConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
@@ -23,8 +24,18 @@ class DissociateSummaryConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
     val config = new DissociateSummaryConfig(ileQueryDisabled)
 
-    "return correct url" in {
-      config.backUrl must be(controllers.consolidations.routes.DisassociateUcrController.displayPage())
+    "return correct back url when Ducr Parts not used" in {
+      config.backUrl(None) must be(controllers.consolidations.routes.DisassociateUcrController.displayPage())
+    }
+
+    "return correct back url when its not a Ducr Part" in {
+      config.backUrl(Some(DucrPartChiefChoice(DucrPartChiefChoice.NotDucrPart))) must be(
+        controllers.consolidations.routes.DisassociateUcrController.displayPage()
+      )
+    }
+
+    "return correct back url when it is a Ducr Part" in {
+      config.backUrl(Some(DucrPartChiefChoice(DucrPartChiefChoice.IsDucrPart))) must be(controllers.routes.DucrPartDetailsController.displayPage())
     }
   }
 
@@ -32,8 +43,12 @@ class DissociateSummaryConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
     val config = new DissociateSummaryConfig(ileQueryEnabled)
 
-    "return correct url when query ucr present" in {
-      config.backUrl must be(controllers.routes.ChoiceController.displayChoiceForm())
+    "return correct url when Ducr Parts not used" in {
+      config.backUrl(None) must be(controllers.routes.ChoiceController.displayChoiceForm())
+    }
+
+    "return same url when Ducr Parts used" in {
+      config.backUrl(Some(DucrPartChiefChoice(DucrPartChiefChoice.IsDucrPart))) must be(controllers.routes.ChoiceController.displayChoiceForm())
     }
 
   }

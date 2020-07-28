@@ -49,7 +49,7 @@
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = s"${consolidations.routes.AssociateUcrController.displayPage}",
+                                href = s"${if(associateUcr.kind.isDucrPart) routes.DucrPartDetailsController.displayPage else consolidations.routes.AssociateUcrController.displayPage}",
                                 content = HtmlContent(linkContent(messages("site.change"))),
                                 visuallyHiddenText = Some(messages("site.change.hint.associate.ucr", associateUcr.kind.formValue.toUpperCase()))
                             )

@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.IleQueryConfig
+import config.{DucrPartConfig, IleQueryConfig}
 import controllers.actions.AuthAction
 import forms.Choice
 import forms.Choice._
@@ -38,6 +38,7 @@ class ChoiceController @Inject()(
   cacheRepository: CacheRepository,
   mcc: MessagesControllerComponents,
   ileQueryConfig: IleQueryConfig,
+  ducrPartConfig: DucrPartConfig,
   choicePage: choice_page
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
@@ -78,10 +79,12 @@ class ChoiceController @Inject()(
   private def proceed(choice: Choice)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     def movementFirstPage =
       if (ileQueryConfig.isIleQueryEnabled) controllers.routes.SpecificDateTimeController.displayPage()
+      else if (ducrPartConfig.isDucrPartsEnabled) routes.DucrPartChiefController.displayPage()
       else routes.ConsignmentReferencesController.displayPage()
 
     def dissociateFirstPage =
       if (ileQueryConfig.isIleQueryEnabled) controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage()
+      else if (ducrPartConfig.isDucrPartsEnabled) routes.DucrPartChiefController.displayPage()
       else consolidations.routes.DisassociateUcrController.displayPage()
 
     def shutFirstPage =
@@ -91,6 +94,7 @@ class ChoiceController @Inject()(
     def associateFirstPage =
       if (ileQueryConfig.isIleQueryEnabled)
         consolidations.routes.ManageMucrController.displayPage()
+      else if (ducrPartConfig.isDucrPartsEnabled) routes.DucrPartChiefController.displayPage()
       else consolidations.routes.MucrOptionsController.displayPage()
 
     (choice match {
@@ -112,7 +116,7 @@ class ChoiceController @Inject()(
     for {
       updatedCache: Cache <- cacheRepository.findByEori(eori).map {
         case Some(cache) => cache.copy(answers = Some(answerProvider.apply(cache.queryUcr)))
-        case None        => Cache(eori, Some(answerProvider.apply(None)), None)
+        case None        => Cache(eori, Some(answerProvider.apply(None)), None, None)
       }
       result <- cacheRepository.upsert(updatedCache)
     } yield result

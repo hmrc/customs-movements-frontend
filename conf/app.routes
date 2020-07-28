@@ -15,7 +15,11 @@ GET         /consignment-query/:ucr                controllers.ileQuery.IleQuery
 # DUCR Part details page
 GET         /ducr-part-details                     controllers.DucrPartDetailsController.displayPage()
 POST        /ducr-part-details                     controllers.DucrPartDetailsController.submitDucrPartDetails()
+POST        /ducr-part-details-journey             controllers.DucrPartDetailsController.submitDucrPartDetailsJourney()
 
+# DUCR Part CHIEF page
+GET         /ducr-part-created-chief               controllers.DucrPartChiefController.displayPage()
+POST        /ducr-part-created-chief               controllers.DucrPartChiefController.submit()
 
 # Declaration choice page
 GET         /choice                                controllers.ChoiceController.displayChoiceForm()

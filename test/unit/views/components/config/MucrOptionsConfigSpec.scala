@@ -18,8 +18,8 @@ package views.components.config
 
 import base.UnitSpec
 import config.AppConfig
-import forms.ManageMucrChoice
 import forms.ManageMucrChoice.AssociateAnotherMucr
+import forms.{DucrPartChiefChoice, ManageMucrChoice}
 
 class MucrOptionsConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
@@ -29,8 +29,17 @@ class MucrOptionsConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
     val config = new MucrOptionsConfig(appConfig, ileQueryDisabled)
 
-    "return correct back url" in {
-      config.backUrl() mustBe controllers.routes.ChoiceController.displayChoiceForm()
+    "return correct back url when Ducr Part not used" in {
+      config.backUrl(None, None) mustBe controllers.routes.ChoiceController.displayChoiceForm()
+    }
+
+    "return correct back url when when it is a Ducr Part" in {
+      config.backUrl(None, Some(DucrPartChiefChoice(DucrPartChiefChoice.IsDucrPart))) mustBe controllers.routes.DucrPartDetailsController
+        .displayPage()
+    }
+
+    "return correct back url when when its not a Ducr Part" in {
+      config.backUrl(None, Some(DucrPartChiefChoice(DucrPartChiefChoice.NotDucrPart))) mustBe controllers.routes.DucrPartChiefController.displayPage()
     }
   }
 
@@ -41,11 +50,11 @@ class MucrOptionsConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
     "return correct back url" when {
 
       "associating a queried mucr" in {
-        config.backUrl(Some(ManageMucrChoice(AssociateAnotherMucr))) mustBe controllers.consolidations.routes.ManageMucrController.displayPage()
+        config.backUrl(Some(ManageMucrChoice(AssociateAnotherMucr)), None) mustBe controllers.consolidations.routes.ManageMucrController.displayPage()
       }
 
       "associating a queried ducr" in {
-        config.backUrl(None) mustBe controllers.routes.ChoiceController.displayChoiceForm()
+        config.backUrl(None, None) mustBe controllers.routes.ChoiceController.displayChoiceForm()
       }
     }
   }

@@ -26,7 +26,7 @@ class AssociateUcrSpec extends IntegrationSpec {
     "GET" should {
       "return 200 when queried mucr" in {
         givenAuthSuccess("eori")
-        givenCacheFor(Cache("eori", Some(AssociateUcrAnswers()), Some(UcrBlock("mucr", UcrType.Mucr))))
+        givenCacheFor(Cache("eori", Some(AssociateUcrAnswers()), Some(UcrBlock("mucr", UcrType.Mucr)), None))
 
         val response = get(controllers.consolidations.routes.ManageMucrController.displayPage())
 
@@ -35,7 +35,7 @@ class AssociateUcrSpec extends IntegrationSpec {
 
       "return 303 when queried ducr" in {
         givenAuthSuccess("eori")
-        givenCacheFor(Cache("eori", Some(AssociateUcrAnswers()), Some(UcrBlock("ducr", UcrType.Ducr))))
+        givenCacheFor(Cache("eori", Some(AssociateUcrAnswers()), Some(UcrBlock("ducr", UcrType.Ducr)), None))
 
         val response = get(controllers.consolidations.routes.ManageMucrController.displayPage())
 
@@ -84,7 +84,7 @@ class AssociateUcrSpec extends IntegrationSpec {
     "POST" should {
       "continue" in {
         givenAuthSuccess("eori")
-        givenCacheFor("eori", AssociateUcrAnswers())
+        givenCacheFor("eori", AssociateUcrAnswers(), UcrBlock("8GB123457359100-TEST0002", UcrType.Ducr))
 
         val response = post(
           controllers.consolidations.routes.MucrOptionsController.save(),

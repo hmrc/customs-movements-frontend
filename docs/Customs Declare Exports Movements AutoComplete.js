@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports Movements AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.19
+// @version      0.20
 // @description  Customs Declare Exports Movements
 // @author       You
 // @match        http*://*/customs-movements*
@@ -29,6 +29,26 @@ function createQuickButton() {
     return button;
 }
 
+function selectFromAutoPredict(element, selected) {
+    let index = typeof selected == "number" ? selected : 0;
+    let selects = element.getElementsByTagName('select');
+    let inputs = element.getElementsByTagName('input');
+    for(let j = 0; j < selects.length; j++){
+        let options = selects[j].getElementsByTagName('option');
+        let option = options[index];
+        if(typeof selected == "string"){
+            for(let o = 0; o < options.length; o++) {
+                if(options[o].value === selected) {
+                    option = options[o];
+                }
+            }
+        }
+        option.selected = "selected";
+        selects[j].value = option.value;
+        inputs[j].value = option.value;
+    }
+}
+
 function currentPageIs(path) {
     let matches = window.location.pathname.match(path);
     return matches && matches.length > 0
@@ -42,7 +62,19 @@ function completePage() {
         document.getElementById("choice").checked = true
         document.getElementsByClassName('govuk-button')[0].click()
     }
-
+    if(currentPageIs("/customs-movements/ducr-part-created-chief")){
+        document.getElementById("choice").checked = true
+        document.getElementsByClassName('govuk-button')[0].click()
+    }
+    if(currentPageIs("/customs-movements/ducr-part-details")){
+        document.getElementById("ducr").value = "9GB123999746000-DUCR12345"
+        document.getElementById("ducrPartId").value = "123"
+        document.getElementsByClassName('govuk-button')[0].click()
+    }
+    if(currentPageIs("/customs-movements/specific-date-and-time")){
+        document.getElementById("choice").checked = true
+        document.getElementsByClassName('govuk-button')[0].click()
+    }
     if(currentPageIs("/customs-movements/consignment-references")){
         document.getElementById("reference").checked = true
         document.getElementById('ducrValue').value = '8GB12345' + Math.floor(Math.random() * 8999) + 100 + '-101SHIP1';
@@ -74,8 +106,8 @@ function completePage() {
     }
     if(currentPageIs("/customs-movements/transport")){
         document.getElementById("modeOfTransport").checked = true;
-        document.getElementById('nationality').value = 'GB';
         document.getElementById('transportId').value = 'TransportReference';
+        selectFromAutoPredict(document.getElementById('nationality-container'), "GB");
         document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/summary")){}

@@ -59,7 +59,7 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
     consignmentReferences = Some(ConsignmentReferences("D", "ref-value")),
     departureDetails = Some(DepartureDetails(date, time)),
     location = Some(Location("location-ref")),
-    transport = Some(Transport("1", "transport-id", "transport-nationality"))
+    transport = Some(Transport("1", "transport-id", "GB"))
   )
 
   private val section_consignment_details = 0
@@ -199,7 +199,7 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       changeId must haveHref(controllers.routes.TransportController.displayPage())
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_transport_nationality) must containMessage("summary.nationality")
-      view.getElementsByClass("govuk-summary-list__value").get(answer_transport_nationality).text mustBe "transport-nationality"
+      view.getElementsByClass("govuk-summary-list__value").get(answer_transport_nationality).text mustBe "United Kingdom (GB)"
 
       val changeNationality = view.getElementsByClass("govuk-link").get(answer_transport_nationality_link_index)
       changeNationality must containMessage("site.change")

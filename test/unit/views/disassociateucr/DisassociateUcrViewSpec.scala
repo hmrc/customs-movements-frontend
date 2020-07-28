@@ -16,14 +16,13 @@
 
 package views.disassociateucr
 
-import base.{Injector, OverridableInjector}
+import base.OverridableInjector
 import config.DucrPartConfig
 import forms.DisassociateUcr
 import forms.UcrType.{Ducr, Mucr}
 import models.cache.DisassociateUcrAnswers
 import org.jsoup.nodes.Document
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
+import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
@@ -33,26 +32,16 @@ import views.html.disassociateucr.disassociate_ucr
 import views.tags.ViewTest
 
 @ViewTest
-class DisassociateUcrViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
+class DisassociateUcrViewSpec extends ViewSpec with MockitoSugar {
 
-  private val appConfig = mock[DucrPartConfig]
-  private val injector = new OverridableInjector(bind[DucrPartConfig].toInstance(appConfig))
+  private val config = mock[DucrPartConfig]
+  private val injector = new OverridableInjector(bind[DucrPartConfig].toInstance(config))
 
   private implicit val request = journeyRequest(DisassociateUcrAnswers())
 
   private val disassociatePage: disassociate_ucr = injector.instanceOf[disassociate_ucr]
 
   private def createView(form: Form[DisassociateUcr]): Html = disassociatePage(form)(request, messages)
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    when(appConfig.isDucrPartsEnabled).thenReturn(true)
-  }
-
-  override def afterEach(): Unit = {
-    reset(appConfig)
-    super.afterEach()
-  }
 
   "Disassociate Ucr View" when {
 
@@ -64,7 +53,7 @@ class DisassociateUcrViewSpec extends ViewSpec with MockitoSugar with BeforeAndA
     }
 
     "display 'Back' button that links to Choice when ducrPart disabled" in {
-      when(appConfig.isDucrPartsEnabled).thenReturn(false)
+      when(config.isDucrPartsEnabled).thenReturn(false)
       val backButton = createView(DisassociateUcr.form).getBackButton
 
       backButton mustBe defined
@@ -75,7 +64,7 @@ class DisassociateUcrViewSpec extends ViewSpec with MockitoSugar with BeforeAndA
     }
 
     "display 'Back' button that links to Ducr Part Chief when ducrPart enabled" in {
-      when(appConfig.isDucrPartsEnabled).thenReturn(true)
+      when(config.isDucrPartsEnabled).thenReturn(true)
       val backButton = createView(DisassociateUcr.form).getBackButton
 
       backButton mustBe defined

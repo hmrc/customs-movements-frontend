@@ -45,24 +45,21 @@ class DucrPartChiefController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
+  private val requiredActions = authenticate andThen isDucrPartsFeatureEnabled andThen ileQueryFeatureDisabled andThen getJourney(
+    JourneyType.ARRIVE,
+    JourneyType.DEPART,
+    JourneyType.ASSOCIATE_UCR,
+    JourneyType.DISSOCIATE_UCR
+  )
+
   def displayPage(): Action[AnyContent] =
-    (authenticate andThen isDucrPartsFeatureEnabled andThen ileQueryFeatureDisabled andThen getJourney(
-      JourneyType.ARRIVE,
-      JourneyType.DEPART,
-      JourneyType.ASSOCIATE_UCR,
-      JourneyType.DISSOCIATE_UCR
-    )) { implicit request =>
+    requiredActions { implicit request =>
       val choice = request.cache.ducrPartChiefChoice
       Ok(buildPage(choice.fold(form())(form().fill(_))))
     }
 
   def submit(): Action[AnyContent] =
-    (authenticate andThen isDucrPartsFeatureEnabled andThen ileQueryFeatureDisabled andThen getJourney(
-      JourneyType.ARRIVE,
-      JourneyType.DEPART,
-      JourneyType.ASSOCIATE_UCR,
-      JourneyType.DISSOCIATE_UCR
-    )).async { implicit request =>
+    requiredActions.async { implicit request =>
       form()
         .bindFromRequest()
         .fold(

@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.IleQueryConfig
 import controllers.actions.{AuthAction, DucrPartsAction, JourneyRefiner, NonIleQueryAction}
 import forms._
 import javax.inject.Inject
@@ -67,13 +66,15 @@ class DucrPartDetailsController @Inject()(
       )
   }
 
+  private val submitDucrPartForJourneyActions = authenticate andThen isDucrPartsFeatureEnabled andThen ileQueryFeatureDisabled andThen getJourney(
+    JourneyType.ARRIVE,
+    JourneyType.DEPART,
+    JourneyType.ASSOCIATE_UCR,
+    JourneyType.DISSOCIATE_UCR
+  )
+
   def submitDucrPartDetailsJourney(): Action[AnyContent] =
-    (authenticate andThen isDucrPartsFeatureEnabled andThen ileQueryFeatureDisabled andThen getJourney(
-      JourneyType.ARRIVE,
-      JourneyType.DEPART,
-      JourneyType.ASSOCIATE_UCR,
-      JourneyType.DISSOCIATE_UCR
-    )).async { implicit request =>
+    submitDucrPartForJourneyActions.async { implicit request =>
       getEmptyForm
         .bindFromRequest()
         .fold(

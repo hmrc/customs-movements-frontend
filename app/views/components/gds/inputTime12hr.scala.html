@@ -14,53 +14,73 @@
  * limitations under the License.
  *@
 
-@this()
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import components.gds.exportsInputText
+@import forms.common.Time
+
+@this(govukSelect : GovukSelect, exportsInputText: exportsInputText)
 
 @(
     fieldName: String,
     form: Form[_],
     label: String,
-    labelHour: String,
-    labelMinute: String,
+    hourKey: String = "time.hour",
+    minuteKey: String = "time.minute",
+    ampmLabelKey: String = "time.ampm",
+    amLabelKey: String = "time.am",
+    pmLabelKey: String = "time.pm",
     hint: Option[String] = None
 )(implicit messages: Messages)
 
 @timeField = @{form(fieldName)}
 @hourField = @{form(s"$fieldName.hour")}
 @minuteField = @{form(s"$fieldName.minute")}
+@ampmField = @{form(s"$fieldName.ampm")}
+@allErrors = @{timeField.errors ++ hourField.errors ++ minuteField.errors ++ ampmField.errors}
 
-<div class="govuk-form-group @{if(timeField.hasErrors) "govuk-form-group--error"}">
+<div class="govuk-form-group @{if(allErrors.nonEmpty) "govuk-form-group--error"}">
     <fieldset class="govuk-fieldset" role="group" aria-describedby="@{fieldName}-hint">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
             @label
         </legend>
         @hint.map { hintText =>
-            <span id="timeOfArrival-hint" class="govuk-hint">
+            <span id="@{fieldName}-hint" class="govuk-hint">
                 @hintText
+            </span>
+        }
+        @if(allErrors.nonEmpty){
+            <span class="govuk-error-message" id="@{fieldName}-error">
+                <span class="govuk-visually-hidden">@messages("site.accessibility.error")</span>
+                @Html(allErrors.map(err => messages(err.message, err.args:_*)).mkString("<br>"))
             </span>
         }
         <div class="govuk-date-input" id="@{fieldName}">
             <div class="govuk-date-input__item">
-                <div class="govuk-form-group">
-                    <label class="govuk-label govuk-date-input__label" for="@{fieldName}_hour">
-                        @labelHour
-                    </label>
-                    <input class="govuk-input govuk-date-input__input govuk-input--width-2 @{if(timeField.hasErrors || hourField.hasErrors) "govuk-input--error"}"
-                        id="@{fieldName}_hour" name="@{fieldName}.hour"
-                        type="text" pattern="[0-9]*" inputmode="numeric"
-                        value="@hourField.value">
-                </div>
+                @exportsInputText(
+                    field = hourField,
+                    labelKey = hourKey,
+                    inputClasses = s"govuk-input govuk-date-input__input govuk-input--width-2 ${if(timeField.hasErrors || hourField.hasErrors) "govuk-input--error"}"
+                )
             </div>
             <div class="govuk-date-input__item">
-                <div class="govuk-form-group">
-                    <label class="govuk-label govuk-date-input__label" for="@{fieldName}_minute">
-                        @labelMinute
-                    </label>
-                    <input class="govuk-input govuk-date-input__input govuk-input--width-2 @{if(timeField.hasErrors || minuteField.hasErrors) "govuk-input--error"}"
-                        id="@{fieldName}_minute" name="@{fieldName}.minute"
-                        type="text" pattern="[0-9]*" inputmode="numeric"
-                        value="@minuteField.value">
-                </div>
+                @exportsInputText(
+                    field = minuteField,
+                    labelKey = minuteKey,
+                    inputClasses = s"govuk-input govuk-date-input__input govuk-input--width-2 ${if(timeField.hasErrors || minuteField.hasErrors) "govuk-input--error"}"
+                )
+            </div>
+            <div class="govuk-date-input__item">
+                @govukSelect(Select(
+                    id = ampmField.id,
+                    name = ampmField.name,
+                    items = Seq(
+                        SelectItem(text = ""),
+                        SelectItem(value = Some(Time.am),text = messages(amLabelKey), selected = ampmField.value.contains(Time.am)),
+                        SelectItem(value = Some(Time.pm),text = messages(pmLabelKey), selected = ampmField.value.contains(Time.pm))
+                    ),
+                    label = Label(content = Text(messages(ampmLabelKey))),
+                    classes = s"govuk-input--width-4 ${if(timeField.hasErrors || ampmField.hasErrors) "govuk-select--error"}"
+                ))
             </div>
         </div>
     </fieldset>

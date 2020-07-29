@@ -148,7 +148,7 @@ class ArrivalSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
       changeDate must haveHref(controllers.routes.MovementDetailsController.displayPage())
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_time) must containMessage("summary.arrival.time")
-      view.getElementsByClass("govuk-summary-list__value").get(answer_time).text mustBe time.toInputFormat
+      view.getElementsByClass("govuk-summary-list__value").get(answer_time).text mustBe viewDates.formatTime(time.time)
 
       val changeTime = view.getElementsByClass("govuk-link").get(answer_time_link_index)
       changeTime must containMessage("site.change")

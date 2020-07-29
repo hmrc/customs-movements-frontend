@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
+import java.time.{LocalDateTime, LocalTime}
 
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
 import controllers.exception.InvalidFeatureStateException
@@ -28,8 +27,8 @@ import play.api.test.Helpers._
 
 class ArrivalSpec extends IntegrationSpec {
 
-  private val date = dateTimeProvider.dateNow.date
-  private val time = dateTimeProvider.timeNow.time.truncatedTo(ChronoUnit.MINUTES)
+  private val date = dateTimeProvider.dateNow.date.minusDays(1)
+  private val time = LocalTime.of(22, 15)
   private val datetime = LocalDateTime.of(date, time).atZone(DateTimeModule.timezone).toInstant
 
   "Consignment References Page" when {
@@ -152,8 +151,9 @@ class ArrivalSpec extends IntegrationSpec {
           "dateOfArrival.day" -> date.getDayOfMonth.toString,
           "dateOfArrival.month" -> date.getMonthValue.toString,
           "dateOfArrival.year" -> date.getYear.toString,
-          "timeOfArrival.hour" -> time.getHour.toString,
-          "timeOfArrival.minute" -> time.getMinute.toString
+          "timeOfArrival.hour" -> "10",
+          "timeOfArrival.minute" -> "15",
+          "timeOfArrival.ampm" -> "PM"
         )
 
         // Then

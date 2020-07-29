@@ -20,50 +20,60 @@ import java.text.DecimalFormat
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-import play.api.data.Forms.{optional, text}
+import play.api.data.Forms.text
 import play.api.data.{Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
+import utils.validators.forms.FieldValidator._
 
 import scala.util.Try
 
-case class Time(time: LocalTime) {
-
-  private val inputFormat = DateTimeFormatter.ofPattern("HH:mm")
-
-  def toInputFormat: String = time.format(inputFormat)
-
-  override def toString: String = time.toString
-
-}
+case class Time(time: LocalTime)
 
 object Time {
   implicit val format: OFormat[Time] = Json.format[Time]
 
   val hourKey = "hour"
   val minuteKey = "minute"
+  val ampmKey = "ampm"
+
+  val time12HourFormatter = DateTimeFormatter.ofPattern("h:mma")
+
+  val am = "AM"
+  val pm = "PM"
 
   val mapping: Mapping[Time] = {
-    def build(hour: Try[Int], minutes: Try[Int]): Try[LocalTime] =
+    def build(hour: Try[Int], minutes: Try[Int], ampm: String): Try[LocalTime] =
       for {
         h <- hour
         m <- minutes
-      } yield LocalTime.of(h, m)
+      } yield {
+        val str = s"$h:${f"$m%02d"}$ampm"
+        print("parsing " + str)
+        val res = LocalTime.parse(str, time12HourFormatter)
+        println(res)
+        res
+      }
 
-    def bind(hour: Try[Int], minutes: Try[Int]): Time =
-      build(hour, minutes)
+    def bind(hour: Try[Int], minutes: Try[Int], ampm: String): Time =
+      build(hour, minutes, ampm)
         .map(apply)
         .getOrElse(throw new IllegalArgumentException("Could not build time - missing one of parameters"))
 
-    def unbind(time: Time): (Try[Int], Try[Int]) =
-      (Try(time.time.getHour), Try(time.time.getMinute))
+    def unbind(time: Time): (Try[Int], Try[Int], String) = {
+      val timeStr = time.time.format(time12HourFormatter)
+      val hr = timeStr.split(":")(0)
+      (Try(hr.toInt), Try(time.time.getMinute), timeStr.takeRight(2))
+    }
 
     val twoDigitFormatter: Mapping[Try[Int]] = {
       val formatter = new DecimalFormat("00")
       text().transform(value => Try(value.toInt), _.map(value => formatter.format(value)).getOrElse(""))
     }
 
+    val amPmMapping: Mapping[String] = text().verifying("time.ampm.error", isEmpty or isContainedIn(Seq(Time.am, Time.pm)))
+
     Forms
-      .tuple(hourKey -> twoDigitFormatter, minuteKey -> twoDigitFormatter)
+      .tuple(hourKey -> twoDigitFormatter, minuteKey -> twoDigitFormatter, ampmKey -> amPmMapping)
       .verifying("time.error.invalid", (build _).tupled.andThen(_.isSuccess))
       .transform((bind _).tupled, unbind)
   }

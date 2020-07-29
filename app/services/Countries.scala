@@ -20,7 +20,9 @@ import play.api.libs.json._
 
 import scala.io.Source
 
-case class Country(countryName: String, countryCode: String)
+case class Country(countryName: String, countryCode: String) {
+  def asString(): String = s"$countryName ($countryCode)"
+}
 
 case object Country {
   implicit val formats = Json.format[Country]
@@ -60,5 +62,6 @@ object Countries {
   val allCountries: List[Country] =
     countries.filter(c => mdgCountryCodes contains c.countryCode)
 
-  def countryName(code: String) = allCountries.find(_.countryCode == code).map(_.countryName).getOrElse(code)
+  def countryName(code: String): String = allCountries.find(_.countryCode == code).map(_.countryName).getOrElse(code)
+  def country(code: String): Option[Country] = allCountries.find(_.countryCode == code)
 }

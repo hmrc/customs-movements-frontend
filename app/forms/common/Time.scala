@@ -61,7 +61,11 @@ object Time {
       (Try(timeString.split(":")(0).toInt), Try(time.time.getMinute), timeString.takeRight(2))
     }
 
-    val twoDigitFormatter: Mapping[Try[Int]] = {
+    val hourMapping: Mapping[Try[Int]] = {
+      text().transform(value => Try(value.toInt), _.map(_.toString).getOrElse(""))
+    }
+
+    val minuteMapping: Mapping[Try[Int]] = {
       val formatter = new DecimalFormat("00")
       text().transform(value => Try(value.toInt), _.map(value => formatter.format(value)).getOrElse(""))
     }
@@ -69,7 +73,7 @@ object Time {
     val amPmMapping: Mapping[String] = text().verifying("time.ampm.error", isEmpty or isContainedIn(Seq(Time.am, Time.pm)))
 
     Forms
-      .tuple(hourKey -> twoDigitFormatter, minuteKey -> twoDigitFormatter, ampmKey -> amPmMapping)
+      .tuple(hourKey -> hourMapping, minuteKey -> minuteMapping, ampmKey -> amPmMapping)
       .verifying("time.error.invalid", (build _).tupled.andThen(_.isSuccess))
       .transform((bind _).tupled, unbind)
   }

@@ -47,11 +47,8 @@ object Time {
         h <- hour
         m <- minutes
       } yield {
-        val str = s"$h:${f"$m%02d"}$ampm"
-        print("parsing " + str)
-        val res = LocalTime.parse(str, time12HourFormatter)
-        println(res)
-        res
+        val timeString = s"$h:${f"$m%02d"}$ampm"
+        LocalTime.parse(timeString, time12HourFormatter)
       }
 
     def bind(hour: Try[Int], minutes: Try[Int], ampm: String): Time =
@@ -60,9 +57,8 @@ object Time {
         .getOrElse(throw new IllegalArgumentException("Could not build time - missing one of parameters"))
 
     def unbind(time: Time): (Try[Int], Try[Int], String) = {
-      val timeStr = time.time.format(time12HourFormatter)
-      val hr = timeStr.split(":")(0)
-      (Try(hr.toInt), Try(time.time.getMinute), timeStr.takeRight(2))
+      val timeString = time.time.format(time12HourFormatter)
+      (Try(timeString.split(":")(0).toInt), Try(time.time.getMinute), timeString.takeRight(2))
     }
 
     val twoDigitFormatter: Mapping[Try[Int]] = {

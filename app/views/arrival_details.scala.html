@@ -29,7 +29,7 @@
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
   inputDate: inputDate,
-  inputTime: inputTime,
+  inputTime: inputTime12hr,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
@@ -57,6 +57,8 @@
       fieldName = "timeOfArrival",
       form = form,
       label = messages("arrivalDetails.time.question"),
+      labelHour = messages("time.hour"),
+      labelMinute = messages("time.minute"),
       hint = Some(messages("arrivalDetails.time.hint"))
     )
 

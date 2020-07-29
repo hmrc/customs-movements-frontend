@@ -23,6 +23,7 @@
 @import views.components.BackButton
 @import views.components.config.BaseConfig
 @import views.ViewDates
+@import services.Countries
 @import models.requests.JourneyRequest
 
 @this(  govukLayout: gds_main_template,
@@ -207,7 +208,7 @@
                             content = Text(messages("summary.nationality"))
                         ),
                         value = Value(
-                            content = Text(data.transport.map(_.nationality).getOrElse(""))
+                            content = Text(data.transport.map(_.nationality).flatMap(Countries.country).map(_.asString()).getOrElse(""))
                         ),
                         actions = Some(Actions(
                             items = Seq(

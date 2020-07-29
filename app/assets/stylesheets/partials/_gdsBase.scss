@@ -12,3 +12,32 @@ govuk-back-link-div class to add that space below (or instead of) the back-link
 .govuk-back-link-div {
   margin-bottom: 40px;
 }
+
+
+/*
+====================================
+CSS to support GovUK Accessible autocomplete Dropdown
+Context: The component is not 100% compatible with GDS design system, more
+specifically the z-index where we need to make sure the 'govuk-template__body'
+needs to be behind the dropdown arrow.
+====================================
+*/
+.govuk-template__body {
+  margin: 0;
+  background-color: #fff;
+  position: relative;
+  z-index: 0;
+}
+
+
+/*
+====================================
+CSS to support browser font sizes for auto-complete component
+====================================
+*/
+.autocomplete__hint,
+.autocomplete__input,
+.autocomplete__option {
+  font-size: 1.1875rem;
+  line-height: 1.31579;
+}

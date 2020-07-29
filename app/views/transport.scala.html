@@ -19,8 +19,10 @@
 @import forms.Transport.ModesOfTransport._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
+@import views.components.autocomplete.AutoCompleteItem
 @import views.components.BackButton
 @import components.gds.{errorSummary, gds_main_template, pageTitle, sectionHeader}
+@import services.Countries
 
 
 @this(  govukLayout: gds_main_template,
@@ -116,22 +118,14 @@
             )
         ))
 
-        @govukInput(Input(
-            id = "nationality",
-            name = "nationality",
-            classes = "govuk-input--width-2",
-            value = form("nationality").value,
-            label = Label(
-              content = Text(messages("transport.nationality.question")),
-              classes = "govuk-label--m"
-            ),
-            hint = Some(Hint(
-              content = Text(messages("transport.nationality.hint"))
-            )),
-            errorMessage =
-              form("nationality").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))
-            )
-        ))
+        @components.autocomplete.field_accessible_autocomplete(
+            field = form("nationality"),
+            label = "transport.nationality.question",
+            labelClass = Some("govuk-label--m"),
+            hintText = None,
+            emptySelectValue = messages("transport.nationality.country.help"),
+            items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
+        )
 
         @govukButton(Button(content = Text(messages("site.continue"))))
     }

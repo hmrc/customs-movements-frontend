@@ -29,6 +29,26 @@ function createQuickButton() {
     return button;
 }
 
+function selectFromAutoPredict(element, selected) {
+    let index = typeof selected == "number" ? selected : 0;
+    let selects = element.getElementsByTagName('select');
+    let inputs = element.getElementsByTagName('input');
+    for(let j = 0; j < selects.length; j++){
+        let options = selects[j].getElementsByTagName('option');
+        let option = options[index];
+        if(typeof selected == "string"){
+            for(let o = 0; o < options.length; o++) {
+                if(options[o].value === selected) {
+                    option = options[o];
+                }
+            }
+        }
+        option.selected = "selected";
+        selects[j].value = option.value;
+        inputs[j].value = option.value;
+    }
+}
+
 function currentPageIs(path) {
     let matches = window.location.pathname.match(path);
     return matches && matches.length > 0
@@ -86,8 +106,8 @@ function completePage() {
     }
     if(currentPageIs("/customs-movements/transport")){
         document.getElementById("modeOfTransport").checked = true;
-        document.getElementById('nationality').value = 'GB';
         document.getElementById('transportId').value = 'TransportReference';
+        selectFromAutoPredict(document.getElementById('nationality-container'), "GB");
         document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/summary")){}

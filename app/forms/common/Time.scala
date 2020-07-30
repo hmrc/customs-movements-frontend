@@ -19,6 +19,7 @@ package forms.common
 import java.text.DecimalFormat
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoField
 
 import play.api.data.Forms.text
 import play.api.data.{Forms, Mapping}
@@ -27,7 +28,12 @@ import utils.validators.forms.FieldValidator._
 
 import scala.util.Try
 
-case class Time(time: LocalTime)
+case class Time(time: LocalTime) {
+
+  def getClockHour: Int = time.get(ChronoField.CLOCK_HOUR_OF_AMPM)
+  def getMinute: Int = time.get(ChronoField.MINUTE_OF_HOUR)
+  def getAmPm: String = if (time.get(ChronoField.AMPM_OF_DAY) == 0) Time.am else Time.pm
+}
 
 object Time {
   implicit val format: OFormat[Time] = Json.format[Time]
@@ -56,10 +62,8 @@ object Time {
         .map(apply)
         .getOrElse(throw new IllegalArgumentException("Could not build time - missing one of parameters"))
 
-    def unbind(time: Time): (Try[Int], Try[Int], String) = {
-      val timeString = time.time.format(time12HourFormatter)
-      (Try(timeString.split(":")(0).toInt), Try(time.time.getMinute), timeString.takeRight(2))
-    }
+    def unbind(time: Time): (Try[Int], Try[Int], String) =
+      (Try(time.getClockHour), Try(time.getMinute), time.getAmPm)
 
     val hourMapping: Mapping[Try[Int]] = {
       text().transform(value => Try(value.toInt), _.map(_.toString).getOrElse(""))

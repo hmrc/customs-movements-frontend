@@ -16,10 +16,12 @@
 
 package forms.common
 
+import java.time.LocalTime
+
 import base.BaseSpec
+import forms.common.Time._
 import helpers.FormMatchers
 import play.api.data.{Form, FormError}
-import Time._
 
 class TimeSpec extends BaseSpec with FormMatchers {
 
@@ -80,6 +82,71 @@ class TimeSpec extends BaseSpec with FormMatchers {
         val forms = form.bind(inputTime)
 
         forms mustBe withoutErrors
+      }
+    }
+
+    "bind correct time" when {
+
+      "time is am" in {
+
+        val inputTime = Map(hourKey -> "10", minuteKey -> "15", ampmKey -> "AM")
+        val boundForm = form.bind(inputTime)
+
+        boundForm.value mustBe Some(Time(LocalTime.of(10, 15)))
+      }
+
+      "time is pm" in {
+
+        val inputTime = Map(hourKey -> "8", minuteKey -> "5", ampmKey -> "PM")
+        val boundForm = form.bind(inputTime)
+
+        boundForm.value mustBe Some(Time(LocalTime.of(20, 5)))
+      }
+
+      "midnight is entered as '12'" in {
+
+        val inputTime = Map(hourKey -> "12", minuteKey -> "01", ampmKey -> "AM")
+        val boundForm = form.bind(inputTime)
+
+        boundForm.value mustBe Some(Time(LocalTime.of(0, 1)))
+      }
+
+      "midnight is entered as '0'" in {
+
+        val inputTime = Map(hourKey -> "0", minuteKey -> "1", ampmKey -> "AM")
+        val boundForm = form.bind(inputTime)
+
+        boundForm.value mustBe Some(Time(LocalTime.of(0, 1)))
+      }
+    }
+
+    "unbind correct time" when {
+
+      "time is am" in {
+
+        val filledForm = form.fill(Time(LocalTime.of(9, 25)))
+
+        filledForm.data(Time.hourKey) mustBe "9"
+        filledForm.data(Time.minuteKey) mustBe "25"
+        filledForm.data(Time.ampmKey) mustBe "AM"
+      }
+
+      "time is pm" in {
+
+        val filledForm = form.fill(Time(LocalTime.of(20, 5)))
+
+        filledForm.data(Time.hourKey) mustBe "8"
+        filledForm.data(Time.minuteKey) mustBe "05"
+        filledForm.data(Time.ampmKey) mustBe "PM"
+      }
+
+      "after midnight" in {
+
+        val filledForm = form.fill(Time(LocalTime.of(0, 5)))
+
+        filledForm.data(Time.hourKey) mustBe "12"
+        filledForm.data(Time.minuteKey) mustBe "05"
+        filledForm.data(Time.ampmKey) mustBe "AM"
       }
     }
   }

@@ -138,7 +138,7 @@ departureDetails.header = Enter date and time of departure
 departureDetails.date.question = Date of departure
 departureDetails.date.hint = For example, 01 08 2007.
 departureDetails.time.question = Time of departure
-departureDetails.time.hint = Enter the time in 24 hour format. For example, 13 30.
+departureDetails.time.hint = Enter the time in 12 hour format. For example, 11 30 am.
 
 departure.details.error.overdue = Time of Departure cannot be more than 60 days in the past
 departure.details.error.future = Time of Departure cannot be in the future

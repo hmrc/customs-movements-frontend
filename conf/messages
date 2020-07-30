@@ -9,9 +9,15 @@ feedback.link=feedback
 date.day = Day
 date.month = Month
 date.year = Year
+date.error.invalid = Date is incorrect
 
 time.hour = Hour
 time.minute = Minute
+time.ampm = am or pm
+time.ampm.error = Select am or pm
+time.am = am
+time.pm = pm
+time.error.invalid = Time is incorrect
 
 error.boolean = Please give an answer
 error.number = Please enter a valid number
@@ -45,11 +51,9 @@ site.inputText.mucr.label = Enter an existing MUCR
 site.inputText.newMucr.label = Enter a new MUCR
 site.inputText.newMucr.label.hint = For example ‘GB/123456789100-AB123’.
 
+site.accessibility.error = Error:
 
 unauthorised.title = You can’t access this service with this account
-
-date.error.invalid = Date is incorrect
-time.error.invalid = Time is incorrect
 
 global.error.title = There is a problem - Declare customs exports for CDS Exports - GOV.UK
 global.error.heading = There is a problem with a service
@@ -123,7 +127,7 @@ arrivalDetails.header = Enter date and time of arrival
 arrivalDetails.date.question = Date of arrival
 arrivalDetails.date.hint = For example, 01 08 2007.
 arrivalDetails.time.question = Time of arrival
-arrivalDetails.time.hint = Enter the time in 24 hour format. For example, 13 30.
+arrivalDetails.time.hint = Enter the time in 12 hour format. For example, 11 30 am.
 
 arrival.details.error.overdue = Time of Arrival cannot be more than 60 days in the past
 arrival.details.error.future = Time of Arrival cannot be in the future
@@ -134,7 +138,7 @@ departureDetails.header = Enter date and time of departure
 departureDetails.date.question = Date of departure
 departureDetails.date.hint = For example, 01 08 2007.
 departureDetails.time.question = Time of departure
-departureDetails.time.hint = Enter the time in 24 hour format. For example, 13 30.
+departureDetails.time.hint = Enter the time in 12 hour format. For example, 11 30 am.
 
 departure.details.error.overdue = Time of Departure cannot be more than 60 days in the past
 departure.details.error.future = Time of Departure cannot be in the future

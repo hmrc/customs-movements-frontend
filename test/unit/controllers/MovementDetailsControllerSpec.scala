@@ -125,7 +125,7 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
           val correctForm = Json.obj(
             "dateOfArrival" -> Json.obj("day" -> yesterday.getDayOfMonth, "month" -> yesterday.getMonthValue, "year" -> yesterday.getYear),
-            "timeOfArrival" -> Json.obj("hour" -> yesterday.getHour, "minute" -> yesterday.getMinute)
+            "timeOfArrival" -> Json.obj("hour" -> "10", "minute" -> "35", "ampm" -> "AM")
           )
           val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences))
 
@@ -198,7 +198,7 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
           val correctForm = Json.obj(
             "dateOfDeparture" -> Json.obj("day" -> yesterday.getDayOfMonth, "month" -> yesterday.getMonthValue, "year" -> yesterday.getYear),
-            "timeOfDeparture" -> Json.obj("hour" -> yesterday.getHour, "minute" -> yesterday.getMinute)
+            "timeOfDeparture" -> Json.obj("hour" -> "2", "minute" -> "45", "ampm" -> "PM")
           )
           val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
 

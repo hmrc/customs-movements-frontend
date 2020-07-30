@@ -184,7 +184,7 @@ class DepartureDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       }
 
       "have value in hour field" in {
-        viewWithData.getElementById("timeOfDeparture_hour").`val`() mustBe convertIntoTwoDigitFormat(time.getHour)
+        viewWithData.getElementById("timeOfDeparture_hour").`val`() mustBe time.getHour.toString
       }
 
       "have value in minute field" in {

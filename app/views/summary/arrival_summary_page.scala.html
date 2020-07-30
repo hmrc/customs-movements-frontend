@@ -123,7 +123,7 @@
                             content = Text(messages("summary.arrival.time"))
                         ),
                         value = Value(
-                            content = Text(data.arrivalDetails.map(_.timeOfArrival.toString).getOrElse(""))
+                            content = Text(data.arrivalDetails.map(arrival => viewDates.formatTime(arrival.timeOfArrival.time)).getOrElse(""))
                         ),
                         actions = Some(Actions(
                             items = Seq(

@@ -19,6 +19,7 @@ package forms.common
 import java.time.LocalTime
 
 import base.BaseSpec
+import forms.common.Time._
 import helpers.FormMatchers
 import play.api.data.{Form, FormError}
 
@@ -26,30 +27,13 @@ class TimeSpec extends BaseSpec with FormMatchers {
 
   val form: Form[Time] = Form(Time.mapping)
 
-  "Time" should {
-
-    "return string in HH:mm format" in {
-
-      val time = Time(LocalTime.of(10, 10))
-
-      time.toString must be("10:10")
-    }
-
-    "format time when user use values like 1, 2, 3, etc..." in {
-
-      val time = Time(LocalTime.of(1, 1))
-      val formattedTime = time.toString
-
-      formattedTime mustEqual "01:01"
-    }
-  }
-
   "Time object" should {
 
     "contain all necessary, correct keys" in {
 
-      Time.hourKey must be("hour")
-      Time.minuteKey must be("minute")
+      hourKey must be("hour")
+      minuteKey must be("minute")
+      ampmKey must be("ampm")
     }
   }
 
@@ -61,13 +45,32 @@ class TimeSpec extends BaseSpec with FormMatchers {
 
         val errors = form.bind(Map.empty[String, String]).errors
 
-        errors must contain theSameElementsAs List(FormError("hour", "error.required"), FormError("minute", "error.required"))
+        errors must contain theSameElementsAs List(
+          FormError("hour", "error.required"),
+          FormError("minute", "error.required"),
+          FormError("ampm", "error.required")
+        )
       }
 
-      "hour and minute is incorrect" in {
-        val errors = form.bind(Map("hour" -> "24", "minute" -> "60")).errors
+      "hour is incorrect" in {
+        val inputTime = Map(hourKey -> "13", minuteKey -> "10", ampmKey -> "AM")
+        val errors = form.bind(inputTime).errors
 
         errors must contain theSameElementsAs List(FormError("", "time.error.invalid"))
+      }
+
+      "minute is incorrect" in {
+        val inputTime = Map(hourKey -> "10", minuteKey -> "60", ampmKey -> "AM")
+        val errors = form.bind(inputTime).errors
+
+        errors must contain theSameElementsAs List(FormError("", "time.error.invalid"))
+      }
+
+      "am/pm is incorrect" in {
+        val inputTime = Map(hourKey -> "10", minuteKey -> "10", ampmKey -> "am")
+        val errors = form.bind(inputTime).errors
+
+        errors must contain theSameElementsAs List(FormError("ampm", "time.ampm.error"))
       }
     }
 
@@ -75,10 +78,75 @@ class TimeSpec extends BaseSpec with FormMatchers {
 
       "time has correct values" in {
 
-        val inputTime = Map("hour" -> "10", "minute" -> "10")
+        val inputTime = Map(hourKey -> "10", minuteKey -> "10", ampmKey -> "AM")
         val forms = form.bind(inputTime)
 
         forms mustBe withoutErrors
+      }
+    }
+
+    "bind correct time" when {
+
+      "time is am" in {
+
+        val inputTime = Map(hourKey -> "10", minuteKey -> "15", ampmKey -> "AM")
+        val boundForm = form.bind(inputTime)
+
+        boundForm.value mustBe Some(Time(LocalTime.of(10, 15)))
+      }
+
+      "time is pm" in {
+
+        val inputTime = Map(hourKey -> "8", minuteKey -> "5", ampmKey -> "PM")
+        val boundForm = form.bind(inputTime)
+
+        boundForm.value mustBe Some(Time(LocalTime.of(20, 5)))
+      }
+
+      "midnight is entered as '12'" in {
+
+        val inputTime = Map(hourKey -> "12", minuteKey -> "01", ampmKey -> "AM")
+        val boundForm = form.bind(inputTime)
+
+        boundForm.value mustBe Some(Time(LocalTime.of(0, 1)))
+      }
+
+      "midnight is entered as '0'" in {
+
+        val inputTime = Map(hourKey -> "0", minuteKey -> "1", ampmKey -> "AM")
+        val boundForm = form.bind(inputTime)
+
+        boundForm.value mustBe Some(Time(LocalTime.of(0, 1)))
+      }
+    }
+
+    "unbind correct time" when {
+
+      "time is am" in {
+
+        val filledForm = form.fill(Time(LocalTime.of(9, 25)))
+
+        filledForm.data(Time.hourKey) mustBe "9"
+        filledForm.data(Time.minuteKey) mustBe "25"
+        filledForm.data(Time.ampmKey) mustBe "AM"
+      }
+
+      "time is pm" in {
+
+        val filledForm = form.fill(Time(LocalTime.of(20, 5)))
+
+        filledForm.data(Time.hourKey) mustBe "8"
+        filledForm.data(Time.minuteKey) mustBe "05"
+        filledForm.data(Time.ampmKey) mustBe "PM"
+      }
+
+      "after midnight" in {
+
+        val filledForm = form.fill(Time(LocalTime.of(0, 5)))
+
+        filledForm.data(Time.hourKey) mustBe "12"
+        filledForm.data(Time.minuteKey) mustBe "05"
+        filledForm.data(Time.ampmKey) mustBe "AM"
       }
     }
   }

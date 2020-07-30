@@ -28,12 +28,19 @@ class ViewDates() {
 
   private val dateAtTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu 'at' h:mma").withZone(timezone)
   private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu").withZone(timezone)
+  private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("h:mma").withZone(timezone)
 
   def formatDateAtTime(temporal: TemporalAccessor): String =
-    dateAtTimeFormatter
-      .format(temporal)
-      .replace("AM", "am")
-      .replace("PM", "pm")
+    formatAmPm(
+      dateAtTimeFormatter
+        .format(temporal)
+    )
 
   def formatDate(temporal: TemporalAccessor): String = dateFormatter.format(temporal)
+  def formatTime(temporal: TemporalAccessor): String = formatAmPm(timeFormatter.format(temporal))
+
+  private def formatAmPm(value: String) =
+    value
+      .replace("AM", "am")
+      .replace("PM", "pm")
 }

@@ -51,7 +51,7 @@ class ArrivalDetailsSpec extends BaseSpec {
 
         val errors = movementDetails.arrivalForm().bind(dateInputData).errors
 
-        errors.length must be(2)
+        errors.length must be(3)
       }
 
       "moment of arrival is in future" in {

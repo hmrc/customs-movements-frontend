@@ -43,13 +43,13 @@ class DepartureDetailsSpec extends BaseSpec with FormMatchers {
       "there is no data" in {
         val inputData = Map.empty[String, String]
         val errors = movementDetails.departureForm().bind(inputData).errors
-        errors must have length 5
+        errors must have length 6
       }
 
       "time is missing" in {
         val inputData = Date.mapping.withPrefix("dateOfDeparture").unbind(Date(LocalDate.now()))
         val errors = movementDetails.departureForm().bind(inputData).errors
-        errors must have length 2
+        errors must have length 3
       }
 
       "date is missing" in {

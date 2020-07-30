@@ -124,7 +124,7 @@
                             content = Text(messages("summary.departure.time"))
                         ),
                         value = Value(
-                            content = Text(data.departureDetails.map(_.timeOfDeparture.toString).getOrElse(""))
+                            content = Text(data.departureDetails.map(departure => viewDates.formatTime(departure.timeOfDeparture.time)).getOrElse(""))
                         ),
                         actions = Some(Actions(
                             items = Seq(

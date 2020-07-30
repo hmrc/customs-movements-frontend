@@ -19,13 +19,11 @@ package models
 import forms.UcrType
 import play.api.libs.json.Json
 
-final case class UcrBlock(ucr: String, ucrPartNo: Option[String] = None, ucrType: String) {
+final case class UcrBlock(ucr: String, ucrType: String) {
 
   def is(ucrType: UcrType): Boolean = this.ucrType.equals(ucrType.codeValue)
 
   def isNot(ucrType: UcrType): Boolean = !is(ucrType)
-
-  def fullUcr: String = ucr + ucrPartNo.map(ucrPartNoValue => s"-$ucrPartNoValue").getOrElse("")
 }
 
 object UcrBlock {

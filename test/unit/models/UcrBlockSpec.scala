@@ -16,33 +16,33 @@
 
 package models
 
-import forms.UcrType.Ducr
+import forms.UcrType.{Ducr, DucrPart}
 import org.scalatest.{MustMatchers, WordSpec}
-import testdata.CommonTestData.{validDucr, validDucrPartId}
+import testdata.CommonTestData.validDucr
 
 class UcrBlockSpec extends WordSpec with MustMatchers {
 
-  "UcrBlock on fullUcr" when {
+  "UcrBlock" when {
 
-    "provided with UCR only" should {
+    "provided with UCRType code" should {
 
-      "return String containing only this UCR" in {
+      "create UcrBlock" in {
 
         val ucrBlock = UcrBlock(ucr = validDucr, ucrType = Ducr.codeValue)
-        val expectedResult = validDucr
 
-        ucrBlock.fullUcr mustBe expectedResult
+        ucrBlock.ucr mustBe validDucr
+        ucrBlock.ucrType mustBe Ducr.codeValue
       }
     }
 
-    "provided with UCR and UcrPartNo" should {
+    "provided with UCRType" should {
 
-      "return String containing both elements separated by '-'" in {
+      "create UcrBlock" in {
 
-        val ucrBlock = UcrBlock(ucr = validDucr, ucrPartNo = Some(validDucrPartId), ucrType = Ducr.codeValue)
-        val expectedResult = s"$validDucr-$validDucrPartId"
+        val ucrBlock = UcrBlock(ucr = validDucr, ucrType = DucrPart)
 
-        ucrBlock.fullUcr mustBe expectedResult
+        ucrBlock.ucr mustBe validDucr
+        ucrBlock.ucrType mustBe DucrPart.codeValue
       }
     }
   }

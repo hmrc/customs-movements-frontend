@@ -16,7 +16,6 @@
 
 package forms
 
-import forms.DucrPartDetails._
 import models.UcrBlock
 import play.api.data.Forms._
 import play.api.data.{Form, Forms, Mapping}
@@ -25,10 +24,8 @@ import utils.validators.forms.FieldValidator.{isValidDucrPartId, validDucrIgnore
 
 case class DucrPartDetails(ducr: String, ducrPartId: String) {
 
-  def toUcrBlock: UcrBlock = {
-    val ucr = s"$ducr$Separator$ducrPartId"
-    UcrBlock(ucr = ucr, ucrType = UcrType.DucrPart)
-  }
+  def toUcrBlock: UcrBlock = UcrBlock(ducr, Some(ducrPartId), UcrType.DucrPart.codeValue)
+
 }
 
 object DucrPartDetails {
@@ -40,11 +37,12 @@ object DucrPartDetails {
     if (ucrBlock.ucrType != UcrType.DucrPart.codeValue)
       throw new IllegalArgumentException(s"Cannot create DucrPartDetails instance from UcrBlock of type: [${ucrBlock.ucrType}]")
     else {
-      val separatorIndex = ucrBlock.ucr.lastIndexOf(Separator)
-      val (ducr, ducrPartId) = ucrBlock.ucr.splitAt(separatorIndex)
-      val ducrPartIdWithoutSeparator = ducrPartId.tail
-
-      DucrPartDetails(ducr = ducr, ducrPartId = ducrPartIdWithoutSeparator)
+      DucrPartDetails(
+        ucrBlock.ucr,
+        ucrBlock.ucrPartNo.getOrElse(
+          throw new IllegalArgumentException(s"Cannot create DucrPartDetails from UcrBlock [$ucrBlock]")
+        )
+      )
     }
 
   val mapping: Mapping[DucrPartDetails] = {

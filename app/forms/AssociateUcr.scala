@@ -56,7 +56,7 @@ object AssociateUcr {
   def form: Form[AssociateUcr] = Form(mapping)
 
   def apply(ucrBlock: UcrBlock): AssociateUcr =
-    AssociateUcr(ucr = ucrBlock.ucr, kind = ucrBlock.ucrType match {
+    AssociateUcr(ucr = ucrBlock.fullUcr, kind = ucrBlock.ucrType match {
       case Mucr.codeValue     => Mucr
       case Ducr.codeValue     => Ducr
       case DucrPart.codeValue => DucrPart

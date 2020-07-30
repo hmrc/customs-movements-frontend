@@ -38,7 +38,7 @@ object ConsignmentReferences {
     new ConsignmentReferences(reference.codeValue, referenceValue)
 
   def apply(ucrBlock: UcrBlock): ConsignmentReferences =
-    new ConsignmentReferences(ucrBlock.ucrType, ucrBlock.ucr)
+    new ConsignmentReferences(ucrBlock.ucrType, ucrBlock.fullUcr)
 
   import UcrType._
 

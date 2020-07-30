@@ -57,7 +57,7 @@ object DisassociateUcr {
     ucrBlock.ucrType match {
       case Mucr.codeValue     => DisassociateUcr(Mucr, None, Some(ucrBlock.ucr))
       case Ducr.codeValue     => DisassociateUcr(Ducr, Some(ucrBlock.ucr), None)
-      case DucrPart.codeValue => DisassociateUcr(DucrPart, Some(ucrBlock.ucr), None)
+      case DucrPart.codeValue => DisassociateUcr(DucrPart, Some(ucrBlock.fullUcr), None)
       case _                  => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
     }
 }

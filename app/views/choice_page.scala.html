@@ -89,7 +89,7 @@
         @errorSummary(form.errors)
 
         @if(pageConfig.ileQueryEnabled) {
-            @sectionHeader(messages("movement.choice.section", queryUcr.map(_.ucr).getOrElse("")))
+            @sectionHeader(messages("movement.choice.section", queryUcr.map(_.fullUcr).getOrElse("")))
         }
 
         @govukRadios(Radios(

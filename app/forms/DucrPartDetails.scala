@@ -39,9 +39,7 @@ object DucrPartDetails {
     else {
       DucrPartDetails(
         ucrBlock.ucr,
-        ucrBlock.ucrPartNo.getOrElse(
-          throw new IllegalArgumentException(s"Cannot create DucrPartDetails from UcrBlock [$ucrBlock]")
-        )
+        ucrBlock.ucrPartNo.getOrElse(throw new IllegalArgumentException(s"Cannot create DucrPartDetails from UcrBlock [$ucrBlock]"))
       )
     }
 

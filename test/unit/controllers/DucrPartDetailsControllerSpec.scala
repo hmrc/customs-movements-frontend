@@ -28,7 +28,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import repository.MockCache
-import testdata.CommonTestData.{validDucr, validDucrPartId, validWholeDucrParts}
+import testdata.CommonTestData.{validDucr, validDucrPartId}
 import views.html.ducr_part_details
 
 import scala.concurrent.ExecutionContext.global
@@ -108,7 +108,12 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
         "pass data from CacheRepository to DucrPartDetails view" in {
 
           val cacheContents =
-            Cache(eori = "eori", answers = None, queryUcr = Some(UcrBlock(ucrType = UcrType.DucrPart.codeValue, ucr = validWholeDucrParts)), None)
+            Cache(
+              eori = "eori",
+              answers = None,
+              queryUcr = Some(UcrBlock(ucrType = UcrType.DucrPart.codeValue, ucr = validDucr, ucrPartNo = Some(validDucrPartId))),
+              None
+            )
           givenTheCacheContains(cacheContents)
 
           val result = controller().displayPage()(getRequest())
@@ -173,7 +178,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.ChoiceController.displayChoiceForm().url)
 
-          val expectedUcrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts)
+          val expectedUcrBlock = UcrBlock(ucrType = UcrType.DucrPart.codeValue, ucr = validDucr, ucrPartNo = Some(validDucrPartId))
           theCacheUpserted.queryUcr mustBe defined
           theCacheUpserted.queryUcr.get mustBe expectedUcrBlock
         }
@@ -228,7 +233,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.ChoiceController.displayChoiceForm().url)
 
-          val expectedUcrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts)
+          val expectedUcrBlock = UcrBlock(ucrType = UcrType.DucrPart.codeValue, ucr = validDucr, ucrPartNo = Some(validDucrPartId))
           theCacheUpserted.queryUcr mustBe defined
           theCacheUpserted.queryUcr.get mustBe expectedUcrBlock
         }

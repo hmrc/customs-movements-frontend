@@ -135,7 +135,9 @@ class DucrPartDetailsSpec extends BaseSpec {
       val ducrPartDetails = DucrPartDetails(ducr = validDucr, ducrPartId = validDucrPartId)
       val expectedUcr = validWholeDucrParts
 
-      ducrPartDetails.toUcrBlock.ucr mustBe expectedUcr
+      ducrPartDetails.toUcrBlock.ucr mustBe validDucr
+      ducrPartDetails.toUcrBlock.ucrPartNo mustBe Some(validDucrPartId)
+      ducrPartDetails.toUcrBlock.fullUcr mustBe expectedUcr
     }
   }
 
@@ -151,21 +153,15 @@ class DucrPartDetailsSpec extends BaseSpec {
       }
     }
 
-    "return DucrPartDetails with correct ducr" in {
+    "return DucrPartDetails with correct details" in {
 
-      val ucrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts)
-      val expectedDucr = validDucr
+      val ucrBlock = UcrBlock(ucrType = UcrType.DucrPart.codeValue, ucr = validDucr, ucrPartNo = Some(validDucrPartId))
 
-      DucrPartDetails(ucrBlock).ducr mustBe expectedDucr
+      val ducrPartDetails = DucrPartDetails(ucrBlock)
+      ducrPartDetails.ducr mustBe validDucr
+      ducrPartDetails.ducrPartId mustBe validDucrPartId
     }
 
-    "return DucrPartDetails with correct ducrPartId" in {
-
-      val ucrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts)
-      val expectedDucrPartId = validDucrPartId
-
-      DucrPartDetails(ucrBlock).ducrPartId mustBe expectedDucrPartId
-    }
   }
 
 }

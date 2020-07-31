@@ -183,7 +183,7 @@ summary.modeOfTransport.change = Change transport type
 summary.transportId = Transport ID
 summary.transportId.change = Change transport ID
 summary.nationality = Transport registered in
-summary.nationality.change = Change registered in
+summary.nationality.change = Change transport registered in
 
 summary.arrival.title = Is the information provided for this arrival correct?
 summary.arrival.date = Date of arrival

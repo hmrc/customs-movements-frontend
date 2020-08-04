@@ -26,7 +26,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -147,6 +147,42 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
           status(result) mustBe BAD_REQUEST
         }
+
+        "date is in the future" in {
+
+          val tomorrow = LocalDateTime.now().plusDays(1)
+          val incorrectForm = Json.obj(
+            "dateOfArrival" -> Json.obj("day" -> tomorrow.getDayOfMonth, "month" -> tomorrow.getMonthValue, "year" -> tomorrow.getYear),
+            "timeOfArrival" -> Json.obj("hour" -> "10", "minute" -> "35", "ampm" -> "AM")
+          )
+          val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences))
+
+          val result = controller(answers).saveMovementDetails()(postRequest(incorrectForm))
+
+          status(result) mustBe BAD_REQUEST
+
+          arrivalResponseForm.errors must be(
+            Seq(FormError("dateOfArrival", "arrival.details.error.future"), FormError("timeOfArrival", "arrival.details.error.future"))
+          )
+        }
+
+        "date is in the past" in {
+
+          val lastYear = LocalDateTime.now().minusYears(1)
+          val incorrectForm = Json.obj(
+            "dateOfArrival" -> Json.obj("day" -> lastYear.getDayOfMonth, "month" -> lastYear.getMonthValue, "year" -> lastYear.getYear),
+            "timeOfArrival" -> Json.obj("hour" -> "10", "minute" -> "35", "ampm" -> "AM")
+          )
+          val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences))
+
+          val result = controller(answers).saveMovementDetails()(postRequest(incorrectForm))
+
+          status(result) mustBe BAD_REQUEST
+
+          arrivalResponseForm.errors must be(
+            Seq(FormError("dateOfArrival", "arrival.details.error.overdue"), FormError("timeOfArrival", "arrival.details.error.overdue"))
+          )
+        }
       }
     }
   }
@@ -219,6 +255,42 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
           val result = controller(answers).saveMovementDetails()(postRequest(incorrectForm))
 
           status(result) mustBe BAD_REQUEST
+        }
+
+        "date is in the future" in {
+
+          val tomorrow = LocalDateTime.now().plusDays(1)
+          val incorrectForm = Json.obj(
+            "dateOfDeparture" -> Json.obj("day" -> tomorrow.getDayOfMonth, "month" -> tomorrow.getMonthValue, "year" -> tomorrow.getYear),
+            "timeOfDeparture" -> Json.obj("hour" -> "2", "minute" -> "45", "ampm" -> "PM")
+          )
+          val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
+
+          val result = controller(answers).saveMovementDetails()(postRequest(incorrectForm))
+
+          status(result) mustBe BAD_REQUEST
+
+          departureResponseForm.errors must be(
+            Seq(FormError("dateOfDeparture", "departure.details.error.future"), FormError("timeOfDeparture", "departure.details.error.future"))
+          )
+        }
+
+        "date is in the past" in {
+
+          val lastYear = LocalDateTime.now().minusYears(1)
+          val incorrectForm = Json.obj(
+            "dateOfDeparture" -> Json.obj("day" -> lastYear.getDayOfMonth, "month" -> lastYear.getMonthValue, "year" -> lastYear.getYear),
+            "timeOfDeparture" -> Json.obj("hour" -> "10", "minute" -> "35", "ampm" -> "AM")
+          )
+          val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
+
+          val result = controller(answers).saveMovementDetails()(postRequest(incorrectForm))
+
+          status(result) mustBe BAD_REQUEST
+
+          departureResponseForm.errors must be(
+            Seq(FormError("dateOfDeparture", "departure.details.error.overdue"), FormError("timeOfDeparture", "departure.details.error.overdue"))
+          )
         }
       }
     }

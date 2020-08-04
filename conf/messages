@@ -22,7 +22,7 @@ time.error.invalid = Time is incorrect
 error.boolean = Please give an answer
 error.number = Please enter a valid number
 error.required = Please enter a value
-error.summary.title = There’s been a problem
+error.summary.title = There is a problem
 error.summary.text = Check the following
 error.ducr = Incorrect DUCR
 error.ducr.empty = DUCR number cannot be empty
@@ -129,8 +129,8 @@ arrivalDetails.date.hint = For example, 01 08 2007.
 arrivalDetails.time.question = Time of arrival
 arrivalDetails.time.hint = Enter the time in 12 hour format. For example, 11 30 am.
 
-arrival.details.error.overdue = Time of Arrival cannot be more than 60 days in the past
-arrival.details.error.future = Time of Arrival cannot be in the future
+arrival.details.error.overdue = Date and time of arrival cannot be more than 60 days in the past
+arrival.details.error.future = Date and time of arrival cannot be in the future
 
 departureDetails.title = Departure date and time
 departureDetails.sectionHeading = Depart consignment {0}
@@ -140,8 +140,8 @@ departureDetails.date.hint = For example, 01 08 2007.
 departureDetails.time.question = Time of departure
 departureDetails.time.hint = Enter the time in 12 hour format. For example, 11 30 am.
 
-departure.details.error.overdue = Time of Departure cannot be more than 60 days in the past
-departure.details.error.future = Time of Departure cannot be in the future
+departure.details.error.overdue = Date and time of departure cannot be more than 60 days in the past
+departure.details.error.future = Date and time of departure cannot be in the future
 
 location.title = Location
 location.question = What is the code for the location of the goods when they are declared?

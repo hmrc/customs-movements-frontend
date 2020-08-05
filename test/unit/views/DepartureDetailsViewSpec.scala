@@ -215,6 +215,20 @@ class DepartureDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
         viewWithTimeError must haveGovUkFieldError("timeOfDeparture", messages("time.error.invalid"))
       }
     }
+
+    "provided with form level DateTime error" should {
+      val viewWithDateError: Document = createView(
+        movementDetails
+          .departureForm()
+          .withError("dateOfDeparture", "departure.details.error.future")
+          .withError("timeOfDeparture", "departure.details.error.future")
+      )
+
+      "have single error in summary" in {
+        viewWithDateError.getElementsByClass("govuk-list govuk-error-summary__list").text() mustBe (messages("departure.details.error.future"))
+      }
+
+    }
   }
 
 }

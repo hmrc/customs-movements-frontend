@@ -215,6 +215,20 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
         viewWithTimeError must haveGovUkFieldError("timeOfArrival", messages("time.error.invalid"))
       }
     }
+
+    "provided with form level DateTime error" should {
+      val viewWithDateError: Document = createView(
+        movementDetails
+          .arrivalForm()
+          .withError("dateOfArrival", "arrival.details.error.overdue")
+          .withError("timeOfArrival", "arrival.details.error.overdue")
+      )
+
+      "have single error in summary" in {
+        viewWithDateError.getElementsByClass("govuk-list govuk-error-summary__list").text() mustBe (messages("arrival.details.error.overdue"))
+      }
+
+    }
   }
 
 }

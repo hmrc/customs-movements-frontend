@@ -35,8 +35,10 @@
 
 @(form: Form[DepartureDetails], consignmentReferenceValue: String)(implicit request: Request[_], messages: Messages)
 
-@removeDuplicateMessages(errors: Seq[FormError]) = @{
-    Map(errors map { a => a.message -> a }: _*).values.toSeq
+@processErrors(errors: Seq[FormError]) = @{
+    val removedDuplicates = Map(errors.reverse.map { a => a.message -> a }: _*).values.toSeq.reverse
+
+    removedDuplicates.map(err => err.copy(key = if(err.key == "dateOfDeparture") "dateOfDeparture.day" else err.key))
 }
 
 @govukLayout(
@@ -44,7 +46,7 @@
   backButton = Some(BackButton(messages("site.back"), controllers.routes.SpecificDateTimeController.displayPage))) {
 
   @formHelper(action = routes.MovementDetailsController.saveMovementDetails(), 'autoComplete -> "off") {
-    @errorSummary(removeDuplicateMessages(form.errors))
+    @errorSummary(processErrors(form.errors))
 
     @sectionHeader(messages("departureDetails.sectionHeading", consignmentReferenceValue))
 

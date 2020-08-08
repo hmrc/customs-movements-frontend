@@ -18,7 +18,7 @@
 @import components.gds.exportsInputText
 @import forms.common.Time
 
-@this(govukSelect : GovukSelect, exportsInputText: exportsInputText)
+@this(govukSelect : GovukSelect, govukInput: GovukInput)
 
 @(
     fieldName: String,
@@ -56,18 +56,22 @@
         }
         <div class="govuk-date-input" id="@{fieldName}">
             <div class="govuk-date-input__item">
-                @exportsInputText(
-                    field = hourField,
-                    labelKey = hourKey,
-                    inputClasses = s"govuk-input govuk-date-input__input govuk-input--width-2 ${if(timeField.hasErrors || hourField.hasErrors) "govuk-input--error"}"
-                )
+                @govukInput(Input(
+                    id = hourField.id,
+                    name = hourField.name,
+                    value = hourField.value,
+                    label = Label(content = Text(messages(hourKey))),
+                    classes = s"govuk-input govuk-date-input__input govuk-input--width-2 ${if(timeField.hasErrors || hourField.hasErrors) "govuk-input--error"}"
+                ))
             </div>
             <div class="govuk-date-input__item">
-                @exportsInputText(
-                    field = minuteField,
-                    labelKey = minuteKey,
-                    inputClasses = s"govuk-input govuk-date-input__input govuk-input--width-2 ${if(timeField.hasErrors || minuteField.hasErrors) "govuk-input--error"}"
-                )
+                @govukInput(Input(
+                    id = minuteField.id,
+                    name = minuteField.name,
+                    value = minuteField.value,
+                    label = Label(content = Text(messages(minuteKey))),
+                    classes = s"govuk-input govuk-date-input__input govuk-input--width-2 ${if(timeField.hasErrors || minuteField.hasErrors) "govuk-input--error"}"
+                ))
             </div>
             <div class="govuk-date-input__item">
                 @govukSelect(Select(

@@ -201,6 +201,7 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
 
       "have field error for Date" in {
         viewWithDateError must haveGovUkFieldError("dateOfArrival", messages("date.error.invalid"))
+        viewWithDateError must haveGovUkGlobalErrorLink("#dateOfArrival.day", messages("date.error.invalid"))
       }
     }
 

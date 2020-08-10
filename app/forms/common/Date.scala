@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter
 import play.api.data.Forms._
 import play.api.data.{Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
+import utils.validators.forms.FieldValidator._
 
 import scala.util.Try
 
@@ -52,6 +53,9 @@ object Date {
 
   val mapping: Mapping[Date] = {
 
+    val twoDigitFormatter = new DecimalFormat("00")
+    val fourDigitFormatter = new DecimalFormat("0000")
+
     def build(day: Try[Int], month: Try[Int], year: Try[Int]): Try[LocalDate] =
       for {
         d <- day
@@ -71,18 +75,26 @@ object Date {
       (Try(value.getDayOfMonth), Try(value.getMonthValue), Try(value.getYear))
     }
 
-    val twoDigitMapping: Mapping[Try[Int]] = {
-      val formatter = new DecimalFormat("00")
-      text().transform[Try[Int]](value => Try(value.toInt), _.map(value => formatter.format(value)).getOrElse(""))
+    val dayMapping: Mapping[Try[Int]] = {
+      text()
+        .verifying("date.day.error", isInRange(1, 31))
+        .transform[Try[Int]](value => Try(value.toInt), _.map(value => twoDigitFormatter.format(value)).getOrElse(""))
     }
 
-    val fourDigitMapping: Mapping[Try[Int]] = {
-      val formatter = new DecimalFormat("0000")
-      text().transform[Try[Int]](value => Try(value.toInt), _.map(value => formatter.format(value)).getOrElse(""))
+    val monthMapping: Mapping[Try[Int]] = {
+      text()
+        .verifying("date.month.error", isInRange(1, 12))
+        .transform[Try[Int]](value => Try(value.toInt), _.map(value => twoDigitFormatter.format(value)).getOrElse(""))
+    }
+
+    val yearMapping: Mapping[Try[Int]] = {
+      text()
+        .verifying("date.year.error", isInRange(2000, 3000))
+        .transform[Try[Int]](value => Try(value.toInt), _.map(value => fourDigitFormatter.format(value)).getOrElse(""))
     }
 
     Forms
-      .tuple(dayKey -> twoDigitMapping, monthKey -> twoDigitMapping, yearKey -> fourDigitMapping)
+      .tuple(dayKey -> dayMapping, monthKey -> monthMapping, yearKey -> yearMapping)
       .verifying("date.error.invalid", (validate _).tupled)
       .transform((bind _).tupled, unbind)
   }

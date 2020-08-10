@@ -64,6 +64,33 @@ class DateSpec extends BaseSpec {
         errors.length must be(1)
         errors.head must be(FormError("", "date.error.invalid"))
       }
+
+      "date has missing day" in {
+
+        val dateInput = Map("day" -> "", "month" -> "2", "year" -> "2020")
+        val errors = form.bind(dateInput).errors
+
+        errors.length must be(1)
+        errors.head must be(FormError("day", "date.day.error"))
+      }
+
+      "date has missing month" in {
+
+        val dateInput = Map("day" -> "1", "month" -> "", "year" -> "2020")
+        val errors = form.bind(dateInput).errors
+
+        errors.length must be(1)
+        errors.head must be(FormError("month", "date.month.error"))
+      }
+
+      "date has missing year" in {
+
+        val dateInput = Map("day" -> "1", "month" -> "2", "year" -> "")
+        val errors = form.bind(dateInput).errors
+
+        errors.length must be(1)
+        errors.head must be(FormError("year", "date.year.error"))
+      }
     }
 
     "return no error for correct date" in {

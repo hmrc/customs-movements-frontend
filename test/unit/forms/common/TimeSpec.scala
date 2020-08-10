@@ -53,17 +53,17 @@ class TimeSpec extends BaseSpec with FormMatchers {
       }
 
       "hour is incorrect" in {
-        val inputTime = Map(hourKey -> "13", minuteKey -> "10", ampmKey -> "AM")
+        val inputTime = Map(hourKey -> "0", minuteKey -> "10", ampmKey -> "AM")
         val errors = form.bind(inputTime).errors
 
-        errors must contain theSameElementsAs List(FormError("", "time.error.invalid"))
+        errors must contain theSameElementsAs List(FormError("hour", "time.hour.error"))
       }
 
       "minute is incorrect" in {
         val inputTime = Map(hourKey -> "10", minuteKey -> "60", ampmKey -> "AM")
         val errors = form.bind(inputTime).errors
 
-        errors must contain theSameElementsAs List(FormError("", "time.error.invalid"))
+        errors must contain theSameElementsAs List(FormError("minute", "time.minute.error"))
       }
 
       "am/pm is incorrect" in {
@@ -103,21 +103,6 @@ class TimeSpec extends BaseSpec with FormMatchers {
         boundForm.value mustBe Some(Time(LocalTime.of(20, 5)))
       }
 
-      "midnight is entered as '12'" in {
-
-        val inputTime = Map(hourKey -> "12", minuteKey -> "01", ampmKey -> "AM")
-        val boundForm = form.bind(inputTime)
-
-        boundForm.value mustBe Some(Time(LocalTime.of(0, 1)))
-      }
-
-      "midnight is entered as '0'" in {
-
-        val inputTime = Map(hourKey -> "0", minuteKey -> "1", ampmKey -> "AM")
-        val boundForm = form.bind(inputTime)
-
-        boundForm.value mustBe Some(Time(LocalTime.of(0, 1)))
-      }
     }
 
     "unbind correct time" when {

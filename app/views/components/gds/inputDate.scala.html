@@ -31,6 +31,11 @@
 @monthField = @{form(s"$fieldName.$monthKey")}
 @yearField = @{form(s"$fieldName.$yearKey")}
 
+@errorMessages = @{
+    val errors = (dateField.errors ++ dayField.errors ++ monthField.errors ++ yearField.errors).map(err => messages(err.message, err.args:_*)).mkString("<br>")
+    if(errors.nonEmpty) Some(ErrorMessage(content = HtmlContent(errors))) else None
+}
+
 @dateInput(DateInput(
   id = fieldName,
   fieldset = Some(Fieldset(
@@ -40,7 +45,7 @@
     ))
   )),
   hint = hint.map(h => Hint(content = Text(h))),
-  errorMessage = form(fieldName).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
+  errorMessage = errorMessages,
   items = Seq(
     InputItem(
       id = s"${fieldName}_$dayKey",

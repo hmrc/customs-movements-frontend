@@ -95,6 +95,13 @@ object FieldValidator {
       case _              => false
   }
 
+  val isInRange: (Int, Int) => String => Boolean = (min: Int, max: Int) =>
+    (input: String) =>
+      Try(input.toInt) match {
+        case Success(value) => value >= min && value <= max
+        case _              => false
+  }
+
   val isValidCountryCode: String => Boolean = (input: String) => allCountries.exists(_.countryCode == input)
 
   val isDecimalWithNoMoreDecimalPlacesThan: Int => String => Boolean =

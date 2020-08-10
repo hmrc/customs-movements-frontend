@@ -66,15 +66,17 @@ object Time {
       (Try(time.getClockHour), Try(time.getMinute), time.getAmPm)
 
     val hourMapping: Mapping[Try[Int]] = {
-      text().transform(value => Try(value.toInt), _.map(_.toString).getOrElse(""))
+      text().verifying("time.hour.error", isInRange(1, 12)).transform(value => Try(value.toInt), _.map(_.toString).getOrElse(""))
     }
 
     val minuteMapping: Mapping[Try[Int]] = {
       val formatter = new DecimalFormat("00")
-      text().transform(value => Try(value.toInt), _.map(value => formatter.format(value)).getOrElse(""))
+      text()
+        .verifying("time.minute.error", isInRange(0, 59))
+        .transform(value => Try(value.toInt), _.map(value => formatter.format(value)).getOrElse(""))
     }
 
-    val amPmMapping: Mapping[String] = text().verifying("time.ampm.error", isEmpty or isContainedIn(Seq(Time.am, Time.pm)))
+    val amPmMapping: Mapping[String] = text().verifying("time.ampm.error", isContainedIn(Seq(Time.am, Time.pm)))
 
     Forms
       .tuple(hourKey -> hourMapping, minuteKey -> minuteMapping, ampmKey -> amPmMapping)

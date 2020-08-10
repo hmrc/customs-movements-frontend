@@ -9,11 +9,16 @@ feedback.link=feedback
 date.day = Day
 date.month = Month
 date.year = Year
+date.day.error = Enter a day between 1 and 31
+date.month.error = Enter a month between 1 and 12
+date.year.error = Enter a year
 date.error.invalid = Date is incorrect
 
 time.hour = Hour
 time.minute = Minute
 time.ampm = am or pm
+time.hour.error = Enter an hour between 1 and 12
+time.minute.error = Enter a minute between 0 and 59
 time.ampm.error = Select am or pm
 time.am = am
 time.pm = pm

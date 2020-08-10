@@ -36,9 +36,15 @@
 @(form: Form[DepartureDetails], consignmentReferenceValue: String)(implicit request: Request[_], messages: Messages)
 
 @processErrors(errors: Seq[FormError]) = @{
-    val removedDuplicates = Map(errors.reverse.map { a => a.message -> a }: _*).values.toSeq.reverse
-
-    removedDuplicates.map(err => err.copy(key = if(err.key == "dateOfDeparture") "dateOfDeparture.day" else err.key))
+    val removeDuplicate = errors match {
+        case e1 :: e2 :: nil if e1.messages == e2.messages => Seq(e1)
+        case _ => errors
+    }
+    removeDuplicate.map(err => err.copy(key = err.key match {
+        case "dateOfDeparture" =>  "dateOfDeparture.day"
+        case "timeOfDeparture" => "timeOfDeparture.hour"
+        case _ => err.key
+    }))
 }
 
 @govukLayout(

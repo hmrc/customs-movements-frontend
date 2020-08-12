@@ -17,6 +17,7 @@
 package connectors
 
 import config.AppConfig
+import connectors.exception.MovementsConnectorException
 import connectors.exchanges.{Consolidation, IleQueryExchange, MovementRequest}
 import javax.inject.{Inject, Singleton}
 import models.notifications.Notification
@@ -24,8 +25,8 @@ import models.submissions.Submission
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames, Status}
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,7 +48,7 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
         case Success(response)  => logSuccessfulExchange("Submit Movement", response.body)
         case Failure(exception) => logFailedExchange("Submit Movement", exception)
       }
-      .map(_ => (): Unit)
+      .map(handleResponse(_, (): Unit))
 
   def submit[T <: Consolidation](request: T)(implicit hc: HeaderCarrier): Future[Unit] =
     httpClient
@@ -56,7 +57,7 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
         case Success(response)  => logSuccessfulExchange("Submit Consolidation", response.body)
         case Failure(exception) => logFailedExchange("Submit Consolidation", exception)
       }
-      .map(_ => (): Unit)
+      .map(handleResponse(_, (): Unit))
 
   def submit(request: IleQueryExchange)(implicit hc: HeaderCarrier): Future[String] =
     httpClient
@@ -65,7 +66,7 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
         case Success(response)  => logSuccessfulExchange("Submit ILE Query", response.body)
         case Failure(exception) => logFailedExchange("Submit ILE Query", exception)
       }
-      .map(_.body)
+      .map(res => handleResponse(res, res.body))
 
   def fetchAllSubmissions(eori: String)(implicit hc: HeaderCarrier): Future[Seq[Submission]] =
     httpClient
@@ -98,6 +99,12 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
 
   private def logFailedExchange(`type`: String, exception: Throwable): Unit =
     logger.warn(`type` + " failed", exception)
+
+  private def handleResponse[T](response: HttpResponse, value: T) =
+    response.status match {
+      case Status.ACCEPTED => value
+      case _               => throw new MovementsConnectorException(s"Failed with response $response")
+    }
 }
 
 object CustomsDeclareExportsMovementsConnector {

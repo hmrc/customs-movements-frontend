@@ -20,6 +20,7 @@ import java.time.Instant
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.AppConfig
+import connectors.exception.MovementsConnectorException
 import connectors.exchanges.ActionType.MovementType
 import connectors.exchanges.{DisassociateDUCRRequest, MovementDetailsRequest, MovementRequest}
 import forms.ConsignmentReferences
@@ -67,6 +68,22 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
           )
       )
     }
+
+    "Handle failure from back end" in {
+      stubFor(
+        post("/movements")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.INTERNAL_SERVER_ERROR)
+          )
+      )
+      val request =
+        MovementRequest("eori", MovementType.Arrival, ConsignmentReferences("ref", "value"), MovementDetailsRequest("datetime"))
+
+      intercept[MovementsConnectorException] {
+        await(connector.submit(request))
+      }
+    }
   }
 
   "Submit Consolidation" should {
@@ -87,6 +104,22 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
         postRequestedFor(urlEqualTo("/consolidation"))
           .withRequestBody(equalTo("""{"ucr":"ucr","consolidationType":"DucrDisassociation","eori":"eori"}"""))
       )
+    }
+
+    "Handle failure from back end" in {
+      stubFor(
+        post("/consolidation")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.INTERNAL_SERVER_ERROR)
+          )
+      )
+
+      val request = DisassociateDUCRRequest("eori", "ucr")
+
+      intercept[MovementsConnectorException] {
+        await(connector.submit(request))
+      }
     }
   }
 

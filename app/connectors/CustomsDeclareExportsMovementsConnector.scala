@@ -24,8 +24,8 @@ import models.submissions.Submission
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames, Status}
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,7 +47,13 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
         case Success(response)  => logSuccessfulExchange("Submit Movement", response.body)
         case Failure(exception) => logFailedExchange("Submit Movement", exception)
       }
-      .map(_ => (): Unit)
+      .map(
+        response =>
+          response.status match {
+            case Status.ACCEPTED => (): Unit
+            case _               => throw new RuntimeException(s"Failed with response $response")
+        }
+      )
 
   def submit[T <: Consolidation](request: T)(implicit hc: HeaderCarrier): Future[Unit] =
     httpClient

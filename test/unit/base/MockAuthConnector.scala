@@ -16,7 +16,7 @@
 
 package base
 
-import controllers.actions.{AuthActionImpl, EoriWhitelist}
+import controllers.actions.{AuthActionImpl, EoriAllowList}
 import models.SignedInUser
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -37,20 +37,20 @@ trait MockAuthConnector extends MockitoSugar with Stubs {
 
   val authConnectorMock: AuthConnector = mock[AuthConnector]
 
-  val eoriWhitelistMock: EoriWhitelist = mock[EoriWhitelist]
+  val eoriAllowListMock: EoriAllowList = mock[EoriAllowList]
 
   val mockAuthAction =
-    new AuthActionImpl(authConnectorMock, eoriWhitelistMock, PlayBodyParsers()(NoMaterializer))(global)
+    new AuthActionImpl(authConnectorMock, eoriAllowListMock, PlayBodyParsers()(NoMaterializer))(global)
 
   def authorizedUser(user: SignedInUser = newUser(validEori)): Unit = {
     when(authConnectorMock.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any()))
       .thenReturn(Future.successful(user.enrolments))
-    when(eoriWhitelistMock.contains(any())).thenReturn(true)
+    when(eoriAllowListMock.contains(any())).thenReturn(true)
   }
 
   def userWithoutEori(user: SignedInUser = newUser("")): Unit = {
     when(authConnectorMock.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any()))
       .thenThrow(InsufficientEnrolments())
-    when(eoriWhitelistMock.contains(any())).thenReturn(true)
+    when(eoriAllowListMock.contains(any())).thenReturn(true)
   }
 }

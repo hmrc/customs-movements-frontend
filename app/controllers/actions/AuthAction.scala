@@ -29,7 +29,7 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector, eoriWhitelist: EoriWhitelist, bodyParsers: PlayBodyParsers)(
+class AuthActionImpl @Inject()(override val authConnector: AuthConnector, eoriAllowList: EoriAllowList, bodyParsers: PlayBodyParsers)(
   implicit override val executionContext: ExecutionContext
 ) extends AuthAction with AuthorisedFunctions {
 
@@ -51,7 +51,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, eoriWh
 
         val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments)
 
-        if (eoriWhitelist.contains(cdsLoggedInUser)) {
+        if (eoriAllowList.contains(cdsLoggedInUser)) {
           block(AuthenticatedRequest(request, cdsLoggedInUser))
         } else {
           Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad()))
@@ -63,7 +63,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, eoriWh
 @ImplementedBy(classOf[AuthActionImpl])
 trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
-class EoriWhitelist @Inject()(configuration: Configuration) {
-  private val values = configuration.get[Seq[String]]("whitelist.eori")
+class EoriAllowList @Inject()(configuration: Configuration) {
+  private val values = configuration.get[Seq[String]]("allowList.eori")
   def contains(user: SignedInUser): Boolean = values.isEmpty || values.contains(user.eori)
 }

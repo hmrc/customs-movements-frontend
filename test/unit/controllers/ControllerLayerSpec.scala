@@ -53,12 +53,12 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
   protected def contentAsHtml(of: Future[Result]): Html = Html(contentAsBytes(of).decodeString(charset(of).getOrElse("utf-8")))
 
   case class SuccessfulAuth(operator: SignedInUser = user)
-      extends AuthActionImpl(mock[AuthConnector], mock[EoriWhitelist], stubMessagesControllerComponents().parsers) {
+      extends AuthActionImpl(mock[AuthConnector], mock[EoriAllowList], stubMessagesControllerComponents().parsers) {
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       block(AuthenticatedRequest(request, operator))
   }
 
-  case object UnsuccessfulAuth extends AuthActionImpl(mock[AuthConnector], mock[EoriWhitelist], stubMessagesControllerComponents().parsers) {
+  case object UnsuccessfulAuth extends AuthActionImpl(mock[AuthConnector], mock[EoriAllowList], stubMessagesControllerComponents().parsers) {
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       Future.successful(Results.Forbidden)
   }

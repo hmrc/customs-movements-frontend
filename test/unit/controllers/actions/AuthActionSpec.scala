@@ -38,21 +38,21 @@ import scala.concurrent.Future
 class AuthActionSpec extends WordSpec with MustMatchers with MockitoSugar with Stubs {
 
   private val connector = mock[AuthConnector]
-  private val whitelist = mock[EoriWhitelist]
+  private val allowList = mock[EoriAllowList]
   private val parsers = stubControllerComponents().parsers
   private val block = mock[AuthenticatedRequest[AnyContent] => Future[Result]]
-  private val action = new AuthActionImpl(connector, whitelist, parsers)
+  private val action = new AuthActionImpl(connector, allowList, parsers)
 
   "Auth Action" should {
     val controllerResponse = mock[Result]
 
     "delegate to controller" when {
 
-      "auth success for whitelisited eori" in {
+      "auth success for allow listed eori" in {
         val enrolment = Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "eori")), "state")
         given(block.apply(any())).willReturn(Future.successful(controllerResponse))
         given(connector.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set(enrolment))))
-        given(whitelist.contains(any())).willReturn(true)
+        given(allowList.contains(any())).willReturn(true)
 
         val result: Result = await(action.invokeBlock(FakeRequest(), block))
 
@@ -83,9 +83,9 @@ class AuthActionSpec extends WordSpec with MustMatchers with MockitoSugar with S
     "redirect to unauthorized" when {
       val enrolment = Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "eori")), "state")
 
-      "eori missing from whitelist" in {
+      "eori missing from allowList" in {
         given(connector.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set(enrolment))))
-        given(whitelist.contains(any())).willReturn(false)
+        given(allowList.contains(any())).willReturn(false)
 
         val result: Result = await(action.invokeBlock(FakeRequest(), block))
 

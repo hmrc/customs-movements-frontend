@@ -223,7 +223,6 @@ shutMucr.summary.title = Is the information provided for this shut request corre
 shutMucr.summary.header = Shut master consignment
 shutMucr.summary.type = MUCR
 
-associate.heading = Add to MUCR {0}
 mucrOptions.heading = Associate consignment {0}
 mucrOptions.hint = Enter a MUCR in one of the correct formats displayed under {0}.
 mucrOptions.hint.link = DE 2/1 in the UK Trade Tariff
@@ -243,7 +242,9 @@ manageMucr.associate.other.consignment = Associate another consignment to this o
 ducr.error.format = Declaration Unique Consignment Reference is in incorrect format
 mucr.error.format = Master Unique Consignment Reference is in incorrect format
 
-associate.ucr.title = Which consignment do you want to add?
+associate.ucr.title = Which consignment do you want to add? - Associate consignment {0}
+associate.ucr.heading = Which consignment do you want to add?
+associate.ucr.sectionHeader = Add to MUCR {0}
 associate.ucr.ducr = Declaration Consignment Reference (DUCR)
 associate.ucr.mucr = Master Consignment Reference (MUCR)
 

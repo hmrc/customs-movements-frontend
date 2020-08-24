@@ -242,7 +242,7 @@ manageMucr.associate.other.consignment = Associate another consignment to this o
 ducr.error.format = Declaration Unique Consignment Reference is in incorrect format
 mucr.error.format = Master Unique Consignment Reference is in incorrect format
 
-associate.ucr.title = Which consignment do you want to add? - Associate consignment {0}
+associate.ucr.title = Which consignment do you want to add to MUCR {0}?
 associate.ucr.heading = Which consignment do you want to add?
 associate.ucr.sectionHeader = Add to MUCR {0}
 associate.ucr.ducr = Declaration Consignment Reference (DUCR)

@@ -34,19 +34,19 @@
 @(form: Form[AssociateUcr], mucrOptions: MucrOptions)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
-    title = Title("associate.ucr.title", Some("mucrOptions.heading")),
+    title = Title("associate.ucr.title", None, Seq(mucrOptions.mucr)),
     backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl))) {
 
     @formHelper(action = consolidations.routes.AssociateUcrController.submit(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("associate.heading", mucrOptions.mucr))
+        @sectionHeader(messages("associate.ucr.sectionHeader", mucrOptions.mucr))
 
         @govukRadios(Radios(
             name = "kind",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("associate.ucr.title", mucrOptions.mucr)),
+                    content = Text(messages("associate.ucr.heading")),
                     isPageHeading = true,
                     classes = "govuk-fieldset__legend--l"
                 ))

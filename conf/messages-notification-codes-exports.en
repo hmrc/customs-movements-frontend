@@ -35,7 +35,7 @@ decoder.icsCode.InvalidationByCustoms = Invalidated by customs
 
 decoder.crc.Success = Success
 decoder.crc.PrelodgedDeclarationNotArrived = Pre-lodged Declaration has not arrived
-decoder.crc.UCRDoesNotExist = UCR does not exist
+decoder.crc.DeclarationNotArrived = Declaration has not arrived
 
 error.ile.InvalidUcrFormat = Invalid format of DUCR/MUCR
 error.ile.ClientIdValidationFailed = Not a recognised client ID

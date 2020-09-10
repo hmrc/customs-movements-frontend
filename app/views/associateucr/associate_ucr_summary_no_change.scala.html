@@ -75,7 +75,9 @@
 
 @govukLayout(
     title = Title("associate.ucr.summary.title"),
-    backButton = Some(BackButton(messages("site.back"), backCall))) {
+    backButton = Some(BackButton(messages("site.back"), backCall)),
+    useCustomContentWidth = true
+) {
 
     @formHelper(action = consolidations.routes.AssociateUcrSummaryController.submit(), 'autoComplete -> "off") {
 

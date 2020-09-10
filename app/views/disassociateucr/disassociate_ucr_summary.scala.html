@@ -35,7 +35,9 @@
 
 @govukLayout(
     title = Title("disassociate.ucr.summary.title"),
-    backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl(request.cache.ducrPartChiefChoice))))  {
+    backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl(request.cache.ducrPartChiefChoice))),
+    useCustomContentWidth = true
+)  {
 
     @formHelper(action = consolidations.routes.DisassociateUcrSummaryController.submit(), 'autoComplete -> "off") {
 

@@ -414,6 +414,7 @@ timeoutDialog.message = For your security, we will sign you out in
 timeoutDialog.keepAlive.text= Stay signed in
 timeoutDialog.signout.text= Sign out
 
-userSignedOut.title = We have saved your answers and signed you out
-userSignedOut.information = To continue the declaration later, save this link:
-userSignedOut.startPageLink = {0}/customs-movements/start
+userSignedOut.title = For your security we have signed you out
+userSignedOut.information = To use the service again, you will need to
+userSignedOut.startPageLink = return to the start page and sign in.
+

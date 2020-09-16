@@ -20,7 +20,6 @@
 @this(
     gdsTemplate: gds_main_template,
     pageTitle: pageTitle,
-    paragraphBody: paragraphBody,
     linkButton: linkButton
 )
 
@@ -32,15 +31,17 @@
     </p>
 }
 
+@paragraphBodyContent = {
+  <p class="govuk-body">
+    @messages("userSignedOut.information") @link(messages("userSignedOut.startPageLink"), controllers.routes.StartController.displayStartPage())
+  </p>
+}
+
 @gdsTemplate(title = Title("userSignedOut.title")) {
 
   @pageTitle(messages("userSignedOut.title"))
 
-  @paragraphBody(messages("userSignedOut.information"))
-
-  <p class="govuk-body">
-    @link(messages("userSignedOut.startPageLink", request.host), controllers.routes.StartController.displayStartPage())
-  </p>
+  @paragraphBodyContent
 
   @govukLink
 }

@@ -19,7 +19,7 @@ package controllers
 import controllers.actions.AuthAction
 import models.SignOutReason
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, verifyZeroInteractions, when}
+import org.mockito.Mockito.{reset, verify, verifyNoMoreInteractions, when}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -94,7 +94,7 @@ class SignOutControllerSpec extends ControllerLayerSpec with ScalaFutures {
 
       controller.sessionTimeoutSignedOut()(getRequest()).futureValue
 
-      verifyZeroInteractions(authAction)
+      verifyNoMoreInteractions(authAction)
     }
 
     "call sessionTimedOutPage" in {
@@ -120,7 +120,7 @@ class SignOutControllerSpec extends ControllerLayerSpec with ScalaFutures {
 
       controller.userSignedOut()(getRequest()).futureValue
 
-      verifyZeroInteractions(authAction)
+      verifyNoMoreInteractions(authAction)
     }
 
     "call userSignedOutPage" in {

@@ -115,8 +115,8 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
         await(service.submit(validEori, answers))
       } mustBe ReturnToStartException
 
-      verifyZeroInteractions(repository)
-      verifyZeroInteractions(audit)
+      verifyNoMoreInteractions(repository)
+      verifyNoMoreInteractions(audit)
     }
 
     def theAssociationSubmitted: Consolidation = {
@@ -188,8 +188,8 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
           await(service.submit(validEori, answers))
         } mustBe ReturnToStartException
 
-        verifyZeroInteractions(repository)
-        verifyZeroInteractions(audit)
+        verifyNoMoreInteractions(repository)
+        verifyNoMoreInteractions(audit)
       }
 
       "missing fields" when {
@@ -200,8 +200,8 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
             await(service.submit(validEori, answers))
           } mustBe ReturnToStartException
 
-          verifyZeroInteractions(repository)
-          verifyZeroInteractions(audit)
+          verifyNoMoreInteractions(repository)
+          verifyNoMoreInteractions(audit)
         }
 
         "Disassociate DUCR" in {
@@ -210,8 +210,8 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
             await(service.submit(validEori, answers))
           } mustBe ReturnToStartException
 
-          verifyZeroInteractions(repository)
-          verifyZeroInteractions(audit)
+          verifyNoMoreInteractions(repository)
+          verifyNoMoreInteractions(audit)
         }
 
         "Disassociate DUCR Part" in {
@@ -220,8 +220,8 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
             await(service.submit(validEori, answers))
           } mustBe ReturnToStartException
 
-          verifyZeroInteractions(repository)
-          verifyZeroInteractions(audit)
+          verifyNoMoreInteractions(repository)
+          verifyNoMoreInteractions(audit)
         }
       }
     }
@@ -266,8 +266,8 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
         await(service.submit(validEori, answers))
       } mustBe ReturnToStartException
 
-      verifyZeroInteractions(repository)
-      verifyZeroInteractions(audit)
+      verifyNoMoreInteractions(repository)
+      verifyNoMoreInteractions(audit)
     }
 
     def theShutMucrSubmitted: ShutMUCRRequest = {
@@ -340,9 +340,9 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
             await(service.submit(validEori, answers))
           }
 
-          verifyZeroInteractions(audit)
-          verifyZeroInteractions(connector)
-          verifyZeroInteractions(repository)
+          verifyNoMoreInteractions(audit)
+          verifyNoMoreInteractions(connector)
+          verifyNoMoreInteractions(repository)
         }
       }
 
@@ -361,7 +361,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
             await(service.submit(validEori, answers))
           }
 
-          verifyZeroInteractions(repository)
+          verifyNoMoreInteractions(repository)
         }
 
         "call AuditService second time with failed result" in {
@@ -444,9 +444,9 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
             await(service.submit(validEori, answers))
           }
 
-          verifyZeroInteractions(audit)
-          verifyZeroInteractions(connector)
-          verifyZeroInteractions(repository)
+          verifyNoMoreInteractions(audit)
+          verifyNoMoreInteractions(connector)
+          verifyNoMoreInteractions(repository)
         }
       }
 
@@ -465,7 +465,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
             await(service.submit(validEori, answers))
           }
 
-          verifyZeroInteractions(repository)
+          verifyNoMoreInteractions(repository)
         }
 
         "call AuditService second time with failed result" in {

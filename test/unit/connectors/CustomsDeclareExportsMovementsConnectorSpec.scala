@@ -62,7 +62,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
       verify(
         postRequestedFor(urlEqualTo("/movements"))
           .withRequestBody(
-            equalTo(
+            equalToJson(
               """{"eori":"eori","choice":"Arrival","consignmentReference":{"reference":"ref","referenceValue":"value"},"movementDetails":{"dateTime":"datetime"}}"""
             )
           )
@@ -102,7 +102,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
 
       verify(
         postRequestedFor(urlEqualTo("/consolidation"))
-          .withRequestBody(equalTo("""{"ucr":"ucr","consolidationType":"DucrDisassociation","eori":"eori"}"""))
+          .withRequestBody(equalToJson("""{"ucr":"ucr","consolidationType":"DucrDisassociation","eori":"eori"}"""))
       )
     }
 

@@ -21,7 +21,7 @@ import javax.inject.Inject
 import models.SignOutReason
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{session_timed_out, user_signed_out}
 
 class SignOutController @Inject()(

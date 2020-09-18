@@ -158,7 +158,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
           val result = controller().submitDucrPartDetails()(postRequest(inputData))
           status(result) mustBe BAD_REQUEST
 
-          verifyZeroInteractions(cache)
+          verifyNoMoreInteractions(cache)
         }
 
       }
@@ -213,7 +213,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
           val result = controller().submitDucrPartDetailsJourney()(postRequest(inputData))
 
           status(result) mustBe BAD_REQUEST
-          verifyZeroInteractions(cache)
+          verifyNoMoreInteractions(cache)
         }
 
       }

@@ -26,7 +26,7 @@ import models.cache.{AssociateUcrAnswers, JourneyType}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.SubmissionService
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.associateucr.{associate_ucr_summary, associate_ucr_summary_no_change}
 
 import scala.concurrent.ExecutionContext

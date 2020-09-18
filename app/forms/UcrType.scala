@@ -29,7 +29,7 @@ object UcrType {
   case object Ducr extends UcrType("ducr", "D")
   case object DucrPart extends UcrType("ducrPart", "DP")
 
-  private val lookup = PartialFunction[String, UcrType] {
+  private val lookup: PartialFunction[String, UcrType] = {
     case Mucr.formValue     => Mucr
     case Ducr.formValue     => Ducr
     case DucrPart.formValue => DucrPart

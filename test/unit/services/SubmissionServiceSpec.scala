@@ -27,7 +27,6 @@ import org.mockito.BDDMockito._
 import org.mockito.Mockito._
 import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.concurrent.IntegrationPatience
 import play.api.test.Helpers._
 import repositories.CacheRepository
 import services.audit.{AuditService, AuditType}

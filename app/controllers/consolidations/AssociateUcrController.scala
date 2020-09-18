@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.AssociateUcr.form
 import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
-import models.cache.{AssociateUcrAnswers, Cache, JourneyType}
+import models.cache.{AssociateUcrAnswers, JourneyType}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.CacheRepository

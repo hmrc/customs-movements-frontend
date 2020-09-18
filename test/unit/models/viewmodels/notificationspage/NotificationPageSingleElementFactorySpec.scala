@@ -16,8 +16,7 @@
 
 package models.viewmodels.notificationspage
 
-import java.time.format.DateTimeFormatter
-import java.time.{Instant, ZoneId}
+import java.time.Instant
 
 import base.BaseSpec
 import com.google.inject.Guice

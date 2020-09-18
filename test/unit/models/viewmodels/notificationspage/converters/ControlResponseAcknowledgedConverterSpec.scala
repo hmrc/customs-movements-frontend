@@ -17,7 +17,6 @@
 package models.viewmodels.notificationspage.converters
 
 import base.{BaseSpec, OverridableInjector}
-import com.google.inject.Guice
 import models.notifications.ResponseType
 import models.viewmodels.decoder.ActionCode
 import modules.DateTimeModule

@@ -30,7 +30,7 @@ class FeatureSwitchController @Inject()(implicit val featureSwitchConfig: Featur
     extends BackendController(cc) {
 
   def set(feature: Feature, status: FeatureStatus): Action[AnyContent] =
-    Action.async { implicit req =>
+    Action.async { _ =>
       featureSwitchConfig.setFeatureStatus(feature, status)
       Future.successful(Ok(s"${feature} ${status}"))
     }

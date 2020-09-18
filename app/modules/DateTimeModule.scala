@@ -16,14 +16,10 @@
 
 package modules
 
-import java.time.format.DateTimeFormatter
-import java.time.temporal.TemporalAccessor
 import java.time.{Clock, ZoneId}
 
 import com.google.inject.AbstractModule
-import javax.inject.{Inject, Provider, Singleton}
 import modules.DateTimeModule.timezone
-import views.ViewDates
 
 class DateTimeModule extends AbstractModule {
   override def configure(): Unit = {

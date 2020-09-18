@@ -19,7 +19,6 @@ package views.components.config
 import config.{AppConfig, IleQueryConfig}
 import forms.{DucrPartChiefChoice, ManageMucrChoice}
 import javax.inject.Inject
-import models.requests.JourneyRequest
 import play.api.mvc.Call
 
 class MucrOptionsConfig @Inject()(appConfig: AppConfig, ileQueryConfig: IleQueryConfig) extends BaseConfig(ileQueryConfig) {

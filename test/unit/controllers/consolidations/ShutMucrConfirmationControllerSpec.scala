@@ -31,15 +31,13 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.confirmation_page
 
-import scala.concurrent.ExecutionContext.global
-
 class ShutMucrConfirmationControllerSpec extends ControllerLayerSpec with ScalaFutures {
 
   private val flashExtractor = mock[FlashExtractor]
   private val confirmationPage = mock[confirmation_page]
 
   private val controller =
-    new ShutMucrConfirmationController(SuccessfulAuth(), stubMessagesControllerComponents(), flashExtractor, confirmationPage)(global)
+    new ShutMucrConfirmationController(SuccessfulAuth(), stubMessagesControllerComponents(), flashExtractor, confirmationPage)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

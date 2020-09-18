@@ -16,8 +16,6 @@
 
 package models.viewmodels.notificationspage.converters
 
-import java.time.format.DateTimeFormatter
-
 import javax.inject.{Inject, Singleton}
 import models.notifications.{Entry, Notification}
 import models.viewmodels.decoder.Decoder
@@ -25,7 +23,7 @@ import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import views.ViewDates
-import views.html.components.{code_explanation, paragraph}
+import views.html.components.code_explanation
 
 @Singleton
 class ERSResponseConverter @Inject()(decoder: Decoder, viewDates: ViewDates) extends NotificationPageSingleElementConverter {

@@ -16,8 +16,6 @@
 
 package handlers
 
-import java.net.URLEncoder
-
 import config.AppConfig
 import controllers.ControllerLayerSpec
 import controllers.exception.IncompleteApplication
@@ -37,7 +35,6 @@ import scala.concurrent.Future.successful
 
 class ErrorHandlerSpec extends ControllerLayerSpec {
 
-  private implicit val lang: Lang = Lang.defaultLang
   private val appConfig = mock[AppConfig]
   private val errorPage = mock[views.html.error_template]
   private val errorPageHTML = HtmlFormat.empty
@@ -77,8 +74,6 @@ class ErrorHandlerSpec extends ControllerLayerSpec {
   }
 
   "resolve error" should {
-
-    def urlEncode(value: String): String = URLEncoder.encode(value, "UTF-8")
 
     "handle incomplete application exception" in {
       val res = errorHandler.resolveError(req, IncompleteApplication)

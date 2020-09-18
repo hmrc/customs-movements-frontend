@@ -16,8 +16,6 @@
 
 package models.viewmodels.notificationspage.converters
 
-import java.time.format.DateTimeFormatter
-
 import javax.inject.{Inject, Singleton}
 import models.notifications.Notification
 import models.viewmodels.notificationspage.NotificationsPageSingleElement

@@ -23,12 +23,8 @@ import org.scalatest.matchers.{BeMatcher, MatchResult, Matcher}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
-import scala.collection.JavaConverters._
-
 //noinspection ScalaStyle
 trait ViewMatchers { self: MustMatchers =>
-
-  implicit private def elements2Scala(elements: Elements): Iterator[Element] = elements.iterator().asScala
 
   val checked: BeMatcher[Element] = new BeMatcher[Element] {
     override def apply(left: Element): MatchResult =

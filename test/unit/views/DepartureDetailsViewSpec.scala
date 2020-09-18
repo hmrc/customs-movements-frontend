@@ -108,9 +108,9 @@ class DepartureDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       "have date section" which {
 
         "contains label" in {
-          import scala.collection.JavaConversions._
+          import scala.collection.JavaConverters.collectionAsScalaIterable
 
-          emptyView.getElementsByTag("legend").exists { elem =>
+          collectionAsScalaIterable(emptyView.getElementsByTag("legend")).exists { elem =>
             elem.text() == messages("departureDetails.date.question")
           }
         }
@@ -138,9 +138,9 @@ class DepartureDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       "have time section" which {
 
         "contains label" in {
-          import scala.collection.JavaConversions._
+          import scala.collection.JavaConverters.collectionAsScalaIterable
 
-          emptyView.getElementsByTag("legend").exists { elem =>
+          collectionAsScalaIterable(emptyView.getElementsByTag("legend")).exists { elem =>
             elem.text() == messages("departureDetails.time.question")
           }
         }

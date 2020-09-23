@@ -49,7 +49,7 @@ class MucrSummaryViewSpec extends ViewSpec with Injector {
 
     "render all routes of entry" in {
       ROECode.codes
-        .filterNot(_ == UnknownRoe)
+        .filterNot(_ == UnknownRoe())
         .foreach(roe => summaryElement(view(mucrInfo.copy(entryStatus = Some(status.copy(roe = Some(roe))))), 0) must containMessage(roe.messageKey))
     }
 

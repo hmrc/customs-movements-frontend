@@ -22,12 +22,10 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.unauthorised
 
-import scala.concurrent.ExecutionContext.global
-
 class UnauthorisedControllerSpec extends ControllerLayerSpec {
 
   private val mockUnauthorisedPage = mock[unauthorised]
-  private val controller = new UnauthorisedController(stubMessagesControllerComponents(), mockUnauthorisedPage)(global)
+  private val controller = new UnauthorisedController(stubMessagesControllerComponents(), mockUnauthorisedPage)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

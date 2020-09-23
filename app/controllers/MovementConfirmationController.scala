@@ -23,10 +23,8 @@ import models.ReturnToStartException
 import models.cache.JourneyType._
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.confirmation_page
-
-import scala.concurrent.ExecutionContext
 
 @Singleton
 class MovementConfirmationController @Inject()(
@@ -34,8 +32,7 @@ class MovementConfirmationController @Inject()(
   mcc: MessagesControllerComponents,
   flashExtractor: FlashExtractor,
   confirmationPage: confirmation_page
-)(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+) extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = authenticate { implicit request =>
     val movementType = flashExtractor.extractMovementType(request).getOrElse(throw ReturnToStartException)

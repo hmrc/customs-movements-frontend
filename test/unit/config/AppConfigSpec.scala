@@ -19,9 +19,8 @@ package config
 import com.typesafe.config.{Config, ConfigFactory}
 import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.Mode.Test
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
 
@@ -67,8 +66,7 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
   val validServicesConfiguration = Configuration(validAppConfig)
   private val emptyServicesConfiguration = Configuration(emptyAppConfig)
 
-  private def runMode(conf: Configuration): RunMode = new RunMode(conf, Test)
-  private def servicesConfig(conf: Configuration) = new ServicesConfig(conf, runMode(conf))
+  private def servicesConfig(conf: Configuration) = new ServicesConfig(conf)
   private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
 
   val validConfigService: AppConfig = appConfig(validServicesConfiguration)
@@ -158,7 +156,7 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
   }
 
   "throw an exception when auth.host is missing" in {
-    intercept[Exception](emptyConfigService.authUrl).getMessage must be("Could not find config auth.host")
+    intercept[Exception](emptyConfigService.authUrl).getMessage must be("Could not find config key 'auth.host'")
   }
 
   "throw an exception when urls.login is missing" in {
@@ -171,7 +169,7 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
 
   "throw an exception when customs-declare-exports-movements.host is missing" in {
     intercept[Exception](emptyConfigService.customsDeclareExportsMovements).getMessage must be(
-      "Could not find config customs-declare-exports-movements.host"
+      "Could not find config key 'customs-declare-exports-movements.host'"
     )
   }
 

@@ -21,14 +21,12 @@ import controllers.routes
 import forms.Transport
 import models.cache.ArrivalAnswers
 import models.requests.JourneyRequest
-import play.api.data.Form
 import play.api.mvc.AnyContentAsEmpty
 import play.twirl.api.Html
 import views.html.transport
 
 class TransportViewSpec extends ViewSpec with Injector {
 
-  private val form: Form[Transport] = Transport.form
   private val transportPage = instanceOf[transport]
 
   private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())

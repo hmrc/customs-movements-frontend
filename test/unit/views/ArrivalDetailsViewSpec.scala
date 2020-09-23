@@ -34,6 +34,8 @@ import play.twirl.api.Html
 import testdata.MovementsTestData
 import views.html.arrival_details
 
+import scala.collection.JavaConverters.collectionAsScalaIterable
+
 class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   private implicit val request = FakeRequest().withCSRFToken
@@ -108,9 +110,7 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
       "have date section" which {
 
         "contains label" in {
-          import scala.collection.JavaConversions._
-
-          emptyView.getElementsByTag("legend").exists { elem =>
+          collectionAsScalaIterable(emptyView.getElementsByTag("legend")).exists { elem =>
             elem.text() == messages("arrivalDetails.date.question")
           }
         }
@@ -138,9 +138,7 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
       "have time section" which {
 
         "contains label" in {
-          import scala.collection.JavaConversions._
-
-          emptyView.getElementsByTag("legend").exists { elem =>
+          collectionAsScalaIterable(emptyView.getElementsByTag("legend")).exists { elem =>
             elem.text() == messages("arrivalDetails.time.question")
           }
         }

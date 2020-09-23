@@ -17,7 +17,6 @@
 package connectors.exchanges
 
 import connectors.exchanges.ActionType.ConsolidationType
-import connectors.exchanges.ActionType.ConsolidationType.DucrPartDisassociation
 import play.api.libs.json._
 import uk.gov.hmrc.play.json.Union
 

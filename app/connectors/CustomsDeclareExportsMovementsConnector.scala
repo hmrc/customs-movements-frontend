@@ -27,7 +27,7 @@ import play.api.http.{ContentTypes, HeaderNames, Status}
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -50,9 +50,9 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
       }
       .map(handleResponse(_, (): Unit))
 
-  def submit[T <: Consolidation](request: T)(implicit hc: HeaderCarrier): Future[Unit] =
+  def submit(request: Consolidation)(implicit hc: HeaderCarrier): Future[Unit] =
     httpClient
-      .POST[T, HttpResponse](appConfig.customsDeclareExportsMovements + Consolidations, request, JsonHeaders)
+      .POST[Consolidation, HttpResponse](appConfig.customsDeclareExportsMovements + Consolidations, request, JsonHeaders)
       .andThen {
         case Success(response)  => logSuccessfulExchange("Submit Consolidation", response.body)
         case Failure(exception) => logFailedExchange("Submit Consolidation", exception)

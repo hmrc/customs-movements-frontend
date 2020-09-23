@@ -21,10 +21,8 @@ import forms.IleQueryForm.form
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.ile_query
-
-import scala.concurrent.ExecutionContext
 
 @Singleton
 class FindConsignmentController @Inject()(
@@ -32,8 +30,7 @@ class FindConsignmentController @Inject()(
   ileQueryFeatureEnabled: IleQueryAction,
   mcc: MessagesControllerComponents,
   ileQueryPage: ile_query
-)(implicit ex: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+) extends FrontendController(mcc) with I18nSupport {
 
   def displayQueryForm(): Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled) { implicit request =>
     Ok(ileQueryPage(form))

@@ -19,8 +19,8 @@ import java.time.{Clock, LocalDateTime, ZoneOffset}
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder
 import connectors.{AuditWiremockTestServer, AuthWiremockTestServer, MovementsBackendWiremockTestServer}
-import models.{DateTimeProvider, UcrBlock}
 import models.cache.{Answers, Cache}
+import models.{DateTimeProvider, UcrBlock}
 import org.scalatest.concurrent.Eventually
 import org.scalatest.{BeforeAndAfterEach, MustMatchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -31,6 +31,7 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Request, Result}
 import play.api.test.Helpers._
 import play.api.test.{CSRFTokenHelper, FakeRequest}
 import play.api.{Application, Configuration}
+import reactivemongo.play.json.ImplicitBSONHandlers
 import reactivemongo.play.json.ImplicitBSONHandlers._
 import reactivemongo.play.json.collection.JSONCollection
 import repositories.CacheRepository
@@ -78,11 +79,16 @@ abstract class IntegrationSpec
     route(app, request).get
   }
 
-  protected def theCacheFor(eori: String): Option[Cache] = await(cacheRepository.find(Json.obj("eori" -> eori)).one[Cache])
+  protected def theCacheFor(eori: String): Option[Cache] =
+    await(
+      cacheRepository
+        .find(Json.obj("eori" -> eori), projection = None)(ImplicitBSONHandlers.JsObjectDocumentWriter, ImplicitBSONHandlers.JsObjectDocumentWriter)
+        .one[Cache]
+    )
 
   protected def theAnswersFor(eori: String): Option[Answers] = theCacheFor(eori).flatMap(_.answers)
 
-  protected def givenCacheFor(cache: Cache): Unit = await(cacheRepository.insert(Cache.format.writes(cache)))
+  protected def givenCacheFor(cache: Cache): Unit = await(cacheRepository.insert(ordered = false).one(Cache.format.writes(cache)))
   protected def givenCacheFor(eori: String, answers: Answers): Unit = givenCacheFor(Cache(eori, Some(answers), None, None))
   protected def givenCacheFor(eori: String, answers: Answers, queryUcr: UcrBlock): Unit =
     givenCacheFor(Cache(eori, Some(answers), Some(queryUcr), None))

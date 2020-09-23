@@ -22,13 +22,11 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.start_page
 
-import scala.concurrent.ExecutionContext.global
-
 class StartControllerSpec extends ControllerLayerSpec {
 
   private val startPage = mock[start_page]
 
-  private val controller = new StartController(stubMessagesControllerComponents(), startPage)(global)
+  private val controller = new StartController(stubMessagesControllerComponents(), startPage)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

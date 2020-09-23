@@ -19,13 +19,11 @@ package controllers
 import controllers.actions.AuthAction
 import models.SignOutReason
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, verifyZeroInteractions, when}
+import org.mockito.Mockito.{reset, verify, verifyNoMoreInteractions, when}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.{session_timed_out, user_signed_out}
-
-import scala.concurrent.ExecutionContext.global
 
 class SignOutControllerSpec extends ControllerLayerSpec with ScalaFutures {
 
@@ -34,7 +32,7 @@ class SignOutControllerSpec extends ControllerLayerSpec with ScalaFutures {
   private val sessionTimedOutPage = mock[session_timed_out]
   private val userSignedOutPage = mock[user_signed_out]
 
-  private val controller = new SignOutController(SuccessfulAuth(), mcc, sessionTimedOutPage, userSignedOutPage)(global)
+  private val controller = new SignOutController(SuccessfulAuth(), mcc, sessionTimedOutPage, userSignedOutPage)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -90,13 +88,13 @@ class SignOutControllerSpec extends ControllerLayerSpec with ScalaFutures {
 
   "SignOutController on sessionTimeoutSignedOut" should {
 
-    val controller = new SignOutController(authAction, mcc, sessionTimedOutPage, userSignedOutPage)(global)
+    val controller = new SignOutController(authAction, mcc, sessionTimedOutPage, userSignedOutPage)
 
     "not authenticate request" in {
 
       controller.sessionTimeoutSignedOut()(getRequest()).futureValue
 
-      verifyZeroInteractions(authAction)
+      verifyNoMoreInteractions(authAction)
     }
 
     "call sessionTimedOutPage" in {
@@ -116,13 +114,13 @@ class SignOutControllerSpec extends ControllerLayerSpec with ScalaFutures {
 
   "SignOutController on userSignedOut" should {
 
-    val controller = new SignOutController(authAction, mcc, sessionTimedOutPage, userSignedOutPage)(global)
+    val controller = new SignOutController(authAction, mcc, sessionTimedOutPage, userSignedOutPage)
 
     "not authenticate request" in {
 
       controller.userSignedOut()(getRequest()).futureValue
 
-      verifyZeroInteractions(authAction)
+      verifyNoMoreInteractions(authAction)
     }
 
     "call userSignedOutPage" in {

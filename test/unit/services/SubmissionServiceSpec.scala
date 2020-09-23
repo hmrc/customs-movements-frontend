@@ -27,7 +27,6 @@ import org.mockito.BDDMockito._
 import org.mockito.Mockito._
 import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.concurrent.IntegrationPatience
 import play.api.test.Helpers._
 import repositories.CacheRepository
 import services.audit.{AuditService, AuditType}
@@ -116,8 +115,8 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
         await(service.submit(validEori, answers))
       } mustBe ReturnToStartException
 
-      verifyZeroInteractions(repository)
-      verifyZeroInteractions(audit)
+      verifyNoMoreInteractions(repository)
+      verifyNoMoreInteractions(audit)
     }
 
     def theAssociationSubmitted: Consolidation = {
@@ -189,8 +188,8 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
           await(service.submit(validEori, answers))
         } mustBe ReturnToStartException
 
-        verifyZeroInteractions(repository)
-        verifyZeroInteractions(audit)
+        verifyNoMoreInteractions(repository)
+        verifyNoMoreInteractions(audit)
       }
 
       "missing fields" when {
@@ -201,8 +200,8 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
             await(service.submit(validEori, answers))
           } mustBe ReturnToStartException
 
-          verifyZeroInteractions(repository)
-          verifyZeroInteractions(audit)
+          verifyNoMoreInteractions(repository)
+          verifyNoMoreInteractions(audit)
         }
 
         "Disassociate DUCR" in {
@@ -211,8 +210,8 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
             await(service.submit(validEori, answers))
           } mustBe ReturnToStartException
 
-          verifyZeroInteractions(repository)
-          verifyZeroInteractions(audit)
+          verifyNoMoreInteractions(repository)
+          verifyNoMoreInteractions(audit)
         }
 
         "Disassociate DUCR Part" in {
@@ -221,8 +220,8 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
             await(service.submit(validEori, answers))
           } mustBe ReturnToStartException
 
-          verifyZeroInteractions(repository)
-          verifyZeroInteractions(audit)
+          verifyNoMoreInteractions(repository)
+          verifyNoMoreInteractions(audit)
         }
       }
     }
@@ -267,8 +266,8 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
         await(service.submit(validEori, answers))
       } mustBe ReturnToStartException
 
-      verifyZeroInteractions(repository)
-      verifyZeroInteractions(audit)
+      verifyNoMoreInteractions(repository)
+      verifyNoMoreInteractions(audit)
     }
 
     def theShutMucrSubmitted: ShutMUCRRequest = {
@@ -341,9 +340,9 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
             await(service.submit(validEori, answers))
           }
 
-          verifyZeroInteractions(audit)
-          verifyZeroInteractions(connector)
-          verifyZeroInteractions(repository)
+          verifyNoMoreInteractions(audit)
+          verifyNoMoreInteractions(connector)
+          verifyNoMoreInteractions(repository)
         }
       }
 
@@ -362,7 +361,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
             await(service.submit(validEori, answers))
           }
 
-          verifyZeroInteractions(repository)
+          verifyNoMoreInteractions(repository)
         }
 
         "call AuditService second time with failed result" in {
@@ -445,9 +444,9 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
             await(service.submit(validEori, answers))
           }
 
-          verifyZeroInteractions(audit)
-          verifyZeroInteractions(connector)
-          verifyZeroInteractions(repository)
+          verifyNoMoreInteractions(audit)
+          verifyNoMoreInteractions(connector)
+          verifyNoMoreInteractions(repository)
         }
       }
 
@@ -466,7 +465,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
             await(service.submit(validEori, answers))
           }
 
-          verifyZeroInteractions(repository)
+          verifyNoMoreInteractions(repository)
         }
 
         "call AuditService second time with failed result" in {

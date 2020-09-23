@@ -28,14 +28,12 @@ import repository.{MockCache, MockIleQueryCache}
 import testdata.CommonTestData.correctUcr
 import views.html.ile_query
 
-import scala.concurrent.ExecutionContext.global
-
 class FindConsignmentControllerSpec extends ControllerLayerSpec with MockIleQueryCache with MockCache {
 
   private val ileQueryPage = mock[ile_query]
 
   private def controllerWithIleQuery(ileQueryAction: IleQueryAction): FindConsignmentController =
-    new FindConsignmentController(SuccessfulAuth(), ileQueryAction, stubMessagesControllerComponents(), ileQueryPage)(global)
+    new FindConsignmentController(SuccessfulAuth(), ileQueryAction, stubMessagesControllerComponents(), ileQueryPage)
 
   private val controller = controllerWithIleQuery(IleQueryEnabled)
 

@@ -17,7 +17,6 @@
 package controllers.actions
 
 import base.UnitSpec
-import play.api.mvc._
 import config.DucrPartConfig
 import controllers.exception.InvalidFeatureStateException
 import models.requests.AuthenticatedRequest
@@ -26,10 +25,9 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.mvc.Result
-import play.twirl.api.HtmlFormat
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class DucrPartActionSpec extends UnitSpec with BeforeAndAfterEach with ScalaFutures {
 

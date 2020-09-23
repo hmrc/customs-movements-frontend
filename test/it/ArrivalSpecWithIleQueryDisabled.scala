@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-import java.time.temporal.ChronoUnit
-import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneOffset}
-
 import forms.ConsignmentReferences
 import models.cache.ArrivalAnswers
 import play.api.Configuration
@@ -26,10 +23,6 @@ class ArrivalSpecWithIleQueryDisabled extends IntegrationSpec {
 
   override def ileQueryFeatureConfiguration: Configuration =
     Configuration.from(Map("microservice.services.features.ileQuery" -> "disabled"))
-
-  private val date = LocalDate.now()
-  private val time = LocalTime.now().truncatedTo(ChronoUnit.MINUTES)
-  private val datetime = LocalDateTime.of(date, time).toInstant(ZoneOffset.UTC)
 
   "Consignment References Page" when {
     "GET" should {

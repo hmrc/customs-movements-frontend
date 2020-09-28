@@ -51,6 +51,11 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
   private val mucr = correctUcr_2
   private val ucr = correctUcr
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(audit, connector, repository, movementBuilder)
+  }
+
   override def afterEach(): Unit = {
     reset(audit, connector, repository, movementBuilder)
     super.afterEach()

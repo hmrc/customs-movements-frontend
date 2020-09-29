@@ -7,7 +7,7 @@ import sbt._
 import uk.gov.hmrc.DefaultBuildSettings._
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 import uk.gov.hmrc.versioning.SbtGitVersioning
-import uk.gov.hmrc.{SbtArtifactory, SbtAutoBuildPlugin}
+import uk.gov.hmrc.{ForkedJvmPerTestSettings, SbtArtifactory, SbtAutoBuildPlugin}
 
 val appName = "customs-movements-frontend"
 
@@ -16,7 +16,7 @@ PlayKeys.devSettings := Seq("play.server.http.port" -> "6796")
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory, SbtWeb)
   .settings(
-    libraryDependencies ++= AppDependencies(),
+    libraryDependencies ++= (AppDependencies.compile ++ AppDependencies.test),
     dependencyOverrides += "commons-codec" % "commons-codec" % "1.12",
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
@@ -24,11 +24,13 @@ lazy val microservice = Project(appName, file("."))
     scalaVersion := "2.12.12"
   )
   .configs(IntegrationTest)
+  .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
+  .settings(resolvers ++= Seq(Resolver.bintrayRepo("hmrc", "releases"), Resolver.jcenterRepo, Resolver.bintrayRepo("emueller", "maven")))
+  .settings(publishingSettings: _*)
   .settings(
     unmanagedSourceDirectories in Test := Seq((baseDirectory in Test).value / "test/unit", (baseDirectory in Test).value / "test/util"),
     addTestReportOption(Test, "test-reports")
   )
-  .settings(inConfig(TemplateItTest)(Defaults.itSettings): _*)
   .settings(
     Keys.fork in IntegrationTest := false,
     unmanagedSourceDirectories in IntegrationTest := Seq(
@@ -36,11 +38,9 @@ lazy val microservice = Project(appName, file("."))
       (baseDirectory in Test).value / "test/util"
     ),
     addTestReportOption(IntegrationTest, "int-test-reports"),
-    testGrouping in IntegrationTest := TestPhases.oneForkedJvmPerTest((definedTests in IntegrationTest).value),
+    testGrouping in IntegrationTest := ForkedJvmPerTestSettings.oneForkedJvmPerTest((definedTests in IntegrationTest).value),
     parallelExecution in IntegrationTest := false
   )
-  .settings(resolvers ++= Seq(Resolver.bintrayRepo("hmrc", "releases"), Resolver.jcenterRepo, Resolver.bintrayRepo("emueller", "maven")))
-  .settings(publishingSettings: _*)
   .settings(
     // concatenate js
     Concat.groups :=
@@ -59,9 +59,7 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(scoverageSettings)
   .settings(silencerSettings)
-
-lazy val TemplateTest = config("tt") extend Test
-lazy val TemplateItTest = config("tit") extend IntegrationTest
+  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
 
 lazy val scoverageSettings: Seq[Setting[_]] = Seq(
   coverageExcludedPackages := List(

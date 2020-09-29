@@ -14,6 +14,13 @@
  * limitations under the License.
  *@
 
-@(message: String = "", href: Call)
+@import play.twirl.api.HtmlFormat.empty
 
-<a class="govuk-link govuk-link--no-visited-state" href="@href.url">@message</a>
+@(message: Html = empty, href: Call, textHidden: Option[String] = None)
+
+@hasHint = @{textHidden.exists(_.nonEmpty)}
+
+<a class="govuk-link govuk-link--no-visited-state" href="@href.url">
+ <span @if(hasHint){aria-hidden="true"}>@message</span>
+ @if(hasHint){<span class="govuk-visually-hidden">@{textHidden.getOrElse("")}</span>}
+</a>

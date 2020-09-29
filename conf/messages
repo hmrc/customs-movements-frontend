@@ -280,6 +280,7 @@ submissions.eori = Eori
 submissions.conversationId = ConversationId
 submissions.ucr = UCR
 submissions.dateOfRequest = Date of request
+submissions.hidden.text = View consignment {0}
 
 submissions.shutmucr = Shut
 submissions.arrival = Arrive

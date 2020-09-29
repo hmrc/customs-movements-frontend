@@ -144,7 +144,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
       val secondDataRowElements = pageWithData.selectFirst(".govuk-table__body .govuk-table__row:nth-child(2)")
       val thirdDataRowElements = pageWithData.selectFirst(".govuk-table__body .govuk-table__row:nth-child(3)")
 
-      firstDataRowElements.selectFirst(".ucr").text() mustBe validMucr
+      firstDataRowElements.selectFirst(".ucr").text() mustBe s"$validMucr ${messages("submissions.hidden.text", validMucr)}"
       firstDataRowElements.selectFirst(".submission-type") must containMessage("submissions.submissionType.M")
       firstDataRowElements.selectFirst(".date-of-request").text() mustBe viewDates.formatDateAtTime(
         LocalDateTime
@@ -152,7 +152,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
       ) // "31 Oct 2019 at 00:00"
       firstDataRowElements.selectFirst(".submission-action") must containMessage("submissions.shutmucr")
 
-      secondDataRowElements.selectFirst(".ucr").text() mustBe validDucr
+      secondDataRowElements.selectFirst(".ucr").text() mustBe s"$validDucr ${messages("submissions.hidden.text", validDucr)}"
       secondDataRowElements.selectFirst(".submission-type") must containMessage("submissions.submissionType.D")
       secondDataRowElements.selectFirst(".date-of-request").text() mustBe viewDates.formatDateAtTime(
         LocalDateTime
@@ -160,7 +160,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
       ) //"31 Oct 2019 at 00:31"
       secondDataRowElements.selectFirst(".submission-action") must containMessage("submissions.arrival")
 
-      thirdDataRowElements.selectFirst(".ucr").text() mustBe validWholeDucrParts
+      thirdDataRowElements.selectFirst(".ucr").text() mustBe s"$validWholeDucrParts ${messages("submissions.hidden.text", validWholeDucrParts)}"
       thirdDataRowElements.selectFirst(".submission-type") must containMessage("submissions.submissionType.DP")
       thirdDataRowElements.selectFirst(".date-of-request").text() mustBe viewDates.formatDateAtTime(
         LocalDateTime

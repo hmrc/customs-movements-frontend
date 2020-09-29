@@ -20,6 +20,7 @@
 @import models.submissions.Submission
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.BackButton
+@import views.html.components.gds.link
 @import views.Title
 @import views.components.config.ViewRequestsConfig
 @import views.ViewDates
@@ -38,9 +39,11 @@
   @if(notifications.isEmpty){
     @components.elements_in_separate_lines(submission.ucrBlocks.map(_.fullUcr))
   } else {
-    <a href="@routes.NotificationsController.listOfNotifications(submission.conversationId)">
-      @components.elements_in_separate_lines(submission.ucrBlocks.map(_.fullUcr))
-    </a>
+    @link(
+      message = components.elements_in_separate_lines(submission.ucrBlocks.map(_.fullUcr)),
+      textHidden = Some(messages("submissions.hidden.text", submission.ucrBlocks.map(_.fullUcr).mkString)),
+      href = routes.NotificationsController.listOfNotifications(submission.conversationId)
+    )
   }
 }
 

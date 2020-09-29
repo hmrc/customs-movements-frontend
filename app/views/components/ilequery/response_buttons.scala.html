@@ -29,6 +29,6 @@
       @govukButton(Button(content = Text(messages("ileQueryResponse.links.manageConsignment")), href = Some(routes.ChoiceController.displayChoiceForm().url)))
   </div>
   <div class="govuk-body govuk-!-margin-bottom-9">
-      @link(messages("ileQueryResponse.links.findConsignment"), controllers.ileQuery.routes.FindConsignmentController.displayQueryForm)
+      @link(Html(messages("ileQueryResponse.links.findConsignment")), controllers.ileQuery.routes.FindConsignmentController.displayQueryForm)
   </div>
 </div>

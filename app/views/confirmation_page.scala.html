@@ -36,7 +36,7 @@
 @(journeyType: JourneyType)(implicit request: Request[_], messages: Messages)
 
 @gotoTimelineLink = @{
-  link(message = messages("confirmation.notification.timeline.link"), href = routes.SubmissionsController.displayPage())
+  link(message = Html(messages("confirmation.notification.timeline.link")), href = routes.SubmissionsController.displayPage())
 }
 
 

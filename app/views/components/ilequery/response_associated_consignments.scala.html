@@ -30,7 +30,7 @@
             rows = associatedUcrs.zipWithIndex.map(indexedUcr => {
                 Seq(
                     TableRow(
-                        content = HtmlContent(link(indexedUcr._1.ucr, controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(indexedUcr._1.ucr))),
+                        content = HtmlContent(link(Html(indexedUcr._1.ucr), controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(indexedUcr._1.ucr))),
                         attributes = Map("id" -> s"associateUcr_${indexedUcr._2}_ucr")
                     ),
                     TableRow(

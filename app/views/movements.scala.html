@@ -41,7 +41,7 @@
   } else {
     @link(
       message = components.elements_in_separate_lines(submission.ucrBlocks.map(_.fullUcr)),
-      textHidden = Some(messages("submissions.hidden.text", submission.ucrBlocks.map(_.fullUcr).mkString)),
+      textHidden = Some(messages("submissions.hidden.text", submission.ucrBlocks.map(_.fullUcr).mkString(", "))),
       href = routes.NotificationsController.listOfNotifications(submission.conversationId)
     )
   }

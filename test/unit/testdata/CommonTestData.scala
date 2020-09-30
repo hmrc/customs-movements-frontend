@@ -35,6 +35,7 @@ object CommonTestData {
   val conversationId: String = "93feaae9-5043-4569-9fc5-ff04bfea0d11"
   val conversationId_2: String = "93feaae9-5043-4569-9fc5-ff04bfea0d22"
   val conversationId_3: String = "93feaae9-5043-4569-9fc5-ff04bfea0d33"
+  val conversationId_4: String = "93feaae9-5043-4569-9fc5-ff04bfea0d44"
 
   def exampleNotificationPageSingleElement(
     title: String = "TITLE",

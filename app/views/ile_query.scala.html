@@ -54,9 +54,9 @@
         @govukButton(Button(content = Text(messages("site.continue"))))
 
         <ul class="govuk-list">
-            <li>@link(message = messages("ileQuery.link.requests"), href = routes.SubmissionsController.displayPage())</li>
+            <li>@link(message = Html(messages("ileQuery.link.requests")), href = routes.SubmissionsController.displayPage())</li>
             @if(ducrPartsConfig.isDucrPartsEnabled){
-                <li>@link(message = messages("ileQuery.link.ducrPart"), href = routes.DucrPartDetailsController.displayPage())</li>
+                <li>@link(message = Html(messages("ileQuery.link.ducrPart")), href = routes.DucrPartDetailsController.displayPage())</li>
             }
         </ul>
 

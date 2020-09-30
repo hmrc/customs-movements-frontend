@@ -15,6 +15,7 @@
  *@
 
 @import config.TimeoutDialogConfig
+@import config.BetaBannerConfig
 @import models.requests.{AuthenticatedRequest, JourneyRequest}
 @import components.gds.{phaseBanner, siteHeader}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -28,11 +29,11 @@
   govukHeader: GovukHeader,
   govukLayout: GovukLayout,
   govukFlexibleLayout: govukFlexibleLayout,
-  govukPhaseBanner: GovukPhaseBanner,
   govukBackLink: GovukBackLink,
   siteHeader: siteHeader,
   phaseBanner: phaseBanner,
-  timeoutDialogConfig: TimeoutDialogConfig
+  timeoutDialogConfig: TimeoutDialogConfig,
+  betaBannerConfig: BetaBannerConfig
 )
 
 @(
@@ -70,7 +71,9 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NDJKHWK" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
-    @phaseBanner("beta")
+    @if(betaBannerConfig.isBetaBannerEnabled) {
+      @phaseBanner("beta")
+    }
 
     @if(useTimeoutDialog) {
         @timeoutDialog(request.uri, timeoutDialogConfig.timeout, timeoutDialogConfig.countdown)

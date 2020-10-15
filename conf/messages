@@ -338,7 +338,7 @@ notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Status o
 ileQuery.title = Find a consignment
 ileQuery.hint = Search by Master Consignment Reference (MUCR) or Declaration Consignment Reference (DUCR).
 ileQuery.ucr.empty = Enter a Unique Consignment Reference.
-ileQuery.ucr.incorrect = Unique Consignment Reference is incorrect
+ileQuery.ucr.incorrect = Unique Consignment Reference is incorrect.
 
 ileQuery.link.requests = View previous requests
 ileQuery.link.ducrPart = Enter a DUCR Part

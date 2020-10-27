@@ -48,7 +48,7 @@ object SOECode {
     Frustrated
   )
 
-  val MucrCodes: Set[SOECode] = Set(ConsolidationOpen, ConsolidationClosedWithoutP2P, ConsolidationHasP2P)
+  val MucrCodes: Set[SOECode] = Set(ConsolidationOpen, ConsolidationClosedWithoutP2P, ConsolidationHasP2P, ConsolidationWithEmptyMucr)
 
   val AllCodes: Set[SOECode] = MucrCodes ++ DucrCodes
 
@@ -95,5 +95,7 @@ object SOECode {
   case object ConsolidationClosedWithoutP2P extends SOECode(code = "C", messageKey = "decoder.soe.ConsolidationClosedWithoutP2P")
 
   case object ConsolidationHasP2P extends SOECode(code = "3", messageKey = "decoder.soe.ConsolidationHasP2P")
+
+  case object ConsolidationWithEmptyMucr extends SOECode(code = "E", messageKey = "decoder.soe.ConsolidationWithEmptyMucr")
 
 }

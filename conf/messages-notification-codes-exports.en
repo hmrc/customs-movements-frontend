@@ -22,6 +22,7 @@ decoder.soe.Frustrated = Frustrated
 decoder.soe.ConsolidationOpen = MUCR is open or empty
 decoder.soe.ConsolidationClosedWithoutP2P = MUCR is closed but does not have permission to proceed
 decoder.soe.ConsolidationHasP2P = MUCR has permission to proceed
+decoder.soe.ConsolidationWithEmptyMucr = Consolidation with empty MUCR
 
 decoder.roe.DocumentaryControl = Additional documents needed before goods can be released
 decoder.roe.PhysicalExternalPartyControl = Subject to review

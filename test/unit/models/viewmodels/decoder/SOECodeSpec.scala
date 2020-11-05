@@ -31,7 +31,7 @@ class SOECodeSpec extends UnitSpec {
 
     "have correct amount of MUCR codes" in {
 
-      val expectedCodesAmount = 3
+      val expectedCodesAmount = 4
       SOECode.MucrCodes.size mustBe expectedCodesAmount
     }
 
@@ -64,7 +64,7 @@ class SOECodeSpec extends UnitSpec {
 
     "have correct list of MUCR codes" in {
 
-      val expectedCodes = Set(ConsolidationOpen, ConsolidationClosedWithoutP2P, ConsolidationHasP2P)
+      val expectedCodes = Set(ConsolidationOpen, ConsolidationClosedWithoutP2P, ConsolidationHasP2P, ConsolidationWithEmptyMucr)
 
       SOECode.MucrCodes mustBe expectedCodes
     }

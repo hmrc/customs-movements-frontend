@@ -46,6 +46,7 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
 
     when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
     when(appConfig.tradeTariffUrl).thenReturn(tradeTariffUrl)
+    when(appConfig.gtmContainer).thenReturn("a")
   }
 
   override def afterEach(): Unit = {

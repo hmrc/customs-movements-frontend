@@ -38,6 +38,7 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
         |microservice.services.auth.host=localhostauth
         |google-analytics.token=N/A
         |google-analytics.host=localhostGoogle
+        |tracking-consent-frontend.gtm.container=a
         |
         |countryCodesCsvFilename=code_lists/mdg-country-codes.csv
         |countryCodesJsonFilename=location-autocomplete-canonical-list.json
@@ -80,6 +81,10 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
 
     "have analytics host" in {
       validConfigService.analyticsHost must be("localhostGoogle")
+    }
+
+    "have gtm container" in {
+      validConfigService.gtmContainer must be("a")
     }
 
     "have auth URL" in {
@@ -149,6 +154,10 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
 
   "throw an exception when google-analytics.host is missing" in {
     intercept[Exception](emptyConfigService.analyticsHost).getMessage must be("Missing configuration key: google-analytics.host")
+  }
+
+  "throw an exception when gtm.container is missing" in {
+    intercept[Exception](emptyConfigService.gtmContainer).getMessage must be("Could not find config key 'tracking-consent-frontend.gtm.container'")
   }
 
   "throw an exception when google-analytics.token is missing" in {

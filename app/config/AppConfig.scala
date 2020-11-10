@@ -94,6 +94,8 @@ class AppConfig @Inject()(
       .getOptional[Boolean]("microservice.services.features.welsh-translation")
       .getOrElse(true)
 
+  lazy val gtmContainer: String = servicesConfig.getString("tracking-consent-frontend.gtm.container")
+
   def languageMap: Map[String, Lang] =
     Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
 

@@ -16,13 +16,14 @@
 
 @import config.TimeoutDialogConfig
 @import config.BetaBannerConfig
+@import config.AppConfig
 @import models.requests.{AuthenticatedRequest, JourneyRequest}
 @import components.gds.{phaseBanner, siteHeader}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTrackingConsentSnippet
 @import views.Title
 @import views.components.BackButton
-@import views.html.components.gds.govukFlexibleLayout
 @import views.html.components.gds.{govukFlexibleLayout, timeoutDialog}
 
 @this(
@@ -33,7 +34,8 @@
   siteHeader: siteHeader,
   phaseBanner: phaseBanner,
   timeoutDialogConfig: TimeoutDialogConfig,
-  betaBannerConfig: BetaBannerConfig
+  betaBannerConfig: BetaBannerConfig,
+  hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet
 )
 
 @(
@@ -45,6 +47,8 @@
 @useTimeoutDialog = @{ request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]]}
 
 @head = {
+    @hmrcTrackingConsentSnippet()
+
     <link rel="shortcut icon" href='@routes.Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />
     <link rel="shortcut icon" href='@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")' rel="stylesheet" type="text/css" />
     <meta name="format-detection" content="telephone=no" />
@@ -54,7 +58,6 @@
 
 @scripts = {
   <script src='@routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
-  <script src='@routes.Assets.versioned("javascripts/google.tag.manager.min.js")'> </script>
   <script src="@routes.Assets.versioned("javascripts/show-hide-content.js")" type="text/javascript"></script>
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/vendor/jquery-ui.min.css")' type="text/css">
 
@@ -67,10 +70,6 @@
 }
 
 @beforeContentBlock = {
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NDJKHWK" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-
     @if(betaBannerConfig.isBetaBannerEnabled) {
       @phaseBanner("beta")
     }

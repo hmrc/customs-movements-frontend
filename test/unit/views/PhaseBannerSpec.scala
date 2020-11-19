@@ -23,12 +23,12 @@ import views.html.components.gds.phaseBanner
 
 class PhaseBannerSpec extends ViewSpec with Injector {
 
-  private val page = instanceOf[phaseBanner]
+  private val banner = instanceOf[phaseBanner]
 
   private val fakeRequestPath = "/customs-movements/start"
   private implicit val request = FakeRequest("GET", fakeRequestPath)
 
-  private def createBanner(): Html = page("")(request, messages)
+  private def createBanner(): Html = banner("")(request, messages)
 
   "Phase banner" should {
     val banner = createBanner()

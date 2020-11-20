@@ -83,7 +83,7 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with Bef
 
       val links = page(disassociateUcr).getElementsByClass("govuk-link")
 
-      links.size() mustBe 1
+      links.size() mustBe 2
     }
 
     "have 'Back' button when ileQuery enabled" in {

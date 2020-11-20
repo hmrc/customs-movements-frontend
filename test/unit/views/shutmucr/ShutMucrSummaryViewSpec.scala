@@ -80,7 +80,7 @@ class ShutMucrSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndA
 
       when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
 
-      shutMucrSummaryPage(shutMucr).getElementsByClass("govuk-link").size() mustBe 1
+      shutMucrSummaryPage(shutMucr).getElementsByClass("govuk-link").size() mustBe 2
     }
 
     "display correct change button when ileQuery disabled" in {

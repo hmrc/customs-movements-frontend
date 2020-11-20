@@ -17,6 +17,7 @@
 package views
 
 import base.Injector
+import config.AppConfig
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import views.html.components.gds.phaseBanner
@@ -24,6 +25,7 @@ import views.html.components.gds.phaseBanner
 class PhaseBannerSpec extends ViewSpec with Injector {
 
   private val banner = instanceOf[phaseBanner]
+  private val config = instanceOf[AppConfig]
 
   private val fakeRequestPath = "/customs-movements/start"
   private implicit val request = FakeRequest("GET", fakeRequestPath)
@@ -35,7 +37,7 @@ class PhaseBannerSpec extends ViewSpec with Injector {
 
     "display banner with the correct feedback link" in {
       banner.getElementsByClass("govuk-phase-banner__text").first().getElementsByTag("a").first() must haveHref(
-        s"http://localhost:9250/contact/beta-feedback-unauthenticated?service=customs-movements-frontend&backUrl=http://localhost$fakeRequestPath"
+        s"http://localhost:9250/contact/beta-feedback-unauthenticated?service=${config.contactFrontendServiceIdentifier}&backUrl=http://localhost$fakeRequestPath"
       )
     }
   }

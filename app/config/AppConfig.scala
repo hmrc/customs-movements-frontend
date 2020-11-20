@@ -41,7 +41,7 @@ class AppConfig @Inject()(
     .map(uri => MongockConfig(uri))
 
   private lazy val contactFrontendBaseUrl = servicesConfig.baseUrl("contact-frontend")
-  private lazy val contactFrontendServiceIdentifier = loadConfig("microservice.services.contact-frontend.serviceId")
+  lazy val contactFrontendServiceIdentifier = loadConfig("microservice.services.contact-frontend.serviceId")
 
   lazy val keyStoreSource: String = appName
   lazy val keyStoreUrl: String = servicesConfig.baseUrl("keystore")

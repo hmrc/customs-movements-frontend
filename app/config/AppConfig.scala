@@ -28,7 +28,7 @@ class AppConfig @Inject()(
   val runModeConfiguration: Configuration,
   val environment: Environment,
   servicesConfig: ServicesConfig,
-  @Named("appName") appName: String
+  @Named("appName") namedAppName: String
 ) {
 
   private def loadConfig(key: String): String =
@@ -43,7 +43,7 @@ class AppConfig @Inject()(
   private lazy val contactFrontendBaseUrl = servicesConfig.baseUrl("contact-frontend")
   lazy val contactFrontendServiceIdentifier = loadConfig("microservice.services.contact-frontend.serviceId")
 
-  lazy val keyStoreSource: String = appName
+  lazy val appName: String = namedAppName
   lazy val keyStoreUrl: String = servicesConfig.baseUrl("keystore")
   lazy val sessionCacheDomain: String =
     servicesConfig.getConfString("cachable.session-cache.domain", throw new Exception(s"Could not find config 'cachable.session-cache.domain'"))

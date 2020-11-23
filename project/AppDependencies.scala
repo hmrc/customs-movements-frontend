@@ -13,7 +13,7 @@ object AppDependencies {
     "uk.gov.hmrc"          %% "play-ui"                       % "8.14.0-play-26",
     "uk.gov.hmrc"          %% "bootstrap-frontend-play-26"    % "2.24.0",
     "uk.gov.hmrc"          %% "play-frontend-govuk"           % "0.53.0-play-26",
-    "uk.gov.hmrc"          %% "play-frontend-hmrc"            % "0.23.0-play-26",
+    "uk.gov.hmrc"          %% "play-frontend-hmrc"            % "0.26.0-play-26",
     "ai.x"                 %% "play-json-extensions"          % "0.42.0",
     "uk.gov.hmrc"          %% "play-whitelist-filter"         % "3.4.0-play-26",
     "uk.gov.hmrc"          %% "simple-reactivemongo"          % "7.30.0-play-26",
@@ -22,7 +22,7 @@ object AppDependencies {
     "com.github.cloudyrock.mongock"  %  "mongock-core"        % "2.0.2",
     "org.mongodb"          %  "mongo-java-driver"             % "3.12.1",
     "org.webjars.npm"      %  "govuk-frontend"                % "3.9.1",
-    "org.webjars.npm"      %  "hmrc-frontend"                 % "1.19.0",
+    "org.webjars.npm"      %  "hmrc-frontend"                 % "1.20.0",
     "org.webjars.npm"      %  "accessible-autocomplete"       % "2.0.3"
   )
 

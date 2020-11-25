@@ -60,6 +60,9 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
         |
         |microservice.services.customs-declare-exports-movements.submit-movements=/movements
         |microservice.services.customs-declare-exports-movements.submit-consolidation=/consolidation
+        |
+        |microservice.services.contact-frontend.url=/contact-frontend-url
+        |microservice.services.contact-frontend.serviceId=Movements-Service-ID
       """.stripMargin
     )
   private val emptyAppConfig: Config = ConfigFactory.parseString("")
@@ -150,66 +153,80 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
       validConfigService.fetchNotifications must be("/notifications")
     }
 
-  }
+    "have feedback link" in {
+      validConfigService.giveFeedbackLink must be("/contact-frontend-url?service=Movements-Service-ID")
+    }
 
-  "throw an exception when google-analytics.host is missing" in {
-    intercept[Exception](emptyConfigService.analyticsHost).getMessage must be("Missing configuration key: google-analytics.host")
-  }
+    "throw an exception" when {
 
-  "throw an exception when gtm.container is missing" in {
-    intercept[Exception](emptyConfigService.gtmContainer).getMessage must be("Could not find config key 'tracking-consent-frontend.gtm.container'")
-  }
+      "google-analytics.host is missing" in {
+        intercept[Exception](emptyConfigService.analyticsHost).getMessage must be("Missing configuration key: google-analytics.host")
+      }
 
-  "throw an exception when google-analytics.token is missing" in {
-    intercept[Exception](emptyConfigService.analyticsToken).getMessage must be("Missing configuration key: google-analytics.token")
-  }
+      "gtm.container is missing" in {
+        intercept[Exception](emptyConfigService.gtmContainer).getMessage must be(
+          "Could not find config key 'tracking-consent-frontend.gtm.container'"
+        )
+      }
 
-  "throw an exception when auth.host is missing" in {
-    intercept[Exception](emptyConfigService.authUrl).getMessage must be("Could not find config key 'auth.host'")
-  }
+      "google-analytics.token is missing" in {
+        intercept[Exception](emptyConfigService.analyticsToken).getMessage must be("Missing configuration key: google-analytics.token")
+      }
 
-  "throw an exception when urls.login is missing" in {
-    intercept[Exception](emptyConfigService.loginUrl).getMessage must be("Missing configuration key: urls.login")
-  }
+      "auth.host is missing" in {
+        intercept[Exception](emptyConfigService.authUrl).getMessage must be("Could not find config key 'auth.host'")
+      }
 
-  "throw an exception when urls.loginContinue is missing" in {
-    intercept[Exception](emptyConfigService.loginContinueUrl).getMessage must be("Missing configuration key: urls.loginContinue")
-  }
+      "urls.login is missing" in {
+        intercept[Exception](emptyConfigService.loginUrl).getMessage must be("Missing configuration key: urls.login")
+      }
 
-  "throw an exception when customs-declare-exports-movements.host is missing" in {
-    intercept[Exception](emptyConfigService.customsDeclareExportsMovements).getMessage must be(
-      "Could not find config key 'customs-declare-exports-movements.host'"
-    )
-  }
+      "urls.loginContinue is missing" in {
+        intercept[Exception](emptyConfigService.loginContinueUrl).getMessage must be("Missing configuration key: urls.loginContinue")
+      }
 
-  "throw an exception when movement Arrival submission uri is missing" in {
-    intercept[Exception](emptyConfigService.movementsSubmissionUri).getMessage must be(
-      "Missing configuration for Customs Declarations Exports Movements submission URI"
-    )
-  }
+      "customs-declare-exports-movements.host is missing" in {
+        intercept[Exception](emptyConfigService.customsDeclareExportsMovements).getMessage must be(
+          "Could not find config key 'customs-declare-exports-movements.host'"
+        )
+      }
 
-  "throw an exception when consolidation submission uri is missing" in {
-    intercept[Exception](emptyConfigService.movementConsolidationUri).getMessage must be(
-      "Missing configuration for Customs Declarations Exports Movements Consolidation"
-    )
-  }
+      "movement Arrival submission uri is missing" in {
+        intercept[Exception](emptyConfigService.movementsSubmissionUri).getMessage must be(
+          "Missing configuration for Customs Declarations Exports Movements submission URI"
+        )
+      }
 
-  "throw an exception when fetch all submissions uri is missing" in {
-    intercept[Exception](emptyConfigService.fetchAllSubmissions).getMessage must be(
-      "Missing configuration for Customs Declaration Exports fetch all submission URI"
-    )
-  }
+      "consolidation submission uri is missing" in {
+        intercept[Exception](emptyConfigService.movementConsolidationUri).getMessage must be(
+          "Missing configuration for Customs Declarations Exports Movements Consolidation"
+        )
+      }
 
-  "throw an exception when fetch single submission uri is missing" in {
-    intercept[Exception](emptyConfigService.fetchSingleSubmission).getMessage must be(
-      "Missing configuration for Customs Declaration Exports fetch single submission URI"
-    )
-  }
+      "fetch all submissions uri is missing" in {
+        intercept[Exception](emptyConfigService.fetchAllSubmissions).getMessage must be(
+          "Missing configuration for Customs Declaration Exports fetch all submission URI"
+        )
+      }
 
-  "throw an exception when fetch notifications uri is missing" in {
-    intercept[Exception](emptyConfigService.fetchNotifications).getMessage must be(
-      "Missing configuration for Customs Declarations Exports fetch notifications URI"
-    )
+      "fetch single submission uri is missing" in {
+        intercept[Exception](emptyConfigService.fetchSingleSubmission).getMessage must be(
+          "Missing configuration for Customs Declaration Exports fetch single submission URI"
+        )
+      }
+
+      "fetch notifications uri is missing" in {
+        intercept[Exception](emptyConfigService.fetchNotifications).getMessage must be(
+          "Missing configuration for Customs Declarations Exports fetch notifications URI"
+        )
+      }
+
+      "fetch giveFeedbackLink is missing" in {
+        intercept[Exception](emptyConfigService.giveFeedbackLink).getMessage must be(
+          "Missing configuration key: microservice.services.contact-frontend.url"
+        )
+      }
+    }
   }
 
 }

@@ -37,7 +37,7 @@ class PhaseBannerSpec extends ViewSpec with Injector {
 
     "display banner with the correct feedback link" in {
       banner.getElementsByClass("govuk-phase-banner__text").first().getElementsByTag("a").first() must haveHref(
-        s"http://localhost:9250/contact/beta-feedback-unauthenticated?service=${config.contactFrontendServiceIdentifier}&backUrl=http://localhost$fakeRequestPath"
+        s"http://localhost:9250/contact/beta-feedback-unauthenticated?service=${config.contactFrontendServiceIdentifier}&backURL=$fakeRequestPath"
       )
     }
   }

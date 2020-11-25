@@ -40,7 +40,7 @@ class AppConfig @Inject()(
     .getOptional[String]("mongodb.uri")
     .map(uri => MongockConfig(uri))
 
-  private lazy val contactFrontendBaseUrl = servicesConfig.baseUrl("contact-frontend")
+  private lazy val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")
   lazy val contactFrontendServiceIdentifier = loadConfig("microservice.services.contact-frontend.serviceId")
 
   lazy val appName: String = namedAppName
@@ -99,8 +99,7 @@ class AppConfig @Inject()(
 
   lazy val gtmContainer: String = servicesConfig.getString("tracking-consent-frontend.gtm.container")
 
-  lazy val giveFeedbackLink: String =
-    s"$contactFrontendBaseUrl/contact/beta-feedback-unauthenticated?service=$contactFrontendServiceIdentifier"
+  lazy val giveFeedbackLink: String = s"$contactFrontendUrl?service=$contactFrontendServiceIdentifier"
 
   def languageMap: Map[String, Lang] =
     Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))

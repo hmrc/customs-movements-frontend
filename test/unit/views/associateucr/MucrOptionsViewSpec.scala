@@ -17,7 +17,7 @@
 package views.associateucr
 
 import base.OverridableInjector
-import config.{AppConfig, IleQueryConfig}
+import config.IleQueryConfig
 import forms.UcrType.Mucr
 import forms.{ManageMucrChoice, MucrOptions}
 import models.UcrBlock
@@ -34,20 +34,14 @@ import views.html.associateucr.mucr_options
 class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   private val ileQueryConfig = mock[IleQueryConfig]
-  private val appConfig = mock[AppConfig]
-  private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig), bind[IleQueryConfig].toInstance(ileQueryConfig))
+  private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
 
   private val page = injector.instanceOf[mucr_options]
-
-  private val tradeTariffUrl = "http://trade-tariff"
 
   override def beforeEach(): Unit = {
     super.beforeEach()
 
     when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
-    when(appConfig.tradeTariffUrl).thenReturn(tradeTariffUrl)
-    when(appConfig.gtmContainer).thenReturn("a")
-    when(appConfig.appName).thenReturn("app-name")
   }
 
   override def afterEach(): Unit = {
@@ -79,7 +73,7 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
       val hint = createView().getElementById("createOrAdd-hint")
 
       hint must containMessage("mucrOptions.hint", messages("mucrOptions.hint.link"))
-      hint.getElementsByTag("a").first() must haveHref(tradeTariffUrl)
+      hint.getElementsByTag("a").first() must haveHref("https://www.gov.uk/trade-tariff")
     }
 
     "render the correct labels and hints" in {

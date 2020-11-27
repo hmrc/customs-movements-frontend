@@ -16,29 +16,59 @@
 
 package views
 
-import base.Injector
+import base.OverridableInjector
 import config.AppConfig
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import views.html.components.gds.phaseBanner
 
-class PhaseBannerSpec extends ViewSpec with Injector {
+class PhaseBannerSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private val banner = instanceOf[phaseBanner]
-  private val config = instanceOf[AppConfig]
+  private val appConfig = mock[AppConfig]
+  private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))
+  private val bannerPartial = injector.instanceOf[phaseBanner]
 
-  private val fakeRequestPath = "/customs-movements/start"
-  private implicit val request = FakeRequest("GET", fakeRequestPath)
+  private val requestPath = "/customs-movements/any-page"
+  private implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", requestPath)
 
-  private def createBanner(): Html = banner("")(request, messages)
+  private val selfBaseUrlTest = "selfBaseUrlTest"
+  private val giveFeedbackLinkTest = "giveFeedbackLinkTest"
+
+  private def createBanner(): Html = bannerPartial("")(fakeRequest, messages)
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    reset(appConfig)
+    when(appConfig.selfBaseUrl).thenReturn(Some(selfBaseUrlTest))
+    when(appConfig.giveFeedbackLink).thenReturn(giveFeedbackLinkTest)
+  }
+
+  override def afterEach(): Unit = {
+    reset(appConfig)
+    super.afterEach()
+  }
 
   "Phase banner" should {
-    val banner = createBanner()
 
-    "display banner with the correct feedback link" in {
-      banner.getElementsByClass("govuk-phase-banner__text").first().getElementsByTag("a").first() must haveHref(
-        s"http://localhost:9250/contact/beta-feedback-unauthenticated?service=${config.contactFrontendServiceIdentifier}&backURL=$fakeRequestPath"
-      )
+    "display feedback link with correct href" when {
+
+      "selfBaseUrl is defined" in {
+        createBanner().getElementsByClass("govuk-phase-banner__text").first().getElementsByTag("a").first() must haveHref(
+          s"$giveFeedbackLinkTest&backUrl=$selfBaseUrlTest$requestPath"
+        )
+      }
+
+      "selfBaseUrl is not defined" in {
+        when(appConfig.selfBaseUrl).thenReturn(None)
+        createBanner().getElementsByClass("govuk-phase-banner__text").first().getElementsByTag("a").first() must haveHref(s"$giveFeedbackLinkTest")
+      }
     }
   }
+
 }

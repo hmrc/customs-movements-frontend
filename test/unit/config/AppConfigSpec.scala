@@ -63,6 +63,7 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
         |
         |microservice.services.contact-frontend.url=/contact-frontend-url
         |microservice.services.contact-frontend.serviceId=Movements-Service-ID
+        |platform.frontend.host="self/base-url"
       """.stripMargin
     )
   private val emptyAppConfig: Config = ConfigFactory.parseString("")
@@ -153,8 +154,17 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
       validConfigService.fetchNotifications must be("/notifications")
     }
 
+    "have selfBaseUrl" in {
+      validConfigService.selfBaseUrl must be(defined)
+      validConfigService.selfBaseUrl.get must be("self/base-url")
+    }
+
     "have feedback link" in {
       validConfigService.giveFeedbackLink must be("/contact-frontend-url?service=Movements-Service-ID")
+    }
+
+    "empty selfBaseUrl when the key is missing" in {
+      emptyConfigService.selfBaseUrl must be(None)
     }
 
     "throw an exception" when {

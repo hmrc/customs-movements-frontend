@@ -40,9 +40,6 @@ class AppConfig @Inject()(
     .getOptional[String]("mongodb.uri")
     .map(uri => MongockConfig(uri))
 
-  private lazy val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")
-  lazy val contactFrontendServiceIdentifier = loadConfig("microservice.services.contact-frontend.serviceId")
-
   lazy val appName: String = namedAppName
   lazy val keyStoreUrl: String = servicesConfig.baseUrl("keystore")
   lazy val sessionCacheDomain: String =
@@ -59,6 +56,14 @@ class AppConfig @Inject()(
   lazy val serviceAvailabilityUrl = loadConfig("urls.serviceAvailability")
 
   lazy val customsDeclareExportsMovements = servicesConfig.baseUrl("customs-declare-exports-movements")
+
+  lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
+  lazy val giveFeedbackLink: String = {
+    val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")
+    val contactFrontendServiceIdentifier: String = loadConfig("microservice.services.contact-frontend.serviceId")
+
+    s"$contactFrontendUrl?service=$contactFrontendServiceIdentifier"
+  }
 
   lazy val movementsSubmissionUri = servicesConfig.getConfString(
     "customs-declare-exports-movements.submit-movements",
@@ -98,8 +103,6 @@ class AppConfig @Inject()(
       .getOrElse(true)
 
   lazy val gtmContainer: String = servicesConfig.getString("tracking-consent-frontend.gtm.container")
-
-  lazy val giveFeedbackLink: String = s"$contactFrontendUrl?service=$contactFrontendServiceIdentifier"
 
   def languageMap: Map[String, Lang] =
     Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))

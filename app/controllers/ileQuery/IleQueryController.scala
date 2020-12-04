@@ -100,7 +100,7 @@ class IleQueryController @Inject()(
 
   private def processQueryResults(queryResponse: IleQueryResponseExchange)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     queryResponse.data match {
-      case response: SuccessfulResponseExchangeData =>
+      case Some(response: SuccessfulResponseExchangeData) =>
         response.queriedUcr match {
 
           case ducrInfo: DucrInfo =>
@@ -118,7 +118,7 @@ class IleQueryController @Inject()(
           case _ => Future.successful(loadingPageResult())
         }
 
-      case response: UcrNotFoundResponseExchangeData =>
+      case Some(response: UcrNotFoundResponseExchangeData) =>
         response.ucrBlock match {
           case Some(UcrBlock(ucr, _, _)) => Future.successful(Ok(consignmentNotFound(ucr)))
           case _                         => Future.successful(InternalServerError(errorHandler.standardErrorTemplate()))

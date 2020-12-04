@@ -20,7 +20,12 @@ import java.time.Instant
 
 import play.api.libs.json.Json
 
-case class IleQueryResponseExchange(timestampReceived: Instant, conversationId: String, responseType: String, data: IleQueryResponseExchangeData)
+case class IleQueryResponseExchange(
+  timestampReceived: Instant,
+  conversationId: String,
+  responseType: String,
+  data: Option[IleQueryResponseExchangeData]
+)
 
 object IleQueryResponseExchange {
   implicit val format = Json.format[IleQueryResponseExchange]

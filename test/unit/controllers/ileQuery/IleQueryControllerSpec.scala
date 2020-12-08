@@ -109,17 +109,17 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
   private val parentMucrInfo = MucrInfo("parentMucr")
   private val successfulMucrResponseData = SuccessfulResponseExchangeData(queriedMucr = Some(mucrInfo), parentMucr = Some(parentMucrInfo))
   private val successfulMucrResponseExchange =
-    IleQueryResponseExchange(Instant.now(), conversationId, "inventoryLinkingQueryResponse", successfulMucrResponseData)
+    IleQueryResponseExchange(Instant.now(), conversationId, "inventoryLinkingQueryResponse", Some(successfulMucrResponseData))
 
   private val ducrInfo = DucrInfo(ucr = "ducr", declarationId = "DeclarationId")
   private val successfulDucrResponseData = SuccessfulResponseExchangeData(queriedDucr = Some(ducrInfo), parentMucr = Some(parentMucrInfo))
   private val successfulDucrResponseExchange =
-    IleQueryResponseExchange(Instant.now(), conversationId, "inventoryLinkingQueryResponse", successfulDucrResponseData)
+    IleQueryResponseExchange(Instant.now(), conversationId, "inventoryLinkingQueryResponse", Some(successfulDucrResponseData))
 
   private val ucrNotFoundResponseData =
     UcrNotFoundResponseExchangeData(messageCode = "QUE", actionCode = "1", ucrBlock = Some(UcrBlock(ucr = "mucr", ucrType = Mucr)))
   private val ucrNotFoundResponseExchange =
-    IleQueryResponseExchange(Instant.now(), conversationId, "inventoryLinkingControlResponse", ucrNotFoundResponseData)
+    IleQueryResponseExchange(Instant.now(), conversationId, "inventoryLinkingControlResponse", Some(ucrNotFoundResponseData))
 
   "IleQueryController on getConsignmentInformation" should {
     "call IleQueryRepository to find ILE Query cache document" in {

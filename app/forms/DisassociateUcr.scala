@@ -44,7 +44,9 @@ object DisassociateUcr {
       "mucr" -> mandatoryIfEqual(
         "kind",
         Mucr.formValue,
-        text().verifying("disassociate.ucr.mucr.empty", nonEmpty).verifying("disassociate.ucr.mucr.error", isEmpty or validMucrIgnoreCase)
+        text()
+          .verifying("disassociate.ucr.mucr.empty", nonEmpty)
+          .verifying("disassociate.ucr.mucr.error", isEmpty or (validMucrIgnoreCase and noLongerThan(35)))
       )
     )(form2Data)(DisassociateUcr.unapply)
 

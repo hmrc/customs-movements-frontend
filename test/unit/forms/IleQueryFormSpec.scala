@@ -17,6 +17,7 @@
 package forms
 
 import base.BaseSpec
+import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 
 class IleQueryFormSpec extends BaseSpec {
@@ -37,6 +38,21 @@ class IleQueryFormSpec extends BaseSpec {
 
       form.errors mustBe (empty)
       form.value must be(Some("GB/ABCED1234-15804TEST"))
+    }
+
+    "convert mucr to upper case when is 35 characters long" in {
+
+      val form = IleQueryForm.form.bind(JsObject(Map("ucr" -> JsString("gb/82f9-0n2f6500040010tO120p0a30998"))))
+
+      form.errors mustBe (empty)
+      form.value must be(Some("GB/82F9-0N2F6500040010TO120P0A30998"))
+    }
+
+    "display error when mucr is over 35 characters long" in {
+
+      val form = IleQueryForm.form.bind(JsObject(Map("ucr" -> JsString("gb/82f9-0n2f6500040010tO120p0a309989"))))
+
+      form.errors must be(Seq(FormError("ucr", "ileQuery.ucr.incorrect")))
     }
   }
 

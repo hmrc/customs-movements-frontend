@@ -89,13 +89,12 @@ class AssociateUcrSpec extends IntegrationSpec {
         val response = post(
           controllers.consolidations.routes.MucrOptionsController.save(),
           "createOrAdd" -> "create",
-          "newMucr" -> "GB/123-12345",
+          "newMucr" -> "GB/82F9-0N2F6500040010TO120P0A30068",
           "existingMucr" -> ""
         )
 
         status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrSummaryController.displayPage().url)
-        theAnswersFor("eori") mustBe Some(AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345"))))
       }
     }
   }

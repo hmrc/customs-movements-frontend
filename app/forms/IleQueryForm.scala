@@ -18,7 +18,7 @@ package forms
 
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.{noLongerThan, _}
 
 object IleQueryForm {
 
@@ -27,7 +27,7 @@ object IleQueryForm {
       .single(
         "ucr" -> text()
           .verifying("ileQuery.ucr.empty", nonEmpty)
-          .verifying("ileQuery.ucr.incorrect", isEmpty or validDucrIgnoreCase or validMucrIgnoreCase)
+          .verifying("ileQuery.ucr.incorrect", isEmpty or validDucrIgnoreCase or (validMucrIgnoreCase and noLongerThan(35)))
           .transform(input => input.toUpperCase, (output: String) => output)
       )
   )

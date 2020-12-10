@@ -75,7 +75,7 @@ class ShutMucrSpec extends IntegrationSpec {
       "continue" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor("eori", ShutMucrAnswers(shutMucr = Some(ShutMucr("GB/123-12345"))))
+        givenCacheFor("eori", ShutMucrAnswers(shutMucr = Some(ShutMucr("GB/82F9-0N2F6500040010TO120P0A30998"))))
         givenMovementsBackendAcceptsTheConsolidation()
 
         // When
@@ -87,13 +87,13 @@ class ShutMucrSpec extends IntegrationSpec {
         theCacheFor("eori") mustBe None
         verify(
           postRequestedForConsolidation()
-            .withRequestBody(equalToJson("""{"eori":"eori","mucr":"GB/123-12345","consolidationType":"ShutMucr"}"""))
+            .withRequestBody(equalToJson("""{"eori":"eori","mucr":"GB/82F9-0N2F6500040010TO120P0A30998","consolidationType":"ShutMucr"}"""))
         )
         verifyEventually(
           postRequestedForAudit()
             .withRequestBody(matchingJsonPath("auditType", equalTo("shut-mucr")))
             .withRequestBody(matchingJsonPath("detail.eori", equalTo("eori")))
-            .withRequestBody(matchingJsonPath("detail.mucr", equalTo("GB/123-12345")))
+            .withRequestBody(matchingJsonPath("detail.mucr", equalTo("GB/82F9-0N2F6500040010TO120P0A30998")))
             .withRequestBody(matchingJsonPath("detail.submissionResult", equalTo("Success")))
         )
       }

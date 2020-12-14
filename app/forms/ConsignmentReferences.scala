@@ -76,7 +76,7 @@ object ConsignmentReferences {
         Mucr.codeValue,
         text()
           .verifying("consignmentReferences.reference.mucrValue.empty", nonEmpty)
-          .verifying("consignmentReferences.reference.mucrValue.error", isEmpty or (validMucrIgnoreCase and noLongerThan(35)))
+          .verifying("consignmentReferences.reference.mucrValue.error", isEmpty or validMucrIgnoreCase)
       )
     )(form2Model)(model2Form)
 

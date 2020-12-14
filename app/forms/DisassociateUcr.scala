@@ -46,7 +46,7 @@ object DisassociateUcr {
         Mucr.formValue,
         text()
           .verifying("disassociate.ucr.mucr.empty", nonEmpty)
-          .verifying("disassociate.ucr.mucr.error", isEmpty or (validMucrIgnoreCase and noLongerThan(35)))
+          .verifying("disassociate.ucr.mucr.error", isEmpty or validMucrIgnoreCase)
       )
     )(form2Data)(DisassociateUcr.unapply)
 

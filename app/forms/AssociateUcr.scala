@@ -49,7 +49,7 @@ object AssociateUcr {
     Forms.mapping(
       "kind" -> of[UcrType](UcrType.formatter),
       "ducr" -> mandatoryIfEqual("kind", Ducr.formValue, text().verifying("ducr.error.format", validDucrIgnoreCase)),
-      "mucr" -> mandatoryIfEqual("kind", Mucr.formValue, text().verifying("mucr.error.format", validMucrIgnoreCase and noLongerThan(35)))
+      "mucr" -> mandatoryIfEqual("kind", Mucr.formValue, text().verifying("mucr.error.format", validMucrIgnoreCase))
     )(bind)(unbind)
   }
 

@@ -102,7 +102,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
         verify(page).apply(any(), any(), any())(any(), any())
       }
 
-      "a MUCR conforms with the regex but has been send but is over 35 characters long" in {
+      "a valid MUCR is over 35 characters long" in {
         val incorrectForm = Json.toJson(MucrOptions("GB/82F9-0N2F6500040010TO120P0A300689", "GB/82F9-0N2F6500040010TO120P0A300689", Create))
 
         val result = controller(AssociateUcrAnswers()).save()(postRequest(incorrectForm))

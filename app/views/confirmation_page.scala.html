@@ -22,6 +22,7 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import views.components.config.ConfirmationPageConfig
+@import views.html.components.exit_survey
 @import views.html.components.confirmation_link
 @import views.html.components.gds.link
 @import views.Title
@@ -30,6 +31,7 @@
   govukLayout: gds_main_template,
   pageTitle: pageTitle,
   govukInsetText: govukInsetText,
+  exitSurvey: exit_survey,
   confirmationPageConfig: ConfirmationPageConfig
 )
 
@@ -50,4 +52,5 @@
 
   @confirmationPageConfig.nextStepLink()
 
+  @exitSurvey()
 }

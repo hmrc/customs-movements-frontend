@@ -148,6 +148,13 @@ class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       link must haveHref(controllers.routes.SubmissionsController.displayPage())
     }
 
+    "render Exit Survey link" in {
+      implicit val request = journeyRequest(ArrivalAnswers())
+      val exitSurvey = page(JourneyType.ARRIVE).getElementById("exit-survey")
+
+      exitSurvey must containMessage("exitSurvey.header")
+    }
+
     "render link returned by ConfirmationPageConfig" in {
 
       implicit val request = journeyRequest(ArrivalAnswers())

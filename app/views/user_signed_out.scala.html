@@ -16,11 +16,13 @@
 
 @import views.Title
 @import views.html.components.gds._
+@import views.html.components.exit_survey
 
 @this(
     gdsTemplate: gds_main_template,
     pageTitle: pageTitle,
-    linkButton: linkButton
+    linkButton: linkButton,
+    exitSurvey: exit_survey
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -42,6 +44,8 @@
   @pageTitle(text = messages("userSignedOut.title"), classes = "govuk-heading-xl")
 
   @paragraphBodyContent
+
+  @exitSurvey()
 
   @govukLink
 }

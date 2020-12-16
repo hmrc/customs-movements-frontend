@@ -49,9 +49,16 @@ class UserSignedOutViewSpec extends ViewSpec with Injector {
       link must haveHref(controllers.routes.StartController.displayStartPage())
     }
 
+    "display Exit Survey link" in {
+
+      val exitSurvey = view.getElementById("exit-survey")
+
+      exitSurvey must containMessage("exitSurvey.header")
+    }
+
     "display link to gov.uk" in {
 
-      val link = view.getElementsByClass("govuk-link govuk-link--no-visited-state").get(1)
+      val link = view.getElementsByClass("govuk-link govuk-link--no-visited-state").get(2)
 
       link must containMessage("site.link.backToGovUk")
       link must haveHref("https://www.gov.uk/")

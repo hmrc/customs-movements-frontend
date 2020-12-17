@@ -54,6 +54,7 @@ class AppConfig @Inject()(
   lazy val customsDeclarationsGoodsTakenOutOfEuUrl = loadConfig("urls.customsDeclarationsGoodsTakenOutOfEu")
   lazy val tradeTariffUrl = loadConfig("urls.tradeTariff")
   lazy val serviceAvailabilityUrl = loadConfig("urls.serviceAvailability")
+  lazy val exitSurveyUrl = loadConfig("urls.exitSurveyUrl")
 
   lazy val customsDeclareExportsMovements = servicesConfig.baseUrl("customs-declare-exports-movements")
 

@@ -32,6 +32,7 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
         |urls.loginContinue="http://localhost:9000/customs-declare-exports-frontend"
         |urls.customsDeclarationsGoodsTakenOutOfEu="https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"
         |urls.serviceAvailability="https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
+        |urls.exitSurveyUrl="http://localhost:9514/feedback/customs-movements-frontend"
         |
         |mongodb.uri="mongodb://localhost:27017/customs-movements-frontend"
         |
@@ -112,6 +113,10 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
     // what is continue URL - redirect ?
     "have login continue URL" in {
       validConfigService.loginContinueUrl must be("http://localhost:9000/customs-declare-exports-frontend")
+    }
+
+    "have exitSurvey URL" in {
+      validConfigService.exitSurveyUrl must be("http://localhost:9514/feedback/customs-movements-frontend")
     }
 
     "have response error explanation mode field" in {

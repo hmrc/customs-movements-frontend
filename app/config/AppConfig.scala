@@ -56,6 +56,10 @@ class AppConfig @Inject()(
   lazy val serviceAvailabilityUrl = loadConfig("urls.serviceAvailability")
   lazy val exitSurveyUrl = loadConfig("urls.exitSurveyUrl")
 
+  lazy val eoriService: String = loadConfig("urls.eoriService")
+  lazy val cdsRegister: String = loadConfig("urls.cdsRegister")
+  lazy val cdsCheckStatus: String = loadConfig("urls.cdsCheckStatus")
+
   lazy val customsDeclareExportsMovements = servicesConfig.baseUrl("customs-declare-exports-movements")
 
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")

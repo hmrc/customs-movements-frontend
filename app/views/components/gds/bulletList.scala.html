@@ -14,12 +14,19 @@
  * limitations under the License.
  *@
 
-@import views.html.components.gds.link
+@import views.html.components.gds._
 
-@this(link: link)
+@this(paragraphBody: paragraphBody)
 
-@(message: String, linkTarget: Call)
+@(title: Option[String] = None, elements: Seq[Html])(implicit messages: Messages)
 
-<p class="govuk-body">
-    @link(message = Html(message), href = linkTarget)
-</p>
+<nav>
+    @title.map(paragraphBody(_, "govuk-body"))
+    <ul class="govuk-list govuk-list--bullet">
+        @elements.map { element =>
+            <li class="dashed-list-item">
+                @element
+            </li>
+        }
+    </ul>
+</nav>

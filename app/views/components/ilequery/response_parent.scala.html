@@ -20,8 +20,9 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
-        converter: IleQueryCodeConverter,
-        govukSummaryList : GovukSummaryList
+  converter: IleQueryCodeConverter,
+  link: link,
+  govukSummaryList : GovukSummaryList
 )
 
 @(parentMucr: Option[MucrInfo])(implicit request: Request[_], messages: Messages)

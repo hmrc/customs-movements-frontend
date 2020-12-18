@@ -20,7 +20,11 @@
 @import views.ViewDates
 @import components.gds.link
 
-@this(converter: IleQueryCodeConverter,govukTable: GovukTable)
+@this(
+  converter: IleQueryCodeConverter,
+  link: link,
+  govukTable: GovukTable
+)
 
 @(associatedUcrs: Seq[UcrInfo])(implicit request: Request[_], messages: Messages)
 

@@ -18,31 +18,44 @@ package views
 
 import base.Injector
 import play.api.test.FakeRequest
+import play.twirl.api.Html
 import views.html.unauthorised
 
 class UnauthorisedViewSpec extends ViewSpec with Injector {
 
-  private implicit val request = FakeRequest()
+  private implicit val request = FakeRequest().withCSRFToken
+
   private val unauthorisedPage = instanceOf[unauthorised]
+  private def view: Html = unauthorisedPage()(request, messages)
 
-  "Unauthorised messages" should {
+  "Unauthorised Page view" should {
 
-    "have correct content" in {
-
-      messages("unauthorised.title") mustBe "You can’t access this service with this account"
-    }
-  }
-
-  "Unauthorised page" should {
-
-    "display same page title as header" in {
-
-      unauthorisedPage().getTitle must containMessage("unauthorised.title")
+    "display page header" in {
+      view.getElementsByTag("h1").first() must containMessage("unauthorised.heading")
     }
 
-    "have heading" in {
+    "display get EORI link" in {
+      val link = view.getElementById("get_eori_link")
 
-      unauthorisedPage().getElementById("title") must containMessage("unauthorised.title")
+      link must containMessage("unauthorised.paragraph.1.bullet.1.link")
+      link must haveHref("https://www.gov.uk/eori")
+      link.attr("target") mustBe "_self"
+    }
+
+    "display access CDS link" in {
+      val link = view.getElementById("access_cds_link")
+
+      link must containMessage("unauthorised.paragraph.1.bullet.2.link")
+      link must haveHref("https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service")
+      link.attr("target") mustBe "_self"
+    }
+
+    "display check CDS application status link" in {
+      val link = view.getElementById("check_cds_application_status_link")
+
+      link must containMessage("unauthorised.paragraph.2.link")
+      link must haveHref("https://www.tax.service.gov.uk/customs/register-for-cds/are-you-based-in-uk")
+      link.attr("target") mustBe "_self"
     }
   }
 }

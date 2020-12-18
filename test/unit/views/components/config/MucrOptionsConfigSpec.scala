@@ -17,17 +17,17 @@
 package views.components.config
 
 import base.UnitSpec
-import config.AppConfig
+import config.ExternalServicesConfig
 import forms.ManageMucrChoice.AssociateAnotherMucr
 import forms.{DucrPartChiefChoice, ManageMucrChoice}
 
 class MucrOptionsConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
-  private val appConfig = mock[AppConfig]
+  private val externalServicesConfig = mock[ExternalServicesConfig]
 
   "MucrOptionsConfig when ileQuery disabled" should {
 
-    val config = new MucrOptionsConfig(appConfig, ileQueryDisabled)
+    val config = new MucrOptionsConfig(externalServicesConfig, ileQueryDisabled)
 
     "return correct back url when Ducr Part not used" in {
       config.backUrl(None, None) mustBe controllers.routes.ChoiceController.displayChoiceForm()
@@ -45,7 +45,7 @@ class MucrOptionsConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
   "MucrOptionsConfig when ileQuery enabled" should {
 
-    val config = new MucrOptionsConfig(appConfig, ileQueryEnabled)
+    val config = new MucrOptionsConfig(externalServicesConfig, ileQueryEnabled)
 
     "return correct back url" when {
 

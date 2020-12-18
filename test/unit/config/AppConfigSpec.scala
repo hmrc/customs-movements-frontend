@@ -100,23 +100,9 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
       validConfigService.loginUrl must be("http://localhost:9949/auth-login-stub/gg-sign-in")
     }
 
-    "have customsDeclarationsGoodsTakenOutOfEu URL" in {
-      validConfigService.customsDeclarationsGoodsTakenOutOfEuUrl must be(
-        "https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"
-      )
-    }
-
-    "have serviceAvailability URL" in {
-      validConfigService.serviceAvailabilityUrl must be("https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues")
-    }
-
     // what is continue URL - redirect ?
     "have login continue URL" in {
       validConfigService.loginContinueUrl must be("http://localhost:9000/customs-declare-exports-frontend")
-    }
-
-    "have exitSurvey URL" in {
-      validConfigService.exitSurveyUrl must be("http://localhost:9514/feedback/customs-movements-frontend")
     }
 
     "have response error explanation mode field" in {

@@ -51,10 +51,6 @@ class AppConfig @Inject()(
   lazy val authUrl = servicesConfig.baseUrl("auth")
   lazy val loginUrl = loadConfig("urls.login")
   lazy val loginContinueUrl = loadConfig("urls.loginContinue")
-  lazy val customsDeclarationsGoodsTakenOutOfEuUrl = loadConfig("urls.customsDeclarationsGoodsTakenOutOfEu")
-  lazy val tradeTariffUrl = loadConfig("urls.tradeTariff")
-  lazy val serviceAvailabilityUrl = loadConfig("urls.serviceAvailability")
-  lazy val exitSurveyUrl = loadConfig("urls.exitSurveyUrl")
 
   lazy val eoriService: String = loadConfig("urls.eoriService")
   lazy val cdsRegister: String = loadConfig("urls.cdsRegister")

@@ -17,12 +17,12 @@
 @import views.html.components.gds.paragraphBody
 @import views.html.components.gds.link
 
-@import config.AppConfig
+@import config.ExternalServicesConfig
 
 @this(
   paragraphBody: paragraphBody,
   link: link,
-  appConfig: AppConfig
+  config: ExternalServicesConfig
 )
 
 @()(implicit messages: Messages)
@@ -31,4 +31,4 @@
 <p class="govuk-body">@Html(messages("exitSurvey.line.1"))</p>
 <p class="govuk-body">@Html(messages("exitSurvey.line.2", link(
     message = Html(messages("exitSurvey.link")),
-    href = Call("GET", appConfig.exitSurveyUrl))))</p>
+    href = Call("GET", config.exitSurveyUrl))))</p>

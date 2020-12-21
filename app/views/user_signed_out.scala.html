@@ -21,6 +21,7 @@
 @this(
     gdsTemplate: gds_main_template,
     pageTitle: pageTitle,
+    link: link,
     linkButton: linkButton,
     exitSurvey: exit_survey
 )
@@ -35,7 +36,10 @@
 
 @paragraphBodyContent = {
   <p class="govuk-body">
-    @messages("userSignedOut.information") @link(Html(messages("userSignedOut.startPageLink")), controllers.routes.StartController.displayStartPage())
+    @messages("userSignedOut.information") @link(
+      message = Html(messages("userSignedOut.startPageLink")),
+      href = controllers.routes.StartController.displayStartPage()
+    )
   </p>
 }
 

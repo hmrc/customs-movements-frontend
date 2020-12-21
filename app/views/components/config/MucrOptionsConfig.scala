@@ -16,12 +16,12 @@
 
 package views.components.config
 
-import config.{AppConfig, IleQueryConfig}
+import config.{ExternalServicesConfig, IleQueryConfig}
 import forms.{DucrPartChiefChoice, ManageMucrChoice}
 import javax.inject.Inject
 import play.api.mvc.Call
 
-class MucrOptionsConfig @Inject()(appConfig: AppConfig, ileQueryConfig: IleQueryConfig) extends BaseConfig(ileQueryConfig) {
+class MucrOptionsConfig @Inject()(config: ExternalServicesConfig, ileQueryConfig: IleQueryConfig) extends BaseConfig(ileQueryConfig) {
 
   def backUrl(manageMucrChoice: Option[ManageMucrChoice], ducrPartChiefChoice: Option[DucrPartChiefChoice]): Call =
     if (ileQueryConfig.isIleQueryEnabled && manageMucrChoice.isDefined)
@@ -33,5 +33,5 @@ class MucrOptionsConfig @Inject()(appConfig: AppConfig, ileQueryConfig: IleQuery
     else
       controllers.routes.ChoiceController.displayChoiceForm()
 
-  def tradeTariffUrl: String = appConfig.tradeTariffUrl
+  def tradeTariffUrl: String = config.tradeTariffUrl
 }

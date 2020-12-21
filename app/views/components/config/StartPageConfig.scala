@@ -16,10 +16,10 @@
 
 package views.components.config
 
-import config.{AppConfig, IleQueryConfig}
+import config.{ExternalServicesConfig, IleQueryConfig}
 import javax.inject.Inject
 
-class StartPageConfig @Inject()(appConfig: AppConfig, ileQueryConfig: IleQueryConfig) {
+class StartPageConfig @Inject()(config: ExternalServicesConfig, ileQueryConfig: IleQueryConfig) {
 
   def startUrl: String =
     if (ileQueryConfig.isIleQueryEnabled)
@@ -27,6 +27,6 @@ class StartPageConfig @Inject()(appConfig: AppConfig, ileQueryConfig: IleQueryCo
     else
       controllers.routes.ChoiceController.displayChoiceForm().url
 
-  lazy val reportUrl = appConfig.serviceAvailabilityUrl
-  lazy val beforeYouStartUrl = appConfig.customsDeclarationsGoodsTakenOutOfEuUrl
+  lazy val reportUrl = config.serviceAvailabilityUrl
+  lazy val beforeYouStartUrl = config.customsDeclarationsGoodsTakenOutOfEuUrl
 }

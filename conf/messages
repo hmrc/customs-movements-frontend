@@ -63,7 +63,13 @@ site.inputText.newMucr.label.hint = For example ‘GB/123456789100-AB123’.
 
 site.accessibility.error = Error:
 
-unauthorised.title = You can’t access this service with this account
+unauthorised.heading = To continue, you need to get access to the Customs Declaration Service (CDS)
+unauthorised.paragraph.1 = To use this service, you’ll need to:
+unauthorised.paragraph.1.bullet.1 = {0} if you do not have one
+unauthorised.paragraph.1.bullet.1.link = get an Economic Operator Registration and Identification (EORI) number
+unauthorised.paragraph.1.bullet.2.link = get access to the Customs Declaration Service
+unauthorised.paragraph.2 = If you’ve already applied for an EORI number, you can {0}.
+unauthorised.paragraph.2.link = check the status of your application
 
 global.error.title = There is a problem - Declare customs exports for CDS Exports - GOV.UK
 global.error.heading = There is a problem with a service.

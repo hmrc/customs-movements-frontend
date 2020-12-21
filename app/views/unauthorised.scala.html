@@ -14,19 +14,57 @@
  * limitations under the License.
  *@
 
-@import views.html.components.gds.gds_main_template
-@import views.html.components.gds.pageTitle
+@import config.ExternalServicesConfig
+@import views.html.components.gds._
 @import views.Title
 
 @this(
- govukLayout: gds_main_template,
- pageTitle: pageTitle
+  govukLayout: gds_main_template,
+  pageTitle: pageTitle,
+  paragraphBody: paragraphBody,
+  link: link,
+  bulletList: bulletList,
+  config: ExternalServicesConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title("unauthorised.title", None)) {
+@howToSection = {
+ <p class="govuk-body">@messages("unauthorised.paragraph.1")</p>
+@bulletList(
+ title = None,
+ elements = Seq(
+  Html(messages("unauthorised.paragraph.1.bullet.1", link(
+   id = Some("get_eori_link"),
+   message = Html(messages("unauthorised.paragraph.1.bullet.1.link")),
+   href = Call("GET", config.eoriService)
+  ))),
+  link(
+   id = Some("access_cds_link"),
+   message = Html(messages("unauthorised.paragraph.1.bullet.2.link")),
+   href = Call("GET", config.cdsRegister)
+  )
+ )
+)
+}
 
-    @pageTitle(messages("unauthorised.title"))
+@appliedSection = {
+ <p class="govuk-body">
+ @Html(messages("unauthorised.paragraph.2", link(
+  id = Some("check_cds_application_status_link"),
+  message = Html(messages("unauthorised.paragraph.2.link")),
+  href = Call("GET", config.cdsCheckStatus)
+ )
+ ))
+ </p>
+}
+
+@govukLayout(title = Title("unauthorised.heading")) {
+
+ @pageTitle(messages("unauthorised.heading"))
+
+ @howToSection
+
+ @appliedSection
 
 }

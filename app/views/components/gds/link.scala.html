@@ -16,11 +16,13 @@
 
 @import play.twirl.api.HtmlFormat.empty
 
-@(message: Html = empty, href: Call, textHidden: Option[String] = None)
+@this()
+
+@(message: Html = empty, textHidden: Option[String] = None, href: Call, target: String = "_self", id: Option[String] = None, classes: String = "govuk-link govuk-link--no-visited-state")
 
 @hasHint = @{textHidden.exists(_.nonEmpty)}
 
-<a class="govuk-link govuk-link--no-visited-state" href="@href.url">
- <span @if(hasHint){aria-hidden="true"}>@message</span>
- @if(hasHint){<span class="govuk-visually-hidden">@{textHidden.getOrElse("")}</span>}
+<a class="@classes" href="@href" target=@target @id.map{id => id="@id" }>
+  <span @if(hasHint){aria-hidden="true"}>@message</span>
+  @if(hasHint){<span class="govuk-visually-hidden">@{textHidden.getOrElse("")}</span>}
 </a>

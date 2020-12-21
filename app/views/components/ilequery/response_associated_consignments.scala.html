@@ -20,7 +20,11 @@
 @import views.ViewDates
 @import components.gds.link
 
-@this(converter: IleQueryCodeConverter,govukTable: GovukTable)
+@this(
+  converter: IleQueryCodeConverter,
+  link: link,
+  govukTable: GovukTable
+)
 
 @(associatedUcrs: Seq[UcrInfo])(implicit request: Request[_], messages: Messages)
 
@@ -30,7 +34,7 @@
             rows = associatedUcrs.zipWithIndex.map(indexedUcr => {
                 Seq(
                     TableRow(
-                        content = HtmlContent(link(Html(indexedUcr._1.ucr), controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(indexedUcr._1.ucr))),
+                        content = HtmlContent(link(message = Html(indexedUcr._1.ucr), href = controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(indexedUcr._1.ucr))),
                         attributes = Map("id" -> s"associateUcr_${indexedUcr._2}_ucr")
                     ),
                     TableRow(

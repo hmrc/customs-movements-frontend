@@ -70,7 +70,9 @@ class DucrSummaryViewSpec extends ViewSpec with Injector {
     }
 
     "render transport" in {
-      summaryElement(view(), 2).text() must include("WagonId, France")
+      summaryElement(view(), 2).text() must include(
+        "WagonId, France, Including Monaco, the French overseas departments (French Guiana, Guadeloupe, Martinique and Reunion) and the French northern part of St Martin"
+      )
     }
 
     "render all input customs status" in {

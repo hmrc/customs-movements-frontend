@@ -24,7 +24,7 @@ class CountriesSpec extends BaseSpec {
   "Countries" should {
     "give all countries with codes in alphabetical order of country name with filtering according to permitted MDG values" in {
       allCountries must contain(Country("Afghanistan", "AF"))
-      allCountries must contain(Country("Curaçao", "CW"))
+      allCountries must contain(Country("Curacao", "CW"))
       allCountries must contain(Country("Zimbabwe", "ZW"))
     }
   }

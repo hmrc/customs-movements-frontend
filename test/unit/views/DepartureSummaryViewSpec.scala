@@ -199,7 +199,10 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       changeId must haveHref(controllers.routes.TransportController.displayPage())
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_transport_nationality) must containMessage("summary.nationality")
-      view.getElementsByClass("govuk-summary-list__value").get(answer_transport_nationality).text mustBe "United Kingdom (GB)"
+      view
+        .getElementsByClass("govuk-summary-list__value")
+        .get(answer_transport_nationality)
+        .text mustBe "United Kingdom, Great Britain, Northern Ireland (GB)"
 
       val changeNationality = view.getElementsByClass("govuk-link").get(answer_transport_nationality_link_index)
       changeNationality must containMessage("site.change")

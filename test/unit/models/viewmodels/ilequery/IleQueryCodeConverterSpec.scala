@@ -27,7 +27,10 @@ class IleQueryCodeConverterSpec extends UnitSpec {
   "IleQueryCodeConverter" should {
 
     "convert transport with identifier and nationality" in {
-      converter.transport(Transport(None, Some("FR"), Some("ID1234"))).asHtml.toString() mustBe "ID1234, France"
+      converter
+        .transport(Transport(None, Some("FR"), Some("ID1234")))
+        .asHtml
+        .toString() mustBe "ID1234, France, Including Monaco, the French overseas departments (French Guiana, Guadeloupe, Martinique and Reunion) and the French northern part of St Martin"
     }
 
     "convert transport with only nationality" in {

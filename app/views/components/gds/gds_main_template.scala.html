@@ -25,6 +25,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{En, Cy}
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTrackingConsentSnippet
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.hmrcStandardFooter
 @import views.Title
 @import views.components.BackButton
 @import views.html.components.gds.{govukFlexibleLayout, timeoutDialog}
@@ -40,6 +41,7 @@
   betaBannerConfig: BetaBannerConfig,
   hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
   hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
+  hmrcFooter: hmrcStandardFooter,
   appConfig: AppConfig
 )
 
@@ -67,11 +69,11 @@
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/vendor/jquery-ui.min.css")' type="text/css">
 
   @if(useTimeoutDialog) {
-      <script src='@routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
-      <script>window.HMRCFrontend.initAll();</script>
       <script src='@routes.Assets.versioned("javascripts/timeoutDialog.js")'> </script>
   }
 
+  <script src='@routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
+  <script>window.HMRCFrontend.initAll();</script>
   <script>window.GOVUKFrontend.initAll();</script>
 }
 
@@ -102,13 +104,6 @@
     )
 
 }
-@footer = @{
-    Seq(
-        FooterItem(href = Some("help/cookies"), text = Some("Cookies")),
-        FooterItem(href = Some("help/privacy"), text = Some("Privacy Policy")),
-        FooterItem(href = Some("help/terms-and-conditions"), text = Some("Terms and conditions")),
-        FooterItem(href = Some("help"), text = Some("Help using GOV.UK"))
-    )}
 
 @if(useCustomContentWidth) {
   @govukFlexibleLayout(
@@ -118,7 +113,7 @@
     bodyEndBlock = None,
     scriptsBlock = Some(scripts),
     headerBlock = Some(siteHeader()),
-    footerItems = footer
+    footerBlock = Some(hmrcFooter())
   )(content)
 } else {
   @govukLayout(
@@ -128,6 +123,6 @@
     bodyEndBlock = None,
     scriptsBlock = Some(scripts),
     headerBlock = Some(siteHeader()),
-    footerItems = footer
+    footerBlock = Some(hmrcFooter())
   )(content)
 }

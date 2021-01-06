@@ -31,6 +31,9 @@ trait MessagesStub {
     Fails the test if a view is configured with a message key that doesnt exist in the messages file
    */
   private class AllMessageKeysAreMandatoryMessages(msg: Messages) extends Messages {
+
+    override def asJava: play.i18n.Messages = msg.asJava
+
     override def messages: Messages = msg.messages
 
     override def lang: Lang = msg.lang

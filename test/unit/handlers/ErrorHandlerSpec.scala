@@ -107,7 +107,7 @@ class ErrorHandlerSpec extends ControllerLayerSpec {
   }
 
   class FakeMessages extends Messages {
-    override def asJava: play.i18n.Messages = asJava
+    override def asJava: play.i18n.Messages = new play.i18n.MessagesImpl(lang.asJava, messagesApi.asJava)
     def lang: Lang = mock[Lang]
     def apply(key: String, args: Any*): String = s"messages($key, ${args.mkString(",")})"
     def apply(keys: Seq[String], args: Any*): String = keys.map(apply(_, args)).mkString(",")

@@ -19,11 +19,12 @@ package views
 import base.Injector
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.Request
+import views.MessagesStub.realMessagesApi
 
 trait MessagesStub {
 
   protected implicit def messages(implicit request: Request[_]): Messages =
-    new AllMessageKeysAreMandatoryMessages(MessagesStub.realMessagesApi.preferred(request))
+    new AllMessageKeysAreMandatoryMessages(realMessagesApi.preferred(request))
 
   protected def messages(key: String, args: Any*)(implicit request: Request[_]): String = messages(request)(key, args: _*)
 
@@ -32,7 +33,7 @@ trait MessagesStub {
    */
   private class AllMessageKeysAreMandatoryMessages(msg: Messages) extends Messages {
 
-    override def asJava: play.i18n.Messages = msg.asJava
+    override def asJava: play.i18n.Messages = new play.i18n.MessagesImpl(lang.asJava, realMessagesApi.asJava)
 
     override def messages: Messages = msg.messages
 

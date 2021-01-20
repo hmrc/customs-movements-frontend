@@ -16,40 +16,22 @@
 
 package controllers
 
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
-import play.twirl.api.HtmlFormat
-import views.html.start_page
 
 class StartControllerSpec extends ControllerLayerSpec {
 
-  private val startPage = mock[start_page]
-
-  private val controller = new StartController(stubMessagesControllerComponents(), startPage)
-
-  override protected def beforeEach(): Unit = {
-    super.beforeEach()
-    when(startPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
-  }
-
-  override protected def afterEach(): Unit = {
-    reset(startPage)
-
-    super.afterEach()
-  }
+  private val controller = new StartController(stubMessagesControllerComponents())
 
   "Start Controller" should {
 
-    "return 200 (OK)" when {
+    "return 303 (SEE_OTHER)" when {
 
-      "display page method is invoked" in {
+      "redirect user to the choice page" in {
 
         val result = controller.displayStartPage()(getRequest())
 
-        status(result) mustBe OK
-
-        verify(startPage).apply()(any(), any())
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.ChoiceController.displayChoiceForm().url)
       }
     }
   }

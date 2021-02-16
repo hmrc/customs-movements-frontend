@@ -46,7 +46,7 @@ class UserSignedOutViewSpec extends ViewSpec with Injector {
       val link = view.getElementsByClass("govuk-link govuk-link--no-visited-state").first()
 
       link must containMessage("userSignedOut.startPageLink", request.host)
-      link must haveHref(controllers.routes.StartController.displayStartPage())
+      link must haveHref(controllers.routes.RootController.displayPage())
     }
 
     "display Exit Survey link" in {

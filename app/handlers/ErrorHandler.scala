@@ -48,7 +48,7 @@ class ErrorHandler @Inject()(appConfig: AppConfig, override val messagesApi: Mes
       case _: InsufficientEnrolments =>
         Results.SeeOther(routes.UnauthorisedController.onPageLoad().url)
       case _: IncompleteApplication | ReturnToStartException =>
-        Results.Redirect(routes.StartController.displayStartPage())
+        Results.Redirect(routes.RootController.displayPage())
       case _: InvalidFeatureStateException => NotFound(notFoundTemplate(Request(rh, "")))
       case _                               => super.resolveError(rh, ex)
     }

@@ -78,13 +78,13 @@ class ErrorHandlerSpec extends ControllerLayerSpec {
     "handle incomplete application exception" in {
       val res = errorHandler.resolveError(req, IncompleteApplication)
       res.header.status must be(Status.SEE_OTHER)
-      res.header.headers.get(HeaderNames.LOCATION) must be(Some(controllers.routes.StartController.displayStartPage().url))
+      res.header.headers.get(HeaderNames.LOCATION) must be(Some(controllers.routes.RootController.displayPage().url))
     }
 
     "handle return to start exception" in {
       val res = errorHandler.resolveError(req, ReturnToStartException)
       res.header.status must be(Status.SEE_OTHER)
-      res.header.headers.get(HeaderNames.LOCATION) must be(Some(controllers.routes.StartController.displayStartPage().url))
+      res.header.headers.get(HeaderNames.LOCATION) must be(Some(controllers.routes.RootController.displayPage().url))
     }
 
     "handle no active session authorisation exception" in {

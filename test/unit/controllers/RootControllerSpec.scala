@@ -18,17 +18,17 @@ package controllers
 
 import play.api.test.Helpers._
 
-class StartControllerSpec extends ControllerLayerSpec {
+class RootControllerSpec extends ControllerLayerSpec {
 
-  private val controller = new StartController(stubMessagesControllerComponents())
+  private val controller = new RootController(stubMessagesControllerComponents())
 
-  "Start Controller" should {
+  "Root Controller" should {
 
     "return 303 (SEE_OTHER)" when {
 
       "redirect user to the choice page" in {
 
-        val result = controller.displayStartPage()(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.ChoiceController.displayChoiceForm().url)

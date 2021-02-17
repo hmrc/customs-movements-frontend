@@ -22,9 +22,9 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
 
-class StartController @Inject()(mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
+class RootController @Inject()(mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
 
-  def displayStartPage(): Action[AnyContent] = Action {
+  def displayPage(): Action[AnyContent] = Action {
     Redirect(controllers.routes.ChoiceController.displayChoiceForm())
   }
 }

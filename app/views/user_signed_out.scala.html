@@ -38,7 +38,7 @@
   <p class="govuk-body">
     @messages("userSignedOut.information") @link(
       message = Html(messages("userSignedOut.startPageLink")),
-      href = controllers.routes.StartController.displayStartPage()
+      href = controllers.routes.RootController.displayPage()
     )
   </p>
 }

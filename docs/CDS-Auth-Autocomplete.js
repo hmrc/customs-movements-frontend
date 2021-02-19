@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name     CDS Movements Authorisation
 // @namespace  http://tampermonkey.net/
-// @version   0.2
+// @version   0.3
 // @description Authenticates with CDS Declare
 // @author    You
 // @match     http*://*/auth-login-stub/gg-sign-in?continue=*customs-movements*
@@ -12,7 +12,7 @@
 (function() {
     'use strict';
 
-    document.getElementsByName("redirectionUrl")[0].value = getBaseUrl() + "/customs-movements/start";
+    document.getElementsByName("redirectionUrl")[0].value = getBaseUrl() + "/customs-movements";
 
     document.getElementById("affinityGroupSelect").selectedIndex = 1;
 

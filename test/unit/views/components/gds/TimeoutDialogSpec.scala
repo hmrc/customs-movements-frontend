@@ -16,7 +16,7 @@
 
 package views.components.gds
 
-import base.{Injector, MockAuthConnector, OverridableInjector}
+import base.{Injector, OverridableInjector}
 import com.typesafe.config.ConfigFactory
 import config.TimeoutDialogConfig
 import forms.Choice
@@ -35,7 +35,7 @@ import uk.gov.hmrc.auth.core.Enrolments
 
 import scala.collection.JavaConverters.asScalaIteratorConverter
 
-class TimeoutDialogSpec extends ViewSpec with MockitoSugar with MockAuthConnector with Injector {
+class TimeoutDialogSpec extends ViewSpec with MockitoSugar with Injector {
 
   "Timeout Dialog" should {
 

@@ -66,13 +66,17 @@ object Time {
       (Try(time.getClockHour), Try(time.getMinute), time.getAmPm)
 
     val hourMapping: Mapping[Try[Int]] = {
-      text().verifying("time.hour.error", isInRange(1, 12)).transform(value => Try(value.toInt), _.map(_.toString).getOrElse(""))
+      text()
+        .verifying("time.hour.missing", nonEmpty)
+        .verifying("time.hour.error", isEmptyOr(isInRange(1, 12)))
+        .transform(value => Try(value.toInt), _.map(_.toString).getOrElse(""))
     }
 
     val minuteMapping: Mapping[Try[Int]] = {
       val formatter = new DecimalFormat("00")
       text()
-        .verifying("time.minute.error", isInRange(0, 59))
+        .verifying("time.minute.missing", nonEmpty)
+        .verifying("time.minute.error", isEmptyOr(isInRange(0, 59)))
         .transform(value => Try(value.toInt), _.map(value => formatter.format(value)).getOrElse(""))
     }
 

@@ -77,19 +77,22 @@ object Date {
 
     val dayMapping: Mapping[Try[Int]] = {
       text()
-        .verifying("date.day.error", isInRange(1, 31))
+        .verifying("date.day.missing", nonEmpty)
+        .verifying("date.day.error", isEmptyOr(isInRange(1, 31)))
         .transform[Try[Int]](value => Try(value.toInt), _.map(value => twoDigitFormatter.format(value)).getOrElse(""))
     }
 
     val monthMapping: Mapping[Try[Int]] = {
       text()
-        .verifying("date.month.error", isInRange(1, 12))
+        .verifying("date.month.missing", nonEmpty)
+        .verifying("date.month.error", isEmptyOr(isInRange(1, 12)))
         .transform[Try[Int]](value => Try(value.toInt), _.map(value => twoDigitFormatter.format(value)).getOrElse(""))
     }
 
     val yearMapping: Mapping[Try[Int]] = {
       text()
-        .verifying("date.year.error", isInRange(2000, 3000))
+        .verifying("date.year.missing", nonEmpty)
+        .verifying("date.year.error", isEmptyOr(isInRange(2000, 3000)))
         .transform[Try[Int]](value => Try(value.toInt), _.map(value => fourDigitFormatter.format(value)).getOrElse(""))
     }
 

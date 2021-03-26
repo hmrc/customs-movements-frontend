@@ -71,6 +71,15 @@ class DateSpec extends BaseSpec {
         val errors = form.bind(dateInput).errors
 
         errors.length must be(1)
+        errors.head must be(FormError("day", "date.day.missing"))
+      }
+
+      "date has day out of range" in {
+
+        val dateInput = Map("day" -> "32", "month" -> "2", "year" -> "2020")
+        val errors = form.bind(dateInput).errors
+
+        errors.length must be(1)
         errors.head must be(FormError("day", "date.day.error"))
       }
 
@@ -80,12 +89,30 @@ class DateSpec extends BaseSpec {
         val errors = form.bind(dateInput).errors
 
         errors.length must be(1)
+        errors.head must be(FormError("month", "date.month.missing"))
+      }
+
+      "date has month out of range" in {
+
+        val dateInput = Map("day" -> "1", "month" -> "13", "year" -> "2020")
+        val errors = form.bind(dateInput).errors
+
+        errors.length must be(1)
         errors.head must be(FormError("month", "date.month.error"))
       }
 
       "date has missing year" in {
 
         val dateInput = Map("day" -> "1", "month" -> "2", "year" -> "")
+        val errors = form.bind(dateInput).errors
+
+        errors.length must be(1)
+        errors.head must be(FormError("year", "date.year.missing"))
+      }
+
+      "date has year out of range" in {
+
+        val dateInput = Map("day" -> "1", "month" -> "2", "year" -> "1999")
         val errors = form.bind(dateInput).errors
 
         errors.length must be(1)

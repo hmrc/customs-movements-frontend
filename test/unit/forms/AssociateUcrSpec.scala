@@ -71,13 +71,47 @@ class AssociateUcrSpec extends BaseSpec {
     }
 
     "return an error" when {
-      "provided with Mucr that is over 35 characters long" in {
+      "radio option kind not present" in {
+        val form = AssociateUcr.form.bind(JsObject(Map("other" -> JsString(""))))
 
+        form.errors mustBe Seq(FormError("kind", List("associate.ucr.error.unselected")))
+      }
+
+      "radio option kind value neither Mucr or Ducr" in {
+        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString(""))))
+
+        form.errors mustBe Seq(FormError("kind", List("associate.ucr.error.unselected")))
+      }
+
+      "provided with Mucr that is empty" in {
+        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString(""))))
+
+        form.errors mustBe Seq(FormError("mucr", List("associate.ucr.mucr.error.empty")))
+      }
+
+      "provided with Mucr that is invalid" in {
+        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString("invalid"))))
+
+        form.errors mustBe Seq(FormError("mucr", List("associate.ucr.mucr.error.invalid")))
+      }
+
+      "provided with Mucr that is over 35 characters long" in {
         val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString("gb/abced1234-15804test12345678901234"))))
 
-        form.errors mustBe Seq(FormError("mucr", List("mucr.error.format")))
+        form.errors mustBe Seq(FormError("mucr", List("associate.ucr.mucr.error.invalid")))
+      }
+
+      "provided with Ducr that is empty" in {
+        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("ducr"), "ducr" -> JsString(""))))
+
+        form.errors mustBe Seq(FormError("ducr", List("associate.ucr.ducr.error.empty")))
+      }
+
+      "provided with Ducr that is invalid" in {
+        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("ducr"), "ducr" -> JsString("invalid"))))
+
+        form.errors mustBe Seq(FormError("ducr", List("associate.ucr.ducr.error.invalid")))
       }
     }
   }
-
 }

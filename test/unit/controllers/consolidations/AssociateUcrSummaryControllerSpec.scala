@@ -89,7 +89,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
     (consignmentRefCaptor.getValue, associateWithCaptor.getValue, associateKindCaptor.getValue)
   }
 
-  private val mucrOptions = MucrOptions("MUCR")
+  private val mucrOptions = MucrOptions(MucrOptions.Create, "MUCR")
   private val associateUcr = AssociateUcr(Ducr, "DUCR")
 
   "Associate Ducr Summary Controller on displayPage" should {
@@ -111,7 +111,8 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
       "display page when queried ducr" in {
         when(ileQueryConfig.isIleQueryEnabled) thenReturn true
         val result =
-          controller(AssociateUcrAnswers(None, Some(MucrOptions("MUCR")), Some(AssociateUcr(Ducr, "Queried DUCR")))).displayPage()(getRequest())
+          controller(AssociateUcrAnswers(None, Some(MucrOptions(MucrOptions.Create, "MUCR")), Some(AssociateUcr(Ducr, "Queried DUCR"))))
+            .displayPage()(getRequest())
 
         status(result) mustBe OK
         verify(mockAssociateDucrSummaryNoChangePage).apply(any(), any(), any(), any())(any(), any())
@@ -127,7 +128,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
         val result = controller(
           AssociateUcrAnswers(
             Some(ManageMucrChoice(ManageMucrChoice.AssociateThisMucr)),
-            Some(MucrOptions("MUCR")),
+            Some(MucrOptions(MucrOptions.Create, "MUCR")),
             Some(AssociateUcr(Mucr, "Queried MUCR"))
           )
         ).displayPage()(getRequest())
@@ -146,7 +147,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
         val result = controller(
           AssociateUcrAnswers(
             Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr)),
-            Some(MucrOptions("Queried MUCR")),
+            Some(MucrOptions(MucrOptions.Create, "Queried MUCR")),
             Some(AssociateUcr(Ducr, "DUCR"))
           )
         ).displayPage()(getRequest())

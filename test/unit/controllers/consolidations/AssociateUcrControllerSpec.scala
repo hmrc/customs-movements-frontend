@@ -58,7 +58,7 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
   }
 
   "Associate Ducr controller" should {
-    val mucrOptions = MucrOptions("MUCR")
+    val mucrOptions = MucrOptions(MucrOptions.Create, "MUCR")
     val associateUcr = AssociateUcr(Ducr, "DUCR")
 
     "return OK (200)" when {

@@ -145,7 +145,7 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with MockitoSug
 
     "provided with form containing DUCR error" should {
 
-      val form = DucrPartDetails.form().withError(FormError("ducr", "ducrPartDetails.ducr.error"))
+      val form = DucrPartDetails.form().withError(FormError("ducr", "ducrPartDetails.ducr.invalid"))
       val view: Document = createView(form)
 
       "render error summary" in {
@@ -155,13 +155,13 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with MockitoSug
 
       "render field error" in {
 
-        view must haveGovUkFieldError("ducr", messages("ducrPartDetails.ducr.error"))
+        view must haveGovUkFieldError("ducr", messages("ducrPartDetails.ducr.invalid"))
       }
     }
 
     "provided with form containing DUCR Part ID error" should {
 
-      val form = DucrPartDetails.form().withError(FormError("ducrPartId", "ducrPartDetails.ducrPartId.error"))
+      val form = DucrPartDetails.form().withError(FormError("ducrPartId", "ducrPartDetails.ducrPartId.invalid"))
       val view: Document = createView(form)
 
       "render error summary" in {
@@ -171,9 +171,8 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with MockitoSug
 
       "render field error" in {
 
-        view must haveGovUkFieldError("ducrPartId", messages("ducrPartDetails.ducrPartId.error"))
+        view must haveGovUkFieldError("ducrPartId", messages("ducrPartDetails.ducrPartId.invalid"))
       }
     }
   }
-
 }

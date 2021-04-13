@@ -27,9 +27,6 @@ class DucrPartDetailsSpec extends BaseSpec {
 
     "return errors" when {
 
-      val expectedDucrError = FormError("ducr", Seq("ducrPartDetails.ducr.error"))
-      val expectedDucrPartIdError = FormError("ducrPartId", Seq("ducrPartDetails.ducrPartId.error"))
-
       "provided with empty DUCR" in {
 
         val input = Map("ducr" -> "", "ducrPartId" -> "")
@@ -38,7 +35,7 @@ class DucrPartDetailsSpec extends BaseSpec {
 
         result.isLeft mustBe true
         result.left.get.size mustBe 2
-        result.left.get must contain(expectedDucrError)
+        result.left.get must contain(FormError("ducr", Seq("ducrPartDetails.ducr.empty")))
       }
 
       "provided with incorrect DUCR" in {
@@ -49,29 +46,29 @@ class DucrPartDetailsSpec extends BaseSpec {
 
         result.isLeft mustBe true
         result.left.get.size mustBe 2
-        result.left.get must contain(expectedDucrError)
+        result.left.get must contain(FormError("ducr", Seq("ducrPartDetails.ducr.invalid")))
       }
 
       "provided with empty DUCR Part ID" in {
 
-        val input = Map("ducr" -> "", "ducrPartId" -> "")
+        val input = Map("ducr" -> validDucr, "ducrPartId" -> "")
 
         val result = DucrPartDetails.mapping.bind(input)
 
         result.isLeft mustBe true
-        result.left.get.size mustBe 2
-        result.left.get must contain(expectedDucrPartIdError)
+        result.left.get.size mustBe 1
+        result.left.get must contain(FormError("ducrPartId", Seq("ducrPartDetails.ducrPartId.empty")))
       }
 
       "provided with incorrect DUCR Part ID" in {
 
-        val input = Map("ducr" -> "incorrect!@#$%^", "ducrPartId" -> "incorrect!@#$%^")
+        val input = Map("ducr" -> validDucr, "ducrPartId" -> "incorrect!@#$%^")
 
         val result = DucrPartDetails.mapping.bind(input)
 
         result.isLeft mustBe true
-        result.left.get.size mustBe 2
-        result.left.get must contain(expectedDucrPartIdError)
+        result.left.get.size mustBe 1
+        result.left.get must contain(FormError("ducrPartId", Seq("ducrPartDetails.ducrPartId.invalid")))
       }
     }
 

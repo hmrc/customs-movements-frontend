@@ -122,10 +122,10 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
       }
 
       "some errors" in {
-        val view: Document = createView(form.withError(FormError("createOrAdd", "mucrOptions.createAdd.value.empty")))
+        val view: Document = createView(form.withError(FormError("createOrAdd", "mucrOptions.reference.value.error.empty")))
 
         view must haveGovUkGlobalErrorSummary
-        view must haveGovUkFieldError("createOrAdd", messages("mucrOptions.createAdd.value.empty"))
+        view must haveGovUkFieldError("createOrAdd", messages("mucrOptions.reference.value.error.empty"))
       }
     }
   }

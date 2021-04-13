@@ -52,17 +52,12 @@ class MucrOptionsController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(buildPage(formWithErrors))),
         validForm => {
-          val validatedForm = MucrOptions.validateForm(form.fill(validForm))
-          if (validatedForm.hasErrors) {
-            Future.successful(BadRequest(buildPage(validatedForm)))
-          } else {
-            val updatedAnswers = request.answersAs[AssociateUcrAnswers].copy(mucrOptions = Some(validForm))
-            cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
-              if (request.cache.queryUcr.isDefined)
-                Redirect(routes.AssociateUcrSummaryController.displayPage())
-              else
-                Redirect(routes.AssociateUcrController.displayPage())
-            }
+          val updatedAnswers = request.answersAs[AssociateUcrAnswers].copy(mucrOptions = Some(validForm))
+          cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
+            if (request.cache.queryUcr.isDefined)
+              Redirect(routes.AssociateUcrSummaryController.displayPage())
+            else
+              Redirect(routes.AssociateUcrController.displayPage())
           }
         }
       )

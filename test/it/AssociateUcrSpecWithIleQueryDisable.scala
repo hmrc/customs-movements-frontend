@@ -51,7 +51,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
 
         status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrController.displayPage().url)
-        theAnswersFor("eori") mustBe Some(AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345"))))
+        theAnswersFor("eori") mustBe Some(AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345"))))
       }
     }
   }
@@ -60,7 +60,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
     "GET" should {
       "return 200" in {
         givenAuthSuccess("eori")
-        givenCacheFor("eori", AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345"))))
+        givenCacheFor("eori", AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345"))))
 
         val response = get(controllers.consolidations.routes.AssociateUcrController.displayPage())
 
@@ -71,7 +71,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
     "POST" should {
       "continue" in {
         givenAuthSuccess("eori")
-        givenCacheFor("eori", AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345"))))
+        givenCacheFor("eori", AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345"))))
 
         val response = post(controllers.consolidations.routes.AssociateUcrController.submit(), "kind" -> "mucr", "mucr" -> "GB/321-54321")
 
@@ -79,7 +79,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
         redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrSummaryController.displayPage().url)
         theAnswersFor("eori") mustBe Some(
           AssociateUcrAnswers(
-            mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345")),
+            mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345")),
             associateUcr = Some(AssociateUcr(UcrType.Mucr, "GB/321-54321"))
           )
         )
@@ -94,7 +94,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
         givenCacheFor(
           "eori",
           AssociateUcrAnswers(
-            mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345")),
+            mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345")),
             associateUcr = Some(AssociateUcr(UcrType.Mucr, "GB/321-54321"))
           )
         )
@@ -111,7 +111,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
         givenCacheFor(
           "eori",
           AssociateUcrAnswers(
-            mucrOptions = Some(MucrOptions(createOrAdd = "create", newMucr = "GB/123-12345")),
+            mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345")),
             associateUcr = Some(AssociateUcr(UcrType.Mucr, "GB/321-54321"))
           )
         )

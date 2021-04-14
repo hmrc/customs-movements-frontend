@@ -34,7 +34,7 @@ class AssociateUcrViewSpec extends ViewSpec with Injector {
 
   private val page = instanceOf[associate_ucr]
 
-  val mucrOptions = MucrOptions("MUCR")
+  val mucrOptions = MucrOptions(MucrOptions.Create, "MUCR")
 
   private def createView(mucr: MucrOptions, form: Form[AssociateUcr]): Html =
     page(form, mucr)(request, messages)
@@ -99,12 +99,12 @@ class AssociateUcrViewSpec extends ViewSpec with Injector {
     }
 
     "display DUCR Form errors" in {
-      val value = AssociateUcr.form.withError(FormError("ducr", "ducr.error.format"))
+      val value = AssociateUcr.form.withError(FormError("ducr", "associate.ucr.ducr.error.invalid"))
 
       val view: Document = createView(mucrOptions, value)
 
       view must haveGovUkGlobalErrorSummary
-      view must haveGovUkFieldError("ducr", messages("ducr.error.format"))
+      view must haveGovUkFieldError("ducr", messages("associate.ucr.ducr.error.invalid"))
     }
   }
 

@@ -30,7 +30,7 @@
 @buildLabel = @{ if(isPageHeading) {
     Label(content = Text(messages(labelKey)), isPageHeading = true,  classes = headingClasses)
   } else {
-    Label(content = Text(messages(labelKey)))
+    Label(content = Text(messages(labelKey)), classes = "govuk-label govuk-label--m")
   }
 }
 

@@ -109,7 +109,7 @@ startPage.informationYouNeed.listItem.3 = the Master Unique Consignment Referenc
 startPage.informationYouNeed.listItem.4 = details of where you’re sending the export to and from
 startPage.reportYourArrivalAndDeparture.header = Report your arrival and departure
 startPage.problemsWithServiceNotice = Online services may be slow during busy times. Check if there are any {0}
-startPage.problemsWithServiceNotice.link = problems with this service.
+startPage.problemsWithServiceNotice.link = problems with this service
 startPage.buttonName = Start now
 
 choicePage.input.error.empty = Select the option you want
@@ -123,13 +123,13 @@ consignmentReferences.reference.ducr = Declaration Consignment Reference (DUCR)
 consignmentReferences.reference.mucr = Master Consignment Reference (MUCR)
 consignmentReferences.reference.ducrPart = DUCR Part
 consignmentReferences.reference.empty = Select a declaration
-consignmentReferences.reference.error = Incorrect reference.
+consignmentReferences.reference.error = Incorrect reference
 consignmentReferences.reference.ducrValue = Declaration Unique Consignment Reference
 consignmentReferences.reference.mucrValue = Master Unique Consignment Reference
-consignmentReferences.reference.mucrValue.empty = Enter a Master Unique Consignment Reference.
-consignmentReferences.reference.ducrValue.empty = Enter a Declaration Unique Consignment Reference.
-consignmentReferences.reference.mucrValue.error = Master Unique Consignment Reference is incorrect.
-consignmentReferences.reference.ducrValue.error = Declaration Unique Consignment Reference is incorrect.
+consignmentReferences.reference.mucrValue.empty = Enter a Master Unique Consignment Reference
+consignmentReferences.reference.ducrValue.empty = Enter a Declaration Unique Consignment Reference
+consignmentReferences.reference.mucrValue.error = Master Unique Consignment Reference is incorrect
+consignmentReferences.reference.ducrValue.error = Declaration Unique Consignment Reference (DUCR) must be in the correct format. For example, 1GB123456789012-TRADER-REF-123
 
 specific.datetime.heading = Do you need to add a specific date and time for this request?
 specific.datetime.arrive.heading = Arrive consignment {0}
@@ -143,7 +143,7 @@ arrivalDetails.title = Arrival date and time
 arrivalDetails.sectionHeading = Arrive consignment {0}
 arrivalDetails.header = Enter date and time of arrival
 arrivalDetails.date.question = Date of arrival
-arrivalDetails.date.hint = For example, 1 8 2007
+arrivalDetails.date.hint = For example, 1 8 2021
 arrivalDetails.time.question = Time of arrival
 arrivalDetails.time.hint = Enter the time in 12 hour format. For example, 11 30 am.
 
@@ -154,7 +154,7 @@ departureDetails.title = Departure date and time
 departureDetails.sectionHeading = Depart consignment {0}
 departureDetails.header = Enter date and time of departure
 departureDetails.date.question = Date of departure
-departureDetails.date.hint = For example, 1 8 2007
+departureDetails.date.hint = For example, 1 8 2021
 departureDetails.time.question = Time of departure
 departureDetails.time.hint = Enter the time in 12 hour format. For example, 11 30 am.
 
@@ -181,12 +181,12 @@ transport.modeOfTransport.6 = Fixed transport installations
 transport.modeOfTransport.7 = Inland waterway transport
 transport.modeOfTransport.8 = Other, for example own propulsion
 transport.transportId.question = What is the ID for the selected transport type?
-transport.transportId.hint = This can be up to 35 characters. For example a vehicle registration number or an IATA flight number. If you selected postal or fixed installation, type 'Unknown' in the box.
+transport.transportId.hint = This can be up to 35 characters. For example a vehicle registration number or an IATA flight number. If you selected postal or fixed installation, type "Unknown" in the box.
 transport.transportId.empty = Enter the transport ID
 transport.transportId.error = Enter a transport ID that contains only letters and numbers
 transport.nationality.question = What country is the transport registered in?
-transport.nationality.empty = Select the country where the transport is registered.
-transport.nationality.error = Select the country where the transport is registered.
+transport.nationality.empty = Select the country where the transport is registered
+transport.nationality.error = Select the country where the transport is registered
 transport.nationality.country.help = Select a country from the list
 
 summary.referenceType = Consignment type
@@ -242,24 +242,27 @@ mucrOptions.hint.link = DE 2/1 in the UK Trade Tariff
 mucrOptions.title = Create or enter a Master Consignment Reference (MUCR) to associate with
 mucrOptions.create = Create a MUCR
 mucrOptions.add = Add to an existing MUCR
-mucrOptions.createAdd.value.empty = Select the option you want
-mucrOptions.reference.value.error = Select a valid option
+mucrOptions.error.unselected = Select if you want to create or add to a MUCR
+mucrOptions.reference.value.error.empty = Enter a MUCR
+mucrOptions.reference.value.error.invalid = MUCR must be in the correct format
 
 manageMucr.title = What do you want to associate?
 manageMucr.heading = Associate consignment {0}
-manageMucr.input.error.empty = Please, choose what do you want to do.
-manageMucr.input.error.incorrectValue = Please, choose valid option.
+manageMucr.input.error.empty = Select what you want to associate
+manageMucr.input.error.incorrectValue = Please, choose valid option
 manageMucr.associate.this.consignment = Associate this consignment to another
 manageMucr.associate.other.consignment = Associate another consignment to this one
-
-ducr.error.format = Declaration Unique Consignment Reference (DUCR) must be in the correct format. For example, 1GB123456789012-TRADER-REF-123
-mucr.error.format = Master Unique Consignment Reference (MUCR) must contain only letters, numbers, commas, hyphens and forward slash
 
 associate.ucr.title = Which consignment do you want to add to MUCR {0}?
 associate.ucr.heading = Which consignment do you want to add?
 associate.ucr.sectionHeader = Add to MUCR {0}
+associate.ucr.error.unselected = Select which consignment you want to add
 associate.ucr.ducr = Declaration Consignment Reference (DUCR)
+associate.ucr.ducr.error.empty = Enter a DUCR
+associate.ucr.ducr.error.invalid = Declaration Unique Consignment Reference (DUCR) must be in the correct format. For example, 1GB123456789012-TRADER-REF-123
 associate.ucr.mucr = Master Consignment Reference (MUCR)
+associate.ucr.mucr.error.empty = Enter a MUCR
+associate.ucr.mucr.error.invalid = Master Unique Consignment Reference (MUCR) must contain only letters, numbers, commas, hyphens and forward slash
 
 associate.ucr.hint = You may want to keep a record of which consignments you have added to this MUCR.
 
@@ -386,22 +389,24 @@ ileQueryResponse.links.manageConsignment = Manage this consignment
 ileQueryResponse.links.findConsignment = Find another consignment
 
 ileQueryResponse.ucrNotFound.title = The requested UCR does not exist
-ileQueryResponse.ucrNotFound.message = {0} does not exist.
+ileQueryResponse.ucrNotFound.message = {0} does not exist
 
 ileCode.unknown = Unknown
 
 ileQueryResponse.timeout.title = There is a problem
 ileQueryResponse.timeout.heading = Sorry, there is a problem with the service
-ileQueryResponse.timeout.message = Try again later.
+ileQueryResponse.timeout.message = Try again later
 
 ducrPartDetails.title = DUCR Part details
 ducrPartDetails.heading = You can use this service if your original declaration was made in CHIEF.
 ducrPartDetails.ducr = Enter DUCR
 ducrPartDetails.ducr.hint = For example, 9GB123999746000-DUCR12345.
-ducrPartDetails.ducr.error = Declaration Unique Consignment Reference (DUCR) must be in the correct format. For example, 1GB123456789012-TRADER-REF-123
+ducrPartDetails.ducr.empty = Enter a DUCR
+ducrPartDetails.ducr.invalid = Declaration Unique Consignment Reference (DUCR) must be in the correct format. For example, 1GB123456789012-TRADER-REF-123
 ducrPartDetails.ducrPartId = Enter DUCR Part ID
 ducrPartDetails.ducrPartId.hint = This can be up to 3 digits. For example, 123.
-ducrPartDetails.ducrPartId.error = Declaration Unique Consignment Reference (DUCR) must be in the correct format. For example, 1GB123456789012-TRADER-REF-123
+ducrPartDetails.ducrPartId.empty = Enter a part DUCR
+ducrPartDetails.ducrPartId.invalid = Part DUCR must be in the correct format. For example, 123
 
 ducrPartChief.ARRIVE.heading = Arrive consignment
 ducrPartChief.ARRIVE.question = Do you want to arrive a DUCR Part which was created in CHIEF?

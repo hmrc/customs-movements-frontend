@@ -18,7 +18,7 @@ package controllers.consolidations
 
 import controllers.ControllerLayerSpec
 import forms.MucrOptions
-import forms.MucrOptions.Create
+import forms.MucrOptions.{Add, Create}
 import models.UcrBlock
 import models.cache.AssociateUcrAnswers
 import org.mockito.ArgumentCaptor
@@ -26,7 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import repository.MockCache
@@ -61,6 +61,12 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
     captor.getValue
   }
 
+  private def formWrites(x: MucrOptions): JsValue = {
+    val mucrFieldName = if (x.createOrAdd == MucrOptions.Create) "newMucr" else "existingMucr"
+
+    Json.obj("createOrAdd" -> x.createOrAdd, mucrFieldName -> x.mucr)
+  }
+
   "Mucr Options Controller" should {
 
     "return 200 (OK)" when {
@@ -73,7 +79,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
       }
 
       "display page with filled data" in {
-        val mucrOptions = MucrOptions(CommonTestData.correctUcr)
+        val mucrOptions = MucrOptions(MucrOptions.Create, CommonTestData.correctUcr)
 
         val result = controller(AssociateUcrAnswers(None, Some(mucrOptions), None)).displayPage()(getRequest())
 
@@ -85,7 +91,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
     "return 400 (BAD_REQUEST)" when {
 
       "form is incorrect during saving on first validation" in {
-        val incorrectForm = Json.toJson(MucrOptions("8GB12345612345612345", "8GB12345612345612345", ""))
+        val incorrectForm = Json.toJson(MucrOptions(MucrOptions.Create, "8GB12345612345612345"))
 
         val result = controller(AssociateUcrAnswers()).save()(postRequest(incorrectForm))
 
@@ -94,7 +100,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
       }
 
       "form is incorrect during saving on second validation" in {
-        val incorrectForm = Json.toJson(MucrOptions("incorrect", "incorrect", Create))
+        val incorrectForm = Json.toJson(MucrOptions(Create, "incorrect"))
 
         val result = controller(AssociateUcrAnswers()).save()(postRequest(incorrectForm))
 
@@ -103,7 +109,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
       }
 
       "a valid MUCR is over 35 characters long" in {
-        val incorrectForm = Json.toJson(MucrOptions("GB/82F9-0N2F6500040010TO120P0A300689", "GB/82F9-0N2F6500040010TO120P0A300689", Create))
+        val incorrectForm = Json.toJson(MucrOptions(Create, "GB/82F9-0N2F6500040010TO120P0A300689"))
 
         val result = controller(AssociateUcrAnswers()).save()(postRequest(incorrectForm))
 
@@ -115,7 +121,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
     "return 303 (SEE_OTHER)" when {
 
       "form is correct when queryUcr not present" in {
-        val correctForm = Json.toJson(MucrOptions(validMucr, "", Create))
+        val correctForm = Json.toJson(MucrOptions(Create, validMucr))(formWrites)
 
         val result = controller(AssociateUcrAnswers(), queryUcr = None).save()(postRequest(correctForm))
 
@@ -125,7 +131,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
 
       "form is correct when queryUcr present" in {
 
-        val correctForm = Json.toJson(MucrOptions(validMucr, "", Create))
+        val correctForm = Json.toJson(MucrOptions(Create, validMucr))(formWrites)
 
         val result = controller(AssociateUcrAnswers(), queryUcr = Some(queryUcr)).save()(postRequest(correctForm))
 
@@ -134,7 +140,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
       }
 
       "a MUCR conforms with the regex but has been send but is just 35 characters long" in {
-        val correctForm = Json.toJson(MucrOptions("GB/82F9-0N2F6500040010TO120P0A30068", "", Create))
+        val correctForm = Json.toJson(MucrOptions(Create, "GB/82F9-0N2F6500040010TO120P0A30068"))(formWrites)
 
         val result = controller(AssociateUcrAnswers(), queryUcr = Some(queryUcr)).save()(postRequest(correctForm))
 

@@ -122,13 +122,13 @@ consignmentReferences.DEPART.question = Which consignment do you want to depart?
 consignmentReferences.reference.ducr = Declaration Consignment Reference (DUCR)
 consignmentReferences.reference.mucr = Master Consignment Reference (MUCR)
 consignmentReferences.reference.ducrPart = DUCR Part
-consignmentReferences.reference.empty = Select a declaration
+consignmentReferences.reference.empty = Select which consignment you want to arrive
 consignmentReferences.reference.error = Incorrect reference
 consignmentReferences.reference.ducrValue = Declaration Unique Consignment Reference
 consignmentReferences.reference.mucrValue = Master Unique Consignment Reference
 consignmentReferences.reference.mucrValue.empty = Enter a Master Unique Consignment Reference
 consignmentReferences.reference.ducrValue.empty = Enter a Declaration Unique Consignment Reference
-consignmentReferences.reference.mucrValue.error = Master Unique Consignment Reference is incorrect
+consignmentReferences.reference.mucrValue.error = Master Unique Consignment Reference (MUCR) must contain only letters, numbers, commas, hyphens and forward slash
 consignmentReferences.reference.ducrValue.error = Declaration Unique Consignment Reference (DUCR) must be in the correct format. For example, 1GB123456789012-TRADER-REF-123
 
 specific.datetime.heading = Do you need to add a specific date and time for this request?
@@ -244,7 +244,7 @@ mucrOptions.create = Create a MUCR
 mucrOptions.add = Add to an existing MUCR
 mucrOptions.error.unselected = Select if you want to create or add to a MUCR
 mucrOptions.reference.value.error.empty = Enter a MUCR
-mucrOptions.reference.value.error.invalid = MUCR must be in the correct format
+mucrOptions.reference.value.error.invalid = Master Unique Consignment Reference (MUCR) must contain only letters, numbers, commas, hyphens and forward slash
 
 manageMucr.title = What do you want to associate?
 manageMucr.heading = Associate consignment {0}

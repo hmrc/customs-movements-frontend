@@ -19,7 +19,7 @@ package views
 import base.OverridableInjector
 import config.DucrPartConfig
 import forms.ConsignmentReferences
-import models.cache.ArrivalAnswers
+import models.cache.{ArrivalAnswers, JourneyType}
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -37,6 +37,8 @@ class ConsignmentReferenceViewSpec extends ViewSpec with MockitoSugar with Befor
 
   private val page = injector.instanceOf[consignment_references]
 
+  private val goodsDirection = JourneyType.ARRIVE
+
   override def beforeEach(): Unit = {
     super.beforeEach()
     when(appConfig.isDucrPartsEnabled).thenReturn(true)
@@ -49,30 +51,34 @@ class ConsignmentReferenceViewSpec extends ViewSpec with MockitoSugar with Befor
 
   "View" should {
     "render title" in {
-      page(ConsignmentReferences.form).getTitle must containMessage("consignmentReferences.ARRIVE.question")
+      page(ConsignmentReferences.form(goodsDirection)).getTitle must containMessage("consignmentReferences.ARRIVE.question")
     }
 
     "render heading" in {
-      page(ConsignmentReferences.form).getElementById("section-header") must containMessage("consignmentReferences.ARRIVE.heading")
+      page(ConsignmentReferences.form(goodsDirection)).getElementById("section-header") must containMessage("consignmentReferences.ARRIVE.heading")
     }
 
     "render options" in {
-      page(ConsignmentReferences.form).getElementsByAttributeValue("for", "reference").first() must containMessage(
+      page(ConsignmentReferences.form(goodsDirection)).getElementsByAttributeValue("for", "reference").first() must containMessage(
         "consignmentReferences.reference.ducr"
       )
-      page(ConsignmentReferences.form).getElementsByAttributeValue("for", "reference-2").first() must containMessage(
+      page(ConsignmentReferences.form(goodsDirection)).getElementsByAttributeValue("for", "reference-2").first() must containMessage(
         "consignmentReferences.reference.mucr"
       )
     }
 
     "render labels" in {
-      page(ConsignmentReferences.form).getElementsByAttributeValue("for", "mucrValue").first() must containMessage("site.inputText.mucr.label")
-      page(ConsignmentReferences.form).getElementsByAttributeValue("for", "ducrValue").first() must containMessage("site.inputText.ducr.label")
+      page(ConsignmentReferences.form(goodsDirection)).getElementsByAttributeValue("for", "mucrValue").first() must containMessage(
+        "site.inputText.mucr.label"
+      )
+      page(ConsignmentReferences.form(goodsDirection)).getElementsByAttributeValue("for", "ducrValue").first() must containMessage(
+        "site.inputText.ducr.label"
+      )
     }
 
     "render back button when ducrPart disabled" in {
       when(appConfig.isDucrPartsEnabled).thenReturn(false)
-      val backButton = page(ConsignmentReferences.form).getBackButton
+      val backButton = page(ConsignmentReferences.form(goodsDirection)).getBackButton
 
       backButton mustBe defined
       backButton.get must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
@@ -80,7 +86,7 @@ class ConsignmentReferenceViewSpec extends ViewSpec with MockitoSugar with Befor
 
     "render back button when ducrPart enabled" in {
       when(appConfig.isDucrPartsEnabled).thenReturn(true)
-      val backButton = page(ConsignmentReferences.form).getBackButton
+      val backButton = page(ConsignmentReferences.form(goodsDirection)).getBackButton
 
       backButton mustBe defined
       backButton.get must haveHref(controllers.routes.DucrPartChiefController.displayPage())
@@ -88,14 +94,15 @@ class ConsignmentReferenceViewSpec extends ViewSpec with MockitoSugar with Befor
 
     "render error summary" when {
       "no errors" in {
-        page(ConsignmentReferences.form).getErrorSummary mustBe empty
+        page(ConsignmentReferences.form(goodsDirection)).getErrorSummary mustBe empty
       }
 
       "some errors" in {
-        val view: Document = page(ConsignmentReferences.form.withError(FormError("reference", "consignmentReferences.reference.empty")))
+        val view: Document =
+          page(ConsignmentReferences.form(goodsDirection).withError(FormError("reference", "consignmentReferences.reference.empty.arrive")))
 
         view must haveGovUkGlobalErrorSummary
-        view must haveGovUkFieldError("reference", messages("consignmentReferences.reference.empty"))
+        view must haveGovUkFieldError("reference", messages("consignmentReferences.reference.empty.arrive"))
       }
     }
   }

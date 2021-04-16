@@ -44,12 +44,12 @@ class ConsignmentReferencesController @Inject()(
   def displayPage(): Action[AnyContent] = (authenticate andThen ileQueryFeatureDisabled andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)) {
     implicit request =>
       val references = request.answersAs[MovementAnswers].consignmentReferences
-      Ok(consignmentReferencesPage(references.fold(form())(form().fill(_))))
+      Ok(consignmentReferencesPage(references.fold(form(request.answers.`type`))(form(request.answers.`type`).fill(_))))
   }
 
   def saveConsignmentReferences(): Action[AnyContent] =
     (authenticate andThen ileQueryFeatureDisabled andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)).async { implicit request =>
-      form()
+      form(request.answers.`type`)
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),

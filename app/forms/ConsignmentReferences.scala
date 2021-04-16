@@ -18,6 +18,7 @@ package forms
 
 import forms.EnhancedMapping.requiredRadio
 import models.UcrBlock
+import models.cache.JourneyType.JourneyType
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -57,29 +58,29 @@ object ConsignmentReferences {
       model.reference match {
         case Ducr.codeValue => Some((model.reference, Some(model.referenceValue), None))
         case Mucr.codeValue => Some((model.reference, None, Some(model.referenceValue)))
-        case _              => Some(model.reference, None, None)
+        case _              => Some((model.reference, None, None))
     }
 
-  val mapping = Forms
-    .mapping(
-      "reference" -> requiredRadio("consignmentReferences.reference.empty")
-        .verifying("consignmentReferences.reference.error", isContainedIn(allowedReferenceAnswers)),
-      "ducrValue" -> mandatoryIfEqual(
-        "reference",
-        Ducr.codeValue,
-        text()
-          .verifying("consignmentReferences.reference.ducrValue.empty", nonEmpty)
-          .verifying("consignmentReferences.reference.ducrValue.error", isEmpty or validDucrIgnoreCase)
-      ),
-      "mucrValue" -> mandatoryIfEqual(
-        "reference",
-        Mucr.codeValue,
-        text()
-          .verifying("consignmentReferences.reference.mucrValue.empty", nonEmpty)
-          .verifying("consignmentReferences.reference.mucrValue.error", isEmpty or validMucrIgnoreCase)
-      )
-    )(form2Model)(model2Form)
+  def mapping(goodsDirection: JourneyType) =
+    Forms
+      .mapping(
+        "reference" -> requiredRadio(s"consignmentReferences.reference.empty.${goodsDirection.toString.toLowerCase}")
+          .verifying("consignmentReferences.reference.error", isContainedIn(allowedReferenceAnswers)),
+        "ducrValue" -> mandatoryIfEqual(
+          "reference",
+          Ducr.codeValue,
+          text()
+            .verifying("consignmentReferences.reference.ducrValue.empty", nonEmpty)
+            .verifying("consignmentReferences.reference.ducrValue.error", isEmpty or validDucrIgnoreCase)
+        ),
+        "mucrValue" -> mandatoryIfEqual(
+          "reference",
+          Mucr.codeValue,
+          text()
+            .verifying("consignmentReferences.reference.mucrValue.empty", nonEmpty)
+            .verifying("consignmentReferences.reference.mucrValue.error", isEmpty or validMucrIgnoreCase)
+        )
+      )(form2Model)(model2Form)
 
-  def form(): Form[ConsignmentReferences] = Form(mapping)
-
+  def form(goodsDirection: JourneyType): Form[ConsignmentReferences] = Form(mapping(goodsDirection))
 }

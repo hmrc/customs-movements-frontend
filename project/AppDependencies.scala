@@ -22,7 +22,6 @@ object AppDependencies {
     "com.github.cloudyrock.mongock"  %  "mongock-core"        % "2.0.2",
     "org.mongodb"          %  "mongo-java-driver"             % "3.12.1",
     "org.webjars.npm"      %  "govuk-frontend"                % "3.10.2",
-    "org.webjars.npm"      %  "hmrc-frontend"                 % "1.23.1",
     "org.webjars.npm"      %  "accessible-autocomplete"       % "2.0.3"
   )
 

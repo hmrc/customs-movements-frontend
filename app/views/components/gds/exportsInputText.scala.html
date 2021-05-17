@@ -21,7 +21,7 @@
 @(
         field: Field,
         labelKey: String,
-        hintKey: Option[String] = None,
+        hintContent: Option[Content] = None,
         isPageHeading: Boolean = false,
         headingClasses: String = "govuk-label--l",
         inputClasses: String = "govuk-!-width-two-thirds"
@@ -39,7 +39,7 @@
   name = field.name,
   value = field.value,
   label = buildLabel,
-  hint = hintKey.map(key => Hint(content = Text(messages(key)))),
+  hint = hintContent.map(hints => Hint(content = hints)),
   errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message)))),
   classes = inputClasses
 ))

@@ -45,21 +45,32 @@ class AppConfig @Inject()(
   lazy val sessionCacheDomain: String =
     servicesConfig.getConfString("cachable.session-cache.domain", throw new Exception(s"Could not find config 'cachable.session-cache.domain'"))
 
-  lazy val analyticsToken = loadConfig(s"google-analytics.token")
-  lazy val analyticsHost = loadConfig(s"google-analytics.host")
+  val analyticsToken = loadConfig(s"google-analytics.token")
+  val analyticsHost = loadConfig(s"google-analytics.host")
 
   lazy val authUrl = servicesConfig.baseUrl("auth")
-  lazy val loginUrl = loadConfig("urls.login")
-  lazy val loginContinueUrl = loadConfig("urls.loginContinue")
+  val loginUrl = loadConfig("urls.login")
+  val loginContinueUrl = loadConfig("urls.loginContinue")
 
-  lazy val eoriService: String = loadConfig("urls.eoriService")
-  lazy val cdsRegister: String = loadConfig("urls.cdsRegister")
-  lazy val cdsCheckStatus: String = loadConfig("urls.cdsCheckStatus")
+  val eoriService: String = loadConfig("urls.eoriService")
+  val cdsRegister: String = loadConfig("urls.cdsRegister")
+  val cdsCheckStatus: String = loadConfig("urls.cdsCheckStatus")
+
+  val customsDecCompletionRequirements = loadConfig("urls.customsDecCompletionRequirements")
+  val locationCodeForAirports = loadConfig("urls.locationCodeForAirports")
+  val certificateOfAgreementAirports = loadConfig("urls.certificateOfAgreementAirports")
+  val locationCodeForMaritimePorts = loadConfig("urls.locationCodeForMaritimePorts")
+  val locationCodeForTempStorage = loadConfig("urls.locationCodeForTempStorage")
+  val designatedExportPlaceCodes = loadConfig("urls.designatedExportPlaceCodes")
+  val locationCodesForCsePremises = loadConfig("urls.locationCodesForCsePremises")
+  val previousProcedureCodesUrl = loadConfig("urls.previousProcedureCodes")
+  val goodsLocationCodesForDataElement = loadConfig("urls.goodsLocationCodesForDataElement")
+  val tariffCdsChiefSupplement = loadConfig("urls.tariffCdsChiefSupplement")
 
   lazy val customsDeclareExportsMovements = servicesConfig.baseUrl("customs-declare-exports-movements")
 
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("platform.frontend.host")
-  lazy val giveFeedbackLink: String = {
+  val giveFeedbackLink: String = {
     val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")
     val contactFrontendServiceIdentifier: String = loadConfig("microservice.services.contact-frontend.serviceId")
 
@@ -95,8 +106,6 @@ class AppConfig @Inject()(
     "customs-declare-exports-movements.ile-query",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports ile query URI")
   )
-
-  lazy val responseErrorExplanationMode = loadConfig("microservice.services.features.response-error-explanation-mode")
 
   lazy val languageTranslationEnabled =
     runModeConfiguration

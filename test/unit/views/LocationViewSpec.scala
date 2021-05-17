@@ -51,8 +51,12 @@ class LocationViewSpec extends ViewSpec with Injector {
     }
 
     "display input hint" in {
+      view.getElementById("code-hint-para1").text() mustBe messages("location.hint.paragraph1")
+      view.getElementById("code-hint-para2").text() mustBe messages("location.hint.paragraph2")
+    }
 
-      view.getElementById("code-hint").text() mustBe messages("location.hint")
+    "display goods location expander" in {
+      view.getElementsByClass("govuk-details__summary-text").first() must containHtml(messages("location.expander.title"))
     }
 
     "display \"Back\" button that links to Movement Details" in {

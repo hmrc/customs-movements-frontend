@@ -1,0 +1,131 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.components.gds._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import config.AppConfig
+@import play.twirl.api.HtmlFormat.fill
+@import scala.collection.immutable.Seq
+
+@this(govukDetails : GovukDetails, govukHint: GovukHint, link: link, paragraph: paragraphBody, appConfig: AppConfig)
+
+@()(implicit messages: Messages)
+
+@paragraphLayout(index: Int) = @{
+    HtmlContent(fill(Seq(
+        link(
+            message = Html(messages(s"location.expander.paragraph${index}.link1.text")),
+            href = Call("GET", appConfig.customsDecCompletionRequirements),
+            target = "_blank"
+        ),
+        Html("<br/>"),
+        Html(messages(s"location.expander.paragraph${index}.text"))
+    )))
+}
+
+@expanderContent = {
+    @paragraph(messages("location.expander.intro"))
+
+    @paragraph(messages("location.expander.paragraph1.title"), "bold")
+    @govukHint(Hint(content = paragraphLayout(1)))
+
+    @paragraph(messages("location.expander.paragraph2.title"), "bold")
+    @govukHint(Hint(content = paragraphLayout(2)))
+
+    @paragraph(messages("location.expander.paragraph3.title"), "bold")
+    @govukHint(Hint(
+        content = HtmlContent(link(
+            message = Html(messages("location.expander.paragraph3.link1.text")),
+            href = Call("GET", appConfig.locationCodeForAirports),
+            target = "_blank"
+        ))
+    ))
+
+    @paragraph(messages("location.expander.paragraph4.title"), "bold")
+    @govukHint(Hint(
+        content = HtmlContent(link(
+            message = Html(messages("location.expander.paragraph4.link1.text")),
+            href = Call("GET", appConfig.certificateOfAgreementAirports),
+            target = "_blank"
+        ))
+    ))
+
+    @paragraph(messages("location.expander.paragraph5.title"), "bold")
+    @govukHint(Hint(
+        content = HtmlContent(link(
+            message = Html(messages("location.expander.paragraph5.link1.text")),
+            href = Call("GET", appConfig.locationCodeForMaritimePorts),
+            target = "_blank"
+        ))
+    ))
+
+    @paragraph(messages("location.expander.paragraph6.title"), "bold")
+    @govukHint(Hint(
+        content = HtmlContent(link(
+            message = Html(messages("location.expander.paragraph6.link1.text")),
+            href = Call("GET", appConfig.locationCodeForTempStorage),
+            target = "_blank"
+        ))
+    ))
+
+    @paragraph(messages("location.expander.paragraph7.title"), "bold")
+    @govukHint(Hint(
+        content = HtmlContent(link(
+            message = Html(messages("location.expander.paragraph7.link1.text")),
+            href = Call("GET", appConfig.designatedExportPlaceCodes),
+            target = "_blank"
+        ))
+    ))
+
+    @paragraph(messages("location.expander.paragraph8.title"), "bold")
+    @govukHint(Hint(
+        content = HtmlContent(fill(Seq(
+            link(
+                message = Html(messages(s"location.expander.paragraph8.link1.text")),
+                href = Call("GET", appConfig.locationCodesForCsePremises),
+                target = "_blank"
+            ),
+            Html("<br/>"),
+            Html(messages(s"location.expander.paragraph8.text",
+                link(
+                    message = Html(messages("location.expander.paragraph8.link2.text")),
+                    href = Call("GET", appConfig.previousProcedureCodesUrl),
+                    target = "_blank"
+                ))
+            )
+        )))
+    ))
+
+    @govukHint(Hint(
+        content = HtmlContent(messages("location.expander.paragraph9.text",
+            link(
+                message = Html(messages("location.expander.paragraph9.link1.text")),
+                href = Call("GET", appConfig.goodsLocationCodesForDataElement),
+                target = "_blank"
+            ),
+            link(
+                message = Html(messages("location.expander.paragraph9.link2.text")),
+                href = Call("GET", appConfig.tariffCdsChiefSupplement),
+                target = "_blank"
+            )
+        ))
+    ))
+}
+
+@govukDetails(Details(
+    summary = Text(messages("location.expander.title")),
+    content = HtmlContent(expanderContent)
+))

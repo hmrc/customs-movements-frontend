@@ -18,14 +18,19 @@
 @import views.Title
 @import views.components.BackButton
 @import models.requests.JourneyRequest
-@import components.gds.{errorSummary, exportsInputText, gds_main_template, sectionHeader}
+@import components.gds.{errorSummary, exportsInputText, gds_main_template, paragraphBody, sectionHeader}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.SpecificDateTimeChoice
+@import views.html.components.goodsLocationExpander
+@import play.twirl.api.HtmlFormat.fill
+@import scala.collection.immutable.Seq
 
 @this(
   govukLayout: gds_main_template,
   govukButton: GovukButton,
   exportsInputText: exportsInputText,
+  paragraphBody: paragraphBody,
+  goodsLocationExpander: goodsLocationExpander,
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
   formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -37,6 +42,13 @@
     case Some(SpecificDateTimeChoice.CurrentDateTime) => controllers.routes.SpecificDateTimeController.displayPage
     case _ => controllers.routes.MovementDetailsController.displayPage
 }}
+
+@hint = @{
+  Seq(
+      paragraphBody(message = messages("location.hint.paragraph1"), id = Some("code-hint-para1"), classes="govuk-hint"),
+      paragraphBody(message = messages("location.hint.paragraph2"), id = Some("code-hint-para2"), classes="govuk-hint")
+  )
+}
 
 @govukLayout(
     title = Title("location.question"),
@@ -50,9 +62,11 @@
         @exportsInputText(
             field = form("code"),
             labelKey = "location.question",
-            hintKey = Some("location.hint"),
+            hintContent = Some(HtmlContent(fill(hint))),
             isPageHeading = true
         )
+
+        @goodsLocationExpander()
 
         @govukButton(Button(content = Text(messages("site.continue"))))
     }

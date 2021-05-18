@@ -33,6 +33,19 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
         |urls.customsDeclarationsGoodsTakenOutOfEu="https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"
         |urls.serviceAvailability="https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
         |urls.exitSurveyUrl="http://localhost:9514/feedback/customs-movements-frontend"
+        |urls.eoriService = "https://www.gov.uk/eori"
+        |urls.cdsRegister = "https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service"
+        |urls.cdsCheckStatus = "https://www.tax.service.gov.uk/customs/register-for-cds/are-you-based-in-uk"
+        |urls.previousProcedureCodes = "http://previousProcedureCodes"
+        |urls.customsDecCompletionRequirements="http://customsDecCompletionRequirements"
+        |urls.locationCodeForAirports="http://locationCodeForAirports"
+        |urls.certificateOfAgreementAirports="http://certificateOfAgreementAirports"
+        |urls.locationCodeForMaritimePorts="http://locationCodeForMaritimePorts"
+        |urls.locationCodeForTempStorage="http://locationCodeForTempStorage"
+        |urls.designatedExportPlaceCodes="http://designatedExportPlaceCodes"
+        |urls.locationCodesForCsePremises="http://locationCodesForCsePremises"
+        |urls.goodsLocationCodesForDataElement="http://goodsLocationCodesForDataElement"
+        |urls.tariffCdsChiefSupplement="http://tariffCdsChiefSupplement"
         |
         |mongodb.uri="mongodb://localhost:27017/customs-movements-frontend"
         |
@@ -67,16 +80,59 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
         |platform.frontend.host="self/base-url"
       """.stripMargin
     )
-  private val emptyAppConfig: Config = ConfigFactory.parseString("")
 
-  val validServicesConfiguration = Configuration(validAppConfig)
-  private val emptyServicesConfiguration = Configuration(emptyAppConfig)
+  private val missingValuesAppConfig: Config =
+    ConfigFactory.parseString(
+      """
+        |urls.login="http://localhost:9949/auth-login-stub/gg-sign-in"
+        |urls.loginContinue="http://localhost:9000/customs-declare-exports-frontend"
+        |urls.customsDeclarationsGoodsTakenOutOfEu="https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"
+        |urls.serviceAvailability="https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
+        |urls.exitSurveyUrl="http://localhost:9514/feedback/customs-movements-frontend"
+        |urls.eoriService = "https://www.gov.uk/eori"
+        |urls.cdsRegister = "https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service"
+        |urls.cdsCheckStatus = "https://www.tax.service.gov.uk/customs/register-for-cds/are-you-based-in-uk"
+        |urls.previousProcedureCodes = "http://previousProcedureCodes"
+        |urls.customsDecCompletionRequirements="http://customsDecCompletionRequirements"
+        |urls.locationCodeForAirports="http://locationCodeForAirports"
+        |urls.certificateOfAgreementAirports="http://certificateOfAgreementAirports"
+        |urls.locationCodeForMaritimePorts="http://locationCodeForMaritimePorts"
+        |urls.locationCodeForTempStorage="http://locationCodeForTempStorage"
+        |urls.designatedExportPlaceCodes="http://designatedExportPlaceCodes"
+        |urls.locationCodesForCsePremises="http://locationCodesForCsePremises"
+        |urls.goodsLocationCodesForDataElement="http://goodsLocationCodesForDataElement"
+        |urls.tariffCdsChiefSupplement="http://tariffCdsChiefSupplement"
+        |
+        |mongodb.uri="mongodb://localhost:27017/customs-movements-frontend"
+        |
+        |google-analytics.token=N/A
+        |google-analytics.host=localhostGoogle
+        |
+        |countryCodesCsvFilename=code_lists/mdg-country-codes.csv
+        |countryCodesJsonFilename=location-autocomplete-canonical-list.json
+        |euCountryCodesCsvFilename=code_lists/mdg-country-codes-eu.csv
+        |
+        |microservice.services.nrs.host=localhostnrs
+        |microservice.services.nrs.port=7654
+        |microservice.services.nrs.apikey=cds-exports
+        |microservice.services.features.default=disabled
+        |microservice.services.features.welsh-translation=false
+        |microservice.services.features.response-error-explanation-mode=Exports
+        |microservice.services.auth.port=9988
+        |
+        |microservice.services.contact-frontend.url=/contact-frontend-url
+        |microservice.services.contact-frontend.serviceId=Movements-Service-ID
+      """.stripMargin
+    )
+
+  private val validServicesConfiguration = Configuration(validAppConfig)
+  private val missingValuesServicesConfiguration = Configuration(missingValuesAppConfig)
 
   private def servicesConfig(conf: Configuration) = new ServicesConfig(conf)
   private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
 
   val validConfigService: AppConfig = appConfig(validServicesConfiguration)
-  val emptyConfigService: AppConfig = appConfig(emptyServicesConfiguration)
+  val emptyConfigService: AppConfig = appConfig(missingValuesServicesConfiguration)
 
   "The config" should {
 
@@ -105,8 +161,44 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
       validConfigService.loginContinueUrl must be("http://localhost:9000/customs-declare-exports-frontend")
     }
 
-    "have response error explanation mode field" in {
-      validConfigService.responseErrorExplanationMode must be("Exports")
+    "have previousProcedureCodesUrl URL" in {
+      validConfigService.previousProcedureCodesUrl must be("http://previousProcedureCodes")
+    }
+
+    "have customsDecCompletionRequirements URL" in {
+      validConfigService.customsDecCompletionRequirements must be("http://customsDecCompletionRequirements")
+    }
+
+    "have locationCodeForAirports URL" in {
+      validConfigService.locationCodeForAirports must be("http://locationCodeForAirports")
+    }
+
+    "have certificateOfAgreementAirports URL" in {
+      validConfigService.certificateOfAgreementAirports must be("http://certificateOfAgreementAirports")
+    }
+
+    "have locationCodeForMaritimePorts URL" in {
+      validConfigService.locationCodeForMaritimePorts must be("http://locationCodeForMaritimePorts")
+    }
+
+    "have locationCodeForTempStorage URL" in {
+      validConfigService.locationCodeForTempStorage must be("http://locationCodeForTempStorage")
+    }
+
+    "have designatedExportPlaceCodes URL" in {
+      validConfigService.designatedExportPlaceCodes must be("http://designatedExportPlaceCodes")
+    }
+
+    "have locationCodesForCsePremises URL" in {
+      validConfigService.locationCodesForCsePremises must be("http://locationCodesForCsePremises")
+    }
+
+    "have goodsLocationCodesForDataElement URL" in {
+      validConfigService.goodsLocationCodesForDataElement must be("http://goodsLocationCodesForDataElement")
+    }
+
+    "have tariffCdsChiefSupplement URL" in {
+      validConfigService.tariffCdsChiefSupplement must be("http://tariffCdsChiefSupplement")
     }
 
     "have language translation enabled field" in {
@@ -160,30 +252,14 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
 
     "throw an exception" when {
 
-      "google-analytics.host is missing" in {
-        intercept[Exception](emptyConfigService.analyticsHost).getMessage must be("Missing configuration key: google-analytics.host")
-      }
-
       "gtm.container is missing" in {
         intercept[Exception](emptyConfigService.gtmContainer).getMessage must be(
           "Could not find config key 'tracking-consent-frontend.gtm.container'"
         )
       }
 
-      "google-analytics.token is missing" in {
-        intercept[Exception](emptyConfigService.analyticsToken).getMessage must be("Missing configuration key: google-analytics.token")
-      }
-
       "auth.host is missing" in {
         intercept[Exception](emptyConfigService.authUrl).getMessage must be("Could not find config key 'auth.host'")
-      }
-
-      "urls.login is missing" in {
-        intercept[Exception](emptyConfigService.loginUrl).getMessage must be("Missing configuration key: urls.login")
-      }
-
-      "urls.loginContinue is missing" in {
-        intercept[Exception](emptyConfigService.loginContinueUrl).getMessage must be("Missing configuration key: urls.loginContinue")
       }
 
       "customs-declare-exports-movements.host is missing" in {
@@ -219,12 +295,6 @@ class AppConfigSpec extends WordSpec with MustMatchers with MockitoSugar {
       "fetch notifications uri is missing" in {
         intercept[Exception](emptyConfigService.fetchNotifications).getMessage must be(
           "Missing configuration for Customs Declarations Exports fetch notifications URI"
-        )
-      }
-
-      "fetch giveFeedbackLink is missing" in {
-        intercept[Exception](emptyConfigService.giveFeedbackLink).getMessage must be(
-          "Missing configuration key: microservice.services.contact-frontend.url"
         )
       }
     }

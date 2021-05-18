@@ -53,14 +53,14 @@
     @exportsInputText(
       field = form("ducr"),
       labelKey = "ducrPartDetails.ducr",
-      hintKey = Some("ducrPartDetails.ducr.hint"),
+      hintContent = Some(Text(messages("ducrPartDetails.ducr.hint"))),
       inputClasses = "govuk-input--width-20"
     )
 
     @exportsInputText(
       field = form("ducrPartId"),
       labelKey = "ducrPartDetails.ducrPartId",
-      hintKey = Some("ducrPartDetails.ducrPartId.hint"),
+      hintContent = Some(Text(messages("ducrPartDetails.ducrPartId.hint"))),
       inputClasses = "govuk-input--width-3"
     )
 

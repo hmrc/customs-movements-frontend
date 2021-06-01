@@ -41,11 +41,11 @@ lazy val microservice = Project(appName, file("."))
     parallelExecution in IntegrationTest := false
   )
   .settings(
-    // concatenate js
+    // concatenate js - https://www.npmjs.com/package/concatenate-js-middleware
     Concat.groups :=
       Seq(
         "stylesheets/vendor/jquery-ui.min.css" -> group(Seq("stylesheets/vendor/jquery-ui.css")),
-        "javascripts/customsdecexfrontend-app.js" -> group(Seq("javascripts/show-hide-content.js", "javascripts/customsdecexfrontend.js"))
+        "javascripts/customsdecexfrontend-app.js" -> group(Seq("javascripts/customsdecexfrontend.js"))
       ),
     // prevent removal of unused code which generates warning errors due to use of third-party libs
     uglifyCompressOptions := Seq("unused=false", "dead_code=false"),

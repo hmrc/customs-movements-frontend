@@ -26,7 +26,7 @@
     govukButton: GovukButton,
     pageTitle: pageTitle,
     linkContent: linkContent,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    formHelper: uk.gov.hmrc.govukfrontend.views.html.helpers.formWithCSRF
 )
 
 @(consignmentRef: String, associateWith: String, associateKind: UcrType, manageMucrChoice: Option[ManageMucrChoice])(implicit request: Request[_], messages: Messages)

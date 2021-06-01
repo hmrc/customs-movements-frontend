@@ -28,7 +28,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios}
-import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+import uk.gov.hmrc.govukfrontend.views.html.helpers.formWithCSRF
 import views.components.config.ChoicePageConfig
 import views.html.choice_page
 import views.html.components.gds.{errorSummary, gds_main_template, sectionHeader}
@@ -46,7 +46,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
   private val govukRadios = instanceOf[GovukRadios]
   private val errorSummary = instanceOf[errorSummary]
   private val sectionHeader = instanceOf[sectionHeader]
-  private val formHelper = instanceOf[FormWithCSRF]
+  private val formHelper = instanceOf[formWithCSRF]
   private val pageConfig = mock[ChoicePageConfig]
 
   def isIleQueryEnabled(enabled: Boolean): Unit = {

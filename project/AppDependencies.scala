@@ -10,7 +10,6 @@ object AppDependencies {
     "uk.gov.hmrc"          %% "logback-json-logger"           % "4.9.0",
     "uk.gov.hmrc"          %% "govuk-template"                % "5.60.0-play-27",
     "uk.gov.hmrc"          %% "play-health"                   % "3.16.0-play-27",
-    "uk.gov.hmrc"          %% "play-ui"                       % "8.19.0-play-27",
     "uk.gov.hmrc"          %% "bootstrap-frontend-play-27"    % "3.2.0",
     "uk.gov.hmrc"          %% "play-frontend-govuk"           % "0.56.0-play-27",
     "uk.gov.hmrc"          %% "play-frontend-hmrc"            % "0.49.0-play-27",

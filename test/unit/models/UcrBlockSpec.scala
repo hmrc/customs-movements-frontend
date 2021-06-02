@@ -17,10 +17,11 @@
 package models
 
 import forms.UcrType.Ducr
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.must.Matchers
 import testdata.CommonTestData.{validDucr, validDucrPartId}
 
-class UcrBlockSpec extends WordSpec with MustMatchers {
+class UcrBlockSpec extends AnyWordSpec with Matchers {
 
   "UcrBlock on fullUcr" when {
 

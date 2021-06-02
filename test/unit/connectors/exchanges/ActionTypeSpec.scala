@@ -18,10 +18,11 @@ package connectors.exchanges
 
 import connectors.exchanges.ActionType.ConsolidationType._
 import connectors.exchanges.ActionType.MovementType._
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.must.Matchers
 import play.api.libs.json.{JsError, JsString}
 
-class ActionTypeSpec extends WordSpec with MustMatchers {
+class ActionTypeSpec extends AnyWordSpec with Matchers {
 
   "ActionType" should {
 

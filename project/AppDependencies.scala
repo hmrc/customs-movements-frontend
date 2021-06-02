@@ -6,22 +6,20 @@ object AppDependencies {
 
   val compile = Seq(
     ws,
-    "uk.gov.hmrc"          %% "play-conditional-form-mapping" % "1.3.0-play-26",
-    "uk.gov.hmrc"          %% "logback-json-logger"           % "4.9.0",
+    "uk.gov.hmrc"          %% "play-conditional-form-mapping" % "1.9.0-play-26",
+    "uk.gov.hmrc"          %% "logback-json-logger"           % "5.1.0",
     "uk.gov.hmrc"          %% "govuk-template"                % "5.60.0-play-27",
     "uk.gov.hmrc"          %% "play-health"                   % "3.16.0-play-27",
-    "uk.gov.hmrc"          %% "play-ui"                       % "8.19.0-play-27",
     "uk.gov.hmrc"          %% "bootstrap-frontend-play-27"    % "3.2.0",
-    "uk.gov.hmrc"          %% "play-frontend-govuk"           % "0.56.0-play-27",
-    "uk.gov.hmrc"          %% "play-frontend-hmrc"            % "0.49.0-play-27",
+    "uk.gov.hmrc"          %% "play-frontend-hmrc"            % "0.68.0-play-27",
     "ai.x"                 %% "play-json-extensions"          % "0.42.0",
     "uk.gov.hmrc"          %% "play-whitelist-filter"         % "3.4.0-play-27",
-    "uk.gov.hmrc"          %% "simple-reactivemongo"          % "7.31.0-play-27",
-    "uk.gov.hmrc"          %% "play-json-union-formatter"     % "1.12.0-play-27",
+    "uk.gov.hmrc"          %% "simple-reactivemongo"          % "8.0.0-play-27",
+    "uk.gov.hmrc"          %% "play-json-union-formatter"     % "1.13.0-play-27",
     "com.github.tototoshi" %% "scala-csv"                     % "1.3.6",
     "com.github.cloudyrock.mongock"  %  "mongock-core"        % "2.0.2",
     "org.mongodb"          %  "mongo-java-driver"             % "3.12.1",
-    "org.webjars.npm"      %  "govuk-frontend"                % "3.10.2",
+    "org.webjars.npm"      %  "govuk-frontend"                % "3.12.0",
     "org.webjars.npm"      %  "accessible-autocomplete"       % "2.0.3"
   )
 

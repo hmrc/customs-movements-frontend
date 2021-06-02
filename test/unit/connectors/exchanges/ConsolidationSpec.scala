@@ -17,10 +17,11 @@
 package connectors.exchanges
 
 import connectors.exchanges.ActionType.ConsolidationType._
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.must.Matchers
 import play.api.libs.json.{JsObject, JsString, JsSuccess, JsValue}
 
-class ConsolidationSpec extends WordSpec with MustMatchers {
+class ConsolidationSpec extends AnyWordSpec with Matchers {
 
   val validEori = "GB123456789"
   private val mucr = "GB/1234-12345678"

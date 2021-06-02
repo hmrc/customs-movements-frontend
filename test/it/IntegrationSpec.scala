@@ -22,7 +22,9 @@ import connectors.{AuditWiremockTestServer, AuthWiremockTestServer, MovementsBac
 import models.cache.{Answers, Cache}
 import models.{DateTimeProvider, UcrBlock}
 import org.scalatest.concurrent.Eventually
-import org.scalatest.{BeforeAndAfterEach, MustMatchers, WordSpec}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -41,7 +43,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 abstract class IntegrationSpec
-    extends WordSpec with MustMatchers with BeforeAndAfterEach with GuiceOneServerPerSuite with AuthWiremockTestServer
+    extends AnyWordSpec with Matchers with BeforeAndAfterEach with GuiceOneServerPerSuite with AuthWiremockTestServer
     with MovementsBackendWiremockTestServer with AuditWiremockTestServer with Eventually with TestMongoDB {
 
   /*

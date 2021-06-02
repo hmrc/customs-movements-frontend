@@ -1,6 +1,6 @@
 # Add all the application routes to the app.routes file
 ->         /customs-movements         app.Routes
 ->         /                          health.Routes
-->     	   /template                  template.Routes
+->         /template                  template.Routes
 
 GET        /admin/metrics             @com.kenshoo.play.metrics.MetricsController.metrics

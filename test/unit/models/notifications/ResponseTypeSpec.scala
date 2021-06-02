@@ -17,10 +17,11 @@
 package models.notifications
 
 import models.notifications.ResponseType._
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.must.Matchers
 import play.api.libs.json.{JsError, JsString}
 
-class ResponseTypeSpec extends WordSpec with MustMatchers {
+class ResponseTypeSpec extends AnyWordSpec with Matchers {
 
   "ResponseType" should {
 

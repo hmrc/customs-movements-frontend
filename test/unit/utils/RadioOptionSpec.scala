@@ -15,10 +15,11 @@
  */
 
 package utils
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.must.Matchers
 import views.components.fields.RadioOption
 
-class RadioOptionSpec extends WordSpec with MustMatchers {
+class RadioOptionSpec extends AnyWordSpec with Matchers {
 
   "Radio Option apply" should {
     "create a correct RadioOption object" in {

@@ -18,13 +18,13 @@ package views.spec
 
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.{BeMatcher, MatchResult, Matcher}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
 //noinspection ScalaStyle
-trait ViewMatchers { self: MustMatchers =>
+trait ViewMatchers { self: Matchers =>
 
   val checked: BeMatcher[Element] = new BeMatcher[Element] {
     override def apply(left: Element): MatchResult =

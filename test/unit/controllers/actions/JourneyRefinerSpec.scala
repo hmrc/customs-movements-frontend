@@ -23,7 +23,9 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
 import org.mockito.Mockito._
-import org.scalatest.{BeforeAndAfterEach, MustMatchers, WordSpec}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
@@ -34,7 +36,7 @@ import uk.gov.hmrc.auth.core.Enrolments
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class JourneyRefinerSpec extends WordSpec with MustMatchers with MockitoSugar with BeforeAndAfterEach {
+class JourneyRefinerSpec extends AnyWordSpec with Matchers with MockitoSugar with BeforeAndAfterEach {
 
   private val movementRepository = mock[CacheRepository]
   private val block = mock[JourneyRequest[_] => Future[Result]]

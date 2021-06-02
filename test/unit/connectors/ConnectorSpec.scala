@@ -19,7 +19,9 @@ package connectors
 import base.Injector
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
-import org.scalatest.{BeforeAndAfterEach, MustMatchers, WordSpec}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
@@ -27,7 +29,7 @@ import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 import scala.concurrent.ExecutionContext
 
 class ConnectorSpec
-    extends WordSpec with WiremockTestServer with Injector with MustMatchers with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
+    extends AnyWordSpec with WiremockTestServer with Injector with Matchers with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
 
   def overrideConfig: Map[String, Any] = Map()
 

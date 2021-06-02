@@ -16,12 +16,12 @@
 
 package models.viewmodels.decoder
 
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import play.api.test.FakeRequest
 import views.ViewSpec
 import views.spec.ViewMatchers
 
-class ILEErrorSpec extends ViewSpec with MustMatchers with ViewMatchers {
+class ILEErrorSpec extends ViewSpec with Matchers with ViewMatchers {
 
   private implicit val request = FakeRequest().withCSRFToken
 

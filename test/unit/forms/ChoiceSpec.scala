@@ -17,10 +17,12 @@
 package forms
 
 import forms.Choice.{Arrival, ChoiceValueFormat, Departure}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.must.Matchers
 import play.api.libs.json.{JsError, JsNumber, JsObject, JsString, JsSuccess, JsValue}
 
-class ChoiceSpec extends WordSpec with MustMatchers with OptionValues {
+class ChoiceSpec extends AnyWordSpec with Matchers with OptionValues {
   import ChoiceSpec._
 
   "Validation defined in Choice mapping" should {

@@ -101,7 +101,7 @@ class ErrorHandlerSpec extends ControllerLayerSpec {
       val res =
         errorHandler.resolveError(req, InsufficientEnrolments("HMRC-CUS-ORG"))
       res.header.status must be(Status.SEE_OTHER)
-      res.header.headers.get(HeaderNames.LOCATION) must be(Some(controllers.routes.UnauthorisedController.onPageLoad().url))
+      res.header.headers.get(HeaderNames.LOCATION) must be(Some(controllers.routes.UnauthorisedController.onPageLoad.url))
     }
 
   }

@@ -55,11 +55,14 @@ trait IntegrationSpec
   def ileQueryFeatureConfiguration: Configuration =
     Configuration.from(Map("microservice.services.features.ileQuery" -> "enabled"))
 
+  val disableMetricsConfiguration = Configuration.from(Map("metrics.jvm" -> "false", "metrics.logback" -> "false"))
+
   val dateTimeProvider = new DateTimeProvider(Clock.fixed(LocalDateTime.now().toInstant(ZoneOffset.UTC), ZoneOffset.UTC))
 
   override def fakeApplication(): Application =
     new GuiceApplicationBuilder()
       .disable[com.kenshoo.play.metrics.PlayModule]
+      .configure(disableMetricsConfiguration)
       .configure(authConfiguration)
       .configure(movementsBackendConfiguration)
       .configure(mongoConfiguration)

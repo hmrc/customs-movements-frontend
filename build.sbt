@@ -6,15 +6,14 @@ import sbt.Keys._
 import sbt._
 import uk.gov.hmrc.DefaultBuildSettings._
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
-import uk.gov.hmrc.versioning.SbtGitVersioning
-import uk.gov.hmrc.{ForkedJvmPerTestSettings, SbtArtifactory, SbtAutoBuildPlugin}
+import uk.gov.hmrc.{ForkedJvmPerTestSettings, SbtAutoBuildPlugin}
 
 val appName = "customs-movements-frontend"
 
 PlayKeys.devSettings := Seq("play.server.http.port" -> "6796")
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory, SbtWeb)
+  .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin, SbtWeb)
   .settings(
     libraryDependencies ++= (AppDependencies.compile ++ AppDependencies.test),
     dependencyOverrides += "commons-codec" % "commons-codec" % "1.12",

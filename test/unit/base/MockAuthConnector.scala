@@ -16,6 +16,7 @@
 
 package base
 
+import akka.stream.testkit.NoMaterializer
 import controllers.actions.{AuthActionImpl, EoriAllowList}
 import models.SignedInUser
 import org.mockito.ArgumentMatchers
@@ -23,7 +24,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.PlayBodyParsers
-import play.api.test.NoMaterializer
 import testdata.CommonTestData.validEori
 import testdata.MovementsTestData._
 import uk.gov.hmrc.auth.core._

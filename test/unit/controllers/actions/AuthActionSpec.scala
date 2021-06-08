@@ -90,7 +90,7 @@ class AuthActionSpec extends AnyWordSpec with Matchers with MockitoSugar with St
 
         val result: Result = await(action.invokeBlock(FakeRequest(), block))
 
-        result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad())
+        result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
       }
     }
 

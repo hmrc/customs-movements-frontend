@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import java.time.{Clock, LocalDateTime, ZoneOffset}
+import com.codahale.metrics.SharedMetricRegistries
 
+import java.time.{Clock, LocalDateTime, ZoneOffset}
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder
 import connectors.{AuditWiremockTestServer, AuthWiremockTestServer, MovementsBackendWiremockTestServer}
@@ -42,7 +43,7 @@ import repository.TestMongoDB
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-abstract class IntegrationSpec
+trait IntegrationSpec
     extends AnyWordSpec with Matchers with BeforeAndAfterEach with GuiceOneServerPerSuite with AuthWiremockTestServer
     with MovementsBackendWiremockTestServer with AuditWiremockTestServer with Eventually with TestMongoDB {
 
@@ -54,11 +55,14 @@ abstract class IntegrationSpec
   def ileQueryFeatureConfiguration: Configuration =
     Configuration.from(Map("microservice.services.features.ileQuery" -> "enabled"))
 
+  val disableMetricsConfiguration = Configuration.from(Map("metrics.jvm" -> "false", "metrics.logback" -> "false"))
+
   val dateTimeProvider = new DateTimeProvider(Clock.fixed(LocalDateTime.now().toInstant(ZoneOffset.UTC), ZoneOffset.UTC))
 
   override def fakeApplication(): Application =
     new GuiceApplicationBuilder()
       .disable[com.kenshoo.play.metrics.PlayModule]
+      .configure(disableMetricsConfiguration)
       .configure(authConfiguration)
       .configure(movementsBackendConfiguration)
       .configure(mongoConfiguration)
@@ -70,6 +74,11 @@ abstract class IntegrationSpec
   override def beforeEach(): Unit = {
     super.beforeEach()
     await(cacheRepository.drop(failIfNotFound = false))
+  }
+
+  override def afterEach(): Unit = {
+    SharedMetricRegistries.clear()
+    super.afterEach()
   }
 
   protected def get(call: Call): Future[Result] =

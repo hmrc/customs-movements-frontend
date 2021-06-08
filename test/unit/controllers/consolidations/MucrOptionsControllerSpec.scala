@@ -18,7 +18,7 @@ package controllers.consolidations
 
 import controllers.ControllerLayerSpec
 import forms.MucrOptions
-import forms.MucrOptions.{Add, Create}
+import forms.MucrOptions.Create
 import models.UcrBlock
 import models.cache.AssociateUcrAnswers
 import org.mockito.ArgumentCaptor

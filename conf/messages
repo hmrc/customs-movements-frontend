@@ -169,7 +169,7 @@ location.hint.paragraph2 = Most goods location codes contain just letters. For e
 location.code.empty = Enter a goods location code
 location.code.error = Enter a goods location code in the correct format
 
-location.expander.title=Find the goods location code (CDS data element 5/23)
+location.expander.title=Find the goods location code
 location.expander.intro=Select the location type, and then look up the code (links open in a new tab).
 location.expander.paragraph1.title=RoRo ports for road transport
 location.expander.paragraph1.text=Download the Tariff supplement and search for appendix 16R.
@@ -188,12 +188,9 @@ location.expander.paragraph6.link1.text=Internal temporary storage facilities (I
 location.expander.paragraph7.title=Designated Export Places (DEPs)
 location.expander.paragraph7.link1.text=Designated Export Places location codes
 location.expander.paragraph8.title=Customs Supervised Export (CSE) premises
-location.expander.paragraph8.text=Where CSE is not being used, enter the location details as given under the ‘Location of goods’ entry in {0}
-location.expander.paragraph8.link1.text=Customs Supervised Export (CSE) premises location codes
-location.expander.paragraph8.link2.text=DE 1/10: Requested and Previous Procedure Codes.
-location.expander.paragraph9.text=If your goods location is not covered by the above guidance, refer to the codes for {0}, or check the latest additions to the CDS location codes in the {1}.
-location.expander.paragraph9.link1.text=data element 5/23 of the Customs Declaration Service (CDS) (Appendix 16)
-location.expander.paragraph9.link2.text=Tariff Volume 3 Great Britain Supplement CDS and CHIEF
+location.expander.paragraph8.text=If your goods location is not covered by the above guidance, refer to the codes for {0}, or check the latest additions to the CDS location codes in the {1}.
+location.expander.paragraph8.link1.text=data element 5/23 of the Customs Declaration Service (CDS) (Appendix 16)
+location.expander.paragraph8.link2.text=Tariff Volume 3 Great Britain Supplement CDS and CHIEF
 
 transport.title = Transport
 transport.heading = Depart consignment {0}

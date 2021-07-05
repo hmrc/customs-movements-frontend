@@ -92,32 +92,14 @@
 
     @paragraph(messages("location.expander.paragraph8.title"), "bold")
     @govukHint(Hint(
-        content = HtmlContent(fill(Seq(
+        content = HtmlContent(messages("location.expander.paragraph8.text",
             link(
-                message = Html(messages(s"location.expander.paragraph8.link1.text")),
-                href = Call("GET", appConfig.locationCodesForCsePremises),
-                target = "_blank"
-            ),
-            Html("<br/>"),
-            Html(messages(s"location.expander.paragraph8.text",
-                link(
-                    message = Html(messages("location.expander.paragraph8.link2.text")),
-                    href = Call("GET", appConfig.previousProcedureCodesUrl),
-                    target = "_blank"
-                ))
-            )
-        )))
-    ))
-
-    @govukHint(Hint(
-        content = HtmlContent(messages("location.expander.paragraph9.text",
-            link(
-                message = Html(messages("location.expander.paragraph9.link1.text")),
+                message = Html(messages("location.expander.paragraph8.link1.text")),
                 href = Call("GET", appConfig.goodsLocationCodesForDataElement),
                 target = "_blank"
             ),
             link(
-                message = Html(messages("location.expander.paragraph9.link2.text")),
+                message = Html(messages("location.expander.paragraph8.link2.text")),
                 href = Call("GET", appConfig.tariffCdsChiefSupplement),
                 target = "_blank"
             )

@@ -18,5 +18,9 @@ package base
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.must.Matchers
+import play.api.data.Form
 
-trait BaseSpec extends AnyWordSpec with Matchers
+trait BaseSpec extends AnyWordSpec with Matchers {
+
+  val JsonBindMaxChars: Long = Form.FromJsonMaxChars
+}

@@ -27,7 +27,8 @@ class MucrOptionsSpec extends BaseSpec {
     "convert new mucr to upper case" in {
 
       val form = MucrOptions.form.bind(
-        JsObject(Map("createOrAdd" -> JsString("create"), "newMucr" -> JsString("gb/abced1234-15804test"), "existingMucr" -> JsString("")))
+        JsObject(Map("createOrAdd" -> JsString("create"), "newMucr" -> JsString("gb/abced1234-15804test"), "existingMucr" -> JsString(""))),
+        JsonBindMaxChars
       )
 
       form.errors mustBe (empty)
@@ -37,7 +38,8 @@ class MucrOptionsSpec extends BaseSpec {
     "convert existing mucr to upper case" in {
 
       val form = MucrOptions.form.bind(
-        JsObject(Map("createOrAdd" -> JsString("add"), "newMucr" -> JsString(""), "existingMucr" -> JsString("gb/abced1234-15804test")))
+        JsObject(Map("createOrAdd" -> JsString("add"), "newMucr" -> JsString(""), "existingMucr" -> JsString("gb/abced1234-15804test"))),
+        JsonBindMaxChars
       )
 
       form.errors mustBe (empty)
@@ -46,37 +48,37 @@ class MucrOptionsSpec extends BaseSpec {
 
     "return an error" when {
       "radio option createOrAdd not present" in {
-        val form = MucrOptions.form.bind(JsObject(Map("other" -> JsString(""))))
+        val form = MucrOptions.form.bind(JsObject(Map("other" -> JsString(""))), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError("createOrAdd", List("mucrOptions.error.unselected")))
       }
 
       "radio option createOrAdd value neither create or add" in {
-        val form = MucrOptions.form.bind(JsObject(Map("createOrAdd" -> JsString(""))))
+        val form = MucrOptions.form.bind(JsObject(Map("createOrAdd" -> JsString(""))), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError("createOrAdd", List("mucrOptions.error.unselected")))
       }
 
       "provided with newMucr that is empty" in {
-        val form = MucrOptions.form.bind(JsObject(Map("createOrAdd" -> JsString("create"), "newMucr" -> JsString(""))))
+        val form = MucrOptions.form.bind(JsObject(Map("createOrAdd" -> JsString("create"), "newMucr" -> JsString(""))), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError("newMucr", List("mucrOptions.reference.value.error.empty")))
       }
 
       "provided with newMucr that is invalid" in {
-        val form = MucrOptions.form.bind(JsObject(Map("createOrAdd" -> JsString("create"), "newMucr" -> JsString("invalid"))))
+        val form = MucrOptions.form.bind(JsObject(Map("createOrAdd" -> JsString("create"), "newMucr" -> JsString("invalid"))), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError("newMucr", List("mucrOptions.reference.value.error.invalid")))
       }
 
       "provided with existingMucr that is empty" in {
-        val form = MucrOptions.form.bind(JsObject(Map("createOrAdd" -> JsString("add"), "existingMucr" -> JsString(""))))
+        val form = MucrOptions.form.bind(JsObject(Map("createOrAdd" -> JsString("add"), "existingMucr" -> JsString(""))), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError("existingMucr", List("mucrOptions.reference.value.error.empty")))
       }
 
       "provided with existingMucr that is invalid" in {
-        val form = MucrOptions.form.bind(JsObject(Map("createOrAdd" -> JsString("add"), "existingMucr" -> JsString("invalid"))))
+        val form = MucrOptions.form.bind(JsObject(Map("createOrAdd" -> JsString("add"), "existingMucr" -> JsString("invalid"))), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError("existingMucr", List("mucrOptions.reference.value.error.invalid")))
       }

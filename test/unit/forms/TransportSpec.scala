@@ -101,7 +101,8 @@ class TransportSpec extends BaseSpec {
 
       "country is lower case" in {
         val form = Transport.form.bind(
-          JsObject(Map("modeOfTransport" -> JsString("2"), "transportId" -> JsString("xwercwrxwy"), "nationality" -> JsString("pl")))
+          JsObject(Map("modeOfTransport" -> JsString("2"), "transportId" -> JsString("xwercwrxwy"), "nationality" -> JsString("pl"))),
+          JsonBindMaxChars
         )
 
         form.errors mustBe (empty)

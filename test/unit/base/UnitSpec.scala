@@ -16,12 +16,10 @@
 
 package base
 
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import reactivemongo.api.commands.{LastError, WriteResult}
 
-trait UnitSpec extends AnyWordSpec with Matchers with MockitoSugar {
+trait UnitSpec extends BaseSpec with MockitoSugar {
   val dummyWriteResultSuccess: WriteResult =
     LastError(true, None, None, None, 0, None, false, None, None, false, None, None)
 }

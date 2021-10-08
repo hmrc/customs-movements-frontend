@@ -47,7 +47,7 @@ class AssociateUcrSpec extends BaseSpec {
 
       "provided with Mucr" in {
 
-        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString("gb/abced1234-15804test"))))
+        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString("gb/abced1234-15804test"))), JsonBindMaxChars)
 
         form.errors mustBe empty
         form.value.map(_.ucr) must be(Some("GB/ABCED1234-15804TEST"))
@@ -55,7 +55,8 @@ class AssociateUcrSpec extends BaseSpec {
 
       "provided with Mucr that is 35 characters long" in {
 
-        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString("gb/abced1234-15804test1234567890123"))))
+        val form = AssociateUcr.form
+          .bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString("gb/abced1234-15804test1234567890123"))), JsonBindMaxChars)
 
         form.errors mustBe empty
         form.value.map(_.ucr) must be(Some("GB/ABCED1234-15804TEST1234567890123"))
@@ -63,7 +64,7 @@ class AssociateUcrSpec extends BaseSpec {
 
       "provided with Ducr" in {
 
-        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("ducr"), "ducr" -> JsString("8gb123457359100-test0001"))))
+        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("ducr"), "ducr" -> JsString("8gb123457359100-test0001"))), JsonBindMaxChars)
 
         form.errors mustBe empty
         form.value.map(_.ucr) must be(Some("8GB123457359100-TEST0001"))
@@ -72,43 +73,44 @@ class AssociateUcrSpec extends BaseSpec {
 
     "return an error" when {
       "radio option kind not present" in {
-        val form = AssociateUcr.form.bind(JsObject(Map("other" -> JsString(""))))
+        val form = AssociateUcr.form.bind(JsObject(Map("other" -> JsString(""))), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError("kind", List("associate.ucr.error.unselected")))
       }
 
       "radio option kind value neither Mucr or Ducr" in {
-        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString(""))))
+        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString(""))), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError("kind", List("associate.ucr.error.unselected")))
       }
 
       "provided with Mucr that is empty" in {
-        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString(""))))
+        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString(""))), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError("mucr", List("associate.ucr.mucr.error.empty")))
       }
 
       "provided with Mucr that is invalid" in {
-        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString("invalid"))))
+        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString("invalid"))), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError("mucr", List("associate.ucr.mucr.error.invalid")))
       }
 
       "provided with Mucr that is over 35 characters long" in {
-        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString("gb/abced1234-15804test12345678901234"))))
+        val form = AssociateUcr.form
+          .bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString("gb/abced1234-15804test12345678901234"))), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError("mucr", List("associate.ucr.mucr.error.invalid")))
       }
 
       "provided with Ducr that is empty" in {
-        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("ducr"), "ducr" -> JsString(""))))
+        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("ducr"), "ducr" -> JsString(""))), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError("ducr", List("associate.ucr.ducr.error.empty")))
       }
 
       "provided with Ducr that is invalid" in {
-        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("ducr"), "ducr" -> JsString("invalid"))))
+        val form = AssociateUcr.form.bind(JsObject(Map("kind" -> JsString("ducr"), "ducr" -> JsString("invalid"))), JsonBindMaxChars)
 
         form.errors mustBe Seq(FormError("ducr", List("associate.ucr.ducr.error.invalid")))
       }

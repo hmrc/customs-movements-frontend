@@ -87,7 +87,9 @@ class ConsignmentReferencesSpec extends BaseSpec {
     "convert ducr to upper case" in {
 
       val form =
-        ConsignmentReferences.form(depart).bind(JsObject(Map("reference" -> JsString("D"), "ducrValue" -> JsString("8gb123457359100-test0001"))))
+        ConsignmentReferences
+          .form(depart)
+          .bind(JsObject(Map("reference" -> JsString("D"), "ducrValue" -> JsString("8gb123457359100-test0001"))), JsonBindMaxChars)
 
       form.errors mustBe (empty)
       form.value.map(_.referenceValue) must be(Some("8GB123457359100-TEST0001"))
@@ -96,7 +98,9 @@ class ConsignmentReferencesSpec extends BaseSpec {
     "convert mucr to upper case" in {
 
       val form =
-        ConsignmentReferences.form(arrive).bind(JsObject(Map("reference" -> JsString("M"), "mucrValue" -> JsString("gb/abced1234-15804test"))))
+        ConsignmentReferences
+          .form(arrive)
+          .bind(JsObject(Map("reference" -> JsString("M"), "mucrValue" -> JsString("gb/abced1234-15804test"))), JsonBindMaxChars)
 
       form.errors mustBe (empty)
       form.value.map(_.referenceValue) must be(Some("GB/ABCED1234-15804TEST"))

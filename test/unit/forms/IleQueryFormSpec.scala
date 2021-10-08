@@ -26,7 +26,7 @@ class IleQueryFormSpec extends BaseSpec {
 
     "convert ducr to upper case" in {
 
-      val form = IleQueryForm.form.bind(JsObject(Map("ucr" -> JsString("8gb123457359100-test0001"))))
+      val form = IleQueryForm.form.bind(JsObject(Map("ucr" -> JsString("8gb123457359100-test0001"))), JsonBindMaxChars)
 
       form.errors mustBe (empty)
       form.value must be(Some("8GB123457359100-TEST0001"))
@@ -34,7 +34,7 @@ class IleQueryFormSpec extends BaseSpec {
 
     "convert mucr to upper case" in {
 
-      val form = IleQueryForm.form.bind(JsObject(Map("ucr" -> JsString("gb/abced1234-15804test"))))
+      val form = IleQueryForm.form.bind(JsObject(Map("ucr" -> JsString("gb/abced1234-15804test"))), JsonBindMaxChars)
 
       form.errors mustBe (empty)
       form.value must be(Some("GB/ABCED1234-15804TEST"))
@@ -42,7 +42,7 @@ class IleQueryFormSpec extends BaseSpec {
 
     "convert mucr to upper case when is 35 characters long" in {
 
-      val form = IleQueryForm.form.bind(JsObject(Map("ucr" -> JsString("gb/82f9-0n2f6500040010tO120p0a30998"))))
+      val form = IleQueryForm.form.bind(JsObject(Map("ucr" -> JsString("gb/82f9-0n2f6500040010tO120p0a30998"))), JsonBindMaxChars)
 
       form.errors mustBe (empty)
       form.value must be(Some("GB/82F9-0N2F6500040010TO120P0A30998"))
@@ -50,7 +50,7 @@ class IleQueryFormSpec extends BaseSpec {
 
     "display error when mucr is over 35 characters long" in {
 
-      val form = IleQueryForm.form.bind(JsObject(Map("ucr" -> JsString("gb/82f9-0n2f6500040010tO120p0a309989"))))
+      val form = IleQueryForm.form.bind(JsObject(Map("ucr" -> JsString("gb/82f9-0n2f6500040010tO120p0a309989"))), JsonBindMaxChars)
 
       form.errors must be(Seq(FormError("ucr", "ileQuery.ucr.incorrect")))
     }

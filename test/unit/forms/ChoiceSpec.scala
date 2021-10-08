@@ -16,20 +16,19 @@
 
 package forms
 
+import base.BaseSpec
 import forms.Choice.{Arrival, ChoiceValueFormat, Departure}
 import org.scalatest.OptionValues
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.must.Matchers
-import play.api.libs.json.{JsError, JsNumber, JsObject, JsString, JsSuccess, JsValue}
+import play.api.libs.json._
 
-class ChoiceSpec extends AnyWordSpec with Matchers with OptionValues {
+class ChoiceSpec extends BaseSpec with OptionValues {
   import ChoiceSpec._
 
   "Validation defined in Choice mapping" should {
 
     "attach errors to form" when {
       "provided with empty input" in {
-        val form = Choice.form().bind(emptyChoiceJSON)
+        val form = Choice.form().bind(emptyChoiceJSON, JsonBindMaxChars)
 
         form.hasErrors mustBe true
         form.errors.length must equal(1)
@@ -37,7 +36,7 @@ class ChoiceSpec extends AnyWordSpec with Matchers with OptionValues {
       }
 
       "provided with an incorrect value" in {
-        val form = Choice.form().bind(incorrectChoiceJSON)
+        val form = Choice.form().bind(incorrectChoiceJSON, JsonBindMaxChars)
 
         form.hasErrors mustBe true
         form.errors.length must equal(1)
@@ -47,7 +46,7 @@ class ChoiceSpec extends AnyWordSpec with Matchers with OptionValues {
 
     "not attach any error" when {
       "provided with valid input" in {
-        val form = Choice.form().bind(correctChoiceJSON)
+        val form = Choice.form().bind(correctChoiceJSON, JsonBindMaxChars)
 
         form.hasErrors mustBe false
       }

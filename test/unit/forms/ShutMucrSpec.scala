@@ -30,7 +30,7 @@ class ShutMucrSpec extends BaseSpec {
 
       "provided MUCR is empty" in {
 
-        val errors = ShutMucr.form().bind(emptyShutMucrJSON).errors
+        val errors = ShutMucr.form().bind(emptyShutMucrJSON, JsonBindMaxChars).errors
 
         errors.length must be(1)
         errors.head must equal(FormError("mucr", "error.mucr.empty"))
@@ -38,7 +38,7 @@ class ShutMucrSpec extends BaseSpec {
 
       "provided MUCR is in incorrect format" in {
 
-        val errors = ShutMucr.form().bind(incorrectShutMucrJSON).errors
+        val errors = ShutMucr.form().bind(incorrectShutMucrJSON, JsonBindMaxChars).errors
 
         errors.length must be(1)
         errors.head must equal(FormError("mucr", "error.mucr.format"))
@@ -46,7 +46,7 @@ class ShutMucrSpec extends BaseSpec {
 
       "provided MUCR length is over 35 characters long" in {
 
-        val errors = ShutMucr.form().bind(JsObject(Map("mucr" -> JsString("gb/abced1234-15804test12345678901234")))).errors
+        val errors = ShutMucr.form().bind(JsObject(Map("mucr" -> JsString("gb/abced1234-15804test12345678901234"))), JsonBindMaxChars).errors
 
         errors.length must be(1)
         errors.head must equal(FormError("mucr", "error.mucr.format"))
@@ -57,21 +57,21 @@ class ShutMucrSpec extends BaseSpec {
 
       "provided MUCR is correct" in {
 
-        ShutMucr.form().bind(correctShutMucrJSON).errors must be(empty)
+        ShutMucr.form().bind(correctShutMucrJSON, JsonBindMaxChars).errors must be(empty)
       }
     }
 
     "convert to upper case" when {
 
       "provided MUCR is lower case" in {
-        val form = ShutMucr.form.bind(JsObject(Map("mucr" -> JsString("gb/abced1234-15804test"))))
+        val form = ShutMucr.form.bind(JsObject(Map("mucr" -> JsString("gb/abced1234-15804test"))), JsonBindMaxChars)
 
         form.errors mustBe (empty)
         form.value.map(_.mucr) must be(Some("GB/ABCED1234-15804TEST"))
       }
 
       "provided MUCR is lower case and is 35 characters long" in {
-        val form = ShutMucr.form.bind(JsObject(Map("mucr" -> JsString("gb/abced1234-15804test1234567890123"))))
+        val form = ShutMucr.form.bind(JsObject(Map("mucr" -> JsString("gb/abced1234-15804test1234567890123"))), JsonBindMaxChars)
 
         form.errors mustBe (empty)
         form.value.map(_.mucr) must be(Some("GB/ABCED1234-15804TEST1234567890123"))

@@ -98,7 +98,7 @@ class LocationSpec extends BaseSpec {
         def formData(code: String) =
           JsObject(Map("code" -> JsString(code)))
 
-        val form = Location.form().bind(formData("plaucorrect"))
+        val form = Location.form().bind(formData("plaucorrect"), JsonBindMaxChars)
 
         form.value.map(_.code) must be(Some("PLAUCORRECT"))
       }

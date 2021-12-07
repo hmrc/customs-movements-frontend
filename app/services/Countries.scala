@@ -21,7 +21,7 @@ import play.api.libs.json._
 import scala.io.Source
 
 case class Country(countryName: String, countryCode: String) {
-  def asString(): String = s"$countryName ($countryCode)"
+  def asString(): String = s"$countryName - $countryCode"
 }
 
 case object Country {

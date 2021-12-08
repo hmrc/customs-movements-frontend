@@ -202,7 +202,7 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       view
         .getElementsByClass("govuk-summary-list__value")
         .get(answer_transport_nationality)
-        .text mustBe "United Kingdom, Great Britain, Northern Ireland (GB)"
+        .text mustBe "United Kingdom, Great Britain, Northern Ireland - GB"
 
       val changeNationality = view.getElementsByClass("govuk-link").get(answer_transport_nationality_link_index)
       changeNationality must containMessage("site.change")

@@ -63,7 +63,6 @@ class AppConfigSpec extends AnyWordSpec with Matchers with MockitoSugar {
         |microservice.services.nrs.port=7654
         |microservice.services.nrs.apikey=cds-exports
         |microservice.services.features.default=disabled
-        |microservice.services.features.welsh-translation=false
         |microservice.services.features.response-error-explanation-mode=Exports
         |microservice.services.auth.port=9988
         |
@@ -117,7 +116,6 @@ class AppConfigSpec extends AnyWordSpec with Matchers with MockitoSugar {
         |microservice.services.nrs.port=7654
         |microservice.services.nrs.apikey=cds-exports
         |microservice.services.features.default=disabled
-        |microservice.services.features.welsh-translation=false
         |microservice.services.features.response-error-explanation-mode=Exports
         |microservice.services.auth.port=9988
         |
@@ -200,10 +198,6 @@ class AppConfigSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
     "have tariffCdsChiefSupplement URL" in {
       validConfigService.tariffCdsChiefSupplement must be("http://tariffCdsChiefSupplement")
-    }
-
-    "have language translation enabled field" in {
-      validConfigService.languageTranslationEnabled must be(false)
     }
 
     "have language map with English" in {

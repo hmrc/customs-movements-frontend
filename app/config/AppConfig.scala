@@ -107,11 +107,6 @@ class AppConfig @Inject()(
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports ile query URI")
   )
 
-  lazy val languageTranslationEnabled =
-    runModeConfiguration
-      .getOptional[Boolean]("microservice.services.features.welsh-translation")
-      .getOrElse(true)
-
   lazy val gtmContainer: String = servicesConfig.getString("tracking-consent-frontend.gtm.container")
 
   def languageMap: Map[String, Lang] =

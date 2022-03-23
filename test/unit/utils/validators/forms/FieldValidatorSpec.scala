@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -896,71 +896,62 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
     "return true" when {
 
       "provided with DucrPartId containing one digit" in {
+        isValidDucrPartId("1") mustBe true
+      }
 
-        val input = "1"
-        isValidDucrPartId(input) mustBe true
+      "provided with DucrPartId containing one digit and a trailing upper case alpha" in {
+        isValidDucrPartId("1A") mustBe true
       }
 
       "provided with DucrPartId containing two digits" in {
+        isValidDucrPartId("12") mustBe true
+      }
 
-        val input = "12"
-        isValidDucrPartId(input) mustBe true
+      "provided with DucrPartId containing two digits and a trailing upper case alpha" in {
+        isValidDucrPartId("12B") mustBe true
       }
 
       "provided with DucrPartId containing three digits" in {
+        isValidDucrPartId("123") mustBe true
+      }
 
-        val input = "123"
-        isValidDucrPartId(input) mustBe true
+      "provided with DucrPartId containing three digits and a trailing upper case alpha" in {
+        isValidDucrPartId("123C") mustBe true
+      }
+
+      "provided with DucrPartId containing just one upper case alpha" in {
+        isValidDucrPartId("123D") mustBe true
       }
     }
 
     "return false" when {
 
       "provided with empty DucrPartId" in {
-
-        val input = ""
-        isValidDucrPartId(input) mustBe false
-      }
-
-      "provided with DucrPartId containing only single letter" in {
-
-        val input = "X"
-        isValidDucrPartId(input) mustBe false
+        isValidDucrPartId("") mustBe false
       }
 
       "provided with DucrPartId containing only letters" in {
-
-        val input = "XYZ"
-        isValidDucrPartId(input) mustBe false
+        isValidDucrPartId("XYZ") mustBe false
       }
 
       "provided with DucrPartId starting with letter" in {
-
-        val input = "X12"
-        isValidDucrPartId(input) mustBe false
+        isValidDucrPartId("X12") mustBe false
       }
 
       "provided with DucrPartId containing letter in the middle" in {
-
-        val input = "1X2"
-        isValidDucrPartId(input) mustBe false
+        isValidDucrPartId("1X2") mustBe false
       }
 
-      "provided with DucrPartId ending with letter" in {
-
-        val input = "12X"
-        isValidDucrPartId(input) mustBe false
+      "provided with DucrPartId ending with a lower case letter" in {
+        isValidDucrPartId("12x") mustBe false
       }
 
       "provided with DucrPartId containing 4 digits" in {
-
-        val input = "1234"
-        isValidDucrPartId(input) mustBe false
+        isValidDucrPartId("1234") mustBe false
       }
 
       "provided with DucrPartId containing 2 letters at the end" in {
-        val input = "1XY"
-        isValidDucrPartId(input) mustBe false
+        isValidDucrPartId("1XY") mustBe false
       }
     }
   }

@@ -33,7 +33,8 @@ class SiteHeaderSpec extends ViewSpec with Injector {
     val siteHeader = createHeader()
 
     "display banner with the service name" in {
-      siteHeader.getElementsByClass("govuk-header__link govuk-header__link--service-name").first() must containMessage("service.name")
+
+      siteHeader.getElementsByClass("hmrc-header__service-name--linked").first() must containMessage("service.name")
     }
 
   }

@@ -34,7 +34,7 @@
   exportsInputText: exportsInputText,
   sectionHeader: sectionHeader,
   pageConfig: MucrOptionsConfig,
-  formHelper: uk.gov.hmrc.govukfrontend.views.html.helpers.formWithCSRF
+  formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 )
 
 @(form: Form[MucrOptions], queryUcr: Option[UcrBlock], manageMucrChoice: Option[ManageMucrChoice])(implicit request: JourneyRequest[_], messages: Messages)

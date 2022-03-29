@@ -11,7 +11,7 @@ object AppDependencies {
     "uk.gov.hmrc"          %% "govuk-template"                % "5.66.0-play-27",
     "uk.gov.hmrc"          %% "play-allowlist-filter"         % "1.0.0-play-28",
     "uk.gov.hmrc"          %% "play-conditional-form-mapping" % "1.9.0-play-28",
-    "uk.gov.hmrc"          %% "play-frontend-hmrc"            % "0.69.0-play-28",
+    "uk.gov.hmrc"          %% "play-frontend-hmrc"            % "3.0.0-play-28",
     "uk.gov.hmrc"          %% "play-json-union-formatter"     % "1.13.0-play-27",
     "uk.gov.hmrc"          %% "simple-reactivemongo"          % "8.0.0-play-28",
     "com.fasterxml.jackson.module" %% "jackson-module-scala"  % "2.12.3",

@@ -1,4 +1,4 @@
-service.name=CDS Exports Service
+service.name=Arrive and depart CDS exports
 
 title.format={0} - {1} - GOV.UK
 title.withSection.format={0} - {1} - {2} - GOV.UK

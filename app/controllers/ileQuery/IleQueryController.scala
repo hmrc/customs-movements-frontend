@@ -123,6 +123,8 @@ class IleQueryController @Inject()(
           case Some(UcrBlock(ucr, _, _)) => Future.successful(Ok(consignmentNotFound(ucr)))
           case _                         => Future.successful(InternalServerError(errorHandler.standardErrorTemplate()))
         }
+
+      case _ => Future.successful(InternalServerError(errorHandler.standardErrorTemplate()))
     }
 
   private def sendIleQuery(ucr: String)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =

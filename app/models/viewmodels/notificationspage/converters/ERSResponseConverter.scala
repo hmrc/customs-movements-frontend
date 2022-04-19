@@ -16,17 +16,18 @@
 
 package models.viewmodels.notificationspage.converters
 
-import javax.inject.{Inject, Singleton}
-import models.notifications.{Entry, Notification}
+import models.notifications.Notification
 import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import views.ViewDates
-import views.html.components.code_explanation
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ERSResponseConverter @Inject()(decoder: Decoder, viewDates: ViewDates) extends NotificationPageSingleElementConverter {
+class ERSResponseConverter @Inject()(val decoder: Decoder, viewDates: ViewDates)
+    extends NotificationPageSingleElementConverter with CommonResponseConverter {
 
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement = {
 
@@ -43,27 +44,4 @@ class ERSResponseConverter @Inject()(decoder: Decoder, viewDates: ViewDates) ext
       content = new Html(List(roeCodeExplanation, soeCodeExplanation, icsCodeExplanation))
     )
   }
-
-  private def findDucrEntry(entries: Seq[Entry]): Option[Entry] = entries.find(_.ucrType.contains("D"))
-
-  private def buildRoeCodeExplanation(roeCode: String)(implicit messages: Messages): Option[Html] = {
-    val RoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")
-    val roeCodeExplanationText = decoder.roe(roeCode).map(roe => (roe.code, messages(roe.messageKey)))
-
-    roeCodeExplanationText.map { case (code, explanation) => code_explanation(RoeCodeHeader, code, explanation) }
-  }
-
-  private def buildSoeCodeExplanation(soeCode: String)(implicit messages: Messages): Option[Html] = {
-    val SoeCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")
-    val soeCodeExplanationText = decoder.ducrSoe(soeCode).map(soe => (soe.code, messages(soe.messageKey)))
-
-    soeCodeExplanationText.map { case (code, explanation) => code_explanation(SoeCodeHeader, code, explanation) }
-  }
-
-  private def buildIcsCodeExplanation(icsCode: String)(implicit messages: Messages): Option[Html] = {
-    val icsCodeExplanationText = decoder.ics(icsCode).map(ics => (ics.code, messages(ics.messageKey)))
-
-    icsCodeExplanationText.map { case (code, explanation) => code_explanation("", code, explanation) }
-  }
-
 }

@@ -136,5 +136,6 @@ object FieldValidator {
   val validMucrIgnoreCase: String => Boolean = (input: String) => validMucr(input.toUpperCase) && noLongerThan(35)(input)
 
   def validRegex: String = "^[0-9]{0,3}[A-Z]?$"
+
   val isValidDucrPartId: String => Boolean = (input: String) => lengthInRange(1)(4)(input) && input.matches(validRegex)
 }

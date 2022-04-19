@@ -429,9 +429,9 @@ ducrPartDetails.ducr.hint = For example, 9GB123999746000-DUCR12345.
 ducrPartDetails.ducr.empty = Enter a DUCR
 ducrPartDetails.ducr.invalid = Declaration Unique Consignment Reference (DUCR) must be in the correct format. For example, 1GB123456789012-TRADER-REF-123
 ducrPartDetails.ducrPartId = Enter DUCR Part ID
-ducrPartDetails.ducrPartId.hint = This can be up to 3 digits. For example, 123.
+ducrPartDetails.ducrPartId.hint = This can be up to 3 numbers and one optional capital letter at the end. For example, 1, 111, 111M or M.
 ducrPartDetails.ducrPartId.empty = Enter a part DUCR
-ducrPartDetails.ducrPartId.invalid = Part DUCR must be in the correct format. For example, 123
+ducrPartDetails.ducrPartId.invalid = DUCR Part must be in the correct format. For example, 1, 111, 111M or M.
 
 ducrPartChief.ARRIVE.heading = Arrive consignment
 ducrPartChief.ARRIVE.question = Do you want to arrive a DUCR Part which was created in CHIEF?

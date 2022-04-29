@@ -47,7 +47,7 @@ class DepartureDetailsSpec extends BaseSpec with FormMatchers {
       }
 
       "time is missing" in {
-        val inputData = Date.mapping.withPrefix("dateOfDeparture").unbind(Date(LocalDate.now()))
+        val inputData = Date.mapping("dateOfDeparture.").withPrefix("dateOfDeparture").unbind(Date(LocalDate.now()))
         val errors = movementDetails.departureForm().bind(inputData).errors
         errors must have length 3
       }
@@ -62,7 +62,7 @@ class DepartureDetailsSpec extends BaseSpec with FormMatchers {
     "return no errors" when {
 
       "date is correct" in {
-        val inputData = Date.mapping.withPrefix("dateOfDeparture").unbind(Date(LocalDate.now().minusDays(1))) ++
+        val inputData = Date.mapping("dateOfDeparture.").withPrefix("dateOfDeparture").unbind(Date(LocalDate.now().minusDays(1))) ++
           Time.mapping.withPrefix("timeOfDeparture").unbind(Time(LocalTime.now()))
         val form = movementDetails.departureForm().bind(inputData)
         form mustBe withoutErrors

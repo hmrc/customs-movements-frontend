@@ -30,7 +30,7 @@ class ArrivalDetailsSpec extends BaseSpec {
 
   private val timeInputData = timeMapping.unbind(Time(LocalTime.of(1, 1)))
 
-  private val dateMapping: Mapping[Date] = Date.mapping.withPrefix("dateOfArrival")
+  private val dateMapping: Mapping[Date] = Date.mapping("dateOfArrival.").withPrefix("dateOfArrival")
 
   private val dateInputData = dateMapping.unbind(Date(date))
 

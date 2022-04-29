@@ -69,7 +69,7 @@ object Date {
           (
             tryTuple._1.map(int => twoDigitFormatter.format(int)).getOrElse(""),
             tryTuple._2.map(int => twoDigitFormatter.format(int)).getOrElse(""),
-            tryTuple._3.map(int => fourDigitFormatter.format(int)).getOrElse(""),
+            tryTuple._3.map(int => fourDigitFormatter.format(int)).getOrElse("")
         )
       )
       .verifying("date.error.invalid", date => validate(date._1, date._2, date._3))

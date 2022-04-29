@@ -21,6 +21,7 @@ date.month.error = Month must be between 1 and 12
 date.year.missing = The date must include a year
 date.year.error = Year must be between 2000 and 3000
 date.error.invalid = Date must be in the correct format
+date.error.allEmpty = Enter a date
 
 time.hour = Hour
 time.minute = Minute

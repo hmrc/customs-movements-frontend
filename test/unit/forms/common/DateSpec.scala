@@ -23,7 +23,7 @@ import play.api.data.{Form, FormError}
 
 class DateSpec extends BaseSpec {
 
-  val form: Form[Date] = Form(Date.mapping)
+  val form: Form[Date] = Form(Date.mapping(""))
 
   "Date" should {
 

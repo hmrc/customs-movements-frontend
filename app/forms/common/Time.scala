@@ -52,36 +52,36 @@ object Time {
   val am = "AM"
   val pm = "PM"
 
-  def isValidTime(hours: String, minutes: String, ampm: String): Boolean =
+  def isValidTimeOrAnyEmptyFields(hours: String, minutes: String, ampm: String): Boolean =
     if (isAnyFieldEmpty(Seq(hours, minutes, ampm))) true
     else Try(LocalTime.parse(timeString(hours, minutes, ampm), time12HourFormatter)).isSuccess
-  def isAnyFieldNotEmpty(fields: Seq[String]): Boolean = fields.exists(_.nonEmpty)
+  def isAnyFieldPopulated(fields: Seq[String]): Boolean = fields.exists(_.nonEmpty)
   def isAnyFieldEmpty(fields: Seq[String]): Boolean = fields.exists(_.isEmpty)
-  def isAnyFieldNotEmptyCondition(fields: Seq[String]): Condition = mapping => fields.exists(field => mapping.getOrElse(field, "").nonEmpty)
+  def isAnyFieldPopulatedCondition(fields: Seq[String]): Condition = mapping => fields.exists(field => mapping.getOrElse(field, "").nonEmpty)
 
   def mapping(prefix: String): Mapping[Time] =
     Forms
       .tuple(hourKey -> hourMapping(prefix), minuteKey -> minuteMapping(prefix), ampmKey -> amPmMapping(prefix))
-      .verifying("time.error.allEmpty", time => isAnyFieldNotEmpty(Seq(time._1, time._2, time._3)))
-      .verifying("time.error.invalid", time => isValidTime(time._1, time._2, time._3))
+      .verifying("time.error.allEmpty", time => isAnyFieldPopulated(Seq(time._1, time._2, time._3)))
+      .verifying("time.error.invalid", time => isValidTimeOrAnyEmptyFields(time._1, time._2, time._3))
       .transform((bind _).tupled, unbind)
 
   private def hourMapping(prefix: String): Mapping[String] = AdditionalConstraintsMapping(
     text()
       .verifying("time.hour.error", isEmptyOr(isInRange(1, 12))),
-    Seq(ConditionalConstraint(isAnyFieldNotEmptyCondition(Seq(prefix + minuteKey, prefix + ampmKey)), "time.hour.missing", nonEmpty))
+    Seq(ConditionalConstraint(isAnyFieldPopulatedCondition(Seq(prefix + minuteKey, prefix + ampmKey)), "time.hour.missing", nonEmpty))
   )
 
   private def minuteMapping(prefix: String): Mapping[String] = AdditionalConstraintsMapping(
     text()
       .verifying("time.minute.error", isEmptyOr(isInRange(0, 59))),
-    Seq(ConditionalConstraint(isAnyFieldNotEmptyCondition(Seq(prefix + hourKey, prefix + ampmKey)), "time.minute.missing", nonEmpty))
+    Seq(ConditionalConstraint(isAnyFieldPopulatedCondition(Seq(prefix + hourKey, prefix + ampmKey)), "time.minute.missing", nonEmpty))
   )
 
   private def amPmMapping(prefix: String): Mapping[String] = AdditionalConstraintsMapping(
     text()
       .verifying("time.ampm.error", isEmptyOr(isContainedIn(Seq(Time.am, Time.pm)))),
-    Seq(ConditionalConstraint(isAnyFieldNotEmptyCondition(Seq(prefix + minuteKey, prefix + hourKey)), "time.ampm.error", nonEmpty))
+    Seq(ConditionalConstraint(isAnyFieldPopulatedCondition(Seq(prefix + minuteKey, prefix + hourKey)), "time.ampm.error", nonEmpty))
   )
 
   private def bind(hour: String, minutes: String, ampm: String): Time = Time(LocalTime.parse(timeString(hour, minutes, ampm), time12HourFormatter))

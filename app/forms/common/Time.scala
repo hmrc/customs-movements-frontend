@@ -16,14 +16,16 @@
 
 package forms.common
 
+import forms.{AdditionalConstraintsMapping, ConditionalConstraint}
+
 import java.text.DecimalFormat
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoField
-
 import play.api.data.Forms.text
 import play.api.data.{Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.voa.play.form.Condition
 import utils.validators.forms.FieldValidator._
 
 import scala.util.Try
@@ -35,6 +37,7 @@ case class Time(time: LocalTime) {
   def getAmPm: String = if (time.get(ChronoField.AMPM_OF_DAY) == 0) Time.am else Time.pm
 }
 
+// See Date for explanation of mapping and validation
 object Time {
   implicit val format: OFormat[Time] = Json.format[Time]
 
@@ -43,48 +46,45 @@ object Time {
   val ampmKey = "ampm"
 
   val time12HourFormatter = DateTimeFormatter.ofPattern("h:mma")
+  val formatter = new DecimalFormat("00")
+  def timeString(hour: String, minutes: String, ampm: String) = s"${hour.toInt}:${f"${minutes.toInt}%02d"}$ampm"
 
   val am = "AM"
   val pm = "PM"
 
-  val mapping: Mapping[Time] = {
-    def build(hour: Try[Int], minutes: Try[Int], ampm: String): Try[LocalTime] =
-      for {
-        h <- hour
-        m <- minutes
-      } yield {
-        val timeString = s"$h:${f"$m%02d"}$ampm"
-        LocalTime.parse(timeString, time12HourFormatter)
-      }
+  def isValidTimeOrAnyEmptyFields(hours: String, minutes: String, ampm: String): Boolean =
+    if (isAnyFieldEmpty(Seq(hours, minutes, ampm))) true
+    else Try(LocalTime.parse(timeString(hours, minutes, ampm), time12HourFormatter)).isSuccess
+  def isAnyFieldPopulated(fields: Seq[String]): Boolean = fields.exists(_.nonEmpty)
+  def isAnyFieldEmpty(fields: Seq[String]): Boolean = fields.exists(_.isEmpty)
+  def isAnyFieldPopulatedCondition(fields: Seq[String]): Condition = mapping => fields.exists(field => mapping.getOrElse(field, "").nonEmpty)
 
-    def bind(hour: Try[Int], minutes: Try[Int], ampm: String): Time =
-      build(hour, minutes, ampm)
-        .map(apply)
-        .getOrElse(throw new IllegalArgumentException("Could not build time - missing one of parameters"))
-
-    def unbind(time: Time): (Try[Int], Try[Int], String) =
-      (Try(time.getClockHour), Try(time.getMinute), time.getAmPm)
-
-    val hourMapping: Mapping[Try[Int]] = {
-      text()
-        .verifying("time.hour.missing", nonEmpty)
-        .verifying("time.hour.error", isEmptyOr(isInRange(1, 12)))
-        .transform(value => Try(value.toInt), _.map(_.toString).getOrElse(""))
-    }
-
-    val minuteMapping: Mapping[Try[Int]] = {
-      val formatter = new DecimalFormat("00")
-      text()
-        .verifying("time.minute.missing", nonEmpty)
-        .verifying("time.minute.error", isEmptyOr(isInRange(0, 59)))
-        .transform(value => Try(value.toInt), _.map(value => formatter.format(value)).getOrElse(""))
-    }
-
-    val amPmMapping: Mapping[String] = text().verifying("time.ampm.error", isContainedIn(Seq(Time.am, Time.pm)))
-
+  def mapping(prefix: String): Mapping[Time] =
     Forms
-      .tuple(hourKey -> hourMapping, minuteKey -> minuteMapping, ampmKey -> amPmMapping)
-      .verifying("time.error.invalid", (build _).tupled.andThen(_.isSuccess))
+      .tuple(hourKey -> hourMapping(prefix), minuteKey -> minuteMapping(prefix), ampmKey -> amPmMapping(prefix))
+      .verifying("time.error.allEmpty", time => isAnyFieldPopulated(Seq(time._1, time._2, time._3)))
+      .verifying("time.error.invalid", time => isValidTimeOrAnyEmptyFields(time._1, time._2, time._3))
       .transform((bind _).tupled, unbind)
-  }
+
+  private def hourMapping(prefix: String): Mapping[String] = AdditionalConstraintsMapping(
+    text()
+      .verifying("time.hour.error", isEmptyOr(isInRange(1, 12))),
+    Seq(ConditionalConstraint(isAnyFieldPopulatedCondition(Seq(prefix + minuteKey, prefix + ampmKey)), "time.hour.missing", nonEmpty))
+  )
+
+  private def minuteMapping(prefix: String): Mapping[String] = AdditionalConstraintsMapping(
+    text()
+      .verifying("time.minute.error", isEmptyOr(isInRange(0, 59))),
+    Seq(ConditionalConstraint(isAnyFieldPopulatedCondition(Seq(prefix + hourKey, prefix + ampmKey)), "time.minute.missing", nonEmpty))
+  )
+
+  private def amPmMapping(prefix: String): Mapping[String] = AdditionalConstraintsMapping(
+    text()
+      .verifying("time.ampm.error", isEmptyOr(isContainedIn(Seq(Time.am, Time.pm)))),
+    Seq(ConditionalConstraint(isAnyFieldPopulatedCondition(Seq(prefix + minuteKey, prefix + hourKey)), "time.ampm.error", nonEmpty))
+  )
+
+  private def bind(hour: String, minutes: String, ampm: String): Time = Time(LocalTime.parse(timeString(hour, minutes, ampm), time12HourFormatter))
+
+  private def unbind(time: Time): (String, String, String) = (time.getClockHour.toString, formatter.format(time.getMinute), time.getAmPm)
 }

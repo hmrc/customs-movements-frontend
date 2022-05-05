@@ -118,6 +118,14 @@ class DateSpec extends BaseSpec {
         errors.length must be(1)
         errors.head must be(FormError("year", "date.year.error"))
       }
+
+      "date missing all three fields" in {
+        val dateInput = Map("day" -> "", "month" -> "", "year" -> "")
+        val errors = form.bind(dateInput).errors
+
+        errors.length must be(1)
+        errors.head must be(FormError("", "date.error.allEmpty"))
+      }
     }
 
     "return no error for correct date" in {

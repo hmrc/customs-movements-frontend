@@ -25,7 +25,7 @@ import play.api.data.{Form, FormError}
 
 class TimeSpec extends BaseSpec with FormMatchers {
 
-  val form: Form[Time] = Form(Time.mapping)
+  val form: Form[Time] = Form(Time.mapping(""))
 
   "Time object" should {
 
@@ -74,6 +74,14 @@ class TimeSpec extends BaseSpec with FormMatchers {
         val errors = form.bind(inputTime).errors
 
         errors must contain theSameElementsAs List(FormError("ampm", "time.ampm.error"))
+      }
+
+      "all three fields are missing" in {
+        val inputTime = Map(hourKey -> "", minuteKey -> "", ampmKey -> "")
+        val errors = form.bind(inputTime).errors
+
+        errors.length mustBe 1
+        errors must contain theSameElementsAs List(FormError("", "time.error.allEmpty"))
       }
     }
 

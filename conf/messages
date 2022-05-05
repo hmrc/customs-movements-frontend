@@ -34,6 +34,7 @@ time.ampm.error = Select am or pm
 time.am = am
 time.pm = pm
 time.error.invalid = Time must be in the correct format
+time.error.allEmpty = Enter a time
 
 
 error.summary.title = There is a problem

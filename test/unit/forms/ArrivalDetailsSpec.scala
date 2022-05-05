@@ -26,7 +26,7 @@ class ArrivalDetailsSpec extends BaseSpec {
 
   private val date = LocalDate.now().minusDays(1)
 
-  private val timeMapping = Time.mapping.withPrefix("timeOfArrival")
+  private val timeMapping = Time.mapping("timeOfArrival.").withPrefix("timeOfArrival")
 
   private val timeInputData = timeMapping.unbind(Time(LocalTime.of(1, 1)))
 

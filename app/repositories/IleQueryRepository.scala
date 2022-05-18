@@ -16,38 +16,36 @@
 
 package repositories
 
-import java.time.Duration
-
+import com.mongodb.client.model.Indexes.ascending
 import config.AppConfig
-import javax.inject.Inject
 import models.cache.IleQuery
-import play.api.libs.json.JsString
-import play.modules.reactivemongo.ReactiveMongoComponent
-import reactivemongo.api.indexes.{Index, IndexType}
-import reactivemongo.bson.{BSONDocument, BSONObjectID}
-import reactivemongo.play.json.collection.JSONCollection
-import uk.gov.hmrc.mongo.ReactiveRepository
-import uk.gov.hmrc.mongo.json.ReactiveMongoFormats.objectIdFormats
+import org.mongodb.scala.bson.BsonDocument
+import org.mongodb.scala.model.{IndexModel, IndexOptions}
+import play.api.libs.json.{JsString, Json}
+import uk.gov.hmrc.mongo.MongoComponent
+import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
+import java.util.concurrent.TimeUnit.SECONDS
+
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.reflect.ClassTag
 
-class IleQueryRepository @Inject()(mc: ReactiveMongoComponent, appConfig: AppConfig)(implicit ec: ExecutionContext)
-    extends ReactiveRepository[IleQuery, BSONObjectID]("ileQueries", mc.mongoConnector.db, IleQuery.format, objectIdFormats) {
+class IleQueryRepository @Inject()(mongo: MongoComponent, appConfig: AppConfig)(implicit ec: ExecutionContext)
+    extends PlayMongoRepository[IleQuery](mongo, "ileQueries", IleQuery.format, IleQueryRepository.indexes) with RepositoryOps[IleQuery] {
 
-  override lazy val collection: JSONCollection =
-    mongo().collection[JSONCollection](collectionName, failoverStrategy = RepositorySettings.failoverStrategy)
+  override def classTag: ClassTag[IleQuery] = implicitly[ClassTag[IleQuery]]
+  implicit val executionContext = ec
 
-  override def indexes: Seq[Index] = super.indexes ++ Seq(
-    Index(
-      key = Seq("createdAt" -> IndexType.Ascending),
-      name = Some("ttl"),
-      options = BSONDocument("expireAfterSeconds" -> Duration.ofMinutes(1).getSeconds)
-    )
-  )
-
-  def findBySessionIdAndUcr(sessionId: String, ucr: String): Future[Option[IleQuery]] =
-    find("sessionId" -> sessionId, "ucr" -> ucr).map(_.headOption)
+  def findBySessionIdAndUcr(sessionId: String, ucr: String): Future[Option[IleQuery]] = {
+    val query = Json.obj("sessionId" -> sessionId, "ucr" -> ucr)
+    collection.find(BsonDocument(query.toString)).headOption()
+  }
 
   def removeByConversationId(conversationId: String): Future[Unit] =
-    remove("conversationId" -> JsString(conversationId)).map(_ => (): Unit)
+    removeEvery("conversationId", conversationId)
+}
+
+object IleQueryRepository {
+  val indexes: Seq[IndexModel] = Seq(IndexModel(ascending("createdAt"), IndexOptions().name("ttl").expireAfter(60, SECONDS)))
 }

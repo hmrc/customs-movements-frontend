@@ -18,13 +18,12 @@ package testdata
 
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDate, LocalTime, ZoneId}
-
 import connectors.exchanges.ActionType.MovementType
 import connectors.exchanges.{ActionType, MovementDetailsRequest, MovementRequest}
 import forms.Transport.ModesOfTransport
 import forms._
 import forms.common.{Date, Time}
-import models.cache.{ArrivalAnswers, DepartureAnswers}
+import models.cache.{ArrivalAnswers, DepartureAnswers, IleQuery}
 import models.submissions.Submission
 import models.{SignedInUser, UcrBlock}
 import testdata.CommonTestData._
@@ -91,5 +90,13 @@ object MovementsTestData {
     ),
     transport = Some(Transport(modeOfTransport = ModesOfTransport.Sea, nationality = "GB", transportId = "transportID"))
   )
+
+  def exampleIleQuery(
+    sessionId: String = "sessionId",
+    ucr: String = correctUcr,
+    conversationId: String = conversationId,
+    createdAt: Instant = Instant.now()
+  ): IleQuery =
+    IleQuery(sessionId = sessionId, ucr = ucr, conversationId = conversationId, createdAt = createdAt)
 
 }

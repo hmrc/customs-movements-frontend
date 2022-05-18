@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 
-package mongock
+package repositories
 
-import com.github.cloudyrock.mongock.MongockBuilder
-import com.google.inject.Singleton
-import com.mongodb.{MongoClient, MongoClientURI}
+import play.api.libs.json.{Json, OFormat}
 
-@Singleton
-case class MongockConfig(mongoURI: String) {
+object SearchParameters {
+  implicit val format: OFormat[SearchParameters] = Json.format[SearchParameters]
+}
 
-  val uri = new MongoClientURI(mongoURI.replaceAllLiterally("sslEnabled", "ssl"))
+case class SearchParameters(eori: Option[String] = None, providerId: Option[String] = None, conversationId: Option[String] = None) {
 
-  val client = new MongoClient(uri)
-
-  val runner = new MongockBuilder(client, uri.getDatabase, "mongock.changesets")
-    .setLockQuickConfig()
-    .build()
-
-  runner.execute()
-  runner.close()
-
+  def isEmpty: Boolean = eori.isEmpty && providerId.isEmpty && conversationId.isEmpty
+  def isDefined: Boolean = !isEmpty
 }

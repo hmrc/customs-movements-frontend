@@ -16,55 +16,35 @@
 
 package repositories
 
-import java.time.Duration
-
-import javax.inject.Inject
 import models.cache.Cache
-import play.api.libs.json.{JsObject, Json}
-import play.modules.reactivemongo.ReactiveMongoComponent
-import reactivemongo.api.indexes.{Index, IndexType}
-import reactivemongo.bson.{BSONDocument, BSONObjectID}
-import reactivemongo.play.json.collection.JSONCollection
-import uk.gov.hmrc.mongo.ReactiveRepository
-import uk.gov.hmrc.mongo.json.ReactiveMongoFormats.objectIdFormats
+import org.mongodb.scala.model.Indexes.ascending
+import org.mongodb.scala.model.{IndexModel, IndexOptions}
+import uk.gov.hmrc.mongo.MongoComponent
+import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
+import java.util.concurrent.TimeUnit.SECONDS
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.reflect.ClassTag
 
-class CacheRepository @Inject()(mc: ReactiveMongoComponent)(implicit ec: ExecutionContext)
-    extends ReactiveRepository[Cache, BSONObjectID]("cache", mc.mongoConnector.db, Cache.format, objectIdFormats) {
+class CacheRepository @Inject()(mc: MongoComponent)(implicit ec: ExecutionContext)
+    extends PlayMongoRepository[Cache](mc, "cache", Cache.format, CacheRepository.indexes) with RepositoryOps[Cache] {
 
-  override lazy val collection: JSONCollection =
-    mongo().collection[JSONCollection](collectionName, failoverStrategy = RepositorySettings.failoverStrategy)
+  override def classTag: ClassTag[Cache] = implicitly[ClassTag[Cache]]
+  implicit val executionContext = ec
 
-  override def indexes: Seq[Index] = Seq(
-    Index(Seq("eori" -> IndexType.Ascending), name = Some("eoriIdx")),
-    Index(
-      key = Seq("updated" -> IndexType.Ascending),
-      name = Some("ttl"),
-      options = BSONDocument("expireAfterSeconds" -> Duration.ofMinutes(60).getSeconds)
-    )
-  )
+  def findByEori(eori: String): Future[Option[Cache]] = findOne("eori", eori)
 
-  def findByEori(eori: String): Future[Option[Cache]] = find("eori" -> eori).map(_.headOption)
-
-  def removeByEori(eori: String): Future[Unit] = remove("eori" -> eori).filter(_.ok).map(_ => (): Unit)
-
-  def findOrCreate(eori: String, onMissing: Cache): Future[Cache] =
-    findByEori(eori).flatMap {
-      case Some(movementCache) => Future.successful(movementCache)
-      case None                => save(onMissing)
-    }
-
-  private def save(movementCache: Cache): Future[Cache] = insert(movementCache).map { res =>
-    if (!res.ok) logger.error(s"Errors when persisting movement cache: ${res.writeErrors.mkString("--")}")
-    movementCache
-  }
+  def removeByEori(eori: String): Future[Unit] = removeEvery("eori", eori)
 
   def upsert(cache: Cache): Future[Cache] =
-    findAndUpdate(Json.obj("eori" -> cache.eori), Json.toJson(cache).as[JsObject])
-      .map(_.value.map(_.as[Cache]))
-      .flatMap {
-        case Some(cache) => Future.successful(cache)
-        case None        => save(cache)
-      }
+    findOneAndReplace("eori", cache.eori, cache)
+
+}
+
+object CacheRepository {
+  val indexes: Seq[IndexModel] = Seq(
+    IndexModel(ascending("eori"), IndexOptions().name("eoriIdx")),
+    IndexModel(ascending("updated"), IndexOptions().name("ttl").expireAfter(60, SECONDS))
+  )
 }

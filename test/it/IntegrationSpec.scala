@@ -15,32 +15,26 @@
  */
 
 import com.codahale.metrics.SharedMetricRegistries
-
-import java.time.{Clock, LocalDateTime, ZoneOffset}
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder
 import connectors.{AuditWiremockTestServer, AuthWiremockTestServer, MovementsBackendWiremockTestServer}
 import models.cache.{Answers, Cache}
 import models.{DateTimeProvider, UcrBlock}
-import org.scalatest.concurrent.Eventually
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.concurrent.Eventually
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call, Request, Result}
 import play.api.test.Helpers._
 import play.api.test.{CSRFTokenHelper, FakeRequest}
 import play.api.{Application, Configuration}
-import reactivemongo.play.json.ImplicitBSONHandlers
-import reactivemongo.play.json.ImplicitBSONHandlers._
-import reactivemongo.play.json.collection.JSONCollection
 import repositories.CacheRepository
 import repository.TestMongoDB
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import java.time.{Clock, LocalDateTime, ZoneOffset}
 import scala.concurrent.Future
 
 trait IntegrationSpec
@@ -50,7 +44,7 @@ trait IntegrationSpec
   /*
     Intentionally NOT exposing the real CacheRepository as we shouldn't test our production code using our production classes.
    */
-  private lazy val cacheRepository: JSONCollection = app.injector.instanceOf[CacheRepository].collection
+  private lazy val cacheRepository = app.injector.instanceOf[CacheRepository]
 
   def ileQueryFeatureConfiguration: Configuration =
     Configuration.from(Map("microservice.services.features.ileQuery" -> "enabled"))
@@ -73,7 +67,7 @@ trait IntegrationSpec
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    await(cacheRepository.drop(failIfNotFound = false))
+    await(cacheRepository.removeAll)
   }
 
   override def afterEach(): Unit = {
@@ -90,15 +84,11 @@ trait IntegrationSpec
   }
 
   protected def theCacheFor(eori: String): Option[Cache] =
-    await(
-      cacheRepository
-        .find(Json.obj("eori" -> eori), projection = None)(ImplicitBSONHandlers.JsObjectDocumentWriter, ImplicitBSONHandlers.JsObjectDocumentWriter)
-        .one[Cache]
-    )
+    await(cacheRepository.findOne("eori", eori))
 
   protected def theAnswersFor(eori: String): Option[Answers] = theCacheFor(eori).flatMap(_.answers)
 
-  protected def givenCacheFor(cache: Cache): Unit = await(cacheRepository.insert(ordered = false).one(Cache.format.writes(cache)))
+  protected def givenCacheFor(cache: Cache): Unit = cacheRepository.insertOne(cache)
   protected def givenCacheFor(eori: String, answers: Answers): Unit = givenCacheFor(Cache(eori, Some(answers), None, None))
   protected def givenCacheFor(eori: String, answers: Answers, queryUcr: UcrBlock): Unit =
     givenCacheFor(Cache(eori, Some(answers), Some(queryUcr), None))

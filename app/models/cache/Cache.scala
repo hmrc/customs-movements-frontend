@@ -16,11 +16,12 @@
 
 package models.cache
 
-import java.time.{Instant, ZoneOffset}
-
 import forms.DucrPartChiefChoice
 import models.UcrBlock
 import play.api.libs.json._
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+
+import java.time.Instant
 
 case class Cache(
   eori: String,
@@ -36,20 +37,7 @@ case class Cache(
 }
 
 object Cache {
-  implicit private val formatInstant: OFormat[Instant] = new OFormat[Instant] {
-    override def writes(datetime: Instant): JsObject =
-      Json.obj("$date" -> datetime.toEpochMilli)
-
-    override def reads(json: JsValue): JsResult[Instant] =
-      json match {
-        case JsObject(map) if map.contains("$date") =>
-          map("$date") match {
-            case JsNumber(v) => JsSuccess(Instant.ofEpochMilli(v.toLong).atOffset(ZoneOffset.UTC).toInstant)
-            case _           => JsError("Unexpected Date Format. Expected a Number (Epoch Milliseconds)")
-          }
-        case _ => JsError("Unexpected Date Format. Expected an object containing a $date field.")
-      }
-  }
+  implicit private val formatInstant: Format[Instant] = MongoJavatimeFormats.instantFormat
   implicit val format: OFormat[Cache] = Json.format[Cache]
 
   def apply(eori: String, queryUcr: UcrBlock): Cache = new Cache(eori, None, Some(queryUcr), None)

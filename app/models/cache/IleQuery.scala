@@ -16,9 +16,10 @@
 
 package models.cache
 
-import java.time.{Instant, ZoneOffset}
-import play.api.libs.json.{Format, JsError, JsNumber, JsObject, JsResult, JsSuccess, JsValue, Json, OFormat}
+import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+
+import java.time.Instant
 
 case class IleQuery(sessionId: String, ucr: String, conversationId: String, createdAt: Instant = Instant.now())
 

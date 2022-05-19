@@ -17,9 +17,5 @@
 package base
 
 import org.scalatestplus.mockito.MockitoSugar
-import reactivemongo.api.commands.{LastError, WriteResult}
 
-trait UnitSpec extends BaseSpec with MockitoSugar {
-  val dummyWriteResultSuccess: WriteResult =
-    LastError(true, None, None, None, 0, None, false, None, None, false, None, None)
-}
+trait UnitSpec extends BaseSpec with MockitoSugar

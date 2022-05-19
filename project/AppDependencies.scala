@@ -13,12 +13,10 @@ object AppDependencies {
     "uk.gov.hmrc"          %% "play-conditional-form-mapping" % "1.9.0-play-28",
     "uk.gov.hmrc"          %% "play-frontend-hmrc"            % "3.0.0-play-28",
     "uk.gov.hmrc"          %% "play-json-union-formatter"     % "1.13.0-play-27",
-    "uk.gov.hmrc"          %% "simple-reactivemongo"          % "8.0.0-play-28",
+    "uk.gov.hmrc.mongo"    %% "hmrc-mongo-play-28"            % "0.63.0",
     "com.fasterxml.jackson.module" %% "jackson-module-scala"  % "2.12.3",
     "ai.x"                 %% "play-json-extensions"          % "0.42.0",
     "com.github.tototoshi" %% "scala-csv"                     % "1.3.6",
-    "com.github.cloudyrock.mongock"  %  "mongock-core"        % "2.0.2",
-    "org.mongodb"          %  "mongo-java-driver"             % "3.12.1",
     "org.webjars.npm"      %  "govuk-frontend"                % "3.12.0",
     "org.webjars.npm"      %  "accessible-autocomplete"       % "2.0.3"
   )

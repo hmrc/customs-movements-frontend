@@ -138,7 +138,7 @@ class IleQueryController @Inject()(
           connector.submit(ileQueryRequest).flatMap { conversationId =>
             val ileQuery = IleQuery(retrieveSessionId, validUcr, conversationId)
 
-            ileQueryRepository.insert(ileQuery).map { _ =>
+            ileQueryRepository.insertOne(ileQuery).map { _ =>
               Redirect(controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(ucr))
             }
           }

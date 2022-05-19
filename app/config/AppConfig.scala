@@ -17,11 +17,11 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
-import javax.inject.Named
-import mongock.MongockConfig
 import play.api.i18n.Lang
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import javax.inject.Named
 
 @Singleton
 class AppConfig @Inject()(
@@ -35,10 +35,6 @@ class AppConfig @Inject()(
     runModeConfiguration
       .getOptional[String](key)
       .getOrElse(throw new Exception(s"Missing configuration key: $key"))
-
-  runModeConfiguration
-    .getOptional[String]("mongodb.uri")
-    .map(uri => MongockConfig(uri))
 
   lazy val appName: String = namedAppName
   lazy val keyStoreUrl: String = servicesConfig.baseUrl("keystore")

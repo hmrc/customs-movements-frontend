@@ -45,6 +45,6 @@ class CacheRepository @Inject()(mc: MongoComponent)(implicit ec: ExecutionContex
 object CacheRepository {
   val indexes: Seq[IndexModel] = Seq(
     IndexModel(ascending("eori"), IndexOptions().name("eoriIdx")),
-    IndexModel(ascending("updated"), IndexOptions().name("ttl").expireAfter(60, SECONDS))
+    IndexModel(ascending("updated"), IndexOptions().name("ttl").expireAfter(3600, SECONDS))
   )
 }

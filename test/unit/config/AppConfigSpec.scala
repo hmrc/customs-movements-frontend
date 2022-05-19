@@ -77,7 +77,7 @@ class AppConfigSpec extends AnyWordSpec with Matchers with MockitoSugar {
         |
         |microservice.services.contact-frontend.url=/contact-frontend-url
         |microservice.services.contact-frontend.serviceId=Movements-Service-ID
-        |platform.frontend.host="self/base-url"
+        |play.frontend.host="self/base-url"
       """.stripMargin
     )
 

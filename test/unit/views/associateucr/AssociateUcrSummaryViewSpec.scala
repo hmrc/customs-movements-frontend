@@ -44,6 +44,10 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
       view.getTitle must containMessage("associate.ucr.summary.title")
     }
 
+    "display page heading" in {
+      view.getElementById("title") must containMessage("associate.ucr.summary.title")
+    }
+
     "render back button" in {
 
       val backButton = view.getBackButton

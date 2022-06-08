@@ -55,6 +55,10 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with Bef
 
   "Disassociate Ucr Summary View" should {
 
+    "display page heading" in {
+      page(disassociateUcr).getElementById("title") must containMessage("disassociate.ucr.summary.title")
+    }
+
     "display 'Confirm and submit' button on page" in {
 
       val view = page(disassociateUcr)

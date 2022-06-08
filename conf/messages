@@ -230,13 +230,13 @@ summary.transportId.change = Change transport ID
 summary.nationality = Transport registered in
 summary.nationality.change = Change transport registered in
 
-summary.arrival.title = Is the information provided for this arrival correct?
+summary.arrival.title = Check your answers before you submit this arrival request
 summary.arrival.date = Date of arrival
 summary.arrival.date.change = Change date of arrival
 summary.arrival.time = Time of arrival
 summary.arrival.time.change = Change time of arrival
 
-summary.departure.title = Is the information provided for this departure correct?
+summary.departure.title = Check your answers before you submit this departure request
 summary.departure.date = Date of departure
 summary.departure.date.change = Change date of departure
 summary.departure.time = Time of departure
@@ -250,7 +250,7 @@ disassociate.ucr.ducr.error = Declaration Unique Consignment Reference (DUCR) mu
 disassociate.ucr.ducr.empty = Enter a Declaration Consignment Reference
 disassociate.ucr.mucr.error = Master Unique Consignment Reference (MUCR) must contain only letters, numbers, commas, hyphens and forward slash
 disassociate.ucr.mucr.empty = Enter a Master Consignment Reference
-disassociate.ucr.summary.title = Is the information provided for this dissociation request correct?
+disassociate.ucr.summary.title = Check your answers before you submit this dissociation request
 disassociate.ucr.summary.table.caption = Remove consignment
 disassociate.ucr.summary.kind.mucr = MUCR
 disassociate.ucr.summary.kind.ducr = DUCR
@@ -259,7 +259,7 @@ disassociate.ucr.summary.kind.ducrPart = DUCR Part
 shutMucr.tabTitle = Shut a MUCR
 shutMucr.title = Which master consignment do you want to shut?
 
-shutMucr.summary.title = Is the information provided for this shut request correct?
+shutMucr.summary.title = Check your answers before you submit this shut request
 shutMucr.summary.header = Shut master consignment
 shutMucr.summary.type = MUCR
 
@@ -293,7 +293,7 @@ associate.ucr.mucr.error.invalid = Master Unique Consignment Reference (MUCR) mu
 
 associate.ucr.hint = You may want to keep a record of which consignments you have added to this MUCR.
 
-associate.ucr.summary.title = Is the information provided for this association request correct?
+associate.ucr.summary.title = Check your answers before you submit this association request
 associate.ucr.summary.consignmentReference = Consignment reference
 associate.ucr.summary.associate.with.mucr = Associate with MUCR
 associate.ucr.summary.associate.with.ducr = Associate with DUCR

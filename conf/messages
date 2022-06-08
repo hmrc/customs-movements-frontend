@@ -264,8 +264,8 @@ shutMucr.summary.header = Shut master consignment
 shutMucr.summary.type = MUCR
 
 mucrOptions.heading = Associate consignment {0}
-mucrOptions.hint = Enter a MUCR in one of the correct formats displayed under {0}.
-mucrOptions.hint.link = DE 2/1 in the UK Trade Tariff
+mucrOptions.paragraph = To check the correct format, see the ‘Notes’ section on {0}.
+mucrOptions.paragraph.link =  data element 2/1 Previous Documents (opens in new tab)
 mucrOptions.title = Create or enter a Master Consignment Reference (MUCR) to associate with
 mucrOptions.create = Create a MUCR
 mucrOptions.add = Add to an existing MUCR

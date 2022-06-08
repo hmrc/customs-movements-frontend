@@ -17,6 +17,7 @@
 @import forms.ManageMucrChoice
 @import forms.MucrOptions
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
 @import views.Title
 @import views.components.BackButton
 @import components.gds.{errorSummary, sectionHeader, gds_main_template}
@@ -33,13 +34,15 @@
   errorSummary: errorSummary,
   exportsInputText: exportsInputText,
   sectionHeader: sectionHeader,
+  pageTitle: pageTitle,
+  paragraphBody: paragraphBody,
   pageConfig: MucrOptionsConfig,
   formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 )
 
 @(form: Form[MucrOptions], queryUcr: Option[UcrBlock], manageMucrChoice: Option[ManageMucrChoice])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tradeTariffLink = {<a target="_blank" href=@pageConfig.tradeTariffUrl>@messages("mucrOptions.hint.link")</a>}
+@previousDocumentsDataElementLink = {<a target="_blank" href=@pageConfig.previousDocumentsDataElementUrl>@messages("mucrOptions.paragraph.link")</a>}
 
 @govukLayout(
     title = Title("mucrOptions.title"),
@@ -50,17 +53,18 @@
 
         @sectionHeader(messages("mucrOptions.heading", queryUcr.map(_.ucr).getOrElse("")))
 
+        @pageTitle(messages("mucrOptions.title"))
+
+        @paragraphBody(messages("mucrOptions.paragraph", previousDocumentsDataElementLink))
+
         @govukRadios(Radios(
             name = "createOrAdd",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("mucrOptions.title")),
                     isPageHeading = true,
-                    classes = "govuk-fieldset__legend--l"
+                    classes = "govuk-visually-hidden"
                 ))
-            )),
-            hint = Some(Hint(
-                content = HtmlContent(Html(messages("mucrOptions.hint", tradeTariffLink)))
             )),
             items = Seq(
                 RadioItem(

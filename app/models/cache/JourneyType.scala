@@ -21,7 +21,7 @@ import play.api.libs.json.{Format, Reads, Writes}
 object JourneyType extends Enumeration {
   type JourneyType = Value
 
-  val ARRIVE, DEPART, ASSOCIATE_UCR, DISSOCIATE_UCR, SHUT_MUCR = Value
+  val ARRIVE, DEPART, ASSOCIATE_UCR, DISSOCIATE_UCR, SHUT_MUCR, JOURNEY_NOT_SELECTED = Value
 
   implicit val format: Format[JourneyType] = Format(Reads.enumNameReads(JourneyType), Writes.enumNameWrites)
 }

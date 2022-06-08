@@ -20,7 +20,7 @@ import models.ReturnToStartException
 import models.cache.{Answers, Cache}
 import play.api.mvc.WrappedRequest
 
-case class JourneyRequest[T](cache: Cache, request: AuthenticatedRequest[T]) extends WrappedRequest(request) {
+case class JourneyRequest[T](cache: Cache, request: AuthenticatedRequest[T]) extends WrappedRequest(request) with RequestWithAnswers[T] {
 
   val eori: String = request.user.eori
 

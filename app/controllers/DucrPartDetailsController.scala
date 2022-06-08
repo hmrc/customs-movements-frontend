@@ -16,12 +16,12 @@
 
 package controllers
 
+import config.IleQueryConfig
 import controllers.actions.{AuthAction, DucrPartsAction, JourneyRefiner, NonIleQueryAction}
 import forms._
-import javax.inject.Inject
 import models.UcrBlock
 import models.cache._
-import models.requests.JourneyRequest
+import models.requests.{JourneyRequest, RequestWithAnswers}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -29,6 +29,7 @@ import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.ducr_part_details
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DucrPartDetailsController @Inject()(
@@ -37,12 +38,23 @@ class DucrPartDetailsController @Inject()(
   getJourney: JourneyRefiner,
   isDucrPartsFeatureEnabled: DucrPartsAction,
   ileQueryFeatureDisabled: NonIleQueryAction,
+  ileQueryConfig: IleQueryConfig,
   cacheRepository: CacheRepository,
   ducrPartsDetailsPage: ducr_part_details
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen isDucrPartsFeatureEnabled).async { implicit request =>
+  def displayPage(): Action[AnyContent] =
+    if (ileQueryConfig.isIleQueryEnabled)
+      (authenticate andThen isDucrPartsFeatureEnabled).async { implicit request =>
+        cacheLookup
+      } else {
+      submitDucrPartForJourneyActions.async { implicit request =>
+        cacheLookup
+      }
+    }
+
+  private def cacheLookup(implicit request: RequestWithAnswers[_]) =
     cacheRepository
       .findByEori(request.eori)
       .map {
@@ -52,7 +64,6 @@ class DucrPartDetailsController @Inject()(
         case _ => getEmptyForm
       }
       .map(form => Ok(ducrPartsDetailsPage(form)))
-  }
 
   def submitDucrPartDetails(): Action[AnyContent] = (authenticate andThen isDucrPartsFeatureEnabled).async { implicit request =>
     getEmptyForm

@@ -19,6 +19,8 @@ package views
 import base.OverridableInjector
 import config.IleQueryConfig
 import forms.DucrPartDetails
+import models.cache._
+import models.requests.{AuthenticatedRequest, RequestWithAnswers}
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -28,6 +30,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import testdata.CommonTestData._
+import testdata.MovementsTestData.newUser
 import views.html.ducr_part_details
 import views.spec.ViewMatchers
 import views.tags.ViewTest
@@ -38,14 +41,14 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with MockitoSug
   private val appConfig = mock[IleQueryConfig]
   private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(appConfig))
 
-  private implicit val request = FakeRequest().withCSRFToken
+  private val authenticatedRequest = AuthenticatedRequest(FakeRequest().withCSRFToken, newUser(validEori))
   private val page = injector.instanceOf[ducr_part_details]
 
-  private def createView(form: Form[DucrPartDetails]): Html = page(form)
+  private def createView(form: Form[DucrPartDetails])(implicit request: RequestWithAnswers[_]): Html = page(form)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(appConfig.isIleQueryEnabled).thenReturn(true)
+    when(appConfig.isIleQueryEnabled).thenReturn(false)
   }
 
   override def afterEach(): Unit = {
@@ -55,123 +58,148 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with MockitoSug
 
   "DucrPartDetails view" when {
 
-    "provided with empty form" should {
+    "IleQuery flag is disabled" should {
+      implicit val request = authenticatedRequest
 
-      val view = createView(DucrPartDetails.form())
+      "provided with empty form" should {
 
-      "render title" in {
-
-        view.getTitle must containMessage("ducrPartDetails.title")
-      }
-
-      "render heading" in {
-
-        view.getElementById("title") must containMessage("ducrPartDetails.title")
-      }
-
-      "render page hint" in {
-
-        view.getElementById("page-hint") must containMessage("ducrPartDetails.heading")
-      }
-
-      "render 'Back' button leading to 'Find a consignment' page when ileQuery enabled" in {
-        when(appConfig.isIleQueryEnabled).thenReturn(true)
         val view = createView(DucrPartDetails.form())
 
-        view.getBackButton mustBe defined
-        view.getBackButton.get must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+        "render title" in {
+
+          view.getTitle must containMessage("ducrPartDetails.title")
+        }
+
+        "not render dynamic consignment heading" in {
+          Option(view.getElementById("section-header")) mustBe empty
+        }
+
+        "render heading" in {
+
+          view.getElementById("title") must containMessage("ducrPartDetails.title")
+        }
+
+        "render page hint" in {
+
+          view.getElementById("page-hint") must containMessage("ducrPartDetails.heading")
+        }
+
+        "render 'Back' button leading to 'Find a consignment' page when ileQuery enabled" in {
+          when(appConfig.isIleQueryEnabled).thenReturn(true)
+          val view = createView(DucrPartDetails.form())
+
+          view.getBackButton mustBe defined
+          view.getBackButton.get must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+        }
+
+        "render 'Back' button leading to 'Ducr Part Chief' page when ileQuery disabled" in {
+          when(appConfig.isIleQueryEnabled).thenReturn(false)
+          val view = createView(DucrPartDetails.form())
+
+          view.getBackButton mustBe defined
+          view.getBackButton.get must haveHref(controllers.routes.DucrPartChiefController.displayPage())
+        }
+
+        "render DUCR input field label" in {
+
+          view.getElementsByAttributeValue("for", "ducr").first() must containMessage("ducrPartDetails.ducr")
+        }
+
+        "render DUCR input field hint" in {
+
+          view.getElementById("ducr-hint") must containMessage("ducrPartDetails.ducr.hint")
+        }
+
+        "render empty DUCR input field" in {
+
+          view.getElementById("ducr").`val`() mustBe empty
+        }
+
+        "render DUCR Part ID input field label" in {
+
+          view.getElementsByAttributeValue("for", "ducrPartId").first() must containMessage("ducrPartDetails.ducrPartId")
+        }
+
+        "render DUCR Part ID input field hint" in {
+
+          view.getElementById("ducrPartId-hint") must containMessage("ducrPartDetails.ducrPartId.hint")
+        }
+
+        "render empty DUCR Part ID input field" in {
+
+          view.getElementById("ducrPartId").`val`() mustBe empty
+        }
+
+        "render submit button" in {
+
+          view.getSubmitButton mustBe defined
+          view.getSubmitButton.get must containMessage("site.continue")
+        }
       }
 
-      "render 'Back' button leading to 'Ducr Part Chief' page when ileQuery disabled" in {
-        when(appConfig.isIleQueryEnabled).thenReturn(false)
-        val view = createView(DucrPartDetails.form())
+      "provided with filled form" should {
 
-        view.getBackButton mustBe defined
-        view.getBackButton.get must haveHref(controllers.routes.DucrPartChiefController.displayPage())
+        val form = DucrPartDetails.form().fill(DucrPartDetails(ducr = validDucr, ducrPartId = validDucrPartId))
+        val view = createView(form)
+
+        "fill DUCR input field" in {
+
+          view.getElementById("ducr").`val`() mustBe validDucr
+        }
+
+        "fill DUCR Part ID input field" in {
+
+          view.getElementById("ducrPartId").`val`() mustBe validDucrPartId
+        }
       }
 
-      "render DUCR input field label" in {
+      "provided with form containing DUCR error" should {
 
-        view.getElementsByAttributeValue("for", "ducr").first() must containMessage("ducrPartDetails.ducr")
+        val form = DucrPartDetails.form().withError(FormError("ducr", "ducrPartDetails.ducr.invalid"))
+        val view: Document = createView(form)
+
+        "render error summary" in {
+
+          view must haveGovUkGlobalErrorSummary
+        }
+
+        "render field error" in {
+
+          view must haveGovUkFieldError("ducr", messages("ducrPartDetails.ducr.invalid"))
+        }
       }
 
-      "render DUCR input field hint" in {
+      "provided with form containing DUCR Part ID error" should {
 
-        view.getElementById("ducr-hint") must containMessage("ducrPartDetails.ducr.hint")
-      }
+        val form = DucrPartDetails.form().withError(FormError("ducrPartId", "ducrPartDetails.ducrPartId.invalid"))
+        val view: Document = createView(form)
 
-      "render empty DUCR input field" in {
+        "render error summary" in {
 
-        view.getElementById("ducr").`val`() mustBe empty
-      }
+          view must haveGovUkGlobalErrorSummary
+        }
 
-      "render DUCR Part ID input field label" in {
+        "render field error" in {
 
-        view.getElementsByAttributeValue("for", "ducrPartId").first() must containMessage("ducrPartDetails.ducrPartId")
-      }
-
-      "render DUCR Part ID input field hint" in {
-
-        view.getElementById("ducrPartId-hint") must containMessage("ducrPartDetails.ducrPartId.hint")
-      }
-
-      "render empty DUCR Part ID input field" in {
-
-        view.getElementById("ducrPartId").`val`() mustBe empty
-      }
-
-      "render submit button" in {
-
-        view.getSubmitButton mustBe defined
-        view.getSubmitButton.get must containMessage("site.continue")
+          view must haveGovUkFieldError("ducrPartId", messages("ducrPartDetails.ducrPartId.invalid"))
+        }
       }
     }
 
-    "provided with filled form" should {
+    "Ile Query flag is enabled" should {
+      when(appConfig.isIleQueryEnabled).thenReturn(true)
 
-      val form = DucrPartDetails.form().fill(DucrPartDetails(ducr = validDucr, ducrPartId = validDucrPartId))
-      val view = createView(form)
+      for (answers <- Seq(ArrivalAnswers(), DepartureAnswers(), AssociateUcrAnswers(), DisassociateUcrAnswers())) {
+        implicit val request = journeyRequest(answers)
 
-      "fill DUCR input field" in {
+        s"provided with empty form on ${request.answers.`type`.toString} consignment" should {
+          val view = createView(DucrPartDetails.form())
 
-        view.getElementById("ducr").`val`() mustBe validDucr
-      }
-
-      "fill DUCR Part ID input field" in {
-
-        view.getElementById("ducrPartId").`val`() mustBe validDucrPartId
-      }
-    }
-
-    "provided with form containing DUCR error" should {
-
-      val form = DucrPartDetails.form().withError(FormError("ducr", "ducrPartDetails.ducr.invalid"))
-      val view: Document = createView(form)
-
-      "render error summary" in {
-
-        view must haveGovUkGlobalErrorSummary
-      }
-
-      "render field error" in {
-
-        view must haveGovUkFieldError("ducr", messages("ducrPartDetails.ducr.invalid"))
-      }
-    }
-
-    "provided with form containing DUCR Part ID error" should {
-
-      val form = DucrPartDetails.form().withError(FormError("ducrPartId", "ducrPartDetails.ducrPartId.invalid"))
-      val view: Document = createView(form)
-
-      "render error summary" in {
-
-        view must haveGovUkGlobalErrorSummary
-      }
-
-      "render field error" in {
-
-        view must haveGovUkFieldError("ducrPartId", messages("ducrPartDetails.ducrPartId.invalid"))
+          "render consignment section header" in {
+            val text = view.getElementById("section-header")
+            text must containMessage(s"ducrPartDetails.${request.answers.`type`.toString.toLowerCase}.heading")
+          }
+        }
       }
     }
   }

@@ -16,11 +16,10 @@
 
 package models.requests
 
-import models.SignedInUser
-import models.cache.JourneyNotSelectedAnswers
-import play.api.mvc.{Request, WrappedRequest}
+import models.cache.Answers
+import play.api.mvc.Request
 
-case class AuthenticatedRequest[A](request: Request[A], user: SignedInUser) extends WrappedRequest[A](request) with RequestWithAnswers[A] {
-  lazy val eori: String = user.eori
-  def answers: JourneyNotSelectedAnswers.type = JourneyNotSelectedAnswers
+trait RequestWithAnswers[A] extends Request[A] {
+  val eori: String
+  def answers: Answers
 }

@@ -20,6 +20,8 @@
 @import views.Title
 @import views.components.BackButton
 @import views.components.config.DucrPartDetailsConfig
+@import models.requests._
+@import models.cache.JourneyNotSelectedAnswers
 
 @this(
   govukLayout: gds_main_template,
@@ -28,13 +30,20 @@
   errorSummary: errorSummary,
   pageTitle: pageTitle,
   pageConfig: DucrPartDetailsConfig,
-  formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+  formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
+  sectionHeader: sectionHeader
 )
 
-@(form: Form[DucrPartDetails])(implicit request: Request[_], messages: Messages)
+@(form: Form[DucrPartDetails])(implicit request: RequestWithAnswers[_], messages: Messages)
 
 @pageHint = {
   <span id="page-hint" class="govuk-hint">@messages("ducrPartDetails.heading")</span>
+}
+
+@consignmentTypeHeading = {
+    @if(request.answers != JourneyNotSelectedAnswers) {
+        @sectionHeader(messages(s"ducrPartDetails.${request.answers.`type`.toString.toLowerCase}.heading"))
+    }
 }
 
 @govukLayout(
@@ -45,6 +54,8 @@
   @formHelper(action = pageConfig.action, 'autoComplete -> "off") {
 
     @errorSummary(form.errors)
+
+    @consignmentTypeHeading
 
     @pageTitle(messages("ducrPartDetails.title"))
 

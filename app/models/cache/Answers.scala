@@ -18,7 +18,7 @@ package models.cache
 
 import forms.{AssociateUcr, MucrOptions, _}
 import models.UcrBlock
-import models.cache.JourneyType.JourneyType
+import models.cache.JourneyType.{JOURNEY_NOT_SELECTED, JourneyType}
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.play.json.Union
 
@@ -99,6 +99,10 @@ object ShutMucrAnswers {
     val shutMucr = ucrBlock.filter(_.ucrType.equals("M")).map(ucrBlock => ShutMucr(ucrBlock.ucr))
     ShutMucrAnswers(shutMucr)
   }
+}
+
+object JourneyNotSelectedAnswers extends Answers {
+  override val `type`: JourneyType = JOURNEY_NOT_SELECTED
 }
 
 trait Answers {

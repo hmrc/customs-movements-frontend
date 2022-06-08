@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.IleQueryConfig
 import controllers.actions.{DucrPartsAction, NonIleQueryAction}
 import controllers.exception.InvalidFeatureStateException
 import forms.{DucrPartDetails, UcrType}
@@ -36,6 +37,7 @@ import scala.concurrent.ExecutionContext.global
 class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache with ScalaFutures with IntegrationPatience {
 
   private val ducrPartDetailsPage = mock[ducr_part_details]
+  private val ileQueryConfig = mock[IleQueryConfig]
 
   private def controller(
     ducrPartsAction: DucrPartsAction = DucrPartsEnabled,
@@ -48,6 +50,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
       ValidJourney(answers),
       ducrPartsAction,
       nonIleQueryAction,
+      ileQueryConfig,
       cache,
       ducrPartDetailsPage
     )(global)

@@ -434,6 +434,10 @@ ducrPartDetails.ducrPartId = Enter DUCR Part ID
 ducrPartDetails.ducrPartId.hint = This can be up to 3 numbers and one optional capital letter at the end. For example, 1, 111, 111M or M.
 ducrPartDetails.ducrPartId.empty = Enter a part DUCR
 ducrPartDetails.ducrPartId.invalid = DUCR Part must be in the correct format.
+ducrPartDetails.arrive.heading = Arrive consignment
+ducrPartDetails.dissociate_ucr.heading = Dissociate consignment
+ducrPartDetails.associate_ucr.heading = Associate consignment
+ducrPartDetails.depart.heading = Depart consignment
 
 ducrPartChief.ARRIVE.heading = Arrive consignment
 ducrPartChief.ARRIVE.question = Do you want to arrive a DUCR Part which was created in CHIEF?

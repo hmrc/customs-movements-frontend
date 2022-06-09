@@ -54,6 +54,10 @@ class ShutMucrSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndA
 
   "Shut Mucr Summary View" should {
 
+    "display page heading" in {
+      shutMucrSummaryPage(shutMucr).getElementById("title") must containMessage("shutMucr.summary.title")
+    }
+
     "display page header" in {
 
       shutMucrSummaryPage(shutMucr).getElementsByClass("govuk-heading-m").text() mustBe messages("shutMucr.summary.header")

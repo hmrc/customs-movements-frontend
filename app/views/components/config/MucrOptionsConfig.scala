@@ -33,5 +33,5 @@ class MucrOptionsConfig @Inject()(config: ExternalServicesConfig, ileQueryConfig
     else
       controllers.routes.ChoiceController.displayChoiceForm()
 
-  def tradeTariffUrl: String = config.tradeTariffUrl
+  def previousDocumentsDataElementUrl: String = config.previousDocumentsDataElementUrl
 }

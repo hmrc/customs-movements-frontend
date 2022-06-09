@@ -69,11 +69,13 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
       createView().getElementById("section-header") must containMessage("mucrOptions.heading", "mucr")
     }
 
-    "have the page hint" in {
-      val hint = createView().getElementById("createOrAdd-hint")
+    "have the body text" in {
+      val body = createView().getElementsByClass("govuk-body").first()
 
-      hint must containMessage("mucrOptions.hint", messages("mucrOptions.hint.link"))
-      hint.getElementsByTag("a").first() must haveHref("https://www.gov.uk/trade-tariff")
+      body must containMessage("mucrOptions.paragraph", messages("mucrOptions.paragraph.link"))
+      body.getElementsByTag("a").first() must haveHref(
+        "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide/group-2-references-of-messages-document-certificates-and-authorisations#de-21-simplified-declaration-previous-documents-box-40-declaration-previous-document"
+      )
     }
 
     "render the correct labels and hints" in {

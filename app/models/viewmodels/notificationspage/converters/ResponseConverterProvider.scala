@@ -59,6 +59,6 @@ class ResponseConverterProvider @Inject()(
       case Some(AcknowledgedAndProcessed.code)          => controlResponseAcknowledgedConverter
       case Some(PartiallyAcknowledgedAndProcessed.code) => controlResponseBlockedConverter
       case Some(Rejected.code)                          => controlResponseRejectedConverter
+      case _                                            => unknownResponseConverter
     }
-
 }

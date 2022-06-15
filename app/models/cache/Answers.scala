@@ -110,6 +110,12 @@ trait Answers {
 }
 
 object Answers {
+  implicit val arrivalAnswers = Json.format[ArrivalAnswers]
+  implicit val departureAnswers = Json.format[DepartureAnswers]
+  implicit val associateUcrAnswers = Json.format[AssociateUcrAnswers]
+  implicit val disassociateUcrAnswers = Json.format[DisassociateUcrAnswers]
+  implicit val shutMucrAnswers = Json.format[ShutMucrAnswers]
+
   implicit val format: Format[Answers] = Union
     .from[Answers]("type")
     .and[ArrivalAnswers](JourneyType.ARRIVE.toString)

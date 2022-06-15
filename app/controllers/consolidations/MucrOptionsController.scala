@@ -19,6 +19,7 @@ package controllers.consolidations
 import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.MucrOptions
 import forms.MucrOptions.form
+
 import javax.inject.{Inject, Singleton}
 import models.cache.{AssociateUcrAnswers, JourneyType}
 import models.requests.JourneyRequest
@@ -26,20 +27,21 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.CacheRepository
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.associateucr.mucr_options
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MucrOptionsController @Inject()(
+class MucrOptionsController @Inject() (
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
   cacheRepository: CacheRepository,
   page: mucr_options
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ASSOCIATE_UCR)) { implicit request =>
     val mucrOptions = request.answersAs[AssociateUcrAnswers].mucrOptions

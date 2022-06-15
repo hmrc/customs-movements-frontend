@@ -19,6 +19,7 @@ package controllers
 import controllers.actions.{AuthAction, DucrPartsAction, JourneyRefiner, NonIleQueryAction}
 import forms.DucrPartChiefChoice
 import forms.DucrPartChiefChoice.form
+
 import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
 import models.cache.JourneyType.JourneyType
@@ -28,13 +29,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.CacheRepository
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.ducr_part_chief
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DucrPartChiefController @Inject()(
+class DucrPartChiefController @Inject() (
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
   isDucrPartsFeatureEnabled: DucrPartsAction,
@@ -43,7 +45,7 @@ class DucrPartChiefController @Inject()(
   mcc: MessagesControllerComponents,
   ducrPartChiefPage: ducr_part_chief
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
   private val requiredActions = authenticate andThen isDucrPartsFeatureEnabled andThen ileQueryFeatureDisabled andThen getJourney(
     JourneyType.ARRIVE,

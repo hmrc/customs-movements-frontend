@@ -19,6 +19,7 @@ package controllers
 import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.Location
 import forms.Location._
+
 import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
 import models.cache._
@@ -27,20 +28,21 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.CacheRepository
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.location
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class LocationController @Inject()(
+class LocationController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyRefiner,
   cache: CacheRepository,
   mcc: MessagesControllerComponents,
   locationPage: location
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ARRIVE, JourneyType.DEPART)) { implicit request =>
     val location = request.answersAs[MovementAnswers].location
@@ -54,7 +56,7 @@ class LocationController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Location]) => Future.successful(BadRequest(buildPage(formWithErrors))),
-        validForm => {
+        validForm =>
           request.answers match {
             case arrivalAnswers: ArrivalAnswers =>
               cache.upsert(request.cache.update(arrivalAnswers.copy(location = Some(validForm)))).map { _ =>
@@ -65,7 +67,6 @@ class LocationController @Inject()(
                 Redirect(controllers.routes.TransportController.displayPage())
               }
           }
-        }
       )
   }
 

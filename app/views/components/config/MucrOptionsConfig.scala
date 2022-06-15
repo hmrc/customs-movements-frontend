@@ -21,7 +21,7 @@ import forms.{DucrPartChiefChoice, ManageMucrChoice}
 import javax.inject.Inject
 import play.api.mvc.Call
 
-class MucrOptionsConfig @Inject()(config: ExternalServicesConfig, ileQueryConfig: IleQueryConfig) extends BaseConfig(ileQueryConfig) {
+class MucrOptionsConfig @Inject() (config: ExternalServicesConfig, ileQueryConfig: IleQueryConfig) extends BaseConfig(ileQueryConfig) {
 
   def backUrl(manageMucrChoice: Option[ManageMucrChoice], ducrPartChiefChoice: Option[DucrPartChiefChoice]): Call =
     if (ileQueryConfig.isIleQueryEnabled && manageMucrChoice.isDefined)

@@ -68,10 +68,13 @@ object AssociateUcr {
   def form: Form[AssociateUcr] = Form(mapping)
 
   def apply(ucrBlock: UcrBlock): AssociateUcr =
-    AssociateUcr(ucr = ucrBlock.ucr, kind = ucrBlock.ucrType match {
-      case Mucr.codeValue     => Mucr
-      case Ducr.codeValue     => Ducr
-      case DucrPart.codeValue => DucrPart
-      case _                  => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
-    })
+    AssociateUcr(
+      ucr = ucrBlock.ucr,
+      kind = ucrBlock.ucrType match {
+        case Mucr.codeValue     => Mucr
+        case Ducr.codeValue     => Ducr
+        case DucrPart.codeValue => DucrPart
+        case _                  => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
+      }
+    )
 }

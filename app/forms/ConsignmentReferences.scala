@@ -45,12 +45,11 @@ object ConsignmentReferences {
 
   val allowedReferenceAnswers: Seq[String] = Seq(Ducr, Mucr).map(_.codeValue)
 
-  private def form2Model: (String, Option[String], Option[String]) => ConsignmentReferences = {
-    case (reference, ducrValue, mucrValue) =>
-      reference match {
-        case Ducr.codeValue => ConsignmentReferences(Ducr, ducrValue.map(_.toUpperCase).getOrElse(""))
-        case Mucr.codeValue => ConsignmentReferences(Mucr, mucrValue.map(_.toUpperCase).getOrElse(""))
-      }
+  private def form2Model: (String, Option[String], Option[String]) => ConsignmentReferences = { case (reference, ducrValue, mucrValue) =>
+    reference match {
+      case Ducr.codeValue => ConsignmentReferences(Ducr, ducrValue.map(_.toUpperCase).getOrElse(""))
+      case Mucr.codeValue => ConsignmentReferences(Mucr, mucrValue.map(_.toUpperCase).getOrElse(""))
+    }
   }
 
   private def model2Form: ConsignmentReferences => Option[(String, Option[String], Option[String])] =
@@ -59,7 +58,7 @@ object ConsignmentReferences {
         case Ducr.codeValue => Some((model.reference, Some(model.referenceValue), None))
         case Mucr.codeValue => Some((model.reference, None, Some(model.referenceValue)))
         case _              => Some((model.reference, None, None))
-    }
+      }
 
   def mapping(goodsDirection: JourneyType) =
     Forms

@@ -26,7 +26,7 @@ import views.ViewDates
 import views.html.components.code_explanation
 
 @Singleton
-class EMRResponseConverter @Inject()(decoder: Decoder, viewDates: ViewDates) extends NotificationPageSingleElementConverter {
+class EMRResponseConverter @Inject() (decoder: Decoder, viewDates: ViewDates) extends NotificationPageSingleElementConverter {
 
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement = {
     val crcCodeExplanation = notification.crcCode.flatMap(buildCrcCodeExplanation).getOrElse(HtmlFormat.empty)

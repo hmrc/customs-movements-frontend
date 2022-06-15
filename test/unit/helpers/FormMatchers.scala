@@ -24,8 +24,8 @@ trait FormMatchers {
     def fieldErrors(errors: Seq[FormError]): String =
       errors
         .groupBy(_.key)
-        .map {
-          case (key, keyError) => s"$key => ${keyError.map(_.message).mkString("[", " ,", "]")}"
+        .map { case (key, keyError) =>
+          s"$key => ${keyError.map(_.message).mkString("[", " ,", "]")}"
         }
         .mkString("\n")
 

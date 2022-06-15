@@ -55,10 +55,10 @@ class ManageMucrViewSpec extends ViewSpec with Injector {
       val backButton = page(form, queryUcr).getBackButton
 
       backButton mustBe defined
-      backButton.foreach(button => {
+      backButton.foreach { button =>
         button must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
         button must containMessage("site.back")
-      })
+      }
     }
 
     "render error summary" when {

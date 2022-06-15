@@ -31,16 +31,16 @@ object Location {
   val formId = "Location"
 
   /**
-    * Country is in two first characters in Location Code
-    */
+   * Country is in two first characters in Location Code
+   */
   private val validateCountry: String => Boolean = (input: String) => {
     val countryCode = input.take(2).toUpperCase
     allCountries.exists(_.countryCode == countryCode)
   }
 
   /**
-    * Location Type is defined as third character in Location Code
-    */
+   * Location Type is defined as third character in Location Code
+   */
   private val validateLocationType: String => Boolean = (input: String) => {
     val correctLocationType: Set[String] = Set("A", "B", "C", "D")
     val predicate = isContainedInIgnoreCase(correctLocationType)
@@ -48,8 +48,8 @@ object Location {
   }
 
   /**
-    * Qualifier Code is defined in fourth characted in Location Code
-    */
+   * Qualifier Code is defined in fourth characted in Location Code
+   */
   private val validateQualifierCode: String => Boolean = (input: String) => {
     val correctQualifierCode: Set[String] = Set("U", "Y")
     val predicate = isContainedInIgnoreCase(correctQualifierCode)

@@ -26,7 +26,7 @@ import views.ViewDates
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ERSResponseConverter @Inject()(val decoder: Decoder, viewDates: ViewDates)
+class ERSResponseConverter @Inject() (val decoder: Decoder, viewDates: ViewDates)
     extends NotificationPageSingleElementConverter with CommonResponseConverter {
 
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement = {

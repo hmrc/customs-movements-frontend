@@ -27,7 +27,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
-class CacheRepository @Inject()(mc: MongoComponent)(implicit ec: ExecutionContext)
+class CacheRepository @Inject() (mc: MongoComponent)(implicit ec: ExecutionContext)
     extends PlayMongoRepository[Cache](mc, "cache", Cache.format, CacheRepository.indexes) with RepositoryOps[Cache] {
 
   override def classTag: ClassTag[Cache] = implicitly[ClassTag[Cache]]

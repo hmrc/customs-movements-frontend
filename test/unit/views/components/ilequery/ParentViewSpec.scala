@@ -77,8 +77,8 @@ class ParentViewSpec extends ViewSpec with Injector {
     "not render rows when status is missing" in {
       val text = view(parentNoEntryStatus).text()
       text must include("parentUcr")
-      text must not include ("Route")
-      text must not include ("Input status")
+      text must not include "Route"
+      text must not include "Input status"
     }
   }
 }

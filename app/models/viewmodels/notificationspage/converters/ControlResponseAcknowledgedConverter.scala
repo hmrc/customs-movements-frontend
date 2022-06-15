@@ -25,7 +25,7 @@ import views.ViewDates
 import views.html.components.paragraph
 
 @Singleton
-class ControlResponseAcknowledgedConverter @Inject()(viewDates: ViewDates) extends NotificationPageSingleElementConverter {
+class ControlResponseAcknowledgedConverter @Inject() (viewDates: ViewDates) extends NotificationPageSingleElementConverter {
 
   private val TitleMessagesKey = "notifications.elem.title.inventoryLinkingControlResponse.AcknowledgedAndProcessed"
   private val ContentHeaderMessagesKey = "notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed"

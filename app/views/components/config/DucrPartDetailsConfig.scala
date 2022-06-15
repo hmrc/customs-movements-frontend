@@ -20,7 +20,7 @@ import config.IleQueryConfig
 import javax.inject.Inject
 import play.api.mvc.Call
 
-class DucrPartDetailsConfig @Inject()(ileQueryConfig: IleQueryConfig) {
+class DucrPartDetailsConfig @Inject() (ileQueryConfig: IleQueryConfig) {
 
   def backUrl: Call =
     if (ileQueryConfig.isIleQueryEnabled)

@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.confirmation_page
 
 @Singleton
-class DisassociateUcrConfirmationController @Inject()(
+class DisassociateUcrConfirmationController @Inject() (
   authenticate: AuthAction,
   mcc: MessagesControllerComponents,
   flashExtractor: FlashExtractor,

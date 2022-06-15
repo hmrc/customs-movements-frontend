@@ -20,7 +20,7 @@ import config.IleQueryConfig
 import javax.inject.Inject
 import play.api.mvc.Call
 
-class ShutMucrSummaryConfig @Inject()(ileQueryConfig: IleQueryConfig) extends BaseConfig(ileQueryConfig) {
+class ShutMucrSummaryConfig @Inject() (ileQueryConfig: IleQueryConfig) extends BaseConfig(ileQueryConfig) {
 
   def backUrl: Call =
     if (ileQueryConfig.isIleQueryEnabled)

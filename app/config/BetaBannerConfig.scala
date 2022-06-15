@@ -20,7 +20,7 @@ import features.{Feature, FeatureStatus}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class BetaBannerConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+class BetaBannerConfig @Inject() (featureSwitchConfig: FeatureSwitchConfig) {
 
   lazy val isBetaBannerEnabled: Boolean = featureSwitchConfig.featureStatus(Feature.betaBanner) == FeatureStatus.enabled
 }

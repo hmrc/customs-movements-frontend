@@ -22,7 +22,7 @@ import java.time.{Clock, LocalDate, LocalTime}
 import forms.common.{Date, Time}
 import javax.inject.Inject
 
-class DateTimeProvider @Inject()(clock: Clock) {
+class DateTimeProvider @Inject() (clock: Clock) {
   def dateNow: Date = Date(LocalDate.now(clock))
   def timeNow: Time = Time(LocalTime.now(clock).truncatedTo(ChronoUnit.MINUTES))
 }

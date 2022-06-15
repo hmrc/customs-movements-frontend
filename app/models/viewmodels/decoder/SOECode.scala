@@ -16,12 +16,13 @@
 
 package models.viewmodels.decoder
 
-/** SOE codes mapping based on Inventory Linking Exports codes.
-  * Details can be found in Exports Notifications Behaviour sheet.
-  *
-  * @param code the code value
-  * @param messageKey messages key with related description
-  */
+/**
+ * SOE codes mapping based on Inventory Linking Exports codes.
+ * Details can be found in Exports Notifications Behaviour sheet.
+ *
+ * @param code the code value
+ * @param messageKey messages key with related description
+ */
 sealed abstract class SOECode(override val code: String, override val messageKey: String) extends CodeWithMessageKey
 
 object SOECode {

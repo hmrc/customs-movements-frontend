@@ -20,7 +20,7 @@ import features.{Feature, FeatureStatus}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class IleQueryConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+class IleQueryConfig @Inject() (featureSwitchConfig: FeatureSwitchConfig) {
 
   def isIleQueryEnabled: Boolean = featureSwitchConfig.featureStatus(Feature.ileQuery) == FeatureStatus.enabled
 }

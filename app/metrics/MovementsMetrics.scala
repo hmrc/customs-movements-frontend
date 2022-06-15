@@ -24,7 +24,7 @@ import javax.inject.{Inject, Singleton}
 import metrics.MetricIdentifiers._
 
 @Singleton
-class MovementsMetrics @Inject()(metrics: Metrics) {
+class MovementsMetrics @Inject() (metrics: Metrics) {
 
   val timers = Map(
     Arrival.value -> metrics.defaultRegistry.timer(s"$arrivalMetric.timer"),

@@ -30,9 +30,13 @@ trait AuthWiremockTestServer extends WiremockTestServer {
 
   protected def givenAuthSuccess(roles: Enrolment*): Unit = {
     val response = Json.obj("allEnrolments" -> roles.map { role =>
-      Json.obj("key" -> role.key, "identifiers" -> role.identifiers.map { id =>
-        Json.obj("key" -> id.key, "value" -> id.value)
-      }, "state" -> "state")
+      Json.obj(
+        "key" -> role.key,
+        "identifiers" -> role.identifiers.map { id =>
+          Json.obj("key" -> id.key, "value" -> id.value)
+        },
+        "state" -> "state"
+      )
     })
 
     stubFor(

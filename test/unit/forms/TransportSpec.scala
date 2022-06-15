@@ -105,7 +105,7 @@ class TransportSpec extends BaseSpec {
           JsonBindMaxChars
         )
 
-        form.errors mustBe (empty)
+        form.errors mustBe empty
         form.value.map(_.modeOfTransport) must be(Some("2"))
         form.value.map(_.transportId) must be(Some("xwercwrxwy"))
         form.value.map(_.nationality) must be(Some("PL"))

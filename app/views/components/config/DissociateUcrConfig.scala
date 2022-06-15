@@ -20,7 +20,7 @@ import config.DucrPartConfig
 import javax.inject.Inject
 import play.api.mvc.Call
 
-class DissociateUcrConfig @Inject()(ducrPartConfig: DucrPartConfig) {
+class DissociateUcrConfig @Inject() (ducrPartConfig: DucrPartConfig) {
 
   def backUrl: Call =
     if (ducrPartConfig.isDucrPartsEnabled)

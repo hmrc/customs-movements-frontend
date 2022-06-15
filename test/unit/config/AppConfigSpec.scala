@@ -27,8 +27,7 @@ class AppConfigSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   private val environment = Environment.simple()
   private val validAppConfig: Config =
-    ConfigFactory.parseString(
-      """
+    ConfigFactory.parseString("""
         |urls.login="http://localhost:9949/auth-login-stub/gg-sign-in"
         |urls.loginContinue="http://localhost:9000/customs-declare-exports-frontend"
         |urls.customsDeclarationsGoodsTakenOutOfEu="https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"
@@ -78,12 +77,10 @@ class AppConfigSpec extends AnyWordSpec with Matchers with MockitoSugar {
         |microservice.services.contact-frontend.url=/contact-frontend-url
         |microservice.services.contact-frontend.serviceId=Movements-Service-ID
         |play.frontend.host="self/base-url"
-      """.stripMargin
-    )
+      """.stripMargin)
 
   private val missingValuesAppConfig: Config =
-    ConfigFactory.parseString(
-      """
+    ConfigFactory.parseString("""
         |urls.login="http://localhost:9949/auth-login-stub/gg-sign-in"
         |urls.loginContinue="http://localhost:9000/customs-declare-exports-frontend"
         |urls.customsDeclarationsGoodsTakenOutOfEu="https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"
@@ -121,8 +118,7 @@ class AppConfigSpec extends AnyWordSpec with Matchers with MockitoSugar {
         |
         |microservice.services.contact-frontend.url=/contact-frontend-url
         |microservice.services.contact-frontend.serviceId=Movements-Service-ID
-      """.stripMargin
-    )
+      """.stripMargin)
 
   private val validServicesConfiguration = Configuration(validAppConfig)
   private val missingValuesServicesConfiguration = Configuration(missingValuesAppConfig)

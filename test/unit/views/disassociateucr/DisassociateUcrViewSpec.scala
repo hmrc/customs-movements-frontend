@@ -57,10 +57,10 @@ class DisassociateUcrViewSpec extends ViewSpec with MockitoSugar {
       val backButton = createView(DisassociateUcr.form).getBackButton
 
       backButton mustBe defined
-      backButton.foreach(button => {
+      backButton.foreach { button =>
         button must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
         button must containMessage("site.back")
-      })
+      }
     }
 
     "display 'Back' button that links to Ducr Part Chief when ducrPart enabled" in {
@@ -68,10 +68,10 @@ class DisassociateUcrViewSpec extends ViewSpec with MockitoSugar {
       val backButton = createView(DisassociateUcr.form).getBackButton
 
       backButton mustBe defined
-      backButton.foreach(button => {
+      backButton.foreach { button =>
         button must haveHref(controllers.routes.DucrPartChiefController.displayPage())
         button must containMessage("site.back")
-      })
+      }
     }
 
     "form is empty" should {

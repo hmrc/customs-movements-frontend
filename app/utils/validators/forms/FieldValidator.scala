@@ -94,14 +94,14 @@ object FieldValidator {
     Try(input.tail) match {
       case Success(value) => isNumeric(value)
       case _              => false
-  }
+    }
 
   val isInRange: (Int, Int) => String => Boolean = (min: Int, max: Int) =>
     (input: String) =>
       Try(input.toInt) match {
         case Success(value) => value >= min && value <= max
         case _              => false
-  }
+      }
 
   val isValidCountryCode: String => Boolean = (input: String) => allCountries.exists(_.countryCode == input)
 
@@ -116,7 +116,7 @@ object FieldValidator {
             b.length <= decimalPlaces && (a + b).length <= totalLength
           case Array(a) if isNumeric(a) => a.length <= totalLength
           case _                        => false
-  }
+        }
 
   val containsDuplicates: Iterable[_] => Boolean = (input: Iterable[_]) => input.toSet.size != input.size
 

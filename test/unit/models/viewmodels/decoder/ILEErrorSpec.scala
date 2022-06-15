@@ -88,17 +88,17 @@ class ILEErrorSpec extends ViewSpec with Matchers with ViewMatchers {
 
       "list is empty" in {
 
-        intercept[IllegalArgumentException] { ILEError(List.empty) }
+        intercept[IllegalArgumentException](ILEError(List.empty))
       }
 
       "list contains only one element" in {
 
-        intercept[IllegalArgumentException] { ILEError(List("code")) }
+        intercept[IllegalArgumentException](ILEError(List("code")))
       }
 
       "list contains more than two elements" in {
 
-        intercept[IllegalArgumentException] { ILEError(List("code", "description", "incorrect")) }
+        intercept[IllegalArgumentException](ILEError(List("code", "description", "incorrect")))
       }
     }
   }

@@ -20,7 +20,7 @@ import config.IleQueryConfig
 import javax.inject.Inject
 import play.api.mvc.Call
 
-class ViewRequestsConfig @Inject()(ileQueryConfig: IleQueryConfig) {
+class ViewRequestsConfig @Inject() (ileQueryConfig: IleQueryConfig) {
   def backLink(): Call =
     if (ileQueryConfig.isIleQueryEnabled)
       controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()

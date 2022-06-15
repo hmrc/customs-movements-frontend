@@ -62,9 +62,8 @@ class ROECodeSpec extends UnitSpec {
 
       "code is correct" in {
 
-        ROECode.codes.map(roe => (roe, roe.code)).map {
-          case (roe, code) =>
-            ROECode.ROECodeFormat.reads(JsString(code)) mustBe JsSuccess(roe)
+        ROECode.codes.map(roe => (roe, roe.code)).map { case (roe, code) =>
+          ROECode.ROECodeFormat.reads(JsString(code)) mustBe JsSuccess(roe)
         }
       }
 
@@ -81,9 +80,8 @@ class ROECodeSpec extends UnitSpec {
 
     "write ROE to correct JsValue" in {
 
-      ROECode.codes.map(roe => (roe, roe.code)).map {
-        case (roe, code) =>
-          ROECode.ROECodeFormat.writes(roe) mustBe JsString(code)
+      ROECode.codes.map(roe => (roe, roe.code)).map { case (roe, code) =>
+        ROECode.ROECodeFormat.writes(roe) mustBe JsString(code)
       }
     }
   }

@@ -29,7 +29,7 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector, eoriAllowList: EoriAllowList, bodyParsers: PlayBodyParsers)(
+class AuthActionImpl @Inject() (override val authConnector: AuthConnector, eoriAllowList: EoriAllowList, bodyParsers: PlayBodyParsers)(
   implicit override val executionContext: ExecutionContext
 ) extends AuthAction with AuthorisedFunctions {
 
@@ -63,7 +63,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, eoriAl
 @ImplementedBy(classOf[AuthActionImpl])
 trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
-class EoriAllowList @Inject()(configuration: Configuration) {
+class EoriAllowList @Inject() (configuration: Configuration) {
   private val values = configuration.get[Seq[String]]("allowList.eori")
   def contains(user: SignedInUser): Boolean = values.isEmpty || values.contains(user.eori)
 }

@@ -182,7 +182,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
       secondDataRowElements.selectFirst(".date-of-request").text() mustBe viewDates.formatDateAtTime(
         LocalDateTime
           .of(2019, 10, 31, 0, 31)
-      ) //"31 Oct 2019 at 00:31"
+      ) // "31 Oct 2019 at 00:31"
       secondDataRowElements.selectFirst(".submission-action") must containMessage("submissions.arrival")
 
       thirdDataRowElements.selectFirst(".ucr").text() mustBe s"$validWholeDucrParts ${messages("submissions.hidden.text", validWholeDucrParts)}"
@@ -190,7 +190,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
       thirdDataRowElements.selectFirst(".date-of-request").text() mustBe viewDates.formatDateAtTime(
         LocalDateTime
           .of(2019, 10, 31, 0, 33)
-      ) //"31 Oct 2019 at 00:33"
+      ) // "31 Oct 2019 at 00:33"
       thirdDataRowElements.selectFirst(".submission-action") must containMessage("submissions.departure")
 
       fourthDataRowElements
@@ -200,7 +200,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
       fourthDataRowElements.selectFirst(".date-of-request").text() mustBe viewDates.formatDateAtTime(
         LocalDateTime
           .of(2019, 10, 31, 0, 30)
-      ) //"31 Oct 2019 at 00:30"
+      ) // "31 Oct 2019 at 00:30"
       fourthDataRowElements.selectFirst(".submission-action") must containMessage("submissions.ducrassociation")
     }
 

@@ -20,7 +20,7 @@ import config.DucrPartConfig
 import javax.inject.Inject
 import play.api.mvc.Call
 
-class ConsignmentReferenceConfig @Inject()(ducrPartConfig: DucrPartConfig) {
+class ConsignmentReferenceConfig @Inject() (ducrPartConfig: DucrPartConfig) {
 
   def backUrl: Call =
     if (ducrPartConfig.isDucrPartsEnabled)

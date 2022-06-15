@@ -59,8 +59,8 @@ class MucrSummaryViewSpec extends ViewSpec with Injector {
     }
 
     "render all mucr status of entry" in {
-      SOECode.MucrCodes.foreach(
-        soe => summaryElement(view(mucrInfo.copy(entryStatus = Some(status.copy(soe = Some(soe.code))))), 1) must containMessage(soe.messageKey)
+      SOECode.MucrCodes.foreach(soe =>
+        summaryElement(view(mucrInfo.copy(entryStatus = Some(status.copy(soe = Some(soe.code))))), 1) must containMessage(soe.messageKey)
       )
     }
 
@@ -82,9 +82,9 @@ class MucrSummaryViewSpec extends ViewSpec with Injector {
 
     "not render rows when codes and transport missing" in {
       val summaryText = view(mucrInfo.copy(entryStatus = None, movements = Seq.empty)).text()
-      summaryText must not include ("Route")
-      summaryText must not include ("Status")
-      summaryText must not include ("Transport")
+      summaryText must not include "Route"
+      summaryText must not include "Status"
+      summaryText must not include "Transport"
     }
 
   }

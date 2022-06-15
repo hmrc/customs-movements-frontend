@@ -38,11 +38,11 @@ object UcrType {
   private val noRadioSelectedErrorKey = "associate.ucr.error.unselected"
 
   val formatter: Formatter[UcrType] = new Formatter[UcrType] {
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], UcrType] = {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], UcrType] =
       data.get(key).map { typ =>
         lookup.andThen(Right.apply).applyOrElse(typ, (_: String) => Left(Seq(FormError(key, noRadioSelectedErrorKey))))
       }
-    }.getOrElse(Left(Seq(FormError(key, noRadioSelectedErrorKey))))
+        .getOrElse(Left(Seq(FormError(key, noRadioSelectedErrorKey))))
 
     override def unbind(key: String, value: UcrType): Map[String, String] = Map(key -> value.formValue)
   }

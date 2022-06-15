@@ -27,7 +27,7 @@ import views.ViewDates
 import views.html.components.{notification_errors, paragraph}
 
 @Singleton
-class ControlResponseRejectedConverter @Inject()(decoder: Decoder, viewDates: ViewDates) extends NotificationPageSingleElementConverter {
+class ControlResponseRejectedConverter @Inject() (decoder: Decoder, viewDates: ViewDates) extends NotificationPageSingleElementConverter {
 
   private val logger = Logger(this.getClass)
 

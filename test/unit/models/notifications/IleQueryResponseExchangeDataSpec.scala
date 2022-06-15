@@ -77,7 +77,7 @@ class IleQueryResponseExchangeDataSpec extends UnitSpec {
         val queriedMucrInfo = MucrInfo(ucr = "mucr", parentMucr = Some("parent-mucr"))
         val response = SuccessfulResponseExchangeData(queriedDucr = Some(queriedDucrInfo), queriedMucr = Some(queriedMucrInfo))
 
-        intercept[IllegalStateException] { response.queriedUcr }
+        intercept[IllegalStateException](response.queriedUcr)
       }
     }
 
@@ -86,7 +86,7 @@ class IleQueryResponseExchangeDataSpec extends UnitSpec {
 
         val response = SuccessfulResponseExchangeData(queriedDucr = None, queriedMucr = None)
 
-        intercept[IllegalStateException] { response.queriedUcr }
+        intercept[IllegalStateException](response.queriedUcr)
       }
     }
   }

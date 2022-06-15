@@ -41,7 +41,7 @@ import views.html._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class IleQueryController @Inject()(
+class IleQueryController @Inject() (
   authenticate: AuthAction,
   ileQueryFeatureEnabled: IleQueryAction,
   mcc: MessagesControllerComponents,

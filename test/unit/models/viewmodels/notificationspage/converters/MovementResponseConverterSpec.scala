@@ -45,9 +45,12 @@ class MovementResponseConverterSpec extends BaseSpec with MockitoSugar with Befo
 
   private val decoder: Decoder = mock[Decoder]
 
-  private val injector = Guice.createInjector(new DateTimeTestModule(), new AbstractModule {
-    override def configure(): Unit = bind(classOf[Decoder]).toInstance(decoder)
-  })
+  private val injector = Guice.createInjector(
+    new DateTimeTestModule(),
+    new AbstractModule {
+      override def configure(): Unit = bind(classOf[Decoder]).toInstance(decoder)
+    }
+  )
 
   private val converter = injector.getInstance(classOf[MovementResponseConverter])
 

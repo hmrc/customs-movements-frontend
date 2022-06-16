@@ -54,10 +54,10 @@ class AssociateUcrSummaryNoChangeViewSpec extends ViewSpec with Injector {
 
       def validateBackButton(backButton: Option[Element], call: Call): Unit = {
         backButton mustBe defined
-        backButton.foreach(button => {
+        backButton.foreach { button =>
           button must haveHref(call)
           button must containMessage("site.back")
-        })
+        }
       }
 
       "query Ducr" in {

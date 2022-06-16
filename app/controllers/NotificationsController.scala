@@ -29,7 +29,7 @@ import views.html.notifications
 
 import scala.concurrent.ExecutionContext
 
-class NotificationsController @Inject()(
+class NotificationsController @Inject() (
   authenticate: AuthAction,
   connector: CustomsDeclareExportsMovementsConnector,
   factory: NotificationPageSingleElementFactory,

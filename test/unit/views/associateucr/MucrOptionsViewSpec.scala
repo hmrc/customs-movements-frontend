@@ -96,10 +96,10 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
       val backButton = createView().getBackButton
 
       backButton mustBe defined
-      backButton.foreach(button => {
+      backButton.foreach { button =>
         button must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
         button must containMessage("site.back")
-      })
+      }
     }
 
     "display 'Back' button that links to 'manage mucr page when ileQuery enabled" in {
@@ -107,10 +107,10 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
       val backButton = createView().getBackButton
 
       backButton mustBe defined
-      backButton.foreach(button => {
+      backButton.foreach { button =>
         button must haveHref(controllers.consolidations.routes.ManageMucrController.displayPage())
         button must containMessage("site.back")
-      })
+      }
     }
 
     "display 'Continue' button on page" in {

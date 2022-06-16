@@ -19,19 +19,21 @@ package controllers
 import controllers.actions.{AuthAction, JourneyRefiner, NonIleQueryAction}
 import forms.ConsignmentReferences
 import forms.ConsignmentReferences._
+
 import javax.inject.{Inject, Singleton}
 import models.cache._
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.CacheRepository
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.consignment_references
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ConsignmentReferencesController @Inject()(
+class ConsignmentReferencesController @Inject() (
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
   ileQueryFeatureDisabled: NonIleQueryAction,
@@ -39,7 +41,7 @@ class ConsignmentReferencesController @Inject()(
   mcc: MessagesControllerComponents,
   consignmentReferencesPage: consignment_references
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen ileQueryFeatureDisabled andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)) {
     implicit request =>
@@ -53,7 +55,7 @@ class ConsignmentReferencesController @Inject()(
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
-          validForm => {
+          validForm =>
             request.answers match {
               case arrivalAnswers: ArrivalAnswers =>
                 cacheRepository.upsert(request.cache.update(arrivalAnswers.copy(consignmentReferences = Some(validForm)))).map { _ =>
@@ -64,7 +66,6 @@ class ConsignmentReferencesController @Inject()(
                   Redirect(controllers.routes.SpecificDateTimeController.displayPage())
                 }
             }
-          }
         )
     }
 }

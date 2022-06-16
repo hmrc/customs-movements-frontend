@@ -21,7 +21,7 @@ import forms.DucrPartChiefChoice
 import javax.inject.Inject
 import play.api.mvc.Call
 
-class DissociateSummaryConfig @Inject()(ileQueryConfig: IleQueryConfig) extends BaseConfig(ileQueryConfig) {
+class DissociateSummaryConfig @Inject() (ileQueryConfig: IleQueryConfig) extends BaseConfig(ileQueryConfig) {
 
   def backUrl(ducrPartChiefChoice: Option[DucrPartChiefChoice]): Call =
     if (ileQueryConfig.isIleQueryEnabled)

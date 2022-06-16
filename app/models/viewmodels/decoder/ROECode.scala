@@ -19,12 +19,13 @@ package models.viewmodels.decoder
 import play.api.Logger
 import play.api.libs.json.{Format, JsResult, JsString, JsSuccess, JsValue}
 
-/** ROE codes mapping based on Inventory Linking Exports codes.
-  * Details can be found in Exports Notifications Behaviour sheet.
-  *
-  * @param code the code value
-  * @param messageKey messages key with related description
-  */
+/**
+ * ROE codes mapping based on Inventory Linking Exports codes.
+ * Details can be found in Exports Notifications Behaviour sheet.
+ *
+ * @param code the code value
+ * @param messageKey messages key with related description
+ */
 sealed abstract class ROECode(override val code: String, override val messageKey: String, val priority: Int)
     extends Ordered[ROECode] with CodeWithMessageKey {
 

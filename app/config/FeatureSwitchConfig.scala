@@ -23,7 +23,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 
 @Singleton
-class FeatureSwitchConfig @Inject()(configuration: Configuration) {
+class FeatureSwitchConfig @Inject() (configuration: Configuration) {
 
   lazy val defaultFeatureStatus: features.FeatureStatus.Value =
     FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))

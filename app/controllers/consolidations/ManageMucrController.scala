@@ -21,18 +21,20 @@ import controllers.consolidations
 import controllers.exception.InvalidFeatureStateException
 import forms.ManageMucrChoice.{form, AssociateAnotherMucr, AssociateThisMucr}
 import forms.{AssociateUcr, MucrOptions, UcrType}
+
 import javax.inject.{Inject, Singleton}
 import models.cache.{AssociateUcrAnswers, JourneyType}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.CacheRepository
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.associateucr.manage_mucr
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ManageMucrController @Inject()(
+class ManageMucrController @Inject() (
   authenticate: AuthAction,
   ileQueryFeatureEnabled: IleQueryAction,
   getJourney: JourneyRefiner,
@@ -40,7 +42,7 @@ class ManageMucrController @Inject()(
   cacheRepository: CacheRepository,
   page: manage_mucr
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled andThen getJourney(JourneyType.ASSOCIATE_UCR)) {
     implicit request =>
@@ -64,7 +66,7 @@ class ManageMucrController @Inject()(
             val newManageMucrChoice = Some(validForm)
             val updatedAnswers = answers.copy(manageMucrChoice = newManageMucrChoice)
             validForm.choice match {
-              case AssociateThisMucr => {
+              case AssociateThisMucr =>
                 // Here we need to create AssociateUCR from query and clear MucrOptions if ManageMucrChoice has changed
                 val updatedForAssociateThisMucr =
                   if (newManageMucrChoice == previousManageMucrChoice) updatedAnswers
@@ -74,8 +76,7 @@ class ManageMucrController @Inject()(
                 cacheRepository.upsert(request.cache.update(updatedForAssociateThisMucr)).map { _ =>
                   Redirect(routes.MucrOptionsController.displayPage())
                 }
-              }
-              case AssociateAnotherMucr => {
+              case AssociateAnotherMucr =>
                 // Here we need to clear AssociateUCR and create MucrOptions from query if ManageMucrChoice has changed
                 val updatedForAssociateAnotherMucr =
                   if (newManageMucrChoice == previousManageMucrChoice) updatedAnswers
@@ -85,7 +86,6 @@ class ManageMucrController @Inject()(
                 cacheRepository.upsert(request.cache.update(updatedForAssociateAnotherMucr)).map { _ =>
                   Redirect(routes.AssociateUcrController.displayPage())
                 }
-              }
             }
           }
         )

@@ -16,7 +16,7 @@ lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin, SbtWeb)
   .settings(
     libraryDependencies ++= (AppDependencies.compile ++ AppDependencies.test),
-    dependencyOverrides += "commons-codec" % "commons-codec" % "1.12",
+    dependencyOverrides += "commons-codec" % "commons-codec" % "1.15",
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     majorVersion := 0,
@@ -67,7 +67,7 @@ lazy val scoverageSettings: Seq[Setting[_]] = Seq(
     "test\\..*",
     ".*(BuildInfo|Routes|Options|TestingUtilitiesController).*"
   ).mkString(";"),
-  coverageMinimum := 84,
+  coverageMinimumStmtTotal := 84,
   coverageFailOnMinimum := true,
   coverageHighlighting := true,
   parallelExecution in Test := false

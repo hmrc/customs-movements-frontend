@@ -19,18 +19,20 @@ package controllers.consolidations
 import controllers.actions.{AuthAction, JourneyRefiner, NonIleQueryAction}
 import forms.ShutMucr
 import forms.ShutMucr.form
+
 import javax.inject.{Inject, Singleton}
 import models.cache.{JourneyType, ShutMucrAnswers}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.CacheRepository
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.shutmucr.shut_mucr
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ShutMucrController @Inject()(
+class ShutMucrController @Inject() (
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
   ileQueryFeatureDisabled: NonIleQueryAction,
@@ -38,7 +40,7 @@ class ShutMucrController @Inject()(
   mcc: MessagesControllerComponents,
   shutMucrPage: shut_mucr
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen ileQueryFeatureDisabled andThen getJourney(JourneyType.SHUT_MUCR)) {
     implicit request =>

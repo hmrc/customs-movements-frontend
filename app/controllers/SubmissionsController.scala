@@ -30,7 +30,7 @@ import views.html.movements
 
 import scala.concurrent.ExecutionContext
 
-class SubmissionsController @Inject()(
+class SubmissionsController @Inject() (
   authenticate: AuthAction,
   connector: CustomsDeclareExportsMovementsConnector,
   mcc: MessagesControllerComponents,

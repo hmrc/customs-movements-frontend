@@ -25,7 +25,7 @@ import models.viewmodels.notificationspage.MovementTotalsResponseType.{EMR, ERS}
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class ResponseConverterProvider @Inject()(
+class ResponseConverterProvider @Inject() (
   controlResponseAcknowledgedConverter: ControlResponseAcknowledgedConverter,
   controlResponseBlockedConverter: ControlResponseBlockedConverter,
   controlResponseRejectedConverter: ControlResponseRejectedConverter,

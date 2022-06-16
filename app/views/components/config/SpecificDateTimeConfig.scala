@@ -21,7 +21,7 @@ import forms.DucrPartChiefChoice
 import javax.inject.Inject
 import play.api.mvc.Call
 
-class SpecificDateTimeConfig @Inject()(ileQueryConfig: IleQueryConfig) {
+class SpecificDateTimeConfig @Inject() (ileQueryConfig: IleQueryConfig) {
 
   def backUrl(ducrPartChiefChoice: Option[DucrPartChiefChoice]): Call =
     if (ileQueryConfig.isIleQueryEnabled)

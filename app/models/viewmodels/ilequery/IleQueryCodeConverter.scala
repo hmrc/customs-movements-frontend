@@ -24,7 +24,7 @@ import services.Countries.countryName
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, HtmlContent, Text}
 
 @Singleton
-class IleQueryCodeConverter @Inject()(decoder: Decoder) {
+class IleQueryCodeConverter @Inject() (decoder: Decoder) {
 
   private def htmlString(codeWithMessageKey: CodeWithMessageKey)(implicit messages: Messages): String =
     htmlString(codeWithMessageKey.code, codeWithMessageKey.messageKey)

@@ -16,14 +16,15 @@
 
 package models.viewmodels.decoder
 
-/** CRC codes mapping based on Inventory Linking Exports codes.
-  * Details can be found in Exports Notifications Behaviour sheet.
-  *
-  * Update: meaning of code 102 changed according to Jira ticket CEDS-1885
-  *
-  * @param code the code value
-  * @param messageKey messages key with related description
-  */
+/**
+ * CRC codes mapping based on Inventory Linking Exports codes.
+ * Details can be found in Exports Notifications Behaviour sheet.
+ *
+ * Update: meaning of code 102 changed according to Jira ticket CEDS-1885
+ *
+ * @param code the code value
+ * @param messageKey messages key with related description
+ */
 sealed abstract class CRCCode(override val code: String, override val messageKey: String) extends CodeWithMessageKey
 
 object CRCCode {

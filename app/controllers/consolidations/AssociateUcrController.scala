@@ -18,26 +18,28 @@ package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.AssociateUcr.form
+
 import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
 import models.cache.{AssociateUcrAnswers, JourneyType}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.CacheRepository
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.associateucr.associate_ucr
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AssociateUcrController @Inject()(
+class AssociateUcrController @Inject() (
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
   cache: CacheRepository,
   associateUcrPage: associate_ucr
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ASSOCIATE_UCR)) { implicit request =>
     val associateUcrAnswers = request.answersAs[AssociateUcrAnswers]

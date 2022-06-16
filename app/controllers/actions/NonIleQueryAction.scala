@@ -24,7 +24,7 @@ import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NonIleQueryAction @Inject()(ileQueryConfig: IleQueryConfig)(implicit val exc: ExecutionContext)
+class NonIleQueryAction @Inject() (ileQueryConfig: IleQueryConfig)(implicit val exc: ExecutionContext)
     extends ActionFunction[AuthenticatedRequest, AuthenticatedRequest] {
 
   override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =

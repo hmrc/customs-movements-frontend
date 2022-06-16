@@ -44,9 +44,8 @@ class AssociatedConsignmentsViewSpec extends ViewSpec with Injector {
     }
 
     "render associate consignments section" in {
-      val viewWithChild = view(
-        associatedConsignments =
-          Seq(MucrInfo("childUcr", entryStatus = Some(EntryStatus(None, Some(ROECode.DocumentaryControl), Some(SOECode.Departed.code)))))
+      val viewWithChild = view(associatedConsignments =
+        Seq(MucrInfo("childUcr", entryStatus = Some(EntryStatus(None, Some(ROECode.DocumentaryControl), Some(SOECode.Departed.code)))))
       )
       viewWithChild.getElementById("associatedUcrs") must containMessage("ileQueryResponse.associated")
 

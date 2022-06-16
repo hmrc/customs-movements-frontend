@@ -23,13 +23,14 @@ import models.cache.{DisassociateUcrAnswers, JourneyType}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.CacheRepository
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.disassociateucr.disassociate_ucr
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DisassociateUcrController @Inject()(
+class DisassociateUcrController @Inject() (
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
   ileQueryFeatureDisabled: NonIleQueryAction,
@@ -37,7 +38,7 @@ class DisassociateUcrController @Inject()(
   cacheRepository: CacheRepository,
   page: disassociate_ucr
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen ileQueryFeatureDisabled andThen getJourney(JourneyType.DISSOCIATE_UCR)) {
     implicit request =>

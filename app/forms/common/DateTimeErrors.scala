@@ -25,13 +25,12 @@ object DateTimeErrors {
       case e1 :: e2 :: _ if e1.messages == e2.messages => Seq(e1)
       case _                                           => errors
     }
-    removeDuplicate.map(
-      err =>
-        err.copy(key = err.key match {
-          case `dateKey` => s"$dateKey.day"
-          case `timeKey` => s"$timeKey.hour"
-          case _         => err.key
-        })
+    removeDuplicate.map(err =>
+      err.copy(key = err.key match {
+        case `dateKey` => s"$dateKey.day"
+        case `timeKey` => s"$timeKey.hour"
+        case _         => err.key
+      })
     )
   }
 }

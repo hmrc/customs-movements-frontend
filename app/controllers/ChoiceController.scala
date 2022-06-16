@@ -20,6 +20,7 @@ import config.{DucrPartConfig, IleQueryConfig}
 import controllers.actions.AuthAction
 import forms.Choice
 import forms.Choice._
+
 import javax.inject.{Inject, Singleton}
 import models.UcrBlock
 import models.cache._
@@ -27,13 +28,14 @@ import models.requests.AuthenticatedRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.CacheRepository
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.choice_page
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ChoiceController @Inject()(
+class ChoiceController @Inject() (
   authenticate: AuthAction,
   cacheRepository: CacheRepository,
   mcc: MessagesControllerComponents,
@@ -41,7 +43,7 @@ class ChoiceController @Inject()(
   ducrPartConfig: DucrPartConfig,
   choicePage: choice_page
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
   def displayChoiceForm: Action[AnyContent] = authenticate.async { implicit request =>
     if (ileQueryConfig.isIleQueryEnabled)

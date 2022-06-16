@@ -22,7 +22,7 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 import views.html.components.confirmation_link
 
-class ConfirmationPageConfig @Inject()(ileQueryConfig: IleQueryConfig, confirmationLink: confirmation_link) {
+class ConfirmationPageConfig @Inject() (ileQueryConfig: IleQueryConfig, confirmationLink: confirmation_link) {
 
   def nextStepLink()(implicit messages: Messages): Html =
     if (ileQueryConfig.isIleQueryEnabled) {

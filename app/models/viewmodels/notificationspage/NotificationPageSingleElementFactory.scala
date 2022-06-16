@@ -29,7 +29,7 @@ import views.ViewDates
 import views.html.components.paragraph
 
 @Singleton
-class NotificationPageSingleElementFactory @Inject()(responseConverterProvider: ResponseConverterProvider, viewDates: ViewDates) {
+class NotificationPageSingleElementFactory @Inject() (responseConverterProvider: ResponseConverterProvider, viewDates: ViewDates) {
 
   def build(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement =
     submission.actionType match {

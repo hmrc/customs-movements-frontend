@@ -24,7 +24,7 @@ import play.twirl.api.HtmlFormat
 import views.ViewDates
 
 @Singleton
-class UnknownResponseConverter @Inject()(viewDates: ViewDates) extends NotificationPageSingleElementConverter {
+class UnknownResponseConverter @Inject() (viewDates: ViewDates) extends NotificationPageSingleElementConverter {
 
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(

@@ -20,7 +20,7 @@ import config.IleQueryConfig
 import javax.inject.Inject
 import play.api.mvc.Call
 
-class AssociateUcrPageConfig @Inject()(ileQueryConfig: IleQueryConfig) {
+class AssociateUcrPageConfig @Inject() (ileQueryConfig: IleQueryConfig) {
 
   def backUrl: Call =
     if (ileQueryConfig.isIleQueryEnabled)

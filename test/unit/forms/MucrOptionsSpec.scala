@@ -31,7 +31,7 @@ class MucrOptionsSpec extends BaseSpec {
         JsonBindMaxChars
       )
 
-      form.errors mustBe (empty)
+      form.errors mustBe empty
       form.value.map(_.mucr) must be(Some("GB/ABCED1234-15804TEST"))
     }
 
@@ -42,7 +42,7 @@ class MucrOptionsSpec extends BaseSpec {
         JsonBindMaxChars
       )
 
-      form.errors mustBe (empty)
+      form.errors mustBe empty
       form.value.map(_.mucr) must be(Some("GB/ABCED1234-15804TEST"))
     }
 

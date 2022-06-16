@@ -19,7 +19,7 @@ package views.components.config
 import config.{ExternalServicesConfig, IleQueryConfig}
 import javax.inject.Inject
 
-class StartPageConfig @Inject()(config: ExternalServicesConfig, ileQueryConfig: IleQueryConfig) {
+class StartPageConfig @Inject() (config: ExternalServicesConfig, ileQueryConfig: IleQueryConfig) {
 
   def startUrl: String =
     if (ileQueryConfig.isIleQueryEnabled)

@@ -21,12 +21,13 @@ import play.api.Logger
 
 import scala.io.Source
 
-/** Inventory Linking Exports errors mapping based on Status DE-code document.
-  * Details can be found in Exports Notifications Behaviour sheet.
-  *
-  * @param code the code value
-  * @param messageKey description for this error code
-  */
+/**
+ * Inventory Linking Exports errors mapping based on Status DE-code document.
+ * Details can be found in Exports Notifications Behaviour sheet.
+ *
+ * @param code the code value
+ * @param messageKey description for this error code
+ */
 case class ILEError(override val code: String, override val messageKey: String) extends CodeWithMessageKey
 
 object ILEError {

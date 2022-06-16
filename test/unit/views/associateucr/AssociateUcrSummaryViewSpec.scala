@@ -53,10 +53,10 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
       val backButton = view.getBackButton
 
       backButton mustBe defined
-      backButton.foreach(button => {
+      backButton.foreach { button =>
         button must haveHref(controllers.consolidations.routes.AssociateUcrController.displayPage())
         button must containMessage("site.back")
-      })
+      }
     }
 
     "display 'Confirm and submit' button on page" in {

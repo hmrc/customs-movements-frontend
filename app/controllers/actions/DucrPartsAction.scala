@@ -24,7 +24,7 @@ import play.api.mvc.{ActionFunction, Result}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DucrPartsAction @Inject()(ducrPartsConfig: DucrPartConfig)(implicit val exc: ExecutionContext)
+class DucrPartsAction @Inject() (ducrPartsConfig: DucrPartConfig)(implicit val exc: ExecutionContext)
     extends ActionFunction[AuthenticatedRequest, AuthenticatedRequest] {
 
   override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =

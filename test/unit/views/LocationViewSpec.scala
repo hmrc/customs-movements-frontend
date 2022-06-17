@@ -50,9 +50,12 @@ class LocationViewSpec extends ViewSpec with Injector {
       departureView.getElementById("section-header") must containMessage("movement.sectionHeading", "Depart", "some-reference")
     }
 
+    "display body text" in {
+      view.getElementById("code-body-para").text() mustBe messages("location.body.paragraph")
+    }
+
     "display input hint" in {
-      view.getElementById("code-hint-para1").text() mustBe messages("location.hint.paragraph1")
-      view.getElementById("code-hint-para2").text() mustBe messages("location.hint.paragraph2")
+      view.getElementById("code-hint-para").text() mustBe messages("location.hint.paragraph")
     }
 
     "display goods location expander" in {

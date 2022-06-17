@@ -146,7 +146,7 @@ arrivalDetails.title = Arrival date and time
 arrivalDetails.sectionHeading = Arrive consignment {0}
 arrivalDetails.header = Enter date and time of arrival
 arrivalDetails.date.question = Date of arrival
-arrivalDetails.date.hint = For example, 1 8 2021
+arrivalDetails.date.hint = For example, 1 8 2021.
 arrivalDetails.time.question = Time of arrival
 arrivalDetails.time.hint = Enter the time in 12 hour format. For example, 11 30 am.
 
@@ -157,7 +157,7 @@ departureDetails.title = Departure date and time
 departureDetails.sectionHeading = Depart consignment {0}
 departureDetails.header = Enter date and time of departure
 departureDetails.date.question = Date of departure
-departureDetails.date.hint = For example, 1 8 2021
+departureDetails.date.hint = For example, 1 8 2021.
 departureDetails.time.question = Time of departure
 departureDetails.time.hint = Enter the time in 12 hour format. For example, 11 30 am.
 

@@ -43,12 +43,17 @@
     case _ => controllers.routes.MovementDetailsController.displayPage
 }}
 
-@hint = @{
-  Seq(
-      paragraphBody(message = messages("location.hint.paragraph1"), id = Some("code-hint-para1"), classes="govuk-hint"),
-      paragraphBody(message = messages("location.hint.paragraph2"), id = Some("code-hint-para2"), classes="govuk-hint")
-  )
+@heading = {
+    <h1 class="govuk-label-wrapper">
+        <label class="govuk-label govuk-label--l" for="code">
+            @messages("location.question")
+        </label>
+    </h1>
 }
+
+@body = @{paragraphBody(message = messages("location.body.paragraph"), id = Some("code-body-para"))}
+
+@hint = @{paragraphBody(message = messages("location.hint.paragraph"), id = Some("code-hint-para"), classes="govuk-hint")}
 
 @govukLayout(
     title = Title("location.question"),
@@ -59,11 +64,16 @@
 
         @sectionHeader(messages("movement.sectionHeading", request.answers.`type`.toString.toLowerCase.capitalize, consignmentReference))
 
+        @heading
+
+        @body
+
         @exportsInputText(
             field = form("code"),
             labelKey = "location.question",
-            hintContent = Some(HtmlContent(fill(hint))),
-            isPageHeading = true
+            hintContent = Some(HtmlContent(hint)),
+            isPageHeading = true,
+            headingClasses = "govuk-visually-hidden"
         )
 
         @goodsLocationExpander()

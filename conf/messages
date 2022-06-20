@@ -166,8 +166,8 @@ departure.details.error.future = Date and time of departure cannot be in the fut
 
 location.title = Location
 location.question = What is the goods location code?
-location.hint.paragraph1 = This is a code for the location where goods are presented to customs. If necessary the goods location code must be updated as part of the arrival process, when the goods arrive at that location.
-location.hint.paragraph2 = Most goods location codes contain just letters. For example, for goods leaving from Felixstowe, it would be GBAUFXTFXTFXT.
+location.body.paragraph = This is a code for the location where goods are presented to customs. If necessary the goods location code must be updated as part of the arrival process, when the goods arrive at that location.
+location.hint.paragraph = Most goods location codes contain just letters. For example, for goods leaving from Felixstowe, it would be GBAUFXTFXTFXT.
 location.code.empty = Enter a goods location code
 location.code.error = Enter a goods location code in the correct format
 

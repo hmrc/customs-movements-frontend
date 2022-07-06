@@ -65,7 +65,7 @@
           value = Some(Ducr.codeValue),
           content = Text(messages("consignmentReferences.reference.ducr")),
           checked = form("reference").value.contains(Ducr.codeValue),
-          conditionalHtml = Some(exportsInputText(form("ducrValue"), "site.inputText.ducr.label"))
+          conditionalHtml = Some(exportsInputText(form("ducrValue"), "site.inputText.ducr.label", Some(Text(messages("consignmentReferences.reference.ducr.hint")))))
         ),
         RadioItem(
           value = Some(Mucr.codeValue),

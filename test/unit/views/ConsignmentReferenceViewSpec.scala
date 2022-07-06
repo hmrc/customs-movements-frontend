@@ -19,6 +19,7 @@ package views
 import base.OverridableInjector
 import config.DucrPartConfig
 import forms.ConsignmentReferences
+import forms.UcrType.Ducr
 import models.cache.{ArrivalAnswers, JourneyType}
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.{reset, when}
@@ -74,6 +75,19 @@ class ConsignmentReferenceViewSpec extends ViewSpec with MockitoSugar with Befor
       page(ConsignmentReferences.form(goodsDirection)).getElementsByAttributeValue("for", "ducrValue").first() must containMessage(
         "site.inputText.ducr.label"
       )
+    }
+
+    "render hint above DUCR input" in {
+      page(ConsignmentReferences.form(goodsDirection)).getElementsByAttributeValue("id", "ducrValue-hint").first() must containMessage(
+        "consignmentReferences.reference.ducr.hint"
+      )
+    }
+
+    "display DUCR invalid" in {
+      val view: Document = page(ConsignmentReferences.form(goodsDirection).fillAndValidate(ConsignmentReferences(Ducr, "incorrectDucr")))
+
+      view must haveGovUkGlobalErrorSummary
+      view must haveGovUkFieldError("ducrValue", messages("consignmentReferences.reference.ducrValue.error"))
     }
 
     "render back button when ducrPart disabled" in {

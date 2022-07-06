@@ -59,6 +59,10 @@ class AssociateUcrViewSpec extends ViewSpec with Injector {
         "have input for value" in {
           emptyView.getElementById("ducr").`val`() mustBe empty
         }
+
+        "have hint text" in {
+          emptyView.getElementById("ducr-hint") must containMessage("associate.ucr.ducr.hint")
+        }
       }
 
       "have 'MUCR' section" which {
@@ -96,6 +100,13 @@ class AssociateUcrViewSpec extends ViewSpec with Injector {
       "display value" in {
         ducrView.getElementById("ducr").`val`() mustBe "1234"
       }
+    }
+
+    "display DUCR invalid" in {
+      val view: Document = createView(mucrOptions, AssociateUcr.form.fillAndValidate(AssociateUcr(Ducr, "incorrectUcr")))
+
+      view must haveGovUkGlobalErrorSummary
+      view must haveGovUkFieldError("ducr", messages("associate.ucr.ducr.error.invalid"))
     }
 
     "display DUCR Form errors" in {

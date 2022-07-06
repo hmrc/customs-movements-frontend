@@ -59,7 +59,7 @@
                     value = Some(UcrType.Ducr.formValue),
                     content = Text(messages("associate.ucr.ducr")),
                     checked = form("kind").value.contains(UcrType.Ducr.formValue),
-                    conditionalHtml = Some(exportsInputText(form("ducr"), "site.inputText.ducr.label"))
+                    conditionalHtml = Some(exportsInputText(form("ducr"), "site.inputText.ducr.label", Some(Text(messages("associate.ucr.ducr.hint")))))
                 ),
                 RadioItem(
                     value = Some(UcrType.Mucr.formValue),

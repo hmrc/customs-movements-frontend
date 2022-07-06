@@ -49,6 +49,7 @@ class DisassociateUcrViewSpec extends ViewSpec with MockitoSugar {
       messages must haveTranslationFor("disassociate.ucr.title")
       messages must haveTranslationFor("disassociate.ucr.heading")
       messages must haveTranslationFor("disassociate.ucr.ducr")
+      messages must haveTranslationFor("disassociate.ucr.ducr.hint")
       messages must haveTranslationFor("disassociate.ucr.mucr")
     }
 
@@ -99,6 +100,10 @@ class DisassociateUcrViewSpec extends ViewSpec with MockitoSugar {
         }
         "have input for value" in {
           emptyView.getElementById("ducr").`val`() mustBe empty
+        }
+
+        "have hint text" in {
+          emptyView.getElementById("ducr-hint") must containMessage("disassociate.ucr.ducr.hint")
         }
       }
 

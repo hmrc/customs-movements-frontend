@@ -55,9 +55,6 @@ function currentPageIs(path) {
 }
 
 function completePage() {
-    if (currentPageIs('/customs-movements/start')) {
-        document.getElementsByClassName('govuk-button')[0].click()
-    }
     if(currentPageIs("/customs-movements/choice")){
         document.getElementById("choice").checked = true
         document.getElementsByClassName('govuk-button')[0].click()

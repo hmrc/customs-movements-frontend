@@ -38,6 +38,5 @@ class ControlResponseAcknowledgedConverter @Inject() (viewDates: ViewDates) exte
     )
 
   private def buildContent()(implicit messages: Messages): Html =
-    paragraph(messages(ContentHeaderMessagesKey))
-
+    paragraph(messages(ContentHeaderMessagesKey), "govuk-body")
 }

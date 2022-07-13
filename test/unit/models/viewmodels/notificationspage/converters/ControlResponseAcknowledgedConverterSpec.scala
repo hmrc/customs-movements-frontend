@@ -40,7 +40,6 @@ class ControlResponseAcknowledgedConverterSpec extends BaseSpec with MockitoSuga
   "ControlResponseAcknowledgedConverter on convert" should {
 
     "return NotificationsPageSingleElement with correct title" in {
-
       val input = AcknowledgedControlResponse
       val expectedTitle = messages("notifications.elem.title.inventoryLinkingControlResponse.AcknowledgedAndProcessed")
 
@@ -50,27 +49,21 @@ class ControlResponseAcknowledgedConverterSpec extends BaseSpec with MockitoSuga
     }
 
     "return NotificationsPageSingleElement with correct timestampInfo" in {
-
       val input = AcknowledgedControlResponse
       val expectedTimestampInfo = "23 October 2019 at 12:34pm"
 
       val result = converter.convert(input)
-
       result.timestampInfo mustBe expectedTimestampInfo
     }
 
     "return NotificationsPageSingleElement with correct content" in {
-
       val input = AcknowledgedControlResponse
-      val expectedContent =
-        messages("notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed")
+      val expectedContent = messages("notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed")
 
       val result = converter.convert(input)
-
       result.content.toString must include(expectedContent)
     }
   }
-
 }
 
 object ControlResponseAcknowledgedConverterSpec {
@@ -80,5 +73,4 @@ object ControlResponseAcknowledgedConverterSpec {
     timestampReceived = NotificationTestData.testTimestamp,
     actionCode = Some(ActionCode.AcknowledgedAndProcessed.code)
   )
-
 }

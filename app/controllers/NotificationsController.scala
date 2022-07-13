@@ -53,7 +53,9 @@ class NotificationsController @Inject() (
 
     params.map {
       case (Some(submissionUcr), Some(submissionElement), notificationElements) =>
-        Ok(notifications(submissionUcr, submissionElement, notificationElements))
+        val elementsToDisplay = submissionElement +: notificationElements
+        Ok(notifications(submissionUcr, elementsToDisplay.reverse))
+
       case _ =>
         Redirect(routes.SubmissionsController.displayPage())
     }

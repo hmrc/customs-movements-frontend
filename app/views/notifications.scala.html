@@ -22,32 +22,17 @@
 
 @this(govukLayout: gds_main_template, pageTitle: pageTitle, sectionHeader: sectionHeader)
 
-@(submissionUcr: String, submissionElement: NotificationsPageSingleElement, elementsToDisplay: Seq[NotificationsPageSingleElement])(implicit request: Request[_], messages: Messages)
-
-@notificationsList(elementsToDisplay: Seq[NotificationsPageSingleElement]) = {
-
-  <ol class="exports-notifications__steps govuk-!-margin-bottom-6">
-    @for((element, index) <- elementsToDisplay.zip(Stream.from(1)).reverse) {
-        @components.notifications_single_element(index, element)
-    }
-  </ol>
-
-  <div id="notifications-request">
-      <h2 id="notifications-request-title" class="govuk-heading-l">@submissionElement.title</h2>
-      <p id="notifications-request-timestamp" class="govuk-body">@{
-          submissionElement.timestampInfo
-      }</p>
-      <div id="notifications-request-content" class="govuk-body">@{
-          submissionElement.content
-      }</div>
-  </div>
-}
+@(submissionUcr: String, elementsToDisplay: Seq[NotificationsPageSingleElement])(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
   title = Title("notifications.title", None, Seq(submissionUcr)),
   backButton = Some(BackButton(messages("site.back"), controllers.routes.SubmissionsController.displayPage))) {
 
-  @pageTitle(text = messages("notifications.title", submissionUcr), classes = "govuk-heading-xl")
+  @pageTitle(text = messages("notifications.title"), classes = "govuk-heading-l govuk-!-margin-bottom-2")
 
-  @notificationsList(elementsToDisplay)
+  <span class="notifications-mucr govuk-caption-l">@messages("notifications.mucr", submissionUcr)</span>
+
+  <ol class="hmrc-timeline govuk-!-margin-top-5 govuk-!-margin-bottom-6">
+    @elementsToDisplay.map(components.notifications_single_element(_))
+  </ol>
 }

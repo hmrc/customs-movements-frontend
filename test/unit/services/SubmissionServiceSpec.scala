@@ -64,6 +64,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
   "Submit Associate" should {
 
     "delegate to connector" when {
+
       "Associate DUCR" in {
         given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful((): Unit))
         given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))

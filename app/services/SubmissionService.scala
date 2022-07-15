@@ -78,11 +78,11 @@ class SubmissionService @Inject() (
       .submit(exchange)
       .andThen {
         case Success(_) =>
-          repository.removeByEori(eori).flatMap { _ =>
+          repository.removeByEori(eori).map { _ =>
             auditService.auditAssociate(eori, mucr, ucr, success)
           }
-        case Failure(_) =>
-          auditService.auditAssociate(eori, mucr, ucr, failed)
+
+        case Failure(_) => auditService.auditAssociate(eori, mucr, ucr, failed)
       }
   }
 

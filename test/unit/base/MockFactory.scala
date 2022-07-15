@@ -26,13 +26,13 @@ import play.twirl.api.HtmlFormat
 
 object MockFactory extends MockitoSugar {
 
-  def buildNotificationPageSingleElementFactoryMock = {
+  private lazy val notificationsPageElement = NotificationsPageSingleElement("", "", HtmlFormat.empty)
+
+  def buildNotificationPageSingleElementFactoryMock: NotificationPageSingleElementFactory = {
     val notificationPageSingleElementFactoryMock = mock[NotificationPageSingleElementFactory]
 
-    when(notificationPageSingleElementFactoryMock.build(any[Submission])(any()))
-      .thenReturn(NotificationsPageSingleElement("", "", HtmlFormat.empty))
-    when(notificationPageSingleElementFactoryMock.build(any[Notification])(any()))
-      .thenReturn(NotificationsPageSingleElement("", "", HtmlFormat.empty))
+    when(notificationPageSingleElementFactoryMock.build(any[Submission])(any())).thenReturn(notificationsPageElement)
+    when(notificationPageSingleElementFactoryMock.build(any[Notification])(any())).thenReturn(notificationsPageElement)
 
     notificationPageSingleElementFactoryMock
   }

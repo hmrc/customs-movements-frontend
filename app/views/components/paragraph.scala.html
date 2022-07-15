@@ -14,5 +14,5 @@
  * limitations under the License.
  *@
 
-@(text: String, id: String = "")
-<p@if(id.nonEmpty){ id=@id }>@text</p>
+@(text: String, classes: String = "")
+<p@if(classes.nonEmpty){ class="@classes" }>@text</p>

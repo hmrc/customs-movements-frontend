@@ -16,25 +16,14 @@
 
 @import models.viewmodels.notificationspage.NotificationsPageSingleElement
 
-@(index: Int, element: NotificationsPageSingleElement)
+@(element: NotificationsPageSingleElement)
 
-<li class="exports-notifications__step">
-  <div class="exports-notifications__header" data-position="1">
-    <h2 class="exports-notifications__title">
-      <span class="exports-notifications__circle exports-notifications__circle--number">
-        <span class="exports-notifications__circle-inner">
-          <span id="index-@index" class="exports-notifications__circle-background">@index</span>
-        </span>
-      </span>
-      <div class="exports-notifications__button exports-notifications__button--title" aria-expanded="false" aria-controls="step-panel">
-        <span id="title-@index" class="govuk-heading-m">@{element.title}</span>
-      </div>
-    </h2>
-  </div>
-  <div class="exports-notifications__panel">
-    <div class="govuk-form-group">
-      <p id="timestampInfo-@index">@{element.timestampInfo}</p>
-      <div id="content-@index">@{element.content}</div>
+<li class="hmrc-timeline__event">
+    <h2 class="hmrc-timeline__event-title">@element.title</h2>
+    <time class="hmrc-timeline__event-meta">
+        @element.timestampInfo
+    </time>
+    <div class="hmrc-timeline__event-content">
+        @element.content
     </div>
-  </div>
 </li>

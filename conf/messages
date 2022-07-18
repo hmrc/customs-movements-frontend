@@ -460,7 +460,6 @@ ducrPartChief.input.error.empty = Select the option you want
 ducrPartChief.input.error.incorrectValue = Choose valid option
 
 sessionTimout.title = For your security, we signed you out
-sessionTimout.paragraph.saved = We saved your answers.
 sessionTimout.signin.button = Sign in
 
 timeoutDialog.title = Your session will timeout soon

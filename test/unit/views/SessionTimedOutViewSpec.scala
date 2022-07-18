@@ -35,7 +35,6 @@ class SessionTimedOutViewSpec extends ViewSpec with Injector {
       val messages = instanceOf[MessagesApi].preferred(request)
 
       messages must haveTranslationFor("sessionTimout.title")
-      messages must haveTranslationFor("sessionTimout.paragraph.saved")
       messages must haveTranslationFor("sessionTimout.signin.button")
       messages must haveTranslationFor("site.link.backToGovUk")
     }

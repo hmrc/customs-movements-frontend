@@ -17,12 +17,15 @@
 package views.components.config
 
 import config.{DucrPartConfig, IleQueryConfig}
+import controllers.actions.ArriveDepartAllowList
 import forms.UcrType.DucrPart
+
 import javax.inject.Inject
 import models.UcrBlock
 import play.api.mvc.Call
 
-class ChoicePageConfig @Inject() (ileQueryConfig: IleQueryConfig, ducrPartsConfig: DucrPartConfig) extends BaseConfig(ileQueryConfig) {
+class ChoicePageConfig @Inject() (ileQueryConfig: IleQueryConfig, ducrPartsConfig: DucrPartConfig, arriveDepartAllowList: ArriveDepartAllowList)
+    extends BaseConfig(ileQueryConfig) {
 
   def backLink(queryUcr: Option[UcrBlock]): Option[Call] =
     if (ileQueryConfig.isIleQueryEnabled)
@@ -34,4 +37,7 @@ class ChoicePageConfig @Inject() (ileQueryConfig: IleQueryConfig, ducrPartsConfi
       }.orElse(Some(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()))
     else
       None
+
+  def isUserPermittedArriveDepartAccess(eori: String): Boolean =
+    arriveDepartAllowList.contains(eori)
 }

@@ -29,7 +29,7 @@ class ChoicePageConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
     "ileQuery disabled" should {
 
-      val config = new ChoicePageConfig(ileQueryDisabled, ducrPartDisabled)
+      val config = new ChoicePageConfig(ileQueryDisabled, ducrPartDisabled, eoriInArriveDepartAllowList)
 
       "return correct url" in {
 
@@ -47,7 +47,7 @@ class ChoicePageConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
       "ducrPart disabled" should {
 
-        val config = new ChoicePageConfig(ileQueryEnabled, ducrPartDisabled)
+        val config = new ChoicePageConfig(ileQueryEnabled, ducrPartDisabled, eoriInArriveDepartAllowList)
 
         "return correct url when query ucr present" in {
 
@@ -67,7 +67,7 @@ class ChoicePageConfigSpec extends UnitSpec with ViewConfigFeaturesSpec {
 
       "ducrPart enabled" when {
 
-        val config = new ChoicePageConfig(ileQueryEnabled, ducrPartEnabled)
+        val config = new ChoicePageConfig(ileQueryEnabled, ducrPartEnabled, eoriInArriveDepartAllowList)
 
         "query ucr is not present" should {
           "return url to 'Find Consignment' page" in {

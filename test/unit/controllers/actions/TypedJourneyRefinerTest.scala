@@ -17,15 +17,15 @@
 package controllers.actions
 
 import models.SignedInUser
-import models.cache.{ArrivalAnswers, Cache, JourneyType}
+import models.cache._
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
@@ -39,16 +39,19 @@ import scala.concurrent.Future
 class TypedJourneyRefinerTest extends AnyWordSpec with Matchers with MockitoSugar with BeforeAndAfterEach {
 
   private val movementRepository = mock[CacheRepository]
+  private val arriveDepartAllowList = mock[ArriveDepartAllowList]
   private val block = mock[JourneyRequest[_] => Future[Result]]
   private val user = SignedInUser("eori", Enrolments(Set.empty))
   private val request = AuthenticatedRequest(FakeRequest(), user)
-  private val answers = ArrivalAnswers()
-  private val cache = Cache("eori", Some(answers), None, None)
+  private val arrivalAnswers = ArrivalAnswers()
+  private val departureAnswers = DepartureAnswers()
+  private val cacheWithArrivalAnswers = Cache("eori", Some(arrivalAnswers), None, None)
+  private val cacheWithDepartureAnswers = Cache("eori", Some(departureAnswers), None, None)
 
-  private val refiner = new JourneyRefiner(movementRepository)
+  private val refiner = new JourneyRefiner(movementRepository, arriveDepartAllowList)
 
   override def afterEach(): Unit = {
-    reset(movementRepository, block)
+    reset(movementRepository, arriveDepartAllowList, block)
     super.afterEach()
   }
 
@@ -56,21 +59,23 @@ class TypedJourneyRefinerTest extends AnyWordSpec with Matchers with MockitoSuga
     "permit request" when {
       "answers found" when {
         "on unshared journey" in {
+          given(arriveDepartAllowList.contains("eori")).willReturn(true)
           given(block.apply(any())).willReturn(Future.successful(Results.Ok))
-          given(movementRepository.findByEori("eori")).willReturn(Future.successful(Some(cache)))
+          given(movementRepository.findByEori("eori")).willReturn(Future.successful(Some(cacheWithArrivalAnswers)))
 
           await(refiner(JourneyType.ARRIVE).invokeBlock(request, block)) mustBe Results.Ok
 
-          theRequestBuilt mustBe JourneyRequest(cache, request)
+          theRequestBuilt mustBe JourneyRequest(cacheWithArrivalAnswers, request)
         }
 
         "on shared journey" in {
+          given(arriveDepartAllowList.contains("eori")).willReturn(true)
           given(block.apply(any())).willReturn(Future.successful(Results.Ok))
-          given(movementRepository.findByEori("eori")).willReturn(Future.successful(Some(cache)))
+          given(movementRepository.findByEori("eori")).willReturn(Future.successful(Some(cacheWithArrivalAnswers)))
 
           await(refiner(JourneyType.DEPART, JourneyType.ARRIVE).invokeBlock(request, block)) mustBe Results.Ok
 
-          theRequestBuilt mustBe JourneyRequest(cache, request)
+          theRequestBuilt mustBe JourneyRequest(cacheWithArrivalAnswers, request)
         }
       }
 
@@ -84,6 +89,7 @@ class TypedJourneyRefinerTest extends AnyWordSpec with Matchers with MockitoSuga
     "block request" when {
       "answers not found" in {
         given(movementRepository.findByEori("eori")).willReturn(Future.successful(None))
+        given(arriveDepartAllowList.contains("eori")).willReturn(true)
 
         await(refiner(JourneyType.ARRIVE).invokeBlock(request, block)) mustBe Results.Redirect(
           controllers.routes.ChoiceController.displayChoiceForm()
@@ -92,11 +98,21 @@ class TypedJourneyRefinerTest extends AnyWordSpec with Matchers with MockitoSuga
 
       "answers found of a different type" in {
         given(movementRepository.findByEori("eori")).willReturn(Future.successful(None))
+        given(arriveDepartAllowList.contains("eori")).willReturn(true)
 
         await(refiner(JourneyType.DEPART).invokeBlock(request, block)) mustBe Results.Redirect(
           controllers.routes.ChoiceController.displayChoiceForm()
         )
       }
+
+      for (journey <- Seq(JourneyType.ARRIVE, JourneyType.DEPART))
+        s"answers type is $journey and user is not on allow list" in {
+          val cache = if (journey == JourneyType.ARRIVE) cacheWithArrivalAnswers else cacheWithDepartureAnswers
+          given(movementRepository.findByEori("eori")).willReturn(Future.successful(Some(cache)))
+          given(arriveDepartAllowList.contains("eori")).willReturn(false)
+
+          await(refiner(journey).invokeBlock(request, block)) mustBe Results.Redirect(controllers.routes.ChoiceController.displayChoiceForm())
+        }
     }
   }
 

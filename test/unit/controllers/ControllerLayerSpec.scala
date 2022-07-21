@@ -64,7 +64,7 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
   }
 
   case class ValidJourney(answers: Answers, queryUcr: Option[UcrBlock] = None, ducrPartChiefChoice: Option[DucrPartChiefChoice] = None)
-      extends JourneyRefiner(mock[CacheRepository]) {
+      extends JourneyRefiner(mock[CacheRepository], mock[ArriveDepartAllowList]) {
     override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
       Future.successful(Right(JourneyRequest(Cache(request.eori, Some(answers), queryUcr, ducrPartChiefChoice), request)))
 
@@ -72,7 +72,7 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
       if (types.contains(answers.`type`)) ValidJourney(answers, queryUcr) else InValidJourney
   }
 
-  case object InValidJourney extends JourneyRefiner(mock[CacheRepository]) {
+  case object InValidJourney extends JourneyRefiner(mock[CacheRepository], mock[ArriveDepartAllowList]) {
     override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
       Future.successful(Left(Results.Forbidden))
   }

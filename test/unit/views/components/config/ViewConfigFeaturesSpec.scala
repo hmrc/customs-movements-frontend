@@ -17,6 +17,8 @@
 package views.components.config
 import base.UnitSpec
 import config.{DucrPartConfig, IleQueryConfig}
+import controllers.actions.ArriveDepartAllowList
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 
@@ -28,6 +30,9 @@ trait ViewConfigFeaturesSpec extends BeforeAndAfterEach { self: UnitSpec =>
   val ducrPartEnabled = mock[DucrPartConfig]
   val ducrPartDisabled = mock[DucrPartConfig]
 
+  val eoriInArriveDepartAllowList = mock[ArriveDepartAllowList]
+  val eoriNotInArriveDepartAllowList = mock[ArriveDepartAllowList]
+
   override def beforeEach() {
     super.beforeEach()
 
@@ -35,11 +40,13 @@ trait ViewConfigFeaturesSpec extends BeforeAndAfterEach { self: UnitSpec =>
     when(ileQueryDisabled.isIleQueryEnabled).thenReturn(false)
     when(ducrPartEnabled.isDucrPartsEnabled).thenReturn(true)
     when(ducrPartDisabled.isDucrPartsEnabled).thenReturn(false)
+    when(eoriInArriveDepartAllowList.contains(any())).thenReturn(true)
+    when(eoriNotInArriveDepartAllowList.contains(any())).thenReturn(false)
   }
 
   override def afterEach(): Unit = {
 
-    reset(ileQueryEnabled, ileQueryDisabled, ducrPartEnabled, ducrPartDisabled)
+    reset(ileQueryEnabled, ileQueryDisabled, ducrPartEnabled, ducrPartDisabled, eoriInArriveDepartAllowList, eoriNotInArriveDepartAllowList)
     super.afterEach()
   }
 

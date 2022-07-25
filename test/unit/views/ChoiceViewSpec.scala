@@ -20,6 +20,7 @@ import base.Injector
 import forms.Choice._
 import forms.{Choice, UcrType}
 import models.UcrBlock
+import models.requests.AuthenticatedRequest
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -27,16 +28,19 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.test.FakeRequest
+import testdata.CommonTestData.validEori
+import testdata.MovementsTestData.newUser
 import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukRadios}
 import views.components.config.ChoicePageConfig
 import views.html.choice_page
 import views.html.components.gds.{errorSummary, gds_main_template, sectionHeader}
 import views.tags.ViewTest
+import scala.collection.JavaConverters._
 
 @ViewTest
 class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with BeforeAndAfterEach {
 
-  private implicit val request = FakeRequest().withCSRFToken
+  private implicit val request = AuthenticatedRequest(FakeRequest().withCSRFToken, newUser(validEori))
 
   private val form: Form[Choice] = Choice.form()
 
@@ -48,13 +52,16 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
   private val formHelper = instanceOf[FormWithCSRF]
   private val pageConfig = mock[ChoicePageConfig]
 
-  def isIleQueryEnabled(enabled: Boolean): Unit = {
+  private def isIleQueryEnabled(enabled: Boolean): Unit = {
     when(pageConfig.backLink(any())).thenReturn(
       if (enabled) Some(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
       else None
     )
     when(pageConfig.ileQueryEnabled).thenReturn(enabled)
   }
+
+  private def isUserOnArriveDepartAllowList(present: Boolean) =
+    when(pageConfig.isUserPermittedArriveDepartAccess(any())).thenReturn(present)
 
   private val choicePage = new choice_page(govukLayout, govukButton, govukRadios, errorSummary, sectionHeader, formHelper, pageConfig)
   private def createView(form: Form[Choice] = form): Document =
@@ -66,8 +73,6 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
   "Choice View" should {
 
     "have proper labels for messages" in {
-      isIleQueryEnabled(true)
-
       messages must haveTranslationFor("movement.choice.title")
       messages must haveTranslationFor("movement.choice.arrival.label")
       messages must haveTranslationFor("movement.choice.departure.label")
@@ -78,8 +83,6 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
     }
 
     "have proper labels for error messages" in {
-      isIleQueryEnabled(true)
-
       messages must haveTranslationFor("choicePage.input.error.empty")
       messages must haveTranslationFor("choicePage.input.error.incorrectValue")
     }
@@ -87,147 +90,200 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
     "not render 'Shut Mucr' option" when {
 
       "ILE query was for a Ducr" in {
+        isUserOnArriveDepartAllowList(true)
         isIleQueryEnabled(true)
-
         val view = choicePage(Choice.form(), Some(UcrBlock("DUCR", UcrType.Ducr)))
 
         view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
-        view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.associateucr.label"))
-        view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.disassociateucr.label"))
-        view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.departure.label"))
+        view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.departure.label"))
+        view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.associateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.disassociateucr.label"))
       }
 
       "user entered Choice page through Ducr Part Details page" in {
+        isUserOnArriveDepartAllowList(true)
         isIleQueryEnabled(true)
-
         val view = choicePage(Choice.form(), Some(UcrBlock("DUCR-123X", UcrType.DucrPart)))
 
         view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
-        view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.associateucr.label"))
-        view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.disassociateucr.label"))
-        view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.departure.label"))
+        view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.departure.label"))
+        view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.associateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.disassociateucr.label"))
       }
     }
 
     "render 'Shut Mucr' option" when {
 
       "ILE query was for a Mucr" in {
+        isUserOnArriveDepartAllowList(true)
         isIleQueryEnabled(true)
-
         val view = choicePage(Choice.form(), Some(UcrBlock("MUCR", UcrType.Mucr)))
 
         view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
-        view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.associateucr.label"))
-        view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.disassociateucr.label"))
-        view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.shutmucr.label"))
-        view.getElementsByAttributeValue("for", "choice-5").text() must be(messages("movement.choice.departure.label"))
+        view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.departure.label"))
+        view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.associateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.disassociateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-5").text() must be(messages("movement.choice.shutmucr.label"))
       }
     }
   }
 
-  "Choice View on empty page" should {
+  "Choice View on empty page" when {
 
-    "display same page title as header with ile query disabled" in {
-      isIleQueryEnabled(false)
-
-      val viewWithMessage = createView()
-      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
-    }
-
-    "display same page title as header with ile query enabled" in {
+    "ILE Query is enabled and user is on ArriveDepart allow list" should {
+      isUserOnArriveDepartAllowList(true)
       isIleQueryEnabled(true)
-
-      val viewWithMessage = createView()
-      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
-    }
-
-    "display header with ile query disabled" in {
-      isIleQueryEnabled(false)
-
-      createView().getElementsByClass("govuk-fieldset__heading").get(0).text() must be(messages("movement.choice.title"))
-    }
-
-    "display header with ile query enabled" in {
-      isIleQueryEnabled(true)
-
-      createView().getElementsByClass("govuk-fieldset__heading").get(0).text() must be(messages("movement.choice.title.consignment"))
-    }
-
-    "display 'Back' button when ile query enabled" in {
-      isIleQueryEnabled(true)
-
-      val backButton = createView().getElementById("back-link")
-
-      backButton.text() must be(messages("site.back"))
-      backButton.attr("href") must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
-    }
-
-    "not display 'Back' button when ile query disabled" in {
-      isIleQueryEnabled(false)
-
-      val backButton = createView().getElementById("back-link")
-
-      backButton must be(null)
-    }
-
-    "display 5 radio buttons with labels when ileQuery is enabled" in {
-      isIleQueryEnabled(true)
-
       val view = createView(Choice.form())
 
-      view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
-      view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.associateucr.label"))
-      view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.disassociateucr.label"))
-      view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.shutmucr.label"))
-      view.getElementsByAttributeValue("for", "choice-5").text() must be(messages("movement.choice.departure.label"))
-      view.getElementsByAttributeValue("for", "choice-6") must be(empty)
+      "display same page title as header" in {
+        view.title() must include(view.getElementsByTag("h1").text())
+      }
+
+      "display header" in {
+        view.getElementsByClass("govuk-fieldset__heading").get(0).text() must be(messages("movement.choice.title.consignment"))
+      }
+
+      "display 'Back' button" in {
+        val backButton = view.getElementById("back-link")
+
+        backButton.text() must be(messages("site.back"))
+        backButton.attr("href") must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
+      }
+
+      "display 5 radio buttons with labels" in {
+        view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
+        view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.departure.label"))
+        view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.associateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.disassociateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-5").text() must be(messages("movement.choice.shutmucr.label"))
+        view.getElementsByTag("label").size mustBe 5
+      }
+
+      "display 5 unchecked radio buttons" in {
+        view.getElementsByClass("govuk-radios__input").size mustBe 5
+        view.getElementsByAttribute("checked").size mustBe 0
+      }
+
+      "display 'Save and continue' button on page" in {
+        val saveButton = view.getElementsByClass("govuk-button").get(0)
+        saveButton.text() must be(messages("site.continue"))
+      }
     }
 
-    "display 6 radio buttons with labels when ileQuery is disabled" in {
-      isIleQueryEnabled(false)
-
-      val view = createView(Choice.form())
-
-      view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
-      view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.associateucr.label"))
-      view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.disassociateucr.label"))
-      view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.shutmucr.label"))
-      view.getElementsByAttributeValue("for", "choice-5").text() must be(messages("movement.choice.departure.label"))
-      view.getElementsByAttributeValue("for", "choice-6").text() must be(messages("movement.choice.submissions.label"))
-    }
-
-    "display 5 unchecked radio buttons when ileQuery is enabled" in {
+    "ILE Query is enabled and user is absent from ArriveDepart allow list" should {
+      isUserOnArriveDepartAllowList(false)
       isIleQueryEnabled(true)
-
       val view = createView(Choice.form())
 
-      ensureRadioIsUnChecked(view, "choice")
-      ensureRadioIsUnChecked(view, "choice-2")
-      ensureRadioIsUnChecked(view, "choice-3")
-      ensureRadioIsUnChecked(view, "choice-4")
-      ensureRadioIsUnChecked(view, "choice-5")
+      "display same page title as header" in {
+        view.title() must include(view.getElementsByTag("h1").text())
+      }
+
+      "display header" in {
+        view.getElementsByClass("govuk-fieldset__heading").get(0).text() must be(messages("movement.choice.title.consignment"))
+      }
+
+      "display 'Back' button" in {
+        val backButton = view.getElementById("back-link")
+
+        backButton.text() must be(messages("site.back"))
+        backButton.attr("href") must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
+      }
+
+      "display 3 radio buttons with labels when user is not on allow list" in {
+        view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.associateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.disassociateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.shutmucr.label"))
+        view.getElementsByTag("label").size mustBe 3
+      }
+
+      "display 3 unchecked radio buttons" in {
+        view.getElementsByClass("govuk-radios__input").size mustBe 3
+        view.getElementsByAttribute("checked").size mustBe 0
+      }
+
+      "display 'Save and continue' button on page" in {
+        val saveButton = view.getElementsByClass("govuk-button").get(0)
+        saveButton.text() must be(messages("site.continue"))
+      }
     }
 
-    "display 6 unchecked radio buttons when ileQuery is disabled" in {
+    "ILE Query is disabled and user is on ArriveDepart allow list" should {
+      isUserOnArriveDepartAllowList(true)
       isIleQueryEnabled(false)
-
       val view = createView(Choice.form())
 
-      ensureRadioIsUnChecked(view, "choice")
-      ensureRadioIsUnChecked(view, "choice-2")
-      ensureRadioIsUnChecked(view, "choice-3")
-      ensureRadioIsUnChecked(view, "choice-4")
-      ensureRadioIsUnChecked(view, "choice-5")
-      ensureRadioIsUnChecked(view, "choice-6")
+      "display same page title as header" in {
+        view.title() must include(view.getElementsByTag("h1").text())
+      }
+
+      "display header" in {
+        view.getElementsByClass("govuk-fieldset__heading").get(0).text() must be(messages("movement.choice.title"))
+      }
+
+      "not display 'Back' button" in {
+        val backButton = view.getElementById("back-link")
+
+        Option(backButton) mustBe empty
+      }
+
+      "display 6 radio buttons with labels" in {
+        view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
+        view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.departure.label"))
+        view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.associateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.disassociateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-5").text() must be(messages("movement.choice.shutmucr.label"))
+        view.getElementsByAttributeValue("for", "choice-6").text() must be(messages("movement.choice.submissions.label"))
+        view.getElementsByTag("label").size mustBe 6
+      }
+
+      "display 6 unchecked radio buttons" in {
+        view.getElementsByClass("govuk-radios__input").size mustBe 6
+        view.getElementsByAttribute("checked").size mustBe 0
+      }
+
+      "display 'Save and continue' button on page" in {
+        val saveButton = view.getElementsByClass("govuk-button").get(0)
+        saveButton.text() must be(messages("site.continue"))
+      }
     }
 
-    "display 'Save and continue' button on page" in {
-      isIleQueryEnabled(true)
+    "ILE Query is disabled and user is absent from ArriveDepart allow list" should {
+      isUserOnArriveDepartAllowList(false)
+      isIleQueryEnabled(false)
+      val view = createView(Choice.form())
 
-      val view = createView()
+      "display same page title as header" in {
+        view.title() must include(view.getElementsByTag("h1").text())
+      }
 
-      val saveButton = view.getElementsByClass("govuk-button").get(0)
-      saveButton.text() must be(messages("site.continue"))
+      "display header" in {
+        view.getElementsByClass("govuk-fieldset__heading").get(0).text() must be(messages("movement.choice.title"))
+      }
+
+      "not display 'Back' button" in {
+        val backButton = view.getElementById("back-link")
+
+        Option(backButton) mustBe empty
+      }
+
+      "display 4 radio buttons with labels" in {
+        view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.associateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.disassociateucr.label"))
+        view.getElementsByAttributeValue("for", "choice-3").text() must be(messages("movement.choice.shutmucr.label"))
+        view.getElementsByAttributeValue("for", "choice-4").text() must be(messages("movement.choice.submissions.label"))
+        view.getElementsByTag("label").size mustBe 4
+      }
+
+      "display 4 unchecked radio buttons" in {
+        view.getElementsByClass("govuk-radios__input").size mustBe 4
+        view.getElementsByAttribute("checked").size mustBe 0
+      }
+
+      "display 'Save and continue' button on page" in {
+        val saveButton = view.getElementsByClass("govuk-button").get(0)
+        saveButton.text() must be(messages("site.continue"))
+      }
     }
   }
 
@@ -259,6 +315,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
   "Choice View when filled" should {
 
     "display selected 1st radio button - Arrival (EAL)" in {
+      isUserOnArriveDepartAllowList(true)
       isIleQueryEnabled(true)
 
       val view = createView(Choice.form().fill(Arrival))
@@ -267,31 +324,50 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
       ensureRadioIsUnChecked(view, "choice-2")
       ensureRadioIsUnChecked(view, "choice-3")
       ensureRadioIsUnChecked(view, "choice-4")
+      ensureRadioIsUnChecked(view, "choice-5")
     }
 
-    "display selected 2nd radio button - Associate (EDL)" in {
+    "display selected 2nd radio button - Depart (EDL)" in {
+      isUserOnArriveDepartAllowList(true)
       isIleQueryEnabled(true)
 
-      val view = createView(Choice.form().fill(AssociateUCR))
+      val view = createView(Choice.form().fill(Departure))
 
       ensureRadioIsUnChecked(view, "choice")
       ensureRadioIsChecked(view, "choice-2")
       ensureRadioIsUnChecked(view, "choice-3")
       ensureRadioIsUnChecked(view, "choice-4")
+      ensureRadioIsUnChecked(view, "choice-5")
     }
 
-    "display selected 3rd radio button - Disassociate (EAC)" in {
+    "display selected 3rd radio button - Associate (EDL)" in {
+      isUserOnArriveDepartAllowList(true)
+      isIleQueryEnabled(true)
+
+      val view = createView(Choice.form().fill(AssociateUCR))
+
+      ensureRadioIsUnChecked(view, "choice")
+      ensureRadioIsUnChecked(view, "choice-2")
+      ensureRadioIsChecked(view, "choice-3")
+      ensureRadioIsUnChecked(view, "choice-4")
+      ensureRadioIsUnChecked(view, "choice-5")
+    }
+
+    "display selected 4th radio button - Disassociate (EAC)" in {
+      isUserOnArriveDepartAllowList(true)
       isIleQueryEnabled(true)
 
       val view = createView(Choice.form().fill(DisassociateUCR))
 
       ensureRadioIsUnChecked(view, "choice")
       ensureRadioIsUnChecked(view, "choice-2")
-      ensureRadioIsChecked(view, "choice-3")
-      ensureRadioIsUnChecked(view, "choice-4")
+      ensureRadioIsUnChecked(view, "choice-3")
+      ensureRadioIsChecked(view, "choice-4")
+      ensureRadioIsUnChecked(view, "choice-5")
     }
 
-    "display selected 4th radio button - Shut a MUCR (CST)" in {
+    "display selected 5th radio button - Shut a MUCR (CST)" in {
+      isUserOnArriveDepartAllowList(true)
       isIleQueryEnabled(true)
 
       val view = createView(Choice.form().fill(ShutMUCR))
@@ -299,7 +375,8 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
       ensureRadioIsUnChecked(view, "choice")
       ensureRadioIsUnChecked(view, "choice-2")
       ensureRadioIsUnChecked(view, "choice-3")
-      ensureRadioIsChecked(view, "choice-4")
+      ensureRadioIsUnChecked(view, "choice-4")
+      ensureRadioIsChecked(view, "choice-5")
     }
   }
 

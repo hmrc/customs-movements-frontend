@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import components.gds._
+@import models.requests.AuthenticatedRequest
 @import forms.Choice._
 @import forms.Choice
 @import forms.UcrType.Mucr
@@ -33,15 +34,10 @@
   pageConfig: ChoicePageConfig
 )
 
-@(form: Form[Choice], queryUcr: Option[UcrBlock] = None)(implicit request: Request[_], messages: Messages)
+@(form: Form[Choice], queryUcr: Option[UcrBlock] = None)(implicit request: AuthenticatedRequest[_], messages: Messages)
 
 @choices = @{
     val commonChoices = Seq(
-        RadioItem(
-            value = Some(Arrival.value.toString),
-            content = Text(messages(s"movement.choice.${Arrival.toString.toLowerCase}.label")),
-            checked = form("choice").value.contains(Arrival.toString.toLowerCase)
-        ),
         RadioItem(
             value = Some(AssociateUCR.value.toString),
             content = Text(messages(s"movement.choice.${AssociateUCR.toString.toLowerCase}.label")),
@@ -56,6 +52,14 @@
             value = Some(ShutMUCR.value.toString),
             content = Text(messages(s"movement.choice.${ShutMUCR.toString.toLowerCase}.label")),
             checked = form("choice").value.contains(ShutMUCR.value.toString)
+        )
+    )
+
+    val arriveDepartChoices = Seq(
+        RadioItem(
+            value = Some(Arrival.value.toString),
+            content = Text(messages(s"movement.choice.${Arrival.toString.toLowerCase}.label")),
+            checked = form("choice").value.contains(Arrival.toString.toLowerCase)
         ),
         RadioItem(
             value = Some(Departure.value.toString),
@@ -64,14 +68,22 @@
         )
     )
 
-    val choicesBasedOnFeature = if (pageConfig.ileQueryEnabled) commonChoices
-    else commonChoices :+ RadioItem(
-        value = Some(Submissions.value.toString),
-        content = Text(messages(s"movement.choice.${Submissions.toString.toLowerCase}.label")),
-        checked = form("choice").value.contains(Submissions.toString.toLowerCase)
+    val submissionsChoice = Seq(
+        RadioItem(
+            value = Some(Submissions.value.toString),
+            content = Text(messages(s"movement.choice.${Submissions.toString.toLowerCase}.label")),
+            checked = form("choice").value.contains(Submissions.toString.toLowerCase)
+        )
     )
 
-    choicesBasedOnFeature.filterNot(item => item.value.contains(ShutMUCR.value) && queryUcr.exists(_.ucrType != Mucr.codeValue))
+    val choicesBasedOnConfig = (pageConfig.ileQueryEnabled, pageConfig.isUserPermittedArriveDepartAccess(request.user.eori)) match {
+        case (true, true) => arriveDepartChoices ++ commonChoices
+        case (true, false) => commonChoices
+        case (false, true) => arriveDepartChoices ++ commonChoices ++ submissionsChoice
+        case _ => commonChoices ++ submissionsChoice
+    }
+
+    choicesBasedOnConfig.filterNot(item => item.value.contains(ShutMUCR.value) && queryUcr.exists(_.ucrType != Mucr.codeValue))
 }
 
 @titleKey = @{

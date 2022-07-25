@@ -39,6 +39,7 @@ import scala.concurrent.Future
 class JourneyRefinerSpec extends AnyWordSpec with Matchers with MockitoSugar with BeforeAndAfterEach {
 
   private val movementRepository = mock[CacheRepository]
+  private val arriveDepartAllowList = mock[ArriveDepartAllowList]
   private val block = mock[JourneyRequest[_] => Future[Result]]
   private val user = SignedInUser("eori", Enrolments(Set.empty))
   private val request = AuthenticatedRequest(FakeRequest(), user)
@@ -46,7 +47,7 @@ class JourneyRefinerSpec extends AnyWordSpec with Matchers with MockitoSugar wit
   private val cache = Cache("eori", Some(answers), None, None)
   private val redirectResult = Results.Redirect(controllers.routes.ChoiceController.displayChoiceForm())
 
-  private val refiner = new JourneyRefiner(movementRepository)
+  private val refiner = new JourneyRefiner(movementRepository, arriveDepartAllowList)
 
   override def afterEach(): Unit = {
     reset(movementRepository, block)

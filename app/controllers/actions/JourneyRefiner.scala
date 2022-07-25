@@ -17,14 +17,15 @@
 package controllers.actions
 
 import javax.inject.Inject
-import models.cache.JourneyType.JourneyType
+import models.cache.JourneyType.{ARRIVE, DEPART, JourneyType}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
+import play.api.Configuration
 import play.api.mvc.{ActionRefiner, Result, Results}
 import repositories.CacheRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class JourneyRefiner @Inject() (movementRepository: CacheRepository)(implicit val exc: ExecutionContext)
+class JourneyRefiner @Inject() (movementRepository: CacheRepository, arriveDepartAllowList: ArriveDepartAllowList)(implicit val exc: ExecutionContext)
     extends ActionRefiner[AuthenticatedRequest, JourneyRequest] {
 
   override protected def executionContext: ExecutionContext = exc
@@ -39,18 +40,30 @@ class JourneyRefiner @Inject() (movementRepository: CacheRepository)(implicit va
     override protected def executionContext: ExecutionContext = exc
   }
 
-  private def toJourneyRequest[A](request: AuthenticatedRequest[A], types: JourneyType*): Future[Option[JourneyRequest[A]]] =
-    movementRepository.findByEori(request.user.eori).map { cacheOption =>
+  private def toJourneyRequest[A](request: AuthenticatedRequest[A], types: JourneyType*): Future[Option[JourneyRequest[A]]] = {
+    val eori = request.user.eori
+
+    movementRepository.findByEori(eori).map { cacheOption =>
       for {
         cache <- cacheOption
         answers <- cache.answers
         if types.isEmpty || types.contains(answers.`type`)
+        if isUserPermittedArriveDepartAccess(answers.`type`, eori, arriveDepartAllowList)
       } yield JourneyRequest(cache, request)
     }
+  }
 
   private def orRedirect[A](journeyOption: Option[JourneyRequest[A]]): Either[Result, JourneyRequest[A]] =
     journeyOption.toRight {
       Results.Redirect(controllers.routes.ChoiceController.displayChoiceForm())
     }
 
+  private def isUserPermittedArriveDepartAccess(answersType: JourneyType, eori: String, arriveDepartAllowList: ArriveDepartAllowList): Boolean =
+    if (Seq(ARRIVE, DEPART).contains(answersType)) arriveDepartAllowList.contains(eori)
+    else true
+}
+
+class ArriveDepartAllowList @Inject() (configuration: Configuration) {
+  private val values = configuration.get[Seq[String]]("arriveDepartAllowList.eori")
+  def contains(eori: String): Boolean = values.isEmpty || values.contains(eori)
 }

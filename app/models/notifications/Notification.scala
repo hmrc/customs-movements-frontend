@@ -17,8 +17,8 @@
 package models.notifications
 
 import java.time.Instant
-
-import play.api.libs.json.Json
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import play.api.libs.json.{Format, Json, OFormat}
 
 final case class Notification(
   timestampReceived: Instant = Instant.now(),
@@ -36,5 +36,6 @@ final case class Notification(
 }
 
 object Notification {
-  implicit val format = Json.format[Notification]
+  implicit val formatInstant: Format[Instant] = MongoJavatimeFormats.instantFormat
+  implicit val format: OFormat[Notification] = Json.format[Notification]
 }

@@ -17,7 +17,6 @@
 package connectors
 
 import java.time.Instant
-
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.AppConfig
 import connectors.exception.MovementsConnectorException
@@ -31,14 +30,16 @@ import models.notifications.queries.IleQueryResponseExchangeData.SuccessfulRespo
 import models.submissions.Submission
 import org.mockito.BDDMockito.given
 import play.api.http.Status
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, Json}
 import play.api.test.Helpers._
 import testdata.CommonTestData.{conversationId, _}
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
 
+  implicit private val formatInstant: Format[Instant] = MongoJavatimeFormats.instantFormat
   private val config = mock[AppConfig]
   given(config.customsDeclareExportsMovements).willReturn(downstreamURL)
 
@@ -141,7 +142,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
            |      }
            |    ],
            |    "actionType":"Arrival",
-           |    "requestTimestamp":"${expectedSubmission.requestTimestamp}"
+           |    "requestTimestamp": ${Json.toJson(expectedSubmission.requestTimestamp)}
            |  }
            |]""".stripMargin
 
@@ -180,7 +181,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
            |      }
            |    ],
            |    "actionType":"Arrival",
-           |    "requestTimestamp":"${submission.requestTimestamp}"
+           |    "requestTimestamp":${Json.toJson(submission.requestTimestamp)}
            |  }
            |""".stripMargin
 
@@ -205,7 +206,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
       val notificationsJson =
         s"""[
            |   {
-           |     "timestampReceived":"${expectedNotification.timestampReceived}",
+           |     "timestampReceived":${Json.toJson(expectedNotification.timestampReceived)},
            |     "conversationId":"$conversationId",
            |     "responseType":"${ControlResponse.value}",
            |     "entries":[
@@ -243,7 +244,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
       val notificationsJson =
         s"""[
           |   {
-          |     "timestampReceived":"${expectedNotification.timestampReceived}",
+          |     "timestampReceived":${Json.toJson(expectedNotification.timestampReceived)},
           |     "conversationId":"$conversationId",
           |     "responseType":"${ControlResponse.value}",
           |     "entries":[

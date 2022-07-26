@@ -18,11 +18,11 @@ package models.submissions
 
 import java.time.Instant
 import java.util.UUID
-
 import connectors.exchanges.ActionType
 import forms.UcrType.{DucrPart, Mucr}
 import models.UcrBlock
 import play.api.libs.json._
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 case class Submission(
   uuid: String = UUID.randomUUID().toString,
@@ -43,5 +43,6 @@ case class Submission(
 }
 
 object Submission {
+  implicit val formatInstant: Format[Instant] = MongoJavatimeFormats.instantFormat
   implicit val format: OFormat[Submission] = Json.format[Submission]
 }

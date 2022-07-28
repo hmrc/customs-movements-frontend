@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.{DucrPartConfig, IleQueryConfig}
+import config.IleQueryConfig
 import controllers.consolidations.{routes => consolidationRoutes}
 import forms.Choice._
 import forms.UcrType.Mucr
@@ -42,11 +42,9 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
   private val cacheWithUcr = Cache("eori", ucrBlock)
   private val ileQueryEnabled = mock[IleQueryConfig]
   private val ileQueryDisabled = mock[IleQueryConfig]
-  private val ducrPartEnabled = mock[DucrPartConfig]
-  private val ducrPartDisabled = mock[DucrPartConfig]
 
-  private def controllerWithConfig(ileQueryConfig: IleQueryConfig, ducrPartConfig: DucrPartConfig) =
-    new ChoiceController(SuccessfulAuth(), cache, stubMessagesControllerComponents(), ileQueryConfig, ducrPartConfig, mockChoicePage)(global)
+  private def controllerWithConfig(ileQueryConfig: IleQueryConfig) =
+    new ChoiceController(SuccessfulAuth(), cache, stubMessagesControllerComponents(), ileQueryConfig, mockChoicePage)(global)
 
   override def beforeEach() {
     super.beforeEach()
@@ -54,9 +52,6 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
     when(mockChoicePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(ileQueryEnabled.isIleQueryEnabled).thenReturn(true)
     when(ileQueryDisabled.isIleQueryEnabled).thenReturn(false)
-    when(ducrPartEnabled.isDucrPartsEnabled).thenReturn(true)
-    when(ducrPartDisabled.isDucrPartsEnabled).thenReturn(false)
-
   }
 
   override def afterEach() {
@@ -71,8 +66,8 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
     captor.getValue
   }
 
-  "Choice Controller with ileQuery and ducrPart disabled" should {
-    val controller = controllerWithConfig(ileQueryDisabled, ducrPartDisabled)
+  "Choice Controller with ileQuery disabled" should {
+    val controller = controllerWithConfig(ileQueryDisabled)
 
     "return 200 (OK)" when {
       "display page method is invoked with empty cache" in {
@@ -111,7 +106,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
           val result = controller.submitChoice()(postRequest(arrivalForm))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.ConsignmentReferencesController.displayPage().url)
+          redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
           theCacheUpserted.answers mustBe Some(ArrivalAnswers(None, None, None))
         }
 
@@ -120,7 +115,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
           val result = controller.submitChoice()(postRequest(arrivalForm))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.ConsignmentReferencesController.displayPage().url)
+          redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
           theCacheUpserted.answers mustBe Some(ArrivalAnswers(Some(ConsignmentReferences(ucrBlock)), None, None))
         }
       }
@@ -133,7 +128,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
           val result = controller.submitChoice()(postRequest(departureForm))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.ConsignmentReferencesController.displayPage().url)
+          redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
           theCacheUpserted.answers mustBe Some(DepartureAnswers(None, None, None, None))
         }
 
@@ -142,7 +137,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
           val result = controller.submitChoice()(postRequest(departureForm))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.ConsignmentReferencesController.displayPage().url)
+          redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
           theCacheUpserted.answers mustBe Some(DepartureAnswers(Some(ConsignmentReferences(ucrBlock)), None, None, None))
         }
       }
@@ -155,7 +150,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
           val result = controller.submitChoice()(postRequest(associateDUCRForm))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(consolidationRoutes.MucrOptionsController.displayPage().url)
+          redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
           theCacheUpserted.answers mustBe Some(AssociateUcrAnswers(None, None))
         }
 
@@ -164,7 +159,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
           val result = controller.submitChoice()(postRequest(associateDUCRForm))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(consolidationRoutes.MucrOptionsController.displayPage().url)
+          redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
           theCacheUpserted.answers mustBe Some(AssociateUcrAnswers(None, None, Some(AssociateUcr(UcrType.Mucr, ucrBlock.ucr))))
         }
       }
@@ -177,7 +172,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
           val result = controller.submitChoice()(postRequest(disassociateDUCRForm))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(consolidationRoutes.DisassociateUcrController.displayPage().url)
+          redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
           theCacheUpserted.answers mustBe Some(DisassociateUcrAnswers(None))
         }
 
@@ -186,7 +181,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
           val result = controller.submitChoice()(postRequest(disassociateDUCRForm))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(consolidationRoutes.DisassociateUcrController.displayPage().url)
+          redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
           theCacheUpserted.answers mustBe Some(DisassociateUcrAnswers(Some(DisassociateUcr(UcrType.Mucr, None, Some(ucrBlock.ucr)))))
         }
       }
@@ -224,8 +219,8 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
     }
   }
 
-  "Choice Controller with ileQuery disabled and ducrPart enabled" should {
-    val controller = controllerWithConfig(ileQueryDisabled, ducrPartEnabled)
+  "Choice Controller with ileQuery disabled" should {
+    val controller = controllerWithConfig(ileQueryDisabled)
 
     "return 303 (SEE_OTHER)" when {
       "choice is Arrival" should {
@@ -284,8 +279,8 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
     }
   }
 
-  "Choice Controller with ileQuery and ducrPart enabled" should {
-    val controller = controllerWithConfig(ileQueryEnabled, ducrPartEnabled)
+  "Choice Controller with ileQuery enabled" should {
+    val controller = controllerWithConfig(ileQueryEnabled)
 
     "redirect to find a consignment" when {
       "display page method is invoked with cache empty" in {
@@ -330,20 +325,20 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
   }
 
   "Choice controller with ileQuery disabled on startSpecificJourney method" should {
-    val controller = controllerWithConfig(ileQueryDisabled, ducrPartDisabled)
+    val controller = controllerWithConfig(ileQueryDisabled)
     "redirect to Consignment References page" when {
       "choice is arrival" in {
         val result = controller.startSpecificJourney(Arrival.value)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.ConsignmentReferencesController.displayPage().url)
+        redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
       }
 
       "choice is departure" in {
         val result = controller.startSpecificJourney(Departure.value)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.ConsignmentReferencesController.displayPage().url)
+        redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
       }
     }
 
@@ -352,7 +347,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
         val result = controller.startSpecificJourney(AssociateUCR.value)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(consolidationRoutes.MucrOptionsController.displayPage().url)
+        redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
       }
     }
 
@@ -361,7 +356,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
         val result = controller.startSpecificJourney(DisassociateUCR.value)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(consolidationRoutes.DisassociateUcrController.displayPage().url)
+        redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
       }
     }
 

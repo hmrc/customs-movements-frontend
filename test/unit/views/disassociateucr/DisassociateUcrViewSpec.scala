@@ -16,30 +16,25 @@
 
 package views.disassociateucr
 
-import base.OverridableInjector
-import config.DucrPartConfig
+import base.Injector
+import controllers.routes.DucrPartChiefController
 import forms.DisassociateUcr
 import forms.UcrType.{Ducr, Mucr}
 import models.cache.DisassociateUcrAnswers
 import org.jsoup.nodes.Document
-import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.inject.bind
 import play.twirl.api.Html
 import views.ViewSpec
 import views.html.disassociateucr.disassociate_ucr
 import views.tags.ViewTest
 
 @ViewTest
-class DisassociateUcrViewSpec extends ViewSpec with MockitoSugar {
-
-  private val config = mock[DucrPartConfig]
-  private val injector = new OverridableInjector(bind[DucrPartConfig].toInstance(config))
+class DisassociateUcrViewSpec extends ViewSpec with Injector with MockitoSugar {
 
   private implicit val request = journeyRequest(DisassociateUcrAnswers())
 
-  private val disassociatePage: disassociate_ucr = injector.instanceOf[disassociate_ucr]
+  private val disassociatePage: disassociate_ucr = instanceOf[disassociate_ucr]
 
   private def createView(form: Form[DisassociateUcr]): Html = disassociatePage(form)(request, messages)
 
@@ -53,24 +48,12 @@ class DisassociateUcrViewSpec extends ViewSpec with MockitoSugar {
       messages must haveTranslationFor("disassociate.ucr.mucr")
     }
 
-    "display 'Back' button that links to Choice when ducrPart disabled" in {
-      when(config.isDucrPartsEnabled).thenReturn(false)
+    "display 'Back' button that links to Ducr Part Chief" in {
       val backButton = createView(DisassociateUcr.form).getBackButton
 
       backButton mustBe defined
       backButton.foreach { button =>
-        button must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
-        button must containMessage("site.back")
-      }
-    }
-
-    "display 'Back' button that links to Ducr Part Chief when ducrPart enabled" in {
-      when(config.isDucrPartsEnabled).thenReturn(true)
-      val backButton = createView(DisassociateUcr.form).getBackButton
-
-      backButton mustBe defined
-      backButton.foreach { button =>
-        button must haveHref(controllers.routes.DucrPartChiefController.displayPage())
+        button must haveHref(DucrPartChiefController.displayPage())
         button must containMessage("site.back")
       }
     }
@@ -173,5 +156,4 @@ class DisassociateUcrViewSpec extends ViewSpec with MockitoSugar {
       view must haveGovUkFieldError("mucr", messages("disassociate.ucr.mucr.error"))
     }
   }
-
 }

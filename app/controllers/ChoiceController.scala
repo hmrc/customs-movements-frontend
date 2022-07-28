@@ -16,12 +16,10 @@
 
 package controllers
 
-import config.{DucrPartConfig, IleQueryConfig}
+import config.IleQueryConfig
 import controllers.actions.AuthAction
 import forms.Choice
 import forms.Choice._
-
-import javax.inject.{Inject, Singleton}
 import models.UcrBlock
 import models.cache._
 import models.requests.AuthenticatedRequest
@@ -32,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.choice_page
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -40,19 +39,16 @@ class ChoiceController @Inject() (
   cacheRepository: CacheRepository,
   mcc: MessagesControllerComponents,
   ileQueryConfig: IleQueryConfig,
-  ducrPartConfig: DucrPartConfig,
   choicePage: choice_page
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
   def displayChoiceForm: Action[AnyContent] = authenticate.async { implicit request =>
-    if (ileQueryConfig.isIleQueryEnabled)
-      displayChoiceFormForIleQuery
-    else
-      displayChoiceFormForIleQueryDisabled
+    if (ileQueryConfig.isIleQueryEnabled) displayChoiceFormForIleQuery
+    else displayChoiceFormForIleQueryDisabled
   }
 
-  private def displayChoiceFormForIleQuery()(implicit request: AuthenticatedRequest[_]) =
+  private def displayChoiceFormForIleQuery()(implicit request: AuthenticatedRequest[_]): Future[Result] =
     cacheRepository.findByEori(request.eori).map {
       case Some(cache) if cache.queryUcr.isDefined =>
         cache.answers
@@ -62,7 +58,7 @@ class ChoiceController @Inject() (
         Redirect(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
     }
 
-  private def displayChoiceFormForIleQueryDisabled()(implicit request: AuthenticatedRequest[_]) =
+  private def displayChoiceFormForIleQueryDisabled()(implicit request: AuthenticatedRequest[_]): Future[Result] =
     cacheRepository.findByEori(request.eori).map(_.flatMap(_.answers)).map {
       case Some(answers) => Ok(choicePage(Choice.form().fill(Choice(answers.`type`))))
       case None          => Ok(choicePage(Choice.form()))
@@ -79,38 +75,29 @@ class ChoiceController @Inject() (
   }
 
   private def proceed(choice: Choice)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
-    def movementFirstPage =
+    def movementFirstPage: Call =
       if (ileQueryConfig.isIleQueryEnabled) controllers.routes.SpecificDateTimeController.displayPage()
-      else if (ducrPartConfig.isDucrPartsEnabled) routes.DucrPartChiefController.displayPage()
-      else routes.ConsignmentReferencesController.displayPage()
+      else routes.DucrPartChiefController.displayPage()
 
-    def dissociateFirstPage =
+    def dissociateFirstPage: Call =
       if (ileQueryConfig.isIleQueryEnabled) controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage()
-      else if (ducrPartConfig.isDucrPartsEnabled) routes.DucrPartChiefController.displayPage()
-      else consolidations.routes.DisassociateUcrController.displayPage()
+      else routes.DucrPartChiefController.displayPage()
 
-    def shutFirstPage =
+    def shutFirstPage: Call =
       if (ileQueryConfig.isIleQueryEnabled) controllers.consolidations.routes.ShutMucrSummaryController.displayPage()
       else consolidations.routes.ShutMucrController.displayPage()
 
-    def associateFirstPage =
-      if (ileQueryConfig.isIleQueryEnabled)
-        consolidations.routes.ManageMucrController.displayPage()
-      else if (ducrPartConfig.isDucrPartsEnabled) routes.DucrPartChiefController.displayPage()
-      else consolidations.routes.MucrOptionsController.displayPage()
+    def associateFirstPage: Call =
+      if (ileQueryConfig.isIleQueryEnabled) consolidations.routes.ManageMucrController.displayPage()
+      else routes.DucrPartChiefController.displayPage()
 
     (choice match {
-      case Arrival =>
-        createOrUpdateCache(request.eori, ArrivalAnswers.fromUcr).map(_ => movementFirstPage)
-      case Departure =>
-        createOrUpdateCache(request.eori, DepartureAnswers.fromUcr).map(_ => movementFirstPage)
-      case AssociateUCR =>
-        createOrUpdateCache(request.eori, AssociateUcrAnswers.fromUcr).map(_ => associateFirstPage)
-      case DisassociateUCR =>
-        createOrUpdateCache(request.eori, DisassociateUcrAnswers.fromUcr).map(_ => dissociateFirstPage)
-      case ShutMUCR =>
-        createOrUpdateCache(request.eori, ShutMucrAnswers.fromUcr).map(_ => shutFirstPage)
-      case Submissions => Future.successful(routes.SubmissionsController.displayPage())
+      case Arrival         => createOrUpdateCache(request.eori, ArrivalAnswers.fromUcr).map(_ => movementFirstPage)
+      case Departure       => createOrUpdateCache(request.eori, DepartureAnswers.fromUcr).map(_ => movementFirstPage)
+      case AssociateUCR    => createOrUpdateCache(request.eori, AssociateUcrAnswers.fromUcr).map(_ => associateFirstPage)
+      case DisassociateUCR => createOrUpdateCache(request.eori, DisassociateUcrAnswers.fromUcr).map(_ => dissociateFirstPage)
+      case ShutMUCR        => createOrUpdateCache(request.eori, ShutMucrAnswers.fromUcr).map(_ => shutFirstPage)
+      case Submissions     => Future.successful(routes.SubmissionsController.displayPage())
     }).map(Redirect)
   }
 

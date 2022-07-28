@@ -16,25 +16,24 @@
 
 package views.components.config
 
-import config.{DucrPartConfig, IleQueryConfig}
+import config.IleQueryConfig
 import controllers.actions.ArriveDepartAllowList
+import controllers.ileQuery.routes.{FindConsignmentController, IleQueryController}
+import controllers.routes.DucrPartDetailsController
 import forms.UcrType.DucrPart
-
-import javax.inject.Inject
 import models.UcrBlock
 import play.api.mvc.Call
 
-class ChoicePageConfig @Inject() (ileQueryConfig: IleQueryConfig, ducrPartsConfig: DucrPartConfig, arriveDepartAllowList: ArriveDepartAllowList)
-    extends BaseConfig(ileQueryConfig) {
+import javax.inject.Inject
+
+class ChoicePageConfig @Inject() (ileQueryConfig: IleQueryConfig, arriveDepartAllowList: ArriveDepartAllowList) extends BaseConfig(ileQueryConfig) {
 
   def backLink(queryUcr: Option[UcrBlock]): Option[Call] =
     if (ileQueryConfig.isIleQueryEnabled)
       queryUcr.map { ucrBlock =>
-        if (ucrBlock.is(DucrPart) && ducrPartsConfig.isDucrPartsEnabled)
-          controllers.routes.DucrPartDetailsController.displayPage()
-        else
-          controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(ucrBlock.ucr)
-      }.orElse(Some(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()))
+        if (ucrBlock.is(DucrPart)) DucrPartDetailsController.displayPage()
+        else IleQueryController.getConsignmentInformation(ucrBlock.ucr)
+      }.orElse(Some(FindConsignmentController.displayQueryForm()))
     else
       None
 

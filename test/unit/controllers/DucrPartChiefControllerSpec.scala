@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.{DucrPartsAction, NonIleQueryAction}
+import controllers.actions.NonIleQueryAction
 import controllers.exception.InvalidFeatureStateException
 import forms.DucrPartChiefChoice
 import models.cache.ArrivalAnswers
@@ -37,15 +37,10 @@ class DucrPartChiefControllerSpec extends ControllerLayerSpec with MockCache wit
 
   private val ducrPartChiefPage = mock[ducr_part_chief]
 
-  private def controller(
-    ducrPartChiefChoice: Option[DucrPartChiefChoice] = None,
-    ducrPartsAction: DucrPartsAction = DucrPartsEnabled,
-    nonIleQueryAction: NonIleQueryAction = ValidForIleQuery
-  ) =
+  private def controller(ducrPartChiefChoice: Option[DucrPartChiefChoice] = None, nonIleQueryAction: NonIleQueryAction = ValidForIleQuery) =
     new DucrPartChiefController(
       SuccessfulAuth(),
       ValidJourney(ArrivalAnswers(), ducrPartChiefChoice = ducrPartChiefChoice),
-      ducrPartsAction,
       nonIleQueryAction,
       cache,
       stubMessagesControllerComponents(),
@@ -54,14 +49,12 @@ class DucrPartChiefControllerSpec extends ControllerLayerSpec with MockCache wit
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-
     reset(ducrPartChiefPage)
     when(ducrPartChiefPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override def afterEach(): Unit = {
     reset(ducrPartChiefPage)
-
     super.afterEach()
   }
 
@@ -73,62 +66,49 @@ class DucrPartChiefControllerSpec extends ControllerLayerSpec with MockCache wit
 
   "DucrPartChiefController on displayPage" when {
 
-    "ducrParts feature is disabled" should {
-
-      "throw InvalidFeatureStateException" in {
-        intercept[InvalidFeatureStateException](await(controller(ducrPartsAction = DucrPartsDisabled).displayPage()(getRequest())))
-      }
-    }
-
     "ileQuery feature is enabled" should {
-
       "throw InvalidFeatureStateException" in {
         intercept[InvalidFeatureStateException](await(controller(nonIleQueryAction = NotValidForIleQuery).displayPage()(getRequest())))
       }
     }
 
-    "return Ok (200) response" should {
+    "ileQuery feature is disabled" should {
+      "return Ok (200) response" should {
+        "display page method is invoked with empty cache" in {
+          val result = controller().displayPage()(getRequest())
+          status(result) mustBe OK
 
-      "display page method is invoked with empty cache" in {
-        val result = controller().displayPage()(getRequest())
-        status(result) mustBe OK
+          theResponseForm.value mustBe empty
+        }
+      }
 
-        theResponseForm.value mustBe empty
+      "return 400 (BAD_REQUEST)" when {
+        "form is incorrect" in {
+          val incorrectForm: JsValue = JsObject(Map("choice" -> JsString("invalid")))
+          val result = controller().submit()(postRequest(incorrectForm))
+
+          status(result) mustBe BAD_REQUEST
+        }
+      }
+
+      "return 303 (SEE_OTHER)" when {
+
+        "user selects yes" in {
+          val incorrectForm: JsValue = JsObject(Map("choice" -> JsString("ducr_part_yes")))
+          val result = controller().submit()(postRequest(incorrectForm))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).value mustBe routes.DucrPartDetailsController.displayPage().url
+        }
+
+        "user selects no" in {
+          val incorrectForm: JsValue = JsObject(Map("choice" -> JsString("ducr_part_no")))
+          val result = controller().submit()(postRequest(incorrectForm))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).value mustBe routes.ConsignmentReferencesController.displayPage().url
+        }
       }
     }
-
-    "return 400 (BAD_REQUEST)" when {
-      "form is incorrect" in {
-        val incorrectForm: JsValue =
-          JsObject(Map("choice" -> JsString("invalid")))
-
-        val result = controller().submit()(postRequest(incorrectForm))
-
-        status(result) mustBe BAD_REQUEST
-      }
-    }
-
-    "return 303 (SEE_OTHER)" when {
-      "user selects yes" in {
-        val incorrectForm: JsValue =
-          JsObject(Map("choice" -> JsString("ducr_part_yes")))
-
-        val result = controller().submit()(postRequest(incorrectForm))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.DucrPartDetailsController.displayPage().url
-      }
-
-      "user selects no" in {
-        val incorrectForm: JsValue =
-          JsObject(Map("choice" -> JsString("ducr_part_no")))
-
-        val result = controller().submit()(postRequest(incorrectForm))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.ConsignmentReferencesController.displayPage().url
-      }
-    }
-
   }
 }

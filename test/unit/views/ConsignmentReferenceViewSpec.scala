@@ -16,39 +16,23 @@
 
 package views
 
-import base.OverridableInjector
-import config.DucrPartConfig
+import base.Injector
+import controllers.routes.DucrPartChiefController
 import forms.ConsignmentReferences
 import forms.UcrType.Ducr
 import models.cache.{ArrivalAnswers, JourneyType}
 import org.jsoup.nodes.Document
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.FormError
-import play.api.inject.bind
 import views.html.consignment_references
 
-class ConsignmentReferenceViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
-
-  private val appConfig = mock[DucrPartConfig]
-  private val injector = new OverridableInjector(bind[DucrPartConfig].toInstance(appConfig))
+class ConsignmentReferenceViewSpec extends ViewSpec with Injector with MockitoSugar {
 
   private implicit val request = journeyRequest(ArrivalAnswers())
 
-  private val page = injector.instanceOf[consignment_references]
+  private val page = instanceOf[consignment_references]
 
   private val goodsDirection = JourneyType.ARRIVE
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    when(appConfig.isDucrPartsEnabled).thenReturn(true)
-  }
-
-  override def afterEach(): Unit = {
-    reset(appConfig)
-    super.afterEach()
-  }
 
   "View" should {
     "render title" in {
@@ -90,23 +74,15 @@ class ConsignmentReferenceViewSpec extends ViewSpec with MockitoSugar with Befor
       view must haveGovUkFieldError("ducrValue", messages("consignmentReferences.reference.ducrValue.error"))
     }
 
-    "render back button when ducrPart disabled" in {
-      when(appConfig.isDucrPartsEnabled).thenReturn(false)
+    "render the back button" in {
       val backButton = page(ConsignmentReferences.form(goodsDirection)).getBackButton
 
       backButton mustBe defined
-      backButton.get must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
-    }
-
-    "render back button when ducrPart enabled" in {
-      when(appConfig.isDucrPartsEnabled).thenReturn(true)
-      val backButton = page(ConsignmentReferences.form(goodsDirection)).getBackButton
-
-      backButton mustBe defined
-      backButton.get must haveHref(controllers.routes.DucrPartChiefController.displayPage())
+      backButton.get must haveHref(DucrPartChiefController.displayPage())
     }
 
     "render error summary" when {
+
       "no errors" in {
         page(ConsignmentReferences.form(goodsDirection)).getErrorSummary mustBe empty
       }
@@ -120,5 +96,4 @@ class ConsignmentReferenceViewSpec extends ViewSpec with MockitoSugar with Befor
       }
     }
   }
-
 }

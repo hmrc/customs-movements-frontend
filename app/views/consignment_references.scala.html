@@ -15,15 +15,13 @@
  *@
 
 @import components.gds.{errorSummary, exportsInputText, gds_main_template, sectionHeader}
-@import controllers.routes
+@import controllers.routes.{DucrPartChiefController, ConsignmentReferencesController}
 @import forms.ConsignmentReferences
-@import forms.UcrType.Ducr
+@import forms.UcrType.{Ducr, Mucr}
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 @import views.components.BackButton
-@import forms.UcrType.Mucr
-@import views.components.config.ConsignmentReferenceConfig
 
 @this(
   govukLayout: gds_main_template,
@@ -32,8 +30,7 @@
   exportsInputText: exportsInputText,
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
-  pageConfig: ConsignmentReferenceConfig,
-  formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+  formHelper: FormWithCSRF
 )
 
 @(form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_], messages: Messages)
@@ -43,9 +40,9 @@
 
 @govukLayout(
   title = Title(headerKey, Some(sectionHeaderKey)),
-  backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl))) {
+  backButton = Some(BackButton(messages("site.back"), DucrPartChiefController.displayPage()))) {
 
-  @formHelper(action = routes.ConsignmentReferencesController.saveConsignmentReferences(), 'autoComplete -> "off") {
+  @formHelper(action = ConsignmentReferencesController.saveConsignmentReferences(), 'autoComplete -> "off") {
     @errorSummary(form.errors)
 
     @sectionHeader(messages(sectionHeaderKey))

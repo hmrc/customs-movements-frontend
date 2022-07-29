@@ -35,7 +35,6 @@ import views.components.config.ChoicePageConfig
 import views.html.choice_page
 import views.html.components.gds.{errorSummary, gds_main_template, sectionHeader}
 import views.tags.ViewTest
-import scala.collection.JavaConverters._
 
 @ViewTest
 class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with BeforeAndAfterEach {
@@ -92,7 +91,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
       "ILE query was for a Ducr" in {
         isUserOnArriveDepartAllowList(true)
         isIleQueryEnabled(true)
-        val view = choicePage(Choice.form(), Some(UcrBlock("DUCR", UcrType.Ducr)))
+        val view = choicePage(form, Some(UcrBlock("DUCR", UcrType.Ducr)))
 
         view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
         view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.departure.label"))
@@ -103,7 +102,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
       "user entered Choice page through Ducr Part Details page" in {
         isUserOnArriveDepartAllowList(true)
         isIleQueryEnabled(true)
-        val view = choicePage(Choice.form(), Some(UcrBlock("DUCR-123X", UcrType.DucrPart)))
+        val view = choicePage(form, Some(UcrBlock("DUCR-123X", UcrType.DucrPart)))
 
         view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
         view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.departure.label"))
@@ -117,7 +116,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
       "ILE query was for a Mucr" in {
         isUserOnArriveDepartAllowList(true)
         isIleQueryEnabled(true)
-        val view = choicePage(Choice.form(), Some(UcrBlock("MUCR", UcrType.Mucr)))
+        val view = choicePage(form, Some(UcrBlock("MUCR", UcrType.Mucr)))
 
         view.getElementsByAttributeValue("for", "choice").text() must be(messages("movement.choice.arrival.label"))
         view.getElementsByAttributeValue("for", "choice-2").text() must be(messages("movement.choice.departure.label"))
@@ -133,7 +132,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
     "ILE Query is enabled and user is on ArriveDepart allow list" should {
       isUserOnArriveDepartAllowList(true)
       isIleQueryEnabled(true)
-      val view = createView(Choice.form())
+      val view = createView()
 
       "display same page title as header" in {
         view.title() must include(view.getElementsByTag("h1").text())
@@ -173,7 +172,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
     "ILE Query is enabled and user is absent from ArriveDepart allow list" should {
       isUserOnArriveDepartAllowList(false)
       isIleQueryEnabled(true)
-      val view = createView(Choice.form())
+      val view = createView()
 
       "display same page title as header" in {
         view.title() must include(view.getElementsByTag("h1").text())
@@ -211,7 +210,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
     "ILE Query is disabled and user is on ArriveDepart allow list" should {
       isUserOnArriveDepartAllowList(true)
       isIleQueryEnabled(false)
-      val view = createView(Choice.form())
+      val view = createView()
 
       "display same page title as header" in {
         view.title() must include(view.getElementsByTag("h1").text())
@@ -251,7 +250,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
     "ILE Query is disabled and user is absent from ArriveDepart allow list" should {
       isUserOnArriveDepartAllowList(false)
       isIleQueryEnabled(false)
-      val view = createView(Choice.form())
+      val view = createView()
 
       "display same page title as header" in {
         view.title() must include(view.getElementsByTag("h1").text())
@@ -292,7 +291,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
     "display error when no choice is made" in {
       isIleQueryEnabled(true)
 
-      val view = createView(Choice.form().bind(Map[String, String]()))
+      val view = createView(form.bind(Map[String, String]()))
 
       view must haveGovUkGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#choice")
@@ -303,7 +302,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
     "display error when choice is incorrect" in {
       isIleQueryEnabled(true)
 
-      val view = createView(Choice.form().bind(Map("choice" -> "incorrect")))
+      val view = createView(form.bind(Map("choice" -> "incorrect")))
 
       view must haveGovUkGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#choice")
@@ -318,7 +317,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
       isUserOnArriveDepartAllowList(true)
       isIleQueryEnabled(true)
 
-      val view = createView(Choice.form().fill(Arrival))
+      val view = createView(form.fill(Arrival))
 
       ensureRadioIsChecked(view, "choice")
       ensureRadioIsUnChecked(view, "choice-2")
@@ -331,7 +330,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
       isUserOnArriveDepartAllowList(true)
       isIleQueryEnabled(true)
 
-      val view = createView(Choice.form().fill(Departure))
+      val view = createView(form.fill(Departure))
 
       ensureRadioIsUnChecked(view, "choice")
       ensureRadioIsChecked(view, "choice-2")
@@ -344,7 +343,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
       isUserOnArriveDepartAllowList(true)
       isIleQueryEnabled(true)
 
-      val view = createView(Choice.form().fill(AssociateUCR))
+      val view = createView(form.fill(AssociateUCR))
 
       ensureRadioIsUnChecked(view, "choice")
       ensureRadioIsUnChecked(view, "choice-2")
@@ -357,7 +356,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
       isUserOnArriveDepartAllowList(true)
       isIleQueryEnabled(true)
 
-      val view = createView(Choice.form().fill(DisassociateUCR))
+      val view = createView(form.fill(DisassociateUCR))
 
       ensureRadioIsUnChecked(view, "choice")
       ensureRadioIsUnChecked(view, "choice-2")
@@ -370,7 +369,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
       isUserOnArriveDepartAllowList(true)
       isIleQueryEnabled(true)
 
-      val view = createView(Choice.form().fill(ShutMUCR))
+      val view = createView(form.fill(ShutMUCR))
 
       ensureRadioIsUnChecked(view, "choice")
       ensureRadioIsUnChecked(view, "choice-2")

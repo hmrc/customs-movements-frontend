@@ -16,30 +16,29 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, DucrPartsAction, JourneyRefiner, NonIleQueryAction}
+import controllers.actions.{AuthAction, JourneyRefiner, NonIleQueryAction}
 import forms.DucrPartChiefChoice
 import forms.DucrPartChiefChoice.form
-
-import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
 import models.cache.JourneyType.JourneyType
 import models.cache._
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.twirl.api.HtmlFormat.Appendable
 import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.ducr_part_chief
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DucrPartChiefController @Inject() (
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
-  isDucrPartsFeatureEnabled: DucrPartsAction,
   ileQueryFeatureDisabled: NonIleQueryAction,
   cacheRepository: CacheRepository,
   mcc: MessagesControllerComponents,
@@ -47,7 +46,7 @@ class DucrPartChiefController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  private val requiredActions = authenticate andThen isDucrPartsFeatureEnabled andThen ileQueryFeatureDisabled andThen getJourney(
+  private val requiredActions = authenticate andThen ileQueryFeatureDisabled andThen getJourney(
     JourneyType.ARRIVE,
     JourneyType.DEPART,
     JourneyType.ASSOCIATE_UCR,
@@ -70,7 +69,7 @@ class DucrPartChiefController @Inject() (
         )
     }
 
-  private def buildPage(form: Form[DucrPartChiefChoice])(implicit request: JourneyRequest[_]) =
+  private def buildPage(form: Form[DucrPartChiefChoice])(implicit request: JourneyRequest[_]): Appendable =
     ducrPartChiefPage(form)
 
   private def updateCache(cache: Cache, choice: DucrPartChiefChoice): Future[Result] = {
@@ -78,7 +77,7 @@ class DucrPartChiefController @Inject() (
     cacheRepository.upsert(toUpdate).map(_ => Redirect(nextPage(choice, cache.answers.map(_.`type`).getOrElse(throw ReturnToStartException))))
   }
 
-  private def nextPage(choice: DucrPartChiefChoice, journeyType: JourneyType) =
+  private def nextPage(choice: DucrPartChiefChoice, journeyType: JourneyType): Call =
     if (choice.choice == DucrPartChiefChoice.IsDucrPart)
       controllers.routes.DucrPartDetailsController.displayPage()
     else

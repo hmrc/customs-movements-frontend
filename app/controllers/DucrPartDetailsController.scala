@@ -17,14 +17,14 @@
 package controllers
 
 import config.IleQueryConfig
-import controllers.actions.{AuthAction, DucrPartsAction, JourneyRefiner, NonIleQueryAction}
+import controllers.actions.{AuthAction, JourneyRefiner, NonIleQueryAction}
 import forms._
 import models.UcrBlock
 import models.cache._
 import models.requests.{JourneyRequest, RequestWithAnswers}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc._
 import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -37,7 +37,6 @@ class DucrPartDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
-  isDucrPartsFeatureEnabled: DucrPartsAction,
   ileQueryFeatureDisabled: NonIleQueryAction,
   ileQueryConfig: IleQueryConfig,
   cacheRepository: CacheRepository,
@@ -47,7 +46,7 @@ class DucrPartDetailsController @Inject() (
 
   def displayPage(): Action[AnyContent] =
     if (ileQueryConfig.isIleQueryEnabled)
-      (authenticate andThen isDucrPartsFeatureEnabled).async { implicit request =>
+      authenticate.async { implicit request =>
         cacheLookup
       }
     else {
@@ -56,7 +55,7 @@ class DucrPartDetailsController @Inject() (
       }
     }
 
-  private def cacheLookup(implicit request: RequestWithAnswers[_]) =
+  private def cacheLookup(implicit request: RequestWithAnswers[_]): Future[Result] =
     cacheRepository
       .findByEori(request.eori)
       .map {
@@ -67,7 +66,7 @@ class DucrPartDetailsController @Inject() (
       }
       .map(form => Ok(ducrPartsDetailsPage(form)))
 
-  def submitDucrPartDetails(): Action[AnyContent] = (authenticate andThen isDucrPartsFeatureEnabled).async { implicit request =>
+  def submitDucrPartDetails(): Action[AnyContent] = authenticate.async { implicit request =>
     getEmptyForm
       .bindFromRequest()
       .fold(
@@ -79,7 +78,7 @@ class DucrPartDetailsController @Inject() (
       )
   }
 
-  private val submitDucrPartForJourneyActions = authenticate andThen isDucrPartsFeatureEnabled andThen ileQueryFeatureDisabled andThen getJourney(
+  private val submitDucrPartForJourneyActions = authenticate andThen ileQueryFeatureDisabled andThen getJourney(
     JourneyType.ARRIVE,
     JourneyType.DEPART,
     JourneyType.ASSOCIATE_UCR,
@@ -104,7 +103,7 @@ class DucrPartDetailsController @Inject() (
         )
     }
 
-  private def handleArrival(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]) =
+  private def handleArrival(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]): Future[Result] =
     saveAndContinue(
       request.cache
         .copy(
@@ -114,7 +113,7 @@ class DucrPartDetailsController @Inject() (
       controllers.routes.SpecificDateTimeController.displayPage()
     )
 
-  private def handleDeparture(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]) =
+  private def handleDeparture(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]): Future[Result] =
     saveAndContinue(
       request.cache
         .copy(
@@ -124,25 +123,24 @@ class DucrPartDetailsController @Inject() (
       controllers.routes.SpecificDateTimeController.displayPage()
     )
 
-  private def handleAssociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]) =
+  private def handleAssociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]): Future[Result] =
     saveAndContinue(
       request.cache
         .copy(queryUcr = ucrBlock, answers = Some(request.answersAs[AssociateUcrAnswers].copy(associateUcr = ucrBlock.map(AssociateUcr.apply)))),
       consolidations.routes.MucrOptionsController.displayPage()
     )
 
-  private def handleDissociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]) =
+  private def handleDissociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]): Future[Result] =
     saveAndContinue(
       request.cache
         .copy(queryUcr = ucrBlock, answers = Some(request.answersAs[DisassociateUcrAnswers].copy(ucr = ucrBlock.map(DisassociateUcr.apply)))),
       controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage()
     )
 
-  private def saveAndContinue(cache: Cache, nextPage: Call) =
+  private def saveAndContinue(cache: Cache, nextPage: Call): Future[Result] =
     cacheRepository
       .upsert(cache)
       .map(_ => Redirect(nextPage))
 
   private def getEmptyForm: Form[DucrPartDetails] = DucrPartDetails.form()
-
 }

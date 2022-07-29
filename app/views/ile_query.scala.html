@@ -14,13 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.DucrPartConfig
-@import views.Title
-@import views.html.components.gds.link
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import components.gds.{errorSummary, gds_main_template, pageTitle}
-@import views.html.components.gds.exportsInputText
+@import uk.gov.hmrc.govukfrontend.views.html.components.{Button, FormWithCSRF, GovukButton, Text}
 @import views.components.BackButton
+@import views.html.components.gds.{exportsInputText, link}
+@import views.Title
 
 @this(
     govukLayout: gds_main_template,
@@ -29,8 +27,7 @@
     exportsInputText: exportsInputText,
     errorSummary: errorSummary,
     pageTitle: pageTitle,
-    formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
-    ducrPartsConfig: DucrPartConfig
+    formHelper: FormWithCSRF
 )
 
 @(form: Form[String])(implicit request: Request[_], messages: Messages)
@@ -56,9 +53,7 @@
 
         <ul class="govuk-list">
             <li>@link(message = Html(messages("ileQuery.link.requests")), href = routes.SubmissionsController.displayPage())</li>
-            @if(ducrPartsConfig.isDucrPartsEnabled){
-                <li>@link(message = Html(messages("ileQuery.link.ducrPart")), href = routes.DucrPartDetailsController.displayPage())</li>
-            }
+            <li>@link(message = Html(messages("ileQuery.link.ducrPart")), href = routes.DucrPartDetailsController.displayPage())</li>
         </ul>
 
     }

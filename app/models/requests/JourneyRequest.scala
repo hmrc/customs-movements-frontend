@@ -26,8 +26,6 @@ case class JourneyRequest[T](cache: Cache, request: AuthenticatedRequest[T]) ext
 
   def answers: Answers = cache.answers.getOrElse(throw ReturnToStartException)
 
-  def answersAre[J <: Answers]: Boolean = cache.answers.isInstanceOf[J]
-
   def answersAs[J <: Answers]: J = answers match {
     case ans: J => ans
     case _      => throw ReturnToStartException

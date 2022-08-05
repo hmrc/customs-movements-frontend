@@ -15,6 +15,7 @@
  *@
 
 @import forms.AssociateUcr
+@import models.requests.JourneyRequest
 @import views.Title
 @import components.gds.{gds_main_template, linkContent, pageTitle}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -27,11 +28,19 @@
         linkContent: linkContent,
         formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF)
 
-@(associateUcr: AssociateUcr, mucr: String)(implicit request: Request[_], messages: Messages)
+@(associateUcr: AssociateUcr, mucr: String)(implicit request: JourneyRequest[_], messages: Messages)
+
+@backlink = @{
+    if(request.cache.queryUcr.isDefined) {
+        consolidations.routes.MucrOptionsController.displayPage()
+    } else {
+        consolidations.routes.AssociateUcrController.displayPage()
+    }
+}
 
 @govukLayout(
     title = Title("associate.ucr.summary.title"),
-    backButton = Some(BackButton(messages("site.back"), consolidations.routes.AssociateUcrController.displayPage)),
+    backButton = Some(BackButton(messages("site.back"), backlink)),
     useCustomContentWidth = true
 ) {
 

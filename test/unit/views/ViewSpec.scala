@@ -17,7 +17,7 @@
 package views
 
 import controllers.CSRFSupport
-import models.SignedInUser
+import models.{SignedInUser, UcrBlock}
 import models.cache.{Answers, Cache}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import org.jsoup.Jsoup
@@ -34,9 +34,9 @@ class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with Messages
 
   implicit protected def htmlBodyOf(html: Html): Document = Jsoup.parse(html.toString())
 
-  protected def journeyRequest(answers: Answers) =
+  protected def journeyRequest(answers: Answers, queryUcr: Option[UcrBlock] = None) =
     JourneyRequest(
-      Cache(validEori, Some(answers), None, None),
+      Cache(validEori, Some(answers), queryUcr, None),
       AuthenticatedRequest(FakeRequest().withCSRFToken, SignedInUser(validEori, Enrolments(Set.empty)))
     )
 

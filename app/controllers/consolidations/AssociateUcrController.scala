@@ -18,8 +18,6 @@ package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
 import forms.AssociateUcr.form
-
-import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
 import models.cache.{AssociateUcrAnswers, JourneyType}
 import play.api.i18n.I18nSupport
@@ -29,6 +27,7 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.associateucr.associate_ucr
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

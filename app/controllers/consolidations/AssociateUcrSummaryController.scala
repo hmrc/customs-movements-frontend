@@ -20,7 +20,6 @@ import config.IleQueryConfig
 import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.storage.FlashKeys
 import forms.UcrType
-import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
 import models.cache.{AssociateUcrAnswers, JourneyType}
 import play.api.i18n.I18nSupport
@@ -29,6 +28,7 @@ import services.SubmissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.associateucr.{associate_ucr_summary, associate_ucr_summary_no_change}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton

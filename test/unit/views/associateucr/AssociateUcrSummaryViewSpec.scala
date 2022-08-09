@@ -19,7 +19,9 @@ package views.associateucr
 import base.Injector
 import forms.UcrType._
 import forms.AssociateUcr
+import models.UcrBlock
 import models.cache.AssociateUcrAnswers
+import models.requests.JourneyRequest
 import play.twirl.api.Html
 import views.ViewSpec
 import views.html.associateucr.associate_ucr_summary
@@ -32,8 +34,8 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
 
   private val page = instanceOf[associate_ucr_summary]
 
-  private def createView(mucr: String, ducr: String): Html =
-    page(AssociateUcr(Ducr, ducr), mucr)(request, messages)
+  private def createView(mucr: String, ducr: String)(implicit request: JourneyRequest[_]): Html =
+    page(AssociateUcr(Ducr, ducr), mucr)
 
   "Associate Ducr Confirmation View" should {
 
@@ -48,15 +50,22 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
       view.getElementById("title") must containMessage("associate.ucr.summary.title")
     }
 
-    "render back button" in {
+    "render back button" when {
 
-      val backButton = view.getBackButton
+      for (ucrBlock <- List(None, Some(new UcrBlock("", Some(""), ""))))
+        s"QueryUcr is $ucrBlock in Cache" in {
+          implicit val request = journeyRequest(AssociateUcrAnswers(), ucrBlock)
+          val view = createView("MUCR", "DUCR")
+          val backButton = view.getBackButton
 
-      backButton mustBe defined
-      backButton.foreach { button =>
-        button must haveHref(controllers.consolidations.routes.AssociateUcrController.displayPage())
-        button must containMessage("site.back")
-      }
+          val backlink =
+            if (ucrBlock.isDefined) controllers.consolidations.routes.MucrOptionsController.displayPage()
+            else controllers.consolidations.routes.AssociateUcrController.displayPage()
+
+          backButton mustBe defined
+          backButton.get must haveHref(backlink)
+          backButton.get must containMessage("site.back")
+        }
     }
 
     "display 'Confirm and submit' button on page" in {

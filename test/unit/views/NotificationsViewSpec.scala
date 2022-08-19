@@ -33,7 +33,7 @@ class NotificationsViewSpec extends ViewSpec with Injector {
 
   "Notification page" should {
 
-    val pageWithoutNotifications = page(submissionUcr = CommonTestData.correctUcr, elementsToDisplay = Seq.empty)
+    val pageWithoutNotifications = page(submissionUcr = CommonTestData.validMucr, elementsToDisplay = Seq.empty)
 
     "contain title" in {
       pageWithoutNotifications.getTitle must containText(messages("notifications.title", CommonTestData.correctUcr))
@@ -42,6 +42,26 @@ class NotificationsViewSpec extends ViewSpec with Injector {
     "contain header" in {
       val text = messages("notifications.title", CommonTestData.correctUcr)
       pageWithoutNotifications.getElementById("title") must containText(text)
+    }
+
+    "contains the right UCR label" when {
+      "UCR is a MUCR" in {
+        val ucr = CommonTestData.validMucr
+        val pageWithMUCR = page(submissionUcr = ucr, elementsToDisplay = Seq.empty)
+
+        val text = messages("notifications.mucr", ucr)
+
+        pageWithMUCR.getElementsByClass("notifications-ucr").first() must containText(text)
+      }
+
+      "UCR is a DUCR" in {
+        val ucr = CommonTestData.validDucr
+        val pageWithMUCR = page(submissionUcr = ucr, elementsToDisplay = Seq.empty)
+
+        val text = messages("notifications.ducr", ucr)
+
+        pageWithMUCR.getElementsByClass("notifications-ucr").first() must containText(text)
+      }
     }
 
     "contain elements for all notifications in correct order" in {

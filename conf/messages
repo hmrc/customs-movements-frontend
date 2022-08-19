@@ -342,6 +342,7 @@ submissions.mucrdisassociation = Disassociate MUCR
 
 notifications.title = Notification details
 notifications.mucr = MUCR: {0}
+notifications.ducr = DUCR: {0}
 
 notifications.elem.title.Arrival = Request to arrive has been received
 notifications.elem.title.Departure = Request to depart has been received

@@ -30,7 +30,7 @@
 
   @pageTitle(text = messages("notifications.title"), classes = "govuk-heading-l govuk-!-margin-bottom-2")
 
-  <span class="notifications-mucr govuk-caption-l">@messages("notifications.mucr", submissionUcr)</span>
+  <span class="notifications-ucr govuk-caption-l">@{if(submissionUcr.matches("^[0-9].*")){messages("notifications.ducr", submissionUcr)}else{messages("notifications.mucr", submissionUcr)}}</span>
 
   <ol class="hmrc-timeline govuk-!-margin-top-5 govuk-!-margin-bottom-6">
     @elementsToDisplay.map(components.notifications_single_element(_))

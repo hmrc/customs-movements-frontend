@@ -77,8 +77,9 @@ class AssociateUcrViewSpec extends ViewSpec with Injector {
         }
       }
 
-      "display 'Continue' button on page" in {
-        emptyView.getElementsByClass("govuk-button").text() mustBe messages("site.continue")
+      "display save buttons on page" in {
+        emptyView.getElementsByClass("govuk-button").first().text() mustBe messages("site.continue")
+        emptyView.getElementsByClass("govuk-button").last().text() mustBe messages("site.saveAndReturnToSummary")
       }
     }
 

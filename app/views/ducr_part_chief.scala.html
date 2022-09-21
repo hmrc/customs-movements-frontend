@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import components.gds.{errorSummary, exportsInputText, gds_main_template, sectionHeader}
+@import components.gds._
 @import controllers.routes
 @import forms.DucrPartChiefChoice
 @import models.requests.JourneyRequest
@@ -29,7 +29,8 @@
     exportsInputText: exportsInputText,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
-    formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+    formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
+    saveButtons: saveButtons
 )
 
 @(form: Form[DucrPartChiefChoice])(implicit request: JourneyRequest[_], messages: Messages)
@@ -71,6 +72,6 @@
       )
     ))
 
-    @govukButton(Button(content = Text(messages("site.continue"))))
+    @saveButtons()
   }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import components.gds.{errorSummary, exportsInputText, gds_main_template, sectionHeader}
+@import components.gds._
 @import forms.{UcrType, AssociateUcr, MucrOptions}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
@@ -29,7 +29,9 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         pageConfig: AssociateUcrPageConfig,
-        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF)
+        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
+        saveButtons: saveButtons
+)
 
 @(form: Form[AssociateUcr], mucrOptions: MucrOptions)(implicit request: Request[_], messages: Messages)
 
@@ -70,6 +72,8 @@
             ),
             errorMessage = form("kind").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-        @govukButton(Button(content = Text(messages("site.continue"))))
+
+        @saveButtons()
+
     }
 }

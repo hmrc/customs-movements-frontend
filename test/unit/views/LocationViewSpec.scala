@@ -71,10 +71,6 @@ class LocationViewSpec extends ViewSpec with Injector {
       backButton.get must haveHref(routes.MovementDetailsController.displayPage())
     }
 
-    "display 'Continue' button on page" in {
-
-      view.getSubmitButton mustBe defined
-      view.getSubmitButton.get must containMessage("site.continue")
-    }
+    checkAllSaveButtonsAreDisplayed(view)
   }
 }

@@ -158,10 +158,8 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
         }
       }
 
-      "have 'Continue' button" in {
-        emptyView.getSubmitButton mustBe defined
-        emptyView.getSubmitButton.get must containMessage("site.continue")
-      }
+      checkAllSaveButtonsAreDisplayed(emptyView)
+
     }
 
     "provided with form containing data" should {

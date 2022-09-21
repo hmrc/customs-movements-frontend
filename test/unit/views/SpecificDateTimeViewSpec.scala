@@ -92,9 +92,6 @@ class SpecificDateTimeViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       }
     }
 
-    "display 'Continue' button on page" in {
-      createView.getSubmitButton mustBe defined
-      createView.getSubmitButton.get must containMessage("site.continue")
-    }
+    checkAllSaveButtonsAreDisplayed(createView)
   }
 }

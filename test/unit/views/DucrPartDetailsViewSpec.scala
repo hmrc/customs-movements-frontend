@@ -130,11 +130,7 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with MockitoSug
           view.getElementById("ducrPartId").`val`() mustBe empty
         }
 
-        "render submit button" in {
-
-          view.getSubmitButton mustBe defined
-          view.getSubmitButton.get must containMessage("site.continue")
-        }
+        checkAllSaveButtonsAreDisplayed(view)
       }
 
       "provided with filled form" should {

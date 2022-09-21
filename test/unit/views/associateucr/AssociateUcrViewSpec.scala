@@ -77,10 +77,7 @@ class AssociateUcrViewSpec extends ViewSpec with Injector {
         }
       }
 
-      "display save buttons on page" in {
-        emptyView.getElementsByClass("govuk-button").first().text() mustBe messages("site.continue")
-        emptyView.getElementsByClass("govuk-button").last().text() mustBe messages("site.saveAndReturnToSummary")
-      }
+      checkAllSaveButtonsAreDisplayed(createView(mucrOptions, AssociateUcr.form.fill(AssociateUcr(Mucr, "1234"))))
     }
 
     "form contains 'MUCR' with value" should {

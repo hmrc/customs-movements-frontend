@@ -73,5 +73,7 @@ class ManageMucrViewSpec extends ViewSpec with Injector {
         view must haveGovUkFieldError("choice", messages("manageMucr.input.error.empty"))
       }
     }
+
+    checkAllSaveButtonsAreDisplayed(page(form, queryUcr))
   }
 }

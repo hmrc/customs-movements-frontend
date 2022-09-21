@@ -95,5 +95,8 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector with MockitoSu
         view must haveGovUkFieldError("reference", messages("consignmentReferences.reference.empty.arrive"))
       }
     }
+
+    checkAllSaveButtonsAreDisplayed(page(ConsignmentReferences.form(goodsDirection)))
+
   }
 }

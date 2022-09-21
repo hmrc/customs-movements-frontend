@@ -76,10 +76,7 @@ class TransportViewSpec extends ViewSpec with Injector {
       backButton must haveHref(routes.LocationController.displayPage())
     }
 
-    "display 'Continue' button on page" in {
-      val saveButton = createPage.getElementsByClass("govuk-button").get(0)
-      saveButton.text() must be(messages("site.continue"))
-    }
+    checkAllSaveButtonsAreDisplayed(createPage)
   }
 
 }

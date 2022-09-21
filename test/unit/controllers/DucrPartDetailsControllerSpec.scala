@@ -136,7 +136,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.ChoiceController.displayChoiceForm().url)
 
-        val expectedUcrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts)
+        val expectedUcrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts.toUpperCase)
         theCacheUpserted.queryUcr mustBe defined
         theCacheUpserted.queryUcr.get mustBe expectedUcrBlock
       }
@@ -174,7 +174,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.ChoiceController.displayChoiceForm().url)
 
-          val expectedUcrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts)
+          val expectedUcrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts.toUpperCase)
           theCacheUpserted.queryUcr mustBe defined
           theCacheUpserted.queryUcr.get mustBe expectedUcrBlock
         }

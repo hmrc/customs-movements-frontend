@@ -68,5 +68,7 @@ class DucrPartChiefViewSpec extends ViewSpec with Injector {
         view must haveGovUkFieldError("choice", messages("ducrPartChief.input.error.empty"))
       }
     }
+
+    checkAllSaveButtonsAreDisplayed(page(form))
   }
 }

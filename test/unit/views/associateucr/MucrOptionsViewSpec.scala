@@ -113,11 +113,6 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
       }
     }
 
-    "display 'Continue' button on page" in {
-      createView().getSubmitButton mustBe defined
-      createView().getSubmitButton.get must containMessage("site.continue")
-    }
-
     "render error summary" when {
       "no errors" in {
         createView().getErrorSummary mustBe empty
@@ -130,5 +125,7 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
         view must haveGovUkFieldError("createOrAdd", messages("mucrOptions.reference.value.error.empty"))
       }
     }
+
+    checkAllSaveButtonsAreDisplayed(createView())
   }
 }

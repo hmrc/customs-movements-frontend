@@ -55,6 +55,7 @@ object DucrPartDetails {
         .verifying("ducrPartDetails.ducr.empty", nonEmpty)
         .verifying("ducrPartDetails.ducr.invalid", isEmpty or validDucrIgnoreCase),
       "ducrPartId" -> text()
+        .transform(_.toUpperCase, (o: String) => o)
         .verifying("ducrPartDetails.ducrPartId.empty", nonEmpty)
         .verifying("ducrPartDetails.ducrPartId.invalid", isEmpty or isValidDucrPartId)
     )(bind)(unapply)

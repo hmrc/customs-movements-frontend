@@ -59,7 +59,7 @@ class LocationController @Inject() (
         validForm =>
           request.answers match {
             case arrivalAnswers: ArrivalAnswers =>
-              cache.upsert(request.cache.update(arrivalAnswers.copy(location = Some(validForm), readyToSubmit = true))).map { _ =>
+              cache.upsert(request.cache.update(arrivalAnswers.copy(location = Some(validForm), readyToSubmit = Some(true)))).map { _ =>
                 Redirect(controllers.routes.SummaryController.displayPage())
               }
             case departureAnswers: DepartureAnswers =>

@@ -21,6 +21,7 @@
 @import components.gds._
 @import components.gds.exportsInputText
 @import forms.ManageMucrChoice
+@import models.requests.RequestWithAnswers
 
 @this(
     govukLayout: gds_main_template,
@@ -34,7 +35,7 @@
     saveButtons: saveButtons
 )
 
-@(form: Form[ManageMucrChoice], queryUcr: Option[UcrBlock])(implicit request: Request[_], messages: Messages)
+@(form: Form[ManageMucrChoice], queryUcr: Option[UcrBlock])(implicit request: RequestWithAnswers[_], messages: Messages)
 
 @govukLayout(
     title = Title("manageMucr.title"),

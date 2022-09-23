@@ -23,6 +23,7 @@
 @import views.components.BackButton
 @import components.gds._
 @import services.Countries
+@import models.requests.RequestWithAnswers
 
 
 @this(  govukLayout: gds_main_template,
@@ -36,7 +37,7 @@
         saveButtons: saveButtons
 )
 
-@(form: Form[Transport], consignmentReference: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Transport], consignmentReference: String)(implicit request: RequestWithAnswers[_], messages: Messages)
 
 @govukLayout(
     title = Title("transport.title"),

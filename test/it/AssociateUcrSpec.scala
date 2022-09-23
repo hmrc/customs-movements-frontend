@@ -100,7 +100,7 @@ class AssociateUcrSpec extends IntegrationSpec {
           AssociateUcrAnswers(
             mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/82F9-0N2F6500040010TO120P0A30068")),
             associateUcr = None,
-            readyToSubmit = true
+            readyToSubmit = Some(true)
           )
         )
       }
@@ -132,7 +132,7 @@ class AssociateUcrSpec extends IntegrationSpec {
           AssociateUcrAnswers(
             mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345")),
             associateUcr = Some(AssociateUcr(UcrType.Mucr, "GB/321-54321")),
-            readyToSubmit = true
+            readyToSubmit = Some(true)
           )
         )
       }

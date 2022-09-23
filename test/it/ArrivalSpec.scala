@@ -213,7 +213,7 @@ class ArrivalSpec extends IntegrationSpec {
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
             arrivalDetails = Some(ArrivalDetails(Date(date), Time(time))),
             location = Some(Location("GBAUEMAEMAEMA")),
-            readyToSubmit = true
+            readyToSubmit = Some(true)
           )
         )
       }

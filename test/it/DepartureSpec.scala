@@ -267,7 +267,7 @@ class DepartureSpec extends IntegrationSpec {
             departureDetails = Some(DepartureDetails(Date(date), Time(time))),
             location = Some(Location("GBAUEMAEMAEMA")),
             transport = Some(Transport("1", "123", "FR")),
-            readyToSubmit = true
+            readyToSubmit = Some(true)
           )
         )
       }

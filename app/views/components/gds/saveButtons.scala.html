@@ -15,6 +15,7 @@
  *@
 
 @import views.html.components.gds._
+@import models.requests.RequestWithAnswers
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
@@ -22,7 +23,7 @@
   saveAndReturnToSummary: saveAndReturnToSummary
 )
 
-@()(implicit messages: Messages)
+@()(implicit request: RequestWithAnswers[_], messages: Messages)
 
 
 @govukButton(Button(content = Text(messages("site.continue")))) @saveAndReturnToSummary()

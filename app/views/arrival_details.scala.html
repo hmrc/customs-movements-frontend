@@ -21,6 +21,7 @@
 @import views.components.BackButton
 @import views.html.components.gds._
 @import forms.common.DateTimeErrors
+@import models.requests.RequestWithAnswers
 
 @this(
 govukLayout: gds_main_template,
@@ -33,7 +34,7 @@ formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
 saveButtons: saveButtons
 )
 
-@(form: Form[ArrivalDetails], consignmentReferenceValue: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[ArrivalDetails], consignmentReferenceValue: String)(implicit request: RequestWithAnswers[_], messages: Messages)
 
 @govukLayout(
   title = Title("arrivalDetails.header"),

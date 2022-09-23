@@ -55,12 +55,14 @@ class MucrOptionsController @Inject() (
         formWithErrors => Future.successful(BadRequest(buildPage(formWithErrors))),
         validForm => {
           val updatedAnswers = request.answersAs[AssociateUcrAnswers].copy(mucrOptions = Some(validForm))
-          cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
-            if (request.cache.queryUcr.isDefined)
+          if (request.cache.queryUcr.isDefined)
+            cacheRepository.upsert(request.cache.update(updatedAnswers.copy(readyToSubmit = true))).map { _ =>
               Redirect(routes.AssociateUcrSummaryController.displayPage())
-            else
+            }
+          else
+            cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
               Redirect(routes.AssociateUcrController.displayPage())
-          }
+            }
         }
       )
   }

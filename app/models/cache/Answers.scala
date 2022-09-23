@@ -26,7 +26,8 @@ case class ArrivalAnswers(
   override val consignmentReferences: Option[ConsignmentReferences] = None,
   arrivalDetails: Option[ArrivalDetails] = None,
   override val location: Option[Location] = None,
-  override val specificDateTimeChoice: Option[SpecificDateTimeChoice] = None
+  override val specificDateTimeChoice: Option[SpecificDateTimeChoice] = None,
+  readyToSubmit: Boolean = false
 ) extends MovementAnswers {
   override val `type`: JourneyType.Value = JourneyType.ARRIVE
 }
@@ -42,7 +43,8 @@ case class DepartureAnswers(
   departureDetails: Option[DepartureDetails] = None,
   override val location: Option[Location] = None,
   override val specificDateTimeChoice: Option[SpecificDateTimeChoice] = None,
-  transport: Option[Transport] = None
+  transport: Option[Transport] = None,
+  readyToSubmit: Boolean = false
 ) extends MovementAnswers {
   override val `type`: JourneyType.Value = JourneyType.DEPART
 }
@@ -58,12 +60,14 @@ trait MovementAnswers extends Answers {
   val consignmentReferences: Option[ConsignmentReferences]
   val location: Option[Location]
   val specificDateTimeChoice: Option[SpecificDateTimeChoice]
+  val readyToSubmit: Boolean
 }
 
 case class AssociateUcrAnswers(
   manageMucrChoice: Option[ManageMucrChoice] = None,
   mucrOptions: Option[MucrOptions] = None,
-  associateUcr: Option[AssociateUcr] = None
+  associateUcr: Option[AssociateUcr] = None,
+  readyToSubmit: Boolean = false
 ) extends Answers {
   override val `type`: JourneyType.Value = JourneyType.ASSOCIATE_UCR
 

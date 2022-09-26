@@ -16,16 +16,13 @@
 
 package controllers.navigation
 
-import controllers.ControllerLayerSpec
+import base.UnitSpec
 import forms.SaveAndReturnToSummary
-import models.cache.ArrivalAnswers
-import org.scalatest.matchers.must.Matchers
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repository.MockCache
 
-class NavigatorSpec extends ControllerLayerSpec with MockCache with Matchers {
+class NavigatorSpec extends UnitSpec {
 
   private val navigator = new Navigator()
 
@@ -34,7 +31,7 @@ class NavigatorSpec extends ControllerLayerSpec with MockCache with Matchers {
     "go to the URL provided" when {
 
       "Save And Continue" in {
-        val result = navigator.continueTo(Call("GET", "/url"))(journeyRequest(ArrivalAnswers()))
+        val result = navigator.continueTo(Call("GET", "/url"))(FakeRequest("GET", "uri"))
 
         result.header.status mustBe SEE_OTHER
         result.header.headers.get(LOCATION) mustBe Some("/url")
@@ -44,9 +41,7 @@ class NavigatorSpec extends ControllerLayerSpec with MockCache with Matchers {
     "Go to the summary page when Save and return to summary form action" when {
 
       "user is in draft mode" in {
-        val result = navigator.continueTo(Call("GET", "/"))(
-          FakeRequest("GET", "uri").withFormUrlEncodedBody(SaveAndReturnToSummary.toString -> "")
-        )
+        val result = navigator.continueTo(Call("GET", "/"))(FakeRequest("GET", "uri").withFormUrlEncodedBody(SaveAndReturnToSummary.toString -> ""))
 
         result.header.status mustBe SEE_OTHER
         result.header.headers.get(LOCATION) mustBe Some(controllers.routes.SummaryController.displayPage().url)

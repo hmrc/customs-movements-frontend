@@ -17,19 +17,20 @@
 package controllers
 
 import controllers.actions.{AuthAction, JourneyRefiner, NonIleQueryAction}
+import controllers.navigation.Navigator
 import forms.ConsignmentReferences
 import forms.ConsignmentReferences._
-
-import javax.inject.{Inject, Singleton}
 import models.cache._
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.consignment_references
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -39,7 +40,8 @@ class ConsignmentReferencesController @Inject() (
   ileQueryFeatureDisabled: NonIleQueryAction,
   cacheRepository: CacheRepository,
   mcc: MessagesControllerComponents,
-  consignmentReferencesPage: consignment_references
+  consignmentReferencesPage: consignment_references,
+  navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
@@ -58,14 +60,15 @@ class ConsignmentReferencesController @Inject() (
           validForm =>
             request.answers match {
               case arrivalAnswers: ArrivalAnswers =>
-                cacheRepository.upsert(request.cache.update(arrivalAnswers.copy(consignmentReferences = Some(validForm)))).map { _ =>
-                  Redirect(controllers.routes.SpecificDateTimeController.displayPage())
-                }
+                saveAndContinue(arrivalAnswers.copy(consignmentReferences = Some(validForm)))
               case departureAnswers: DepartureAnswers =>
-                cacheRepository.upsert(request.cache.update(departureAnswers.copy(consignmentReferences = Some(validForm)))).map { _ =>
-                  Redirect(controllers.routes.SpecificDateTimeController.displayPage())
-                }
+                saveAndContinue(departureAnswers.copy(consignmentReferences = Some(validForm)))
             }
         )
+    }
+
+  private def saveAndContinue(answers: Answers)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+    cacheRepository.upsert(request.cache.update(answers)).map { _ =>
+      navigator.continueTo(controllers.routes.SpecificDateTimeController.displayPage())
     }
 }

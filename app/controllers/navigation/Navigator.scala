@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import views.html.components.gds._
-@import models.requests.RequestWithAnswers
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+package controllers.navigation
 
-@this(
-  govukButton: GovukButton,
-  saveAndReturnToSummary: saveAndReturnToSummary
-)
+import forms.{FormAction, SaveAndReturnToSummary}
+import play.api.mvc._
 
-@()(implicit request: RequestWithAnswers[_], messages: Messages)
+class Navigator {
 
+  def continueTo(redirectTo: Call)(implicit request: Request[AnyContent]): Result =
+    FormAction.bindFromRequest match {
+      case Some(SaveAndReturnToSummary) => Results.Redirect(controllers.routes.SummaryController.displayPage())
+      case _                            => Results.Redirect(redirectTo)
+    }
 
-@govukButton(Button(content = Text(messages("site.continue")), name = Some("Continue")))
-@if(request.answers.readyToSubmit.contains(true)) {
-@saveAndReturnToSummary()
 }

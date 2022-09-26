@@ -134,7 +134,6 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with MockitoSug
 
         checkSaveAndReturnToSummaryButtonIsHidden(createView(DucrPartDetails.form()))
 
-
       }
 
       "provided with filled form" should {

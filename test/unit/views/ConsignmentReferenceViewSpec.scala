@@ -34,7 +34,7 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector with MockitoSu
   private val page = instanceOf[consignment_references]
 
   private val goodsDirection = JourneyType.ARRIVE
-  
+
   def view(implicit request: JourneyRequest[_] = request) = page(ConsignmentReferences.form(goodsDirection))
 
   "View" should {
@@ -47,27 +47,17 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector with MockitoSu
     }
 
     "render options" in {
-      view().getElementsByAttributeValue("for", "reference").first() must containMessage(
-        "consignmentReferences.reference.ducr"
-      )
-      view().getElementsByAttributeValue("for", "reference-2").first() must containMessage(
-        "consignmentReferences.reference.mucr"
-      )
+      view().getElementsByAttributeValue("for", "reference").first() must containMessage("consignmentReferences.reference.ducr")
+      view().getElementsByAttributeValue("for", "reference-2").first() must containMessage("consignmentReferences.reference.mucr")
     }
 
     "render labels" in {
-      view().getElementsByAttributeValue("for", "mucrValue").first() must containMessage(
-        "site.inputText.mucr.label"
-      )
-      view().getElementsByAttributeValue("for", "ducrValue").first() must containMessage(
-        "site.inputText.ducr.label"
-      )
+      view().getElementsByAttributeValue("for", "mucrValue").first() must containMessage("site.inputText.mucr.label")
+      view().getElementsByAttributeValue("for", "ducrValue").first() must containMessage("site.inputText.ducr.label")
     }
 
     "render hint above DUCR input" in {
-      view().getElementsByAttributeValue("id", "ducrValue-hint").first() must containMessage(
-        "consignmentReferences.reference.ducr.hint"
-      )
+      view().getElementsByAttributeValue("id", "ducrValue-hint").first() must containMessage("consignmentReferences.reference.ducr.hint")
     }
 
     "display DUCR invalid" in {

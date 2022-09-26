@@ -16,8 +16,9 @@
 
 package controllers
 
-import java.time._
+import controllers.navigation.Navigator
 
+import java.time._
 import forms.common.{Date, Time}
 import forms.{ArrivalDetails, ConsignmentReferences, DepartureDetails, SpecificDateTimeChoice}
 import models.DateTimeProvider
@@ -51,7 +52,8 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
       cache,
       stubMessagesControllerComponents(),
       mockSpecificDataTimePage,
-      mockDateTimeProvider
+      mockDateTimeProvider,
+      new Navigator()
     )
 
   override protected def beforeEach(): Unit = {

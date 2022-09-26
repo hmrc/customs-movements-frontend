@@ -20,6 +20,7 @@ import base.OverridableInjector
 import config.IleQueryConfig
 import forms.SpecificDateTimeChoice
 import models.cache.{ArrivalAnswers, DepartureAnswers}
+import models.requests.JourneyRequest
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -50,18 +51,18 @@ class SpecificDateTimeViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
   private val form: Form[SpecificDateTimeChoice] = SpecificDateTimeChoice.form()
   private implicit val request = journeyRequest(ArrivalAnswers())
 
-  private def createView: Html = page(form, "some-reference")
+  private def createView(implicit request: JourneyRequest[_] = request): Html = page(form, "some-reference")
 
   "SpecificDateTime View on empty page" should {
 
     "display page title" in {
 
-      createView.getElementsByTag("h1").first() must containMessage("specific.datetime.heading")
+      createView().getElementsByTag("h1").first() must containMessage("specific.datetime.heading")
     }
 
     "have the correct section header for the Arrival journey" in {
 
-      createView.getElementById("section-header") must containMessage("specific.datetime.arrive.heading", "some-reference")
+      createView().getElementById("section-header") must containMessage("specific.datetime.arrive.heading", "some-reference")
     }
 
     "have the correct section header for the Departure journey" in {
@@ -72,7 +73,7 @@ class SpecificDateTimeViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
     "display 'Back' button that links to Consignment References when ileQuery disabled" in {
       when(appConfig.isIleQueryEnabled).thenReturn(false)
-      val backButton = createView.getBackButton
+      val backButton = createView().getBackButton
 
       backButton mustBe defined
       backButton.foreach { button =>
@@ -83,7 +84,7 @@ class SpecificDateTimeViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
     "display 'Back' button that links to Choice when ileQuery enabled" in {
       when(appConfig.isIleQueryEnabled).thenReturn(true)
-      val backButton = createView.getBackButton
+      val backButton = createView().getBackButton
 
       backButton mustBe defined
       backButton.foreach { button =>
@@ -92,6 +93,9 @@ class SpecificDateTimeViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       }
     }
 
-    checkAllSaveButtonsAreDisplayed(createView)
+    checkAllSaveButtonsAreDisplayed(createView(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))
+
+    checkSaveAndReturnToSummaryButtonIsHidden(createView())
+
   }
 }

@@ -29,6 +29,7 @@ import views.html.associateucr.manage_mucr
 class ManageMucrViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(AssociateUcrAnswers())
+  private val requestReadyToSubmit = journeyRequest(AssociateUcrAnswers(readyToSubmit = Some(true)))
 
   private val page = instanceOf[manage_mucr]
   private val form: Form[ManageMucrChoice] = ManageMucrChoice.form()
@@ -74,6 +75,9 @@ class ManageMucrViewSpec extends ViewSpec with Injector {
       }
     }
 
-    checkAllSaveButtonsAreDisplayed(page(form, queryUcr))
+    checkAllSaveButtonsAreDisplayed(page(form, queryUcr)(requestReadyToSubmit, messages(requestReadyToSubmit)))
+
+    checkSaveAndReturnToSummaryButtonIsHidden(page(form, queryUcr))
+
   }
 }

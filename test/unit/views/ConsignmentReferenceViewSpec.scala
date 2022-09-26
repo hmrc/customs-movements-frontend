@@ -21,6 +21,7 @@ import controllers.routes.DucrPartChiefController
 import forms.ConsignmentReferences
 import forms.UcrType.Ducr
 import models.cache.{ArrivalAnswers, JourneyType}
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.FormError
@@ -33,36 +34,38 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector with MockitoSu
   private val page = instanceOf[consignment_references]
 
   private val goodsDirection = JourneyType.ARRIVE
+  
+  def view(implicit request: JourneyRequest[_] = request) = page(ConsignmentReferences.form(goodsDirection))
 
   "View" should {
     "render title" in {
-      page(ConsignmentReferences.form(goodsDirection)).getTitle must containMessage("consignmentReferences.ARRIVE.question")
+      view().getTitle must containMessage("consignmentReferences.ARRIVE.question")
     }
 
     "render heading" in {
-      page(ConsignmentReferences.form(goodsDirection)).getElementById("section-header") must containMessage("consignmentReferences.ARRIVE.heading")
+      view().getElementById("section-header") must containMessage("consignmentReferences.ARRIVE.heading")
     }
 
     "render options" in {
-      page(ConsignmentReferences.form(goodsDirection)).getElementsByAttributeValue("for", "reference").first() must containMessage(
+      view().getElementsByAttributeValue("for", "reference").first() must containMessage(
         "consignmentReferences.reference.ducr"
       )
-      page(ConsignmentReferences.form(goodsDirection)).getElementsByAttributeValue("for", "reference-2").first() must containMessage(
+      view().getElementsByAttributeValue("for", "reference-2").first() must containMessage(
         "consignmentReferences.reference.mucr"
       )
     }
 
     "render labels" in {
-      page(ConsignmentReferences.form(goodsDirection)).getElementsByAttributeValue("for", "mucrValue").first() must containMessage(
+      view().getElementsByAttributeValue("for", "mucrValue").first() must containMessage(
         "site.inputText.mucr.label"
       )
-      page(ConsignmentReferences.form(goodsDirection)).getElementsByAttributeValue("for", "ducrValue").first() must containMessage(
+      view().getElementsByAttributeValue("for", "ducrValue").first() must containMessage(
         "site.inputText.ducr.label"
       )
     }
 
     "render hint above DUCR input" in {
-      page(ConsignmentReferences.form(goodsDirection)).getElementsByAttributeValue("id", "ducrValue-hint").first() must containMessage(
+      view().getElementsByAttributeValue("id", "ducrValue-hint").first() must containMessage(
         "consignmentReferences.reference.ducr.hint"
       )
     }
@@ -75,7 +78,7 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector with MockitoSu
     }
 
     "render the back button" in {
-      val backButton = page(ConsignmentReferences.form(goodsDirection)).getBackButton
+      val backButton = view().getBackButton
 
       backButton mustBe defined
       backButton.get must haveHref(DucrPartChiefController.displayPage())
@@ -84,7 +87,7 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector with MockitoSu
     "render error summary" when {
 
       "no errors" in {
-        page(ConsignmentReferences.form(goodsDirection)).getErrorSummary mustBe empty
+        view().getErrorSummary mustBe empty
       }
 
       "some errors" in {
@@ -96,7 +99,9 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector with MockitoSu
       }
     }
 
-    checkAllSaveButtonsAreDisplayed(page(ConsignmentReferences.form(goodsDirection)))
+    checkAllSaveButtonsAreDisplayed(view(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))
+
+    checkSaveAndReturnToSummaryButtonIsHidden(view())
 
   }
 }

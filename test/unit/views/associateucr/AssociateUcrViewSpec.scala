@@ -20,6 +20,7 @@ import base.Injector
 import forms.UcrType._
 import forms.{AssociateUcr, MucrOptions}
 import models.cache.AssociateUcrAnswers
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import play.twirl.api.Html
@@ -34,10 +35,12 @@ class AssociateUcrViewSpec extends ViewSpec with Injector {
 
   private val page = instanceOf[associate_ucr]
 
+  private val form = AssociateUcr.form.fill(AssociateUcr(Mucr, "1234"))
+
   val mucrOptions = MucrOptions(MucrOptions.Create, "MUCR")
 
-  private def createView(mucr: MucrOptions, form: Form[AssociateUcr]): Html =
-    page(form, mucr)(request, messages)
+  private def createView(mucr: MucrOptions, form: Form[AssociateUcr])(implicit request: JourneyRequest[_] = request): Html =
+    page(form, mucr)
 
   "Associate Ucr View" when {
 
@@ -77,7 +80,9 @@ class AssociateUcrViewSpec extends ViewSpec with Injector {
         }
       }
 
-      checkAllSaveButtonsAreDisplayed(createView(mucrOptions, AssociateUcr.form.fill(AssociateUcr(Mucr, "1234"))))
+      checkAllSaveButtonsAreDisplayed(createView(mucrOptions, form)(journeyRequest(AssociateUcrAnswers(readyToSubmit = Some(true)))))
+
+      checkSaveAndReturnToSummaryButtonIsHidden(emptyView)
     }
 
     "form contains 'MUCR' with value" should {

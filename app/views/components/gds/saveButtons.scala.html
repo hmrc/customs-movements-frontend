@@ -26,4 +26,7 @@
 @()(implicit request: RequestWithAnswers[_], messages: Messages)
 
 
-@govukButton(Button(content = Text(messages("site.continue")))) @saveAndReturnToSummary()
+@govukButton(Button(content = Text(messages("site.continue"))))
+@if(request.answers.readyToSubmit.contains(true)) {
+@saveAndReturnToSummary()
+}

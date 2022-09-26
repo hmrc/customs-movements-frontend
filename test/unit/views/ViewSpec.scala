@@ -70,15 +70,18 @@ class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with Messages
     }
 
   def checkSaveAndReturnToSummaryButtonIsDisplayed(view: Html)(implicit messages: Messages): Unit =
-      s"display 'Save and return to summary' button in mode" in {
+      s"display 'Save and return to summary' button" in {
         view.getSaveAndReturnButton.value must containMessage("site.saveAndReturnToSummary")
       }
 
-  def checkAllSaveButtonsAreDisplayed(createView: Html)(implicit messages: Messages): Unit = {
-    val view = createView
+  def checkSaveAndReturnToSummaryButtonIsHidden(view: Html)(implicit messages: Messages): Unit =
+      s"hide 'Save and return to summary' button" in {
+        view.getSaveAndReturnButton must not be(defined)
+      }
 
+  def checkAllSaveButtonsAreDisplayed(view: Html)(implicit messages: Messages): Unit = {
     checkSaveAndContinueButtonIsDisplayed(view)
-    checkSaveAndReturnToSummaryButtonIsDisplayed(createView)
+    checkSaveAndReturnToSummaryButtonIsDisplayed(view)
   }
 
 }

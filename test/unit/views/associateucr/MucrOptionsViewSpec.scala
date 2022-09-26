@@ -22,6 +22,7 @@ import forms.UcrType.Mucr
 import forms.{ManageMucrChoice, MucrOptions}
 import models.UcrBlock
 import models.cache.AssociateUcrAnswers
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -57,7 +58,8 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
   private val queryUcr = Some(UcrBlock(ucr = "mucr", ucrType = Mucr))
   private val manageMucr = Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr))
 
-  private def createView(form: Form[MucrOptions] = form) = page(form, queryUcr, manageMucr)
+  private def createView(form: Form[MucrOptions] = form)(implicit request: JourneyRequest[_] = request) =
+    page(form, queryUcr, manageMucr)
 
   "MUCR options" should {
 
@@ -126,6 +128,9 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
       }
     }
 
-    checkAllSaveButtonsAreDisplayed(createView())
+    checkAllSaveButtonsAreDisplayed(createView(form)(journeyRequest(AssociateUcrAnswers(readyToSubmit = Some(true)))))
+
+    checkSaveAndReturnToSummaryButtonIsHidden(createView())
+
   }
 }

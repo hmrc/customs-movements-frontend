@@ -130,7 +130,11 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with MockitoSug
           view.getElementById("ducrPartId").`val`() mustBe empty
         }
 
-        checkAllSaveButtonsAreDisplayed(view)
+        checkAllSaveButtonsAreDisplayed(createView(DucrPartDetails.form())(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))
+
+        checkSaveAndReturnToSummaryButtonIsHidden(createView(DucrPartDetails.form()))
+
+
       }
 
       "provided with filled form" should {

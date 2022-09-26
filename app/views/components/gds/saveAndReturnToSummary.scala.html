@@ -15,11 +15,10 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import models.requests.RequestWithAnswers
 
 @this(govukButton : GovukButton)
 
-@(messageKey: String = "site.saveAndReturnToSummary")(implicit request: RequestWithAnswers[_], messages: Messages)
+@(messageKey: String = "site.saveAndReturnToSummary")(implicit messages: Messages)
 
 @govukButton(Button(
   attributes = Map("id" -> "save_and_return_to_summary"),

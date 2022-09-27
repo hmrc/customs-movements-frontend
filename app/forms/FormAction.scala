@@ -18,9 +18,7 @@ package forms
 
 import play.api.mvc.{AnyContent, Request}
 
-sealed trait FormAction {
-  def label: String = this.getClass.getSimpleName.replace("$", "")
-}
+sealed trait FormAction
 
 case object Continue extends FormAction
 case object SaveAndReturnToSummary extends FormAction

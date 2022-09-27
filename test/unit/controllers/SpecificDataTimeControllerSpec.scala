@@ -16,9 +16,6 @@
 
 package controllers
 
-import controllers.navigation.Navigator
-
-import java.time._
 import forms.common.{Date, Time}
 import forms.{ArrivalDetails, ConsignmentReferences, DepartureDetails, SpecificDateTimeChoice}
 import models.DateTimeProvider
@@ -34,13 +31,13 @@ import play.twirl.api.HtmlFormat
 import repository.MockCache
 import views.html.specific_date_and_time
 
+import java.time._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache with OptionValues {
 
   private val mockSpecificDataTimePage = mock[specific_date_and_time]
   private val mockDateTimeProvider = mock[DateTimeProvider]
-
 
   private val consignmentReferences = ConsignmentReferences("reference", "referenceValue")
   private val fixedDate = Date(LocalDate.of(2020, 6, 18))

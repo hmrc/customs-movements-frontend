@@ -105,7 +105,7 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
         val result = controller(answers).saveLocation()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe routes.SummaryController.displayPage().url
+        redirectLocation(result).value mustBe routes.SummaryController.displayPage().url
       }
     }
 

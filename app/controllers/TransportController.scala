@@ -61,7 +61,7 @@ class TransportController @Inject() (
         validForm => {
           val movementAnswers = answers.copy(transport = Some(validForm), readyToSubmit = Some(true))
           cache.upsert(request.cache.update(movementAnswers)).map { _ =>
-            navigator.continueTo(controllers.routes.SummaryController.displayPage())
+            Redirect(controllers.routes.SummaryController.displayPage())
           }
         }
       )

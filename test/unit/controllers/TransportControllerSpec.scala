@@ -108,7 +108,7 @@ class TransportControllerSpec extends ControllerLayerSpec with MockCache with Op
         val result = controller(answers).saveTransport()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe routes.SummaryController.displayPage().url
+        redirectLocation(result).value mustBe routes.SummaryController.displayPage().url
       }
     }
 

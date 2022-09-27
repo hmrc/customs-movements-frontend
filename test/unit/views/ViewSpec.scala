@@ -17,14 +17,14 @@
 package views
 
 import controllers.CSRFSupport
-import models.{SignedInUser, UcrBlock}
 import models.cache.{Answers, Cache}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.{SignedInUser, UcrBlock}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.OptionValues
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.twirl.api.Html
@@ -35,7 +35,6 @@ import views.spec.ViewMatchers
 class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with MessagesStub with CSRFSupport with OptionValues {
 
   implicit protected def htmlBodyOf(html: Html): Document = Jsoup.parse(html.toString())
-
 
   protected def journeyRequest(answers: Answers, queryUcr: Option[UcrBlock] = None) =
     JourneyRequest(
@@ -70,14 +69,14 @@ class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with Messages
     }
 
   def checkSaveAndReturnToSummaryButtonIsDisplayed(view: Html)(implicit messages: Messages): Unit =
-      s"display 'Save and return to summary' button" in {
-        view.getSaveAndReturnButton.value must containMessage("site.saveAndReturnToSummary")
-      }
+    s"display 'Save and return to summary' button" in {
+      view.getSaveAndReturnButton.value must containMessage("site.saveAndReturnToSummary")
+    }
 
   def checkSaveAndReturnToSummaryButtonIsHidden(view: Html)(implicit messages: Messages): Unit =
-      s"hide 'Save and return to summary' button" in {
-        view.getSaveAndReturnButton must not be(defined)
-      }
+    s"hide 'Save and return to summary' button" in {
+      view.getSaveAndReturnButton must not be defined
+    }
 
   def checkAllSaveButtonsAreDisplayed(view: Html)(implicit messages: Messages): Unit = {
     checkSaveAndContinueButtonIsDisplayed(view)

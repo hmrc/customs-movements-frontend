@@ -20,10 +20,8 @@ import controllers.actions.{AuthAction, IleQueryAction, JourneyRefiner}
 import controllers.consolidations
 import controllers.exception.InvalidFeatureStateException
 import controllers.navigation.Navigator
-import forms.ManageMucrChoice.{AssociateAnotherMucr, AssociateThisMucr, form}
+import forms.ManageMucrChoice.{form, AssociateAnotherMucr, AssociateThisMucr}
 import forms.{AssociateUcr, MucrOptions, UcrType}
-
-import javax.inject.{Inject, Singleton}
 import models.cache.{AssociateUcrAnswers, JourneyType}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.associateucr.manage_mucr
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

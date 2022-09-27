@@ -16,15 +16,13 @@
 
 package controllers.navigation
 
+import controllers.routes.SummaryController
 import forms.{FormAction, SaveAndReturnToSummary}
 import play.api.mvc._
-import controllers.routes.SummaryController
 
 class Navigator {
 
-  def continueTo(redirectTo: Call, returnToSummary: Call = SummaryController.displayPage())(
-    implicit request: Request[AnyContent]
-  ): Result =
+  def continueTo(redirectTo: Call, returnToSummary: Call = SummaryController.displayPage())(implicit request: Request[AnyContent]): Result =
     FormAction.bindFromRequest match {
       case Some(SaveAndReturnToSummary) => Results.Redirect(returnToSummary)
       case _                            => Results.Redirect(redirectTo)

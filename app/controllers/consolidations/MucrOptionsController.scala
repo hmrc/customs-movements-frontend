@@ -17,6 +17,7 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.navigation.Navigator
 import forms.MucrOptions
 import forms.MucrOptions.form
 
@@ -39,7 +40,8 @@ class MucrOptionsController @Inject() (
   getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
   cacheRepository: CacheRepository,
-  page: mucr_options
+  page: mucr_options,
+  navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
@@ -57,11 +59,11 @@ class MucrOptionsController @Inject() (
           val updatedAnswers = request.answersAs[AssociateUcrAnswers].copy(mucrOptions = Some(validForm))
           if (request.cache.queryUcr.isDefined)
             cacheRepository.upsert(request.cache.update(updatedAnswers.copy(readyToSubmit = Some(true)))).map { _ =>
-              Redirect(routes.AssociateUcrSummaryController.displayPage())
+              navigator.continueTo(routes.AssociateUcrSummaryController.displayPage())
             }
           else
             cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
-              Redirect(routes.AssociateUcrController.displayPage())
+              navigator.continueTo(routes.AssociateUcrController.displayPage())
             }
         }
       )

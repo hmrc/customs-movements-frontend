@@ -37,8 +37,7 @@ class AssociateUcrController @Inject() (
   getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
   cache: CacheRepository,
-  associateUcrPage: associate_ucr,
-  navigator: Navigator
+  associateUcrPage: associate_ucr
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
@@ -60,7 +59,7 @@ class AssociateUcrController @Inject() (
         formData => {
           val updatedAnswers = request.answersAs[AssociateUcrAnswers].copy(associateUcr = Some(formData), readyToSubmit = Some(true))
           cache.upsert(request.cache.update(updatedAnswers)).map { _ =>
-            navigator.continueTo(routes.AssociateUcrSummaryController.displayPage())
+            Redirect(routes.AssociateUcrSummaryController.displayPage())
           }
         }
       )

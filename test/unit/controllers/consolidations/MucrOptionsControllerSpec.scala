@@ -136,7 +136,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
         val result = controller(AssociateUcrAnswers(), queryUcr = Some(queryUcr)).save()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe routes.AssociateUcrSummaryController.displayPage().url
+        redirectLocation(result).value mustBe routes.AssociateUcrSummaryController.displayPage().url
       }
 
       "a MUCR conforms with the regex but has been send but is just 35 characters long" in {
@@ -145,7 +145,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
         val result = controller(AssociateUcrAnswers(), queryUcr = Some(queryUcr)).save()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe routes.AssociateUcrSummaryController.displayPage().url
+        redirectLocation(result).value mustBe routes.AssociateUcrSummaryController.displayPage().url
       }
     }
   }

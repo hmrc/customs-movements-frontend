@@ -105,7 +105,7 @@ class DucrPartDetailsController @Inject() (
         )
     }
 
-  private def handleArrival(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]): Future[Result] =
+  private def handleArrival(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     saveAndContinue(
       request.cache
         .copy(
@@ -115,7 +115,7 @@ class DucrPartDetailsController @Inject() (
       controllers.routes.SpecificDateTimeController.displayPage()
     )
 
-  private def handleDeparture(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]): Future[Result] =
+  private def handleDeparture(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     saveAndContinue(
       request.cache
         .copy(
@@ -125,24 +125,24 @@ class DucrPartDetailsController @Inject() (
       controllers.routes.SpecificDateTimeController.displayPage()
     )
 
-  private def handleAssociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]): Future[Result] =
+  private def handleAssociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     saveAndContinue(
       request.cache
         .copy(queryUcr = ucrBlock, answers = Some(request.answersAs[AssociateUcrAnswers].copy(associateUcr = ucrBlock.map(AssociateUcr.apply)))),
       consolidations.routes.MucrOptionsController.displayPage()
     )
 
-  private def handleDissociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]): Future[Result] =
+  private def handleDissociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     saveAndContinue(
       request.cache
         .copy(queryUcr = ucrBlock, answers = Some(request.answersAs[DisassociateUcrAnswers].copy(ucr = ucrBlock.map(DisassociateUcr.apply)))),
       controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage()
     )
 
-  private def saveAndContinue(cache: Cache, nextPage: Call): Future[Result] =
+  private def saveAndContinue(cache: Cache, nextPage: Call)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     cacheRepository
       .upsert(cache)
-      .map(_ => Redirect(nextPage))
+      .map(_ => navigator.continueTo(nextPage))
 
   private def getEmptyForm: Form[DucrPartDetails] = DucrPartDetails.form()
 }

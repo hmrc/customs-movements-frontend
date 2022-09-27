@@ -39,7 +39,7 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
   private val mockAssociateDucrPage = mock[associate_ucr]
 
   private def controller(answers: AssociateUcrAnswers) =
-    new AssociateUcrController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, mockAssociateDucrPage, navigator)
+    new AssociateUcrController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, mockAssociateDucrPage)
 
   override protected def beforeEach() {
     super.beforeEach()
@@ -113,7 +113,7 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
 
         val result = controller(AssociateUcrAnswers(None, Some(mucrOptions))).submit()(postRequest(validDUCR))
         status(result) must be(SEE_OTHER)
-        thePageNavigatedTo.url mustBe routes.AssociateUcrSummaryController.displayPage().url
+        redirectLocation(result) mustBe Some(routes.AssociateUcrSummaryController.displayPage().url)
       }
     }
   }

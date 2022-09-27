@@ -76,7 +76,7 @@ class ManageMucrController @Inject() (
                     updatedAnswers
                       .copy(associateUcr = request.cache.queryUcr.map(AssociateUcr.apply), mucrOptions = None)
                 cacheRepository.upsert(request.cache.update(updatedForAssociateThisMucr)).map { _ =>
-                  navigator.continueTo(routes.MucrOptionsController.displayPage())
+                  navigator.continueTo(routes.MucrOptionsController.displayPage(), routes.AssociateUcrSummaryController.displayPage())
                 }
               case AssociateAnotherMucr =>
                 // Here we need to clear AssociateUCR and create MucrOptions from query if ManageMucrChoice has changed
@@ -86,7 +86,7 @@ class ManageMucrController @Inject() (
                     updatedAnswers
                       .copy(associateUcr = None, mucrOptions = request.cache.queryUcr.map(MucrOptions.apply))
                 cacheRepository.upsert(request.cache.update(updatedForAssociateAnotherMucr)).map { _ =>
-                  navigator.continueTo(routes.AssociateUcrController.displayPage())
+                  navigator.continueTo(routes.AssociateUcrController.displayPage(), routes.AssociateUcrSummaryController.displayPage())
                 }
             }
           }

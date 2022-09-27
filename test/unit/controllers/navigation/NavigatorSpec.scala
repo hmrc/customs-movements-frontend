@@ -18,9 +18,14 @@ package controllers.navigation
 
 import base.UnitSpec
 import forms.SaveAndReturnToSummary
-import play.api.mvc.Call
+import models.SignedInUser
+import models.cache.{AssociateUcrAnswers, Cache}
+import models.requests.{AuthenticatedRequest, JourneyRequest}
+import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import testdata.CommonTestData.validEori
+import uk.gov.hmrc.auth.core.Enrolments
 
 class NavigatorSpec extends UnitSpec {
 
@@ -31,20 +36,45 @@ class NavigatorSpec extends UnitSpec {
     "go to the URL provided" when {
 
       "Save And Continue" in {
-        val result = navigator.continueTo(Call("GET", "/url"))(FakeRequest("GET", "uri"))
+
+        val request = AuthenticatedRequest[AnyContent](FakeRequest(), SignedInUser(validEori, Enrolments(Set.empty)))
+
+        val result = navigator.continueTo(Call("GET", "/url"))(request)
 
         result.header.status mustBe SEE_OTHER
         result.header.headers.get(LOCATION) mustBe Some("/url")
       }
     }
 
-    "Go to the summary page when Save and return to summary form action" when {
+    "user is ready to submit" should {
 
-      "user is in draft mode" in {
-        val result = navigator.continueTo(Call("GET", "/"))(FakeRequest("GET", "uri").withFormUrlEncodedBody(SaveAndReturnToSummary.toString -> ""))
+      "Go to the summary page when Save and return to summary form action" in {
+
+        val request = AuthenticatedRequest[AnyContent](
+          FakeRequest().withFormUrlEncodedBody(SaveAndReturnToSummary.toString -> ""),
+          SignedInUser(validEori, Enrolments(Set.empty))
+        )
+
+        val result = navigator.continueTo(Call("GET", "/"))(request)
 
         result.header.status mustBe SEE_OTHER
         result.header.headers.get(LOCATION) mustBe Some(controllers.routes.SummaryController.displayPage().url)
+      }
+
+      "Go to the associate ucr summary page when Save and return to summary form action" in {
+
+        val request = JourneyRequest(
+          Cache(validEori, Some(AssociateUcrAnswers()), None, None),
+          AuthenticatedRequest[AnyContent](
+            FakeRequest().withFormUrlEncodedBody(SaveAndReturnToSummary.toString -> ""),
+            SignedInUser(validEori, Enrolments(Set.empty))
+          )
+        )
+
+        val result = navigator.continueTo(Call("GET", "/"))(request)
+
+        result.header.status mustBe SEE_OTHER
+        result.header.headers.get(LOCATION) mustBe Some(controllers.consolidations.routes.AssociateUcrSummaryController.displayPage().url)
       }
     }
   }

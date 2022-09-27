@@ -17,6 +17,7 @@
 package base
 
 import controllers.navigation.Navigator
+import models.requests.RequestWithAnswers
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
 import org.mockito.{ArgumentCaptor, Mockito}
@@ -31,7 +32,7 @@ trait MockNavigator extends MockitoSugar with BeforeAndAfterEach { self: Mockito
   protected val aRedirectToTheNextPage: Result = mock[Result]
 
   override protected def beforeEach(): Unit = {
-    given(navigator.continueTo(any[Call], any[Call])(any[Request[AnyContent]]))
+    given(navigator.continueTo(any[Call])(any[RequestWithAnswers[AnyContent]]))
       .willReturn(aRedirectToTheNextPage)
     given(aRedirectToTheNextPage.header).willReturn(ResponseHeader(Status.SEE_OTHER))
   }
@@ -40,10 +41,10 @@ trait MockNavigator extends MockitoSugar with BeforeAndAfterEach { self: Mockito
     super.afterEach()
     Mockito.reset(navigator)
   }
-  
+
   protected def thePageNavigatedTo: Call = {
     val callCaptor: ArgumentCaptor[Call] = ArgumentCaptor.forClass(classOf[Call])
-    Mockito.verify(navigator).continueTo(callCaptor.capture(), any())(any())
+    Mockito.verify(navigator).continueTo(callCaptor.capture())(any())
     callCaptor.getValue
   }
 

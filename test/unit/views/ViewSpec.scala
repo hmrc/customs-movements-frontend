@@ -36,10 +36,12 @@ class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with Messages
 
   implicit protected def htmlBodyOf(html: Html): Document = Jsoup.parse(html.toString())
 
+  protected val signedInUser = SignedInUser(validEori, Enrolments(Set.empty))
+
   protected def journeyRequest(answers: Answers, queryUcr: Option[UcrBlock] = None) =
     JourneyRequest(
       Cache(validEori, Some(answers), queryUcr, None),
-      AuthenticatedRequest(FakeRequest().withCSRFToken, SignedInUser(validEori, Enrolments(Set.empty)))
+      AuthenticatedRequest(FakeRequest().withCSRFToken, signedInUser)
     )
 
   /*

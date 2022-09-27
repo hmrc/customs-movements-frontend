@@ -16,16 +16,21 @@
 
 package controllers.navigation
 
+import controllers.consolidations.routes.AssociateUcrSummaryController
 import controllers.routes.SummaryController
 import forms.{FormAction, SaveAndReturnToSummary}
+import models.cache.JourneyType
+import models.requests.RequestWithAnswers
+import play.api.mvc.Results.Redirect
 import play.api.mvc._
 
 class Navigator {
 
-  def continueTo(redirectTo: Call, returnToSummary: Call = SummaryController.displayPage())(implicit request: Request[AnyContent]): Result =
-    FormAction.bindFromRequest match {
-      case Some(SaveAndReturnToSummary) => Results.Redirect(returnToSummary)
-      case _                            => Results.Redirect(redirectTo)
+  def continueTo(redirectTo: Call)(implicit request: RequestWithAnswers[AnyContent]): Result =
+    (FormAction.bindFromRequest, request.answers.`type`) match {
+      case (Some(SaveAndReturnToSummary), JourneyType.ASSOCIATE_UCR) => Redirect(AssociateUcrSummaryController.displayPage())
+      case (Some(SaveAndReturnToSummary), _)                         => Redirect(SummaryController.displayPage())
+      case _                                                         => Redirect(redirectTo)
     }
 
 }

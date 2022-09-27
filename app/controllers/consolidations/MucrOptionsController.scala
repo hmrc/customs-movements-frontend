@@ -20,8 +20,6 @@ import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.navigation.Navigator
 import forms.MucrOptions
 import forms.MucrOptions.form
-
-import javax.inject.{Inject, Singleton}
 import models.cache.{AssociateUcrAnswers, JourneyType}
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -32,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.associateucr.mucr_options
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -50,6 +49,9 @@ class MucrOptionsController @Inject() (
     Ok(buildPage(mucrOptions.fold(form)(form.fill)))
   }
 
+  private def buildPage(form: Form[MucrOptions])(implicit request: JourneyRequest[_]) =
+    page(form, request.cache.queryUcr, request.answersAs[AssociateUcrAnswers].manageMucrChoice)
+
   def save(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ASSOCIATE_UCR)).async { implicit request =>
     form
       .bindFromRequest()
@@ -63,12 +65,9 @@ class MucrOptionsController @Inject() (
             }
           else
             cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
-              navigator.continueTo(routes.AssociateUcrController.displayPage(), routes.AssociateUcrSummaryController.displayPage())
+              navigator.continueTo(routes.AssociateUcrController.displayPage())
             }
         }
       )
   }
-
-  private def buildPage(form: Form[MucrOptions])(implicit request: JourneyRequest[_]) =
-    page(form, request.cache.queryUcr, request.answersAs[AssociateUcrAnswers].manageMucrChoice)
 }

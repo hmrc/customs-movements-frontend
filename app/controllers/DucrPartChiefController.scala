@@ -17,6 +17,7 @@
 package controllers
 
 import controllers.actions.{AuthAction, JourneyRefiner, NonIleQueryAction}
+import controllers.navigation.Navigator
 import forms.DucrPartChiefChoice
 import forms.DucrPartChiefChoice.form
 import models.ReturnToStartException
@@ -25,7 +26,7 @@ import models.cache._
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.mvc._
 import play.twirl.api.HtmlFormat.Appendable
 import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
@@ -42,7 +43,8 @@ class DucrPartChiefController @Inject() (
   ileQueryFeatureDisabled: NonIleQueryAction,
   cacheRepository: CacheRepository,
   mcc: MessagesControllerComponents,
-  ducrPartChiefPage: ducr_part_chief
+  ducrPartChiefPage: ducr_part_chief,
+  navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
@@ -69,12 +71,14 @@ class DucrPartChiefController @Inject() (
         )
     }
 
-  private def buildPage(form: Form[DucrPartChiefChoice])(implicit request: JourneyRequest[_]): Appendable =
+  private def buildPage(form: Form[DucrPartChiefChoice])(implicit request: JourneyRequest[AnyContent]): Appendable =
     ducrPartChiefPage(form)
 
-  private def updateCache(cache: Cache, choice: DucrPartChiefChoice): Future[Result] = {
+  private def updateCache(cache: Cache, choice: DucrPartChiefChoice)(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
     val toUpdate = (if (choice.isDucrPart) cache else cache.copy(queryUcr = None)).copy(ducrPartChiefChoice = Some(choice))
-    cacheRepository.upsert(toUpdate).map(_ => Redirect(nextPage(choice, cache.answers.map(_.`type`).getOrElse(throw ReturnToStartException))))
+    cacheRepository
+      .upsert(toUpdate)
+      .map(_ => navigator.continueTo(nextPage(choice, cache.answers.map(_.`type`).getOrElse(throw ReturnToStartException))))
   }
 
   private def nextPage(choice: DucrPartChiefChoice, journeyType: JourneyType): Call =

@@ -18,6 +18,7 @@ package controllers
 
 import config.IleQueryConfig
 import controllers.actions.{AuthAction, JourneyRefiner, NonIleQueryAction}
+import controllers.navigation.Navigator
 import forms._
 import models.UcrBlock
 import models.cache._
@@ -40,7 +41,8 @@ class DucrPartDetailsController @Inject() (
   ileQueryFeatureDisabled: NonIleQueryAction,
   ileQueryConfig: IleQueryConfig,
   cacheRepository: CacheRepository,
-  ducrPartsDetailsPage: ducr_part_details
+  ducrPartsDetailsPage: ducr_part_details,
+  navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
@@ -73,7 +75,7 @@ class DucrPartDetailsController @Inject() (
         formWithErrors => Future.successful(BadRequest(ducrPartsDetailsPage(formWithErrors))),
         validDucrPartDetails =>
           cacheRepository.upsert(Cache(request.eori, validDucrPartDetails.toUcrBlock)).map { _ =>
-            Redirect(controllers.routes.ChoiceController.displayChoiceForm())
+            navigator.continueTo(controllers.routes.ChoiceController.displayChoiceForm())
           }
       )
   }

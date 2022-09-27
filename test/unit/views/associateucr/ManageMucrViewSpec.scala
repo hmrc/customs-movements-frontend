@@ -32,7 +32,7 @@ class ManageMucrViewSpec extends ViewSpec with Injector {
   private val requestReadyToSubmit = journeyRequest(AssociateUcrAnswers(readyToSubmit = Some(true)))
 
   private val page = instanceOf[manage_mucr]
-  private val form: Form[ManageMucrChoice] = ManageMucrChoice.form()
+  private val form: Form[ManageMucrChoice] = ManageMucrChoice.form
 
   private val queryUcr = Some(UcrBlock(ucr = "mucr", ucrType = Mucr))
 

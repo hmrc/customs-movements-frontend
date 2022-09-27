@@ -17,6 +17,7 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.navigation.Navigator
 import forms.AssociateUcr.form
 import models.ReturnToStartException
 import models.cache.{AssociateUcrAnswers, JourneyType}
@@ -36,7 +37,8 @@ class AssociateUcrController @Inject() (
   getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
   cache: CacheRepository,
-  associateUcrPage: associate_ucr
+  associateUcrPage: associate_ucr,
+  navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
@@ -58,7 +60,7 @@ class AssociateUcrController @Inject() (
         formData => {
           val updatedAnswers = request.answersAs[AssociateUcrAnswers].copy(associateUcr = Some(formData), readyToSubmit = Some(true))
           cache.upsert(request.cache.update(updatedAnswers)).map { _ =>
-            Redirect(routes.AssociateUcrSummaryController.displayPage())
+            navigator.continueTo(routes.AssociateUcrSummaryController.displayPage())
           }
         }
       )

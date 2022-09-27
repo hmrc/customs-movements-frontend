@@ -17,6 +17,7 @@
 package controllers
 
 import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.navigation.Navigator
 import forms.Transport
 import forms.Transport._
 
@@ -39,7 +40,8 @@ class TransportController @Inject() (
   getJourney: JourneyRefiner,
   cache: CacheRepository,
   mcc: MessagesControllerComponents,
-  transportPage: transport
+  transportPage: transport,
+  navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
@@ -59,7 +61,7 @@ class TransportController @Inject() (
         validForm => {
           val movementAnswers = answers.copy(transport = Some(validForm), readyToSubmit = Some(true))
           cache.upsert(request.cache.update(movementAnswers)).map { _ =>
-            Redirect(controllers.routes.SummaryController.displayPage())
+            navigator.continueTo(controllers.routes.SummaryController.displayPage())
           }
         }
       )

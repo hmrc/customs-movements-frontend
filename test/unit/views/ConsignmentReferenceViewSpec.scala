@@ -79,6 +79,8 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector with MockitoSu
 
       backButton mustBe defined
       backButton.get must haveHref(DucrPartChiefController.displayPage())
+      backButton.get must containMessage("site.back.previousQuestion")
+
     }
 
     "render error summary" when {

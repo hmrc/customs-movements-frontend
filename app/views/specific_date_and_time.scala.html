@@ -42,7 +42,7 @@
 
 @govukLayout(
   title = Title("specific.datetime.heading"),
-  backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl(request.cache.ducrPartChiefChoice)))) {
+  backButton = Some(BackButton(messages("site.back.previousQuestion"), pageConfig.backUrl(request.cache.ducrPartChiefChoice)))) {
 
   @formHelper(action = routes.SpecificDateTimeController.submit(), 'autoComplete -> "off") {
     @errorSummary(form.errors)

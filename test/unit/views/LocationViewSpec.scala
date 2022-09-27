@@ -67,7 +67,7 @@ class LocationViewSpec extends ViewSpec with Injector {
       val backButton = view.getBackButton
 
       backButton mustBe defined
-      backButton.get must containMessage("site.back")
+      backButton.get must containMessage("site.back.previousQuestion")
       backButton.get must haveHref(routes.MovementDetailsController.displayPage())
     }
 

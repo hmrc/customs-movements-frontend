@@ -52,7 +52,7 @@ class DucrPartChiefViewSpec extends ViewSpec with Injector {
       backButton mustBe defined
       backButton.foreach { button =>
         button must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
-        button must containMessage("site.back")
+        button must containMessage("site.back.toStartPage")
       }
     }
 

@@ -88,6 +88,8 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
 
         backButton mustBe defined
         backButton.get must haveHref(controllers.routes.SpecificDateTimeController.displayPage())
+        backButton.get must containMessage("site.back.previousQuestion")
+
       }
 
       "have 'Back' button when ileQuery disabled" in {
@@ -97,6 +99,8 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
 
         backButton mustBe defined
         backButton.get must haveHref(controllers.routes.SpecificDateTimeController.displayPage())
+        backButton.get must containMessage("site.back.previousQuestion")
+
       }
 
       "have section header" in {

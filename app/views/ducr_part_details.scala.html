@@ -48,7 +48,7 @@
 
 @govukLayout(
   title = Title("ducrPartDetails.title", Some("ducrPartDetails.heading")),
-  backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl))
+  backButton = Some(BackButton(messages("site.back.previousQuestion"), pageConfig.backUrl))
 ) {
 
   @formHelper(action = pageConfig.action, 'autoComplete -> "off") {

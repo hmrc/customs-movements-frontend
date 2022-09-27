@@ -38,11 +38,10 @@ class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with Messages
 
   protected val signedInUser = SignedInUser(validEori, Enrolments(Set.empty))
 
-  protected def journeyRequest(answers: Answers, queryUcr: Option[UcrBlock] = None) =
-    JourneyRequest(
-      Cache(validEori, Some(answers), queryUcr, None),
-      AuthenticatedRequest(FakeRequest().withCSRFToken, signedInUser)
-    )
+  def checkSaveAndReturnToSummaryButtonIsHidden(view: Html)(implicit messages: Messages): Unit =
+    s"hide 'Save and return to summary' button" in {
+      view.getSaveAndReturnButton must not be defined
+    }
 
   /*
     Implicit Utility class for retrieving common elements which are on the vast majority of pages
@@ -65,6 +64,11 @@ class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with Messages
     def getForm: Option[Element] = Option(document.getElementsByTag("form")).filter(!_.isEmpty).map(_.first())
   }
 
+  def checkAllSaveButtonsAreDisplayed(view: Html)(implicit messages: Messages): Unit = {
+    checkSaveAndContinueButtonIsDisplayed(view)
+    checkSaveAndReturnToSummaryButtonIsDisplayed(view)
+  }
+
   def checkSaveAndContinueButtonIsDisplayed(view: Html)(implicit messages: Messages): Unit =
     "display 'Save and continue' button" in {
       view.getSubmitButton.value must containMessage("site.continue")
@@ -75,14 +79,7 @@ class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with Messages
       view.getSaveAndReturnButton.value must containMessage("site.saveAndReturnToSummary")
     }
 
-  def checkSaveAndReturnToSummaryButtonIsHidden(view: Html)(implicit messages: Messages): Unit =
-    s"hide 'Save and return to summary' button" in {
-      view.getSaveAndReturnButton must not be defined
-    }
-
-  def checkAllSaveButtonsAreDisplayed(view: Html)(implicit messages: Messages): Unit = {
-    checkSaveAndContinueButtonIsDisplayed(view)
-    checkSaveAndReturnToSummaryButtonIsDisplayed(view)
-  }
+  protected def journeyRequest(answers: Answers, queryUcr: Option[UcrBlock] = None) =
+    JourneyRequest(Cache(validEori, Some(answers), queryUcr, None), AuthenticatedRequest(FakeRequest().withCSRFToken, signedInUser))
 
 }

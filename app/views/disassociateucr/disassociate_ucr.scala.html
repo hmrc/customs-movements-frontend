@@ -36,7 +36,7 @@
 
 @govukLayout(
     title = Title("disassociate.ucr.title"),
-    backButton = Some(BackButton(messages("site.back"), DucrPartChiefController.displayPage()))) {
+    backButton = Some(BackButton(messages("site.back.previousQuestion"), DucrPartChiefController.displayPage()))) {
 
     @formHelper(action = consolidations.routes.DisassociateUcrController.submit(), 'autoComplete -> "off") {
         @errorSummary(form.errors)

@@ -16,9 +16,6 @@
 
 package views
 
-import java.time.temporal.ChronoUnit
-import java.time.{LocalDate, LocalTime}
-
 import base.OverridableInjector
 import config.IleQueryConfig
 import forms._
@@ -30,6 +27,9 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import views.html.summary.departure_summary_page
 
+import java.time.temporal.ChronoUnit
+import java.time.{LocalDate, LocalTime}
+
 class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   private implicit val request = journeyRequest(DepartureAnswers())
@@ -39,6 +39,26 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
   private val viewDates = new ViewDates()
 
   private val page = injector.instanceOf[departure_summary_page]
+  private val date = Date(LocalDate.now())
+  private val time = Time(LocalTime.now().truncatedTo(ChronoUnit.MINUTES))
+  private val answers = DepartureAnswers(
+    consignmentReferences = Some(ConsignmentReferences("D", "ref-value")),
+    departureDetails = Some(DepartureDetails(date, time)),
+    location = Some(Location("location-ref")),
+    transport = Some(Transport("1", "transport-id", "GB"))
+  )
+  private val section_consignment_details = 0
+  private val section_depart_datetime = 1
+  private val section_location = 2
+  private val section_transport = 3
+  private val answer_consignment_type = 0
+  private val answer_consignment_reference = 1
+  private val answer_date = 2
+  private val answer_time = 3
+  private val answer_location = 4
+  private val answer_transport_type = 5
+  private val answer_transport_id = 6
+  private val answer_transport_nationality = 7
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -51,30 +71,6 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
     super.afterEach()
   }
-
-  private val date = Date(LocalDate.now())
-  private val time = Time(LocalTime.now().truncatedTo(ChronoUnit.MINUTES))
-
-  private val answers = DepartureAnswers(
-    consignmentReferences = Some(ConsignmentReferences("D", "ref-value")),
-    departureDetails = Some(DepartureDetails(date, time)),
-    location = Some(Location("location-ref")),
-    transport = Some(Transport("1", "transport-id", "GB"))
-  )
-
-  private val section_consignment_details = 0
-  private val section_depart_datetime = 1
-  private val section_location = 2
-  private val section_transport = 3
-
-  private val answer_consignment_type = 0
-  private val answer_consignment_reference = 1
-  private val answer_date = 2
-  private val answer_time = 3
-  private val answer_location = 4
-  private val answer_transport_type = 5
-  private val answer_transport_id = 6
-  private val answer_transport_nationality = 7
 
   "View" should {
 
@@ -213,7 +209,7 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
       val backButton = page(answers).getBackButton
 
-      backButton must not be(defined)
+      backButton must not be defined
     }
 
     "render 'Confirm and submit' button on page" in {

@@ -17,7 +17,6 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
-import controllers.navigation.Navigator
 import forms.AssociateUcr.form
 import models.ReturnToStartException
 import models.cache.{AssociateUcrAnswers, JourneyType}

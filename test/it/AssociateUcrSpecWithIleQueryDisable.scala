@@ -80,7 +80,8 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
         theAnswersFor("eori") mustBe Some(
           AssociateUcrAnswers(
             mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345")),
-            associateUcr = Some(AssociateUcr(UcrType.Mucr, "GB/321-54321"))
+            associateUcr = Some(AssociateUcr(UcrType.Mucr, "GB/321-54321")),
+            readyToSubmit = Some(true)
           )
         )
       }

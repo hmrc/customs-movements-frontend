@@ -52,7 +52,8 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
       stubMessagesControllerComponents(),
       MovementsTestData.movementDetails,
       mockArrivalDetailsPage,
-      mockDepartureDetailsPage
+      mockDepartureDetailsPage,
+      navigator
     )(global)
 
   override protected def beforeEach(): Unit = {
@@ -132,7 +133,7 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
           val result = controller(answers).saveMovementDetails()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe routes.LocationController.displayPage().url
+          thePageNavigatedTo.url mustBe routes.LocationController.displayPage().url
         }
       }
 
@@ -241,7 +242,7 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
           val result = controller(answers).saveMovementDetails()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe routes.LocationController.displayPage().url
+          thePageNavigatedTo.url mustBe routes.LocationController.displayPage().url
         }
       }
 

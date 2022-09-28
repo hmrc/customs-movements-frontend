@@ -16,7 +16,7 @@
 
 package controllers
 
-import base.UnitSpec
+import base.{MockNavigator, UnitSpec}
 import config.IleQueryConfig
 import controllers.actions._
 import controllers.exception.InvalidFeatureStateException
@@ -39,7 +39,7 @@ import utils.Stubs
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with CSRFSupport with Stubs {
+abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with CSRFSupport with Stubs with MockNavigator {
 
   protected val user = SignedInUser("eori", Enrolments(Set.empty))
   protected def getRequest(): Request[AnyContent] = FakeRequest(GET, "/").withCSRFToken

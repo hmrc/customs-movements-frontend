@@ -48,7 +48,7 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
   }
 
   private def controller(answers: MovementAnswers = ArrivalAnswers()) =
-    new LocationController(SuccessfulAuth(), ValidJourney(answers), cache, stubMessagesControllerComponents(), mockLocationPage)(global)
+    new LocationController(SuccessfulAuth(), ValidJourney(answers), cache, stubMessagesControllerComponents(), mockLocationPage, navigator)(global)
 
   private def theResponseForm: Form[Location] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Location]])
@@ -119,7 +119,7 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
         val result = controller(answers).saveLocation()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.TransportController.displayPage().url
+        thePageNavigatedTo.url mustBe routes.TransportController.displayPage().url
       }
     }
 

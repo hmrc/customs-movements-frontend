@@ -55,6 +55,7 @@ site.submit = Submit
 site.add = Add
 site.remove = Remove
 site.change = Change
+site.saveAndReturnToSummary = Save and return to summary
 site.change.hint.disassociate.ucr = Change {0} to be removed.
 site.change.hint.associate.ucr = Change {0} to be added.
 site.change.hint.associate.mucr = Change MUCR.

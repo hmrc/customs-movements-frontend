@@ -17,6 +17,7 @@
 package controllers
 
 import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.navigation.Navigator
 import forms.{ArrivalDetails, DepartureDetails, MovementDetails}
 
 import javax.inject.{Inject, Singleton}
@@ -42,7 +43,8 @@ class MovementDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   details: MovementDetails,
   arrivalDetailsPage: arrival_details,
-  departureDetailsPage: departure_details
+  departureDetailsPage: departure_details,
+  navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
@@ -72,7 +74,7 @@ class MovementDetailsController @Inject() (
         case departureAnswers: DepartureAnswers => handleSavingDeparture(departureAnswers)
       }).flatMap {
         case Left(resultView) => Future.successful(BadRequest(resultView))
-        case Right(call)      => Future.successful(Redirect(call))
+        case Right(call)      => Future.successful(navigator.continueTo(call))
       }
   }
 

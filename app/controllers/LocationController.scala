@@ -17,6 +17,7 @@
 package controllers
 
 import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.navigation.Navigator
 import forms.Location
 import forms.Location._
 
@@ -40,7 +41,8 @@ class LocationController @Inject() (
   journeyType: JourneyRefiner,
   cache: CacheRepository,
   mcc: MessagesControllerComponents,
-  locationPage: location
+  locationPage: location,
+  navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
@@ -59,12 +61,12 @@ class LocationController @Inject() (
         validForm =>
           request.answers match {
             case arrivalAnswers: ArrivalAnswers =>
-              cache.upsert(request.cache.update(arrivalAnswers.copy(location = Some(validForm)))).map { _ =>
+              cache.upsert(request.cache.update(arrivalAnswers.copy(location = Some(validForm), readyToSubmit = Some(true)))).map { _ =>
                 Redirect(controllers.routes.SummaryController.displayPage())
               }
             case departureAnswers: DepartureAnswers =>
               cache.upsert(request.cache.update(departureAnswers.copy(location = Some(validForm)))).map { _ =>
-                Redirect(controllers.routes.TransportController.displayPage())
+                navigator.continueTo(controllers.routes.TransportController.displayPage())
               }
           }
       )
@@ -74,4 +76,5 @@ class LocationController @Inject() (
     val answers = request.answersAs[MovementAnswers]
     locationPage(form, answers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException), answers.specificDateTimeChoice)
   }
+
 }

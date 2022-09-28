@@ -19,10 +19,9 @@ package controllers.consolidations
 import controllers.actions.{AuthAction, IleQueryAction, JourneyRefiner}
 import controllers.consolidations
 import controllers.exception.InvalidFeatureStateException
+import controllers.navigation.Navigator
 import forms.ManageMucrChoice.{form, AssociateAnotherMucr, AssociateThisMucr}
 import forms.{AssociateUcr, MucrOptions, UcrType}
-
-import javax.inject.{Inject, Singleton}
 import models.cache.{AssociateUcrAnswers, JourneyType}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.associateucr.manage_mucr
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -40,7 +40,8 @@ class ManageMucrController @Inject() (
   getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
   cacheRepository: CacheRepository,
-  page: manage_mucr
+  page: manage_mucr,
+  navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
@@ -74,7 +75,7 @@ class ManageMucrController @Inject() (
                     updatedAnswers
                       .copy(associateUcr = request.cache.queryUcr.map(AssociateUcr.apply), mucrOptions = None)
                 cacheRepository.upsert(request.cache.update(updatedForAssociateThisMucr)).map { _ =>
-                  Redirect(routes.MucrOptionsController.displayPage())
+                  navigator.continueTo(routes.MucrOptionsController.displayPage())
                 }
               case AssociateAnotherMucr =>
                 // Here we need to clear AssociateUCR and create MucrOptions from query if ManageMucrChoice has changed
@@ -84,7 +85,7 @@ class ManageMucrController @Inject() (
                     updatedAnswers
                       .copy(associateUcr = None, mucrOptions = request.cache.queryUcr.map(MucrOptions.apply))
                 cacheRepository.upsert(request.cache.update(updatedForAssociateAnotherMucr)).map { _ =>
-                  Redirect(routes.AssociateUcrController.displayPage())
+                  navigator.continueTo(routes.AssociateUcrController.displayPage())
                 }
             }
           }

@@ -26,6 +26,7 @@ import views.html.ducr_part_chief
 class DucrPartChiefViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(ArrivalAnswers())
+  private val requestReadyToSubmit = journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))
 
   private val page = instanceOf[ducr_part_chief]
   private val form: Form[DucrPartChiefChoice] = DucrPartChiefChoice.form()
@@ -68,5 +69,10 @@ class DucrPartChiefViewSpec extends ViewSpec with Injector {
         view must haveGovUkFieldError("choice", messages("ducrPartChief.input.error.empty"))
       }
     }
+
+    checkAllSaveButtonsAreDisplayed(page(form)(requestReadyToSubmit, messages(requestReadyToSubmit)))
+
+    checkSaveAndReturnToSummaryButtonIsHidden(page(form))
+
   }
 }

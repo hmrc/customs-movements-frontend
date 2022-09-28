@@ -21,8 +21,9 @@
 @import views.Title
 @import views.components.autocomplete.AutoCompleteItem
 @import views.components.BackButton
-@import components.gds.{errorSummary, gds_main_template, pageTitle, sectionHeader}
+@import components.gds._
 @import services.Countries
+@import models.requests.RequestWithAnswers
 
 
 @this(  govukLayout: gds_main_template,
@@ -32,10 +33,11 @@
         pageTitle: pageTitle,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
-        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
+        saveButtons: saveButtons
 )
 
-@(form: Form[Transport], consignmentReference: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Transport], consignmentReference: String)(implicit request: RequestWithAnswers[_], messages: Messages)
 
 @govukLayout(
     title = Title("transport.title"),
@@ -128,7 +130,7 @@
             items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
         )
 
-        @govukButton(Button(content = Text(messages("site.continue"))))
+        @saveButtons()
     }
 }
 

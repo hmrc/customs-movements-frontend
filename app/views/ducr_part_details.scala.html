@@ -24,14 +24,14 @@
 @import models.cache.JourneyNotSelectedAnswers
 
 @this(
-  govukLayout: gds_main_template,
-  govukButton: GovukButton,
-  exportsInputText: exportsInputText,
-  errorSummary: errorSummary,
-  pageTitle: pageTitle,
-  pageConfig: DucrPartDetailsConfig,
-  formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
-  sectionHeader: sectionHeader
+    govukLayout: gds_main_template,
+    exportsInputText: exportsInputText,
+    errorSummary: errorSummary,
+    pageTitle: pageTitle,
+    pageConfig: DucrPartDetailsConfig,
+    formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons
 )
 
 @(form: Form[DucrPartDetails])(implicit request: RequestWithAnswers[_], messages: Messages)
@@ -75,6 +75,6 @@
       inputClasses = "govuk-input--width-3"
     )
 
-    @govukButton(Button(content = Text(messages("site.continue"))))
+    @saveButtons()
   }
 }

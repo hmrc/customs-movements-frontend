@@ -18,6 +18,7 @@ package controllers
 
 import config.IleQueryConfig
 import controllers.actions.{AuthAction, JourneyRefiner, NonIleQueryAction}
+import controllers.navigation.Navigator
 import forms._
 import models.UcrBlock
 import models.cache._
@@ -40,7 +41,8 @@ class DucrPartDetailsController @Inject() (
   ileQueryFeatureDisabled: NonIleQueryAction,
   ileQueryConfig: IleQueryConfig,
   cacheRepository: CacheRepository,
-  ducrPartsDetailsPage: ducr_part_details
+  ducrPartsDetailsPage: ducr_part_details,
+  navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
@@ -73,7 +75,7 @@ class DucrPartDetailsController @Inject() (
         formWithErrors => Future.successful(BadRequest(ducrPartsDetailsPage(formWithErrors))),
         validDucrPartDetails =>
           cacheRepository.upsert(Cache(request.eori, validDucrPartDetails.toUcrBlock)).map { _ =>
-            Redirect(controllers.routes.ChoiceController.displayChoiceForm())
+            navigator.continueTo(controllers.routes.ChoiceController.displayChoiceForm())
           }
       )
   }
@@ -103,7 +105,7 @@ class DucrPartDetailsController @Inject() (
         )
     }
 
-  private def handleArrival(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]): Future[Result] =
+  private def handleArrival(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     saveAndContinue(
       request.cache
         .copy(
@@ -113,7 +115,7 @@ class DucrPartDetailsController @Inject() (
       controllers.routes.SpecificDateTimeController.displayPage()
     )
 
-  private def handleDeparture(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]): Future[Result] =
+  private def handleDeparture(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     saveAndContinue(
       request.cache
         .copy(
@@ -123,24 +125,24 @@ class DucrPartDetailsController @Inject() (
       controllers.routes.SpecificDateTimeController.displayPage()
     )
 
-  private def handleAssociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]): Future[Result] =
+  private def handleAssociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     saveAndContinue(
       request.cache
         .copy(queryUcr = ucrBlock, answers = Some(request.answersAs[AssociateUcrAnswers].copy(associateUcr = ucrBlock.map(AssociateUcr.apply)))),
       consolidations.routes.MucrOptionsController.displayPage()
     )
 
-  private def handleDissociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[_]): Future[Result] =
+  private def handleDissociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     saveAndContinue(
       request.cache
         .copy(queryUcr = ucrBlock, answers = Some(request.answersAs[DisassociateUcrAnswers].copy(ucr = ucrBlock.map(DisassociateUcr.apply)))),
       controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage()
     )
 
-  private def saveAndContinue(cache: Cache, nextPage: Call): Future[Result] =
+  private def saveAndContinue(cache: Cache, nextPage: Call)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     cacheRepository
       .upsert(cache)
-      .map(_ => Redirect(nextPage))
+      .map(_ => navigator.continueTo(nextPage))
 
   private def getEmptyForm: Form[DucrPartDetails] = DucrPartDetails.form()
 }

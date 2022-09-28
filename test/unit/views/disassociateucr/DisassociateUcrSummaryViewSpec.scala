@@ -33,10 +33,9 @@ import views.tags.ViewTest
 class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   private implicit val request = journeyRequest(DisassociateUcrAnswers())
-
+  val disassociateUcr = DisassociateUcr(Ducr, ducr = Some("SOME-DUCR"), mucr = None)
   private val ileQueryConfig = mock[IleQueryConfig]
   private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
-
   private val page = injector.instanceOf[disassociate_ucr_summary]
 
   override def beforeEach(): Unit = {
@@ -50,8 +49,6 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with Bef
 
     super.afterEach()
   }
-
-  val disassociateUcr = DisassociateUcr(Ducr, ducr = Some("SOME-DUCR"), mucr = None)
 
   "Disassociate Ucr Summary View" should {
 
@@ -94,14 +91,14 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with Bef
 
       when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
 
-      page(disassociateUcr).getBackButton must not be(defined)
+      page(disassociateUcr).getBackButton must not be defined
     }
 
     "have 'Back' button when ileQuery disabled" in {
 
       when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
 
-      page(disassociateUcr).getBackButton must not be(defined)
+      page(disassociateUcr).getBackButton must not be defined
 
     }
 

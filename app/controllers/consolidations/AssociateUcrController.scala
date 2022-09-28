@@ -17,6 +17,7 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.navigation.Navigator
 import forms.AssociateUcr.form
 import models.ReturnToStartException
 import models.cache.{AssociateUcrAnswers, JourneyType}
@@ -56,7 +57,7 @@ class AssociateUcrController @Inject() (
       .fold(
         formWithErrors => Future.successful(BadRequest(associateUcrPage(formWithErrors, mucrOptions))),
         formData => {
-          val updatedAnswers = request.answersAs[AssociateUcrAnswers].copy(associateUcr = Some(formData))
+          val updatedAnswers = request.answersAs[AssociateUcrAnswers].copy(associateUcr = Some(formData), readyToSubmit = Some(true))
           cache.upsert(request.cache.update(updatedAnswers)).map { _ =>
             Redirect(routes.AssociateUcrSummaryController.displayPage())
           }

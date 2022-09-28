@@ -47,7 +47,8 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
       nonIleQueryAction,
       ileQueryConfig,
       cache,
-      ducrPartDetailsPage
+      ducrPartDetailsPage,
+      navigator
     )(global)
 
   override def beforeEach(): Unit = {
@@ -134,7 +135,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
         val result = controller().submitDucrPartDetails()(postRequest(inputData))
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.ChoiceController.displayChoiceForm().url)
+        thePageNavigatedTo.url mustBe controllers.routes.ChoiceController.displayChoiceForm().url
 
         val expectedUcrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts.toUpperCase)
         theCacheUpserted.queryUcr mustBe defined
@@ -172,7 +173,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
           val result = controller().submitDucrPartDetails()(postRequest(inputData))
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.ChoiceController.displayChoiceForm().url)
+          thePageNavigatedTo.url mustBe controllers.routes.ChoiceController.displayChoiceForm().url
 
           val expectedUcrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts.toUpperCase)
           theCacheUpserted.queryUcr mustBe defined

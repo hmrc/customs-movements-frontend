@@ -14,12 +14,13 @@
  * limitations under the License.
  *@
 
-@import components.gds.{errorSummary, exportsInputText, gds_main_template, sectionHeader}
+@import components.gds._
 @import forms.{UcrType, AssociateUcr, MucrOptions}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 @import views.components.BackButton
 @import views.components.config.AssociateUcrPageConfig
+@import models.requests.RequestWithAnswers
 
 @this(  govukLayout: gds_main_template,
         govukButton: GovukButton,
@@ -29,9 +30,11 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         pageConfig: AssociateUcrPageConfig,
-        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF)
+        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
+        saveButtons: saveButtons
+)
 
-@(form: Form[AssociateUcr], mucrOptions: MucrOptions)(implicit request: Request[_], messages: Messages)
+@(form: Form[AssociateUcr], mucrOptions: MucrOptions)(implicit request: RequestWithAnswers[_], messages: Messages)
 
 @govukLayout(
     title = Title("associate.ucr.title", None, Seq(mucrOptions.mucr)),
@@ -70,6 +73,8 @@
             ),
             errorMessage = form("kind").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-        @govukButton(Button(content = Text(messages("site.continue"))))
+
+        @saveButtons()
+
     }
 }

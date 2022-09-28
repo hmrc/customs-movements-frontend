@@ -17,6 +17,8 @@
 package controllers
 
 import controllers.actions.{AuthAction, JourneyRefiner, NonIleQueryAction}
+import controllers.consolidations.routes.{DisassociateUcrController, MucrOptionsController}
+import controllers.navigation.Navigator
 import forms.DucrPartChiefChoice
 import forms.DucrPartChiefChoice.form
 import models.ReturnToStartException
@@ -25,7 +27,7 @@ import models.cache._
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.mvc._
 import play.twirl.api.HtmlFormat.Appendable
 import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
@@ -42,7 +44,8 @@ class DucrPartChiefController @Inject() (
   ileQueryFeatureDisabled: NonIleQueryAction,
   cacheRepository: CacheRepository,
   mcc: MessagesControllerComponents,
-  ducrPartChiefPage: ducr_part_chief
+  ducrPartChiefPage: ducr_part_chief,
+  navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
@@ -59,6 +62,9 @@ class DucrPartChiefController @Inject() (
       Ok(buildPage(choice.fold(form())(form().fill(_))))
     }
 
+  private def buildPage(form: Form[DucrPartChiefChoice])(implicit request: JourneyRequest[AnyContent]): Appendable =
+    ducrPartChiefPage(form)
+
   def submit(): Action[AnyContent] =
     requiredActions.async { implicit request =>
       form()
@@ -69,22 +75,21 @@ class DucrPartChiefController @Inject() (
         )
     }
 
-  private def buildPage(form: Form[DucrPartChiefChoice])(implicit request: JourneyRequest[_]): Appendable =
-    ducrPartChiefPage(form)
-
-  private def updateCache(cache: Cache, choice: DucrPartChiefChoice): Future[Result] = {
+  private def updateCache(cache: Cache, choice: DucrPartChiefChoice)(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
     val toUpdate = (if (choice.isDucrPart) cache else cache.copy(queryUcr = None)).copy(ducrPartChiefChoice = Some(choice))
-    cacheRepository.upsert(toUpdate).map(_ => Redirect(nextPage(choice, cache.answers.map(_.`type`).getOrElse(throw ReturnToStartException))))
+    cacheRepository
+      .upsert(toUpdate)
+      .map(_ => nextPage(choice, cache.answers.map(_.`type`).getOrElse(throw ReturnToStartException)))
   }
 
-  private def nextPage(choice: DucrPartChiefChoice, journeyType: JourneyType): Call =
+  private def nextPage(choice: DucrPartChiefChoice, journeyType: JourneyType)(implicit request: JourneyRequest[AnyContent]): Result =
     if (choice.choice == DucrPartChiefChoice.IsDucrPart)
-      controllers.routes.DucrPartDetailsController.displayPage()
+      navigator.continueTo(routes.DucrPartDetailsController.displayPage())
     else
       journeyType match {
-        case JourneyType.ARRIVE | JourneyType.DEPART => controllers.routes.ConsignmentReferencesController.displayPage()
-        case JourneyType.ASSOCIATE_UCR               => consolidations.routes.MucrOptionsController.displayPage()
-        case JourneyType.DISSOCIATE_UCR              => consolidations.routes.DisassociateUcrController.displayPage()
+        case JourneyType.ARRIVE | JourneyType.DEPART => navigator.continueTo(routes.ConsignmentReferencesController.displayPage())
+        case JourneyType.ASSOCIATE_UCR               => navigator.continueTo(MucrOptionsController.displayPage())
+        case JourneyType.DISSOCIATE_UCR              => navigator.continueTo(DisassociateUcrController.displayPage())
       }
 
 }

@@ -17,28 +17,31 @@
 package views
 
 import controllers.CSRFSupport
-import models.{SignedInUser, UcrBlock}
 import models.cache.{Answers, Cache}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.{SignedInUser, UcrBlock}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
-import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import testdata.CommonTestData.validEori
 import uk.gov.hmrc.auth.core.Enrolments
 import views.spec.ViewMatchers
 
-class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with MessagesStub with CSRFSupport {
+class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with MessagesStub with CSRFSupport with OptionValues {
 
   implicit protected def htmlBodyOf(html: Html): Document = Jsoup.parse(html.toString())
 
-  protected def journeyRequest(answers: Answers, queryUcr: Option[UcrBlock] = None) =
-    JourneyRequest(
-      Cache(validEori, Some(answers), queryUcr, None),
-      AuthenticatedRequest(FakeRequest().withCSRFToken, SignedInUser(validEori, Enrolments(Set.empty)))
-    )
+  protected val signedInUser = SignedInUser(validEori, Enrolments(Set.empty))
+
+  def checkSaveAndReturnToSummaryButtonIsHidden(view: Html)(implicit messages: Messages): Unit =
+    s"hide 'Save and return to summary' button" in {
+      view.getSaveAndReturnButton must not be defined
+    }
 
   /*
     Implicit Utility class for retrieving common elements which are on the vast majority of pages
@@ -52,11 +55,31 @@ class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with Messages
 
     def getSubmitButton: Option[Element] = Option(document.getElementsByClass("govuk-button").first())
 
+    def getSaveAndReturnButton: Option[Element] = Option(document.getElementsByClass("govuk-button--secondary").first())
+
     def getErrorSummary: Option[Element] = Option(document.getElementById("error-summary"))
 
     def getGovUkErrorSummary = document.getElementsByClass("govuk-error-summary")
 
     def getForm: Option[Element] = Option(document.getElementsByTag("form")).filter(!_.isEmpty).map(_.first())
   }
+
+  def checkAllSaveButtonsAreDisplayed(view: Html)(implicit messages: Messages): Unit = {
+    checkSaveAndContinueButtonIsDisplayed(view)
+    checkSaveAndReturnToSummaryButtonIsDisplayed(view)
+  }
+
+  def checkSaveAndContinueButtonIsDisplayed(view: Html)(implicit messages: Messages): Unit =
+    "display 'Save and continue' button" in {
+      view.getSubmitButton.value must containMessage("site.continue")
+    }
+
+  def checkSaveAndReturnToSummaryButtonIsDisplayed(view: Html)(implicit messages: Messages): Unit =
+    s"display 'Save and return to summary' button" in {
+      view.getSaveAndReturnButton.value must containMessage("site.saveAndReturnToSummary")
+    }
+
+  protected def journeyRequest(answers: Answers, queryUcr: Option[UcrBlock] = None) =
+    JourneyRequest(Cache(validEori, Some(answers), queryUcr, None), AuthenticatedRequest(FakeRequest().withCSRFToken, signedInUser))
 
 }

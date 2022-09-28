@@ -38,7 +38,7 @@ class TransportControllerSpec extends ControllerLayerSpec with MockCache with Op
   private val mockTransportPage = mock[transport]
 
   private def controller(answers: DepartureAnswers) =
-    new TransportController(SuccessfulAuth(), ValidJourney(answers), cache, stubMessagesControllerComponents(), mockTransportPage)(global)
+    new TransportController(SuccessfulAuth(), ValidJourney(answers), cache, stubMessagesControllerComponents(), mockTransportPage, navigator)(global)
 
   private val consignmentReferences = ConsignmentReferences("reference", "referenceValue")
 

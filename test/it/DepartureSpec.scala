@@ -266,7 +266,8 @@ class DepartureSpec extends IntegrationSpec {
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
             departureDetails = Some(DepartureDetails(Date(date), Time(time))),
             location = Some(Location("GBAUEMAEMAEMA")),
-            transport = Some(Transport("1", "123", "FR"))
+            transport = Some(Transport("1", "123", "FR")),
+            readyToSubmit = Some(true)
           )
         )
       }

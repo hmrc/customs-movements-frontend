@@ -16,8 +16,6 @@
 
 package controllers
 
-import java.time._
-
 import forms.common.{Date, Time}
 import forms.{ArrivalDetails, ConsignmentReferences, DepartureDetails, SpecificDateTimeChoice}
 import models.DateTimeProvider
@@ -33,6 +31,7 @@ import play.twirl.api.HtmlFormat
 import repository.MockCache
 import views.html.specific_date_and_time
 
+import java.time._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache with OptionValues {
@@ -51,7 +50,8 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
       cache,
       stubMessagesControllerComponents(),
       mockSpecificDataTimePage,
-      mockDateTimeProvider
+      mockDateTimeProvider,
+      navigator
     )
 
   override protected def beforeEach(): Unit = {
@@ -122,7 +122,7 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
         val result = controller(answers).submit()(postRequest(Json.toJson(dateTimeChoice)))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.MovementDetailsController.displayPage().url
+        thePageNavigatedTo.url mustBe routes.MovementDetailsController.displayPage().url
         theCacheUpserted.answers mustBe Some(answers.copy(specificDateTimeChoice = Some(dateTimeChoice)))
       }
 
@@ -134,7 +134,7 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
           controller(answers).submit()(postRequest(Json.toJson(dateTimeChoice)))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.LocationController.displayPage().url
+        thePageNavigatedTo.url mustBe routes.LocationController.displayPage().url
         theCacheUpserted.answers mustBe Some(
           answers
             .copy(specificDateTimeChoice = Some(dateTimeChoice), arrivalDetails = Some(ArrivalDetails(fixedDate, fixedTime)))
@@ -148,7 +148,7 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
         val result = controller(answers).submit()(postRequest(Json.toJson(dateTimeChoice)))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.MovementDetailsController.displayPage().url
+        thePageNavigatedTo.url mustBe routes.MovementDetailsController.displayPage().url
         theCacheUpserted.answers mustBe Some(answers.copy(specificDateTimeChoice = Some(dateTimeChoice)))
       }
 
@@ -160,7 +160,7 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
           controller(answers).submit()(postRequest(Json.toJson(dateTimeChoice)))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.LocationController.displayPage().url
+        thePageNavigatedTo.url mustBe routes.LocationController.displayPage().url
         theCacheUpserted.answers mustBe Some(
           answers
             .copy(specificDateTimeChoice = Some(dateTimeChoice), departureDetails = Some(DepartureDetails(fixedDate, fixedTime)))

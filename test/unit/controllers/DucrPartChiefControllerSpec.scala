@@ -44,7 +44,8 @@ class DucrPartChiefControllerSpec extends ControllerLayerSpec with MockCache wit
       nonIleQueryAction,
       cache,
       stubMessagesControllerComponents(),
-      ducrPartChiefPage
+      ducrPartChiefPage,
+      navigator
     )(global)
 
   override def beforeEach(): Unit = {
@@ -98,7 +99,7 @@ class DucrPartChiefControllerSpec extends ControllerLayerSpec with MockCache wit
           val result = controller().submit()(postRequest(incorrectForm))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe routes.DucrPartDetailsController.displayPage().url
+          thePageNavigatedTo.url mustBe routes.DucrPartDetailsController.displayPage().url
         }
 
         "user selects no" in {
@@ -106,7 +107,7 @@ class DucrPartChiefControllerSpec extends ControllerLayerSpec with MockCache wit
           val result = controller().submit()(postRequest(incorrectForm))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe routes.ConsignmentReferencesController.displayPage().url
+          thePageNavigatedTo.url mustBe routes.ConsignmentReferencesController.displayPage().url
         }
       }
     }

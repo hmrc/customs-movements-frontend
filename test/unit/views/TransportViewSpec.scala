@@ -31,55 +31,54 @@ class TransportViewSpec extends ViewSpec with Injector {
 
   private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())
 
-  private def createPage: Html = transportPage(Transport.form, "some-reference")
+  private def createPage(implicit request: JourneyRequest[_] = request): Html = transportPage(Transport.form, "some-reference")
 
   "Transport View" should {
 
     "have the correct title" in {
-      createPage.getTitle must containMessage("transport.title")
+      createPage().getTitle must containMessage("transport.title")
     }
 
     "have the correct section header" in {
-      createPage.getElementById("section-header") must containMessage("transport.heading", "some-reference")
+      createPage().getElementById("section-header") must containMessage("transport.heading", "some-reference")
     }
 
     "display header with hint" in {
-      createPage.getElementsByClass("govuk-fieldset__legend").get(0).text() must be(messages("transport.modeOfTransport.question"))
+      createPage().getElementsByClass("govuk-fieldset__legend").get(0).text() must be(messages("transport.modeOfTransport.question"))
     }
 
     "display 8 radio buttons with labels" in {
-      createPage.getElementsByAttributeValue("for", "modeOfTransport").text() must be(messages("transport.modeOfTransport.1"))
-      createPage.getElementsByAttributeValue("for", "modeOfTransport-2").text() must be(messages("transport.modeOfTransport.2"))
-      createPage.getElementsByAttributeValue("for", "modeOfTransport-3").text() must be(messages("transport.modeOfTransport.3"))
-      createPage.getElementsByAttributeValue("for", "modeOfTransport-4").text() must be(messages("transport.modeOfTransport.4"))
-      createPage.getElementsByAttributeValue("for", "modeOfTransport-5").text() must be(messages("transport.modeOfTransport.5"))
-      createPage.getElementsByAttributeValue("for", "modeOfTransport-6").text() must be(messages("transport.modeOfTransport.6"))
-      createPage.getElementsByAttributeValue("for", "modeOfTransport-7").text() must be(messages("transport.modeOfTransport.7"))
-      createPage.getElementsByAttributeValue("for", "modeOfTransport-8").text() must be(messages("transport.modeOfTransport.8"))
+      createPage().getElementsByAttributeValue("for", "modeOfTransport").text() must be(messages("transport.modeOfTransport.1"))
+      createPage().getElementsByAttributeValue("for", "modeOfTransport-2").text() must be(messages("transport.modeOfTransport.2"))
+      createPage().getElementsByAttributeValue("for", "modeOfTransport-3").text() must be(messages("transport.modeOfTransport.3"))
+      createPage().getElementsByAttributeValue("for", "modeOfTransport-4").text() must be(messages("transport.modeOfTransport.4"))
+      createPage().getElementsByAttributeValue("for", "modeOfTransport-5").text() must be(messages("transport.modeOfTransport.5"))
+      createPage().getElementsByAttributeValue("for", "modeOfTransport-6").text() must be(messages("transport.modeOfTransport.6"))
+      createPage().getElementsByAttributeValue("for", "modeOfTransport-7").text() must be(messages("transport.modeOfTransport.7"))
+      createPage().getElementsByAttributeValue("for", "modeOfTransport-8").text() must be(messages("transport.modeOfTransport.8"))
     }
 
     "Transport View on empty page" should {
 
       "display the correct labels and hints" in {
-        createPage.getElementsByAttributeValue("for", "transportId").text() must be(messages("transport.transportId.question"))
-        createPage.getElementById("transportId-hint").text() mustBe messages("transport.transportId.hint")
-        createPage.getElementsByAttributeValue("for", "nationality").text() must be(messages("transport.nationality.question"))
+        createPage().getElementsByAttributeValue("for", "transportId").text() must be(messages("transport.transportId.question"))
+        createPage().getElementById("transportId-hint").text() mustBe messages("transport.transportId.hint")
+        createPage().getElementsByAttributeValue("for", "nationality").text() must be(messages("transport.nationality.question"))
       }
 
     }
 
     "display \"Back\" button that links to Location page" in {
 
-      val backButton = createPage.getElementById("back-link")
+      val backButton = createPage().getElementById("back-link")
 
       backButton.text() must be(messages("site.back"))
       backButton must haveHref(routes.LocationController.displayPage())
     }
 
-    "display 'Continue' button on page" in {
-      val saveButton = createPage.getElementsByClass("govuk-button").get(0)
-      saveButton.text() must be(messages("site.continue"))
-    }
+    checkSaveAndReturnToSummaryButtonIsHidden(createPage())
+
+    checkAllSaveButtonsAreDisplayed(createPage(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))
   }
 
 }

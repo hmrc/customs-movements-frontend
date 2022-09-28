@@ -21,19 +21,21 @@
 @import views.components.BackButton
 @import views.html.components.gds._
 @import forms.common.DateTimeErrors
+@import models.requests.RequestWithAnswers
 
 @this(
-  govukLayout: gds_main_template,
-  govukButton: GovukButton,
-  pageTitle: pageTitle,
-  errorSummary: errorSummary,
-  sectionHeader: sectionHeader,
-  inputDate: inputDate,
-  inputTime: inputTime,
-  formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+    govukLayout: gds_main_template,
+    govukButton: GovukButton,
+    pageTitle: pageTitle,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    inputDate: inputDate,
+    inputTime: inputTime,
+    formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
+    saveButtons: saveButtons
 )
 
-@(form: Form[DepartureDetails], consignmentReferenceValue: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[DepartureDetails], consignmentReferenceValue: String)(implicit request: RequestWithAnswers[_], messages: Messages)
 
 @govukLayout(
   title = Title("departureDetails.header"),
@@ -60,6 +62,6 @@
       hint = Some(messages("departureDetails.time.hint"))
     )
 
-    @govukButton(Button(content = Text(messages("site.continue"))))
+    @saveButtons()
   }
 }

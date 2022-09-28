@@ -37,5 +37,5 @@ object ManageMucrChoice {
         .verifying("manageMucr.input.error.incorrectValue", isContainedIn(allChoices))
     )(ManageMucrChoice.apply)(ManageMucrChoice.unapply)
 
-  def form(): Form[ManageMucrChoice] = Form(mapping)
+  def form: Form[ManageMucrChoice] = Form(mapping)
 }

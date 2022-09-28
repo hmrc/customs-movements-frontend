@@ -44,7 +44,8 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
       nonIleQueryAction,
       cache,
       stubMessagesControllerComponents(),
-      mockConsignmentReferencePage
+      mockConsignmentReferencePage,
+      navigator
     )
 
   override protected def beforeEach(): Unit = {
@@ -121,7 +122,7 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
         val result = controller(ArrivalAnswers(), ValidForIleQuery).saveConsignmentReferences()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.SpecificDateTimeController.displayPage().url
+        thePageNavigatedTo.url mustBe routes.SpecificDateTimeController.displayPage().url
       }
     }
 
@@ -140,7 +141,7 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
         val result = controller(DepartureAnswers(), ValidForIleQuery).saveConsignmentReferences()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.SpecificDateTimeController.displayPage().url
+        thePageNavigatedTo.url mustBe routes.SpecificDateTimeController.displayPage().url
       }
     }
 

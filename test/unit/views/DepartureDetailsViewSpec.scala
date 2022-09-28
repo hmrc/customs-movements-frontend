@@ -16,27 +16,28 @@
 
 package views
 
-import java.text.DecimalFormat
-import java.time.{LocalDate, LocalTime}
-
 import base.OverridableInjector
 import config.IleQueryConfig
 import forms.DepartureDetails
 import forms.common.{Date, Time}
+import models.cache.DepartureAnswers
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
-import play.api.test.FakeRequest
 import play.twirl.api.Html
 import testdata.MovementsTestData
 import views.html.departure_details
 
+import java.text.DecimalFormat
+import java.time.{LocalDate, LocalTime}
+
 class DepartureDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private implicit val request = FakeRequest().withCSRFToken
+  private implicit val request = journeyRequest(DepartureAnswers())
 
   private val ileQueryConfig = mock[IleQueryConfig]
   private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
@@ -58,7 +59,8 @@ class DepartureDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
   private val movementDetails = MovementsTestData.movementDetails
 
   private val consignmentReferencesValue = "M-ref"
-  private def createView(form: Form[DepartureDetails]): Html = page(form, consignmentReferencesValue)(request, messages)
+  private def createView(form: Form[DepartureDetails])(implicit request: JourneyRequest[_] = request): Html =
+    page(form, consignmentReferencesValue)
 
   private def convertIntoTwoDigitFormat(input: Int): String = {
     val formatter = new DecimalFormat("00")
@@ -160,10 +162,10 @@ class DepartureDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
         }
       }
 
-      "have 'Continue' button" in {
-        emptyView.getSubmitButton mustBe defined
-        emptyView.getSubmitButton.get must containMessage("site.continue")
-      }
+      checkAllSaveButtonsAreDisplayed(createView(movementDetails.departureForm())(journeyRequest(DepartureAnswers(readyToSubmit = Some(true)))))
+
+      checkSaveAndReturnToSummaryButtonIsHidden(emptyView)
+
     }
 
     "provided with form containing data" should {

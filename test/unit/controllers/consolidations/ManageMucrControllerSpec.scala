@@ -44,7 +44,15 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
     ileQueryAction: IleQueryAction = IleQueryEnabled,
     queryUcr: Option[UcrBlock] = Some(UcrBlock("mucr", UcrType.Mucr))
   ) =
-    new ManageMucrController(SuccessfulAuth(), ileQueryAction, ValidJourney(answers, queryUcr), stubMessagesControllerComponents(), cache, page)
+    new ManageMucrController(
+      SuccessfulAuth(),
+      ileQueryAction,
+      ValidJourney(answers, queryUcr),
+      stubMessagesControllerComponents(),
+      cache,
+      page,
+      navigator
+    )
 
   override def beforeEach() {
     super.beforeEach()
@@ -117,7 +125,7 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
         val result = controller(AssociateUcrAnswers()).submit()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.AssociateUcrController.displayPage().url
+        thePageNavigatedTo.url mustBe routes.AssociateUcrController.displayPage().url
       }
 
       "form is correct with AssociateThisMucr option" in {
@@ -126,7 +134,7 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
         val result = controller(AssociateUcrAnswers()).submit()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.MucrOptionsController.displayPage().url
+        thePageNavigatedTo.url mustBe routes.MucrOptionsController.displayPage().url
       }
     }
   }

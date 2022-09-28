@@ -17,10 +17,9 @@
 package controllers
 
 import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.navigation.Navigator
 import forms.SpecificDateTimeChoice.form
 import forms.{ArrivalDetails, DepartureDetails, SpecificDateTimeChoice}
-
-import javax.inject.{Inject, Singleton}
 import models.cache.{ArrivalAnswers, DepartureAnswers, JourneyType, MovementAnswers}
 import models.requests.JourneyRequest
 import models.{DateTimeProvider, ReturnToStartException}
@@ -32,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.specific_date_and_time
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -41,7 +41,8 @@ class SpecificDateTimeController @Inject() (
   cache: CacheRepository,
   mcc: MessagesControllerComponents,
   specificDateTimePage: specific_date_and_time,
-  dateTimeProvider: DateTimeProvider
+  dateTimeProvider: DateTimeProvider,
+  navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
@@ -62,9 +63,11 @@ class SpecificDateTimeController @Inject() (
               case departureAnswers: DepartureAnswers => updateDepartureAnswers(departureAnswers, validForm)
             }
             cache.upsert(request.cache.update(answers)).map { _ =>
-              validForm.choice match {
-                case SpecificDateTimeChoice.UserDateTime    => Redirect(controllers.routes.MovementDetailsController.displayPage())
-                case SpecificDateTimeChoice.CurrentDateTime => Redirect(controllers.routes.LocationController.displayPage())
+              navigator.continueTo {
+                validForm.choice match {
+                  case SpecificDateTimeChoice.UserDateTime    => controllers.routes.MovementDetailsController.displayPage()
+                  case SpecificDateTimeChoice.CurrentDateTime => controllers.routes.LocationController.displayPage()
+                }
               }
             }
           }

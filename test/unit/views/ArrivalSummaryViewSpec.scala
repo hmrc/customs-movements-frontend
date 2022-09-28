@@ -166,7 +166,7 @@ class ArrivalSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
       changeDate must haveHref(controllers.routes.LocationController.displayPage())
     }
 
-    "render back button" in {
+    "not render back button" in {
 
       val backButton = page(answers).getBackButton
 

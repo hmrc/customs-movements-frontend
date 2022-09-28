@@ -80,6 +80,13 @@ class AssociateUcrViewSpec extends ViewSpec with Injector {
       "display 'Continue' button on page" in {
         emptyView.getElementsByClass("govuk-button").text() mustBe messages("site.continue")
       }
+
+      "display 'Back' button" in {
+        val backButton = emptyView.getBackButton
+
+        backButton mustBe defined
+        backButton.get must containMessage("site.back.previousQuestion")
+      }
     }
 
     "form contains 'MUCR' with value" should {

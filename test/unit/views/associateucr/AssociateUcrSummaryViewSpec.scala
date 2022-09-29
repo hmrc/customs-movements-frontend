@@ -17,8 +17,8 @@
 package views.associateucr
 
 import base.Injector
-import forms.UcrType._
 import forms.AssociateUcr
+import forms.UcrType._
 import models.UcrBlock
 import models.cache.AssociateUcrAnswers
 import models.requests.JourneyRequest
@@ -56,7 +56,7 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
         s"QueryUcr is $ucrBlock in Cache" in {
           implicit val request = journeyRequest(AssociateUcrAnswers(), ucrBlock)
 
-          createView("MUCR", "DUCR").getBackButton must not be(defined)
+          createView("MUCR", "DUCR").getBackButton must not be defined
         }
     }
 

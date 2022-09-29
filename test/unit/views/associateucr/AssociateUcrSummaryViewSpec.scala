@@ -55,16 +55,8 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
       for (ucrBlock <- List(None, Some(new UcrBlock("", Some(""), ""))))
         s"QueryUcr is $ucrBlock in Cache" in {
           implicit val request = journeyRequest(AssociateUcrAnswers(), ucrBlock)
-          val view = createView("MUCR", "DUCR")
-          val backButton = view.getBackButton
 
-          val backlink =
-            if (ucrBlock.isDefined) controllers.consolidations.routes.MucrOptionsController.displayPage()
-            else controllers.consolidations.routes.AssociateUcrController.displayPage()
-
-          backButton mustBe defined
-          backButton.get must haveHref(backlink)
-          backButton.get must containMessage("site.back")
+          createView("MUCR", "DUCR").getBackButton must not be(defined)
         }
     }
 

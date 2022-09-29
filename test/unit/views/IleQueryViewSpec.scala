@@ -74,23 +74,5 @@ class IleQueryViewSpec extends ViewSpec with Injector with MockitoSugar {
       view.getSubmitButton mustBe defined
       view.getSubmitButton.get must containMessage("site.continue")
     }
-
-    "contain link to view previous requests" in {
-      val govukListElement = view.getElementsByClass("govuk-list").first
-
-      val previousRequests = govukListElement.getElementsByClass("govuk-link").get(0)
-
-      previousRequests must containMessage("ileQuery.link.requests")
-      previousRequests must haveHref(controllers.routes.SubmissionsController.displayPage())
-    }
-
-    "contain link to 'DUCR Part Details' page" in {
-      val govukListElement = view.getElementsByClass("govuk-list").first
-
-      val ducrPartDetailsLink = govukListElement.getElementsByClass("govuk-link").get(1)
-
-      ducrPartDetailsLink must containMessage("ileQuery.link.ducrPart")
-      ducrPartDetailsLink must haveHref(controllers.routes.DucrPartDetailsController.displayPage())
-    }
   }
 }

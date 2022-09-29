@@ -17,6 +17,7 @@
 package config
 
 import features.{Feature, FeatureStatus}
+
 import javax.inject.{Inject, Singleton}
 
 @Singleton

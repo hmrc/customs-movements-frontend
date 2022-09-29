@@ -16,7 +16,6 @@
 
 package controllers
 
-import controllers.actions.NonIleQueryAction
 import controllers.exception.InvalidFeatureStateException
 import forms.ConsignmentReferences
 import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}

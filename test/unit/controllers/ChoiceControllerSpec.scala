@@ -39,7 +39,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
   private val mockChoicePage = mock[choice_page]
   private val ucrBlock = UcrBlock("MUCR", UcrType.Mucr)
-  private val cacheWithUcr = Cache("eori", ucrBlock)
+  private val cacheWithUcr = Cache("eori", ucrBlock, false)
   private val ileQueryEnabled = mock[IleQueryConfig]
   private val ileQueryDisabled = mock[IleQueryConfig]
 
@@ -72,15 +72,15 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
     "return 200 (OK)" when {
       "display page method is invoked with empty cache" in {
         givenTheCacheIsEmpty()
-        val result = controller.displayChoiceForm()(getRequest())
+        val result = controller.displayChoices(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value mustBe empty
       }
 
       "display page method is invoked with data in cache" in {
-        givenTheCacheContains(Cache("eori", Some(ArrivalAnswers()), None, None))
-        val result = controller.displayChoiceForm()(getRequest())
+        givenTheCacheContains(Cache("eori", ArrivalAnswers()))
+        val result = controller.displayChoices(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value mustBe Some(Arrival)
@@ -91,7 +91,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
       "form is incorrect" in {
         val incorrectForm = JsObject(Map("choice" -> JsString("Incorrect")))
 
-        val result = controller.submitChoice()(postRequest(incorrectForm))
+        val result = controller.submitChoice(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -103,7 +103,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
         "create cache if empty" in {
           givenTheCacheIsEmpty()
-          val result = controller.submitChoice()(postRequest(arrivalForm))
+          val result = controller.submitChoice(postRequest(arrivalForm))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
@@ -112,7 +112,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
         "update cache if not empty" in {
           givenTheCacheContains(cacheWithUcr)
-          val result = controller.submitChoice()(postRequest(arrivalForm))
+          val result = controller.submitChoice(postRequest(arrivalForm))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
@@ -125,7 +125,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
         "create cache if empty" in {
           givenTheCacheIsEmpty()
-          val result = controller.submitChoice()(postRequest(departureForm))
+          val result = controller.submitChoice(postRequest(departureForm))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
@@ -134,7 +134,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
         "update cache if not empty" in {
           givenTheCacheContains(cacheWithUcr)
-          val result = controller.submitChoice()(postRequest(departureForm))
+          val result = controller.submitChoice(postRequest(departureForm))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
@@ -147,7 +147,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
         "create cache if empty" in {
           givenTheCacheIsEmpty()
-          val result = controller.submitChoice()(postRequest(associateDUCRForm))
+          val result = controller.submitChoice(postRequest(associateDUCRForm))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
@@ -156,7 +156,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
         "update cache if not empty" in {
           givenTheCacheContains(cacheWithUcr)
-          val result = controller.submitChoice()(postRequest(associateDUCRForm))
+          val result = controller.submitChoice(postRequest(associateDUCRForm))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
@@ -169,7 +169,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
         "create cache if empty" in {
           givenTheCacheIsEmpty()
-          val result = controller.submitChoice()(postRequest(disassociateDUCRForm))
+          val result = controller.submitChoice(postRequest(disassociateDUCRForm))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
@@ -178,7 +178,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
         "update cache if not empty" in {
           givenTheCacheContains(cacheWithUcr)
-          val result = controller.submitChoice()(postRequest(disassociateDUCRForm))
+          val result = controller.submitChoice(postRequest(disassociateDUCRForm))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
@@ -191,7 +191,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
         "create cache if empty" in {
           givenTheCacheIsEmpty()
-          val result = controller.submitChoice()(postRequest(shutMucrForm))
+          val result = controller.submitChoice(postRequest(shutMucrForm))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(consolidationRoutes.ShutMucrController.displayPage().url)
@@ -200,7 +200,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
         "update cache if not empty" in {
           givenTheCacheContains(cacheWithUcr)
-          val result = controller.submitChoice()(postRequest(shutMucrForm))
+          val result = controller.submitChoice(postRequest(shutMucrForm))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(consolidationRoutes.ShutMucrController.displayPage().url)
@@ -211,7 +211,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
       "choice is Submission" in {
         val submissionsForm = JsObject(Map("choice" -> JsString(Submissions.value)))
 
-        val result = controller.submitChoice()(postRequest(submissionsForm))
+        val result = controller.submitChoice(postRequest(submissionsForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(routes.SubmissionsController.displayPage().url)
@@ -228,7 +228,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
         "redirect to Is Ducr Part question" in {
           givenTheCacheIsEmpty()
-          val result = controller.submitChoice()(postRequest(arrivalForm))
+          val result = controller.submitChoice(postRequest(arrivalForm))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
@@ -242,7 +242,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
         "redirect to Is Ducr Part question" in {
           givenTheCacheIsEmpty()
-          val result = controller.submitChoice()(postRequest(departureForm))
+          val result = controller.submitChoice(postRequest(departureForm))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
@@ -256,7 +256,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
         "redirect to Is Ducr Part question" in {
           givenTheCacheIsEmpty()
-          val result = controller.submitChoice()(postRequest(associateDUCRForm))
+          val result = controller.submitChoice(postRequest(associateDUCRForm))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
@@ -269,7 +269,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
         "redirect to Is Ducr Part question" in {
           givenTheCacheIsEmpty()
-          val result = controller.submitChoice()(postRequest(disassociateDUCRForm))
+          val result = controller.submitChoice(postRequest(disassociateDUCRForm))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.DucrPartChiefController.displayPage().url)
@@ -286,36 +286,36 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
       "display page method is invoked with cache empty" in {
         givenTheCacheIsEmpty()
 
-        val result = controller.displayChoiceForm()(getRequest())
+        val result = controller.displayChoices(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
+        redirectLocation(result) mustBe Some(controllers.ileQuery.routes.FindConsignmentController.displayPage.url)
       }
 
       "display page method is invoked with cache not containing queried URC" in {
-        givenTheCacheContains(Cache("eori", Some(ArrivalAnswers()), None, None))
+        givenTheCacheContains(Cache("eori", ArrivalAnswers()))
 
-        val result = controller.displayChoiceForm()(getRequest())
+        val result = controller.displayChoices(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
+        redirectLocation(result) mustBe Some(controllers.ileQuery.routes.FindConsignmentController.displayPage.url)
       }
     }
 
     "return 200 (OK)" when {
       "display page method is invoked with cache containing queried URC but no Answer" in {
-        givenTheCacheContains(Cache("eori", UcrBlock(ucr = "ucr", ucrType = Mucr)))
+        givenTheCacheContains(Cache("eori", UcrBlock(ucr = "ucr", ucrType = Mucr), false))
 
-        val result = controller.displayChoiceForm()(getRequest())
+        val result = controller.displayChoices(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value mustBe empty
       }
 
       "display page method is invoked with cache containing queried URC and Answer" in {
-        givenTheCacheContains(Cache("eori", Some(ArrivalAnswers()), Some(UcrBlock(ucr = "ucr", ucrType = Mucr)), None))
+        givenTheCacheContains(Cache("eori", ArrivalAnswers(), UcrBlock(ucr = "ucr", ucrType = Mucr), true))
 
-        val result = controller.displayChoiceForm()(getRequest())
+        val result = controller.displayChoices(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value mustBe Some(Arrival)

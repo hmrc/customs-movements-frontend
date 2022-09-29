@@ -89,7 +89,7 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with MockitoSug
           val view = createView(DucrPartDetails.form())
 
           view.getBackButton mustBe defined
-          view.getBackButton.get must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+          view.getBackButton.get must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayPage)
         }
 
         "render 'Back' button leading to 'Ducr Part Chief' page when ileQuery disabled" in {

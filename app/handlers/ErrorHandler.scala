@@ -18,8 +18,7 @@ package handlers
 
 import config.AppConfig
 import controllers.exception.{IncompleteApplication, InvalidFeatureStateException}
-import controllers.routes
-import javax.inject.{Inject, Singleton}
+import controllers.routes.{RootController, UnauthorisedController}
 import models.ReturnToStartException
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results.{BadRequest, NotFound}
@@ -30,6 +29,8 @@ import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.error_template
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class ErrorHandler @Inject() (appConfig: AppConfig, override val messagesApi: MessagesApi, errorTemplate: error_template)
@@ -43,12 +44,9 @@ class ErrorHandler @Inject() (appConfig: AppConfig, override val messagesApi: Me
 
   override def resolveError(rh: RequestHeader, ex: Throwable): Result =
     ex match {
-      case _: NoActiveSession =>
-        Results.Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.loginContinueUrl)))
-      case _: InsufficientEnrolments =>
-        Results.SeeOther(routes.UnauthorisedController.onPageLoad.url)
-      case _: IncompleteApplication | ReturnToStartException =>
-        Results.Redirect(routes.RootController.displayPage())
+      case _: NoActiveSession => Results.Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.loginContinueUrl)))
+      case _: InsufficientEnrolments => Results.SeeOther(UnauthorisedController.onPageLoad.url)
+      case _: IncompleteApplication | ReturnToStartException => Results.Redirect(RootController.displayPage)
       case _: InvalidFeatureStateException => NotFound(notFoundTemplate(Request(rh, "")))
       case _                               => super.resolveError(rh, ex)
     }

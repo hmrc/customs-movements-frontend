@@ -101,7 +101,7 @@ class ShutMucrSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndA
       val backButton = shutMucrSummaryPage(shutMucr).getBackButton
 
       backButton mustBe defined
-      backButton.get must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+      backButton.get must haveHref(controllers.routes.ChoiceController.displayChoices)
     }
 
     "have 'Back' button when ileQuery disabled" in {

@@ -44,7 +44,7 @@ class ShutMucrViewSpec extends ViewSpec with Injector {
 
       backButton mustBe defined
       backButton.foreach { button =>
-        button must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+        button must haveHref(controllers.routes.ChoiceController.displayChoices)
         button must containMessage("site.back.toStartPage")
       }
     }

@@ -16,19 +16,19 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, JourneyRefiner, NonIleQueryAction}
+import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.consolidations.routes.{DisassociateUcrController, MucrOptionsController}
 import controllers.navigation.Navigator
+import controllers.routes.{ConsignmentReferencesController, DucrPartDetailsController}
 import forms.DucrPartChiefChoice
 import forms.DucrPartChiefChoice.form
 import models.ReturnToStartException
-import models.cache.JourneyType.JourneyType
+import models.cache.JourneyType._
 import models.cache._
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import play.twirl.api.HtmlFormat.Appendable
 import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -41,7 +41,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class DucrPartChiefController @Inject() (
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
-  ileQueryFeatureDisabled: NonIleQueryAction,
   cacheRepository: CacheRepository,
   mcc: MessagesControllerComponents,
   ducrPartChiefPage: ducr_part_chief,
@@ -49,34 +48,24 @@ class DucrPartChiefController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  private val requiredActions = authenticate andThen ileQueryFeatureDisabled andThen getJourney(
-    JourneyType.ARRIVE,
-    JourneyType.DEPART,
-    JourneyType.ASSOCIATE_UCR,
-    JourneyType.DISSOCIATE_UCR
-  )
+  private val requiredActions = authenticate andThen getJourney(ARRIVE, DEPART, ASSOCIATE_UCR, DISSOCIATE_UCR)
 
-  def displayPage(): Action[AnyContent] =
-    requiredActions { implicit request =>
-      val choice = request.cache.ducrPartChiefChoice
-      Ok(buildPage(choice.fold(form())(form().fill(_))))
-    }
+  def displayPage(): Action[AnyContent] = requiredActions { implicit request =>
+    val choice = request.cache.ducrPartChiefChoice
+    Ok(ducrPartChiefPage(choice.fold(form())(form().fill(_))))
+  }
 
-  private def buildPage(form: Form[DucrPartChiefChoice])(implicit request: JourneyRequest[AnyContent]): Appendable =
-    ducrPartChiefPage(form)
-
-  def submit(): Action[AnyContent] =
-    requiredActions.async { implicit request =>
-      form()
-        .bindFromRequest()
-        .fold(
-          (formWithErrors: Form[DucrPartChiefChoice]) => Future.successful(BadRequest(buildPage(formWithErrors))),
-          choice => updateCache(request.cache, choice)
-        )
-    }
+  def submit(): Action[AnyContent] = requiredActions.async { implicit request =>
+    form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[DucrPartChiefChoice]) => Future.successful(BadRequest(ducrPartChiefPage(formWithErrors))),
+        choice => updateCache(request.cache, choice)
+      )
+  }
 
   private def updateCache(cache: Cache, choice: DucrPartChiefChoice)(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
-    val toUpdate = (if (choice.isDucrPart) cache else cache.copy(queryUcr = None)).copy(ducrPartChiefChoice = Some(choice))
+    val toUpdate = (if (choice.isDucrPart) cache else cache.copy(ucrBlock = None)).copy(ducrPartChiefChoice = Some(choice))
     cacheRepository
       .upsert(toUpdate)
       .map(_ => nextPage(choice, cache.answers.map(_.`type`).getOrElse(throw ReturnToStartException)))
@@ -84,12 +73,11 @@ class DucrPartChiefController @Inject() (
 
   private def nextPage(choice: DucrPartChiefChoice, journeyType: JourneyType)(implicit request: JourneyRequest[AnyContent]): Result =
     if (choice.choice == DucrPartChiefChoice.IsDucrPart)
-      navigator.continueTo(routes.DucrPartDetailsController.displayPage())
+      navigator.continueTo(DucrPartDetailsController.displayPage())
     else
       journeyType match {
-        case JourneyType.ARRIVE | JourneyType.DEPART => navigator.continueTo(routes.ConsignmentReferencesController.displayPage())
-        case JourneyType.ASSOCIATE_UCR               => navigator.continueTo(MucrOptionsController.displayPage())
-        case JourneyType.DISSOCIATE_UCR              => navigator.continueTo(DisassociateUcrController.displayPage())
+        case ARRIVE | DEPART => navigator.continueTo(ConsignmentReferencesController.displayPage())
+        case ASSOCIATE_UCR   => navigator.continueTo(MucrOptionsController.displayPage())
+        case DISSOCIATE_UCR  => navigator.continueTo(DisassociateUcrController.displayPage())
       }
-
 }

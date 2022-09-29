@@ -40,10 +40,10 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
 
   private val page = mock[mucr_options]
 
-  private val queryUcr = UcrBlock(ucr = "ducr", ucrType = "D")
+  private val ucrBlock = UcrBlock(ucr = "ducr", ucrType = "D")
 
-  private def controller(answers: AssociateUcrAnswers, queryUcr: Option[UcrBlock] = None) =
-    new MucrOptionsController(SuccessfulAuth(), ValidJourney(answers, queryUcr), stubMessagesControllerComponents(), cache, page, navigator)(global)
+  private def controller(answers: AssociateUcrAnswers, ucrBlock: Option[UcrBlock] = None) =
+    new MucrOptionsController(SuccessfulAuth(), ValidJourney(answers, ucrBlock), stubMessagesControllerComponents(), cache, page, navigator)(global)
 
   override def beforeEach() {
     super.beforeEach()
@@ -81,7 +81,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
       "display page with filled data" in {
         val mucrOptions = MucrOptions(MucrOptions.Create, CommonTestData.correctUcr)
 
-        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions), None)).displayPage()(getRequest())
+        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions))).displayPage()(getRequest())
 
         status(result) mustBe OK
         theFormRendered.value.get.mucr mustBe CommonTestData.correctUcr
@@ -120,20 +120,19 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
 
     "return 303 (SEE_OTHER)" when {
 
-      "form is correct when queryUcr not present" in {
+      "form is correct when ucrBlock not present" in {
         val correctForm = Json.toJson(MucrOptions(Create, validMucr))(formWrites)
 
-        val result = controller(AssociateUcrAnswers(), queryUcr = None).save()(postRequest(correctForm))
+        val result = controller(AssociateUcrAnswers()).save()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         thePageNavigatedTo.url mustBe routes.AssociateUcrController.displayPage().url
       }
 
-      "form is correct when queryUcr present" in {
-
+      "form is correct when ucrBlock present" in {
         val correctForm = Json.toJson(MucrOptions(Create, validMucr))(formWrites)
 
-        val result = controller(AssociateUcrAnswers(), queryUcr = Some(queryUcr)).save()(postRequest(correctForm))
+        val result = controller(AssociateUcrAnswers(), ucrBlock = Some(ucrBlock)).save()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.AssociateUcrSummaryController.displayPage().url
@@ -142,7 +141,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
       "a MUCR conforms with the regex but has been send but is just 35 characters long" in {
         val correctForm = Json.toJson(MucrOptions(Create, "GB/82F9-0N2F6500040010TO120P0A30068"))(formWrites)
 
-        val result = controller(AssociateUcrAnswers(), queryUcr = Some(queryUcr)).save()(postRequest(correctForm))
+        val result = controller(AssociateUcrAnswers(), ucrBlock = Some(ucrBlock)).save()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.AssociateUcrSummaryController.displayPage().url

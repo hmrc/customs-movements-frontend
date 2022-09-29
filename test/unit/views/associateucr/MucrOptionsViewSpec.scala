@@ -18,6 +18,8 @@ package views.associateucr
 
 import base.OverridableInjector
 import config.IleQueryConfig
+import controllers.consolidations.routes.ManageMucrController
+import controllers.routes.ChoiceController
 import forms.UcrType.Mucr
 import forms.{ManageMucrChoice, MucrOptions}
 import models.UcrBlock
@@ -29,6 +31,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.{Form, FormError}
 import play.api.inject.bind
+import play.twirl.api.HtmlFormat.Appendable
 import views.ViewSpec
 import views.html.associateucr.mucr_options
 
@@ -51,17 +54,17 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
     super.afterEach()
   }
 
-  private implicit val request = journeyRequest(AssociateUcrAnswers(manageMucrChoice = Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr))))
-
   private val form: Form[MucrOptions] = MucrOptions.form
 
-  private val queryUcr = Some(UcrBlock(ucr = "mucr", ucrType = Mucr))
+  private val ucrBlock = Some(UcrBlock(ucr = "mucr", ucrType = Mucr))
   private val manageMucr = Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr))
 
-  private def createView(form: Form[MucrOptions] = form)(implicit request: JourneyRequest[_] = request) =
-    page(form, queryUcr, manageMucr)
+  private def createView(form: Form[MucrOptions] = form)(implicit request: JourneyRequest[_]): Appendable =
+    page(form, ucrBlock, manageMucr)
 
   "MUCR options" should {
+
+    implicit val request = journeyRequest(AssociateUcrAnswers(Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr))))
 
     "have the correct title" in {
       createView().getTitle must containMessage("mucrOptions.title")
@@ -99,7 +102,7 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
 
       backButton mustBe defined
       backButton.foreach { button =>
-        button must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+        button must haveHref(ChoiceController.displayChoices)
         button must containMessage("site.back.previousQuestion")
       }
     }
@@ -110,7 +113,7 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
 
       backButton mustBe defined
       backButton.foreach { button =>
-        button must haveHref(controllers.consolidations.routes.ManageMucrController.displayPage())
+        button must haveHref(ManageMucrController.displayPage())
         button must containMessage("site.back.previousQuestion")
       }
     }
@@ -131,6 +134,5 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
     checkAllSaveButtonsAreDisplayed(createView(form)(journeyRequest(AssociateUcrAnswers(readyToSubmit = Some(true)))))
 
     checkSaveAndReturnToSummaryButtonIsHidden(createView())
-
   }
 }

@@ -15,6 +15,8 @@
  *@
 
 @import components.gds.{errorSummary, gds_main_template, pageTitle}
+@import controllers.ileQuery.routes.FindConsignmentController
+@import controllers.routes.{ChoiceController, DucrPartDetailsController, SubmissionsController}
 @import uk.gov.hmrc.govukfrontend.views.html.components.{Button, FormWithCSRF, GovukButton, Text}
 @import views.components.BackButton
 @import views.html.components.gds.{exportsInputText, link}
@@ -32,12 +34,9 @@
 
 @(form: Form[String])(implicit request: Request[_], messages: Messages)
 
-@govukLayout(
-    title = Title("ileQuery.title"),
-    backButton = None) {
+@govukLayout(title = Title("ileQuery.title"), backButton = Some(BackButton(messages("site.back"), ChoiceController.displayChoices))) {
 
-    @formHelper(action = controllers.ileQuery.routes.FindConsignmentController.submitQueryForm(), 'autoComplete -> "off") {
-
+    @formHelper(action = FindConsignmentController.submitPage, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @exportsInputText(
@@ -52,9 +51,8 @@
         @govukButton(Button(content = Text(messages("site.continue"))))
 
         <ul class="govuk-list">
-            <li>@link(message = Html(messages("ileQuery.link.requests")), href = routes.SubmissionsController.displayPage())</li>
-            <li>@link(message = Html(messages("ileQuery.link.ducrPart")), href = routes.DucrPartDetailsController.displayPage())</li>
+            <li>@link(message = Html(messages("ileQuery.link.requests")), href = SubmissionsController.displayPage)</li>
+            <li>@link(message = Html(messages("ileQuery.link.ducrPart")), href = DucrPartDetailsController.displayPage)</li>
         </ul>
-
     }
 }

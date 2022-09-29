@@ -32,9 +32,9 @@
 
 @serviceNameLink = @{
     if (ileQueryConfig.isIleQueryEnabled)
-        controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url
+        controllers.ileQuery.routes.FindConsignmentController.displayPage.url
     else
-        controllers.routes.ChoiceController.displayChoiceForm().url
+        controllers.routes.ChoiceController.displayChoices.url
 }
 
 @hmrcHeader(Header(

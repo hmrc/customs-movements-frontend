@@ -24,7 +24,6 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.twirl.api.{Html, HtmlFormat}
-import views.components.config.ConfirmationPageConfig
 import views.html.confirmation_page
 import views.tags.ViewTest
 

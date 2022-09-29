@@ -17,6 +17,8 @@
 package views
 
 import base.Injector
+import config.IleQueryConfig
+import controllers.actions.ArriveDepartAllowList
 import forms.Choice._
 import forms.{Choice, UcrType}
 import models.UcrBlock
@@ -31,7 +33,6 @@ import play.api.test.FakeRequest
 import testdata.CommonTestData.validEori
 import testdata.MovementsTestData.newUser
 import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukRadios}
-import views.components.config.ChoicePageConfig
 import views.html.choice_page
 import views.html.components.gds.{errorSummary, gds_main_template, sectionHeader}
 import views.tags.ViewTest
@@ -41,7 +42,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
 
   private implicit val request = AuthenticatedRequest(FakeRequest().withCSRFToken, newUser(validEori))
 
-  private val form: Form[Choice] = Choice.form()
+  private val form: Form[Choice] = Choice.form
 
   private val govukLayout = instanceOf[gds_main_template]
   private val govukButton = instanceOf[GovukButton]
@@ -49,25 +50,23 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
   private val errorSummary = instanceOf[errorSummary]
   private val sectionHeader = instanceOf[sectionHeader]
   private val formHelper = instanceOf[FormWithCSRF]
-  private val pageConfig = mock[ChoicePageConfig]
+  private val arriveDepartAllowList = mock[ArriveDepartAllowList]
+  private val ileQueryConfig = mock[IleQueryConfig]
 
-  private def isIleQueryEnabled(enabled: Boolean): Unit = {
-    when(pageConfig.backLink(any())).thenReturn(
-      if (enabled) Some(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
-      else None
-    )
-    when(pageConfig.ileQueryEnabled).thenReturn(enabled)
-  }
+  private def isIleQueryEnabled(enabled: Boolean): Unit = when(ileQueryConfig.isIleQueryEnabled).thenReturn(enabled)
 
-  private def isUserOnArriveDepartAllowList(present: Boolean) =
-    when(pageConfig.isUserPermittedArriveDepartAccess(any())).thenReturn(present)
+  private def isUserOnArriveDepartAllowList(present: Boolean): Unit =
+    when(arriveDepartAllowList.contains(any())).thenReturn(present)
 
-  private val choicePage = new choice_page(govukLayout, govukButton, govukRadios, errorSummary, sectionHeader, formHelper, pageConfig)
+  private val choicePage = new choice_page(
+    govukLayout, govukButton, govukRadios, errorSummary, sectionHeader, formHelper, arriveDepartAllowList, ileQueryConfig
+  )
+
   private def createView(form: Form[Choice] = form): Document =
     choicePage(form)(request, messages)
 
   override def afterEach(): Unit =
-    reset(pageConfig)
+    reset(arriveDepartAllowList, ileQueryConfig)
 
   "Choice View" should {
 
@@ -146,7 +145,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
         val backButton = view.getElementById("back-link")
 
         backButton.text() must be(messages("site.back"))
-        backButton.attr("href") must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
+        backButton.attr("href") must be(controllers.ileQuery.routes.FindConsignmentController.displayPage.url)
       }
 
       "display 5 radio buttons with labels" in {
@@ -186,7 +185,7 @@ class ChoiceViewSpec extends ViewSpec with Injector with MockitoSugar with Befor
         val backButton = view.getElementById("back-link")
 
         backButton.text() must be(messages("site.back"))
-        backButton.attr("href") must be(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
+        backButton.attr("href") must be(controllers.ileQuery.routes.FindConsignmentController.displayPage.url)
       }
 
       "display 3 radio buttons with labels when user is not on allow list" in {

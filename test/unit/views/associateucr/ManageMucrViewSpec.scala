@@ -34,50 +34,49 @@ class ManageMucrViewSpec extends ViewSpec with Injector {
   private val page = instanceOf[manage_mucr]
   private val form: Form[ManageMucrChoice] = ManageMucrChoice.form
 
-  private val queryUcr = Some(UcrBlock(ucr = "mucr", ucrType = Mucr))
+  private val ucrBlock = Some(UcrBlock(ucr = "mucr", ucrType = Mucr))
 
   "MUCR options" should {
 
     "have the correct title" in {
-      page(form, queryUcr).getTitle must containMessage("manageMucr.title")
+      page(form, ucrBlock).getTitle must containMessage("manageMucr.title")
     }
 
     "have the correct heading" in {
-      page(form, queryUcr).getElementById("section-header") must containMessage("manageMucr.heading", "mucr")
+      page(form, ucrBlock).getElementById("section-header") must containMessage("manageMucr.heading", "mucr")
     }
 
     "render the correct labels" in {
-      val view = page(form, queryUcr)
+      val view = page(form, ucrBlock)
       view.getElementsByAttributeValue("for", "choice").first() must containMessage("manageMucr.associate.this.consignment")
       view.getElementsByAttributeValue("for", "choice-2").first() must containMessage("manageMucr.associate.other.consignment")
     }
 
     "display 'Back' button" in {
-      val backButton = page(form, queryUcr).getBackButton
+      val backButton = page(form, ucrBlock).getBackButton
 
       backButton mustBe defined
       backButton.foreach { button =>
-        button must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+        button must haveHref(controllers.routes.ChoiceController.displayChoices)
         button must containMessage("site.back")
       }
     }
 
     "render error summary" when {
       "no errors" in {
-        page(form, queryUcr).getErrorSummary mustBe empty
+        page(form, ucrBlock).getErrorSummary mustBe empty
       }
 
       "some errors" in {
-        val view: Document = page(form.withError(FormError("choice", "manageMucr.input.error.empty")), queryUcr)
+        val view: Document = page(form.withError(FormError("choice", "manageMucr.input.error.empty")), ucrBlock)
 
         view must haveGovUkGlobalErrorSummary
         view must haveGovUkFieldError("choice", messages("manageMucr.input.error.empty"))
       }
     }
 
-    checkAllSaveButtonsAreDisplayed(page(form, queryUcr)(requestReadyToSubmit, messages(requestReadyToSubmit)))
+    checkAllSaveButtonsAreDisplayed(page(form, ucrBlock)(requestReadyToSubmit, messages(requestReadyToSubmit)))
 
-    checkSaveAndReturnToSummaryButtonIsHidden(page(form, queryUcr))
-
+    checkSaveAndReturnToSummaryButtonIsHidden(page(form, ucrBlock))
   }
 }

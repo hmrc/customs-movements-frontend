@@ -16,6 +16,7 @@
 
 package controllers
 
+import controllers.routes.ChoiceController
 import play.api.test.Helpers._
 
 class RootControllerSpec extends ControllerLayerSpec {
@@ -23,15 +24,12 @@ class RootControllerSpec extends ControllerLayerSpec {
   private val controller = new RootController(stubMessagesControllerComponents())
 
   "Root Controller" should {
-
     "return 303 (SEE_OTHER)" when {
-
       "redirect user to the choice page" in {
-
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.ChoiceController.displayChoiceForm().url)
+        redirectLocation(result) mustBe Some(ChoiceController.displayChoices.url)
       }
     }
   }

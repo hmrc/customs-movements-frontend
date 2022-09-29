@@ -26,7 +26,8 @@ import java.time.Instant
 case class Cache(
   eori: String,
   answers: Option[Answers],
-  queryUcr: Option[UcrBlock],
+  ucrBlock: Option[UcrBlock],
+  ucrBlockFromIleQuery: Boolean,
   ducrPartChiefChoice: Option[DucrPartChiefChoice],
   updated: Option[Instant] = Some(Instant.now())
 ) {
@@ -40,5 +41,15 @@ object Cache {
   implicit private val formatInstant: Format[Instant] = MongoJavatimeFormats.instantFormat
   implicit val format: OFormat[Cache] = Json.format[Cache]
 
-  def apply(eori: String, queryUcr: UcrBlock): Cache = new Cache(eori, None, Some(queryUcr), None)
+  def apply(eori: String): Cache =
+    new Cache(eori, None, None, false, None)
+
+  def apply(eori: String, ucrBlock: UcrBlock, ucrBlockFromIleQuery: Boolean): Cache =
+    new Cache(eori, None, Some(ucrBlock), ucrBlockFromIleQuery, None)
+
+  def apply(eori: String, answers: Answers, ucrBlock: UcrBlock, ucrBlockFromIleQuery: Boolean): Cache =
+    new Cache(eori, Some(answers), Some(ucrBlock), ucrBlockFromIleQuery, None)
+
+  def apply(eori: String, answers: Answers): Cache =
+    new Cache(eori, Some(answers), None, false, None)
 }

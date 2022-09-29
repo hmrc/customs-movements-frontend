@@ -8,27 +8,30 @@ GET         /unauthorised                          controllers.UnauthorisedContr
 
 # Root Url
 
-GET         /                                      controllers.RootController.displayPage()
+GET         /                                      controllers.RootController.displayPage
+
+# Choice page
+GET         /choice                                controllers.ChoiceController.displayChoices
+GET         /choice/:journey                       controllers.ChoiceController.startSpecificJourney(journey)
+POST        /choice                                controllers.ChoiceController.submitChoice
+
+# Choice on selected Consignment page
+GET         /choice-on-consignment                 controllers.ChoiceOnConsignmentController.displayChoices
+POST        /choice-on-consignment                 controllers.ChoiceOnConsignmentController.submitChoice
 
 # ILE Query - entry point
-GET         /consignment-query                     controllers.ileQuery.FindConsignmentController.displayQueryForm()
-POST        /consignment-query                     controllers.ileQuery.FindConsignmentController.submitQueryForm()
+GET         /consignment-query                     controllers.ileQuery.FindConsignmentController.displayPage
+POST        /consignment-query                     controllers.ileQuery.FindConsignmentController.submitPage
 
-GET         /consignment-query/:ucr                controllers.ileQuery.IleQueryController.getConsignmentInformation(ucr: String)
-
-# DUCR Part details page
-GET         /ducr-part-details                     controllers.DucrPartDetailsController.displayPage()
-POST        /ducr-part-details                     controllers.DucrPartDetailsController.submitDucrPartDetails()
-POST        /ducr-part-details-journey             controllers.DucrPartDetailsController.submitDucrPartDetailsJourney()
+GET         /consignment-query/:ucr                controllers.ileQuery.IleQueryController.getConsignmentData(ucr: String)
 
 # DUCR Part CHIEF page
 GET         /ducr-part-created-chief               controllers.DucrPartChiefController.displayPage()
 POST        /ducr-part-created-chief               controllers.DucrPartChiefController.submit()
 
-# Declaration choice page
-GET         /choice                                controllers.ChoiceController.displayChoiceForm()
-GET         /choice/:journey                       controllers.ChoiceController.startSpecificJourney(journey)
-POST        /choice                                controllers.ChoiceController.submitChoice()
+# DUCR Part details page
+GET         /ducr-part-details                     controllers.DucrPartDetailsController.displayPage()
+POST        /ducr-part-details                     controllers.DucrPartDetailsController.submitDucrPartDetails()
 
 # MUCR Options
 GET         /mucr-options                          controllers.consolidations.MucrOptionsController.displayPage()

@@ -23,10 +23,12 @@ import play.api.test.Helpers._
 class AssociateUcrSpec extends IntegrationSpec {
 
   "Manage Mucr Page" when {
+
     "GET" should {
+
       "return 200 when queried mucr" in {
         givenAuthSuccess("eori")
-        givenCacheFor(Cache("eori", Some(AssociateUcrAnswers()), Some(UcrBlock("mucr", UcrType.Mucr)), None))
+        givenCacheFor(Cache("eori", AssociateUcrAnswers(), UcrBlock("mucr", UcrType.Mucr), false))
 
         val response = get(controllers.consolidations.routes.ManageMucrController.displayPage())
 
@@ -35,7 +37,7 @@ class AssociateUcrSpec extends IntegrationSpec {
 
       "return 303 when queried ducr" in {
         givenAuthSuccess("eori")
-        givenCacheFor(Cache("eori", Some(AssociateUcrAnswers()), Some(UcrBlock("ducr", UcrType.Ducr)), None))
+        givenCacheFor(Cache("eori", AssociateUcrAnswers(), UcrBlock("ducr", UcrType.Ducr), false))
 
         val response = get(controllers.consolidations.routes.ManageMucrController.displayPage())
 
@@ -45,6 +47,7 @@ class AssociateUcrSpec extends IntegrationSpec {
     }
 
     "POST" should {
+
       "continue for associate this mucr" in {
         givenAuthSuccess("eori")
         givenCacheFor("eori", AssociateUcrAnswers())
@@ -70,6 +73,7 @@ class AssociateUcrSpec extends IntegrationSpec {
   }
 
   "UCR Options Page" when {
+
     "GET" should {
       "return 200" in {
         givenAuthSuccess("eori")
@@ -108,6 +112,7 @@ class AssociateUcrSpec extends IntegrationSpec {
   }
 
   "Associate UCR Page" when {
+
     "GET" should {
       "return 200" in {
         givenAuthSuccess("eori")
@@ -140,6 +145,7 @@ class AssociateUcrSpec extends IntegrationSpec {
   }
 
   "Associate UCR Summary Page" when {
+
     "GET" should {
       "return 200" in {
         givenAuthSuccess("eori")

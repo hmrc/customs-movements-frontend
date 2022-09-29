@@ -38,8 +38,6 @@ import scala.collection.JavaConverters.collectionAsScalaIterable
 
 class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private implicit val request = journeyRequest(ArrivalAnswers())
-
   private val ileQueryConfig = mock[IleQueryConfig]
   private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
 
@@ -62,7 +60,7 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
   private val consignmentReferencesValue = "M-ref"
 
   private val form = movementDetails.arrivalForm()
-  private def createView(form: Form[ArrivalDetails])(implicit request: JourneyRequest[_] = request): Html =
+  private def createView(form: Form[ArrivalDetails])(implicit request: JourneyRequest[_]): Html =
     page(form, consignmentReferencesValue)
 
   private def convertIntoTwoDigitFormat(input: Int): String = {
@@ -76,6 +74,8 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
   }
 
   "ArrivalDetails View" when {
+
+    implicit val request = journeyRequest(ArrivalAnswers())
 
     "provided with empty form" should {
       val emptyView = createView(form)
@@ -169,7 +169,6 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
       checkAllSaveButtonsAreDisplayed(emptyViewReadyToSubmit)
 
       checkSaveAndReturnToSummaryButtonIsHidden(emptyView)
-
     }
 
     "provided with form containing data" should {
@@ -234,8 +233,6 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
       "have single error in summary" in {
         viewWithDateError.getElementsByClass("govuk-list govuk-error-summary__list").text() mustBe (messages("arrival.details.error.overdue"))
       }
-
     }
   }
-
 }

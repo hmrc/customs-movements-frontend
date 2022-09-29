@@ -47,7 +47,7 @@ class SiteHeaderViewSpec extends ViewSpec with BeforeAndAfterEach with MockitoSu
       val serviceNameLink = headerComponent()
         .getElementsByClass("hmrc-header__service-name--linked")
         .first()
-      serviceNameLink must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+      serviceNameLink must haveHref(controllers.routes.ChoiceController.displayChoices)
       serviceNameLink must containMessage("service.name")
     }
 
@@ -58,7 +58,7 @@ class SiteHeaderViewSpec extends ViewSpec with BeforeAndAfterEach with MockitoSu
       val serviceNameLink = headerComponent()
         .getElementsByClass("hmrc-header__service-name--linked")
         .first()
-      serviceNameLink must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+      serviceNameLink must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayPage)
       serviceNameLink must containMessage("service.name")
     }
   }

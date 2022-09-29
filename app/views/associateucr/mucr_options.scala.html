@@ -14,45 +14,50 @@
  * limitations under the License.
  *@
 
-@import forms.ManageMucrChoice
-@import forms.MucrOptions
+@import config.ExternalServicesConfig
+@import controllers.consolidations.routes.{ManageMucrController, MucrOptionsController}
+@import controllers.routes.{ChoiceOnConsignmentController, DucrPartChiefController, DucrPartDetailsController}
+@import forms.{ManageMucrChoice, MucrOptions}
+@import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.BackButton
 @import views.html.components.gds._
 @import views.Title
-@import views.components.BackButton
-@import components.gds._
-@import components.gds.exportsInputText
-@import views.components.config.MucrOptionsConfig
-@import models.requests.JourneyRequest
-
 
 @this(
     govukLayout: gds_main_template,
-    govukButton: GovukButton,
     govukRadios: GovukRadios,
-    govukInput: GovukInput,
     errorSummary: errorSummary,
     exportsInputText: exportsInputText,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
     paragraphBody: paragraphBody,
-    pageConfig: MucrOptionsConfig,
-    formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
-    saveButtons: saveButtons
+    formHelper: FormWithCSRF,
+    saveButtons: saveButtons,
+    config: ExternalServicesConfig
 )
 
-@(form: Form[MucrOptions], queryUcr: Option[UcrBlock], manageMucrChoice: Option[ManageMucrChoice])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[MucrOptions], ucrBlock: Option[UcrBlock], manageMucrChoice: Option[ManageMucrChoice])(implicit request: JourneyRequest[_], messages: Messages)
 
-@previousDocumentsDataElementLink = {<a target="_blank" href=@pageConfig.previousDocumentsDataElementUrl>@messages("mucrOptions.paragraph.link")</a>}
+@previousDocumentsDataElementLink = {
+    <a target="_blank" href=@config.previousDocumentsDataElementUrl>@messages("mucrOptions.paragraph.link")</a>
+}
 
-@govukLayout(
-    title = Title("mucrOptions.title"),
-    backButton = Some(BackButton(messages("site.back.previousQuestion"), pageConfig.backUrl(manageMucrChoice, request.cache.ducrPartChiefChoice)))) {
+@backUrl = @{
+    if (request.cache.ucrBlockFromIleQuery) {
+        if (manageMucrChoice.isDefined) ManageMucrController.displayPage
+        else ChoiceOnConsignmentController.displayChoices
+    }
+    else if (request.cache.ducrPartChiefChoice.exists(_.isDucrPart)) DucrPartDetailsController.displayPage
+    else DucrPartChiefController.displayPage
+}
 
-    @formHelper(action = consolidations.routes.MucrOptionsController.save(), 'autoComplete -> "off") {
+@govukLayout(title = Title("mucrOptions.title"), backButton = Some(BackButton(messages("site.back.previousQuestion"), backUrl))) {
+
+    @formHelper(action = MucrOptionsController.save(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("mucrOptions.heading", queryUcr.map(_.ucr).getOrElse("")))
+        @sectionHeader(messages("mucrOptions.heading", ucrBlock.map(_.ucr).getOrElse("")))
 
         @pageTitle(messages("mucrOptions.title"))
 

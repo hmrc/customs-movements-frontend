@@ -18,10 +18,12 @@ package controllers.consolidations
 
 import config.IleQueryConfig
 import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.consolidations.routes.AssociateUcrConfirmationController
 import controllers.storage.FlashKeys
 import forms.UcrType
 import models.ReturnToStartException
-import models.cache.{AssociateUcrAnswers, JourneyType}
+import models.cache.AssociateUcrAnswers
+import models.cache.JourneyType.ASSOCIATE_UCR
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.SubmissionService
@@ -43,26 +45,19 @@ class AssociateUcrSummaryController @Inject() (
 )(implicit executionContext: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ASSOCIATE_UCR)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(ASSOCIATE_UCR)) { implicit request =>
     val answers = request.answersAs[AssociateUcrAnswers]
     val mucrOptions = answers.mucrOptions.getOrElse(throw ReturnToStartException)
     val associateUcr = answers.associateUcr.getOrElse(throw ReturnToStartException)
 
-    if (ileQueryConfig.isIleQueryEnabled) {
-      if (answers.isAssociateAnotherMucr)
-        Ok(associateUcrSummaryNoChangePage(mucrOptions.mucr, associateUcr.ucr, associateUcr.kind, answers.manageMucrChoice))
-      else
-        Ok(associateUcrSummaryNoChangePage(associateUcr.ucr, mucrOptions.mucr, UcrType.Mucr, answers.manageMucrChoice))
-    } else
-      Ok(associateUcrSummaryPage(associateUcr, mucrOptions.mucr))
-
+    if (!request.cache.ucrBlockFromIleQuery) Ok(associateUcrSummaryPage(associateUcr, mucrOptions.mucr))
+    else if (answers.isAssociateAnotherMucr) Ok(associateUcrSummaryNoChangePage(mucrOptions.mucr, associateUcr.ucr, associateUcr.kind, answers.manageMucrChoice))
+    else Ok(associateUcrSummaryNoChangePage(associateUcr.ucr, mucrOptions.mucr, UcrType.Mucr, answers.manageMucrChoice))
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ASSOCIATE_UCR)).async { implicit request =>
-    val answers = request.answersAs[AssociateUcrAnswers]
-
-    submissionService.submit(request.eori, answers).map { _ =>
-      Redirect(controllers.consolidations.routes.AssociateUcrConfirmationController.displayPage())
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType(ASSOCIATE_UCR)).async { implicit request =>
+    submissionService.submit(request.eori, request.answersAs[AssociateUcrAnswers]).map { _ =>
+      Redirect(AssociateUcrConfirmationController.displayPage())
         .flashing(FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString)
     }
   }

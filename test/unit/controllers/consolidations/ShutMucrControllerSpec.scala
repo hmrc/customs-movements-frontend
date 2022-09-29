@@ -17,7 +17,6 @@
 package controllers.consolidations
 
 import controllers.ControllerLayerSpec
-import controllers.actions.NonIleQueryAction
 import controllers.exception.InvalidFeatureStateException
 import forms.ShutMucr
 import models.cache.{Cache, ShutMucrAnswers}
@@ -63,7 +62,6 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
     "return 200 (OK)" when {
 
       "GET displayPage is invoked without data in cache" in {
-
         givenTheCacheIsEmpty()
 
         val result = controller(ShutMucrAnswers(), ValidForIleQuery).displayPage()(getRequest)
@@ -73,9 +71,8 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
       }
 
       "GET displayPage is invoked with data in cache" in {
-
         val cachedForm = Some(ShutMucr("123"))
-        givenTheCacheContains(Cache("12345", Some(ShutMucrAnswers(shutMucr = cachedForm)), None, None))
+        givenTheCacheContains(Cache("12345", ShutMucrAnswers(shutMucr = cachedForm)))
 
         val result = controller(ShutMucrAnswers(shutMucr = cachedForm), ValidForIleQuery).displayPage()(getRequest)
 
@@ -99,7 +96,6 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
     "return 303 (SEE_OTHER)" when {
 
       "form is correct and submission service returned ACCEPTED" in {
-
         givenTheCacheIsEmpty()
 
         val correctForm = Json.toJson(ShutMucr(validMucr))

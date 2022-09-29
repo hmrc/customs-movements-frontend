@@ -24,22 +24,22 @@ class ChoiceSpec extends IntegrationSpec {
 
   "Display Page" should {
 
-    "return 200 when queryUcr in cache" in {
+    "return 200 when ucrBlock in cache" in {
       givenAuthSuccess("eori")
-      givenCacheFor(Cache("eori", UcrBlock(ucr = "ucr", ucrType = Mucr)))
+      givenCacheFor(Cache("eori", UcrBlock(ucr = "ucr", ucrType = Mucr), false))
 
-      val response = get(controllers.routes.ChoiceController.displayChoiceForm())
+      val response = get(controllers.routes.ChoiceController.displayChoices)
 
       status(response) mustBe OK
     }
 
-    "return 300 when no queryUcr in cache" in {
+    "return 300 when no ucrBlock in cache" in {
       givenAuthSuccess("eori")
 
-      val response = get(controllers.routes.ChoiceController.displayChoiceForm())
+      val response = get(controllers.routes.ChoiceController.displayChoices)
 
       status(response) mustBe SEE_OTHER
-      redirectLocation(response) mustBe Some(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url)
+      redirectLocation(response) mustBe Some(controllers.ileQuery.routes.FindConsignmentController.displayPage.url)
     }
   }
 
@@ -48,7 +48,7 @@ class ChoiceSpec extends IntegrationSpec {
       "Departure" in {
         givenAuthSuccess("eori")
 
-        val response = post(controllers.routes.ChoiceController.submitChoice(), "choice" -> Choice.Departure.value)
+        val response = post(controllers.routes.ChoiceController.submitChoice, "choice" -> Choice.Departure.value)
 
         status(response) mustBe SEE_OTHER
         theAnswersFor("eori") mustBe Some(DepartureAnswers())
@@ -57,7 +57,7 @@ class ChoiceSpec extends IntegrationSpec {
       "Arrival" in {
         givenAuthSuccess("eori")
 
-        val response = post(controllers.routes.ChoiceController.submitChoice(), "choice" -> Choice.Arrival.value)
+        val response = post(controllers.routes.ChoiceController.submitChoice, "choice" -> Choice.Arrival.value)
 
         status(response) mustBe SEE_OTHER
         theAnswersFor("eori") mustBe Some(ArrivalAnswers())
@@ -66,7 +66,7 @@ class ChoiceSpec extends IntegrationSpec {
       "Associate UCR" in {
         givenAuthSuccess("eori")
 
-        val response = post(controllers.routes.ChoiceController.submitChoice(), "choice" -> Choice.AssociateUCR.value)
+        val response = post(controllers.routes.ChoiceController.submitChoice, "choice" -> Choice.AssociateUCR.value)
 
         status(response) mustBe SEE_OTHER
         theAnswersFor("eori") mustBe Some(AssociateUcrAnswers())
@@ -75,7 +75,7 @@ class ChoiceSpec extends IntegrationSpec {
       "Dissociate UCR" in {
         givenAuthSuccess("eori")
 
-        val response = post(controllers.routes.ChoiceController.submitChoice(), "choice" -> Choice.DisassociateUCR.value)
+        val response = post(controllers.routes.ChoiceController.submitChoice, "choice" -> Choice.DisassociateUCR.value)
 
         status(response) mustBe SEE_OTHER
         theAnswersFor("eori") mustBe Some(DisassociateUcrAnswers())
@@ -84,7 +84,7 @@ class ChoiceSpec extends IntegrationSpec {
       "Shut MUCR" in {
         givenAuthSuccess("eori")
 
-        val response = post(controllers.routes.ChoiceController.submitChoice(), "choice" -> Choice.ShutMUCR.value)
+        val response = post(controllers.routes.ChoiceController.submitChoice, "choice" -> Choice.ShutMUCR.value)
 
         status(response) mustBe SEE_OTHER
         theAnswersFor("eori") mustBe Some(ShutMucrAnswers())

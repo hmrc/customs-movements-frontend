@@ -94,7 +94,7 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with Bef
       val backButton = page(disassociateUcr).getBackButton
 
       backButton mustBe defined
-      backButton.get must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+      backButton.get must haveHref(controllers.routes.ChoiceController.displayChoices)
     }
 
     "have 'Back' button when ileQuery disabled" in {

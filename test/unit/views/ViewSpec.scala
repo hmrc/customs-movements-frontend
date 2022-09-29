@@ -38,7 +38,7 @@ class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with Messages
 
   protected val signedInUser = SignedInUser(validEori, Enrolments(Set.empty))
 
-  def checkSaveAndReturnToSummaryButtonIsHidden(view: Html)(implicit messages: Messages): Unit =
+  def checkSaveAndReturnToSummaryButtonIsHidden(view: Html): Unit =
     s"hide 'Save and return to summary' button" in {
       view.getSaveAndReturnButton must not be defined
     }
@@ -55,7 +55,8 @@ class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with Messages
 
     def getSubmitButton: Option[Element] = Option(document.getElementsByClass("govuk-button").first())
 
-    def getSaveAndReturnButton: Option[Element] = Option(document.getElementsByClass("govuk-button--secondary").first())
+    def getSaveAndReturnButton: Option[Element] =
+      Option(document.getElementsByClass("govuk-button--secondary").first())
 
     def getErrorSummary: Option[Element] = Option(document.getElementById("error-summary"))
 
@@ -79,7 +80,9 @@ class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with Messages
       view.getSaveAndReturnButton.value must containMessage("site.saveAndReturnToSummary")
     }
 
-  protected def journeyRequest(answers: Answers, queryUcr: Option[UcrBlock] = None) =
-    JourneyRequest(Cache(validEori, Some(answers), queryUcr, None), AuthenticatedRequest(FakeRequest().withCSRFToken, signedInUser))
-
+  protected def journeyRequest(answers: Answers, ucrBlock: Option[UcrBlock] = None, ucrBlockFromIleQuery: Boolean = false) =
+    JourneyRequest(
+      Cache(validEori, Some(answers), ucrBlock, ucrBlockFromIleQuery, None),
+      AuthenticatedRequest(FakeRequest().withCSRFToken, signedInUser)
+    )
 }

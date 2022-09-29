@@ -37,8 +37,6 @@ import java.time.{LocalDate, LocalTime}
 
 class DepartureDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private implicit val request = journeyRequest(DepartureAnswers())
-
   private val ileQueryConfig = mock[IleQueryConfig]
   private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
 
@@ -59,7 +57,7 @@ class DepartureDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
   private val movementDetails = MovementsTestData.movementDetails
 
   private val consignmentReferencesValue = "M-ref"
-  private def createView(form: Form[DepartureDetails])(implicit request: JourneyRequest[_] = request): Html =
+  private def createView(form: Form[DepartureDetails])(implicit request: JourneyRequest[_]): Html =
     page(form, consignmentReferencesValue)
 
   private def convertIntoTwoDigitFormat(input: Int): String = {
@@ -73,6 +71,8 @@ class DepartureDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
   }
 
   "Departure Details View" when {
+
+    implicit val request = journeyRequest(DepartureAnswers())
 
     "provided with empty form" should {
       val emptyView = createView(movementDetails.departureForm())

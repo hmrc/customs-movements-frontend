@@ -32,5 +32,4 @@ class Navigator {
       case (Some(SaveAndReturnToSummary), _)                         => Redirect(SummaryController.displayPage())
       case _                                                         => Redirect(redirectTo)
     }
-
 }

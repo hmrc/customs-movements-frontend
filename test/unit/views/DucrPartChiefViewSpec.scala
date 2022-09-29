@@ -17,6 +17,7 @@
 package views
 
 import base.Injector
+import controllers.routes.ChoiceController
 import forms.DucrPartChiefChoice
 import models.cache.ArrivalAnswers
 import org.jsoup.nodes.Document
@@ -52,7 +53,7 @@ class DucrPartChiefViewSpec extends ViewSpec with Injector {
 
       backButton mustBe defined
       backButton.foreach { button =>
-        button must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+        button must haveHref(ChoiceController.displayChoices)
         button must containMessage("site.back.toStartPage")
       }
     }

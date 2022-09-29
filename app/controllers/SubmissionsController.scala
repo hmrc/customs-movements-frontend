@@ -16,11 +16,8 @@
 
 package controllers
 
-import java.time.Instant
-
 import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.AuthAction
-import javax.inject.Inject
 import models.notifications.Notification
 import models.submissions.Submission
 import play.api.i18n.I18nSupport
@@ -28,6 +25,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.movements
 
+import java.time.Instant
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class SubmissionsController @Inject() (
@@ -39,13 +38,12 @@ class SubmissionsController @Inject() (
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    val eori = request.user.eori
-
     for {
-      submissions <- connector.fetchAllSubmissions(eori)
-      notifications <- connector.fetchAllNotificationsForUser(eori)
+      submissions <- connector.fetchAllSubmissions(request.user.eori)
+      notifications <- connector.fetchAllNotificationsForUser(request.user.eori)
       submissionsWithNotifications = matchNotificationsAgainstSubmissions(submissions, notifications)
-    } yield Ok(movementsPage(sortWithOldestLast(submissionsWithNotifications)))
+    }
+    yield Ok(movementsPage(sortWithOldestLast(submissionsWithNotifications)))
   }
 
   private def matchNotificationsAgainstSubmissions(

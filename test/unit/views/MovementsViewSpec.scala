@@ -64,8 +64,8 @@ class MovementsViewSpec extends ViewSpec with Injector {
       backButton must containMessage("site.back.toStartPage")
 
       if (realIleQueryConfig.isIleQueryEnabled)
-        backButton must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
-      else backButton must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+        backButton must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayPage)
+      else backButton must haveHref(controllers.routes.ChoiceController.displayChoices)
     }
 
     "contain header" in {

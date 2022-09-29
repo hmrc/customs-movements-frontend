@@ -15,43 +15,40 @@
  *@
 
 @import config.AppConfig
-@import components.gds.gds_main_template
-@import components.gds.pageTitle
+@import controllers.routes.{ChoiceController, SubmissionsController}
 @import models.cache.JourneyType.JourneyType
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukInsetText
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-@import views.components.config.ConfirmationPageConfig
 @import views.html.components.exit_survey
-@import views.html.components.confirmation_link
-@import views.html.components.gds.link
+@import views.html.components.gds.{gds_main_template, link, pageTitle}
 @import views.Title
 
 @this(
-  govukLayout: gds_main_template,
-  pageTitle: pageTitle,
-  link: link,
-  govukInsetText: GovukInsetText,
-  exitSurvey: exit_survey,
-  confirmationPageConfig: ConfirmationPageConfig
+    govukLayout: gds_main_template,
+    pageTitle: pageTitle,
+    link: link,
+    govukInsetText: GovukInsetText,
+    exitSurvey: exit_survey,
 )
 
 @(journeyType: JourneyType)(implicit request: Request[_], messages: Messages)
 
 @gotoTimelineLink = @{
-  link(message = Html(messages("confirmation.notification.timeline.link")), href = routes.SubmissionsController.displayPage())
+  link(message = Html(messages("confirmation.notification.timeline.link")), href = SubmissionsController.displayPage)
 }
-
 
 @govukLayout(title = Title(s"confirmation.title.$journeyType")) {
 
-  @pageTitle(text = messages(s"confirmation.title.$journeyType"), classes = "govuk-heading-xl")
+    @pageTitle(text = messages(s"confirmation.title.$journeyType"), classes = "govuk-heading-xl")
 
-  @govukInsetText(InsetText(
-    content = HtmlContent(messages("confirmation.insetText")+"<br>"+messages("confirmation.insetText.check", gotoTimelineLink))
-  ))
+    @govukInsetText(InsetText(
+        content = HtmlContent(messages("confirmation.insetText")+"<br>"+messages("confirmation.insetText.check", gotoTimelineLink))
+    ))
 
-  @confirmationPageConfig.nextStepLink()
+    <p class="govuk-body">
+        @link(message = Html(messages("confirmation.redirect.choice.link")), href = ChoiceController.displayChoices)
+    </p>
 
   @exitSurvey()
 }

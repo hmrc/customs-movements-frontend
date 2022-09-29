@@ -17,6 +17,7 @@
 package views.components.ilequery
 
 import base.Injector
+import controllers.ileQuery.routes.IleQueryController
 import models.notifications.EntryStatus
 import models.notifications.queries.{MucrInfo, UcrInfo}
 import models.viewmodels.decoder.{ROECode, SOECode}
@@ -51,9 +52,7 @@ class AssociatedConsignmentsViewSpec extends ViewSpec with Injector {
 
       val elmChild = viewWithChild.getElementById("associateUcr_0_ucr")
       elmChild must containText("childUcr")
-      elmChild.getElementsByClass("govuk-link").first() must haveHref(
-        controllers.ileQuery.routes.IleQueryController.getConsignmentInformation("childUcr")
-      )
+      elmChild.getElementsByClass("govuk-link").first() must haveHref(IleQueryController.getConsignmentData("childUcr"))
 
       viewWithChild.getElementById("associateUcr_0_roe") must containMessage(ROECode.DocumentaryControl.messageKey)
 

@@ -18,10 +18,10 @@ package controllers.actions
 
 import config.IleQueryConfig
 import controllers.exception.InvalidFeatureStateException
-import javax.inject.Inject
 import models.requests.AuthenticatedRequest
 import play.api.mvc._
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IleQueryAction @Inject() (ileQueryConfig: IleQueryConfig)(implicit val exc: ExecutionContext)

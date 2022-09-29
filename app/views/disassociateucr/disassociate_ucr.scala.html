@@ -14,16 +14,17 @@
  * limitations under the License.
  *@
 
-@import components.gds.exportsInputText
-@import components.gds.{errorSummary, sectionHeader, gds_main_template}
+@import controllers.consolidations.routes.DisassociateUcrController
 @import controllers.routes.DucrPartChiefController
 @import forms.{DisassociateUcr, UcrType}
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.BackButton
+@import views.html.components.gds.{errorSummary, exportsInputText, gds_main_template, sectionHeader}
 @import views.Title
 
-@this(govukLayout: gds_main_template,
+@this(
+    govukLayout: gds_main_template,
     govukButton: GovukButton,
     govukRadios: GovukRadios,
     exportsInputText: exportsInputText,
@@ -36,9 +37,9 @@
 
 @govukLayout(
     title = Title("disassociate.ucr.title"),
-    backButton = Some(BackButton(messages("site.back.previousQuestion"), DucrPartChiefController.displayPage()))) {
-
-    @formHelper(action = consolidations.routes.DisassociateUcrController.submit(), 'autoComplete -> "off") {
+    backButton = Some(BackButton(messages("site.back.previousQuestion"), DucrPartChiefController.displayPage))
+) {
+    @formHelper(action = DisassociateUcrController.submit, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("disassociate.ucr.heading"))
@@ -67,6 +68,7 @@
                     conditionalHtml = Some(exportsInputText(form("mucr"), "site.inputText.mucr.label"))
                 ))
         ))
+
         @govukButton(Button(content = Text(messages("site.continue"))))
     }
 }

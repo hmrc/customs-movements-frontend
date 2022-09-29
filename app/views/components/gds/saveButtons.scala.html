@@ -14,19 +14,14 @@
  * limitations under the License.
  *@
 
-@import views.html.components.gds._
 @import models.requests.RequestWithAnswers
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
 
-@this(
-  govukButton: GovukButton,
-  saveAndReturnToSummary: saveAndReturnToSummary
-)
+@this(govukButton: GovukButton, saveAndReturnToSummary: saveAndReturnToSummary)
 
 @()(implicit request: RequestWithAnswers[_], messages: Messages)
 
-
 @govukButton(Button(content = Text(messages("site.continue")), name = Some("Continue")))
-@if(request.answers.readyToSubmit.contains(true)) {
-@saveAndReturnToSummary()
-}
+
+@if(request.answers.readyToSubmit.contains(true)) { @saveAndReturnToSummary() }

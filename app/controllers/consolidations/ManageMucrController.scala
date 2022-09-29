@@ -17,12 +17,13 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, IleQueryAction, JourneyRefiner}
-import controllers.consolidations
+import controllers.consolidations.routes.MucrOptionsController
 import controllers.exception.InvalidFeatureStateException
 import controllers.navigation.Navigator
-import forms.ManageMucrChoice.{form, AssociateAnotherMucr, AssociateThisMucr}
+import forms.ManageMucrChoice.{AssociateAnotherMucr, AssociateThisMucr, form}
 import forms.{AssociateUcr, MucrOptions, UcrType}
-import models.cache.{AssociateUcrAnswers, JourneyType}
+import models.cache.AssociateUcrAnswers
+import models.cache.JourneyType.ASSOCIATE_UCR
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.CacheRepository
@@ -45,50 +46,51 @@ class ManageMucrController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled andThen getJourney(JourneyType.ASSOCIATE_UCR)) {
-    implicit request =>
-      if (request.cache.queryUcr.map(_.isNot(UcrType.Mucr)).getOrElse(throw InvalidFeatureStateException)) {
-        Redirect(consolidations.routes.MucrOptionsController.displayPage())
-      } else {
-        val mucrOptions = request.answersAs[AssociateUcrAnswers].manageMucrChoice
-        Ok(page(mucrOptions.fold(form)(form.fill), request.cache.queryUcr))
-      }
+  private val journeyActions = authenticate andThen ileQueryFeatureEnabled andThen getJourney(ASSOCIATE_UCR)
+
+  def displayPage(): Action[AnyContent] = journeyActions { implicit request =>
+    if (request.cache.ucrBlock.map(_.isNot(UcrType.Mucr)).getOrElse(throw InvalidFeatureStateException))
+      Redirect(MucrOptionsController.displayPage())
+    else {
+      val mucrOptions = request.answersAs[AssociateUcrAnswers].manageMucrChoice
+      Ok(page(mucrOptions.fold(form)(form.fill), request.cache.ucrBlock))
+    }
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled andThen getJourney(JourneyType.ASSOCIATE_UCR)).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(page(formWithErrors, request.cache.queryUcr))),
-          validForm => {
-            val answers = request.answersAs[AssociateUcrAnswers]
-            val previousManageMucrChoice = answers.manageMucrChoice
-            val newManageMucrChoice = Some(validForm)
-            val updatedAnswers = answers.copy(manageMucrChoice = newManageMucrChoice)
-            validForm.choice match {
-              case AssociateThisMucr =>
-                // Here we need to create AssociateUCR from query and clear MucrOptions if ManageMucrChoice has changed
-                val updatedForAssociateThisMucr =
-                  if (newManageMucrChoice == previousManageMucrChoice) updatedAnswers
-                  else
-                    updatedAnswers
-                      .copy(associateUcr = request.cache.queryUcr.map(AssociateUcr.apply), mucrOptions = None)
-                cacheRepository.upsert(request.cache.update(updatedForAssociateThisMucr)).map { _ =>
-                  navigator.continueTo(routes.MucrOptionsController.displayPage())
-                }
-              case AssociateAnotherMucr =>
-                // Here we need to clear AssociateUCR and create MucrOptions from query if ManageMucrChoice has changed
-                val updatedForAssociateAnotherMucr =
-                  if (newManageMucrChoice == previousManageMucrChoice) updatedAnswers
-                  else
-                    updatedAnswers
-                      .copy(associateUcr = None, mucrOptions = request.cache.queryUcr.map(MucrOptions.apply))
-                cacheRepository.upsert(request.cache.update(updatedForAssociateAnotherMucr)).map { _ =>
-                  navigator.continueTo(routes.AssociateUcrController.displayPage())
-                }
-            }
+  def submit(): Action[AnyContent] = journeyActions.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(page(formWithErrors, request.cache.ucrBlock))),
+        validForm => {
+          val answers = request.answersAs[AssociateUcrAnswers]
+          val previousManageMucrChoice = answers.manageMucrChoice
+          val newManageMucrChoice = Some(validForm)
+          val updatedAnswers = answers.copy(manageMucrChoice = newManageMucrChoice)
+
+          validForm.choice match {
+
+            case AssociateThisMucr =>
+              // Here we need to create AssociateUCR from query and clear MucrOptions if ManageMucrChoice has changed
+              val updatedForAssociateThisMucr =
+                if (newManageMucrChoice == previousManageMucrChoice) updatedAnswers
+                else updatedAnswers.copy(associateUcr = request.cache.ucrBlock.map(AssociateUcr.apply), mucrOptions = None)
+
+              cacheRepository.upsert(request.cache.update(updatedForAssociateThisMucr)).map { _ =>
+                navigator.continueTo(MucrOptionsController.displayPage())
+              }
+
+            case AssociateAnotherMucr =>
+              // Here we need to clear AssociateUCR and create MucrOptions from query if ManageMucrChoice has changed
+              val updatedForAssociateAnotherMucr =
+                if (newManageMucrChoice == previousManageMucrChoice) updatedAnswers
+                else updatedAnswers.copy(associateUcr = None, mucrOptions = request.cache.ucrBlock.map(MucrOptions.apply))
+
+              cacheRepository.upsert(request.cache.update(updatedForAssociateAnotherMucr)).map { _ =>
+                navigator.continueTo(routes.AssociateUcrController.displayPage())
+              }
           }
-        )
+        }
+      )
   }
 }

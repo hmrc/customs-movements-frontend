@@ -16,10 +16,11 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyRefiner, NonIleQueryAction}
-import forms.DisassociateUcr
-import javax.inject.{Inject, Singleton}
-import models.cache.{DisassociateUcrAnswers, JourneyType}
+import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.consolidations.routes.DisassociateUcrSummaryController
+import forms.DisassociateUcr.form
+import models.cache.DisassociateUcrAnswers
+import models.cache.JourneyType.DISSOCIATE_UCR
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.CacheRepository
@@ -27,39 +28,37 @@ import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.disassociateucr.disassociate_ucr
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DisassociateUcrController @Inject() (
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
-  ileQueryFeatureDisabled: NonIleQueryAction,
   mcc: MessagesControllerComponents,
   cacheRepository: CacheRepository,
   page: disassociate_ucr
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen ileQueryFeatureDisabled andThen getJourney(JourneyType.DISSOCIATE_UCR)) {
-    implicit request =>
-      request.answersAs[DisassociateUcrAnswers].ucr match {
-        case Some(ucr) => Ok(page(DisassociateUcr.form.fill(ucr)))
-        case _         => Ok(page(DisassociateUcr.form))
-      }
+  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(DISSOCIATE_UCR)) { implicit request =>
+    request.answersAs[DisassociateUcrAnswers].ucr match {
+      case Some(ucr) => Ok(page(form.fill(ucr)))
+      case _         => Ok(page(form))
+    }
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen ileQueryFeatureDisabled andThen getJourney(JourneyType.DISSOCIATE_UCR)).async {
-    implicit request =>
-      DisassociateUcr.form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(page(formWithErrors))),
-          validForm => {
-            val updatedAnswers = request.answersAs[DisassociateUcrAnswers].copy(ucr = Some(validForm))
-            cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
-              Redirect(controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage())
-            }
+  def submit(): Action[AnyContent] = (authenticate andThen getJourney(DISSOCIATE_UCR)).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(page(formWithErrors))),
+        validForm => {
+          val updatedAnswers = request.answersAs[DisassociateUcrAnswers].copy(ucr = Some(validForm))
+          cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
+            Redirect(DisassociateUcrSummaryController.displayPage())
           }
-        )
+        }
+      )
   }
 }

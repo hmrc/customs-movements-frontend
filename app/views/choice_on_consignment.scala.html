@@ -14,14 +14,17 @@
  * limitations under the License.
  *@
 
-@import components.gds._
-@import config.IleQueryConfig
-@import controllers.actions.ArriveDepartAllowList
-@import controllers.routes.ChoiceController
 @import forms.Choice._
 @import forms.Choice
+@import config.IleQueryConfig
+@import controllers.actions.ArriveDepartAllowList
+@import controllers.ileQuery.routes.IleQueryController
+@import controllers.routes.ChoiceOnConsignmentController
+@import forms.UcrType.{DucrPart, Mucr}
 @import models.requests.AuthenticatedRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.BackButton
+@import views.html.components.gds._
 @import views.Title
 
 @this(
@@ -35,7 +38,7 @@
   ileQueryConfig: IleQueryConfig
 )
 
-@(form: Form[Choice])(implicit request: AuthenticatedRequest[_], messages: Messages)
+@(form: Form[Choice], ucrBlock: UcrBlock)(implicit request: AuthenticatedRequest[_], messages: Messages)
 
 @arriveDepartChoices = @{
   Seq(
@@ -48,16 +51,6 @@
         value = Some(Departure.value.toString),
         content = Text(messages(s"movement.choice.${Departure.toString.toLowerCase}.label")),
         checked = form("choice").value.contains(Departure.toString.toLowerCase())
-    )
-  )
-}
-
-@findConsignmentChoice = @{
-  Seq(
-    RadioItem(
-        value = Some(FindConsignment.value.toString),
-        content = Text(messages(s"movement.choice.${FindConsignment.toString.toLowerCase}.label")),
-        checked = form("choice").value.contains(FindConsignment.toString.toLowerCase)
     )
   )
 }
@@ -78,31 +71,30 @@
             value = Some(ShutMUCR.value.toString),
             content = Text(messages(s"movement.choice.${ShutMUCR.toString.toLowerCase}.label")),
             checked = form("choice").value.contains(ShutMUCR.value.toString)
-        ),
-        RadioItem(
-            value = Some(Submissions.value.toString),
-            content = Text(messages(s"movement.choice.${Submissions.toString.toLowerCase}.label")),
-            checked = form("choice").value.contains(Submissions.toString.toLowerCase)
         )
     )
 
-    (ileQueryConfig.isIleQueryEnabled, arriveDepartAllowList.contains(request.user.eori)) match {
-        case (true, true) => findConsignmentChoice ++ arriveDepartChoices ++ commonChoices
-        case (true, false) => findConsignmentChoice ++ commonChoices
-        case (false, true) => arriveDepartChoices ++ commonChoices
-        case _ => commonChoices
-    }
+    val choices =
+      if (arriveDepartAllowList.contains(request.user.eori)) arriveDepartChoices ++ commonChoices
+      else commonChoices
+
+    choices.filterNot(item => item.value.contains(ShutMUCR.value) && ucrBlock.ucrType != Mucr.codeValue)
 }
 
-@govukLayout(title = Title("movement.choice.title")) {
-    @formHelper(action = ChoiceController.submitChoice, 'autoComplete -> "off") {
+@govukLayout(
+    title = Title("movement.choice.title.consignment"),
+    backButton = Some(BackButton(messages("site.back"), IleQueryController.getConsignmentData(ucrBlock.ucr)))
+) {
+    @formHelper(action = ChoiceOnConsignmentController.submitChoice, 'autoComplete -> "off") {
         @errorSummary(form.errors)
+
+        @sectionHeader(messages("movement.choice.section", ucrBlock.ucr))
 
         @govukRadios(Radios(
             name = "choice",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("movement.choice.title")),
+                    content = Text(messages("movement.choice.title.consignment")),
                     isPageHeading = true,
                     classes = "govuk-fieldset__legend--l"
                 ))

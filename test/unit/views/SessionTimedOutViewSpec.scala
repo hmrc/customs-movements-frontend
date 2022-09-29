@@ -51,7 +51,7 @@ class SessionTimedOutViewSpec extends ViewSpec with Injector {
       val button = view.getElementsByClass("govuk-button").first()
 
       button.text() mustBe messages("sessionTimout.signin.button")
-      button.attr("href") mustBe controllers.routes.ChoiceController.displayChoiceForm().url
+      button.attr("href") mustBe controllers.routes.ChoiceController.displayChoices.url
     }
 
     "display back to gov.uk link" in {

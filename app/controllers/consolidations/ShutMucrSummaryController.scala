@@ -17,9 +17,9 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.consolidations.routes.ShutMucrConfirmationController
 import controllers.storage.FlashKeys
 import forms.ShutMucr
-import javax.inject.Inject
 import models.ReturnToStartException
 import models.cache.{JourneyType, ShutMucrAnswers}
 import play.api.i18n.I18nSupport
@@ -28,6 +28,7 @@ import services.SubmissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.shutmucr.shut_mucr_summary
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ShutMucrSummaryController @Inject() (
@@ -48,7 +49,7 @@ class ShutMucrSummaryController @Inject() (
     val answers = request.answersAs[ShutMucrAnswers]
 
     submissionService.submit(request.eori, answers).map { _ =>
-      Redirect(routes.ShutMucrConfirmationController.displayPage())
+      Redirect(ShutMucrConfirmationController.displayPage())
         .flashing(FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString)
     }
   }

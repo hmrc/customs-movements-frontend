@@ -18,7 +18,6 @@ package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.storage.FlashKeys
-import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
 import models.cache.{DisassociateUcrAnswers, JourneyType}
 import play.api.i18n.I18nSupport
@@ -27,6 +26,7 @@ import services.SubmissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.disassociateucr.disassociate_ucr_summary
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton

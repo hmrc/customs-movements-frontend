@@ -21,8 +21,7 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@govukLayout(
-    title = Title("ileQuery.loading.title")) {
+@govukLayout(title = Title("ileQuery.loading.title")) {
 
     @pageTitle(messages("ileQuery.loading.title"))
     @pageSubHeading(messages("ileQuery.loading.hint"))

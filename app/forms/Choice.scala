@@ -30,8 +30,6 @@ sealed abstract class Choice(val value: String) {
 
 object Choice {
 
-  def unapply(status: Choice): Option[String] = Some(status.value)
-
   def apply(input: String): Choice =
     allChoices.find(_.value == input).getOrElse(throw new IllegalArgumentException(s"Incorrect choice [$input]"))
 
@@ -42,6 +40,8 @@ object Choice {
     case DISSOCIATE_UCR => DisassociateUCR
     case SHUT_MUCR      => ShutMUCR
   }
+
+  def unapply(status: Choice): Option[String] = Some(status.value)
 
   implicit object ChoiceValueFormat extends Format[Choice] {
     def reads(status: JsValue): JsResult[Choice] = status match {
@@ -57,10 +57,13 @@ object Choice {
   case object Departure extends Choice("departure")
   case object AssociateUCR extends Choice("associateUCR")
   case object DisassociateUCR extends Choice("disassociateUCR")
+  case object FindConsignment extends Choice("findConsignment")
   case object ShutMUCR extends Choice("shutMUCR")
   case object Submissions extends Choice("submissions")
 
-  val allChoices = Seq(Arrival, Departure, AssociateUCR, DisassociateUCR, ShutMUCR, Submissions)
+  val allChoices = List(Arrival, Departure, AssociateUCR, DisassociateUCR, FindConsignment, ShutMUCR, Submissions)
+
+  val consignmentChoices = List(Arrival, Departure, AssociateUCR, DisassociateUCR, ShutMUCR)
 
   val choiceId = "Choice"
 
@@ -70,5 +73,5 @@ object Choice {
         .verifying("choicePage.input.error.incorrectValue", isContainedIn(allChoices.map(_.value)))
     )(Choice.apply)(Choice.unapply)
 
-  def form(): Form[Choice] = Form(choiceMapping)
+  val form: Form[Choice] = Form(choiceMapping)
 }

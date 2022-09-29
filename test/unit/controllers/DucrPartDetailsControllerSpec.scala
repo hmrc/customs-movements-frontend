@@ -17,7 +17,6 @@
 package controllers
 
 import config.IleQueryConfig
-import controllers.actions.NonIleQueryAction
 import controllers.exception.InvalidFeatureStateException
 import forms.{DucrPartDetails, UcrType}
 import models.UcrBlock
@@ -88,9 +87,9 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
     }
 
     "pass data from CacheRepository to DucrPartDetails view" when {
-      "cache contains queryUcr of DucrParts type" in {
+      "cache contains ucrBlock of DucrParts type" in {
         val cacheContents =
-          Cache(eori = "eori", answers = None, queryUcr = Some(UcrBlock(ucrType = UcrType.DucrPart.codeValue, ucr = validWholeDucrParts)), None)
+          Cache(eori = "eori", UcrBlock(ucrType = UcrType.DucrPart.codeValue, ucr = validWholeDucrParts), false)
         givenTheCacheContains(cacheContents)
 
         val result = controller().displayPage()(getRequest())
@@ -102,9 +101,8 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
     }
 
     "pass empty form to DucrPartDetails view" when {
-      "cache contains queryUcr of different type" in {
-        val cacheContents =
-          Cache(eori = "eori", answers = None, queryUcr = Some(UcrBlock(ucrType = UcrType.Ducr.codeValue, ucr = validDucr)), None)
+      "cache contains ucrBlock of different type" in {
+        val cacheContents = Cache(eori = "eori", UcrBlock(ucrType = UcrType.Ducr.codeValue, ucr = validDucr), false)
         givenTheCacheContains(cacheContents)
 
         val result = controller().displayPage()(getRequest())
@@ -135,11 +133,11 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
         val result = controller().submitDucrPartDetails()(postRequest(inputData))
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe controllers.routes.ChoiceController.displayChoiceForm().url
+        thePageNavigatedTo.url mustBe controllers.routes.ChoiceController.displayChoices.url
 
         val expectedUcrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts.toUpperCase)
-        theCacheUpserted.queryUcr mustBe defined
-        theCacheUpserted.queryUcr.get mustBe expectedUcrBlock
+        theCacheUpserted.ucrBlock mustBe defined
+        theCacheUpserted.ucrBlock.get mustBe expectedUcrBlock
       }
     }
   }
@@ -173,11 +171,11 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
           val result = controller().submitDucrPartDetails()(postRequest(inputData))
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo.url mustBe controllers.routes.ChoiceController.displayChoiceForm().url
+          thePageNavigatedTo.url mustBe controllers.routes.ChoiceController.displayChoices.url
 
           val expectedUcrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts.toUpperCase)
-          theCacheUpserted.queryUcr mustBe defined
-          theCacheUpserted.queryUcr.get mustBe expectedUcrBlock
+          theCacheUpserted.ucrBlock mustBe defined
+          theCacheUpserted.ucrBlock.get mustBe expectedUcrBlock
         }
       }
     }

@@ -19,7 +19,7 @@ package views.components.links
 object StartPageNextLink {
   def url(ileQueryEnabled: Boolean): String =
     if (ileQueryEnabled)
-      controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url
+      controllers.ileQuery.routes.FindConsignmentController.displayPage.url
     else
-      controllers.routes.ChoiceController.displayChoiceForm().url
+      controllers.routes.ChoiceController.displayChoices.url
 }

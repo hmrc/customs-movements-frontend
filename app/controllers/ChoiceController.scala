@@ -18,6 +18,9 @@ package controllers
 
 import config.IleQueryConfig
 import controllers.actions.AuthAction
+import controllers.consolidations.routes.ShutMucrController
+import controllers.ileQuery.routes.FindConsignmentController
+import controllers.routes.{DucrPartChiefController, SubmissionsController}
 import forms.Choice
 import forms.Choice._
 import models.UcrBlock
@@ -43,71 +46,37 @@ class ChoiceController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  def displayChoiceForm: Action[AnyContent] = authenticate.async { implicit request =>
-    if (ileQueryConfig.isIleQueryEnabled) displayChoiceFormForIleQuery
-    else displayChoiceFormForIleQueryDisabled
-  }
-
-  private def displayChoiceFormForIleQuery()(implicit request: AuthenticatedRequest[_]): Future[Result] =
-    cacheRepository.findByEori(request.eori).map {
-      case Some(cache) if cache.queryUcr.isDefined =>
-        cache.answers
-          .map(answers => Ok(choicePage(Choice.form().fill(Choice(answers.`type`)), cache.queryUcr)))
-          .getOrElse(Ok(choicePage(Choice.form(), cache.queryUcr)))
-      case _ =>
-        Redirect(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
-    }
-
-  private def displayChoiceFormForIleQueryDisabled()(implicit request: AuthenticatedRequest[_]): Future[Result] =
+  val displayChoices: Action[AnyContent] = authenticate.async { implicit request =>
     cacheRepository.findByEori(request.eori).map(_.flatMap(_.answers)).map {
-      case Some(answers) => Ok(choicePage(Choice.form().fill(Choice(answers.`type`))))
-      case None          => Ok(choicePage(Choice.form()))
+      case Some(answers) => Ok(choicePage(form.fill(Choice(answers.`type`))))
+      case None => Ok(choicePage(form))
     }
+  }
 
   def startSpecificJourney(choice: String): Action[AnyContent] = authenticate.async { implicit request =>
-    proceed(Choice(choice))
+    nextPage(Choice(choice))
   }
 
-  def submitChoice(): Action[AnyContent] = authenticate.async { implicit request =>
-    form()
+  val submitChoice: Action[AnyContent] = authenticate.async { implicit request =>
+    form
       .bindFromRequest()
-      .fold(formWithErrors => Future.successful(BadRequest(choicePage(formWithErrors))), proceed)
+      .fold(formWithErrors => Future.successful(BadRequest(choicePage(formWithErrors))), nextPage)
   }
 
-  private def proceed(choice: Choice)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
-    def movementFirstPage: Call =
-      if (ileQueryConfig.isIleQueryEnabled) controllers.routes.SpecificDateTimeController.displayPage()
-      else routes.DucrPartChiefController.displayPage()
+  private def nextPage(choice: Choice)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
+    choice match {
+      case Arrival         => saveCache(request.eori, ArrivalAnswers.fromUcr, DucrPartChiefController.displayPage)
+      case Departure       => saveCache(request.eori, DepartureAnswers.fromUcr, DucrPartChiefController.displayPage)
+      case AssociateUCR    => saveCache(request.eori, AssociateUcrAnswers.fromUcr, DucrPartChiefController.displayPage)
+      case DisassociateUCR => saveCache(request.eori, DisassociateUcrAnswers.fromUcr, DucrPartChiefController.displayPage)
+      case ShutMUCR        => saveCache(request.eori, ShutMucrAnswers.fromUcr, ShutMucrController.displayPage)
+      case Submissions     => resetCache(request.eori, SubmissionsController.displayPage)
+      case FindConsignment if ileQueryConfig.isIleQueryEnabled => resetCache(request.eori, FindConsignmentController.displayPage)
+    }
 
-    def dissociateFirstPage: Call =
-      if (ileQueryConfig.isIleQueryEnabled) controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage()
-      else routes.DucrPartChiefController.displayPage()
+  def resetCache(eori: String, call: Call): Future[Result] =
+    cacheRepository.upsert(Cache(eori)).map(_ => Redirect(call))
 
-    def shutFirstPage: Call =
-      if (ileQueryConfig.isIleQueryEnabled) controllers.consolidations.routes.ShutMucrSummaryController.displayPage()
-      else consolidations.routes.ShutMucrController.displayPage()
-
-    def associateFirstPage: Call =
-      if (ileQueryConfig.isIleQueryEnabled) consolidations.routes.ManageMucrController.displayPage()
-      else routes.DucrPartChiefController.displayPage()
-
-    (choice match {
-      case Arrival         => createOrUpdateCache(request.eori, ArrivalAnswers.fromUcr).map(_ => movementFirstPage)
-      case Departure       => createOrUpdateCache(request.eori, DepartureAnswers.fromUcr).map(_ => movementFirstPage)
-      case AssociateUCR    => createOrUpdateCache(request.eori, AssociateUcrAnswers.fromUcr).map(_ => associateFirstPage)
-      case DisassociateUCR => createOrUpdateCache(request.eori, DisassociateUcrAnswers.fromUcr).map(_ => dissociateFirstPage)
-      case ShutMUCR        => createOrUpdateCache(request.eori, ShutMucrAnswers.fromUcr).map(_ => shutFirstPage)
-      case Submissions     => Future.successful(routes.SubmissionsController.displayPage())
-    }).map(Redirect)
-  }
-
-  def createOrUpdateCache(eori: String, answerProvider: Option[UcrBlock] => Answers)(): Future[Cache] =
-    for {
-      updatedCache: Cache <- cacheRepository.findByEori(eori).map {
-        case Some(cache) => cache.copy(answers = Some(answerProvider.apply(cache.queryUcr)))
-        case None        => Cache(eori, Some(answerProvider.apply(None)), None, None)
-      }
-      result <- cacheRepository.upsert(updatedCache)
-    } yield result
-
+  def saveCache(eori: String, answer: Option[UcrBlock] => Answers, call: Call): Future[Result] =
+    cacheRepository.upsert(Cache(eori, answer.apply(None))).map(_ => Redirect(call))
 }

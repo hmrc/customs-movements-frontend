@@ -14,14 +14,14 @@
  * limitations under the License.
  *@
 
-@import components.gds._
 @import controllers.routes.{DucrPartChiefController, ConsignmentReferencesController}
 @import forms.ConsignmentReferences
 @import forms.UcrType.{Ducr, Mucr}
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.Title
 @import views.components.BackButton
+@import views.html.components.gds._
+@import views.Title
 
 @this(
     govukLayout: gds_main_template,
@@ -40,8 +40,8 @@
 
 @govukLayout(
   title = Title(headerKey, Some(sectionHeaderKey)),
-  backButton = Some(BackButton(messages("site.back.previousQuestion"), DucrPartChiefController.displayPage()))) {
-
+  backButton = Some(BackButton(messages("site.back.previousQuestion"), DucrPartChiefController.displayPage()))
+) {
   @formHelper(action = ConsignmentReferencesController.saveConsignmentReferences(), 'autoComplete -> "off") {
     @errorSummary(form.errors)
 

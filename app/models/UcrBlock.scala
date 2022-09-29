@@ -32,5 +32,4 @@ object UcrBlock {
   implicit val format = Json.format[UcrBlock]
 
   def apply(ucr: String, ucrType: UcrType): UcrBlock = UcrBlock(ucr = ucr, ucrType = ucrType.codeValue)
-
 }

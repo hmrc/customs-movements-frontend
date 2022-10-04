@@ -205,11 +205,12 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       changeNationality must haveHref(controllers.routes.TransportController.displayPage())
     }
 
-    "not render back button" in {
+    "render back button" in {
 
       val backButton = page(answers).getBackButton
 
-      backButton must not be defined
+      backButton mustBe defined
+      backButton.get must haveHref(controllers.routes.TransportController.displayPage())
     }
 
     "render 'Confirm and submit' button on page" in {

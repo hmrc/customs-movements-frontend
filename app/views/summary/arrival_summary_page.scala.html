@@ -48,7 +48,7 @@
 
 @govukLayout(
     title = Title("summary.arrival.title"),
-    backButton = None,
+    backButton = Some(BackButton(messages("site.back"), routes.LocationController.displayPage)),
     useCustomContentWidth = true
 ) {
 

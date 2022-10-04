@@ -30,9 +30,17 @@
 
 @(associateUcr: AssociateUcr, mucr: String)(implicit request: JourneyRequest[_], messages: Messages)
 
+@backlink = @{
+    if(request.cache.queryUcr.isDefined) {
+        consolidations.routes.MucrOptionsController.displayPage()
+    } else {
+        consolidations.routes.AssociateUcrController.displayPage()
+    }
+}
+
 @govukLayout(
     title = Title("associate.ucr.summary.title"),
-    backButton = None,
+    backButton = Some(BackButton(messages("site.back"), backlink)),
     useCustomContentWidth = true
 ) {
 

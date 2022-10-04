@@ -87,19 +87,24 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with Bef
       links.size() mustBe 2
     }
 
-    "not have 'Back' button when ileQuery enabled" in {
+    "have 'Back' button when ileQuery enabled" in {
 
       when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
 
-      page(disassociateUcr).getBackButton must not be defined
+      val backButton = page(disassociateUcr).getBackButton
+
+      backButton mustBe defined
+      backButton.get must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
     }
 
     "have 'Back' button when ileQuery disabled" in {
 
       when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
 
-      page(disassociateUcr).getBackButton must not be defined
+      val backButton = page(disassociateUcr).getBackButton
 
+      backButton mustBe defined
+      backButton.get must haveHref(controllers.consolidations.routes.DisassociateUcrController.displayPage())
     }
 
   }

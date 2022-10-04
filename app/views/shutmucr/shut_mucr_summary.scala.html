@@ -33,7 +33,7 @@
 
 @govukLayout(
     title = Title("shutMucr.summary.title"),
-    backButton = None,
+    backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl)),
     useCustomContentWidth = true
 ) {
 

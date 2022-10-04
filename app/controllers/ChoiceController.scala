@@ -31,7 +31,7 @@ import play.api.mvc._
 import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.choice_page
+import views.html.choice
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,19 +42,15 @@ class ChoiceController @Inject() (
   cacheRepository: CacheRepository,
   mcc: MessagesControllerComponents,
   ileQueryConfig: IleQueryConfig,
-  choicePage: choice_page
+  choicePage: choice
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
   val displayChoices: Action[AnyContent] = authenticate.async { implicit request =>
     cacheRepository.findByEori(request.eori).map(_.flatMap(_.answers)).map {
       case Some(answers) => Ok(choicePage(form.fill(Choice(answers.`type`))))
-      case None => Ok(choicePage(form))
+      case None          => Ok(choicePage(form))
     }
-  }
-
-  def startSpecificJourney(choice: String): Action[AnyContent] = authenticate.async { implicit request =>
-    nextPage(Choice(choice))
   }
 
   val submitChoice: Action[AnyContent] = authenticate.async { implicit request =>

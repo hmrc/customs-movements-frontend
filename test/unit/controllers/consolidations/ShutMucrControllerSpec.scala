@@ -17,7 +17,7 @@
 package controllers.consolidations
 
 import controllers.ControllerLayerSpec
-import controllers.exception.InvalidFeatureStateException
+import controllers.consolidations.routes.ShutMucrSummaryController
 import forms.ShutMucr
 import models.cache.{Cache, ShutMucrAnswers}
 import org.mockito.ArgumentCaptor
@@ -38,8 +38,8 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
 
   private val page = mock[shut_mucr]
 
-  private def controller(answers: ShutMucrAnswers, nonIleQueryAction: NonIleQueryAction) =
-    new ShutMucrController(SuccessfulAuth(), ValidJourney(answers), nonIleQueryAction, cache, stubMessagesControllerComponents(), page)
+  private def controller(answers: ShutMucrAnswers) =
+    new ShutMucrController(SuccessfulAuth(), ValidJourney(answers), cacheRepository, stubMessagesControllerComponents(), page)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -64,7 +64,7 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
       "GET displayPage is invoked without data in cache" in {
         givenTheCacheIsEmpty()
 
-        val result = controller(ShutMucrAnswers(), ValidForIleQuery).displayPage()(getRequest)
+        val result = controller(ShutMucrAnswers()).displayPage()(getRequest)
 
         status(result) mustBe OK
         theResponseForm.value mustBe empty
@@ -74,7 +74,7 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
         val cachedForm = Some(ShutMucr("123"))
         givenTheCacheContains(Cache("12345", ShutMucrAnswers(shutMucr = cachedForm)))
 
-        val result = controller(ShutMucrAnswers(shutMucr = cachedForm), ValidForIleQuery).displayPage()(getRequest)
+        val result = controller(ShutMucrAnswers(shutMucr = cachedForm)).displayPage()(getRequest)
 
         status(result) mustBe OK
 
@@ -83,35 +83,25 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "form is incorrect" in {
         val incorrectForm = Json.toJson(ShutMucr(""))
 
-        val result = controller(ShutMucrAnswers(), ValidForIleQuery).submitForm()(postRequest(incorrectForm))
+        val result = controller(ShutMucrAnswers()).submitForm()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
     }
 
     "return 303 (SEE_OTHER)" when {
-
       "form is correct and submission service returned ACCEPTED" in {
         givenTheCacheIsEmpty()
 
         val correctForm = Json.toJson(ShutMucr(validMucr))
 
-        val result = controller(ShutMucrAnswers(), ValidForIleQuery).submitForm()(postRequest(correctForm))
+        val result = controller(ShutMucrAnswers()).submitForm()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.ShutMucrSummaryController.displayPage().url
-      }
-    }
-
-    "block access" when {
-      "ileQuery enabled" in {
-        intercept[RuntimeException] {
-          await(controller(ShutMucrAnswers(), NotValidForIleQuery).displayPage()(getRequest))
-        } mustBe InvalidFeatureStateException
+        redirectLocation(result).value mustBe ShutMucrSummaryController.displayPage().url
       }
     }
   }

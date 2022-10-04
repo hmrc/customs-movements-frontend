@@ -22,10 +22,12 @@ import models.requests.{AuthenticatedRequest, JourneyRequest}
 import models.{SignedInUser, UcrBlock}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
+import org.jsoup.select.Elements
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.Messages
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import testdata.CommonTestData.validEori
@@ -42,6 +44,8 @@ class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with Messages
     s"hide 'Save and return to summary' button" in {
       view.getSaveAndReturnButton must not be defined
     }
+
+  def removeBlanksIfAnyBeforeDot(s: String): String = s.replace(" .", ".")
 
   /*
     Implicit Utility class for retrieving common elements which are on the vast majority of pages
@@ -60,7 +64,7 @@ class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with Messages
 
     def getErrorSummary: Option[Element] = Option(document.getElementById("error-summary"))
 
-    def getGovUkErrorSummary = document.getElementsByClass("govuk-error-summary")
+    def getGovUkErrorSummary: Elements = document.getElementsByClass("govuk-error-summary")
 
     def getForm: Option[Element] = Option(document.getElementsByTag("form")).filter(!_.isEmpty).map(_.first())
   }
@@ -80,9 +84,16 @@ class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with Messages
       view.getSaveAndReturnButton.value must containMessage("site.saveAndReturnToSummary")
     }
 
-  protected def journeyRequest(answers: Answers, ucrBlock: Option[UcrBlock] = None, ucrBlockFromIleQuery: Boolean = false) =
+  protected def journeyRequest(
+    answers: Answers,
+    ucrBlock: Option[UcrBlock] = None,
+    ucrBlockFromIleQuery: Boolean = false
+  ): JourneyRequest[AnyContentAsEmpty.type] =
     JourneyRequest(
       Cache(validEori, Some(answers), ucrBlock, ucrBlockFromIleQuery, None),
       AuthenticatedRequest(FakeRequest().withCSRFToken, signedInUser)
     )
+
+  protected def journeyRequest(cache: Cache): JourneyRequest[AnyContentAsEmpty.type] =
+    JourneyRequest(cache, AuthenticatedRequest(FakeRequest().withCSRFToken, signedInUser))
 }

@@ -17,6 +17,7 @@
 package views.associateucr
 
 import base.Injector
+import controllers.routes.ChoiceOnConsignmentController
 import forms.ManageMucrChoice
 import forms.UcrType.Mucr
 import models.UcrBlock
@@ -57,7 +58,7 @@ class ManageMucrViewSpec extends ViewSpec with Injector {
 
       backButton mustBe defined
       backButton.foreach { button =>
-        button must haveHref(controllers.routes.ChoiceController.displayChoices)
+        button must haveHref(ChoiceOnConsignmentController.displayChoices)
         button must containMessage("site.back")
       }
     }

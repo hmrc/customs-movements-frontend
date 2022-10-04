@@ -34,7 +34,6 @@ class NavigatorSpec extends UnitSpec {
   "Continue To" should {
 
     "go to the URL provided" when {
-
       "Save And Continue" in {
         val request = AuthenticatedRequest[AnyContent](FakeRequest(), SignedInUser(validEori, Enrolments(Set.empty)))
 

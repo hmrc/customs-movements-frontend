@@ -16,18 +16,14 @@
 
 package views
 
-import base.OverridableInjector
-import config.IleQueryConfig
+import base.Injector
+import controllers.routes.SpecificDateTimeController
 import forms.ArrivalDetails
 import forms.common.{Date, Time}
 import models.cache.ArrivalAnswers
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.inject.bind
 import play.twirl.api.Html
 import testdata.MovementsTestData
 import views.html.arrival_details
@@ -36,24 +32,9 @@ import java.text.DecimalFormat
 import java.time.{LocalDate, LocalTime}
 import scala.collection.JavaConverters.collectionAsScalaIterable
 
-class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
+class ArrivalDetailsViewSpec extends ViewSpec with Injector {
 
-  private val ileQueryConfig = mock[IleQueryConfig]
-  private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
-
-  private val page = injector.instanceOf[arrival_details]
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-
-    when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
-  }
-
-  override def afterEach(): Unit = {
-    reset(ileQueryConfig)
-
-    super.afterEach()
-  }
+  private val page = instanceOf[arrival_details]
 
   private val movementDetails = MovementsTestData.movementDetails
 
@@ -85,26 +66,12 @@ class ArrivalDetailsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
         emptyView.getTitle must containMessage("arrivalDetails.header")
       }
 
-      "have 'Back' button when ileQuery enabled" in {
-        when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
-
+      "have 'Back' button linking to /specific-date-and-time page" in {
         val backButton = createView(movementDetails.arrivalForm()).getBackButton
 
         backButton mustBe defined
-        backButton.get must haveHref(controllers.routes.SpecificDateTimeController.displayPage())
+        backButton.get must haveHref(SpecificDateTimeController.displayPage())
         backButton.get must containMessage("site.back.previousQuestion")
-
-      }
-
-      "have 'Back' button when ileQuery disabled" in {
-        when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
-
-        val backButton = createView(movementDetails.arrivalForm()).getBackButton
-
-        backButton mustBe defined
-        backButton.get must haveHref(controllers.routes.SpecificDateTimeController.displayPage())
-        backButton.get must containMessage("site.back.previousQuestion")
-
       }
 
       "have section header" in {

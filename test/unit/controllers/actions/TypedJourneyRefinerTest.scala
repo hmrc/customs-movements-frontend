@@ -93,18 +93,14 @@ class TypedJourneyRefinerTest extends AnyWordSpec with Matchers with MockitoSuga
         given(movementRepository.findByEori("eori")).willReturn(Future.successful(None))
         given(arriveDepartAllowList.contains("eori")).willReturn(true)
 
-        await(refiner(JourneyType.ARRIVE).invokeBlock(request, block)) mustBe Results.Redirect(
-          controllers.routes.ChoiceController.displayChoices
-        )
+        await(refiner(JourneyType.ARRIVE).invokeBlock(request, block)) mustBe Results.Redirect(controllers.routes.ChoiceController.displayChoices)
       }
 
       "answers found of a different type" in {
         given(movementRepository.findByEori("eori")).willReturn(Future.successful(None))
         given(arriveDepartAllowList.contains("eori")).willReturn(true)
 
-        await(refiner(JourneyType.DEPART).invokeBlock(request, block)) mustBe Results.Redirect(
-          controllers.routes.ChoiceController.displayChoices
-        )
+        await(refiner(JourneyType.DEPART).invokeBlock(request, block)) mustBe Results.Redirect(controllers.routes.ChoiceController.displayChoices)
       }
 
       for (journey <- Seq(JourneyType.ARRIVE, JourneyType.DEPART))

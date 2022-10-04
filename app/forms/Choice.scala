@@ -22,10 +22,12 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json._
 import utils.validators.forms.FieldValidator.isContainedIn
 
-sealed abstract class Choice(val value: String) {
+abstract class Choice(val value: String) {
 
-  def isArrival: Boolean = value == Choice.Arrival.value
-  def isDeparture: Boolean = value == Choice.Departure.value
+  lazy val isArrival: Boolean = value == Choice.Arrival.value
+  lazy val isDeparture: Boolean = value == Choice.Departure.value
+  lazy val isFindConsignment: Boolean = value == Choice.FindConsignment.value
+  lazy val isShutMUCR: Boolean = value == Choice.ShutMUCR.value
 }
 
 object Choice {
@@ -61,7 +63,7 @@ object Choice {
   case object ShutMUCR extends Choice("shutMUCR")
   case object Submissions extends Choice("submissions")
 
-  val allChoices = List(Arrival, Departure, AssociateUCR, DisassociateUCR, FindConsignment, ShutMUCR, Submissions)
+  val allChoices = List(FindConsignment, Arrival, Departure, AssociateUCR, DisassociateUCR, ShutMUCR, Submissions)
 
   val consignmentChoices = List(Arrival, Departure, AssociateUCR, DisassociateUCR, ShutMUCR)
 

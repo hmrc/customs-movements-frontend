@@ -48,7 +48,7 @@
         if (manageMucrChoice.isDefined) ManageMucrController.displayPage
         else ChoiceOnConsignmentController.displayChoices
     }
-    else if (request.cache.ducrPartChiefChoice.exists(_.isDucrPart)) DucrPartDetailsController.displayPage
+    else if (request.cache.isDucrPartChief) DucrPartDetailsController.displayPage
     else DucrPartChiefController.displayPage
 }
 

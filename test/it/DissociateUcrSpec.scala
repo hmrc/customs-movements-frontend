@@ -15,46 +15,11 @@
  */
 
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
-import controllers.exception.InvalidFeatureStateException
 import forms.{DisassociateUcr, UcrType}
 import models.cache.DisassociateUcrAnswers
 import play.api.test.Helpers._
 
 class DissociateUcrSpec extends IntegrationSpec {
-
-  "Dissociate UCR Page" when {
-    "GET" should {
-      "throw feature disabled" in {
-        // Given
-        givenAuthSuccess("eori")
-        givenCacheFor("eori", DisassociateUcrAnswers())
-
-        // When
-        val response = get(controllers.consolidations.routes.DisassociateUcrController.displayPage())
-
-        // Then
-        intercept[InvalidFeatureStateException] {
-          await(response)
-        }
-      }
-    }
-
-    "POST" should {
-      "throw feature disabled" in {
-        // Given
-        givenAuthSuccess("eori")
-        givenCacheFor("eori", DisassociateUcrAnswers())
-
-        // When
-        val response = post(controllers.consolidations.routes.DisassociateUcrController.submit(), "kind" -> "mucr", "mucr" -> "GB/321-54321")
-
-        // Then
-        intercept[InvalidFeatureStateException] {
-          await(response)
-        }
-      }
-    }
-  }
 
   "Dissociate UCR Summary Page" when {
     "GET" should {

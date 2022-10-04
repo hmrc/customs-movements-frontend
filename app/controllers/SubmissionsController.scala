@@ -42,8 +42,7 @@ class SubmissionsController @Inject() (
       submissions <- connector.fetchAllSubmissions(request.user.eori)
       notifications <- connector.fetchAllNotificationsForUser(request.user.eori)
       submissionsWithNotifications = matchNotificationsAgainstSubmissions(submissions, notifications)
-    }
-    yield Ok(movementsPage(sortWithOldestLast(submissionsWithNotifications)))
+    } yield Ok(movementsPage(sortWithOldestLast(submissionsWithNotifications)))
   }
 
   private def matchNotificationsAgainstSubmissions(

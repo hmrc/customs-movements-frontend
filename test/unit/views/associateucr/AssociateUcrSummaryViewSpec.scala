@@ -17,12 +17,17 @@
 package views.associateucr
 
 import base.Injector
-import forms.AssociateUcr
+import controllers.consolidations.routes.{AssociateUcrController, MucrOptionsController}
+import forms.DucrPartChiefChoice.IsDucrPart
 import forms.UcrType._
+import forms.{AssociateUcr, DucrPartChiefChoice}
 import models.UcrBlock
-import models.cache.AssociateUcrAnswers
+import models.cache.{AssociateUcrAnswers, Cache}
 import models.requests.JourneyRequest
+import org.scalatest.Assertion
+import play.api.mvc.Call
 import play.twirl.api.Html
+import testdata.CommonTestData.validEori
 import views.ViewSpec
 import views.html.associateucr.associate_ucr_summary
 import views.tags.ViewTest
@@ -38,11 +43,9 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
     page(AssociateUcr(Ducr, ducr), mucr)
 
   "Associate Ducr Confirmation View" should {
-
     val view = createView("MUCR", "DUCR")
 
     "render title" in {
-
       view.getTitle must containMessage("associate.ucr.summary.title")
     }
 
@@ -50,53 +53,59 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
       view.getElementById("title") must containMessage("associate.ucr.summary.title")
     }
 
-    "render back button" when {
+    "render a back button pointing to /mucr-options" when {
+      "the entered ucr is of type 'DucrPart" in {
+        val cache = Cache(validEori, None, None, false, Some(DucrPartChiefChoice(IsDucrPart)))
+        implicit val request = journeyRequest(cache)
+        testBackButton(MucrOptionsController.displayPage)
+      }
+    }
 
-      for (ucrBlock <- List(None, Some(new UcrBlock("", Some(""), ""))))
-        s"QueryUcr is $ucrBlock in Cache" in {
-          implicit val request = journeyRequest(AssociateUcrAnswers(), ucrBlock)
-          val view = createView("MUCR", "DUCR")
-          val backButton = view.getBackButton
+    "render a back button pointing to /associate-ucr" when {
 
-          val backlink =
-            if (ucrBlock.isDefined) controllers.consolidations.routes.MucrOptionsController.displayPage()
-            else controllers.consolidations.routes.AssociateUcrController.displayPage()
+      "the entered ucr is of type 'Mucr" in {
+        implicit val request = journeyRequest(AssociateUcrAnswers(), Some(UcrBlock("ucr", Mucr)))
+        testBackButton(AssociateUcrController.displayPage)
+      }
 
-          backButton mustBe defined
-          backButton.get must haveHref(backlink)
-          backButton.get must containMessage("site.back")
-        }
+      "the entered ucr is of type 'Ducr" in {
+        implicit val request = journeyRequest(AssociateUcrAnswers(), Some(UcrBlock("ucr", Ducr)))
+        testBackButton(AssociateUcrController.displayPage)
+      }
     }
 
     "display 'Confirm and submit' button on page" in {
-
       view.getElementsByClass("govuk-button").first() must containMessage("site.confirmAndSubmit")
     }
 
     "display 'Change' link on page for associate ucr" in {
-
       val changeUcr = view.getElementsByClass("govuk-link").get(1)
       changeUcr must containMessage("site.change")
-      changeUcr must haveHref(controllers.consolidations.routes.AssociateUcrController.displayPage())
+      changeUcr must haveHref(AssociateUcrController.displayPage())
     }
 
     "display 'Change' link on the page for mucr" in {
-
       val changeMucr = view.getElementsByClass("govuk-link").get(2)
       changeMucr must containMessage("site.change")
-      changeMucr must haveHref(controllers.consolidations.routes.MucrOptionsController.displayPage())
+      changeMucr must haveHref(MucrOptionsController.displayPage())
     }
 
     "display 'Add consignment' type in summary list" in {
-
       view.getElementsByClass("govuk-summary-list__key").first() must containMessage("associate.ucr.summary.kind.ducr")
       view.getElementsByClass("govuk-summary-list__value").first().text() mustBe "DUCR"
     }
 
     "display 'To master consignment' type in summary list" in {
-
       view.getElementsByClass("govuk-summary-list__key").last() must containMessage("associate.ucr.summary.kind.mucr")
       view.getElementsByClass("govuk-summary-list__value").last().text() mustBe "MUCR"
     }
+  }
+
+  private def testBackButton(call: Call)(implicit request: JourneyRequest[_]): Assertion = {
+    val view = createView("MUCR", "DUCR")
+    val backButton = view.getBackButton
+    backButton mustBe defined
+    backButton.get must haveHref(call)
+    backButton.get must containMessage("site.back")
   }
 }

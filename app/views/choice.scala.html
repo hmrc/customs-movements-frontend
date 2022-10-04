@@ -40,14 +40,14 @@
 @arriveDepartChoices = @{
   Seq(
     RadioItem(
-        value = Some(Arrival.value.toString),
-        content = Text(messages(s"movement.choice.${Arrival.toString.toLowerCase}.label")),
-        checked = form("choice").value.contains(Arrival.toString.toLowerCase)
+        value = Some(Arrival.value),
+        content = Text(messages(s"movement.choice.${Arrival.value.toLowerCase}.label")),
+        checked = form("choice").value.contains(Arrival.value.toLowerCase)
     ),
     RadioItem(
-        value = Some(Departure.value.toString),
-        content = Text(messages(s"movement.choice.${Departure.toString.toLowerCase}.label")),
-        checked = form("choice").value.contains(Departure.toString.toLowerCase())
+        value = Some(Departure.value),
+        content = Text(messages(s"movement.choice.${Departure.value.toLowerCase}.label")),
+        checked = form("choice").value.contains(Departure.value.toLowerCase)
     )
   )
 }
@@ -55,9 +55,9 @@
 @findConsignmentChoice = @{
   Seq(
     RadioItem(
-        value = Some(FindConsignment.value.toString),
-        content = Text(messages(s"movement.choice.${FindConsignment.toString.toLowerCase}.label")),
-        checked = form("choice").value.contains(FindConsignment.toString.toLowerCase)
+        value = Some(FindConsignment.value),
+        content = Text(messages(s"movement.choice.${FindConsignment.value.toLowerCase}.label")),
+        checked = form("choice").value.contains(FindConsignment.value.toLowerCase)
     )
   )
 }
@@ -65,24 +65,24 @@
 @choices = @{
     val commonChoices = Seq(
         RadioItem(
-            value = Some(AssociateUCR.value.toString),
-            content = Text(messages(s"movement.choice.${AssociateUCR.toString.toLowerCase}.label")),
-            checked = form("choice").value.contains(AssociateUCR.value.toString)
+            value = Some(AssociateUCR.value),
+            content = Text(messages(s"movement.choice.${AssociateUCR.value.toLowerCase}.label")),
+            checked = form("choice").value.contains(AssociateUCR.value)
         ),
         RadioItem(
-            value = Some(DisassociateUCR.value.toString),
-            content = Text(messages(s"movement.choice.${DisassociateUCR.toString.toLowerCase}.label")),
-            checked = form("choice").value.contains(DisassociateUCR.value.toString)
+            value = Some(DisassociateUCR.value),
+            content = Text(messages(s"movement.choice.${DisassociateUCR.value.toLowerCase}.label")),
+            checked = form("choice").value.contains(DisassociateUCR.value)
         ),
         RadioItem(
-            value = Some(ShutMUCR.value.toString),
-            content = Text(messages(s"movement.choice.${ShutMUCR.toString.toLowerCase}.label")),
-            checked = form("choice").value.contains(ShutMUCR.value.toString)
+            value = Some(ShutMUCR.value),
+            content = Text(messages(s"movement.choice.${ShutMUCR.value.toLowerCase}.label")),
+            checked = form("choice").value.contains(ShutMUCR.value)
         ),
         RadioItem(
-            value = Some(Submissions.value.toString),
-            content = Text(messages(s"movement.choice.${Submissions.toString.toLowerCase}.label")),
-            checked = form("choice").value.contains(Submissions.toString.toLowerCase)
+            value = Some(Submissions.value),
+            content = Text(messages(s"movement.choice.${Submissions.value.toLowerCase}.label")),
+            checked = form("choice").value.contains(Submissions.value.toLowerCase)
         )
     )
 

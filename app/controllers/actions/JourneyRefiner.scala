@@ -25,7 +25,7 @@ import repositories.CacheRepository
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class JourneyRefiner @Inject()(cacheRepository: CacheRepository, arriveDepartAllowList: ArriveDepartAllowList)(implicit val exc: ExecutionContext)
+class JourneyRefiner @Inject() (cacheRepository: CacheRepository, arriveDepartAllowList: ArriveDepartAllowList)(implicit val exc: ExecutionContext)
     extends ActionRefiner[AuthenticatedRequest, JourneyRequest] {
 
   override protected def executionContext: ExecutionContext = exc
@@ -33,12 +33,13 @@ class JourneyRefiner @Inject()(cacheRepository: CacheRepository, arriveDepartAll
   override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
     toJourneyRequest(request, Seq.empty[JourneyType]: _*).map(orRedirect)
 
-  def apply(types: JourneyType*): ActionRefiner[AuthenticatedRequest, JourneyRequest] = new ActionRefiner[AuthenticatedRequest, JourneyRequest] {
-    override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
-      toJourneyRequest(request, types: _*).map(orRedirect)
+  def apply(types: JourneyType*): ActionRefiner[AuthenticatedRequest, JourneyRequest] =
+    new ActionRefiner[AuthenticatedRequest, JourneyRequest] {
+      override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
+        toJourneyRequest(request, types: _*).map(orRedirect)
 
-    override protected def executionContext: ExecutionContext = exc
-  }
+      override protected def executionContext: ExecutionContext = exc
+    }
 
   private def toJourneyRequest[A](request: AuthenticatedRequest[A], types: JourneyType*): Future[Option[JourneyRequest[A]]] = {
     val eori = request.user.eori

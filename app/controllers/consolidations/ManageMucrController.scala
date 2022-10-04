@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, IleQueryAction, JourneyRefiner}
 import controllers.consolidations.routes.MucrOptionsController
 import controllers.exception.InvalidFeatureStateException
 import controllers.navigation.Navigator
-import forms.ManageMucrChoice.{AssociateAnotherMucr, AssociateThisMucr, form}
+import forms.ManageMucrChoice.{form, AssociateAnotherMucr, AssociateThisMucr}
 import forms.{AssociateUcr, MucrOptions, UcrType}
 import models.cache.AssociateUcrAnswers
 import models.cache.JourneyType.ASSOCIATE_UCR

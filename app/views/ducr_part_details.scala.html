@@ -16,7 +16,6 @@
 
 @import controllers.routes.{DucrPartChiefController, DucrPartDetailsController}
 @import forms.DucrPartDetails
-@import models.cache.JourneyNotSelectedAnswers
 @import models.requests._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.BackButton
@@ -39,12 +38,6 @@
   <span id="page-hint" class="govuk-hint">@messages("ducrPartDetails.heading")</span>
 }
 
-@consignmentTypeHeading = {
-    @if(request.answers != JourneyNotSelectedAnswers) {
-        @sectionHeader(messages(s"ducrPartDetails.${request.answers.`type`.toString.toLowerCase}.heading"))
-    }
-}
-
 @govukLayout(
   title = Title("ducrPartDetails.title", Some("ducrPartDetails.heading")),
   backButton = Some(BackButton(messages("site.back.previousQuestion"), DucrPartChiefController.displayPage))
@@ -52,7 +45,7 @@
     @formHelper(action = DucrPartDetailsController.submitDucrPartDetails, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @consignmentTypeHeading
+        @sectionHeader(messages(s"ducrPartDetails.${request.answers.`type`.toString.toLowerCase}.heading"))
 
         @pageTitle(messages("ducrPartDetails.title"))
 

@@ -17,6 +17,7 @@
 package views
 
 import base.Injector
+import controllers.routes.ChoiceController
 import forms.IleQueryForm
 import org.jsoup.nodes.Element
 import org.scalatestplus.mockito.MockitoSugar
@@ -40,8 +41,8 @@ class IleQueryViewSpec extends ViewSpec with Injector with MockitoSugar {
       view.getTitle must containMessage("ileQuery.title")
     }
 
-    "not render 'Back' button" in {
-      Option(view.getElementById("back-link")) mustBe None
+    "render a 'Back' button" in {
+      view.getElementById("back-link") must haveAttribute("href", ChoiceController.displayChoices.url)
     }
 
     "render page header" in {

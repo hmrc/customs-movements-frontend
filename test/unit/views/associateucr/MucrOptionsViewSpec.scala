@@ -16,43 +16,25 @@
 
 package views.associateucr
 
-import base.OverridableInjector
-import config.IleQueryConfig
+import base.Injector
 import controllers.consolidations.routes.ManageMucrController
-import controllers.routes.ChoiceController
+import controllers.routes.{ChoiceOnConsignmentController, DucrPartChiefController, DucrPartDetailsController}
+import forms.DucrPartChiefChoice.IsDucrPart
 import forms.UcrType.Mucr
-import forms.{ManageMucrChoice, MucrOptions}
+import forms.{DucrPartChiefChoice, ManageMucrChoice, MucrOptions}
 import models.UcrBlock
-import models.cache.AssociateUcrAnswers
+import models.cache.{AssociateUcrAnswers, Cache}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.{Form, FormError}
-import play.api.inject.bind
 import play.twirl.api.HtmlFormat.Appendable
+import testdata.CommonTestData.validEori
 import views.ViewSpec
 import views.html.associateucr.mucr_options
 
-class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
+class MucrOptionsViewSpec extends ViewSpec with Injector {
 
-  private val ileQueryConfig = mock[IleQueryConfig]
-  private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
-
-  private val page = injector.instanceOf[mucr_options]
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-
-    when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
-  }
-
-  override def afterEach(): Unit = {
-    reset(ileQueryConfig)
-
-    super.afterEach()
-  }
+  private val page = instanceOf[mucr_options]
 
   private val form: Form[MucrOptions] = MucrOptions.form
 
@@ -64,7 +46,9 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
 
   "MUCR options" should {
 
-    implicit val request = journeyRequest(AssociateUcrAnswers(Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr))))
+    val manageMucrChoice = Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr))
+    val answer = AssociateUcrAnswers(manageMucrChoice)
+    implicit val request = journeyRequest(answer)
 
     "have the correct title" in {
       createView().getTitle must containMessage("mucrOptions.title")
@@ -77,7 +61,8 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
     "have the body text" in {
       val body = createView().getElementsByClass("govuk-body").first()
 
-      body must containMessage("mucrOptions.paragraph", messages("mucrOptions.paragraph.link"))
+      val expectedText = messages("mucrOptions.paragraph", messages("mucrOptions.paragraph.link"))
+      removeBlanksIfAnyBeforeDot(body.text) mustBe expectedText
       body.getElementsByTag("a").first() must haveHref(
         "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide/group-2-references-of-messages-document-certificates-and-authorisations#de-21-simplified-declaration-previous-documents-box-40-declaration-previous-document"
       )
@@ -96,25 +81,63 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
       view.getElementById("createOrAdd-2") mustBe unchecked
     }
 
-    "display 'Back' button that links to start page when ileQuery disabled" in {
-      when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
-      val backButton = createView().getBackButton
+    "display 'Back' button that links to /ducr-part-created-chief page" when {
+      "on a NON-'Find a consignment' journey and" when {
+        "the Ucr is NOT of DucrPart type" in {
+          val backButton = createView().getBackButton
 
-      backButton mustBe defined
-      backButton.foreach { button =>
-        button must haveHref(ChoiceController.displayChoices)
-        button must containMessage("site.back.previousQuestion")
+          backButton mustBe defined
+          backButton.foreach { button =>
+            button must haveHref(DucrPartChiefController.displayPage)
+            button must containMessage("site.back.previousQuestion")
+          }
+        }
       }
     }
 
-    "display 'Back' button that links to 'manage mucr page when ileQuery enabled" in {
-      when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
-      val backButton = createView().getBackButton
+    "display 'Back' button that links to /ducr-part-details page" when {
+      "on a NON-'Find a consignment' journey and" when {
+        "the Ucr is of DucrPart type" in {
+          val cache = Cache(validEori, Some(answer), None, false, Some(DucrPartChiefChoice(IsDucrPart)))
+          implicit val request = journeyRequest(cache)
+          val backButton = createView().getBackButton
 
-      backButton mustBe defined
-      backButton.foreach { button =>
-        button must haveHref(ManageMucrController.displayPage())
-        button must containMessage("site.back.previousQuestion")
+          backButton mustBe defined
+          backButton.foreach { button =>
+            button must haveHref(DucrPartDetailsController.displayPage)
+            button must containMessage("site.back.previousQuestion")
+          }
+        }
+      }
+    }
+
+    "display 'Back' button that links to /manage-mucr page" when {
+      "on a 'Find a consignment' journey and" when {
+        "AssociateUcrAnswers.manageMucrChoice is defined" in {
+          implicit val request = journeyRequest(answer, None, true)
+          val backButton = createView().getBackButton
+
+          backButton mustBe defined
+          backButton.foreach { button =>
+            button must haveHref(ManageMucrController.displayPage)
+            button must containMessage("site.back.previousQuestion")
+          }
+        }
+      }
+    }
+
+    "display 'Back' button that links to /choice-on-consignment page" when {
+      "on a 'Find a consignment' journey and" when {
+        "AssociateUcrAnswers.manageMucrChoice is NOT defined" in {
+          implicit val request = journeyRequest(answer, None, true)
+          val backButton = page(form, ucrBlock, None).getBackButton
+
+          backButton mustBe defined
+          backButton.foreach { button =>
+            button must haveHref(ChoiceOnConsignmentController.displayChoices)
+            button must containMessage("site.back.previousQuestion")
+          }
+        }
       }
     }
 

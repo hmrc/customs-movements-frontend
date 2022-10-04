@@ -63,7 +63,7 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
       ileQueryAction,
       stubMessagesControllerComponents(),
       errorHandler,
-      cache,
+      cacheRepository,
       ileQueryRepository,
       connector,
       ileQueryPage,
@@ -396,7 +396,7 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
             await(controller.getConsignmentData("ducr")(request))
 
             val cacheCaptor = newCacheCaptor
-            verify(cache).upsert(cacheCaptor.capture())
+            verify(cacheRepository).upsert(cacheCaptor.capture())
             val cacheUpserted = cacheCaptor.getValue
 
             cacheUpserted.eori mustBe "eori"
@@ -435,7 +435,7 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
             await(controller.getConsignmentData("mucr")(request))
 
             val cacheCaptor = newCacheCaptor
-            verify(cache).upsert(cacheCaptor.capture())
+            verify(cacheRepository).upsert(cacheCaptor.capture())
             val cacheUpserted = cacheCaptor.getValue
 
             cacheUpserted.eori mustBe "eori"

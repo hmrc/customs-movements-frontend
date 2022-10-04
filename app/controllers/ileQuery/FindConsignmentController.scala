@@ -42,9 +42,6 @@ class FindConsignmentController @Inject() (
   val submitPage: Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled) { implicit request =>
     form
       .bindFromRequest()
-      .fold(
-        formWithErrors => BadRequest(ileQueryPage(formWithErrors)),
-        validUcr => Redirect(IleQueryController.getConsignmentData(validUcr))
-      )
+      .fold(formWithErrors => BadRequest(ileQueryPage(formWithErrors)), validUcr => Redirect(IleQueryController.getConsignmentData(validUcr)))
   }
 }

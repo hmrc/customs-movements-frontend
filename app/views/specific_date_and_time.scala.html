@@ -39,7 +39,7 @@
 
 @backUrl = @{
     if (request.cache.ucrBlockFromIleQuery) ChoiceOnConsignmentController.displayChoices
-    else if (request.cache.ducrPartChiefChoice.exists(_.isDucrPart)) DucrPartDetailsController.displayPage()
+    else if (request.cache.isDucrPartChief) DucrPartDetailsController.displayPage()
     else ConsignmentReferencesController.displayPage()
 }
 

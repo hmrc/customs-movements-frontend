@@ -49,7 +49,7 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
       ileQueryAction,
       ValidJourney(answers, ucrBlock, true),
       stubMessagesControllerComponents(),
-      cache,
+      cacheRepository,
       page,
       navigator
     )

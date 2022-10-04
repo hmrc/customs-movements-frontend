@@ -16,38 +16,22 @@
 
 package views.shutmucr
 
-import base.OverridableInjector
-import config.IleQueryConfig
-import controllers.consolidations.routes
+import base.Injector
+import controllers.consolidations.routes.ShutMucrController
+import controllers.routes.ChoiceOnConsignmentController
 import forms.ShutMucr
 import models.cache.ShutMucrAnswers
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
-import play.api.inject.bind
 import testdata.CommonTestData.validMucr
 import views.ViewSpec
 import views.html.shutmucr.shut_mucr_summary
 
-class ShutMucrSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
+class ShutMucrSummaryViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(ShutMucrAnswers())
+
+  private val shutMucrSummaryPage = instanceOf[shut_mucr_summary]
+
   val shutMucr = ShutMucr(validMucr)
-  private val ileQueryConfig = mock[IleQueryConfig]
-  private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
-  private val shutMucrSummaryPage = injector.instanceOf[shut_mucr_summary]
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-
-    when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
-  }
-
-  override def afterEach(): Unit = {
-    reset(ileQueryConfig)
-
-    super.afterEach()
-  }
 
   "Shut Mucr Summary View" should {
 
@@ -56,63 +40,48 @@ class ShutMucrSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndA
     }
 
     "display page header" in {
-
       shutMucrSummaryPage(shutMucr).getElementsByClass("govuk-heading-m").text() mustBe messages("shutMucr.summary.header")
     }
 
     "display MUCR type in summary list" in {
-
       shutMucrSummaryPage(shutMucr).getElementsByClass("govuk-summary-list__key").text() mustBe messages("shutMucr.summary.type")
     }
 
     "display correct mucr" in {
-
       shutMucrSummaryPage(shutMucr).getElementsByClass("govuk-summary-list__value").text() mustBe validMucr
     }
 
     "display correct submit button" in {
-
       val submitButton = shutMucrSummaryPage(shutMucr).getElementsByClass("govuk-button").first()
 
       submitButton.text() mustBe messages("site.confirmAndSubmit")
     }
 
-    "not display change button when ileQuery enabled (Sign out link only)" in {
-
-      when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
-
+    "not display change button when on a 'Find a consignment' journey" in {
+      implicit val request = journeyRequest(ShutMucrAnswers(), None, true)
       shutMucrSummaryPage(shutMucr).getElementsByClass("govuk-link").size() mustBe 2
     }
 
-    "display correct change button when ileQuery disabled" in {
-
-      when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
-
+    "display correct change button when on a NON-'Find a consignment' journey" in {
       val changeButton = shutMucrSummaryPage(shutMucr).getElementsByClass("govuk-link").get(1)
 
-      changeButton must haveHref(routes.ShutMucrController.displayPage())
+      changeButton must haveHref(ShutMucrController.displayPage())
       changeButton.text() must include(messages("site.edit"))
     }
 
-    "have 'Back' button when ileQuery enabled" in {
-
-      when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
-
+    "have 'Back' button when on a 'Find a consignment' journey" in {
+      implicit val request = journeyRequest(ShutMucrAnswers(), None, true)
       val backButton = shutMucrSummaryPage(shutMucr).getBackButton
 
       backButton mustBe defined
-      backButton.get must haveHref(controllers.routes.ChoiceController.displayChoices)
+      backButton.get must haveHref(ChoiceOnConsignmentController.displayChoices)
     }
 
-    "have 'Back' button when ileQuery disabled" in {
-
-      when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
-
+    "have 'Back' button when on a NON-'Find a consignment' journey" in {
       val backButton = shutMucrSummaryPage(shutMucr).getBackButton
 
       backButton mustBe defined
-      backButton.get must haveHref(routes.ShutMucrController.displayPage())
+      backButton.get must haveHref(ShutMucrController.displayPage)
     }
-
   }
 }

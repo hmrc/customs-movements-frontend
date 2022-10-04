@@ -16,7 +16,7 @@
 
 package models.cache
 
-import forms.DucrPartChiefChoice
+import forms.{DucrPartChiefChoice, UcrType}
 import models.UcrBlock
 import play.api.libs.json._
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -32,9 +32,11 @@ case class Cache(
   updated: Option[Instant] = Some(Instant.now())
 ) {
 
-  def update(answers: Answers): Cache = this.copy(answers = Some(answers), updated = Some(Instant.now()))
+  def is(ucrType: UcrType): Boolean = ucrBlock.exists(_.is(ucrType))
 
   def isDucrPartChief: Boolean = ducrPartChiefChoice.exists(_.isDucrPart)
+
+  def update(answers: Answers): Cache = this.copy(answers = Some(answers), updated = Some(Instant.now()))
 }
 
 object Cache {

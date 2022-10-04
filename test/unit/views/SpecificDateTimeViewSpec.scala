@@ -16,39 +16,23 @@
 
 package views
 
-import base.OverridableInjector
-import config.IleQueryConfig
-import forms.SpecificDateTimeChoice
-import models.cache.{ArrivalAnswers, DepartureAnswers}
+import base.Injector
+import controllers.routes.{ChoiceOnConsignmentController, ConsignmentReferencesController, DucrPartDetailsController}
+import forms.DucrPartChiefChoice.IsDucrPart
+import forms.{DucrPartChiefChoice, SpecificDateTimeChoice}
+import models.cache.{ArrivalAnswers, Cache, DepartureAnswers}
 import models.requests.JourneyRequest
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.inject.bind
 import play.twirl.api.Html
+import testdata.CommonTestData.validEori
 import views.html.specific_date_and_time
 
-class SpecificDateTimeViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
+class SpecificDateTimeViewSpec extends ViewSpec with Injector {
 
-  private val appConfig = mock[IleQueryConfig]
-  private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(appConfig))
-
-  private val page = injector.instanceOf[specific_date_and_time]
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-
-    when(appConfig.isIleQueryEnabled).thenReturn(true)
-  }
-
-  override def afterEach(): Unit = {
-    reset(appConfig)
-
-    super.afterEach()
-  }
+  private val page = instanceOf[specific_date_and_time]
 
   private val form: Form[SpecificDateTimeChoice] = SpecificDateTimeChoice.form()
+
   private implicit val request = journeyRequest(ArrivalAnswers())
 
   private def createView(implicit request: JourneyRequest[_] = request): Html = page(form, "some-reference")
@@ -56,46 +40,63 @@ class SpecificDateTimeViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
   "SpecificDateTime View on empty page" should {
 
     "display page title" in {
-
       createView().getElementsByTag("h1").first() must containMessage("specific.datetime.heading")
     }
 
     "have the correct section header for the Arrival journey" in {
-
       createView().getElementById("section-header") must containMessage("specific.datetime.arrive.heading", "some-reference")
     }
 
     "have the correct section header for the Departure journey" in {
-
       val departureView = page(form, "some-reference")(journeyRequest(DepartureAnswers()), messages)
       departureView.getElementById("section-header") must containMessage("specific.datetime.depart.heading", "some-reference")
     }
 
-    "display 'Back' button that links to Consignment References when ileQuery disabled" in {
-      when(appConfig.isIleQueryEnabled).thenReturn(false)
-      val backButton = createView().getBackButton
+    "display 'Back' button that links to the /choice-on-consignment page" when {
+      "on a 'Find a consignment' journey" in {
+        implicit val request = journeyRequest(ArrivalAnswers(), None, true)
+        val backButton = createView.getBackButton
 
-      backButton mustBe defined
-      backButton.foreach { button =>
-        button must haveHref(controllers.routes.ConsignmentReferencesController.displayPage())
-        button must containMessage("site.back.previousQuestion")
+        backButton mustBe defined
+        backButton.foreach { button =>
+          button must haveHref(ChoiceOnConsignmentController.displayChoices)
+          button must containMessage("site.back")
+        }
       }
     }
 
-    "display 'Back' button that links to Choice when ileQuery enabled" in {
-      when(appConfig.isIleQueryEnabled).thenReturn(true)
-      val backButton = createView().getBackButton
+    "display 'Back' button that links to the /ducr-part-details page" when {
+      "on a NON-'Find a consignment' journey and" when {
+        "the Ucr is of DucrPart type" in {
+          val cache = Cache(validEori, Some(ArrivalAnswers()), None, false, Some(DucrPartChiefChoice(IsDucrPart)))
+          implicit val request = journeyRequest(cache)
+          val backButton = createView.getBackButton
 
-      backButton mustBe defined
-      backButton.foreach { button =>
-        button must haveHref(controllers.routes.ChoiceController.displayChoices)
-        button must containMessage("site.back")
+          backButton mustBe defined
+          backButton.foreach { button =>
+            button must haveHref(DucrPartDetailsController.displayPage)
+            button must containMessage("site.back.previousQuestion")
+          }
+        }
+      }
+    }
+
+    "display 'Back' button that links to the /consignment-references page" when {
+      "on a NON-'Find a consignment' journey and" when {
+        "the Ucr is not of DucrPart type" in {
+          val backButton = createView().getBackButton
+
+          backButton mustBe defined
+          backButton.foreach { button =>
+            button must haveHref(ConsignmentReferencesController.displayPage)
+            button must containMessage("site.back")
+          }
+        }
       }
     }
 
     checkAllSaveButtonsAreDisplayed(createView(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))
 
     checkSaveAndReturnToSummaryButtonIsHidden(createView())
-
   }
 }

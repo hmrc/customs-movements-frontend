@@ -16,16 +16,15 @@
 
 package controllers
 
-import config.IleQueryConfig
 import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.consolidations.routes.{DisassociateUcrSummaryController, MucrOptionsController}
 import controllers.navigation.Navigator
 import controllers.routes.SpecificDateTimeController
 import forms.DucrPartDetails.form
-import forms.{AssociateUcr, ConsignmentReferences, DisassociateUcr, DucrPartDetails, UcrType}
+import forms._
 import models.UcrBlock
-import models.cache._
 import models.cache.JourneyType._
+import models.cache._
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -41,7 +40,6 @@ class DucrPartDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   authenticate: AuthAction,
   getJourney: JourneyRefiner,
-  ileQueryConfig: IleQueryConfig,
   cacheRepository: CacheRepository,
   ducrPartsDetailsPage: ducr_part_details,
   navigator: Navigator
@@ -51,13 +49,15 @@ class DucrPartDetailsController @Inject() (
   private val journeyActions = authenticate andThen getJourney(ARRIVE, DEPART, ASSOCIATE_UCR, DISSOCIATE_UCR)
 
   def displayPage(): Action[AnyContent] = journeyActions.async { implicit request =>
-    cacheRepository.findByEori(request.eori).map {
-      case Some(cache) if cache.ucrBlock.exists(_.ucrType == UcrType.DucrPart.codeValue) =>
-        cache.ucrBlock.map(ucrBlock => form().fill(DucrPartDetails(ucrBlock))).getOrElse(form())
+    cacheRepository
+      .findByEori(request.eori)
+      .map {
+        case Some(cache) if cache.ucrBlock.exists(_.ucrType == UcrType.DucrPart.codeValue) =>
+          cache.ucrBlock.map(ucrBlock => form().fill(DucrPartDetails(ucrBlock))).getOrElse(form())
 
-      case _ => form()
-    }
-    .map(form => Ok(ducrPartsDetailsPage(form)))
+        case _ => form()
+      }
+      .map(form => Ok(ducrPartsDetailsPage(form)))
   }
 
   def submitDucrPartDetails(): Action[AnyContent] = journeyActions.async { implicit request =>
@@ -78,28 +78,36 @@ class DucrPartDetailsController @Inject() (
   }
 
   private def handleArrival(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    saveAndContinue(request.cache.copy(
+    saveAndContinue(
+      request.cache.copy(
         ucrBlock = ucrBlock,
         answers = Some(request.answersAs[ArrivalAnswers].copy(consignmentReferences = ucrBlock.map(ConsignmentReferences.apply)))
-    ), SpecificDateTimeController.displayPage)
+      ),
+      SpecificDateTimeController.displayPage
+    )
 
   private def handleDeparture(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    saveAndContinue(request.cache.copy(
-      ucrBlock = ucrBlock,
-      answers = Some(request.answersAs[DepartureAnswers].copy(consignmentReferences = ucrBlock.map(ConsignmentReferences.apply)))
-    ), SpecificDateTimeController.displayPage())
+    saveAndContinue(
+      request.cache.copy(
+        ucrBlock = ucrBlock,
+        answers = Some(request.answersAs[DepartureAnswers].copy(consignmentReferences = ucrBlock.map(ConsignmentReferences.apply)))
+      ),
+      SpecificDateTimeController.displayPage()
+    )
 
   private def handleAssociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    saveAndContinue(request.cache.copy(
-      ucrBlock = ucrBlock,
-      answers = Some(request.answersAs[AssociateUcrAnswers].copy(associateUcr = ucrBlock.map(AssociateUcr.apply)))
-    ), MucrOptionsController.displayPage())
+    saveAndContinue(
+      request.cache
+        .copy(ucrBlock = ucrBlock, answers = Some(request.answersAs[AssociateUcrAnswers].copy(associateUcr = ucrBlock.map(AssociateUcr.apply)))),
+      MucrOptionsController.displayPage()
+    )
 
   private def handleDissociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    saveAndContinue(request.cache.copy(
-      ucrBlock = ucrBlock,
-      answers = Some(request.answersAs[DisassociateUcrAnswers].copy(ucr = ucrBlock.map(DisassociateUcr.apply)))
-    ), DisassociateUcrSummaryController.displayPage())
+    saveAndContinue(
+      request.cache
+        .copy(ucrBlock = ucrBlock, answers = Some(request.answersAs[DisassociateUcrAnswers].copy(ucr = ucrBlock.map(DisassociateUcr.apply)))),
+      DisassociateUcrSummaryController.displayPage()
+    )
 
   private def saveAndContinue(cache: Cache, call: Call)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     cacheRepository.upsert(cache).map(_ => navigator.continueTo(call))

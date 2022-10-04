@@ -16,8 +16,7 @@
 
 package controllers
 
-import config.IleQueryConfig
-import controllers.actions.AuthAction
+import controllers.actions.{ArriveDepartAllowList, AuthAction}
 import controllers.consolidations.routes.{DisassociateUcrSummaryController, ManageMucrController, ShutMucrSummaryController}
 import controllers.routes.{ChoiceController, SpecificDateTimeController}
 import forms.Choice
@@ -37,11 +36,11 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ChoiceOnConsignmentController @Inject()(
+class ChoiceOnConsignmentController @Inject() (
   authenticate: AuthAction,
   cacheRepository: CacheRepository,
   mcc: MessagesControllerComponents,
-  ileQueryConfig: IleQueryConfig,
+  arriveDepartAllowList: ArriveDepartAllowList,
   choicePage: choice_on_consignment
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
@@ -59,19 +58,21 @@ class ChoiceOnConsignmentController @Inject()(
     def badRequestPage(formWithErrors: Form[Choice]): CacheAndUcr => Future[Result] =
       (cacheAndUcr: CacheAndUcr) => Future.successful(BadRequest(choicePage(formWithErrors, cacheAndUcr.ucrBlock)))
 
-    form
-      .bindFromRequest
+    form.bindFromRequest
       .fold(formWithErrors => processWithCacheAndUcr(request.eori, badRequestPage(formWithErrors)), process)
   }
 
+  lazy val choicesNoArriveAndDepart = List(AssociateUCR, DisassociateUCR, ShutMUCR)
+
   private def process(choice: Choice)(implicit request: AuthenticatedRequest[_]): Future[Result] = {
-    if (consignmentChoices.contains(choice)) {
+    val validChoices = if (arriveDepartAllowList.contains(request.eori)) consignmentChoices else choicesNoArriveAndDepart
+    if (validChoices.contains(choice)) {
       val answerAndCall: (Option[UcrBlock] => Answers, Call) = choice match {
-        case Arrival          => (ArrivalAnswers.fromUcr, SpecificDateTimeController.displayPage)
-        case Departure        => (DepartureAnswers.fromUcr, SpecificDateTimeController.displayPage)
-        case DisassociateUCR  => (DisassociateUcrAnswers.fromUcr, DisassociateUcrSummaryController.displayPage)
-        case ShutMUCR         => (ShutMucrAnswers.fromUcr, ShutMucrSummaryController.displayPage)
-        case _                => (AssociateUcrAnswers.fromUcr, ManageMucrController.displayPage)
+        case Arrival         => (ArrivalAnswers.fromUcr, SpecificDateTimeController.displayPage)
+        case Departure       => (DepartureAnswers.fromUcr, SpecificDateTimeController.displayPage)
+        case DisassociateUCR => (DisassociateUcrAnswers.fromUcr, DisassociateUcrSummaryController.displayPage)
+        case ShutMUCR        => (ShutMucrAnswers.fromUcr, ShutMucrSummaryController.displayPage)
+        case _               => (AssociateUcrAnswers.fromUcr, ManageMucrController.displayPage)
       }
 
       val updateCache = (cacheAndUcr: CacheAndUcr) => {
@@ -80,8 +81,7 @@ class ChoiceOnConsignmentController @Inject()(
       }
 
       processWithCacheAndUcr(request.eori, updateCache)
-    }
-    else Future.successful(Redirect(controllers.routes.ChoiceOnConsignmentController.displayChoices))
+    } else Future.successful(Redirect(controllers.routes.ChoiceOnConsignmentController.displayChoices))
   }
 
   private def processWithCacheAndUcr(eori: String, f: CacheAndUcr => Future[Result]): Future[Result] =
@@ -91,7 +91,7 @@ class ChoiceOnConsignmentController @Inject()(
         ucrBlock <- cache.ucrBlock
       } yield CacheAndUcr(cache, ucrBlock)) match {
         case Some(cacheAndUcr) => f(cacheAndUcr)
-        case _  => Future.successful(Redirect(ChoiceController.displayChoices))
+        case _                 => Future.successful(Redirect(ChoiceController.displayChoices))
       }
     }
 }

@@ -46,10 +46,9 @@ class ConsignmentReferencesController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)) {
-    implicit request =>
-      val references = request.answersAs[MovementAnswers].consignmentReferences
-      Ok(consignmentReferencesPage(references.fold(form(request.answers.`type`))(form(request.answers.`type`).fill(_))))
+  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)) { implicit request =>
+    val references = request.answersAs[MovementAnswers].consignmentReferences
+    Ok(consignmentReferencesPage(references.fold(form(request.answers.`type`))(form(request.answers.`type`).fill(_))))
   }
 
   def saveConsignmentReferences(): Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)).async { implicit request =>

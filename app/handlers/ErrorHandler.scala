@@ -44,11 +44,11 @@ class ErrorHandler @Inject() (appConfig: AppConfig, override val messagesApi: Me
 
   override def resolveError(rh: RequestHeader, ex: Throwable): Result =
     ex match {
-      case _: NoActiveSession => Results.Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.loginContinueUrl)))
+      case _: NoActiveSession        => Results.Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.loginContinueUrl)))
       case _: InsufficientEnrolments => Results.SeeOther(UnauthorisedController.onPageLoad.url)
       case _: IncompleteApplication | ReturnToStartException => Results.Redirect(RootController.displayPage)
-      case _: InvalidFeatureStateException => NotFound(notFoundTemplate(Request(rh, "")))
-      case _                               => super.resolveError(rh, ex)
+      case _: InvalidFeatureStateException                   => NotFound(notFoundTemplate(Request(rh, "")))
+      case _                                                 => super.resolveError(rh, ex)
     }
 
   def getBadRequestPage()(implicit request: Request[_]): Result =

@@ -17,6 +17,8 @@
 @import controllers.consolidations.routes.{AssociateUcrController, AssociateUcrSummaryController, MucrOptionsController}
 @import controllers.routes.DucrPartDetailsController
 @import forms.AssociateUcr
+@import forms.UcrType.Ducr
+@import models.cache.AssociateUcrAnswers
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.BackButton
@@ -35,7 +37,7 @@
 @(associateUcr: AssociateUcr, mucr: String)(implicit request: JourneyRequest[_], messages: Messages)
 
 @backlink = @{
-    if (request.cache.ducrPartChiefChoice.exists(_.isDucrPart)) MucrOptionsController.displayPage
+    if (request.cache.isDucrPartChief) MucrOptionsController.displayPage
     else AssociateUcrController.displayPage
 }
 

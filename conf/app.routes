@@ -12,7 +12,6 @@ GET         /                                      controllers.RootController.di
 
 # Choice page
 GET         /choice                                controllers.ChoiceController.displayChoices
-GET         /choice/:journey                       controllers.ChoiceController.startSpecificJourney(journey)
 POST        /choice                                controllers.ChoiceController.submitChoice
 
 # Choice on selected Consignment page

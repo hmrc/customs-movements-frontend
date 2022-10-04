@@ -17,9 +17,10 @@
 package controllers.consolidations
 
 import controllers.ControllerLayerSpec
-import forms.MucrOptions
+import controllers.consolidations.routes.{AssociateUcrController, AssociateUcrSummaryController}
+import forms.DucrPartChiefChoice.IsDucrPart
 import forms.MucrOptions.Create
-import models.UcrBlock
+import forms.{DucrPartChiefChoice, MucrOptions}
 import models.cache.AssociateUcrAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -40,10 +41,8 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
 
   private val page = mock[mucr_options]
 
-  private val ucrBlock = UcrBlock(ucr = "ducr", ucrType = "D")
-
-  private def controller(answers: AssociateUcrAnswers, ucrBlock: Option[UcrBlock] = None) =
-    new MucrOptionsController(SuccessfulAuth(), ValidJourney(answers, ucrBlock), stubMessagesControllerComponents(), cache, page, navigator)(global)
+  private def controller(journey: ValidJourney = ValidJourney(AssociateUcrAnswers())): MucrOptionsController =
+    new MucrOptionsController(SuccessfulAuth(), journey, stubMessagesControllerComponents(), cacheRepository, page, navigator)(global)
 
   override def beforeEach() {
     super.beforeEach()
@@ -72,7 +71,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
     "return 200 (OK)" when {
 
       "display page method is invoked" in {
-        val result = controller(AssociateUcrAnswers()).displayPage()(getRequest())
+        val result = controller().displayPage()(getRequest())
 
         status(result) mustBe OK
         theFormRendered.value mustBe empty
@@ -81,7 +80,8 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
       "display page with filled data" in {
         val mucrOptions = MucrOptions(MucrOptions.Create, CommonTestData.correctUcr)
 
-        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions))).displayPage()(getRequest())
+        val validJourney = ValidJourney(AssociateUcrAnswers(None, Some(mucrOptions)))
+        val result = controller(validJourney).displayPage()(getRequest())
 
         status(result) mustBe OK
         theFormRendered.value.get.mucr mustBe CommonTestData.correctUcr
@@ -93,7 +93,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
       "form is incorrect during saving on first validation" in {
         val incorrectForm = Json.toJson(MucrOptions(MucrOptions.Create, "8GB12345612345612345"))
 
-        val result = controller(AssociateUcrAnswers()).save()(postRequest(incorrectForm))
+        val result = controller().save()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
         verify(page).apply(any(), any(), any())(any(), any())
@@ -102,7 +102,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
       "form is incorrect during saving on second validation" in {
         val incorrectForm = Json.toJson(MucrOptions(Create, "incorrect"))
 
-        val result = controller(AssociateUcrAnswers()).save()(postRequest(incorrectForm))
+        val result = controller().save()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
         verify(page).apply(any(), any(), any())(any(), any())
@@ -111,7 +111,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
       "a valid MUCR is over 35 characters long" in {
         val incorrectForm = Json.toJson(MucrOptions(Create, "GB/82F9-0N2F6500040010TO120P0A300689"))
 
-        val result = controller(AssociateUcrAnswers()).save()(postRequest(incorrectForm))
+        val result = controller().save()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
         verify(page).apply(any(), any(), any())(any(), any())
@@ -120,31 +120,36 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
 
     "return 303 (SEE_OTHER)" when {
 
-      "form is correct when ucrBlock not present" in {
-        val correctForm = Json.toJson(MucrOptions(Create, validMucr))(formWrites)
+      "on a NON-'Find a consignment' journey and" when {
 
-        val result = controller(AssociateUcrAnswers()).save()(postRequest(correctForm))
+        "the Ucr is not of a DucrPart type" in {
+          val correctForm = Json.toJson(MucrOptions(Create, validMucr))(formWrites)
 
-        status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe routes.AssociateUcrController.displayPage().url
+          val result = controller().save()(postRequest(correctForm))
+
+          status(result) mustBe SEE_OTHER
+          thePageNavigatedTo.url mustBe AssociateUcrController.displayPage.url
+        }
+
+        "the Ucr is of a DucrPart type" in {
+          val correctForm = Json.toJson(MucrOptions(Create, validMucr))(formWrites)
+
+          val validJourney = ValidJourney(AssociateUcrAnswers(), None, false, Some(DucrPartChiefChoice(IsDucrPart)))
+          val result = controller(validJourney).save()(postRequest(correctForm))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).value mustBe AssociateUcrSummaryController.displayPage.url
+        }
       }
 
-      "form is correct when ucrBlock present" in {
+      "on a 'Find a consignment' journey" in {
         val correctForm = Json.toJson(MucrOptions(Create, validMucr))(formWrites)
 
-        val result = controller(AssociateUcrAnswers(), ucrBlock = Some(ucrBlock)).save()(postRequest(correctForm))
+        val validJourney = ValidJourney(AssociateUcrAnswers(), None, true)
+        val result = controller(validJourney).save()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.AssociateUcrSummaryController.displayPage().url
-      }
-
-      "a MUCR conforms with the regex but has been send but is just 35 characters long" in {
-        val correctForm = Json.toJson(MucrOptions(Create, "GB/82F9-0N2F6500040010TO120P0A30068"))(formWrites)
-
-        val result = controller(AssociateUcrAnswers(), ucrBlock = Some(ucrBlock)).save()(postRequest(correctForm))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.AssociateUcrSummaryController.displayPage().url
+        redirectLocation(result).value mustBe AssociateUcrSummaryController.displayPage.url
       }
     }
   }

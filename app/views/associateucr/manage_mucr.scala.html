@@ -39,7 +39,7 @@
 
 @govukLayout(
     title = Title("manageMucr.title"),
-    backButton = Some(BackButton(messages("site.back"), controllers.routes.ChoiceController.displayChoiceForm))) {
+    backButton = Some(BackButton(messages("site.back.previousQuestion"), controllers.routes.ChoiceController.displayChoiceForm))) {
 
     @formHelper(action = consolidations.routes.ManageMucrController.submit(), 'autoComplete -> "off") {
         @errorSummary(form.errors)

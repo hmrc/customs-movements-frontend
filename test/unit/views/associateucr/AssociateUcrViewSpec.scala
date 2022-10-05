@@ -80,6 +80,13 @@ class AssociateUcrViewSpec extends ViewSpec with Injector {
         }
       }
 
+      "display 'Back' button" in {
+        val backButton = emptyView.getBackButton
+
+        backButton mustBe defined
+        backButton.get must containMessage("site.back.previousQuestion")
+      }
+
       checkAllSaveButtonsAreDisplayed(createView(mucrOptions, form)(journeyRequest(AssociateUcrAnswers(readyToSubmit = Some(true)))))
 
       checkSaveAndReturnToSummaryButtonIsHidden(emptyView)

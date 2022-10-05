@@ -45,6 +45,7 @@ error.mucr.format = Master Unique Consignment Reference (MUCR) must contain only
 
 site.back = Back
 site.back.toStartPage = Back to selection page
+site.back.previousQuestion = Back to previous question
 site.link.backToGovUk = Back to GOV.UK
 site.edit = Change
 site.save_and_continue = Save and continue

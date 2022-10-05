@@ -100,7 +100,7 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
       backButton mustBe defined
       backButton.foreach { button =>
         button must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
-        button must containMessage("site.back")
+        button must containMessage("site.back.previousQuestion")
       }
     }
 
@@ -111,7 +111,7 @@ class MucrOptionsViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfter
       backButton mustBe defined
       backButton.foreach { button =>
         button must haveHref(controllers.consolidations.routes.ManageMucrController.displayPage())
-        button must containMessage("site.back")
+        button must containMessage("site.back.previousQuestion")
       }
     }
 

@@ -38,7 +38,7 @@ saveButtons: saveButtons
 
 @govukLayout(
   title = Title("arrivalDetails.header"),
-  backButton = Some(BackButton(messages("site.back"), controllers.routes.SpecificDateTimeController.displayPage()))) {
+  backButton = Some(BackButton(messages("site.back.previousQuestion"), controllers.routes.SpecificDateTimeController.displayPage()))) {
 
   @formHelper(action = routes.MovementDetailsController.saveMovementDetails(), 'autoComplete -> "off") {
     @errorSummary(DateTimeErrors.processErrors(form.errors, "dateOfArrival", "timeOfArrival"))

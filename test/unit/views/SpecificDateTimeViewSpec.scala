@@ -78,7 +78,7 @@ class SpecificDateTimeViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
       backButton mustBe defined
       backButton.foreach { button =>
         button must haveHref(controllers.routes.ConsignmentReferencesController.displayPage())
-        button must containMessage("site.back")
+        button must containMessage("site.back.previousQuestion")
       }
     }
 

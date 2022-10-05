@@ -32,10 +32,9 @@ import views.html.shutmucr.shut_mucr_summary
 class ShutMucrSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   private implicit val request = journeyRequest(ShutMucrAnswers())
-
+  val shutMucr = ShutMucr(validMucr)
   private val ileQueryConfig = mock[IleQueryConfig]
   private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
-
   private val shutMucrSummaryPage = injector.instanceOf[shut_mucr_summary]
 
   override def beforeEach(): Unit = {
@@ -49,8 +48,6 @@ class ShutMucrSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndA
 
     super.afterEach()
   }
-
-  val shutMucr = ShutMucr(validMucr)
 
   "Shut Mucr Summary View" should {
 

@@ -38,7 +38,7 @@
 
 @govukLayout(
     title = Title("associate.ucr.title", None, Seq(mucrOptions.mucr)),
-    backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl))) {
+    backButton = Some(BackButton(messages("site.back.previousQuestion"), pageConfig.backUrl))) {
 
     @formHelper(action = consolidations.routes.AssociateUcrController.submit(), 'autoComplete -> "off") {
         @errorSummary(form.errors)

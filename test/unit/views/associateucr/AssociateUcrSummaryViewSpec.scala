@@ -17,8 +17,8 @@
 package views.associateucr
 
 import base.Injector
-import forms.UcrType._
 import forms.AssociateUcr
+import forms.UcrType._
 import models.UcrBlock
 import models.cache.AssociateUcrAnswers
 import models.requests.JourneyRequest

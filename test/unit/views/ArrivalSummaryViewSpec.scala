@@ -16,9 +16,6 @@
 
 package views
 
-import java.time.temporal.ChronoUnit
-import java.time.{LocalDate, LocalTime}
-
 import base.OverridableInjector
 import config.IleQueryConfig
 import forms.common.{Date, Time}
@@ -30,6 +27,9 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import views.html.summary.arrival_summary_page
 
+import java.time.temporal.ChronoUnit
+import java.time.{LocalDate, LocalTime}
+
 class ArrivalSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   private implicit val request = journeyRequest(ArrivalAnswers())
@@ -39,6 +39,21 @@ class ArrivalSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
   private val viewDates = new ViewDates()
 
   private val page = injector.instanceOf[arrival_summary_page]
+  private val date = Date(LocalDate.now())
+  private val time = Time(LocalTime.now().truncatedTo(ChronoUnit.MINUTES))
+  private val answers = ArrivalAnswers(
+    consignmentReferences = Some(ConsignmentReferences("D", "ref-value")),
+    arrivalDetails = Some(ArrivalDetails(date, time)),
+    location = Some(Location("location-ref"))
+  )
+  private val section_consignment_details = 0
+  private val section_arrival_datetime = 1
+  private val section_location = 2
+  private val answer_consignment_type = 0
+  private val answer_consignment_reference = 1
+  private val answer_date = 2
+  private val answer_time = 3
+  private val answer_location = 4
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -51,25 +66,6 @@ class ArrivalSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAf
 
     super.afterEach()
   }
-
-  private val date = Date(LocalDate.now())
-  private val time = Time(LocalTime.now().truncatedTo(ChronoUnit.MINUTES))
-
-  private val answers = ArrivalAnswers(
-    consignmentReferences = Some(ConsignmentReferences("D", "ref-value")),
-    arrivalDetails = Some(ArrivalDetails(date, time)),
-    location = Some(Location("location-ref"))
-  )
-
-  private val section_consignment_details = 0
-  private val section_arrival_datetime = 1
-  private val section_location = 2
-
-  private val answer_consignment_type = 0
-  private val answer_consignment_reference = 1
-  private val answer_date = 2
-  private val answer_time = 3
-  private val answer_location = 4
 
   "View" should {
 

@@ -98,6 +98,8 @@ class DucrPartDetailsViewSpec extends ViewSpec with ViewMatchers with MockitoSug
 
           view.getBackButton mustBe defined
           view.getBackButton.get must haveHref(controllers.routes.DucrPartChiefController.displayPage())
+          view.getBackButton.get must containMessage("site.back.previousQuestion")
+
         }
 
         "render DUCR input field label" in {

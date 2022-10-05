@@ -58,7 +58,7 @@
 
 @govukLayout(
     title = Title("location.question"),
-    backButton = Some(BackButton(messages("site.back"), backCall))) {
+    backButton = Some(BackButton(messages("site.back.previousQuestion"), backCall))) {
     @formHelper(action = controllers.routes.LocationController.saveLocation(), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)

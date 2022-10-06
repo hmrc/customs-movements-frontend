@@ -98,6 +98,14 @@ class DucrPartDetailsViewSpec extends ViewSpec with Injector with ViewMatchers {
         view.getElementById("ducrPartId").`val`() mustBe empty
       }
 
+      "render 'Help with DUCR' details expander" in {
+        val text = view.getElementsByClass("govuk-details__text").first()
+        text must containMessage("ducrPartDetails.details.text", messages("ducrPartDetails.details.text.link"))
+        text.child(0) must haveHref(
+          "https://www.gov.uk/government/publications/uk-trade-tariff-exports/uk-trade-tariff-exports#unique-consignment-reference-ucr-numbers"
+        )
+      }
+
       checkAllSaveButtonsAreDisplayed(createView(DucrPartDetails.form())(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))
 
       checkSaveAndReturnToSummaryButtonIsHidden(createView(DucrPartDetails.form()))

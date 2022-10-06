@@ -30,6 +30,7 @@ class ExternalServicesConfig @Inject() (val configuration: Configuration) {
   val serviceAvailabilityUrl: String = loadUrl("serviceAvailability")
   val exitSurveyUrl: String = loadUrl("exitSurveyUrl")
   val previousDocumentsDataElementUrl = loadUrl("previousDocumentsDataElement")
+  val ucrInformationUrl = loadUrl("ucrInformation")
 
   val eoriService: String = loadUrl("eoriService")
   val cdsRegister: String = loadUrl("cdsRegister")

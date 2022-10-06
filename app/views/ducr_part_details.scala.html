@@ -73,7 +73,9 @@
             summary = Text(messages("ducrPartDetails.details.title")),
             content = HtmlContent(messages("ducrPartDetails.details.text", link(
                 message = Html(messages("ducrPartDetails.details.text.link")),
-                href = Call("GET", config.ucrInformationUrl))))
+                href = Call("GET", config.ucrInformationUrl),
+                target = "_blank"
+            )))
         ))
 
         @saveButtons()

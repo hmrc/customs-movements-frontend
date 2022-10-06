@@ -104,6 +104,7 @@ class DucrPartDetailsViewSpec extends ViewSpec with Injector with ViewMatchers {
         text.child(0) must haveHref(
           "https://www.gov.uk/government/publications/uk-trade-tariff-exports/uk-trade-tariff-exports#unique-consignment-reference-ucr-numbers"
         )
+        text.child(0) must haveAttribute("target", "_blank")
       }
 
       checkAllSaveButtonsAreDisplayed(createView(DucrPartDetails.form())(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))

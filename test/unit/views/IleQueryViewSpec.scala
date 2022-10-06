@@ -43,6 +43,7 @@ class IleQueryViewSpec extends ViewSpec with Injector with MockitoSugar {
 
     "render a 'Back' button" in {
       view.getElementById("back-link") must haveAttribute("href", ChoiceController.displayChoices.url)
+      view.getElementById("back-link") must containMessage("site.back.toStartPage")
     }
 
     "render page header" in {

@@ -21,15 +21,19 @@
 @import views.components.BackButton
 @import views.html.components.gds._
 @import views.Title
+@import config.ExternalServicesConfig
 
 @this(
     govukLayout: gds_main_template,
+    govukDetails : GovukDetails,
     exportsInputText: exportsInputText,
     errorSummary: errorSummary,
     pageTitle: pageTitle,
+    link: link,
     formHelper: FormWithCSRF,
     sectionHeader: sectionHeader,
-    saveButtons: saveButtons
+    saveButtons: saveButtons,
+    config: ExternalServicesConfig
 )
 
 @(form: Form[DucrPartDetails])(implicit request: RequestWithAnswers[_], messages: Messages)
@@ -64,6 +68,13 @@
           hintContent = Some(Text(messages("ducrPartDetails.ducrPartId.hint"))),
           inputClasses = "govuk-input--width-3"
         )
+
+        @govukDetails(Details(
+            summary = Text(messages("ducrPartDetails.details.title")),
+            content = HtmlContent(messages("ducrPartDetails.details.text", link(
+                message = Html(messages("ducrPartDetails.details.text.link")),
+                href = Call("GET", config.ucrInformationUrl))))
+        ))
 
         @saveButtons()
     }

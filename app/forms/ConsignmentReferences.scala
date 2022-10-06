@@ -20,7 +20,7 @@ import forms.EnhancedMapping.requiredRadio
 import models.UcrBlock
 import models.cache.JourneyType.JourneyType
 import play.api.data.Forms.text
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
@@ -60,24 +60,24 @@ object ConsignmentReferences {
         case _              => Some((model.reference, None, None))
       }
 
-  def mapping(goodsDirection: JourneyType) =
+  def mapping(goodsDirection: JourneyType): Mapping[ConsignmentReferences] =
     Forms
       .mapping(
-        "reference" -> requiredRadio(s"consignmentReferences.reference.empty.${goodsDirection.toString.toLowerCase}")
-          .verifying("consignmentReferences.reference.error", isContainedIn(allowedReferenceAnswers)),
+        "reference" -> requiredRadio(s"consignment.references.empty.${goodsDirection.toString.toLowerCase}")
+          .verifying("consignment.references.error", isContainedIn(allowedReferenceAnswers)),
         "ducrValue" -> mandatoryIfEqual(
           "reference",
           Ducr.codeValue,
           text()
-            .verifying("consignmentReferences.reference.ducrValue.empty", nonEmpty)
-            .verifying("consignmentReferences.reference.ducrValue.error", isEmpty or validDucrIgnoreCase)
+            .verifying("consignment.references.ducrValue.empty", nonEmpty)
+            .verifying("consignment.references.ducrValue.error", isEmpty or validDucrIgnoreCase)
         ),
         "mucrValue" -> mandatoryIfEqual(
           "reference",
           Mucr.codeValue,
           text()
-            .verifying("consignmentReferences.reference.mucrValue.empty", nonEmpty)
-            .verifying("consignmentReferences.reference.mucrValue.error", isEmpty or validMucrIgnoreCase)
+            .verifying("consignment.references.mucrValue.empty", nonEmpty)
+            .verifying("consignment.references.mucrValue.error", isEmpty or validMucrIgnoreCase)
         )
       )(form2Model)(model2Form)
 

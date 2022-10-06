@@ -72,7 +72,7 @@ class ArrivalSummaryViewSpec extends ViewSpec with Injector {
       view.getElementsByClass("govuk-heading-m").get(section_consignment_details) must containMessage("summary.consignmentDetails")
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_consignment_type) must containMessage("summary.referenceType")
-      view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_type) must containMessage("consignmentReferences.reference.ducr")
+      view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_type) must containMessage("consignment.references.ducr")
 
       val changeType = view.getElementsByClass("govuk-link").get(answer_consignment_type_link_index)
       changeType must containMessage("site.change")
@@ -91,21 +91,19 @@ class ArrivalSummaryViewSpec extends ViewSpec with Injector {
       "provided with DUCR" in {
         val view = page(answers.copy(consignmentReferences = Some(ConsignmentReferences(reference = UcrType.Ducr, "ref-value"))))
 
-        view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_type) must containMessage("consignmentReferences.reference.ducr")
+        view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_type) must containMessage("consignment.references.ducr")
       }
 
       "provided with MUCR" in {
         val view = page(answers.copy(consignmentReferences = Some(ConsignmentReferences(reference = UcrType.Mucr, "ref-value"))))
 
-        view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_type) must containMessage("consignmentReferences.reference.mucr")
+        view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_type) must containMessage("consignment.references.mucr")
       }
 
       "provided with DUCR Part" in {
         val view = page(answers.copy(consignmentReferences = Some(ConsignmentReferences(reference = UcrType.DucrPart, "ref-value"))))
 
-        view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_type) must containMessage(
-          "consignmentReferences.reference.ducrPart"
-        )
+        view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_type) must containMessage("consignment.references.ducrPart")
       }
     }
 

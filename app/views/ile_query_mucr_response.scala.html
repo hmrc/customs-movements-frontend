@@ -14,26 +14,22 @@
  * limitations under the License.
  *@
 
-@import components.gds.gds_main_template
-@import components.ilequery.{response_buttons, response_parent, response_previous_movements, response_associated_consignments, response_mucr_summary}
+@import controllers.ileQuery.routes.FindConsignmentController
 @import models.notifications.queries.{MucrInfo, UcrInfo}
-@import models.viewmodels.ilequery.IleQueryCodeConverter
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukTag, Tag, Text}
 @import views.components.BackButton
+@import views.html.components.gds.gds_main_template
+@import views.html.components.ilequery._
 @import views.Title
 
 @this(
-        converter: IleQueryCodeConverter,
-        govukLayout: gds_main_template,
-        summarySection: response_mucr_summary,
-        parentSection: response_parent,
-        previousMovementsSection: response_previous_movements,
-        associatedConsignmentsSection: response_associated_consignments,
-        responseButtons: response_buttons,
-        govukButton: GovukButton,
-        govukSummaryList : GovukSummaryList,
-        govukTable: GovukTable,
-        govukTag: GovukTag
+    govukLayout: gds_main_template,
+    summarySection: response_mucr_summary,
+    parentSection: response_parent,
+    previousMovementsSection: response_previous_movements,
+    associatedConsignmentsSection: response_associated_consignments,
+    responseButtons: response_buttons,
+    govukTag: GovukTag
 )
 
 @(info: MucrInfo, parentMucr: Option[MucrInfo], associatedConsignments: Seq[UcrInfo])(implicit request: Request[_], messages: Messages)
@@ -41,8 +37,8 @@
 @govukLayout(
     useCustomContentWidth = true,
     title = Title("ileQueryResponse.mucr.title"),
-    backButton = Some(BackButton(messages("site.back"), controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()))) {
-
+    backButton = Some(BackButton(messages("site.back"), FindConsignmentController.displayPage))
+) {
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
@@ -67,6 +63,5 @@
         @parentSection(parentMucr)
 
         @associatedConsignmentsSection(associatedConsignments)
-
     </div>
 }

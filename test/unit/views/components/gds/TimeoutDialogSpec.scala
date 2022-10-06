@@ -19,44 +19,45 @@ package views.components.gds
 import base.{Injector, OverridableInjector}
 import com.typesafe.config.ConfigFactory
 import config.TimeoutDialogConfig
+import controllers.routes.SignOutController
 import forms.Choice
+import models.SignOutReason.SessionTimeout
 import models.SignedInUser
+import models.requests.AuthenticatedRequest
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.Configuration
 import play.api.data.Form
 import play.api.inject.bind
-import play.api.Configuration
 import play.api.test.FakeRequest
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import views.ViewSpec
-import views.html.choice_page
-import models.requests.AuthenticatedRequest
 import testdata.CommonTestData.validEori
 import uk.gov.hmrc.auth.core.Enrolments
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import views.ViewSpec
+import views.html.choice
 
 import scala.collection.JavaConverters.asScalaIteratorConverter
 
-class TimeoutDialogSpec extends ViewSpec with MockitoSugar with Injector {
+class TimeoutDialogSpec extends ViewSpec with Injector with MockitoSugar {
 
   "Timeout Dialog" should {
-
     "display the timeout dialog when user is signed in" in {
-
       implicit val request = FakeRequest().withCSRFToken
-      val form: Form[Choice] = Choice.form()
+      val form: Form[Choice] = Choice.form
       val authenticatedRequest = AuthenticatedRequest(FakeRequest().withCSRFToken, SignedInUser(validEori, Enrolments(Set.empty)))
 
       val serviceConfig = new ServicesConfig(Configuration(ConfigFactory.parseString(s"""
           timeoutDialog.timeout="100 millis"
           timeoutDialog.countdown="200 millis"
-          """)))
+      """)))
+
       val timeoutDialogConfig = new TimeoutDialogConfig(serviceConfig)
       val injector = new OverridableInjector(bind[TimeoutDialogConfig].toInstance(timeoutDialogConfig))
-      val choicePage = injector.instanceOf[choice_page]
+      val choicePage = injector.instanceOf[choice]
       val view = choicePage(form)(authenticatedRequest, messages)
-      val metas = view.getElementsByTag("meta").iterator.asScala.toList.filter(_.attr("name") == "hmrc-timeout-dialog")
+      val elements = view.getElementsByTag("meta").iterator.asScala.toList
+      val metas = elements.filter(_.attr("name") == "hmrc-timeout-dialog")
       assert(metas.nonEmpty)
-      metas.head.dataset.get("sign-out-url") mustBe controllers.routes.SignOutController.signOut(models.SignOutReason.SessionTimeout).url
+      metas.head.dataset.get("sign-out-url") mustBe SignOutController.signOut(SessionTimeout).url
     }
   }
-
 }

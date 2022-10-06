@@ -14,34 +14,26 @@
  * limitations under the License.
  *@
 
-@import components.gds.{gds_main_template, pageTitle}
-@import java.time.format.DateTimeFormatter
+@import controllers.routes.ChoiceController
 @import models.notifications.Notification
 @import models.submissions.Submission
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.BackButton
-@import views.html.components.gds.link
+@import views.html.components.elements_in_separate_lines
+@import views.html.components.gds.{gds_main_template, link, pageTitle}
 @import views.Title
-@import views.components.config.ViewRequestsConfig
 @import views.ViewDates
 
-@this(
-  govukLayout: gds_main_template,
-  pageTitle: pageTitle,
-  link: link,
-  table: GovukTable,
-  viewRequestsConfig: ViewRequestsConfig,
-  viewDates: ViewDates
-)
+@this(govukLayout: gds_main_template, pageTitle: pageTitle, link: link, table: GovukTable, viewDates: ViewDates)
 
 @(submissions: Seq[(Submission, Seq[Notification])])(implicit request: Request[_], messages: Messages)
 
 @ucrCellContent(submission: Submission, notifications: Seq[Notification]) = {
-  @if(notifications.isEmpty){
-    @components.elements_in_separate_lines(submission.ucrBlocks.map(_.fullUcr))
+  @if(notifications.isEmpty) {
+    @elements_in_separate_lines(submission.ucrBlocks.map(_.fullUcr))
   } else {
     @link(
-      message = components.elements_in_separate_lines(submission.ucrBlocks.map(_.fullUcr)),
+      message = elements_in_separate_lines(submission.ucrBlocks.map(_.fullUcr)),
       textHidden = Some(messages("submissions.hidden.text", submission.ucrBlocks.map(_.fullUcr).mkString(", "))),
       href = routes.NotificationsController.listOfNotifications(submission.conversationId)
     )
@@ -53,13 +45,9 @@
 @dateOfRequestClass = @{"date-of-request"}
 @submissionActionClass = @{"submission-action"}
 
-
 @govukLayout(
   title = Title("submissions.title"),
-  backButton = Some(BackButton(
-    title = messages("site.back.toStartPage"),
-    call = viewRequestsConfig.backLink()
-  )),
+  backButton = Some(BackButton(title = messages("site.back.toStartPage"), ChoiceController.displayChoices)),
   useCustomContentWidth = true
 ) {
 
@@ -99,7 +87,7 @@
               classes = ucrClass
             ),
             TableRow(
-              content = HtmlContent(components.elements_in_separate_lines(submission.ucrBlocks.map(ucrBlock => messages(s"submissions.submissionType.${ucrBlock.ucrType}")))),
+              content = HtmlContent(elements_in_separate_lines(submission.ucrBlocks.map(ucrBlock => messages(s"submissions.submissionType.${ucrBlock.ucrType}")))),
               classes = submissionTypeClass
             ),
             TableRow(

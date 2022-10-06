@@ -16,41 +16,41 @@
 
 package views
 
-import base.OverridableInjector
-import config.IleQueryConfig
+import base.Injector
+import controllers.routes.{ConsignmentReferencesController, LocationController, MovementDetailsController, TransportController}
 import forms._
 import forms.common.{Date, Time}
+import models.UcrBlock
 import models.cache.DepartureAnswers
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.inject.bind
 import views.html.summary.departure_summary_page
 
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalTime}
 
-class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
+class DepartureSummaryViewSpec extends ViewSpec with Injector with MockitoSugar {
 
   private implicit val request = journeyRequest(DepartureAnswers())
 
-  private val ileQueryConfig = mock[IleQueryConfig]
-  private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
   private val viewDates = new ViewDates()
 
-  private val page = injector.instanceOf[departure_summary_page]
+  private val page = instanceOf[departure_summary_page]
+
   private val date = Date(LocalDate.now())
   private val time = Time(LocalTime.now().truncatedTo(ChronoUnit.MINUTES))
+
   private val answers = DepartureAnswers(
     consignmentReferences = Some(ConsignmentReferences("D", "ref-value")),
     departureDetails = Some(DepartureDetails(date, time)),
     location = Some(Location("location-ref")),
     transport = Some(Transport("1", "transport-id", "GB"))
   )
+
   private val section_consignment_details = 0
   private val section_depart_datetime = 1
   private val section_location = 2
   private val section_transport = 3
+
   private val answer_consignment_type = 0
   private val answer_consignment_reference = 1
   private val answer_date = 2
@@ -60,32 +60,17 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
   private val answer_transport_id = 6
   private val answer_transport_nationality = 7
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-
-    when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
-  }
-
-  override def afterEach(): Unit = {
-    reset(ileQueryConfig)
-
-    super.afterEach()
-  }
-
   "View" should {
 
     "render title" in {
-
       page(answers).getTitle must containMessage("summary.departure.title")
     }
 
     "render heading" in {
-
       page(answers).getElementById("title") must containMessage("summary.departure.title")
     }
 
     "render 'Consignment details' section in summary list" in {
-
       val answer_consignment_type_link_index = answer_consignment_type + 1
       val answer_consignment_reference_link_index = answer_consignment_reference + 1
 
@@ -97,34 +82,31 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
       val changeType = view.getElementsByClass("govuk-link").get(answer_consignment_type_link_index)
       changeType must containMessage("site.change")
-      changeType must haveHref(controllers.routes.ConsignmentReferencesController.displayPage())
+      changeType must haveHref(ConsignmentReferencesController.displayPage())
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_consignment_reference) must containMessage("summary.referenceValue")
       view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_reference).text() mustBe "ref-value"
 
       val changeRef = view.getElementsByClass("govuk-link").get(answer_consignment_reference_link_index)
       changeRef must containMessage("site.change")
-      changeRef must haveHref(controllers.routes.ConsignmentReferencesController.displayPage())
+      changeRef must haveHref(ConsignmentReferencesController.displayPage())
     }
 
     "render correct Consignment type" when {
 
       "provided with DUCR" in {
-
         val view = page(answers.copy(consignmentReferences = Some(ConsignmentReferences(reference = UcrType.Ducr, "ref-value"))))
 
         view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_type) must containMessage("consignmentReferences.reference.ducr")
       }
 
       "provided with MUCR" in {
-
         val view = page(answers.copy(consignmentReferences = Some(ConsignmentReferences(reference = UcrType.Mucr, "ref-value"))))
 
         view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_type) must containMessage("consignmentReferences.reference.mucr")
       }
 
       "provided with DUCR Part" in {
-
         val view = page(answers.copy(consignmentReferences = Some(ConsignmentReferences(reference = UcrType.DucrPart, "ref-value"))))
 
         view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_type) must containMessage(
@@ -134,7 +116,6 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
     }
 
     "render 'Departure date and time' section in summary list" in {
-
       val answer_date_link_index = answer_date + 1
       val answer_time_link_index = answer_time + 1
 
@@ -146,18 +127,17 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
       val changeDate = view.getElementsByClass("govuk-link").get(answer_date_link_index)
       changeDate must containMessage("site.change")
-      changeDate must haveHref(controllers.routes.MovementDetailsController.displayPage())
+      changeDate must haveHref(MovementDetailsController.displayPage())
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_time) must containMessage("summary.departure.time")
       view.getElementsByClass("govuk-summary-list__value").get(answer_time).text mustBe viewDates.formatTime(time.time)
 
       val changeTime = view.getElementsByClass("govuk-link").get(answer_time_link_index)
       changeTime must containMessage("site.change")
-      changeTime must haveHref(controllers.routes.MovementDetailsController.displayPage())
+      changeTime must haveHref(MovementDetailsController.displayPage())
     }
 
     "render 'Location' section in summary list" in {
-
       val answer_location_link_index = answer_location + 1
 
       val view = page(answers)
@@ -168,11 +148,10 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
       val changeDate = view.getElementsByClass("govuk-link").get(answer_location_link_index)
       changeDate must containMessage("site.change")
-      changeDate must haveHref(controllers.routes.LocationController.displayPage())
+      changeDate must haveHref(LocationController.displayPage())
     }
 
     "render 'Transport' section in summary list" in {
-
       val answer_transport_type_link_index = answer_transport_type + 1
       val answer_transport_id_link_index = answer_transport_id + 1
       val answer_transport_nationality_link_index = answer_transport_nationality + 1
@@ -185,14 +164,14 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
       val changeMode = view.getElementsByClass("govuk-link").get(answer_transport_type_link_index)
       changeMode must containMessage("site.change")
-      changeMode must haveHref(controllers.routes.TransportController.displayPage())
+      changeMode must haveHref(TransportController.displayPage())
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_transport_id) must containMessage("summary.transportId")
       view.getElementsByClass("govuk-summary-list__value").get(answer_transport_id).text mustBe "transport-id"
 
       val changeId = view.getElementsByClass("govuk-link").get(answer_transport_id_link_index)
       changeId must containMessage("site.change")
-      changeId must haveHref(controllers.routes.TransportController.displayPage())
+      changeId must haveHref(TransportController.displayPage())
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_transport_nationality) must containMessage("summary.nationality")
       view
@@ -202,39 +181,29 @@ class DepartureSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAnd
 
       val changeNationality = view.getElementsByClass("govuk-link").get(answer_transport_nationality_link_index)
       changeNationality must containMessage("site.change")
-      changeNationality must haveHref(controllers.routes.TransportController.displayPage())
+      changeNationality must haveHref(TransportController.displayPage())
     }
 
     "render back button" in {
-
       val backButton = page(answers).getBackButton
 
       backButton mustBe defined
-      backButton.get must haveHref(controllers.routes.TransportController.displayPage())
+      backButton.get must haveHref(TransportController.displayPage())
     }
 
     "render 'Confirm and submit' button on page" in {
-
       page(answers).getElementsByClass("govuk-button").first() must containMessage("site.confirmAndSubmit")
     }
 
-    "render change consignment links when ileQuery disabled" in {
-
-      when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
-
+    "render change consignment links on NON-'Find-a-consignment' journeys" in {
       val links = page(answers).getElementsByClass("govuk-link")
-
-      links.toString must include(controllers.routes.ConsignmentReferencesController.displayPage().url)
+      links.toString must include(ConsignmentReferencesController.displayPage().url)
     }
 
-    "not render change consignment links when ileQuery enabled" in {
-
-      when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
-
+    "not render change consignment links on a 'Find-a-consignment' journey" in {
+      implicit val request = journeyRequest(DepartureAnswers(), Some(UcrBlock("ucr", UcrType.Ducr)), true)
       val links = page(answers).getElementsByClass("govuk-link")
-
-      links.toString must not include controllers.routes.ConsignmentReferencesController.displayPage().url
+      links.toString must not include ConsignmentReferencesController.displayPage().url
     }
   }
-
 }

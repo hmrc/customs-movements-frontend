@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package views.components.config
+package controllers.actions
 
-import config.IleQueryConfig
-import javax.inject.Inject
-import play.api.mvc.Call
+import play.api.Configuration
 
-class ViewRequestsConfig @Inject() (ileQueryConfig: IleQueryConfig) {
-  def backLink(): Call =
-    if (ileQueryConfig.isIleQueryEnabled)
-      controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()
-    else controllers.routes.ChoiceController.displayChoiceForm()
+import javax.inject.{Inject, Singleton}
+
+@Singleton
+class ArriveDepartAllowList @Inject() (configuration: Configuration) {
+
+  private val values = configuration.get[Seq[String]]("arriveDepartAllowList.eori")
+
+  def contains(eori: String): Boolean = values.isEmpty || values.contains(eori)
 }

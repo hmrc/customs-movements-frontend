@@ -16,7 +16,7 @@
 
 package models.cache
 
-import forms.DucrPartChiefChoice
+import forms.{DucrPartChiefChoice, UcrType}
 import models.UcrBlock
 import play.api.libs.json._
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -26,19 +26,32 @@ import java.time.Instant
 case class Cache(
   eori: String,
   answers: Option[Answers],
-  queryUcr: Option[UcrBlock],
+  ucrBlock: Option[UcrBlock],
+  ucrBlockFromIleQuery: Boolean,
   ducrPartChiefChoice: Option[DucrPartChiefChoice],
   updated: Option[Instant] = Some(Instant.now())
 ) {
 
-  def update(answers: Answers): Cache = this.copy(answers = Some(answers), updated = Some(Instant.now()))
+  def is(ucrType: UcrType): Boolean = ucrBlock.exists(_.is(ucrType))
 
   def isDucrPartChief: Boolean = ducrPartChiefChoice.exists(_.isDucrPart)
+
+  def update(answers: Answers): Cache = this.copy(answers = Some(answers), updated = Some(Instant.now()))
 }
 
 object Cache {
   implicit private val formatInstant: Format[Instant] = MongoJavatimeFormats.instantFormat
   implicit val format: OFormat[Cache] = Json.format[Cache]
 
-  def apply(eori: String, queryUcr: UcrBlock): Cache = new Cache(eori, None, Some(queryUcr), None)
+  def apply(eori: String): Cache =
+    new Cache(eori, None, None, false, None)
+
+  def apply(eori: String, ucrBlock: UcrBlock, ucrBlockFromIleQuery: Boolean): Cache =
+    new Cache(eori, None, Some(ucrBlock), ucrBlockFromIleQuery, None)
+
+  def apply(eori: String, answers: Answers, ucrBlock: UcrBlock, ucrBlockFromIleQuery: Boolean): Cache =
+    new Cache(eori, Some(answers), Some(ucrBlock), ucrBlockFromIleQuery, None)
+
+  def apply(eori: String, answers: Answers): Cache =
+    new Cache(eori, Some(answers), None, false, None)
 }

@@ -45,8 +45,8 @@ class TypedJourneyRefinerTest extends AnyWordSpec with Matchers with MockitoSuga
   private val request = AuthenticatedRequest(FakeRequest(), user)
   private val arrivalAnswers = ArrivalAnswers()
   private val departureAnswers = DepartureAnswers()
-  private val cacheWithArrivalAnswers = Cache("eori", Some(arrivalAnswers), None, None)
-  private val cacheWithDepartureAnswers = Cache("eori", Some(departureAnswers), None, None)
+  private val cacheWithArrivalAnswers = Cache("eori", arrivalAnswers)
+  private val cacheWithDepartureAnswers = Cache("eori", departureAnswers)
 
   private val refiner = new JourneyRefiner(movementRepository, arriveDepartAllowList)
 
@@ -58,6 +58,7 @@ class TypedJourneyRefinerTest extends AnyWordSpec with Matchers with MockitoSuga
   "refine" should {
     "permit request" when {
       "answers found" when {
+
         "on unshared journey" in {
           given(arriveDepartAllowList.contains("eori")).willReturn(true)
           given(block.apply(any())).willReturn(Future.successful(Results.Ok))
@@ -87,22 +88,19 @@ class TypedJourneyRefinerTest extends AnyWordSpec with Matchers with MockitoSuga
     }
 
     "block request" when {
+
       "answers not found" in {
         given(movementRepository.findByEori("eori")).willReturn(Future.successful(None))
         given(arriveDepartAllowList.contains("eori")).willReturn(true)
 
-        await(refiner(JourneyType.ARRIVE).invokeBlock(request, block)) mustBe Results.Redirect(
-          controllers.routes.ChoiceController.displayChoiceForm()
-        )
+        await(refiner(JourneyType.ARRIVE).invokeBlock(request, block)) mustBe Results.Redirect(controllers.routes.ChoiceController.displayChoices)
       }
 
       "answers found of a different type" in {
         given(movementRepository.findByEori("eori")).willReturn(Future.successful(None))
         given(arriveDepartAllowList.contains("eori")).willReturn(true)
 
-        await(refiner(JourneyType.DEPART).invokeBlock(request, block)) mustBe Results.Redirect(
-          controllers.routes.ChoiceController.displayChoiceForm()
-        )
+        await(refiner(JourneyType.DEPART).invokeBlock(request, block)) mustBe Results.Redirect(controllers.routes.ChoiceController.displayChoices)
       }
 
       for (journey <- Seq(JourneyType.ARRIVE, JourneyType.DEPART))
@@ -111,9 +109,8 @@ class TypedJourneyRefinerTest extends AnyWordSpec with Matchers with MockitoSuga
           given(movementRepository.findByEori("eori")).willReturn(Future.successful(Some(cache)))
           given(arriveDepartAllowList.contains("eori")).willReturn(false)
 
-          await(refiner(journey).invokeBlock(request, block)) mustBe Results.Redirect(controllers.routes.ChoiceController.displayChoiceForm())
+          await(refiner(journey).invokeBlock(request, block)) mustBe Results.Redirect(controllers.routes.ChoiceController.displayChoices)
         }
     }
   }
-
 }

@@ -14,24 +14,19 @@
  * limitations under the License.
  *@
 
-@import components.gds.gds_main_template
 @import components.ilequery.{response_parent, response_previous_movements, response_buttons, response_ducr_summary}
+@import controllers.ileQuery.routes.FindConsignmentController
 @import models.notifications.queries.{DucrInfo, MucrInfo}
-@import models.viewmodels.ilequery.IleQueryCodeConverter
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.BackButton
+@import views.html.components.gds.gds_main_template
 @import views.Title
 
 @this(
-        converter: IleQueryCodeConverter,
-        govukLayout: gds_main_template,
-        summarySection: response_ducr_summary,
-        parentSection: response_parent,
-        previousMovementsSection: response_previous_movements,
-        responseButtons: response_buttons,
-        govukButton: GovukButton,
-        govukSummaryList : GovukSummaryList,
-        govukTable: GovukTable
+    govukLayout: gds_main_template,
+    summarySection: response_ducr_summary,
+    parentSection: response_parent,
+    previousMovementsSection: response_previous_movements,
+    responseButtons: response_buttons,
 )
 
 @(info: DucrInfo, parentMucr: Option[MucrInfo])(implicit request: Request[_], messages: Messages)
@@ -39,8 +34,8 @@
 @govukLayout(
     useCustomContentWidth = true,
     title = Title("ileQueryResponse.ducr.title"),
-    backButton = Some(BackButton(messages("site.back"), controllers.ileQuery.routes.FindConsignmentController.displayQueryForm()))) {
-
+    backButton = Some(BackButton(messages("site.back"), FindConsignmentController.displayPage))
+) {
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
@@ -55,8 +50,5 @@
         @previousMovementsSection(info.movements)
 
         @parentSection(parentMucr)
-
-
     </div>
-
 }

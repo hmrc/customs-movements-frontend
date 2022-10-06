@@ -14,32 +14,45 @@
  * limitations under the License.
  *@
 
-@import components.gds.{gds_main_template, linkContent, pageTitle}
+@import controllers.consolidations.routes.{DisassociateUcrController, DisassociateUcrSummaryController}
+@import controllers.routes.{ChoiceOnConsignmentController, DucrPartDetailsController}
 @import forms.DisassociateUcr
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.Title
-@import views.components.BackButton
-@import views.components.config.DissociateSummaryConfig
 @import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.BackButton
+@import views.html.components.gds.{gds_main_template, linkContent, pageTitle}
+@import views.Title
 
-@this(  govukLayout: gds_main_template,
-        pageTitle: pageTitle,
-        table: GovukTable,
-        govukButton: GovukButton,
-        govukSummaryList : GovukSummaryList,
-        linkContent: linkContent,
-        pageConfig: DissociateSummaryConfig,
-        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF)
+@this(
+    govukLayout: gds_main_template,
+    pageTitle: pageTitle,
+    govukButton: GovukButton,
+    govukSummaryList : GovukSummaryList,
+    linkContent: linkContent,
+    formHelper: FormWithCSRF
+)
 
 @(disassociateUcr: DisassociateUcr)(implicit request: JourneyRequest[_], messages: Messages)
 
+@kind = @{ disassociateUcr.kind }
+
+@href = @{
+    if (kind.isDucrPart) DucrPartDetailsController.displayPage.url
+    else DisassociateUcrController.displayPage.url
+}
+
+@backUrl = @{
+    if (request.cache.ucrBlockFromIleQuery) ChoiceOnConsignmentController.displayChoices
+    else if (request.cache.isDucrPartChief) DucrPartDetailsController.displayPage
+    else DisassociateUcrController.displayPage
+}
+
 @govukLayout(
     title = Title("disassociate.ucr.summary.title"),
-    backButton = Some(BackButton(messages("site.back"), pageConfig.backUrl(request.cache.ducrPartChiefChoice))),
+    backButton = Some(BackButton(messages("site.back"), backUrl)),
     useCustomContentWidth = true
 )  {
-
-    @formHelper(action = consolidations.routes.DisassociateUcrSummaryController.submit(), 'autoComplete -> "off") {
+    @formHelper(action = DisassociateUcrSummaryController.submit(), 'autoComplete -> "off") {
 
         @pageTitle(messages("disassociate.ucr.summary.title"))
 
@@ -49,27 +62,24 @@
             rows = Seq(
                 SummaryListRow(
                     key = Key(
-                        content = Text(messages(s"disassociate.ucr.summary.kind.${disassociateUcr.kind.formValue}"))
+                        content = Text(messages(s"disassociate.ucr.summary.kind.${kind.formValue}"))
                     ),
                     value = Value(
                         content = Text(disassociateUcr.ucr)
                     ),
-                    actions = if(pageConfig.ileQueryEnabled) None else Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = s"${if(disassociateUcr.kind.isDucrPart) routes.DucrPartDetailsController.displayPage else consolidations.routes.DisassociateUcrController.displayPage()}",
-                                content = HtmlContent(linkContent(messages("site.change"))),
-                                visuallyHiddenText = Some(messages("site.change.hint.disassociate.ucr", disassociateUcr.kind.toString.toUpperCase))
-                            )
-                        )
-                    ))
+                    actions =
+                        if (request.cache.ucrBlockFromIleQuery) None
+                        else Some(Actions(items = Seq(ActionItem(
+                            href = href,
+                            content = HtmlContent(linkContent(messages("site.change"))),
+                            visuallyHiddenText = Some(messages("site.change.hint.disassociate.ucr", kind.toString.toUpperCase))
+                        ))))
                 )
             ),
             classes = "govuk-!-margin-bottom-9"
         ))
+
         @govukButton(Button(content = Text(messages("site.confirmAndSubmit"))))
-
     }
-
 }
 

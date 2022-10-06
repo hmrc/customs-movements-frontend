@@ -19,6 +19,7 @@ package handlers
 import config.AppConfig
 import controllers.ControllerLayerSpec
 import controllers.exception.IncompleteApplication
+import controllers.routes.RootController
 import models.ReturnToStartException
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
@@ -78,13 +79,13 @@ class ErrorHandlerSpec extends ControllerLayerSpec {
     "handle incomplete application exception" in {
       val res = errorHandler.resolveError(req, IncompleteApplication)
       res.header.status must be(Status.SEE_OTHER)
-      res.header.headers.get(HeaderNames.LOCATION) must be(Some(controllers.routes.RootController.displayPage().url))
+      res.header.headers.get(HeaderNames.LOCATION) must be(Some(RootController.displayPage.url))
     }
 
     "handle return to start exception" in {
       val res = errorHandler.resolveError(req, ReturnToStartException)
       res.header.status must be(Status.SEE_OTHER)
-      res.header.headers.get(HeaderNames.LOCATION) must be(Some(controllers.routes.RootController.displayPage().url))
+      res.header.headers.get(HeaderNames.LOCATION) must be(Some(RootController.displayPage.url))
     }
 
     "handle no active session authorisation exception" in {
@@ -103,7 +104,6 @@ class ErrorHandlerSpec extends ControllerLayerSpec {
       res.header.status must be(Status.SEE_OTHER)
       res.header.headers.get(HeaderNames.LOCATION) must be(Some(controllers.routes.UnauthorisedController.onPageLoad.url))
     }
-
   }
 
   class FakeMessages extends Messages {
@@ -114,5 +114,4 @@ class ErrorHandlerSpec extends ControllerLayerSpec {
     def translate(key: String, args: Seq[Any]): Option[String] = None
     def isDefinedAt(key: String): Boolean = true
   }
-
 }

@@ -37,7 +37,7 @@ object MucrOptions {
 
   def apply(ucrBlock: UcrBlock): MucrOptions =
     ucrBlock.ucrType match {
-      case UcrType.Mucr.codeValue => MucrOptions(MucrOptions.Add, ucrBlock.ucr)
+      case UcrType.Mucr.codeValue => MucrOptions(Add, ucrBlock.ucr)
       case _                      => throw new IllegalArgumentException(s"Invalid ucrType: ${ucrBlock.ucrType}")
     }
 

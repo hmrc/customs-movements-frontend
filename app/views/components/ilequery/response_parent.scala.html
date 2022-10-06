@@ -15,6 +15,7 @@
  *@
 
 @import components.gds.link
+@import controllers.ileQuery.routes.IleQueryController
 @import models.notifications.queries.MucrInfo
 @import models.viewmodels.ilequery.IleQueryCodeConverter
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -41,7 +42,7 @@
                         value = Value(
                             content = HtmlContent(link(
                               message = Html(parent.ucr),
-                              href = controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(parent.ucr)
+                              href = IleQueryController.getConsignmentData(parent.ucr)
                             ))
                         )
                     ),

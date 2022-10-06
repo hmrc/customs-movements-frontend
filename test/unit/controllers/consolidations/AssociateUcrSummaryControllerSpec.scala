@@ -16,7 +16,6 @@
 
 package controllers.consolidations
 
-import config.IleQueryConfig
 import controllers.ControllerLayerSpec
 import controllers.storage.FlashKeys
 import forms.UcrType._
@@ -26,7 +25,7 @@ import models.cache.{AssociateUcrAnswers, JourneyType}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -36,21 +35,18 @@ import views.html.associateucr.{associate_ucr_summary, associate_ucr_summary_no_
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with IntegrationPatience {
+class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFutures {
 
   private val submissionService = mock[SubmissionService]
   private val mockAssociateDucrSummaryPage = mock[associate_ucr_summary]
   private val mockAssociateDucrSummaryNoChangePage = mock[associate_ucr_summary_no_change]
 
-  private val ileQueryConfig = mock[IleQueryConfig]
-
-  private def controller(answers: AssociateUcrAnswers) =
+  private def controller(answers: AssociateUcrAnswers, ucrBlockFromIleQuery: Boolean = true) =
     new AssociateUcrSummaryController(
       SuccessfulAuth(),
-      ValidJourney(answers),
+      ValidJourney(answers, None, ucrBlockFromIleQuery),
       stubMessagesControllerComponents(),
       submissionService,
-      ileQueryConfig,
       mockAssociateDucrSummaryPage,
       mockAssociateDucrSummaryNoChangePage
     )(global)
@@ -58,25 +54,23 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
-    reset(submissionService, mockAssociateDucrSummaryPage)
     when(mockAssociateDucrSummaryPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockAssociateDucrSummaryNoChangePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(submissionService, mockAssociateDucrSummaryPage, mockAssociateDucrSummaryNoChangePage, ileQueryConfig)
-
+    reset(submissionService, mockAssociateDucrSummaryPage, mockAssociateDucrSummaryNoChangePage)
     super.afterEach()
   }
 
-  private def theResponseDataIleQueryDisabled: (AssociateUcr, String) = {
+  private def theResponseDataOnNonFindConsignmentJourney: (AssociateUcr, String) = {
     val associateDucrCaptor = ArgumentCaptor.forClass(classOf[AssociateUcr])
     val mucrOptionsCaptor = ArgumentCaptor.forClass(classOf[String])
     verify(mockAssociateDucrSummaryPage).apply(associateDucrCaptor.capture(), mucrOptionsCaptor.capture())(any(), any())
     (associateDucrCaptor.getValue, mucrOptionsCaptor.getValue)
   }
 
-  private def theResponseDataIleQueryEnabled: (String, String, UcrType) = {
+  private def theResponseDataOnFindConsignmentJourney: (String, String, UcrType) = {
     val consignmentRefCaptor = ArgumentCaptor.forClass(classOf[String])
     val associateWithCaptor = ArgumentCaptor.forClass(classOf[String])
     val associateKindCaptor = ArgumentCaptor.forClass(classOf[UcrType])
@@ -96,20 +90,19 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
 
     "return 200 (OK)" when {
 
-      "display page is invoked with data in cache when ileQuery disabled" in {
-        when(ileQueryConfig.isIleQueryEnabled) thenReturn false
-        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions), Some(associateUcr))).displayPage()(getRequest())
+      "display page is invoked on non-'Find a consignment' journey" in {
+        val answer = AssociateUcrAnswers(None, Some(mucrOptions), Some(associateUcr))
+        val result = controller(answer, false).displayPage()(getRequest())
 
         status(result) mustBe OK
         verify(mockAssociateDucrSummaryPage).apply(any(), any())(any(), any())
 
-        val (viewUCR, viewOptions) = theResponseDataIleQueryDisabled
+        val (viewUCR, viewOptions) = theResponseDataOnNonFindConsignmentJourney
         viewUCR.ucr mustBe "DUCR"
         viewOptions mustBe "MUCR"
       }
 
       "display page when queried ducr" in {
-        when(ileQueryConfig.isIleQueryEnabled) thenReturn true
         val result =
           controller(AssociateUcrAnswers(None, Some(MucrOptions(MucrOptions.Create, "MUCR")), Some(AssociateUcr(Ducr, "Queried DUCR"))))
             .displayPage()(getRequest())
@@ -117,14 +110,13 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
         status(result) mustBe OK
         verify(mockAssociateDucrSummaryNoChangePage).apply(any(), any(), any(), any())(any(), any())
 
-        val (consignmentRef, associateWith, associateKind) = theResponseDataIleQueryEnabled
+        val (consignmentRef, associateWith, associateKind) = theResponseDataOnFindConsignmentJourney
         consignmentRef mustBe "Queried DUCR"
         associateWith mustBe "MUCR"
         associateKind mustBe UcrType.Mucr
       }
 
       "display page when queried mucr and 'Associate this consignment to another'" in {
-        when(ileQueryConfig.isIleQueryEnabled) thenReturn true
         val result = controller(
           AssociateUcrAnswers(
             Some(ManageMucrChoice(ManageMucrChoice.AssociateThisMucr)),
@@ -136,14 +128,13 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
         status(result) mustBe OK
         verify(mockAssociateDucrSummaryNoChangePage).apply(any(), any(), any(), any())(any(), any())
 
-        val (consignmentRef, associateWith, associateKind) = theResponseDataIleQueryEnabled
+        val (consignmentRef, associateWith, associateKind) = theResponseDataOnFindConsignmentJourney
         consignmentRef mustBe "Queried MUCR"
         associateWith mustBe "MUCR"
         associateKind mustBe UcrType.Mucr
       }
 
       "display page when queried mucr and 'Associate another consignment to this one'" in {
-        when(ileQueryConfig.isIleQueryEnabled) thenReturn true
         val result = controller(
           AssociateUcrAnswers(
             Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr)),
@@ -155,7 +146,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
         status(result) mustBe OK
         verify(mockAssociateDucrSummaryNoChangePage).apply(any(), any(), any(), any())(any(), any())
 
-        val (consignmentRef, associateWith, associateKind) = theResponseDataIleQueryEnabled
+        val (consignmentRef, associateWith, associateKind) = theResponseDataOnFindConsignmentJourney
         consignmentRef mustBe "Queried MUCR"
         associateWith mustBe "DUCR"
         associateKind mustBe UcrType.Ducr

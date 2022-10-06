@@ -1,0 +1,106 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.Choice._
+@import forms.Choice
+@import controllers.actions.ArriveDepartAllowList
+@import controllers.ileQuery.routes.IleQueryController
+@import controllers.routes.ChoiceOnConsignmentController
+@import forms.UcrType.{DucrPart, Mucr}
+@import models.requests.AuthenticatedRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.BackButton
+@import views.html.components.gds._
+@import views.Title
+
+@this(
+  govukLayout: gds_main_template,
+  govukButton: GovukButton,
+  govukRadios: GovukRadios,
+  errorSummary: errorSummary,
+  sectionHeader: sectionHeader,
+  formHelper: FormWithCSRF,
+  arriveDepartAllowList: ArriveDepartAllowList
+)
+
+@(form: Form[Choice], ucrBlock: UcrBlock)(implicit request: AuthenticatedRequest[_], messages: Messages)
+
+@arriveDepartChoices = @{
+  Seq(
+    RadioItem(
+        value = Some(Arrival.value),
+        content = Text(messages(s"movement.choice.${Arrival.value.toLowerCase}.label")),
+        checked = form("choice").value.contains(Arrival.value.toLowerCase)
+    ),
+    RadioItem(
+        value = Some(Departure.value),
+        content = Text(messages(s"movement.choice.${Departure.value.toLowerCase}.label")),
+        checked = form("choice").value.contains(Departure.value.toLowerCase)
+    )
+  )
+}
+
+@choices = @{
+    val commonChoices = Seq(
+        RadioItem(
+            value = Some(AssociateUCR.value),
+            content = Text(messages(s"movement.choice.${AssociateUCR.value.toLowerCase}.label")),
+            checked = form("choice").value.contains(AssociateUCR.value)
+        ),
+        RadioItem(
+            value = Some(DisassociateUCR.value),
+            content = Text(messages(s"movement.choice.${DisassociateUCR.value.toLowerCase}.label")),
+            checked = form("choice").value.contains(DisassociateUCR.value)
+        ),
+        RadioItem(
+            value = Some(ShutMUCR.value),
+            content = Text(messages(s"movement.choice.${ShutMUCR.value.toLowerCase}.label")),
+            checked = form("choice").value.contains(ShutMUCR.value)
+        )
+    )
+
+    val choices =
+      if (arriveDepartAllowList.contains(request.user.eori)) arriveDepartChoices ++ commonChoices
+      else commonChoices
+
+    choices.filterNot(item => item.value.contains(ShutMUCR.value) && ucrBlock.ucrType != Mucr.codeValue)
+}
+
+@govukLayout(
+    title = Title("movement.choice.title.consignment"),
+    backButton = Some(BackButton(messages("site.back"), IleQueryController.getConsignmentData(ucrBlock.ucr)))
+) {
+    @formHelper(action = ChoiceOnConsignmentController.submitChoice, 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("movement.choice.section", ucrBlock.ucr))
+
+        @govukRadios(Radios(
+            name = "choice",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("movement.choice.title.consignment")),
+                    isPageHeading = true,
+                    classes = "govuk-fieldset__legend--l"
+                ))
+            )),
+            items = choices,
+            errorMessage = form("choice").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+
+        @govukButton(Button(content = Text(messages("site.continue"))))
+    }
+}

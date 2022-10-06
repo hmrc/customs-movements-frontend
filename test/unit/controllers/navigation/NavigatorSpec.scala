@@ -34,9 +34,7 @@ class NavigatorSpec extends UnitSpec {
   "Continue To" should {
 
     "go to the URL provided" when {
-
       "Save And Continue" in {
-
         val request = AuthenticatedRequest[AnyContent](FakeRequest(), SignedInUser(validEori, Enrolments(Set.empty)))
 
         val result = navigator.continueTo(Call("GET", "/url"))(request)
@@ -49,7 +47,6 @@ class NavigatorSpec extends UnitSpec {
     "user is ready to submit" should {
 
       "Go to the summary page when Save and return to summary form action" in {
-
         val request = AuthenticatedRequest[AnyContent](
           FakeRequest().withFormUrlEncodedBody(SaveAndReturnToSummary.toString -> ""),
           SignedInUser(validEori, Enrolments(Set.empty))
@@ -62,9 +59,8 @@ class NavigatorSpec extends UnitSpec {
       }
 
       "Go to the associate ucr summary page when Save and return to summary form action" in {
-
         val request = JourneyRequest(
-          Cache(validEori, Some(AssociateUcrAnswers()), None, None),
+          Cache(validEori, AssociateUcrAnswers()),
           AuthenticatedRequest[AnyContent](
             FakeRequest().withFormUrlEncodedBody(SaveAndReturnToSummary.toString -> ""),
             SignedInUser(validEori, Enrolments(Set.empty))
@@ -78,5 +74,4 @@ class NavigatorSpec extends UnitSpec {
       }
     }
   }
-
 }

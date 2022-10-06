@@ -17,9 +17,11 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.consolidations.routes.AssociateUcrSummaryController
 import forms.AssociateUcr.form
 import models.ReturnToStartException
-import models.cache.{AssociateUcrAnswers, JourneyType}
+import models.cache.AssociateUcrAnswers
+import models.cache.JourneyType.ASSOCIATE_UCR
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.CacheRepository
@@ -40,7 +42,7 @@ class AssociateUcrController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ASSOCIATE_UCR)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(ASSOCIATE_UCR)) { implicit request =>
     val associateUcrAnswers = request.answersAs[AssociateUcrAnswers]
     val mucrOptions = associateUcrAnswers.mucrOptions.getOrElse(throw ReturnToStartException)
     val associateUcr = associateUcrAnswers.associateUcr
@@ -48,7 +50,7 @@ class AssociateUcrController @Inject() (
     Ok(associateUcrPage(associateUcr.fold(form)(form.fill), mucrOptions))
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ASSOCIATE_UCR)).async { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen getJourney(ASSOCIATE_UCR)).async { implicit request =>
     val mucrOptions = request.answersAs[AssociateUcrAnswers].mucrOptions.getOrElse(throw ReturnToStartException)
 
     form
@@ -57,9 +59,7 @@ class AssociateUcrController @Inject() (
         formWithErrors => Future.successful(BadRequest(associateUcrPage(formWithErrors, mucrOptions))),
         formData => {
           val updatedAnswers = request.answersAs[AssociateUcrAnswers].copy(associateUcr = Some(formData), readyToSubmit = Some(true))
-          cache.upsert(request.cache.update(updatedAnswers)).map { _ =>
-            Redirect(routes.AssociateUcrSummaryController.displayPage())
-          }
+          cache.upsert(request.cache.update(updatedAnswers)).map(_ => Redirect(AssociateUcrSummaryController.displayPage()))
         }
       )
   }

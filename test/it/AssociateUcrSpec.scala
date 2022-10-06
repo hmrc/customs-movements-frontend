@@ -15,6 +15,13 @@
  */
 
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
+import controllers.consolidations.routes.{
+  AssociateUcrConfirmationController,
+  AssociateUcrController,
+  AssociateUcrSummaryController,
+  ManageMucrController,
+  MucrOptionsController
+}
 import forms._
 import models.UcrBlock
 import models.cache.{AssociateUcrAnswers, Cache}
@@ -23,36 +30,39 @@ import play.api.test.Helpers._
 class AssociateUcrSpec extends IntegrationSpec {
 
   "Manage Mucr Page" when {
+
     "GET" should {
+
       "return 200 when queried mucr" in {
         givenAuthSuccess("eori")
-        givenCacheFor(Cache("eori", Some(AssociateUcrAnswers()), Some(UcrBlock("mucr", UcrType.Mucr)), None))
+        givenCacheFor(Cache("eori", AssociateUcrAnswers(), UcrBlock("mucr", UcrType.Mucr), false))
 
-        val response = get(controllers.consolidations.routes.ManageMucrController.displayPage())
+        val response = get(ManageMucrController.displayPage())
 
         status(response) mustBe OK
       }
 
       "return 303 when queried ducr" in {
         givenAuthSuccess("eori")
-        givenCacheFor(Cache("eori", Some(AssociateUcrAnswers()), Some(UcrBlock("ducr", UcrType.Ducr)), None))
+        givenCacheFor(Cache("eori", AssociateUcrAnswers(), UcrBlock("ducr", UcrType.Ducr), false))
 
-        val response = get(controllers.consolidations.routes.ManageMucrController.displayPage())
+        val response = get(ManageMucrController.displayPage())
 
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.MucrOptionsController.displayPage().url)
+        redirectLocation(response) mustBe Some(MucrOptionsController.displayPage().url)
       }
     }
 
     "POST" should {
+
       "continue for associate this mucr" in {
         givenAuthSuccess("eori")
         givenCacheFor("eori", AssociateUcrAnswers())
 
-        val response = post(controllers.consolidations.routes.ManageMucrController.submit(), "choice" -> ManageMucrChoice.AssociateThisMucr)
+        val response = post(ManageMucrController.submit(), "choice" -> ManageMucrChoice.AssociateThisMucr)
 
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.MucrOptionsController.displayPage().url)
+        redirectLocation(response) mustBe Some(MucrOptionsController.displayPage().url)
         theAnswersFor("eori") mustBe Some(AssociateUcrAnswers(manageMucrChoice = Some(ManageMucrChoice(ManageMucrChoice.AssociateThisMucr))))
       }
 
@@ -60,22 +70,23 @@ class AssociateUcrSpec extends IntegrationSpec {
         givenAuthSuccess("eori")
         givenCacheFor("eori", AssociateUcrAnswers())
 
-        val response = post(controllers.consolidations.routes.ManageMucrController.submit(), "choice" -> ManageMucrChoice.AssociateAnotherMucr)
+        val response = post(ManageMucrController.submit(), "choice" -> ManageMucrChoice.AssociateAnotherMucr)
 
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrController.displayPage().url)
+        redirectLocation(response) mustBe Some(AssociateUcrController.displayPage().url)
         theAnswersFor("eori") mustBe Some(AssociateUcrAnswers(manageMucrChoice = Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr))))
       }
     }
   }
 
   "UCR Options Page" when {
+
     "GET" should {
       "return 200" in {
         givenAuthSuccess("eori")
         givenCacheFor("eori", AssociateUcrAnswers())
 
-        val response = get(controllers.consolidations.routes.MucrOptionsController.displayPage())
+        val response = get(MucrOptionsController.displayPage())
 
         status(response) mustBe OK
       }
@@ -87,20 +98,16 @@ class AssociateUcrSpec extends IntegrationSpec {
         givenAuthSuccess("eori")
         givenCacheFor("eori", AssociateUcrAnswers(), UcrBlock("8GB123457359100-TEST0002", UcrType.Ducr))
 
-        val response = post(
-          controllers.consolidations.routes.MucrOptionsController.save(),
-          "createOrAdd" -> "create",
-          "newMucr" -> "GB/82F9-0N2F6500040010TO120P0A30068",
-          "existingMucr" -> ""
-        )
+        val response =
+          post(MucrOptionsController.save(), "createOrAdd" -> "create", "newMucr" -> "GB/82F9-0N2F6500040010TO120P0A30068", "existingMucr" -> "")
 
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrSummaryController.displayPage().url)
+        redirectLocation(response) mustBe Some(AssociateUcrController.displayPage().url)
         theAnswersFor("eori") mustBe Some(
           AssociateUcrAnswers(
             mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/82F9-0N2F6500040010TO120P0A30068")),
             associateUcr = None,
-            readyToSubmit = Some(true)
+            readyToSubmit = Some(false)
           )
         )
       }
@@ -108,12 +115,13 @@ class AssociateUcrSpec extends IntegrationSpec {
   }
 
   "Associate UCR Page" when {
+
     "GET" should {
       "return 200" in {
         givenAuthSuccess("eori")
         givenCacheFor("eori", AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345"))))
 
-        val response = get(controllers.consolidations.routes.AssociateUcrController.displayPage())
+        val response = get(AssociateUcrController.displayPage())
 
         status(response) mustBe OK
       }
@@ -124,10 +132,10 @@ class AssociateUcrSpec extends IntegrationSpec {
         givenAuthSuccess("eori")
         givenCacheFor("eori", AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345"))))
 
-        val response = post(controllers.consolidations.routes.AssociateUcrController.submit(), "kind" -> "mucr", "mucr" -> "GB/321-54321")
+        val response = post(AssociateUcrController.submit(), "kind" -> "mucr", "mucr" -> "GB/321-54321")
 
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrSummaryController.displayPage().url)
+        redirectLocation(response) mustBe Some(AssociateUcrSummaryController.displayPage().url)
         theAnswersFor("eori") mustBe Some(
           AssociateUcrAnswers(
             mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345")),
@@ -140,6 +148,7 @@ class AssociateUcrSpec extends IntegrationSpec {
   }
 
   "Associate UCR Summary Page" when {
+
     "GET" should {
       "return 200" in {
         givenAuthSuccess("eori")
@@ -151,7 +160,7 @@ class AssociateUcrSpec extends IntegrationSpec {
           )
         )
 
-        val response = get(controllers.consolidations.routes.AssociateUcrSummaryController.displayPage())
+        val response = get(AssociateUcrSummaryController.displayPage())
 
         status(response) mustBe OK
       }
@@ -169,10 +178,10 @@ class AssociateUcrSpec extends IntegrationSpec {
         )
         givenMovementsBackendAcceptsTheConsolidation()
 
-        val response = post(controllers.consolidations.routes.AssociateUcrSummaryController.submit())
+        val response = post(AssociateUcrSummaryController.submit())
 
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrConfirmationController.displayPage().url)
+        redirectLocation(response) mustBe Some(AssociateUcrConfirmationController.displayPage().url)
         theAnswersFor("eori") mustBe None
         verify(
           postRequestedForConsolidation()

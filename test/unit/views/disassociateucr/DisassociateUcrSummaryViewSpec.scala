@@ -16,39 +16,27 @@
 
 package views.disassociateucr
 
-import base.OverridableInjector
-import config.IleQueryConfig
-import forms.DisassociateUcr
+import base.Injector
+import controllers.consolidations.routes.DisassociateUcrController
+import controllers.routes.{ChoiceOnConsignmentController, DucrPartDetailsController}
+import forms.DucrPartChiefChoice.IsDucrPart
+import forms.{DisassociateUcr, DucrPartChiefChoice}
 import forms.UcrType.Ducr
-import models.cache.DisassociateUcrAnswers
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
+import models.cache.{Cache, DisassociateUcrAnswers}
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.inject.bind
+import testdata.CommonTestData.validEori
 import views.ViewSpec
 import views.html.disassociateucr.disassociate_ucr_summary
 import views.tags.ViewTest
 
 @ViewTest
-class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
+class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector with MockitoSugar {
 
   private implicit val request = journeyRequest(DisassociateUcrAnswers())
+
+  private val page = instanceOf[disassociate_ucr_summary]
+
   val disassociateUcr = DisassociateUcr(Ducr, ducr = Some("SOME-DUCR"), mucr = None)
-  private val ileQueryConfig = mock[IleQueryConfig]
-  private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
-  private val page = injector.instanceOf[disassociate_ucr_summary]
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-
-    when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
-  }
-
-  override def afterEach(): Unit = {
-    reset(ileQueryConfig)
-
-    super.afterEach()
-  }
 
   "Disassociate Ucr Summary View" should {
 
@@ -57,56 +45,60 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with MockitoSugar with Bef
     }
 
     "display 'Confirm and submit' button on page" in {
-
       val view = page(disassociateUcr)
       view.getElementsByClass("govuk-button").text() mustBe messages("site.confirmAndSubmit")
     }
 
     "display 'Reference' link on page" in {
-
       val view = page(disassociateUcr)
       view.getElementsByClass("govuk-summary-list__value").first() must containText("SOME-DUCR")
     }
 
-    "display 'Change' link on page when ileQuery disabled" in {
-
-      when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
-
+    "display 'Change' link when on NON-'Find a consignment' journey" in {
       val view = page(disassociateUcr)
       val changeButton = view.getElementsByClass("govuk-link").get(1)
       changeButton must containMessage("site.change")
       changeButton must haveAttribute("href", controllers.consolidations.routes.DisassociateUcrController.displayPage().url)
     }
 
-    "not display 'Change' link when ileQuery enabled (Sign out link only)" in {
-
-      when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
-
+    "not display 'Change' link when on 'Find a consignment' journey" in {
+      implicit val request = journeyRequest(DisassociateUcrAnswers(), None, true)
       val links = page(disassociateUcr).getElementsByClass("govuk-link")
-
       links.size() mustBe 2
     }
 
-    "have 'Back' button when ileQuery enabled" in {
+    "have a 'Back' button linking to the /choice-on-consignment page" when {
+      "on 'Find a consignment' journey" in {
+        implicit val request = journeyRequest(DisassociateUcrAnswers(), None, true)
+        val backButton = page(disassociateUcr).getBackButton
 
-      when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
-
-      val backButton = page(disassociateUcr).getBackButton
-
-      backButton mustBe defined
-      backButton.get must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+        backButton mustBe defined
+        backButton.get must haveHref(ChoiceOnConsignmentController.displayChoices)
+      }
     }
 
-    "have 'Back' button when ileQuery disabled" in {
+    "have a 'Back' button linking to the /ducr-part-details page" when {
+      "on NON-'Find a consignment' journey and" when {
+        "Ucr is DucrPart" in {
+          val cache = Cache(validEori, Some(DisassociateUcrAnswers()), None, false, Some(DucrPartChiefChoice(IsDucrPart)))
+          implicit val request = journeyRequest(cache)
+          val backButton = page(disassociateUcr).getBackButton
 
-      when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
-
-      val backButton = page(disassociateUcr).getBackButton
-
-      backButton mustBe defined
-      backButton.get must haveHref(controllers.consolidations.routes.DisassociateUcrController.displayPage())
+          backButton mustBe defined
+          backButton.get must haveHref(DucrPartDetailsController.displayPage)
+        }
+      }
     }
 
+    "have a 'Back' button linking to the /dissociate-ucr page" when {
+      "on NON-'Find a consignment' journey and" when {
+        "Ucr is DucrPart" in {
+          val backButton = page(disassociateUcr).getBackButton
+
+          backButton mustBe defined
+          backButton.get must haveHref(DisassociateUcrController.displayPage)
+        }
+      }
+    }
   }
-
 }

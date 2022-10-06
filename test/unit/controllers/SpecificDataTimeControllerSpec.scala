@@ -16,6 +16,7 @@
 
 package controllers
 
+import controllers.routes.{LocationController, MovementDetailsController}
 import forms.common.{Date, Time}
 import forms.{ArrivalDetails, ConsignmentReferences, DepartureDetails, SpecificDateTimeChoice}
 import models.DateTimeProvider
@@ -47,7 +48,7 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
     new SpecificDateTimeController(
       SuccessfulAuth(),
       ValidJourney(answers),
-      cache,
+      cacheRepository,
       stubMessagesControllerComponents(),
       mockSpecificDataTimePage,
       mockDateTimeProvider,
@@ -122,7 +123,7 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
         val result = controller(answers).submit()(postRequest(Json.toJson(dateTimeChoice)))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe routes.MovementDetailsController.displayPage().url
+        thePageNavigatedTo.url mustBe MovementDetailsController.displayPage().url
         theCacheUpserted.answers mustBe Some(answers.copy(specificDateTimeChoice = Some(dateTimeChoice)))
       }
 
@@ -134,7 +135,7 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
           controller(answers).submit()(postRequest(Json.toJson(dateTimeChoice)))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe routes.LocationController.displayPage().url
+        thePageNavigatedTo.url mustBe LocationController.displayPage().url
         theCacheUpserted.answers mustBe Some(
           answers
             .copy(specificDateTimeChoice = Some(dateTimeChoice), arrivalDetails = Some(ArrivalDetails(fixedDate, fixedTime)))
@@ -148,7 +149,7 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
         val result = controller(answers).submit()(postRequest(Json.toJson(dateTimeChoice)))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe routes.MovementDetailsController.displayPage().url
+        thePageNavigatedTo.url mustBe MovementDetailsController.displayPage().url
         theCacheUpserted.answers mustBe Some(answers.copy(specificDateTimeChoice = Some(dateTimeChoice)))
       }
 
@@ -160,13 +161,12 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
           controller(answers).submit()(postRequest(Json.toJson(dateTimeChoice)))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe routes.LocationController.displayPage().url
+        thePageNavigatedTo.url mustBe LocationController.displayPage().url
         theCacheUpserted.answers mustBe Some(
           answers
             .copy(specificDateTimeChoice = Some(dateTimeChoice), departureDetails = Some(DepartureDetails(fixedDate, fixedTime)))
         )
       }
     }
-
   }
 }

@@ -14,33 +14,25 @@
  * limitations under the License.
  *@
 
-@import config.IleQueryConfig
+@import controllers.routes.{ChoiceController, SignOutController}
 @import models.requests.{AuthenticatedRequest, JourneyRequest}
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.{Header, HmrcHeader}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language
 
-@this(hmrcHeader: HmrcHeader, ileQueryConfig: IleQueryConfig)
+@this(hmrcHeader: HmrcHeader)
 
 @()(implicit request: Request[_], messages: Messages)
 
 @signOutHref = @{
   if (request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]])
-    Some(controllers.routes.SignOutController.signOut(models.SignOutReason.UserAction).url)
-  else
-    None
-}
-
-@serviceNameLink = @{
-    if (ileQueryConfig.isIleQueryEnabled)
-        controllers.ileQuery.routes.FindConsignmentController.displayQueryForm().url
-    else
-        controllers.routes.ChoiceController.displayChoiceForm().url
+    Some(SignOutController.signOut(models.SignOutReason.UserAction).url)
+  else None
 }
 
 @hmrcHeader(Header(
     homepageUrl = "https://www.gov.uk",
     serviceName = Some(messages("service.name")),
-    serviceUrl = serviceNameLink,
+    serviceUrl = ChoiceController.displayChoices.url,
     language = language.En,
     containerClasses = "govuk-width-container",
     signOutHref = signOutHref

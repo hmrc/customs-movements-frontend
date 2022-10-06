@@ -16,13 +16,10 @@
 
 package views
 
-import java.time.temporal.ChronoUnit.MINUTES
-import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
-
 import base.Injector
-import config.IleQueryConfig
 import connectors.exchanges.ActionType.{ConsolidationType, MovementType}
 import controllers.routes
+import controllers.routes.ChoiceController
 import forms.UcrType
 import models.UcrBlock
 import models.notifications.{Entry, Notification, ResponseType}
@@ -37,12 +34,13 @@ import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import views.html.movements
 
+import java.time.temporal.ChronoUnit.MINUTES
+import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
+
 class MovementsViewSpec extends ViewSpec with Injector {
 
   implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
   private val viewDates = new ViewDates()
-
-  private val realIleQueryConfig = instanceOf[IleQueryConfig]
 
   private val page = instanceOf[movements]
   private val dateTime: Instant = LocalDate.of(2019, 10, 31).atStartOfDay().toInstant(ZoneOffset.UTC)
@@ -58,14 +56,10 @@ class MovementsViewSpec extends ViewSpec with Injector {
     }
 
     "contain back button" in {
-
       val backButton = emptyPage.getElementById("back-link")
 
       backButton must containMessage("site.back.toStartPage")
-
-      if (realIleQueryConfig.isIleQueryEnabled)
-        backButton must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
-      else backButton must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
+      backButton must haveHref(ChoiceController.displayChoices)
     }
 
     "contain header" in {
@@ -77,7 +71,6 @@ class MovementsViewSpec extends ViewSpec with Injector {
     }
 
     "contain correct table headers" in {
-
       val doc: Document = emptyPage
 
       doc.selectFirst(".govuk-table__header.ucr") must containMessage("submissions.ucr")
@@ -87,7 +80,6 @@ class MovementsViewSpec extends ViewSpec with Injector {
     }
 
     "contain correct submission data" in {
-
       val shutMucrSubmission = Submission(
         requestTimestamp = dateTime,
         eori = "",
@@ -205,7 +197,6 @@ class MovementsViewSpec extends ViewSpec with Injector {
     }
 
     "contain MUCR and DUCR if Submission contains both" in {
-
       val notifications = Seq(
         exampleNotificationFrontendModel(
           conversationId = conversationId,
@@ -228,7 +219,6 @@ class MovementsViewSpec extends ViewSpec with Injector {
 
     "contain link to ViewNotifications page" when {
       "there are Notifications for the Submission" in {
-
         val submission = exampleSubmission(requestTimestamp = dateTime)
         val notifications = Seq(exampleNotificationFrontendModel(timestampReceived = dateTime.plusSeconds(3)))
 

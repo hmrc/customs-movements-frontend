@@ -42,14 +42,14 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
   private def controller(
     answers: AssociateUcrAnswers,
     ileQueryAction: IleQueryAction = IleQueryEnabled,
-    queryUcr: Option[UcrBlock] = Some(UcrBlock("mucr", UcrType.Mucr))
+    ucrBlock: Option[UcrBlock] = Some(UcrBlock("mucr", UcrType.Mucr))
   ) =
     new ManageMucrController(
       SuccessfulAuth(),
       ileQueryAction,
-      ValidJourney(answers, queryUcr),
+      ValidJourney(answers, ucrBlock, true),
       stubMessagesControllerComponents(),
-      cache,
+      cacheRepository,
       page,
       navigator
     )
@@ -106,14 +106,14 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
     "return 303 (SEE_OTHER)" when {
 
       "queried ucr was Ducr" in {
-        val result = controller(AssociateUcrAnswers(), queryUcr = Some(UcrBlock("ducr", UcrType.Ducr))).displayPage()(getRequest())
+        val result = controller(AssociateUcrAnswers(), ucrBlock = Some(UcrBlock("ducr", UcrType.Ducr))).displayPage()(getRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.MucrOptionsController.displayPage().url
       }
 
       "queried ucr was Ducr Part" in {
-        val result = controller(AssociateUcrAnswers(), queryUcr = Some(UcrBlock("ducrPart", UcrType.DucrPart))).displayPage()(getRequest())
+        val result = controller(AssociateUcrAnswers(), ucrBlock = Some(UcrBlock("ducrPart", UcrType.DucrPart))).displayPage()(getRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.MucrOptionsController.displayPage().url
@@ -144,21 +144,16 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
     "block access" when {
 
       "ileQuery feature disabled" in {
-
         intercept[RuntimeException] {
           await(controller(AssociateUcrAnswers(), IleQueryDisabled).displayPage()(getRequest()))
         } mustBe InvalidFeatureStateException
-
       }
 
       "queried ucr not available in cache" in {
-
         intercept[RuntimeException] {
-          await(controller(AssociateUcrAnswers(), IleQueryEnabled, queryUcr = None).displayPage()(getRequest()))
+          await(controller(AssociateUcrAnswers(), IleQueryEnabled, ucrBlock = None).displayPage()(getRequest()))
         } mustBe InvalidFeatureStateException
-
       }
-
     }
   }
 }

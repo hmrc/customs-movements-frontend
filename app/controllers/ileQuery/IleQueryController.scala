@@ -19,10 +19,10 @@ package controllers.ileQuery
 import connectors.CustomsDeclareExportsMovementsConnector
 import connectors.exchanges.IleQueryExchange
 import controllers.actions.{AuthAction, IleQueryAction}
+import controllers.ileQuery.routes.IleQueryController
 import forms.IleQueryForm.form
 import forms.UcrType._
 import handlers.ErrorHandler
-import javax.inject.{Inject, Singleton}
 import models.UcrBlock
 import models.cache.{Cache, IleQuery}
 import models.notifications.queries.IleQueryResponseExchangeData.{SuccessfulResponseExchangeData, UcrNotFoundResponseExchangeData}
@@ -38,6 +38,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.validators.forms.FieldValidator._
 import views.html._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -60,7 +61,7 @@ class IleQueryController @Inject() (
 
   private val logger = Logger(this.getClass)
 
-  def getConsignmentInformation(ucr: String): Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled).async { implicit request =>
+  def getConsignmentData(ucr: String): Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled).async { implicit request =>
     ileQueryRepository.findBySessionIdAndUcr(retrieveSessionId, ucr).flatMap {
       case Some(query) => checkForNotifications(query)
       case None        => sendIleQuery(ucr)
@@ -105,13 +106,13 @@ class IleQueryController @Inject() (
 
           case ducrInfo: DucrInfo =>
             val ucrBlock = UcrBlock(ucr = ducrInfo.ucr, ucrType = Ducr)
-            cacheRepository.upsert(Cache(request.eori, ucrBlock)).map { _ =>
+            cacheRepository.upsert(Cache(request.eori, ucrBlock, true)).map { _ =>
               Ok(ileQueryDucrResponsePage(ducrInfo, response.parentMucr))
             }
 
           case mucrInfo: MucrInfo =>
             val ucrBlock = UcrBlock(ucr = mucrInfo.ucr, ucrType = Mucr)
-            cacheRepository.upsert(Cache(request.eori, ucrBlock)).map { _ =>
+            cacheRepository.upsert(Cache(request.eori, ucrBlock, true)).map { _ =>
               Ok(ileQueryMucrResponsePage(mucrInfo, response.parentMucr, response.sortedChildrenUcrs))
             }
 
@@ -133,13 +134,13 @@ class IleQueryController @Inject() (
       .fold(
         formWithErrors => Future.successful(BadRequest(ileQueryPage(formWithErrors))),
         validUcr => {
-          val ileQueryRequest = buildIleQuery(request.eori, validUcr)
+          val ileQueryExchange = buildIleQuery(request.eori, validUcr)
 
-          connector.submit(ileQueryRequest).flatMap { conversationId =>
+          connector.submit(ileQueryExchange).flatMap { conversationId =>
             val ileQuery = IleQuery(retrieveSessionId, validUcr, conversationId)
 
             ileQueryRepository.insertOne(ileQuery).map { _ =>
-              Redirect(controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(ucr))
+              Redirect(IleQueryController.getConsignmentData(ucr))
             }
           }
         }

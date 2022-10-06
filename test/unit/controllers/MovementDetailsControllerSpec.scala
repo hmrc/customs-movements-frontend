@@ -48,7 +48,7 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
     new MovementDetailsController(
       SuccessfulAuth(),
       ValidJourney(answers),
-      cache,
+      cacheRepository,
       stubMessagesControllerComponents(),
       MovementsTestData.movementDetails,
       mockArrivalDetailsPage,

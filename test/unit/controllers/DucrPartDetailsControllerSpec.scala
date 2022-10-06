@@ -16,9 +16,7 @@
 
 package controllers
 
-import config.IleQueryConfig
-import controllers.actions.NonIleQueryAction
-import controllers.exception.InvalidFeatureStateException
+import controllers.routes.SpecificDateTimeController
 import forms.{DucrPartDetails, UcrType}
 import models.UcrBlock
 import models.cache.{Answers, ArrivalAnswers, Cache}
@@ -37,16 +35,13 @@ import scala.concurrent.ExecutionContext.global
 class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache with ScalaFutures with IntegrationPatience {
 
   private val ducrPartDetailsPage = mock[ducr_part_details]
-  private val ileQueryConfig = mock[IleQueryConfig]
 
-  private def controller(answers: Answers = ArrivalAnswers(), nonIleQueryAction: NonIleQueryAction = ValidForIleQuery) =
+  private def controller(answers: Answers = ArrivalAnswers()) =
     new DucrPartDetailsController(
       stubMessagesControllerComponents(),
       SuccessfulAuth(),
       ValidJourney(answers),
-      nonIleQueryAction,
-      ileQueryConfig,
-      cache,
+      cacheRepository,
       ducrPartDetailsPage,
       navigator
     )(global)
@@ -72,7 +67,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
       val result = controller().displayPage()(getRequest())
       status(result) mustBe OK
 
-      verify(cache).findByEori(any())
+      verify(cacheRepository).findByEori(any())
     }
 
     "pass empty form to DucrPartDetails view" when {
@@ -88,9 +83,9 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
     }
 
     "pass data from CacheRepository to DucrPartDetails view" when {
-      "cache contains queryUcr of DucrParts type" in {
+      "cache contains ucrBlock of DucrParts type" in {
         val cacheContents =
-          Cache(eori = "eori", answers = None, queryUcr = Some(UcrBlock(ucrType = UcrType.DucrPart.codeValue, ucr = validWholeDucrParts)), None)
+          Cache(eori = "eori", UcrBlock(ucrType = UcrType.DucrPart.codeValue, ucr = validWholeDucrParts), false)
         givenTheCacheContains(cacheContents)
 
         val result = controller().displayPage()(getRequest())
@@ -102,9 +97,8 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
     }
 
     "pass empty form to DucrPartDetails view" when {
-      "cache contains queryUcr of different type" in {
-        val cacheContents =
-          Cache(eori = "eori", answers = None, queryUcr = Some(UcrBlock(ucrType = UcrType.Ducr.codeValue, ucr = validDucr)), None)
+      "cache contains ucrBlock of different type" in {
+        val cacheContents = Cache(eori = "eori", UcrBlock(ucrType = UcrType.Ducr.codeValue, ucr = validDucr), false)
         givenTheCacheContains(cacheContents)
 
         val result = controller().displayPage()(getRequest())
@@ -125,7 +119,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
         val result = controller().submitDucrPartDetails()(postRequest(inputData))
         status(result) mustBe BAD_REQUEST
 
-        verifyNoMoreInteractions(cache)
+        verifyNoMoreInteractions(cacheRepository)
       }
     }
 
@@ -135,50 +129,11 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
         val result = controller().submitDucrPartDetails()(postRequest(inputData))
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe controllers.routes.ChoiceController.displayChoiceForm().url
+        thePageNavigatedTo.url mustBe SpecificDateTimeController.displayPage.url
 
         val expectedUcrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts.toUpperCase)
-        theCacheUpserted.queryUcr mustBe defined
-        theCacheUpserted.queryUcr.get mustBe expectedUcrBlock
-      }
-    }
-  }
-
-  "DucrPartDetailsController on submitDucrPartDetailsJourney" when {
-
-    "ileQuery feature is enabled" should {
-      "throw InvalidFeatureStateException" in {
-        intercept[InvalidFeatureStateException](
-          await(controller(nonIleQueryAction = NotValidForIleQuery).submitDucrPartDetailsJourney()(postRequest()))
-        )
-      }
-    }
-
-    "ileQuery feature is disabled" should {
-
-      "return BadRequest (400) response" when {
-        "provided with incorrect data" in {
-          val inputData = Json.obj("ducr" -> "InvalidDucr!@#", "ducrPartId" -> "InvalidDucrPartId!@#")
-
-          val result = controller().submitDucrPartDetailsJourney()(postRequest(inputData))
-
-          status(result) mustBe BAD_REQUEST
-          verifyNoMoreInteractions(cache)
-        }
-      }
-
-      "provide CacheRepository with correct UcrBlock object" when {
-        "provided with correct data" in {
-          val inputData = Json.obj("ducr" -> validDucr, "ducrPartId" -> validDucrPartId)
-
-          val result = controller().submitDucrPartDetails()(postRequest(inputData))
-          status(result) mustBe SEE_OTHER
-          thePageNavigatedTo.url mustBe controllers.routes.ChoiceController.displayChoiceForm().url
-
-          val expectedUcrBlock = UcrBlock(ucrType = UcrType.DucrPart, ucr = validWholeDucrParts.toUpperCase)
-          theCacheUpserted.queryUcr mustBe defined
-          theCacheUpserted.queryUcr.get mustBe expectedUcrBlock
-        }
+        theCacheUpserted.ucrBlock mustBe defined
+        theCacheUpserted.ucrBlock.get mustBe expectedUcrBlock
       }
     }
   }

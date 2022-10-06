@@ -14,57 +14,21 @@
  * limitations under the License.
  */
 
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDateTime, LocalTime}
-
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
-import controllers.exception.InvalidFeatureStateException
 import forms._
 import forms.common.{Date, Time}
 import models.cache.DepartureAnswers
 import modules.DateTimeModule
 import play.api.test.Helpers._
 
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDateTime, LocalTime}
+
 class DepartureSpec extends IntegrationSpec {
 
   private val date = dateTimeProvider.dateNow.date.minusDays(1)
   private val time = LocalTime.of(10, 15)
   private val datetime = LocalDateTime.of(date, time).atZone(DateTimeModule.timezone).toInstant
-
-  "Consignment References Page" when {
-    "GET" should {
-      "throw feature disabled" in {
-        // Given
-        givenAuthSuccess("eori")
-        givenCacheFor("eori", DepartureAnswers())
-
-        // When
-        val response = get(controllers.routes.ConsignmentReferencesController.displayPage())
-
-        // Then
-        intercept[InvalidFeatureStateException] {
-          await(response)
-        }
-      }
-    }
-
-    "POST" should {
-      "throw feature disabled" in {
-        // Given
-        givenAuthSuccess("eori")
-        givenCacheFor("eori", DepartureAnswers())
-
-        // When
-        val response =
-          post(controllers.routes.ConsignmentReferencesController.saveConsignmentReferences(), "reference" -> "M", "mucrValue" -> "GB/123-12345")
-
-        // Then
-        intercept[InvalidFeatureStateException] {
-          await(response)
-        }
-      }
-    }
-  }
 
   "Specific Date/Time Page" when {
     "GET" should {

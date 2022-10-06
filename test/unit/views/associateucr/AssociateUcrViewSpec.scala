@@ -31,18 +31,18 @@ import views.tags.ViewTest
 @ViewTest
 class AssociateUcrViewSpec extends ViewSpec with Injector {
 
-  private implicit val request = journeyRequest(AssociateUcrAnswers())
-
   private val page = instanceOf[associate_ucr]
 
   private val form = AssociateUcr.form.fill(AssociateUcr(Mucr, "1234"))
 
   val mucrOptions = MucrOptions(MucrOptions.Create, "MUCR")
 
-  private def createView(mucr: MucrOptions, form: Form[AssociateUcr])(implicit request: JourneyRequest[_] = request): Html =
+  private def createView(mucr: MucrOptions, form: Form[AssociateUcr])(implicit request: JourneyRequest[_]): Html =
     page(form, mucr)
 
   "Associate Ucr View" when {
+
+    implicit val request = journeyRequest(AssociateUcrAnswers())
 
     "have a proper labels for messages" in {
       messages must haveTranslationFor("associate.ucr.title")

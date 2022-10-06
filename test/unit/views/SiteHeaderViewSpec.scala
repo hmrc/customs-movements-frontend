@@ -16,49 +16,21 @@
 
 package views
 
-import base.{Injector, OverridableInjector}
-import config.IleQueryConfig
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
-import play.api.inject.bind
+import base.Injector
+import controllers.routes.ChoiceController
 import play.api.test.FakeRequest
 import views.html.components.gds.siteHeader
 
-class SiteHeaderViewSpec extends ViewSpec with BeforeAndAfterEach with MockitoSugar with Injector {
-
-  private val ileQueryConfig = mock[IleQueryConfig]
-  private val injector = new OverridableInjector(bind[IleQueryConfig].toInstance(ileQueryConfig))
-  private implicit val request = FakeRequest().withCSRFToken
-
-  override def afterEach(): Unit = {
-    reset(ileQueryConfig)
-    super.afterEach()
-  }
-
-  private def headerComponent = injector.instanceOf[siteHeader]
+class SiteHeaderViewSpec extends ViewSpec with Injector {
 
   "SiteHeader component" should {
-
     "render service name with link to 'Choice' page" in {
-
-      when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
-
+      implicit val request = FakeRequest().withCSRFToken
+      val headerComponent = instanceOf[siteHeader]
       val serviceNameLink = headerComponent()
         .getElementsByClass("hmrc-header__service-name--linked")
         .first()
-      serviceNameLink must haveHref(controllers.routes.ChoiceController.displayChoiceForm())
-      serviceNameLink must containMessage("service.name")
-    }
-
-    "render service name with link to 'Find Consignment' page" in {
-
-      when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
-
-      val serviceNameLink = headerComponent()
-        .getElementsByClass("hmrc-header__service-name--linked")
-        .first()
-      serviceNameLink must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayQueryForm())
+      serviceNameLink must haveHref(ChoiceController.displayChoices)
       serviceNameLink must containMessage("service.name")
     }
   }

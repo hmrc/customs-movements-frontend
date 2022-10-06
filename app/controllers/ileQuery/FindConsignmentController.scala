@@ -17,14 +17,15 @@
 package controllers.ileQuery
 
 import controllers.actions.{AuthAction, IleQueryAction}
+import controllers.ileQuery.routes.IleQueryController
 import forms.IleQueryForm.form
-
-import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.ile_query
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class FindConsignmentController @Inject() (
@@ -34,17 +35,13 @@ class FindConsignmentController @Inject() (
   ileQueryPage: ile_query
 ) extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  def displayQueryForm(): Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled) { implicit request =>
     Ok(ileQueryPage(form))
   }
 
-  def submitQueryForm(): Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled) { implicit request =>
+  val submitPage: Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled) { implicit request =>
     form
       .bindFromRequest()
-      .fold(
-        formWithErrors => BadRequest(ileQueryPage(formWithErrors)),
-        validUcr => Redirect(controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(validUcr))
-      )
+      .fold(formWithErrors => BadRequest(ileQueryPage(formWithErrors)), validUcr => Redirect(IleQueryController.getConsignmentData(validUcr)))
   }
-
 }

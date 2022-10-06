@@ -18,7 +18,7 @@ package models.cache
 
 import forms.{AssociateUcr, MucrOptions, _}
 import models.UcrBlock
-import models.cache.JourneyType.{JOURNEY_NOT_SELECTED, JourneyType}
+import models.cache.JourneyType._
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.play.json.Union
 
@@ -29,7 +29,7 @@ case class ArrivalAnswers(
   override val specificDateTimeChoice: Option[SpecificDateTimeChoice] = None,
   override val readyToSubmit: Option[Boolean] = Some(false)
 ) extends MovementAnswers {
-  override val `type`: JourneyType.Value = JourneyType.ARRIVE
+  override val `type`: JourneyType.Value = ARRIVE
 }
 
 object ArrivalAnswers {
@@ -46,7 +46,7 @@ case class DepartureAnswers(
   transport: Option[Transport] = None,
   override val readyToSubmit: Option[Boolean] = Some(false)
 ) extends MovementAnswers {
-  override val `type`: JourneyType.Value = JourneyType.DEPART
+  override val `type`: JourneyType.Value = DEPART
 }
 
 object DepartureAnswers {
@@ -68,9 +68,10 @@ case class AssociateUcrAnswers(
   associateUcr: Option[AssociateUcr] = None,
   override val readyToSubmit: Option[Boolean] = Some(false)
 ) extends Answers {
-  override val `type`: JourneyType.Value = JourneyType.ASSOCIATE_UCR
+  override val `type`: JourneyType.Value = ASSOCIATE_UCR
 
   def isAssociateAnotherMucr: Boolean = manageMucrChoice.exists(_.choice == ManageMucrChoice.AssociateAnotherMucr)
+  def isAssociateThisMucr: Boolean = manageMucrChoice.exists(_.choice == ManageMucrChoice.AssociateThisMucr)
 }
 
 object AssociateUcrAnswers {
@@ -81,7 +82,7 @@ object AssociateUcrAnswers {
 }
 
 case class DisassociateUcrAnswers(ucr: Option[DisassociateUcr] = None) extends Answers {
-  override val `type`: JourneyType.Value = JourneyType.DISSOCIATE_UCR
+  override val `type`: JourneyType.Value = DISSOCIATE_UCR
 }
 
 object DisassociateUcrAnswers {
@@ -92,7 +93,7 @@ object DisassociateUcrAnswers {
 }
 
 case class ShutMucrAnswers(shutMucr: Option[ShutMucr] = None) extends Answers {
-  override val `type`: JourneyType.Value = JourneyType.SHUT_MUCR
+  override val `type`: JourneyType.Value = SHUT_MUCR
 }
 
 object ShutMucrAnswers {
@@ -122,11 +123,10 @@ object Answers {
 
   implicit val format: Format[Answers] = Union
     .from[Answers]("type")
-    .and[ArrivalAnswers](JourneyType.ARRIVE.toString)
-    .and[DepartureAnswers](JourneyType.DEPART.toString)
-    .and[AssociateUcrAnswers](JourneyType.ASSOCIATE_UCR.toString)
-    .and[DisassociateUcrAnswers](JourneyType.DISSOCIATE_UCR.toString)
-    .and[ShutMucrAnswers](JourneyType.SHUT_MUCR.toString)
+    .and[ArrivalAnswers](ARRIVE.toString)
+    .and[DepartureAnswers](DEPART.toString)
+    .and[AssociateUcrAnswers](ASSOCIATE_UCR.toString)
+    .and[DisassociateUcrAnswers](DISSOCIATE_UCR.toString)
+    .and[ShutMucrAnswers](SHUT_MUCR.toString)
     .format
-
 }

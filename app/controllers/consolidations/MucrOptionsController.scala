@@ -17,14 +17,17 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.consolidations.routes.{AssociateUcrController, AssociateUcrSummaryController}
 import controllers.navigation.Navigator
 import forms.MucrOptions
 import forms.MucrOptions.form
-import models.cache.{AssociateUcrAnswers, JourneyType}
+import models.cache.AssociateUcrAnswers
+import models.cache.JourneyType.ASSOCIATE_UCR
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.twirl.api.HtmlFormat.Appendable
 import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -44,28 +47,28 @@ class MucrOptionsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ASSOCIATE_UCR)) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(ASSOCIATE_UCR)) { implicit request =>
     val mucrOptions = request.answersAs[AssociateUcrAnswers].mucrOptions
     Ok(buildPage(mucrOptions.fold(form)(form.fill)))
   }
 
-  private def buildPage(form: Form[MucrOptions])(implicit request: JourneyRequest[_]) =
-    page(form, request.cache.queryUcr, request.answersAs[AssociateUcrAnswers].manageMucrChoice)
+  private def buildPage(form: Form[MucrOptions])(implicit request: JourneyRequest[_]): Appendable =
+    page(form, request.cache.ucrBlock, request.answersAs[AssociateUcrAnswers].manageMucrChoice)
 
-  def save(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ASSOCIATE_UCR)).async { implicit request =>
+  def save(): Action[AnyContent] = (authenticate andThen getJourney(ASSOCIATE_UCR)).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(buildPage(formWithErrors))),
         validForm => {
           val updatedAnswers = request.answersAs[AssociateUcrAnswers].copy(mucrOptions = Some(validForm))
-          if (request.cache.queryUcr.isDefined)
+          if (request.cache.ucrBlockFromIleQuery || request.cache.isDucrPartChief)
             cacheRepository.upsert(request.cache.update(updatedAnswers.copy(readyToSubmit = Some(true)))).map { _ =>
-              Redirect(routes.AssociateUcrSummaryController.displayPage())
+              Redirect(AssociateUcrSummaryController.displayPage())
             }
           else
             cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
-              navigator.continueTo(routes.AssociateUcrController.displayPage())
+              navigator.continueTo(AssociateUcrController.displayPage())
             }
         }
       )

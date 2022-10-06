@@ -15,7 +15,7 @@
  *@
 
 @import components.gds._
-@import controllers.routes
+@import controllers.routes.{ChoiceOnConsignmentController, ConsignmentReferencesController, DucrPartDetailsController, SpecificDateTimeController}
 @import forms.SpecificDateTimeChoice
 @import forms.UcrType.Ducr
 @import models.requests.JourneyRequest
@@ -23,16 +23,13 @@
 @import views.Title
 @import views.components.BackButton
 @import forms.UcrType.Mucr
-@import views.components.config.SpecificDateTimeConfig
 
 @this(
     govukLayout: gds_main_template,
     govukRadios: GovukRadios,
-    exportsInputText: exportsInputText,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
-    pageConfig: SpecificDateTimeConfig,
-    formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
+    formHelper: FormWithCSRF,
     saveButtons: saveButtons
 )
 
@@ -40,11 +37,17 @@
 
 @sectionHeaderKey = @{s"specific.datetime.${request.answers.`type`.toString.toLowerCase}.heading"}
 
+@backUrl = @{
+    if (request.cache.ucrBlockFromIleQuery) ChoiceOnConsignmentController.displayChoices
+    else if (request.cache.isDucrPartChief) DucrPartDetailsController.displayPage()
+    else ConsignmentReferencesController.displayPage()
+}
+
 @govukLayout(
   title = Title("specific.datetime.heading"),
-  backButton = Some(BackButton(messages("site.back.previousQuestion"), pageConfig.backUrl(request.cache.ducrPartChiefChoice)))) {
-
-  @formHelper(action = routes.SpecificDateTimeController.submit(), 'autoComplete -> "off") {
+  backButton = Some(BackButton(messages("site.back.previousQuestion"), backUrl))
+) {
+  @formHelper(action = SpecificDateTimeController.submit(), 'autoComplete -> "off") {
     @errorSummary(form.errors)
 
     @sectionHeader(messages(sectionHeaderKey, consignmentReferenceValue))

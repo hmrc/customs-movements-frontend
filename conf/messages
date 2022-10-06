@@ -90,6 +90,7 @@ movement.choice.arrival.label = Arrive
 movement.choice.departure.label = Depart
 movement.choice.associateucr.label = Associate
 movement.choice.disassociateucr.label = Dissociate
+movement.choice.findconsignment.label = Find a consignment
 movement.choice.shutmucr.label = Shut
 movement.choice.submissions.label = View requests
 movement.arrival = Arrive goods
@@ -314,7 +315,6 @@ confirmation.title.SHUT_MUCR = Your request to shut a MUCR has been submitted
 confirmation.insetText = It might take a few minutes before a decision is made.
 confirmation.insetText.check = Go to the {0} to check the status.
 confirmation.notification.timeline.link = consignment’s notification timeline
-confirmation.redirect.query.link = Find another consignment
 confirmation.redirect.choice.link = Back to start
 
 submissions.title = Requests
@@ -389,9 +389,6 @@ ileQuery.title = Find a consignment
 ileQuery.hint = Search by Master Consignment Reference (MUCR) or Declaration Consignment Reference (DUCR).
 ileQuery.ucr.empty = Enter a Unique Consignment Reference
 ileQuery.ucr.incorrect = Unique Consignment Reference is incorrect
-
-ileQuery.link.requests = View previous requests
-ileQuery.link.ducrPart = Enter a DUCR Part
 
 ileQuery.loading.title = Looking for consignment
 ileQuery.loading.hint = This should only take a few seconds, do not refresh the page.

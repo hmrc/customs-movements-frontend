@@ -39,7 +39,6 @@ class CacheRepository @Inject() (mc: MongoComponent)(implicit ec: ExecutionConte
 
   def upsert(cache: Cache): Future[Cache] =
     findOneAndReplace("eori", cache.eori, cache)
-
 }
 
 object CacheRepository {

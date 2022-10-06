@@ -17,6 +17,7 @@
 package views.components.ilequery
 
 import base.Injector
+import controllers.ileQuery.routes.IleQueryController
 import models.notifications.EntryStatus
 import models.notifications.queries.MucrInfo
 import models.viewmodels.decoder.{ROECode, SOECode}
@@ -54,9 +55,7 @@ class ParentViewSpec extends ViewSpec with Injector {
     "render parent consignment link" in {
       val parentRefElement = parentElement(view(parent), 0)
 
-      parentRefElement.getElementsByClass("govuk-link").first() must haveHref(
-        controllers.ileQuery.routes.IleQueryController.getConsignmentInformation("parentUcr")
-      )
+      parentRefElement.getElementsByClass("govuk-link").first() must haveHref(IleQueryController.getConsignmentData("parentUcr"))
       parentRefElement.text() must be("parentUcr")
     }
 

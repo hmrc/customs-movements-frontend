@@ -17,6 +17,7 @@
 package views
 
 import base.Injector
+import controllers.routes.ChoiceController
 import forms.IleQueryForm
 import org.jsoup.nodes.Element
 import org.scalatestplus.mockito.MockitoSugar
@@ -40,8 +41,8 @@ class IleQueryViewSpec extends ViewSpec with Injector with MockitoSugar {
       view.getTitle must containMessage("ileQuery.title")
     }
 
-    "not render 'Back' button" in {
-      Option(view.getElementById("back-link")) mustBe None
+    "render a 'Back' button" in {
+      view.getElementById("back-link") must haveAttribute("href", ChoiceController.displayChoices.url)
     }
 
     "render page header" in {
@@ -73,24 +74,6 @@ class IleQueryViewSpec extends ViewSpec with Injector with MockitoSugar {
     "contain submit button" in {
       view.getSubmitButton mustBe defined
       view.getSubmitButton.get must containMessage("site.continue")
-    }
-
-    "contain link to view previous requests" in {
-      val govukListElement = view.getElementsByClass("govuk-list").first
-
-      val previousRequests = govukListElement.getElementsByClass("govuk-link").get(0)
-
-      previousRequests must containMessage("ileQuery.link.requests")
-      previousRequests must haveHref(controllers.routes.SubmissionsController.displayPage())
-    }
-
-    "contain link to 'DUCR Part Details' page" in {
-      val govukListElement = view.getElementsByClass("govuk-list").first
-
-      val ducrPartDetailsLink = govukListElement.getElementsByClass("govuk-link").get(1)
-
-      ducrPartDetailsLink must containMessage("ileQuery.link.ducrPart")
-      ducrPartDetailsLink must haveHref(controllers.routes.DucrPartDetailsController.displayPage())
     }
   }
 }

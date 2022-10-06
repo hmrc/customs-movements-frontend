@@ -39,7 +39,7 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
   private val mockAssociateDucrPage = mock[associate_ucr]
 
   private def controller(answers: AssociateUcrAnswers) =
-    new AssociateUcrController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cache, mockAssociateDucrPage)
+    new AssociateUcrController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cacheRepository, mockAssociateDucrPage)
 
   override protected def beforeEach() {
     super.beforeEach()

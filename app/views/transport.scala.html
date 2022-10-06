@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.routes
+@import controllers.routes.{LocationController, TransportController}
 @import forms.Transport
 @import forms.Transport.ModesOfTransport._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -25,25 +25,24 @@
 @import services.Countries
 @import models.requests.RequestWithAnswers
 
-
-@this(  govukLayout: gds_main_template,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukInput: GovukInput,
-        pageTitle: pageTitle,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
-        saveButtons: saveButtons
+@this(
+    govukLayout: gds_main_template,
+    govukRadios: GovukRadios,
+    govukInput: GovukInput,
+    pageTitle: pageTitle,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    formHelper: FormWithCSRF,
+    saveButtons: saveButtons
 )
 
 @(form: Form[Transport], consignmentReference: String)(implicit request: RequestWithAnswers[_], messages: Messages)
 
 @govukLayout(
     title = Title("transport.title"),
-    backButton = Some(BackButton(messages("site.back.previousQuestion"), controllers.routes.LocationController.displayPage))) {
-
-    @formHelper(action = routes.TransportController.saveTransport(), 'autoComplete -> "off") {
+    backButton = Some(BackButton(messages("site.back.previousQuestion"), LocationController.displayPage))
+) {
+    @formHelper(action = TransportController.saveTransport, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("transport.heading", consignmentReference))

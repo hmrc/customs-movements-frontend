@@ -19,6 +19,7 @@ package controllers.ileQuery
 import controllers.ControllerLayerSpec
 import controllers.actions.IleQueryAction
 import controllers.exception.InvalidFeatureStateException
+import controllers.ileQuery.routes.IleQueryController
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.libs.json.{JsString, Json}
@@ -51,46 +52,40 @@ class FindConsignmentControllerSpec extends ControllerLayerSpec with MockIleQuer
     super.afterEach()
   }
 
-  "FindConsignmentController on displayQueryForm" should {
-
+  "FindConsignmentController on displayPage" should {
     "return Ok status (200)" in {
-
-      val result = controller.displayQueryForm()(getRequest)
+      val result = controller.displayPage(getRequest)
 
       status(result) mustBe OK
     }
   }
 
-  "FindConsignmentController on submitQueryForm" when {
+  "FindConsignmentController on submitPage" when {
 
     "provide with correct form" should {
 
       "return SeeOther status (303)" in {
-
         val correctForm = Json.obj(("ucr", JsString(correctUcr)))
 
-        val result = controller.submitQueryForm()(postRequest(correctForm))
+        val result = controller.submitPage(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
       }
 
       "redirect to Consignment Details page" in {
-
         val correctForm = Json.obj(("ucr", JsString(correctUcr)))
 
-        val result = controller.submitQueryForm()(postRequest(correctForm))
+        val result = controller.submitPage(postRequest(correctForm))
 
-        redirectLocation(result).get mustBe controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(correctUcr).url
+        redirectLocation(result).get mustBe IleQueryController.getConsignmentData(correctUcr).url
       }
     }
 
     "provided with incorrect form" should {
-
       "return BadRequest status (400)" in {
-
         val incorrectForm = JsString("1234")
 
-        val result = controller.submitQueryForm()(postRequest(incorrectForm))
+        val result = controller.submitPage(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -102,22 +97,18 @@ class FindConsignmentControllerSpec extends ControllerLayerSpec with MockIleQuer
     val controllerIleQueryDisabled = controllerWithIleQuery(IleQueryDisabled)
 
     "block access to query form" in {
-
       intercept[RuntimeException] {
-        await(controllerIleQueryDisabled.displayQueryForm()(getRequest))
+        await(controllerIleQueryDisabled.displayPage(getRequest))
       } mustBe InvalidFeatureStateException
 
     }
 
     "block access when posting query form" in {
-
       val correctForm = Json.obj(("ucr", JsString(correctUcr)))
 
       intercept[RuntimeException] {
-        await(controllerIleQueryDisabled.submitQueryForm()(postRequest(correctForm)))
+        await(controllerIleQueryDisabled.submitPage(postRequest(correctForm)))
       }
     }
-
   }
-
 }

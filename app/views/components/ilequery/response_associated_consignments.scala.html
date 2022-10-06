@@ -14,11 +14,12 @@
  * limitations under the License.
  *@
 
+@import components.gds.link
+@import controllers.ileQuery.routes.IleQueryController
 @import models.notifications.queries.UcrInfo
 @import models.viewmodels.ilequery.IleQueryCodeConverter
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.ViewDates
-@import components.gds.link
 
 @this(
   converter: IleQueryCodeConverter,
@@ -34,7 +35,7 @@
             rows = associatedUcrs.zipWithIndex.map(indexedUcr => {
                 Seq(
                     TableRow(
-                        content = HtmlContent(link(message = Html(indexedUcr._1.ucr), href = controllers.ileQuery.routes.IleQueryController.getConsignmentInformation(indexedUcr._1.ucr))),
+                        content = HtmlContent(link(message = Html(indexedUcr._1.ucr), href = IleQueryController.getConsignmentData(indexedUcr._1.ucr))),
                         attributes = Map("id" -> s"associateUcr_${indexedUcr._2}_ucr")
                     ),
                     TableRow(

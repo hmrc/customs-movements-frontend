@@ -62,5 +62,4 @@ object DucrPartDetails {
   }
 
   def form(): Form[DucrPartDetails] = Form(mapping)
-
 }

@@ -16,156 +16,46 @@
 
 package views
 
-import base.OverridableInjector
+import base.Injector
+import controllers.routes.SubmissionsController
 import models.cache._
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.inject.bind
-import play.twirl.api.{Html, HtmlFormat}
-import views.components.config.ConfirmationPageConfig
 import views.html.confirmation_page
 import views.tags.ViewTest
 
 @ViewTest
-class ConfirmationPageViewSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
+class ConfirmationPageViewSpec extends ViewSpec with Injector with MockitoSugar {
 
-  private val confirmationPageConfig = mock[ConfirmationPageConfig]
-  private val injector = new OverridableInjector(bind[ConfirmationPageConfig].toInstance(confirmationPageConfig))
+  private val page = instanceOf[confirmation_page]
 
-  private val page = injector.instanceOf[confirmation_page]
+  "ConfirmationPageView" when {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
+    List(ArrivalAnswers(), DepartureAnswers(), AssociateUcrAnswers(), DisassociateUcrAnswers(), ShutMucrAnswers()).foreach { answer =>
+      s"provided with ${answer.`type`} Journey Type" should {
+        implicit val request = journeyRequest(answer)
+        val view = page(answer.`type`)
 
-    when(confirmationPageConfig.nextStepLink()(any())).thenReturn(HtmlFormat.empty)
-  }
+        "render title" in {
+          view.getTitle must containMessage(s"confirmation.title.${answer.`type`}")
+        }
 
-  override def afterEach(): Unit = {
-    reset(confirmationPageConfig)
+        "render header" in {
+          view.getElementsByClass("govuk-heading-xl").first() must containMessage(s"confirmation.title.${answer.`type`}")
+        }
 
-    super.afterEach()
-  }
+        "render inset text with link to View Requests page" in {
+          val inset = view.getElementsByClass("govuk-inset-text").first()
+          inset must containMessage("confirmation.insetText")
 
-  "ConfirmationPageView" should {
+          val link = inset.getElementsByClass("govuk-link").first()
+          link must containMessage("confirmation.notification.timeline.link")
+          link must haveHref(SubmissionsController.displayPage())
+        }
 
-    "render title" when {
-
-      "provided with ARRIVE Journey Type" in {
-
-        implicit val request = journeyRequest(ArrivalAnswers())
-
-        page(JourneyType.ARRIVE).getTitle must containMessage("confirmation.title.ARRIVE")
+        "render Exit Survey link" in {
+          view.getElementById("exit-survey") must containMessage("exitSurvey.header")
+        }
       }
-
-      "provided with DEPART Journey Type" in {
-
-        implicit val request = journeyRequest(DepartureAnswers())
-
-        page(JourneyType.DEPART).getTitle must containMessage("confirmation.title.DEPART")
-      }
-
-      "provided with ASSOCIATE_UCR Journey Type" in {
-
-        implicit val request = journeyRequest(AssociateUcrAnswers())
-
-        page(JourneyType.ASSOCIATE_UCR).getTitle must containMessage("confirmation.title.ASSOCIATE_UCR")
-      }
-
-      "provided with DISSOCIATE_UCR Journey Type" in {
-
-        implicit val request = journeyRequest(DisassociateUcrAnswers())
-
-        page(JourneyType.DISSOCIATE_UCR).getTitle must containMessage("confirmation.title.DISSOCIATE_UCR")
-      }
-
-      "provided with SHUT_MUCR Journey Type" in {
-
-        implicit val request = journeyRequest(ShutMucrAnswers())
-
-        page(JourneyType.SHUT_MUCR).getTitle must containMessage("confirmation.title.SHUT_MUCR")
-      }
-    }
-
-    "render header" when {
-
-      "provided with ARRIVE Journey Type" in {
-
-        implicit val request = journeyRequest(ArrivalAnswers())
-
-        page(JourneyType.ARRIVE)
-          .getElementsByClass("govuk-heading-xl")
-          .first() must containMessage("confirmation.title.ARRIVE")
-      }
-
-      "provided with DEPART Journey Type" in {
-
-        implicit val request = journeyRequest(DepartureAnswers())
-
-        page(JourneyType.DEPART)
-          .getElementsByClass("govuk-heading-xl")
-          .first() must containMessage("confirmation.title.DEPART")
-      }
-
-      "provided with ASSOCIATE_UCR Journey Type" in {
-
-        implicit val request = journeyRequest(AssociateUcrAnswers())
-
-        page(JourneyType.ASSOCIATE_UCR)
-          .getElementsByClass("govuk-heading-xl")
-          .first() must containMessage("confirmation.title.ASSOCIATE_UCR")
-      }
-
-      "provided with DISSOCIATE_UCR Journey Type" in {
-
-        implicit val request = journeyRequest(DisassociateUcrAnswers())
-
-        page(JourneyType.DISSOCIATE_UCR)
-          .getElementsByClass("govuk-heading-xl")
-          .first() must containMessage("confirmation.title.DISSOCIATE_UCR")
-      }
-
-      "provided with SHUT_MUCR Journey Type" in {
-
-        implicit val request = journeyRequest(ShutMucrAnswers())
-
-        page(JourneyType.SHUT_MUCR)
-          .getElementsByClass("govuk-heading-xl")
-          .first() must containMessage("confirmation.title.SHUT_MUCR")
-      }
-    }
-
-    "render inset text with link to View Requests page" in {
-
-      implicit val request = journeyRequest(ArrivalAnswers())
-
-      val inset = page(JourneyType.ARRIVE).getElementsByClass("govuk-inset-text").first()
-      inset must containMessage("confirmation.insetText")
-
-      val link = inset.getElementsByClass("govuk-link").first()
-      link must containMessage("confirmation.notification.timeline.link")
-      link must haveHref(controllers.routes.SubmissionsController.displayPage())
-    }
-
-    "render Exit Survey link" in {
-      implicit val request = journeyRequest(ArrivalAnswers())
-      val exitSurvey = page(JourneyType.ARRIVE).getElementById("exit-survey")
-
-      exitSurvey must containMessage("exitSurvey.header")
-    }
-
-    "render link returned by ConfirmationPageConfig" in {
-
-      implicit val request = journeyRequest(ArrivalAnswers())
-
-      val testConfirmationLink = Html("""<div class="govuk-link">Test Confirmation Link</div>""")
-      when(confirmationPageConfig.nextStepLink()(any())).thenReturn(testConfirmationLink)
-
-      val link = page(JourneyType.ARRIVE).getElementsByClass("govuk-link").get(2)
-
-      link.text must include("Test Confirmation Link")
     }
   }
-
 }

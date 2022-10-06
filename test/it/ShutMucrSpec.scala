@@ -15,46 +15,11 @@
  */
 
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
-import controllers.exception.InvalidFeatureStateException
 import forms.ShutMucr
 import models.cache.ShutMucrAnswers
 import play.api.test.Helpers._
 
 class ShutMucrSpec extends IntegrationSpec {
-
-  "Enter MUCR Page" when {
-    "GET" should {
-      "throw feature disabled" in {
-        // Given
-        givenAuthSuccess("eori")
-        givenCacheFor("eori", ShutMucrAnswers())
-
-        // When
-        val response = get(controllers.consolidations.routes.ShutMucrController.displayPage())
-
-        // Then
-        intercept[InvalidFeatureStateException] {
-          await(response)
-        }
-      }
-    }
-
-    "POST" should {
-      "throw feature disabled" in {
-        // Given
-        givenAuthSuccess("eori")
-        givenCacheFor("eori", ShutMucrAnswers())
-
-        // When
-        val response = post(controllers.consolidations.routes.ShutMucrController.submitForm(), "mucr" -> "GB/123-12345")
-
-        // Then
-        intercept[InvalidFeatureStateException] {
-          await(response)
-        }
-      }
-    }
-  }
 
   "Shut MUCR Summary Page" when {
     "GET" should {

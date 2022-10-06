@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.routes
+@import controllers.routes.{MovementDetailsController, SpecificDateTimeController}
 @import forms.ArrivalDetails
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
@@ -24,23 +24,23 @@
 @import models.requests.RequestWithAnswers
 
 @this(
-govukLayout: gds_main_template,
-pageTitle: pageTitle,
-errorSummary: errorSummary,
-sectionHeader: sectionHeader,
-inputDate: inputDate,
-inputTime: inputTime,
-formHelper: uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF,
-saveButtons: saveButtons
+    govukLayout: gds_main_template,
+    pageTitle: pageTitle,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    inputDate: inputDate,
+    inputTime: inputTime,
+    formHelper: FormWithCSRF,
+    saveButtons: saveButtons
 )
 
 @(form: Form[ArrivalDetails], consignmentReferenceValue: String)(implicit request: RequestWithAnswers[_], messages: Messages)
 
 @govukLayout(
   title = Title("arrivalDetails.header"),
-  backButton = Some(BackButton(messages("site.back.previousQuestion"), controllers.routes.SpecificDateTimeController.displayPage()))) {
+  backButton = Some(BackButton(messages("site.back.previousQuestion"), SpecificDateTimeController.displayPage))) {
 
-  @formHelper(action = routes.MovementDetailsController.saveMovementDetails(), 'autoComplete -> "off") {
+  @formHelper(action = MovementDetailsController.saveMovementDetails, 'autoComplete -> "off") {
     @errorSummary(DateTimeErrors.processErrors(form.errors, "dateOfArrival", "timeOfArrival"))
 
     @sectionHeader(messages("arrivalDetails.sectionHeading", consignmentReferenceValue))

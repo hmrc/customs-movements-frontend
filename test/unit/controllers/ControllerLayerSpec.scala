@@ -63,13 +63,21 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
       Future.successful(Results.Forbidden)
   }
 
-  case class ValidJourney(answers: Answers, queryUcr: Option[UcrBlock] = None, ducrPartChiefChoice: Option[DucrPartChiefChoice] = None)
-      extends JourneyRefiner(mock[CacheRepository], mock[ArriveDepartAllowList]) {
-    override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
-      Future.successful(Right(JourneyRequest(Cache(request.eori, Some(answers), queryUcr, ducrPartChiefChoice), request)))
+  case class ValidJourney(
+    answers: Answers,
+    ucrBlock: Option[UcrBlock] = None,
+    ucrBlockFromIleQuery: Boolean = false,
+    ducrPartChiefChoice: Option[DucrPartChiefChoice] = None
+  ) extends JourneyRefiner(mock[CacheRepository], mock[ArriveDepartAllowList]) {
+
+    override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
+      val cache = Cache(request.eori, Some(answers), ucrBlock, ucrBlockFromIleQuery, ducrPartChiefChoice)
+      Future.successful(Right(JourneyRequest(cache, request)))
+    }
 
     override def apply(types: JourneyType*): ActionRefiner[AuthenticatedRequest, JourneyRequest] =
-      if (types.contains(answers.`type`)) ValidJourney(answers, queryUcr) else InValidJourney
+      if (!types.contains(answers.`type`)) InValidJourney
+      else ValidJourney(answers, ucrBlock, ucrBlockFromIleQuery, ducrPartChiefChoice)
   }
 
   case object InValidJourney extends JourneyRefiner(mock[CacheRepository], mock[ArriveDepartAllowList]) {
@@ -78,20 +86,12 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
   }
 
   case object IleQueryEnabled extends IleQueryAction(mock[IleQueryConfig]) {
-    override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = block(request)
+    override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
+      block(request)
   }
 
   case object IleQueryDisabled extends IleQueryAction(mock[IleQueryConfig]) {
     override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       throw InvalidFeatureStateException
-  }
-
-  case object NotValidForIleQuery extends NonIleQueryAction(mock[IleQueryConfig]) {
-    override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      throw InvalidFeatureStateException
-  }
-
-  case object ValidForIleQuery extends NonIleQueryAction(mock[IleQueryConfig]) {
-    override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = block(request)
   }
 }

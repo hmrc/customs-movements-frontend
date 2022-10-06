@@ -18,9 +18,12 @@ package views.shutmucr
 
 import base.Injector
 import forms.ShutMucr
+import forms.ShutMucr.form
 import models.cache.ShutMucrAnswers
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
+import play.twirl.api.HtmlFormat.Appendable
 import views.ViewSpec
 import views.html.shutmucr.shut_mucr
 
@@ -30,17 +33,20 @@ class ShutMucrViewSpec extends ViewSpec with Injector {
 
   private val page = instanceOf[shut_mucr]
 
+  def createView(frm: Form[ShutMucr] = form())(implicit request: JourneyRequest[_]): Appendable = page(frm)
+
   "View" should {
+
     "render title" in {
-      page(ShutMucr.form()).getTitle must containMessage("shutMucr.title")
+      createView().getTitle must containMessage("shutMucr.title")
     }
 
     "render input for mucr" in {
-      page(ShutMucr.form()).getElementsByAttributeValue("for", "mucr").first() must containMessage("shutMucr.title")
+      createView().getElementsByAttributeValue("for", "mucr").first() must containMessage("shutMucr.title")
     }
 
     "render back button" in {
-      val backButton = page(ShutMucr.form()).getBackButton
+      val backButton = createView().getBackButton
 
       backButton mustBe defined
       backButton.foreach { button =>
@@ -49,15 +55,33 @@ class ShutMucrViewSpec extends ViewSpec with Injector {
       }
     }
 
+    "display the expander for Mucr guidance" in {
+      val expander = createView().getElementsByClass("govuk-details").first()
+      expander.children.size mustBe 2
+
+      expander.child(0).text mustBe messages("shutMucr.expander.title")
+
+      val paragraph = expander.child(1)
+
+      val prefix = "shutMucr.expander.content"
+      val expectedText = messages(s"$prefix", messages(s"$prefix.link"))
+      val actualText = removeBlanksIfAnyBeforeDot(paragraph.text)
+      actualText mustBe expectedText
+
+      val link = paragraph.child(0)
+      link must haveHref(
+        "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide/group-2-references-of-messages-document-certificates-and-authorisations"
+      )
+      link must haveAttribute("target", "_blank")
+    }
+
     "render error summary" when {
       "no errors" in {
-        page(ShutMucr.form()).getGovUkErrorSummary mustBe empty
+        createView().getGovUkErrorSummary mustBe empty
       }
 
       "some errors" in {
-        val value = ShutMucr.form.withError(FormError("mucr", "error.mucr.empty"))
-
-        val view: Document = page(value)
+        val view: Document = createView(form.withError(FormError("mucr", "error.mucr.empty")))
 
         view must haveGovUkGlobalErrorSummary
         view must haveGovUkFieldError("mucr", messages("error.mucr.empty"))
@@ -65,12 +89,10 @@ class ShutMucrViewSpec extends ViewSpec with Injector {
     }
 
     "render submit button" in {
-
-      val view = page(ShutMucr.form())
+      val view = createView()
 
       view.getSubmitButton mustBe defined
       view.getSubmitButton.get must containMessage("site.continue")
     }
   }
-
 }

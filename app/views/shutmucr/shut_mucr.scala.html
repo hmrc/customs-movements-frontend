@@ -14,20 +14,24 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.consolidations.routes.ShutMucrController
 @import controllers.routes.ChoiceController
 @import forms.ShutMucr
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.BackButton
-@import views.html.components.gds.{exportsInputText, errorSummary, gds_main_template}
+@import views.html.components.gds.{exportsInputText, errorSummary, gds_main_template, link}
 @import views.Title
 
 @this(
     govukLayout: gds_main_template,
+    govukDetails : GovukDetails,
     govukButton: GovukButton,
     exportsInputText: exportsInputText,
+    link: link,
     errorSummary: errorSummary,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
 )
 
 @(form: Form[ShutMucr])(implicit request: Request[_], messages: Messages)
@@ -44,6 +48,17 @@
             labelKey = "shutMucr.title",
             isPageHeading = true
         )
+
+        @govukDetails(Details(
+            summary = Text(messages("shutMucr.expander.title")),
+            content = HtmlContent(messages("shutMucr.expander.content",
+                link(
+                    message = Html(messages("shutMucr.expander.content.link")),
+                    href = Call("GET", appConfig.guidanceOnDucrAndMucr),
+                    target = "_blank"
+                )
+            ))
+        ))
 
         @govukButton(Button(content = Text(messages("site.continue"))))
     }

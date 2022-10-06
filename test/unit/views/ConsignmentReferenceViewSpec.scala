@@ -91,7 +91,7 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector with MockitoSu
       }
     }
 
-    "display the expander for Arrived declarations" in {
+    "display the expander for Ducr / Mucr guidance" in {
       val expander = createView().getElementsByClass("govuk-details").first()
       expander.children.size mustBe 2
 
@@ -103,6 +103,12 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector with MockitoSu
       val expectedText = messages(s"$prefix", messages(s"$prefix.link"))
       val actualText = removeBlanksIfAnyBeforeDot(paragraph.text)
       actualText mustBe expectedText
+
+      val link = paragraph.child(0)
+      link must haveHref(
+        "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide/group-2-references-of-messages-document-certificates-and-authorisations"
+      )
+      link must haveAttribute("target", "_blank")
     }
 
     checkAllSaveButtonsAreDisplayed(createView()(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))

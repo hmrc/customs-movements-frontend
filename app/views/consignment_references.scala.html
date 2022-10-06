@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.routes.{DucrPartChiefController, ConsignmentReferencesController}
 @import forms.ConsignmentReferences
 @import forms.UcrType.{Ducr, Mucr}
@@ -25,18 +26,21 @@
 
 @this(
     govukLayout: gds_main_template,
+    govukDetails : GovukDetails,
     govukRadios: GovukRadios,
     exportsInputText: exportsInputText,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
+    link: link,
     formHelper: FormWithCSRF,
-    saveButtons: saveButtons
+    saveButtons: saveButtons,
+    appConfig: AppConfig
 )
 
 @(form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_], messages: Messages)
 
-@headerKey = @{s"consignmentReferences.${request.answers.`type`}.question"}
-@sectionHeaderKey = @{s"consignmentReferences.${request.answers.`type`}.heading"}
+@headerKey = @{s"consignment.references.${request.answers.`type`}.question"}
+@sectionHeaderKey = @{s"consignment.references.${request.answers.`type`}.heading"}
 
 @govukLayout(
   title = Title(headerKey, Some(sectionHeaderKey)),
@@ -60,17 +64,32 @@
       items = Seq(
         RadioItem(
           value = Some(Ducr.codeValue),
-          content = Text(messages("consignmentReferences.reference.ducr")),
+          content = Text(messages("consignment.references.ducr")),
           checked = form("reference").value.contains(Ducr.codeValue),
-          conditionalHtml = Some(exportsInputText(form("ducrValue"), "site.inputText.ducr.label", Some(Text(messages("consignmentReferences.reference.ducr.hint")))))
+          conditionalHtml = Some(exportsInputText(
+              form("ducrValue"),
+              "site.inputText.ducr.label",
+              Some(Text(messages("consignment.references.ducr.hint")))
+          ))
         ),
         RadioItem(
           value = Some(Mucr.codeValue),
-          content = Text(messages("consignmentReferences.reference.mucr")),
+          content = Text(messages("consignment.references.mucr")),
           checked = form("reference").value.contains(Mucr.codeValue),
           conditionalHtml = Some(exportsInputText(form("mucrValue"), "site.inputText.mucr.label"))
         )
       )
+    ))
+
+    @govukDetails(Details(
+        summary = Text(messages("consignment.references.expander.title")),
+        content = HtmlContent(messages("consignment.references.expander.content",
+            link(
+                message = Html(messages("consignment.references.expander.content.link")),
+                href = Call("GET", appConfig.guidanceOnDucrAndMucr),
+                target = "_blank"
+            )
+        ))
     ))
 
     @saveButtons()

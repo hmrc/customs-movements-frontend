@@ -46,6 +46,7 @@ class AppConfigSpec extends AnyWordSpec with Matchers with MockitoSugar {
         |urls.locationCodesForCsePremises="http://locationCodesForCsePremises"
         |urls.goodsLocationCodesForDataElement="http://goodsLocationCodesForDataElement"
         |urls.tariffCdsChiefSupplement="http://tariffCdsChiefSupplement"
+        |urls.guidanceOnDucrAndMucr="http://guidanceOnDucrAndMucr"
         |
         |mongodb.uri="mongodb://localhost:27017/customs-movements-frontend"
         |
@@ -99,6 +100,7 @@ class AppConfigSpec extends AnyWordSpec with Matchers with MockitoSugar {
         |urls.locationCodesForCsePremises="http://locationCodesForCsePremises"
         |urls.goodsLocationCodesForDataElement="http://goodsLocationCodesForDataElement"
         |urls.tariffCdsChiefSupplement="http://tariffCdsChiefSupplement"
+        |urls.guidanceOnDucrAndMucr="http://guidanceOnDucrAndMucr"
         |
         |mongodb.uri="mongodb://localhost:27017/customs-movements-frontend"
         |
@@ -290,5 +292,4 @@ class AppConfigSpec extends AnyWordSpec with Matchers with MockitoSugar {
       }
     }
   }
-
 }

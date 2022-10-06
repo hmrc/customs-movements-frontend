@@ -39,9 +39,9 @@
 
 @referenceTypeKey = @{
     data.consignmentReferences.map { ref =>
-        if (ref.is(Ducr)) "consignmentReferences.reference.ducr"
-        else if (ref.is(DucrPart)) "consignmentReferences.reference.ducrPart"
-        else "consignmentReferences.reference.mucr"
+        if (ref.is(Ducr)) "consignment.references.ducr"
+        else if (ref.is(DucrPart)) "consignment.references.ducrPart"
+        else "consignment.references.mucr"
     }.getOrElse("")
 }
 

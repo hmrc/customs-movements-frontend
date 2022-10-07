@@ -34,7 +34,7 @@
 
 @(form: Form[String])(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title("ileQuery.title"), backButton = Some(BackButton(messages("site.back"), ChoiceController.displayChoices))) {
+@govukLayout(title = Title("ileQuery.title"), backButton = Some(BackButton(messages("site.back.toStartPage"), ChoiceController.displayChoices))) {
 
     @formHelper(action = FindConsignmentController.submitPage, 'autoComplete -> "off") {
         @errorSummary(form.errors)

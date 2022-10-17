@@ -54,7 +54,7 @@ class FindConsignmentControllerSpec extends ControllerLayerSpec with MockIleQuer
 
   "FindConsignmentController on displayPage" should {
     "return Ok status (200)" in {
-      val result = controller.displayPage(getRequest)
+      val result = controller.displayPage(getRequest())
 
       status(result) mustBe OK
     }
@@ -98,7 +98,7 @@ class FindConsignmentControllerSpec extends ControllerLayerSpec with MockIleQuer
 
     "block access to query form" in {
       intercept[RuntimeException] {
-        await(controllerIleQueryDisabled.displayPage(getRequest))
+        await(controllerIleQueryDisabled.displayPage(getRequest()))
       } mustBe InvalidFeatureStateException
 
     }

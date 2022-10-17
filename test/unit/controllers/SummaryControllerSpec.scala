@@ -68,13 +68,13 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
     "return 200 (OK)" when {
 
       "cache contains data and user is during Arrival journey" in {
-        val result = controller(ArrivalAnswers()).displayPage()(getRequest())
+        val result = controller(ArrivalAnswers()).displayPage(getRequest())
 
         status(result) mustBe OK
       }
 
       "cache contains data and user is during Departure journey" in {
-        val result = controller(DepartureAnswers()).displayPage()(getRequest())
+        val result = controller(DepartureAnswers()).displayPage(getRequest())
 
         status(result) mustBe OK
       }
@@ -101,7 +101,7 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
         val result = controller(ArrivalAnswers()).submitMovementRequest()(postRequest(emptyForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.displayPage().url)
+        redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.displayPage.url)
       }
 
       "return response with Movement Type in flash" in {
@@ -131,7 +131,7 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
         val result = controller(DepartureAnswers()).submitMovementRequest()(postRequest(emptyForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.displayPage().url)
+        redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.displayPage.url)
       }
 
       "return response with Movement Type in flash" in {

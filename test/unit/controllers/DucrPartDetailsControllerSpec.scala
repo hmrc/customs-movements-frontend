@@ -64,7 +64,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
     "return Ok (200) response" in {
       givenTheCacheIsEmpty()
 
-      val result = controller().displayPage()(getRequest())
+      val result = controller().displayPage(getRequest())
       status(result) mustBe OK
 
       verify(cacheRepository).findByEori(any())
@@ -74,7 +74,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
       "cache is empty" in {
         givenTheCacheIsEmpty()
 
-        val result = controller().displayPage()(getRequest())
+        val result = controller().displayPage(getRequest())
         status(result) mustBe OK
 
         val expectedForm = DucrPartDetails.form()
@@ -88,7 +88,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
           Cache(eori = "eori", UcrBlock(ucrType = UcrType.DucrPart.codeValue, ucr = validWholeDucrParts), false)
         givenTheCacheContains(cacheContents)
 
-        val result = controller().displayPage()(getRequest())
+        val result = controller().displayPage(getRequest())
         status(result) mustBe OK
 
         val expectedForm = DucrPartDetails.form().fill(DucrPartDetails(ducr = validDucr, ducrPartId = validDucrPartId))
@@ -101,7 +101,7 @@ class DucrPartDetailsControllerSpec extends ControllerLayerSpec with MockCache w
         val cacheContents = Cache(eori = "eori", UcrBlock(ucrType = UcrType.Ducr.codeValue, ucr = validDucr), false)
         givenTheCacheContains(cacheContents)
 
-        val result = controller().displayPage()(getRequest())
+        val result = controller().displayPage(getRequest())
         status(result) mustBe OK
 
         val expectedForm = DucrPartDetails.form()

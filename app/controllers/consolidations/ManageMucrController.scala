@@ -48,18 +48,17 @@ class ManageMucrController @Inject() (
 
   private val journeyActions = authenticate andThen ileQueryFeatureEnabled andThen getJourney(ASSOCIATE_UCR)
 
-  def displayPage(): Action[AnyContent] = journeyActions { implicit request =>
+  def displayPage: Action[AnyContent] = journeyActions { implicit request =>
     if (request.cache.ucrBlock.map(_.isNot(UcrType.Mucr)).getOrElse(throw InvalidFeatureStateException))
-      Redirect(MucrOptionsController.displayPage())
+      Redirect(MucrOptionsController.displayPage)
     else {
       val mucrOptions = request.answersAs[AssociateUcrAnswers].manageMucrChoice
       Ok(page(mucrOptions.fold(form)(form.fill), request.cache.ucrBlock))
     }
   }
 
-  def submit(): Action[AnyContent] = journeyActions.async { implicit request =>
-    form
-      .bindFromRequest()
+  def submit: Action[AnyContent] = journeyActions.async { implicit request =>
+    form.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(page(formWithErrors, request.cache.ucrBlock))),
         validForm => {
@@ -77,7 +76,7 @@ class ManageMucrController @Inject() (
                 else updatedAnswers.copy(associateUcr = request.cache.ucrBlock.map(AssociateUcr.apply), mucrOptions = None)
 
               cacheRepository.upsert(request.cache.update(updatedForAssociateThisMucr)).map { _ =>
-                navigator.continueTo(MucrOptionsController.displayPage())
+                navigator.continueTo(MucrOptionsController.displayPage)
               }
 
             case AssociateAnotherMucr =>
@@ -87,7 +86,7 @@ class ManageMucrController @Inject() (
                 else updatedAnswers.copy(associateUcr = None, mucrOptions = request.cache.ucrBlock.map(MucrOptions.apply))
 
               cacheRepository.upsert(request.cache.update(updatedForAssociateAnotherMucr)).map { _ =>
-                navigator.continueTo(routes.AssociateUcrController.displayPage())
+                navigator.continueTo(routes.AssociateUcrController.displayPage)
               }
           }
         }

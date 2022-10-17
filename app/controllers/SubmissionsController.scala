@@ -37,7 +37,7 @@ class SubmissionsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayPage: Action[AnyContent] = authenticate.async { implicit request =>
     for {
       submissions <- connector.fetchAllSubmissions(request.user.eori)
       notifications <- connector.fetchAllNotificationsForUser(request.user.eori)

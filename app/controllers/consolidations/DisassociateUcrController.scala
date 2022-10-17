@@ -41,22 +41,21 @@ class DisassociateUcrController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(DISSOCIATE_UCR)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen getJourney(DISSOCIATE_UCR)) { implicit request =>
     request.answersAs[DisassociateUcrAnswers].ucr match {
       case Some(ucr) => Ok(page(form.fill(ucr)))
       case _         => Ok(page(form))
     }
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen getJourney(DISSOCIATE_UCR)).async { implicit request =>
-    form
-      .bindFromRequest()
+  def submit: Action[AnyContent] = (authenticate andThen getJourney(DISSOCIATE_UCR)).async { implicit request =>
+    form.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(page(formWithErrors))),
         validForm => {
           val updatedAnswers = request.answersAs[DisassociateUcrAnswers].copy(ucr = Some(validForm))
           cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
-            Redirect(DisassociateUcrSummaryController.displayPage())
+            Redirect(DisassociateUcrSummaryController.displayPage)
           }
         }
       )

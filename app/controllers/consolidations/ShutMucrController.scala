@@ -42,20 +42,19 @@ class ShutMucrController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(SHUT_MUCR)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen getJourney(SHUT_MUCR)) { implicit request =>
     val shutMucr: Option[ShutMucr] = request.answersAs[ShutMucrAnswers].shutMucr
     Ok(shutMucrPage(shutMucr.fold(form())(form().fill)))
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen getJourney(SHUT_MUCR)).async { implicit request =>
-    form()
-      .bindFromRequest()
+  def submitForm: Action[AnyContent] = (authenticate andThen getJourney(SHUT_MUCR)).async { implicit request =>
+    form().bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(shutMucrPage(formWithErrors))),
         validForm => {
           val updatedAnswers = request.answersAs[ShutMucrAnswers].copy(shutMucr = Some(validForm))
           cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
-            Redirect(ShutMucrSummaryController.displayPage())
+            Redirect(ShutMucrSummaryController.displayPage)
           }
         }
       )

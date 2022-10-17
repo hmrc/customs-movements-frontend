@@ -81,7 +81,7 @@ class ShutMucrViewSpec extends ViewSpec with Injector {
       }
 
       "some errors" in {
-        val view: Document = createView(form.withError(FormError("mucr", "error.mucr.empty")))
+        val view: Document = createView(form().withError(FormError("mucr", "error.mucr.empty")))
 
         view must haveGovUkGlobalErrorSummary
         view must haveGovUkFieldError("mucr", messages("error.mucr.empty"))

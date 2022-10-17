@@ -52,7 +52,7 @@
     backButton = Some(BackButton(messages("site.back"), backUrl)),
     useCustomContentWidth = true
 )  {
-    @formHelper(action = DisassociateUcrSummaryController.submit(), 'autoComplete -> "off") {
+    @formHelper(action = DisassociateUcrSummaryController.submit, 'autoComplete -> "off") {
 
         @pageTitle(messages("disassociate.ucr.summary.title"))
 

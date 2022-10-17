@@ -16,12 +16,11 @@
 
 package utils.internationalisation
 
-import javax.inject.{Inject, Singleton}
 import play.api.http.HttpConfiguration
 import play.api.i18n.{DefaultMessagesApiProvider, Langs}
 import play.api.{Configuration, Environment}
 
-import scala.collection.breakOut
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class MovementsMessagesApiProvider @Inject() (environment: Environment, config: Configuration, langs: Langs, httpConfiguration: HttpConfiguration)
@@ -32,7 +31,8 @@ class MovementsMessagesApiProvider @Inject() (environment: Environment, config: 
       .map(_.code)
       .map { code =>
         (code, loadMessageFiles(s".$code"))
-      }(breakOut): Map[String, Map[String, String]])
+      }
+      .toMap: Map[String, Map[String, String]])
       .+("default" -> loadMessageFiles("")) + ("default.play" -> loadMessageFiles(".default"))
 
   private def loadMessageFiles(suffix: String): Map[String, String] =

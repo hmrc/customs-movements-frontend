@@ -39,15 +39,15 @@
 
 @backUrl = @{
     if (request.cache.ucrBlockFromIleQuery) ChoiceOnConsignmentController.displayChoices
-    else if (request.cache.isDucrPartChief) DucrPartDetailsController.displayPage()
-    else ConsignmentReferencesController.displayPage()
+    else if (request.cache.isDucrPartChief) DucrPartDetailsController.displayPage
+    else ConsignmentReferencesController.displayPage
 }
 
 @govukLayout(
   title = Title("specific.datetime.heading"),
   backButton = Some(BackButton(messages("site.back.previousQuestion"), backUrl))
 ) {
-  @formHelper(action = SpecificDateTimeController.submit(), 'autoComplete -> "off") {
+  @formHelper(action = SpecificDateTimeController.submit, 'autoComplete -> "off") {
     @errorSummary(form.errors)
 
     @sectionHeader(messages(sectionHeaderKey, consignmentReferenceValue))

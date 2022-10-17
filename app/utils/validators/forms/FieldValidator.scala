@@ -92,8 +92,8 @@ object FieldValidator {
 
   val isTailNumeric: String => Boolean = (input: String) =>
     Try(input.tail) match {
-      case Success(value) => isNumeric(value)
-      case _              => false
+      case Success(value) if value.nonEmpty => isNumeric(value)
+      case _                                => false
     }
 
   val isInRange: (Int, Int) => String => Boolean = (min: Int, max: Int) =>

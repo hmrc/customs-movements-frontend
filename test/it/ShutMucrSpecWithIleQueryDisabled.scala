@@ -32,7 +32,7 @@ class ShutMucrSpecWithIleQueryDisabled extends IntegrationSpec {
         givenCacheFor("eori", ShutMucrAnswers())
 
         // When
-        val response = get(controllers.consolidations.routes.ShutMucrController.displayPage())
+        val response = get(controllers.consolidations.routes.ShutMucrController.displayPage)
 
         // Then
         status(response) mustBe OK
@@ -50,7 +50,7 @@ class ShutMucrSpecWithIleQueryDisabled extends IntegrationSpec {
 
         // Then
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.ShutMucrSummaryController.displayPage().url)
+        redirectLocation(response) mustBe Some(controllers.consolidations.routes.ShutMucrSummaryController.displayPage.url)
         theAnswersFor("eori") mustBe Some(ShutMucrAnswers(shutMucr = Some(ShutMucr("GB/123-12345"))))
       }
     }

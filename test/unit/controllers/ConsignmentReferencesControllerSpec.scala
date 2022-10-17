@@ -64,7 +64,7 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
   "Consignment Reference Controller" should {
     "return 200 (OK)" when {
       "display page method is invoked and cache is empty" in {
-        val result = controller(ArrivalAnswers()).displayPage()(getRequest())
+        val result = controller(ArrivalAnswers()).displayPage(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value mustBe empty
@@ -75,7 +75,7 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
           val cachedData = ConsignmentReferences("D", "123456")
 
           val answers = ArrivalAnswers(Some(cachedData))
-          val result = controller(answers).displayPage()(getRequest())
+          val result = controller(answers).displayPage(getRequest())
 
           status(result) mustBe OK
           theResponseForm.value.value mustBe cachedData
@@ -85,7 +85,7 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
           val cachedData = ConsignmentReferences("D", "123456")
 
           val answers = DepartureAnswers(Some(cachedData))
-          val result = controller(answers).displayPage()(getRequest())
+          val result = controller(answers).displayPage(getRequest())
 
           status(result) mustBe OK
           theResponseForm.value.value mustBe cachedData
@@ -119,7 +119,7 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
         val result = controller(ArrivalAnswers()).saveConsignmentReferences()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe routes.SpecificDateTimeController.displayPage().url
+        thePageNavigatedTo.url mustBe routes.SpecificDateTimeController.displayPage.url
       }
     }
 
@@ -138,7 +138,7 @@ class ConsignmentReferencesControllerSpec extends ControllerLayerSpec with MockC
         val result = controller(DepartureAnswers()).saveConsignmentReferences()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe routes.SpecificDateTimeController.displayPage().url
+        thePageNavigatedTo.url mustBe routes.SpecificDateTimeController.displayPage.url
       }
     }
   }

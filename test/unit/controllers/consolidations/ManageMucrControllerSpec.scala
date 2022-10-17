@@ -54,7 +54,7 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
       navigator
     )
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     super.beforeEach()
     when(page.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
@@ -75,7 +75,7 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
     "return 200 (OK)" when {
 
       "display page method is invoked" in {
-        val result = controller(AssociateUcrAnswers()).displayPage()(getRequest())
+        val result = controller(AssociateUcrAnswers()).displayPage(getRequest())
 
         status(result) mustBe OK
         theFormRendered.value mustBe empty
@@ -84,7 +84,7 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
       "display page with filled data" in {
         val manageMucrChoice = ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr)
 
-        val result = controller(AssociateUcrAnswers(Some(manageMucrChoice), None, None)).displayPage()(getRequest())
+        val result = controller(AssociateUcrAnswers(Some(manageMucrChoice), None, None)).displayPage(getRequest())
 
         status(result) mustBe OK
         theFormRendered.value.get.choice mustBe ManageMucrChoice.AssociateAnotherMucr
@@ -96,7 +96,7 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
       "form is incorrect during saving" in {
         val incorrectForm = Json.toJson(ManageMucrChoice("invalid"))
 
-        val result = controller(AssociateUcrAnswers()).submit()(postRequest(incorrectForm))
+        val result = controller(AssociateUcrAnswers()).submit(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
         verify(page).apply(any(), any())(any(), any())
@@ -106,35 +106,35 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
     "return 303 (SEE_OTHER)" when {
 
       "queried ucr was Ducr" in {
-        val result = controller(AssociateUcrAnswers(), ucrBlock = Some(UcrBlock("ducr", UcrType.Ducr))).displayPage()(getRequest())
+        val result = controller(AssociateUcrAnswers(), ucrBlock = Some(UcrBlock("ducr", UcrType.Ducr))).displayPage(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.MucrOptionsController.displayPage().url
+        redirectLocation(result).value mustBe routes.MucrOptionsController.displayPage.url
       }
 
       "queried ucr was Ducr Part" in {
-        val result = controller(AssociateUcrAnswers(), ucrBlock = Some(UcrBlock("ducrPart", UcrType.DucrPart))).displayPage()(getRequest())
+        val result = controller(AssociateUcrAnswers(), ucrBlock = Some(UcrBlock("ducrPart", UcrType.DucrPart))).displayPage(getRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.MucrOptionsController.displayPage().url
+        redirectLocation(result).value mustBe routes.MucrOptionsController.displayPage.url
       }
 
       "form is correct with AssociateAnotherMucr option" in {
         val correctForm = Json.toJson(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr))
 
-        val result = controller(AssociateUcrAnswers()).submit()(postRequest(correctForm))
+        val result = controller(AssociateUcrAnswers()).submit(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe routes.AssociateUcrController.displayPage().url
+        thePageNavigatedTo.url mustBe routes.AssociateUcrController.displayPage.url
       }
 
       "form is correct with AssociateThisMucr option" in {
         val correctForm = Json.toJson(ManageMucrChoice(ManageMucrChoice.AssociateThisMucr))
 
-        val result = controller(AssociateUcrAnswers()).submit()(postRequest(correctForm))
+        val result = controller(AssociateUcrAnswers()).submit(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe routes.MucrOptionsController.displayPage().url
+        thePageNavigatedTo.url mustBe routes.MucrOptionsController.displayPage.url
       }
     }
   }
@@ -145,13 +145,13 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
 
       "ileQuery feature disabled" in {
         intercept[RuntimeException] {
-          await(controller(AssociateUcrAnswers(), IleQueryDisabled).displayPage()(getRequest()))
+          await(controller(AssociateUcrAnswers(), IleQueryDisabled).displayPage(getRequest()))
         } mustBe InvalidFeatureStateException
       }
 
       "queried ucr not available in cache" in {
         intercept[RuntimeException] {
-          await(controller(AssociateUcrAnswers(), IleQueryEnabled, ucrBlock = None).displayPage()(getRequest()))
+          await(controller(AssociateUcrAnswers(), IleQueryEnabled, ucrBlock = None).displayPage(getRequest()))
         } mustBe InvalidFeatureStateException
       }
     }

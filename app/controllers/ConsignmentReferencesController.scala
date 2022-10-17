@@ -46,14 +46,13 @@ class ConsignmentReferencesController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)) { implicit request =>
     val references = request.answersAs[MovementAnswers].consignmentReferences
     Ok(consignmentReferencesPage(references.fold(form(request.answers.`type`))(form(request.answers.`type`).fill(_))))
   }
 
   def saveConsignmentReferences(): Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)).async { implicit request =>
-    form(request.answers.`type`)
-      .bindFromRequest()
+    form(request.answers.`type`).bindFromRequest
       .fold(
         (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
         validForm =>
@@ -66,6 +65,6 @@ class ConsignmentReferencesController @Inject() (
 
   private def saveAndContinue(answers: Answers)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     cacheRepository.upsert(request.cache.update(answers)).map { _ =>
-      navigator.continueTo(SpecificDateTimeController.displayPage())
+      navigator.continueTo(SpecificDateTimeController.displayPage)
     }
 }

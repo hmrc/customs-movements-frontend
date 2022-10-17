@@ -15,7 +15,7 @@
  *@
 
 @import controllers.routes.ChoiceOnConsignmentController
-@import forms.{ManageMucrChoice, MucrOptions}
+@import forms.ManageMucrChoice
 @import models.requests.RequestWithAnswers
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
@@ -37,7 +37,7 @@
     title = Title("manageMucr.title"),
     backButton = Some(BackButton(messages("site.back.previousQuestion"), ChoiceOnConsignmentController.displayChoices))
 ) {
-    @formHelper(action = consolidations.routes.ManageMucrController.submit(), 'autoComplete -> "off") {
+    @formHelper(action = consolidations.routes.ManageMucrController.submit, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("manageMucr.heading", ucrBlock.map(_.ucr).getOrElse("")))

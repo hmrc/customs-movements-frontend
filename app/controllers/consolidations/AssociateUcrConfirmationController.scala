@@ -34,7 +34,7 @@ class AssociateUcrConfirmationController @Inject() (
   confirmationPage: confirmation_page
 ) extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = authenticate { implicit request =>
+  def displayPage: Action[AnyContent] = authenticate { implicit request =>
     val journeyType = flashExtractor.extractMovementType(request).getOrElse(throw ReturnToStartException)
     journeyType match {
       case ASSOCIATE_UCR => Ok(confirmationPage(journeyType))

@@ -38,7 +38,7 @@ class SummaryController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)) { implicit request =>
     request.answers match {
       case arrivalAnswers: ArrivalAnswers     => Ok(arrivalSummaryPage(arrivalAnswers))
       case departureAnswers: DepartureAnswers => Ok(departureSummaryPage(departureAnswers))
@@ -48,7 +48,7 @@ class SummaryController @Inject() (
   def submitMovementRequest(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)).async {
     implicit request =>
       submissionService.submit(request.eori, request.answersAs[MovementAnswers]).map { _ =>
-        Redirect(controllers.routes.MovementConfirmationController.displayPage())
+        Redirect(controllers.routes.MovementConfirmationController.displayPage)
           .flashing(FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString)
       }
   }

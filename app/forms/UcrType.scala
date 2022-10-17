@@ -42,7 +42,7 @@ object UcrType {
       data
         .get(key)
         .map { typ =>
-          lookup.andThen(Right.apply).applyOrElse(typ, (_: String) => Left(Seq(FormError(key, noRadioSelectedErrorKey))))
+          lookup.andThen(Right.apply(_)).applyOrElse(typ, (_: String) => Left(Seq(FormError(key, noRadioSelectedErrorKey))))
         }
         .getOrElse(Left(Seq(FormError(key, noRadioSelectedErrorKey))))
 

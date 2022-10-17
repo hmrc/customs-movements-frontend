@@ -50,7 +50,7 @@ class MovementDetailsController @Inject() (
 
   val journeyAction = authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)
 
-  def displayPage(): Action[AnyContent] = journeyAction { implicit request =>
+  def displayPage: Action[AnyContent] = journeyAction { implicit request =>
     request.answers match {
       case arrivalAnswers: ArrivalAnswers     => Ok(arrivalPage(arrivalAnswers))
       case departureAnswers: DepartureAnswers => Ok(departurePage(departureAnswers))
@@ -69,7 +69,7 @@ class MovementDetailsController @Inject() (
       departureAnswers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException)
     )
 
-  def saveMovementDetails(): Action[AnyContent] = journeyAction.async { implicit request =>
+  def saveMovementDetails: Action[AnyContent] = journeyAction.async { implicit request =>
     (request.answers match {
       case arrivalAnswers: ArrivalAnswers     => handleSavingArrival(arrivalAnswers)
       case departureAnswers: DepartureAnswers => handleSavingDeparture(departureAnswers)
@@ -89,13 +89,13 @@ class MovementDetailsController @Inject() (
 
     details
       .arrivalForm()
-      .bindFromRequest()
+      .bindFromRequest
       .fold(
         (formWithErrors: Form[ArrivalDetails]) =>
           Future.successful(Left(arrivalDetailsPage(withDateSpecificErrors(formWithErrors), consignmentReferenceValue))),
         validForm =>
           cache.upsert(request.cache.update(arrivalAnswers.copy(arrivalDetails = Some(validForm)))).map { _ =>
-            Right(LocationController.displayPage())
+            Right(LocationController.displayPage)
           }
       )
   }
@@ -110,13 +110,13 @@ class MovementDetailsController @Inject() (
 
     details
       .departureForm()
-      .bindFromRequest()
+      .bindFromRequest
       .fold(
         (formWithErrors: Form[DepartureDetails]) =>
           Future.successful(Left(departureDetailsPage(withDateSpecificErrors(formWithErrors), consignmentReferenceValue))),
         validForm =>
           cache.upsert(request.cache.update(departureAnswers.copy(departureDetails = Some(validForm)))).map { _ =>
-            Right(LocationController.displayPage())
+            Right(LocationController.displayPage)
           }
       )
   }

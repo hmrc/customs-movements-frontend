@@ -45,7 +45,7 @@ class TransportController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DEPART)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DEPART)) { implicit request =>
     val answers = request.answersAs[DepartureAnswers]
     val consignmentReference = answers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException)
     Ok(transportPage(answers.transport.fold(form)(form.fill), consignmentReference))
@@ -54,14 +54,13 @@ class TransportController @Inject() (
   def saveTransport(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DEPART)).async { implicit request =>
     val answers = request.answersAs[DepartureAnswers]
     val consignmentReference = answers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException)
-    form
-      .bindFromRequest()
+    form.bindFromRequest
       .fold(
         (formWithErrors: Form[Transport]) => Future.successful(BadRequest(transportPage(formWithErrors, consignmentReference))),
         validForm => {
           val movementAnswers = answers.copy(transport = Some(validForm), readyToSubmit = Some(true))
           cache.upsert(request.cache.update(movementAnswers)).map { _ =>
-            Redirect(controllers.routes.SummaryController.displayPage())
+            Redirect(controllers.routes.SummaryController.displayPage)
           }
         }
       )

@@ -81,13 +81,13 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
     "display 'Change' link on page for associate ucr" in {
       val changeUcr = view.getElementsByClass("govuk-link").get(1)
       changeUcr must containMessage("site.change")
-      changeUcr must haveHref(AssociateUcrController.displayPage())
+      changeUcr must haveHref(AssociateUcrController.displayPage)
     }
 
     "display 'Change' link on the page for mucr" in {
       val changeMucr = view.getElementsByClass("govuk-link").get(2)
       changeMucr must containMessage("site.change")
-      changeMucr must haveHref(MucrOptionsController.displayPage())
+      changeMucr must haveHref(MucrOptionsController.displayPage)
     }
 
     "display 'Add consignment' type in summary list" in {

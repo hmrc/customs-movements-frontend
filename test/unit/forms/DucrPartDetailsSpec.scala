@@ -34,8 +34,8 @@ class DucrPartDetailsSpec extends BaseSpec {
         val result = DucrPartDetails.mapping.bind(input)
 
         result.isLeft mustBe true
-        result.left.get.size mustBe 2
-        result.left.get must contain(FormError("ducr", Seq("ducrPartDetails.ducr.empty")))
+        result.swap.getOrElse(Seq.empty[FormError]).size mustBe 2
+        result.swap.getOrElse(Seq.empty[FormError]) must contain(FormError("ducr", Seq("ducrPartDetails.ducr.empty")))
       }
 
       "provided with incorrect DUCR" in {
@@ -45,8 +45,8 @@ class DucrPartDetailsSpec extends BaseSpec {
         val result = DucrPartDetails.mapping.bind(input)
 
         result.isLeft mustBe true
-        result.left.get.size mustBe 2
-        result.left.get must contain(FormError("ducr", Seq("ducrPartDetails.ducr.invalid")))
+        result.swap.getOrElse(Seq.empty[FormError]).size mustBe 2
+        result.swap.getOrElse(Seq.empty[FormError]) must contain(FormError("ducr", Seq("ducrPartDetails.ducr.invalid")))
       }
 
       "provided with empty DUCR Part ID" in {
@@ -56,8 +56,8 @@ class DucrPartDetailsSpec extends BaseSpec {
         val result = DucrPartDetails.mapping.bind(input)
 
         result.isLeft mustBe true
-        result.left.get.size mustBe 1
-        result.left.get must contain(FormError("ducrPartId", Seq("ducrPartDetails.ducrPartId.empty")))
+        result.swap.getOrElse(Seq.empty[FormError]).size mustBe 1
+        result.swap.getOrElse(Seq.empty[FormError]) must contain(FormError("ducrPartId", Seq("ducrPartDetails.ducrPartId.empty")))
       }
 
       "provided with incorrect DUCR Part ID" in {
@@ -67,8 +67,8 @@ class DucrPartDetailsSpec extends BaseSpec {
         val result = DucrPartDetails.mapping.bind(input)
 
         result.isLeft mustBe true
-        result.left.get.size mustBe 1
-        result.left.get must contain(FormError("ducrPartId", Seq("ducrPartDetails.ducrPartId.invalid")))
+        result.swap.getOrElse(Seq.empty[FormError]).size mustBe 1
+        result.swap.getOrElse(Seq.empty[FormError]) must contain(FormError("ducrPartId", Seq("ducrPartDetails.ducrPartId.invalid")))
       }
     }
 
@@ -102,7 +102,7 @@ class DucrPartDetailsSpec extends BaseSpec {
         val result = DucrPartDetails.mapping.bind(input)
 
         result.isRight mustBe true
-        result.right.get.ducr mustBe validDucr.toUpperCase
+        result.getOrElse(DucrPartDetails("", "")).ducr mustBe validDucr.toUpperCase
       }
 
       "provided with DUCR Part ID containing lower case characters" in {
@@ -112,7 +112,7 @@ class DucrPartDetailsSpec extends BaseSpec {
         val result = DucrPartDetails.mapping.bind(input)
 
         result.isRight mustBe true
-        result.right.get.ducrPartId mustBe validDucrPartId.toUpperCase
+        result.getOrElse(DucrPartDetails("", "")).ducrPartId mustBe validDucrPartId.toUpperCase
       }
     }
   }

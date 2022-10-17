@@ -38,7 +38,7 @@ class DepartureSpec extends IntegrationSpec {
         givenCacheFor("eori", DepartureAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
 
         // When
-        val response = get(controllers.routes.SpecificDateTimeController.displayPage())
+        val response = get(controllers.routes.SpecificDateTimeController.displayPage)
 
         // Then
         status(response) mustBe OK
@@ -53,11 +53,11 @@ class DepartureSpec extends IntegrationSpec {
           givenCacheFor("eori", DepartureAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
 
           // When
-          val response = post(controllers.routes.SpecificDateTimeController.submit(), "choice" -> SpecificDateTimeChoice.UserDateTime)
+          val response = post(controllers.routes.SpecificDateTimeController.submit, "choice" -> SpecificDateTimeChoice.UserDateTime)
 
           // Then
           status(response) mustBe SEE_OTHER
-          redirectLocation(response) mustBe Some(controllers.routes.MovementDetailsController.displayPage().url)
+          redirectLocation(response) mustBe Some(controllers.routes.MovementDetailsController.displayPage.url)
           theAnswersFor("eori") mustBe Some(
             DepartureAnswers(
               consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
@@ -71,11 +71,11 @@ class DepartureSpec extends IntegrationSpec {
           givenCacheFor("eori", DepartureAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
 
           // When
-          val response = post(controllers.routes.SpecificDateTimeController.submit(), "choice" -> SpecificDateTimeChoice.CurrentDateTime)
+          val response = post(controllers.routes.SpecificDateTimeController.submit, "choice" -> SpecificDateTimeChoice.CurrentDateTime)
 
           // Then
           status(response) mustBe SEE_OTHER
-          redirectLocation(response) mustBe Some(controllers.routes.LocationController.displayPage().url)
+          redirectLocation(response) mustBe Some(controllers.routes.LocationController.displayPage.url)
           theAnswersFor("eori") mustBe Some(
             DepartureAnswers(
               consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
@@ -96,7 +96,7 @@ class DepartureSpec extends IntegrationSpec {
         givenCacheFor("eori", DepartureAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
 
         // When
-        val response = get(controllers.routes.MovementDetailsController.displayPage())
+        val response = get(controllers.routes.MovementDetailsController.displayPage)
 
         // Then
         status(response) mustBe OK
@@ -122,7 +122,7 @@ class DepartureSpec extends IntegrationSpec {
 
         // Then
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.routes.LocationController.displayPage().url)
+        redirectLocation(response) mustBe Some(controllers.routes.LocationController.displayPage.url)
         theAnswersFor("eori") mustBe Some(
           DepartureAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
@@ -147,7 +147,7 @@ class DepartureSpec extends IntegrationSpec {
         )
 
         // When
-        val response = get(controllers.routes.LocationController.displayPage())
+        val response = get(controllers.routes.LocationController.displayPage)
 
         // Then
         status(response) mustBe OK
@@ -171,7 +171,7 @@ class DepartureSpec extends IntegrationSpec {
 
         // Then
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.routes.TransportController.displayPage().url)
+        redirectLocation(response) mustBe Some(controllers.routes.TransportController.displayPage.url)
         theAnswersFor("eori") mustBe Some(
           DepartureAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
@@ -198,7 +198,7 @@ class DepartureSpec extends IntegrationSpec {
         )
 
         // When
-        val response = get(controllers.routes.TransportController.displayPage())
+        val response = get(controllers.routes.TransportController.displayPage)
 
         // TThen
         status(response) mustBe OK
@@ -224,7 +224,7 @@ class DepartureSpec extends IntegrationSpec {
 
         // Then
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.routes.SummaryController.displayPage().url)
+        redirectLocation(response) mustBe Some(controllers.routes.SummaryController.displayPage.url)
         theAnswersFor("eori") mustBe Some(
           DepartureAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
@@ -254,7 +254,7 @@ class DepartureSpec extends IntegrationSpec {
         )
 
         // When
-        val response = get(controllers.routes.SummaryController.displayPage())
+        val response = get(controllers.routes.SummaryController.displayPage)
 
         // Then
         status(response) mustBe OK
@@ -281,7 +281,7 @@ class DepartureSpec extends IntegrationSpec {
 
         // Then
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.routes.MovementConfirmationController.displayPage().url)
+        redirectLocation(response) mustBe Some(controllers.routes.MovementConfirmationController.displayPage.url)
         theAnswersFor("eori") mustBe None
         verify(
           postRequestedForMovement()

@@ -34,7 +34,7 @@ class ShutMucrConfirmationController @Inject() (
   confirmationPage: confirmation_page
 ) extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = authenticate { implicit request =>
+  def displayPage: Action[AnyContent] = authenticate { implicit request =>
     val journeyType = flashExtractor.extractMovementType(request).getOrElse(throw ReturnToStartException)
     journeyType match {
       case SHUT_MUCR => Ok(confirmationPage(journeyType))

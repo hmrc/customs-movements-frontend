@@ -82,14 +82,14 @@ class DepartureSummaryViewSpec extends ViewSpec with Injector with MockitoSugar 
 
       val changeType = view.getElementsByClass("govuk-link").get(answer_consignment_type_link_index)
       changeType must containMessage("site.change")
-      changeType must haveHref(ConsignmentReferencesController.displayPage())
+      changeType must haveHref(ConsignmentReferencesController.displayPage)
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_consignment_reference) must containMessage("summary.referenceValue")
       view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_reference).text() mustBe "ref-value"
 
       val changeRef = view.getElementsByClass("govuk-link").get(answer_consignment_reference_link_index)
       changeRef must containMessage("site.change")
-      changeRef must haveHref(ConsignmentReferencesController.displayPage())
+      changeRef must haveHref(ConsignmentReferencesController.displayPage)
     }
 
     "render correct Consignment type" when {
@@ -125,14 +125,14 @@ class DepartureSummaryViewSpec extends ViewSpec with Injector with MockitoSugar 
 
       val changeDate = view.getElementsByClass("govuk-link").get(answer_date_link_index)
       changeDate must containMessage("site.change")
-      changeDate must haveHref(MovementDetailsController.displayPage())
+      changeDate must haveHref(MovementDetailsController.displayPage)
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_time) must containMessage("summary.departure.time")
       view.getElementsByClass("govuk-summary-list__value").get(answer_time).text mustBe viewDates.formatTime(time.time)
 
       val changeTime = view.getElementsByClass("govuk-link").get(answer_time_link_index)
       changeTime must containMessage("site.change")
-      changeTime must haveHref(MovementDetailsController.displayPage())
+      changeTime must haveHref(MovementDetailsController.displayPage)
     }
 
     "render 'Location' section in summary list" in {
@@ -146,7 +146,7 @@ class DepartureSummaryViewSpec extends ViewSpec with Injector with MockitoSugar 
 
       val changeDate = view.getElementsByClass("govuk-link").get(answer_location_link_index)
       changeDate must containMessage("site.change")
-      changeDate must haveHref(LocationController.displayPage())
+      changeDate must haveHref(LocationController.displayPage)
     }
 
     "render 'Transport' section in summary list" in {
@@ -162,14 +162,14 @@ class DepartureSummaryViewSpec extends ViewSpec with Injector with MockitoSugar 
 
       val changeMode = view.getElementsByClass("govuk-link").get(answer_transport_type_link_index)
       changeMode must containMessage("site.change")
-      changeMode must haveHref(TransportController.displayPage())
+      changeMode must haveHref(TransportController.displayPage)
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_transport_id) must containMessage("summary.transportId")
       view.getElementsByClass("govuk-summary-list__value").get(answer_transport_id).text mustBe "transport-id"
 
       val changeId = view.getElementsByClass("govuk-link").get(answer_transport_id_link_index)
       changeId must containMessage("site.change")
-      changeId must haveHref(TransportController.displayPage())
+      changeId must haveHref(TransportController.displayPage)
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_transport_nationality) must containMessage("summary.nationality")
       view
@@ -179,14 +179,14 @@ class DepartureSummaryViewSpec extends ViewSpec with Injector with MockitoSugar 
 
       val changeNationality = view.getElementsByClass("govuk-link").get(answer_transport_nationality_link_index)
       changeNationality must containMessage("site.change")
-      changeNationality must haveHref(TransportController.displayPage())
+      changeNationality must haveHref(TransportController.displayPage)
     }
 
     "render back button" in {
       val backButton = page(answers).getBackButton
 
       backButton mustBe defined
-      backButton.get must haveHref(TransportController.displayPage())
+      backButton.get must haveHref(TransportController.displayPage)
     }
 
     "render 'Confirm and submit' button on page" in {
@@ -195,13 +195,13 @@ class DepartureSummaryViewSpec extends ViewSpec with Injector with MockitoSugar 
 
     "render change consignment links on NON-'Find-a-consignment' journeys" in {
       val links = page(answers).getElementsByClass("govuk-link")
-      links.toString must include(ConsignmentReferencesController.displayPage().url)
+      links.toString must include(ConsignmentReferencesController.displayPage.url)
     }
 
     "not render change consignment links on a 'Find-a-consignment' journey" in {
       implicit val request = journeyRequest(DepartureAnswers(), Some(UcrBlock("ucr", UcrType.Ducr)), true)
       val links = page(answers).getElementsByClass("govuk-link")
-      links.toString must not include ConsignmentReferencesController.displayPage().url
+      links.toString must not include ConsignmentReferencesController.displayPage.url
     }
   }
 }

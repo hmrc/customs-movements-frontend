@@ -73,7 +73,7 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector with MockitoSu
       val backButton = createView().getBackButton
 
       backButton mustBe defined
-      backButton.get must haveHref(DucrPartChiefController.displayPage())
+      backButton.get must haveHref(DucrPartChiefController.displayPage)
       backButton.get must containMessage("site.back.previousQuestion")
 
     }

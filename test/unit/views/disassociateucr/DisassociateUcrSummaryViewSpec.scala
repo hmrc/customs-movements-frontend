@@ -58,7 +58,7 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector with Mockito
       val view = page(disassociateUcr)
       val changeButton = view.getElementsByClass("govuk-link").get(1)
       changeButton must containMessage("site.change")
-      changeButton must haveAttribute("href", controllers.consolidations.routes.DisassociateUcrController.displayPage().url)
+      changeButton must haveAttribute("href", controllers.consolidations.routes.DisassociateUcrController.displayPage.url)
     }
 
     "not display 'Change' link when on 'Find a consignment' journey" in {

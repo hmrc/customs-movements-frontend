@@ -516,12 +516,13 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
       "input contains two or more characters but not only numeric" in {
         isTailNumeric("12nd12") mustBe false
       }
+
+      "input contains only one character" in {
+        isTailNumeric("0") mustBe false
+      }
     }
 
     "return true" when {
-      "input contains only one character" in {
-        isTailNumeric("0") mustBe true
-      }
 
       "input contains all numeric characters starts from 2nd char" in {
         isTailNumeric("a1241") mustBe true

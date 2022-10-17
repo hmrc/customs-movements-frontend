@@ -89,7 +89,7 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
           val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences))
 
-          val result = controller(answers).displayPage()(getRequest())
+          val result = controller(answers).displayPage(getRequest())
 
           status(result) mustBe OK
           arrivalResponseForm.value mustBe empty
@@ -100,7 +100,7 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
           val cachedData = ArrivalDetails(Date(LocalDate.of(2019, 2, 10)), Time(LocalTime.of(10, 10)))
           val answers = ArrivalAnswers(arrivalDetails = Some(cachedData), consignmentReferences = Some(consignmentReferences))
 
-          val result = controller(answers).displayPage()(getRequest())
+          val result = controller(answers).displayPage(getRequest())
 
           status(result) mustBe OK
           arrivalResponseForm.value.value mustBe cachedData
@@ -112,7 +112,7 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
         "consignment reference is missing" in {
 
           intercept[RuntimeException] {
-            await(controller(ArrivalAnswers()).displayPage()(getRequest()))
+            await(controller(ArrivalAnswers()).displayPage(getRequest()))
           } mustBe ReturnToStartException
         }
       }
@@ -133,7 +133,7 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
           val result = controller(answers).saveMovementDetails()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo.url mustBe routes.LocationController.displayPage().url
+          thePageNavigatedTo.url mustBe routes.LocationController.displayPage.url
         }
       }
 
@@ -198,7 +198,7 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
 
           val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
 
-          val result = controller(answers).displayPage()(getRequest())
+          val result = controller(answers).displayPage(getRequest())
 
           status(result) mustBe OK
           departureResponseForm.value mustBe empty
@@ -209,7 +209,7 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
           val cachedData = DepartureDetails(Date(LocalDate.of(2019, 2, 10)), Time(LocalTime.now()))
           val answers = DepartureAnswers(departureDetails = Some(cachedData), consignmentReferences = Some(consignmentReferences))
 
-          val result = controller(answers).displayPage()(getRequest())
+          val result = controller(answers).displayPage(getRequest())
 
           status(result) mustBe OK
           departureResponseForm.value.value mustBe cachedData
@@ -221,7 +221,7 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
         "consignment reference is missing" in {
 
           intercept[RuntimeException] {
-            await(controller(DepartureAnswers()).displayPage()(getRequest()))
+            await(controller(DepartureAnswers()).displayPage(getRequest()))
           } mustBe ReturnToStartException
         }
       }
@@ -242,7 +242,7 @@ class MovementDetailsControllerSpec extends ControllerLayerSpec with MockCache w
           val result = controller(answers).saveMovementDetails()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
-          thePageNavigatedTo.url mustBe routes.LocationController.displayPage().url
+          thePageNavigatedTo.url mustBe routes.LocationController.displayPage.url
         }
       }
 

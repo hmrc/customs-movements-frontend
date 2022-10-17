@@ -133,7 +133,7 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
 
       await(controller.getConsignmentData("mucr")(request))
 
-      verify(ileQueryRepository) findBySessionIdAndUcr (meq("sessionId"), meq("mucr"))
+      verify(ileQueryRepository).findBySessionIdAndUcr(meq("sessionId"), meq("mucr"))
     }
   }
 
@@ -530,7 +530,7 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
     "block access when getting query results" in {
 
       intercept[RuntimeException] {
-        await(controllerIleQueryDisabled.getConsignmentData("mucr")(getRequest.withHeaders(Headers(("X-Session-ID", "123456")))))
+        await(controllerIleQueryDisabled.getConsignmentData("mucr")(getRequest().withHeaders(Headers(("X-Session-ID", "123456")))))
       } mustBe InvalidFeatureStateException
     }
   }

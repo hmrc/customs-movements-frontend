@@ -44,7 +44,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
   private def controller(journey: ValidJourney = ValidJourney(AssociateUcrAnswers())): MucrOptionsController =
     new MucrOptionsController(SuccessfulAuth(), journey, stubMessagesControllerComponents(), cacheRepository, page, navigator)(global)
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     super.beforeEach()
     when(page.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
@@ -71,7 +71,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
     "return 200 (OK)" when {
 
       "display page method is invoked" in {
-        val result = controller().displayPage()(getRequest())
+        val result = controller().displayPage(getRequest())
 
         status(result) mustBe OK
         theFormRendered.value mustBe empty
@@ -81,7 +81,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
         val mucrOptions = MucrOptions(MucrOptions.Create, CommonTestData.correctUcr)
 
         val validJourney = ValidJourney(AssociateUcrAnswers(None, Some(mucrOptions)))
-        val result = controller(validJourney).displayPage()(getRequest())
+        val result = controller(validJourney).displayPage(getRequest())
 
         status(result) mustBe OK
         theFormRendered.value.get.mucr mustBe CommonTestData.correctUcr
@@ -123,7 +123,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
       "on a NON-'Find a consignment' journey and" when {
 
         "the Ucr is not of a DucrPart type" in {
-          val correctForm = Json.toJson(MucrOptions(Create, validMucr))(formWrites)
+          val correctForm = Json.toJson(MucrOptions(Create, validMucr))(formWrites(_))
 
           val result = controller().save()(postRequest(correctForm))
 
@@ -132,7 +132,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
         }
 
         "the Ucr is of a DucrPart type" in {
-          val correctForm = Json.toJson(MucrOptions(Create, validMucr))(formWrites)
+          val correctForm = Json.toJson(MucrOptions(Create, validMucr))(formWrites(_))
 
           val validJourney = ValidJourney(AssociateUcrAnswers(), None, false, Some(DucrPartChiefChoice(IsDucrPart)))
           val result = controller(validJourney).save()(postRequest(correctForm))
@@ -143,7 +143,7 @@ class MucrOptionsControllerSpec extends ControllerLayerSpec with MockCache with 
       }
 
       "on a 'Find a consignment' journey" in {
-        val correctForm = Json.toJson(MucrOptions(Create, validMucr))(formWrites)
+        val correctForm = Json.toJson(MucrOptions(Create, validMucr))(formWrites(_))
 
         val validJourney = ValidJourney(AssociateUcrAnswers(), None, true)
         val result = controller(validJourney).save()(postRequest(correctForm))

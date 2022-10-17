@@ -46,7 +46,7 @@ class LocationController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ARRIVE, JourneyType.DEPART)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ARRIVE, JourneyType.DEPART)) { implicit request =>
     val location = request.answersAs[MovementAnswers].location
     Ok(buildPage(location.fold(form())(form().fill(_))))
   }
@@ -54,19 +54,18 @@ class LocationController @Inject() (
   def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ARRIVE, JourneyType.DEPART)).async { implicit request =>
     if (request.answersAs[MovementAnswers].consignmentReferences.map(_.referenceValue).isEmpty) throw ReturnToStartException
 
-    form()
-      .bindFromRequest()
+    form().bindFromRequest
       .fold(
         (formWithErrors: Form[Location]) => Future.successful(BadRequest(buildPage(formWithErrors))),
         validForm =>
           request.answers match {
             case arrivalAnswers: ArrivalAnswers =>
               cache.upsert(request.cache.update(arrivalAnswers.copy(location = Some(validForm), readyToSubmit = Some(true)))).map { _ =>
-                Redirect(controllers.routes.SummaryController.displayPage())
+                Redirect(controllers.routes.SummaryController.displayPage)
               }
             case departureAnswers: DepartureAnswers =>
               cache.upsert(request.cache.update(departureAnswers.copy(location = Some(validForm)))).map { _ =>
-                navigator.continueTo(controllers.routes.TransportController.displayPage())
+                navigator.continueTo(controllers.routes.TransportController.displayPage)
               }
           }
       )

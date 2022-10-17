@@ -64,7 +64,7 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
   "Disassociate Ucr Controller" should {
     "return 200 (OK)" when {
       "display page is invoked" in {
-        val result = controller(DisassociateUcrAnswers()).displayPage()(getRequest())
+        val result = controller(DisassociateUcrAnswers()).displayPage(getRequest())
 
         status(result) mustBe OK
         theFormDisplayed.value mustBe empty
@@ -72,7 +72,7 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
 
       "display page is invoked with data" in {
         val ucr = DisassociateUcr(UcrType.Ducr, Some("ducr"), None)
-        val result = controller(DisassociateUcrAnswers(Some(ucr))).displayPage()(getRequest())
+        val result = controller(DisassociateUcrAnswers(Some(ucr))).displayPage(getRequest())
 
         status(result) mustBe OK
         theFormDisplayed.value mustBe Some(ucr)
@@ -81,7 +81,7 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
 
     "return 400 (BAD_REQUEST)" when {
       "incorrect form is submitted" in {
-        val result = controller(DisassociateUcrAnswers()).submit()(postRequest(incorrectForm))
+        val result = controller(DisassociateUcrAnswers()).submit(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -89,9 +89,9 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
 
     "return 303 (SEE_OTHER)" when {
       "form is correct" in {
-        val result = controller(DisassociateUcrAnswers()).submit()(postRequest(correctForm))
+        val result = controller(DisassociateUcrAnswers()).submit(postRequest(correctForm))
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe DisassociateUcrSummaryController.displayPage().url
+        redirectLocation(result).value mustBe DisassociateUcrSummaryController.displayPage.url
       }
     }
   }

@@ -64,14 +64,14 @@ class ShutMucrSpec extends BaseSpec {
     "convert to upper case" when {
 
       "provided MUCR is lower case" in {
-        val form = ShutMucr.form.bind(JsObject(Map("mucr" -> JsString("gb/abced1234-15804test"))), JsonBindMaxChars)
+        val form = ShutMucr.form().bind(JsObject(Map("mucr" -> JsString("gb/abced1234-15804test"))), JsonBindMaxChars)
 
         form.errors mustBe empty
         form.value.map(_.mucr) must be(Some("GB/ABCED1234-15804TEST"))
       }
 
       "provided MUCR is lower case and is 35 characters long" in {
-        val form = ShutMucr.form.bind(JsObject(Map("mucr" -> JsString("gb/abced1234-15804test1234567890123"))), JsonBindMaxChars)
+        val form = ShutMucr.form().bind(JsObject(Map("mucr" -> JsString("gb/abced1234-15804test1234567890123"))), JsonBindMaxChars)
 
         form.errors mustBe empty
         form.value.map(_.mucr) must be(Some("GB/ABCED1234-15804TEST1234567890123"))

@@ -41,7 +41,7 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
   private def controller(answers: AssociateUcrAnswers) =
     new AssociateUcrController(SuccessfulAuth(), ValidJourney(answers), stubMessagesControllerComponents(), cacheRepository, mockAssociateDucrPage)
 
-  override protected def beforeEach() {
+  override protected def beforeEach(): Unit = {
     super.beforeEach()
     when(mockAssociateDucrPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
@@ -66,7 +66,7 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
       "display page method is invoked and Mucr Options page has data" in {
         val request = getRequest()
 
-        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions))).displayPage()(request)
+        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions))).displayPage(request)
 
         status(result) must be(OK)
         theFormRendered.value mustBe empty
@@ -75,7 +75,7 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
       "display previously gathered data" in {
         val request = getRequest()
 
-        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions), Some(associateUcr))).displayPage()(request)
+        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions), Some(associateUcr))).displayPage(request)
 
         status(result) must be(OK)
         theFormRendered.value.get mustBe AssociateUcr(Ducr, "DUCR")
@@ -88,20 +88,20 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
         val request = getRequest()
 
         intercept[RuntimeException] {
-          await(controller(AssociateUcrAnswers(mucrOptions = None)).displayPage()(request))
+          await(controller(AssociateUcrAnswers(mucrOptions = None)).displayPage(request))
         } mustBe ReturnToStartException
       }
 
       "Mucr Options page is not in cache during saving with incorrect form" in {
         intercept[RuntimeException] {
-          await(controller(AssociateUcrAnswers(mucrOptions = None)).submit()(postRequest(Json.obj())))
+          await(controller(AssociateUcrAnswers(mucrOptions = None)).submit(postRequest(Json.obj())))
         } mustBe ReturnToStartException
       }
     }
 
     "return 400 (BAD_REQUEST)" when {
       "form is incorrect and cache contains data from previous page" in {
-        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions))).submit()(postRequest(Json.obj()))
+        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions))).submit(postRequest(Json.obj()))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -111,9 +111,9 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
       "form is correct" in {
         val validDUCR = AssociateUcr.mapping.unbind(AssociateUcr(Ducr, validDucr))
 
-        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions))).submit()(postRequest(validDUCR))
+        val result = controller(AssociateUcrAnswers(None, Some(mucrOptions))).submit(postRequest(validDUCR))
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(routes.AssociateUcrSummaryController.displayPage().url)
+        redirectLocation(result) mustBe Some(routes.AssociateUcrSummaryController.displayPage.url)
       }
     }
   }

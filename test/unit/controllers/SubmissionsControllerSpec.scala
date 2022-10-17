@@ -63,7 +63,7 @@ class SubmissionsControllerSpec extends ControllerLayerSpec with ScalaFutures {
       when(connector.fetchAllSubmissions(any[String])(any())).thenReturn(Future.successful(Seq.empty))
       when(connector.fetchAllNotificationsForUser(any[String])(any())).thenReturn(Future.successful(Seq.empty))
 
-      val result = controller.displayPage()(getRequest())
+      val result = controller.displayPage(getRequest())
 
       status(result) mustBe OK
     }
@@ -73,7 +73,7 @@ class SubmissionsControllerSpec extends ControllerLayerSpec with ScalaFutures {
       when(connector.fetchAllSubmissions(any[String])(any())).thenReturn(Future.successful(Seq.empty))
       when(connector.fetchAllNotificationsForUser(any[String])(any())).thenReturn(Future.successful(Seq.empty))
 
-      controller.displayPage()(getRequest()).futureValue
+      controller.displayPage(getRequest()).futureValue
 
       verify(connector).fetchAllSubmissions(meq(user.eori))(any())
     }
@@ -84,7 +84,7 @@ class SubmissionsControllerSpec extends ControllerLayerSpec with ScalaFutures {
       when(connector.fetchAllSubmissions(any[String])(any())).thenReturn(Future.successful(Seq(submission)))
       when(connector.fetchAllNotificationsForUser(any[String])(any())).thenReturn(Future.successful(Seq.empty))
 
-      controller.displayPage()(getRequest()).futureValue
+      controller.displayPage(getRequest()).futureValue
 
       verify(connector).fetchAllNotificationsForUser(meq(user.eori))(any())
     }
@@ -101,7 +101,7 @@ class SubmissionsControllerSpec extends ControllerLayerSpec with ScalaFutures {
           .thenReturn(Future.successful(Seq(submission1, submission2, submission3)))
         when(connector.fetchAllNotificationsForUser(any[String])(any())).thenReturn(Future.successful(Seq.empty))
 
-        controller.displayPage()(getRequest()).futureValue
+        controller.displayPage(getRequest()).futureValue
 
         val viewArguments: Seq[(Submission, Seq[Notification])] = captureViewArguments()
 
@@ -125,7 +125,7 @@ class SubmissionsControllerSpec extends ControllerLayerSpec with ScalaFutures {
         when(connector.fetchAllNotificationsForUser(any[String])(any()))
           .thenReturn(Future.successful(Seq(notification1, notification2, notification3, notification4)))
 
-        controller.displayPage()(getRequest()).futureValue
+        controller.displayPage(getRequest()).futureValue
 
         val viewArguments: Seq[(Submission, Seq[Notification])] = captureViewArguments()
 
@@ -149,7 +149,7 @@ class SubmissionsControllerSpec extends ControllerLayerSpec with ScalaFutures {
         when(connector.fetchAllNotificationsForUser(anyString())(any()))
           .thenReturn(Future.successful(Seq(exampleNotificationFrontendModel())))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
 

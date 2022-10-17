@@ -39,7 +39,7 @@ class MovementConfirmationControllerSpec extends ControllerLayerSpec with ScalaF
   private val controller =
     new MovementConfirmationController(SuccessfulAuth(), stubMessagesControllerComponents(), flashExtractor, confirmationPage)
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     super.beforeEach()
 
     reset(flashExtractor, confirmationPage)
@@ -61,7 +61,7 @@ class MovementConfirmationControllerSpec extends ControllerLayerSpec with ScalaF
       "journey type is ARRIVAL" in {
 
         when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.ARRIVE))
-        val result = controller.displayPage()(getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ARRIVE.toString))
+        val result = controller.displayPage(getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ARRIVE.toString))
 
         status(result) mustBe Status.OK
         verify(confirmationPage).apply(meq(JourneyType.ARRIVE))(any(), any())
@@ -70,7 +70,7 @@ class MovementConfirmationControllerSpec extends ControllerLayerSpec with ScalaF
       "journey type is DEPARTURE" in {
 
         when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.DEPART))
-        val result = controller.displayPage()(getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.DEPART.toString))
+        val result = controller.displayPage(getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.DEPART.toString))
 
         status(result) mustBe Status.OK
         verify(confirmationPage).apply(meq(JourneyType.DEPART))(any(), any())
@@ -84,7 +84,7 @@ class MovementConfirmationControllerSpec extends ControllerLayerSpec with ScalaF
         when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.ARRIVE))
         val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ARRIVE.toString)
 
-        controller.displayPage()(request).futureValue
+        controller.displayPage(request).futureValue
 
         val requestCaptor: ArgumentCaptor[Request[_]] = ArgumentCaptor.forClass(classOf[Request[_]])
         verify(flashExtractor).extractMovementType(requestCaptor.capture())
@@ -96,7 +96,7 @@ class MovementConfirmationControllerSpec extends ControllerLayerSpec with ScalaF
         when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.DEPART))
         val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.DEPART.toString)
 
-        controller.displayPage()(request).futureValue
+        controller.displayPage(request).futureValue
 
         val requestCaptor: ArgumentCaptor[Request[_]] = ArgumentCaptor.forClass(classOf[Request[_]])
         verify(flashExtractor).extractMovementType(requestCaptor.capture())
@@ -111,7 +111,7 @@ class MovementConfirmationControllerSpec extends ControllerLayerSpec with ScalaF
         when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(None)
 
         intercept[RuntimeException] {
-          await(controller.displayPage()(getRequest))
+          await(controller.displayPage(getRequest))
         } mustBe ReturnToStartException
       }
 
@@ -121,7 +121,7 @@ class MovementConfirmationControllerSpec extends ControllerLayerSpec with ScalaF
         val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ASSOCIATE_UCR.toString)
 
         intercept[RuntimeException] {
-          await(controller.displayPage()(request))
+          await(controller.displayPage(request))
         } mustBe ReturnToStartException
       }
 
@@ -131,7 +131,7 @@ class MovementConfirmationControllerSpec extends ControllerLayerSpec with ScalaF
         val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.DISSOCIATE_UCR.toString)
 
         intercept[RuntimeException] {
-          await(controller.displayPage()(request))
+          await(controller.displayPage(request))
         } mustBe ReturnToStartException
       }
 
@@ -141,7 +141,7 @@ class MovementConfirmationControllerSpec extends ControllerLayerSpec with ScalaF
         val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.SHUT_MUCR.toString)
 
         intercept[RuntimeException] {
-          await(controller.displayPage()(request))
+          await(controller.displayPage(request))
         } mustBe ReturnToStartException
       }
     }

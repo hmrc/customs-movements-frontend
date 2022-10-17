@@ -50,14 +50,13 @@ class DucrPartChiefController @Inject() (
 
   private val requiredActions = authenticate andThen getJourney(ARRIVE, DEPART, ASSOCIATE_UCR, DISSOCIATE_UCR)
 
-  def displayPage(): Action[AnyContent] = requiredActions { implicit request =>
+  def displayPage: Action[AnyContent] = requiredActions { implicit request =>
     val choice = request.cache.ducrPartChiefChoice
     Ok(ducrPartChiefPage(choice.fold(form())(form().fill(_))))
   }
 
-  def submit(): Action[AnyContent] = requiredActions.async { implicit request =>
-    form()
-      .bindFromRequest()
+  def submit: Action[AnyContent] = requiredActions.async { implicit request =>
+    form().bindFromRequest
       .fold(
         (formWithErrors: Form[DucrPartChiefChoice]) => Future.successful(BadRequest(ducrPartChiefPage(formWithErrors))),
         choice => updateCache(request.cache, choice)
@@ -73,11 +72,11 @@ class DucrPartChiefController @Inject() (
 
   private def nextPage(choice: DucrPartChiefChoice, journeyType: JourneyType)(implicit request: JourneyRequest[AnyContent]): Result =
     if (choice.choice == DucrPartChiefChoice.IsDucrPart)
-      navigator.continueTo(DucrPartDetailsController.displayPage())
+      navigator.continueTo(DucrPartDetailsController.displayPage)
     else
       journeyType match {
-        case ARRIVE | DEPART => navigator.continueTo(ConsignmentReferencesController.displayPage())
-        case ASSOCIATE_UCR   => navigator.continueTo(MucrOptionsController.displayPage())
-        case DISSOCIATE_UCR  => navigator.continueTo(DisassociateUcrController.displayPage())
+        case ARRIVE | DEPART => navigator.continueTo(ConsignmentReferencesController.displayPage)
+        case ASSOCIATE_UCR   => navigator.continueTo(MucrOptionsController.displayPage)
+        case DISSOCIATE_UCR  => navigator.continueTo(DisassociateUcrController.displayPage)
       }
 }

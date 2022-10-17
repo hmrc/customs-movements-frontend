@@ -32,7 +32,7 @@ class DissociateUcrSpecWithIleQueryDisabled extends IntegrationSpec {
         givenCacheFor("eori", DisassociateUcrAnswers())
 
         // When
-        val response = get(controllers.consolidations.routes.DisassociateUcrController.displayPage())
+        val response = get(controllers.consolidations.routes.DisassociateUcrController.displayPage)
 
         // Then
         status(response) mustBe OK
@@ -46,11 +46,11 @@ class DissociateUcrSpecWithIleQueryDisabled extends IntegrationSpec {
         givenCacheFor("eori", DisassociateUcrAnswers())
 
         // When
-        val response = post(controllers.consolidations.routes.DisassociateUcrController.submit(), "kind" -> "mucr", "mucr" -> "GB/321-54321")
+        val response = post(controllers.consolidations.routes.DisassociateUcrController.submit, "kind" -> "mucr", "mucr" -> "GB/321-54321")
 
         // Then
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage().url)
+        redirectLocation(response) mustBe Some(controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage.url)
         theAnswersFor("eori") mustBe Some(
           DisassociateUcrAnswers(ucr = Some(DisassociateUcr(kind = UcrType.Mucr, mucr = Some("GB/321-54321"), ducr = None)))
         )

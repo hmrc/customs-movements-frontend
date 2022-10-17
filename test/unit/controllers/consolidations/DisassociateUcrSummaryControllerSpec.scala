@@ -74,7 +74,7 @@ class DisassociateUcrSummaryControllerSpec extends ControllerLayerSpec with Scal
     "return 200 (OK)" when {
 
       "display page is invoked with data in cache" in {
-        val result = controller(DisassociateUcrAnswers(Some(ucr))).displayPage()(getRequest())
+        val result = controller(DisassociateUcrAnswers(Some(ucr))).displayPage(getRequest())
 
         status(result) mustBe OK
         verify(mockDisassociateUcrSummaryPage).apply(any())(any(), any())
@@ -87,7 +87,7 @@ class DisassociateUcrSummaryControllerSpec extends ControllerLayerSpec with Scal
 
       "DisassociateUcr is missing during displaying page" in {
         intercept[RuntimeException] {
-          await(controller(DisassociateUcrAnswers(None)).displayPage()(getRequest()))
+          await(controller(DisassociateUcrAnswers(None)).displayPage(getRequest()))
         } mustBe ReturnToStartException
       }
     }
@@ -101,7 +101,7 @@ class DisassociateUcrSummaryControllerSpec extends ControllerLayerSpec with Scal
         when(submissionService.submit(any(), any[DisassociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
         val cachedAnswers = DisassociateUcrAnswers(Some(ucr))
 
-        controller(cachedAnswers).submit()(postRequest()).futureValue
+        controller(cachedAnswers).submit(postRequest()).futureValue
 
         val expectedEori = SuccessfulAuth().operator.eori
         verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers))(any())
@@ -111,10 +111,10 @@ class DisassociateUcrSummaryControllerSpec extends ControllerLayerSpec with Scal
         when(submissionService.submit(any(), any[DisassociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
 
         val result =
-          controller(DisassociateUcrAnswers(Some(ucr))).submit()(postRequest(Json.obj()))
+          controller(DisassociateUcrAnswers(Some(ucr))).submit(postRequest(Json.obj()))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.consolidations.routes.DisassociateUcrConfirmationController.displayPage().url)
+        redirectLocation(result) mustBe Some(controllers.consolidations.routes.DisassociateUcrConfirmationController.displayPage.url)
 
       }
 
@@ -122,7 +122,7 @@ class DisassociateUcrSummaryControllerSpec extends ControllerLayerSpec with Scal
         when(submissionService.submit(any(), any[DisassociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
 
         val result =
-          controller(DisassociateUcrAnswers(Some(ucr))).submit()(postRequest(Json.obj()))
+          controller(DisassociateUcrAnswers(Some(ucr))).submit(postRequest(Json.obj()))
 
         flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.DISSOCIATE_UCR.toString)
 

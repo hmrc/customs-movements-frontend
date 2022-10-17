@@ -48,7 +48,7 @@ class DucrPartDetailsController @Inject() (
 
   private val journeyActions = authenticate andThen getJourney(ARRIVE, DEPART, ASSOCIATE_UCR, DISSOCIATE_UCR)
 
-  def displayPage(): Action[AnyContent] = journeyActions.async { implicit request =>
+  def displayPage: Action[AnyContent] = journeyActions.async { implicit request =>
     cacheRepository
       .findByEori(request.eori)
       .map {
@@ -61,8 +61,7 @@ class DucrPartDetailsController @Inject() (
   }
 
   def submitDucrPartDetails(): Action[AnyContent] = journeyActions.async { implicit request =>
-    form()
-      .bindFromRequest()
+    form().bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(ducrPartsDetailsPage(formWithErrors))),
         validDucrPartDetails => {
@@ -92,21 +91,21 @@ class DucrPartDetailsController @Inject() (
         ucrBlock = ucrBlock,
         answers = Some(request.answersAs[DepartureAnswers].copy(consignmentReferences = ucrBlock.map(ConsignmentReferences.apply)))
       ),
-      SpecificDateTimeController.displayPage()
+      SpecificDateTimeController.displayPage
     )
 
   private def handleAssociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     saveAndContinue(
       request.cache
         .copy(ucrBlock = ucrBlock, answers = Some(request.answersAs[AssociateUcrAnswers].copy(associateUcr = ucrBlock.map(AssociateUcr.apply)))),
-      MucrOptionsController.displayPage()
+      MucrOptionsController.displayPage
     )
 
   private def handleDissociate(ucrBlock: Option[UcrBlock])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     saveAndContinue(
       request.cache
         .copy(ucrBlock = ucrBlock, answers = Some(request.answersAs[DisassociateUcrAnswers].copy(ucr = ucrBlock.map(DisassociateUcr.apply)))),
-      DisassociateUcrSummaryController.displayPage()
+      DisassociateUcrSummaryController.displayPage
     )
 
   private def saveAndContinue(cache: Cache, call: Call)(implicit request: JourneyRequest[AnyContent]): Future[Result] =

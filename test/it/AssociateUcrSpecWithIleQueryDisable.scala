@@ -31,7 +31,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
         givenAuthSuccess("eori")
         givenCacheFor("eori", AssociateUcrAnswers())
 
-        val response = get(controllers.consolidations.routes.MucrOptionsController.displayPage())
+        val response = get(controllers.consolidations.routes.MucrOptionsController.displayPage)
 
         status(response) mustBe OK
       }
@@ -50,7 +50,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
         )
 
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrController.displayPage().url)
+        redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrController.displayPage.url)
         theAnswersFor("eori") mustBe Some(AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345"))))
       }
     }
@@ -62,7 +62,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
         givenAuthSuccess("eori")
         givenCacheFor("eori", AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345"))))
 
-        val response = get(controllers.consolidations.routes.AssociateUcrController.displayPage())
+        val response = get(controllers.consolidations.routes.AssociateUcrController.displayPage)
 
         status(response) mustBe OK
       }
@@ -73,10 +73,10 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
         givenAuthSuccess("eori")
         givenCacheFor("eori", AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345"))))
 
-        val response = post(controllers.consolidations.routes.AssociateUcrController.submit(), "kind" -> "mucr", "mucr" -> "GB/321-54321")
+        val response = post(controllers.consolidations.routes.AssociateUcrController.submit, "kind" -> "mucr", "mucr" -> "GB/321-54321")
 
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrSummaryController.displayPage().url)
+        redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrSummaryController.displayPage.url)
         theAnswersFor("eori") mustBe Some(
           AssociateUcrAnswers(
             mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345")),
@@ -100,7 +100,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
           )
         )
 
-        val response = get(controllers.consolidations.routes.AssociateUcrSummaryController.displayPage())
+        val response = get(controllers.consolidations.routes.AssociateUcrSummaryController.displayPage)
 
         status(response) mustBe OK
       }
@@ -121,7 +121,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
         val response = post(controllers.consolidations.routes.AssociateUcrSummaryController.submit())
 
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrConfirmationController.displayPage().url)
+        redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrConfirmationController.displayPage.url)
         theAnswersFor("eori") mustBe None
         verify(
           postRequestedForConsolidation()

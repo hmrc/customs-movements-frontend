@@ -64,7 +64,7 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
       "GET displayPage is invoked without data in cache" in {
         givenTheCacheIsEmpty()
 
-        val result = controller(ShutMucrAnswers()).displayPage()(getRequest)
+        val result = controller(ShutMucrAnswers()).displayPage(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value mustBe empty
@@ -74,7 +74,7 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
         val cachedForm = Some(ShutMucr("123"))
         givenTheCacheContains(Cache("12345", ShutMucrAnswers(shutMucr = cachedForm)))
 
-        val result = controller(ShutMucrAnswers(shutMucr = cachedForm)).displayPage()(getRequest)
+        val result = controller(ShutMucrAnswers(shutMucr = cachedForm)).displayPage(getRequest())
 
         status(result) mustBe OK
 
@@ -101,7 +101,7 @@ class ShutMucrControllerSpec extends ControllerLayerSpec with MockCache with Opt
         val result = controller(ShutMucrAnswers()).submitForm()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe ShutMucrSummaryController.displayPage().url
+        redirectLocation(result).value mustBe ShutMucrSummaryController.displayPage.url
       }
     }
   }

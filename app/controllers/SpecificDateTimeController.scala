@@ -49,14 +49,13 @@ class SpecificDateTimeController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)) { implicit request =>
     val choice = request.answersAs[MovementAnswers].specificDateTimeChoice
     Ok(buildPage(choice.fold(form())(form().fill(_))))
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)).async { implicit request =>
-    form()
-      .bindFromRequest()
+  def submit: Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)).async { implicit request =>
+    form().bindFromRequest
       .fold(
         (formWithErrors: Form[SpecificDateTimeChoice]) => Future.successful(BadRequest(buildPage(formWithErrors))),
         validForm => {
@@ -67,8 +66,8 @@ class SpecificDateTimeController @Inject() (
           cache.upsert(request.cache.update(answers)).map { _ =>
             navigator.continueTo {
               validForm.choice match {
-                case SpecificDateTimeChoice.UserDateTime    => MovementDetailsController.displayPage()
-                case SpecificDateTimeChoice.CurrentDateTime => LocationController.displayPage()
+                case SpecificDateTimeChoice.UserDateTime    => MovementDetailsController.displayPage
+                case SpecificDateTimeChoice.CurrentDateTime => LocationController.displayPage
               }
             }
           }

@@ -54,8 +54,7 @@ class ChoiceController @Inject() (
   }
 
   val submitChoice: Action[AnyContent] = authenticate.async { implicit request =>
-    form
-      .bindFromRequest()
+    form.bindFromRequest
       .fold(formWithErrors => Future.successful(BadRequest(choicePage(formWithErrors))), nextPage)
   }
 

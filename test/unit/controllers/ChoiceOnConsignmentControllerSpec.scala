@@ -50,14 +50,14 @@ class ChoiceOnConsignmentControllerSpec extends ControllerLayerSpec with MockCac
       global
     )
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     super.beforeEach()
     givenTheCacheIsEmpty()
     when(arriveDepartAllowList.contains(any())).thenReturn(true)
     when(choicePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
-  override def afterEach() {
+  override def afterEach(): Unit = {
     reset(arriveDepartAllowList, choicePage)
 
     super.afterEach()

@@ -39,7 +39,7 @@ class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec with Sc
   private val controller =
     new AssociateUcrConfirmationController(SuccessfulAuth(), stubMessagesControllerComponents(), flashExtractor, confirmationPage)
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     super.beforeEach()
 
     reset(flashExtractor, confirmationPage)
@@ -61,7 +61,7 @@ class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec with Sc
       when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.ASSOCIATE_UCR))
       val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ASSOCIATE_UCR.toString)
 
-      val result = controller.displayPage()(request)
+      val result = controller.displayPage(request)
 
       status(result) must be(OK)
       verify(confirmationPage).apply(meq(JourneyType.ASSOCIATE_UCR))(any(), any())
@@ -72,7 +72,7 @@ class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec with Sc
       when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.ASSOCIATE_UCR))
       val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ASSOCIATE_UCR.toString)
 
-      controller.displayPage()(request).futureValue
+      controller.displayPage(request).futureValue
 
       val requestCaptor: ArgumentCaptor[Request[_]] = ArgumentCaptor.forClass(classOf[Request[_]])
       verify(flashExtractor).extractMovementType(requestCaptor.capture())
@@ -86,7 +86,7 @@ class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec with Sc
         when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(None)
 
         intercept[RuntimeException] {
-          await(controller.displayPage()(getRequest))
+          await(controller.displayPage(getRequest))
         } mustBe ReturnToStartException
       }
 
@@ -96,7 +96,7 @@ class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec with Sc
         val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ARRIVE.toString)
 
         intercept[RuntimeException] {
-          await(controller.displayPage()(request))
+          await(controller.displayPage(request))
         } mustBe ReturnToStartException
       }
 
@@ -106,7 +106,7 @@ class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec with Sc
         val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.DEPART.toString)
 
         intercept[RuntimeException] {
-          await(controller.displayPage()(request))
+          await(controller.displayPage(request))
         } mustBe ReturnToStartException
       }
 
@@ -116,7 +116,7 @@ class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec with Sc
         val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.DISSOCIATE_UCR.toString)
 
         intercept[RuntimeException] {
-          await(controller.displayPage()(request))
+          await(controller.displayPage(request))
         } mustBe ReturnToStartException
       }
 
@@ -126,7 +126,7 @@ class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec with Sc
         val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.SHUT_MUCR.toString)
 
         intercept[RuntimeException] {
-          await(controller.displayPage()(request))
+          await(controller.displayPage(request))
         } mustBe ReturnToStartException
       }
     }

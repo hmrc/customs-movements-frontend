@@ -66,7 +66,7 @@ class DucrPartChiefControllerSpec extends ControllerLayerSpec with MockCache wit
 
     "return Ok (200) response" should {
       "display page method is invoked with empty cache" in {
-        val result = controller().displayPage()(getRequest())
+        val result = controller().displayPage(getRequest())
         status(result) mustBe OK
 
         theResponseForm.value mustBe empty
@@ -76,7 +76,7 @@ class DucrPartChiefControllerSpec extends ControllerLayerSpec with MockCache wit
     "return 400 (BAD_REQUEST)" when {
       "form is incorrect" in {
         val incorrectForm: JsValue = JsObject(Map("choice" -> JsString("invalid")))
-        val result = controller().submit()(postRequest(incorrectForm))
+        val result = controller().submit(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -86,18 +86,18 @@ class DucrPartChiefControllerSpec extends ControllerLayerSpec with MockCache wit
 
       "user selects yes" in {
         val incorrectForm: JsValue = JsObject(Map("choice" -> JsString("ducr_part_yes")))
-        val result = controller().submit()(postRequest(incorrectForm))
+        val result = controller().submit(postRequest(incorrectForm))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe routes.DucrPartDetailsController.displayPage().url
+        thePageNavigatedTo.url mustBe routes.DucrPartDetailsController.displayPage.url
       }
 
       "user selects no" in {
         val incorrectForm: JsValue = JsObject(Map("choice" -> JsString("ducr_part_no")))
-        val result = controller().submit()(postRequest(incorrectForm))
+        val result = controller().submit(postRequest(incorrectForm))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe routes.ConsignmentReferencesController.displayPage().url
+        thePageNavigatedTo.url mustBe routes.ConsignmentReferencesController.displayPage.url
       }
     }
   }

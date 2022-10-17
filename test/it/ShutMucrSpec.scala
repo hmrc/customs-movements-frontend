@@ -29,7 +29,7 @@ class ShutMucrSpec extends IntegrationSpec {
         givenCacheFor("eori", ShutMucrAnswers(shutMucr = Some(ShutMucr("GB/123-12345"))))
 
         // When
-        val response = get(controllers.consolidations.routes.ShutMucrSummaryController.displayPage())
+        val response = get(controllers.consolidations.routes.ShutMucrSummaryController.displayPage)
 
         // Then
         status(response) mustBe OK
@@ -48,7 +48,7 @@ class ShutMucrSpec extends IntegrationSpec {
 
         // Then
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.ShutMucrConfirmationController.displayPage().url)
+        redirectLocation(response) mustBe Some(controllers.consolidations.routes.ShutMucrConfirmationController.displayPage.url)
         theCacheFor("eori") mustBe None
         verify(
           postRequestedForConsolidation()

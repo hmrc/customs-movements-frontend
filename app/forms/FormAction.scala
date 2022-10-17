@@ -28,7 +28,7 @@ object FormAction {
   private val saveAndReturnToSummaryLabel = "SaveAndReturnToSummary"
   private val continueLabel = "Continue"
 
-  def bindFromRequest()(implicit request: Request[AnyContent]): Option[FormAction] =
+  def bindFromRequest(implicit request: Request[AnyContent]): Option[FormAction] =
     request.body.asFormUrlEncoded.flatMap { body =>
       body.flatMap {
         case (`continueLabel`, _)               => Some(Continue)

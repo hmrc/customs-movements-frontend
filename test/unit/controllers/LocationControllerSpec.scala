@@ -66,7 +66,7 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
 
         val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences))
 
-        val result = controller(answers).displayPage()(getRequest())
+        val result = controller(answers).displayPage(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value mustBe empty
@@ -77,7 +77,7 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
         val cachedData = Location("PLAYlocationCode")
         val answers = ArrivalAnswers(location = Some(cachedData), consignmentReferences = Some(consignmentReferences))
 
-        val result = controller(answers).displayPage()(getRequest())
+        val result = controller(answers).displayPage(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value.value mustBe cachedData
@@ -89,7 +89,7 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
       "consignment reference is missing" in {
 
         intercept[RuntimeException] {
-          await(controller().displayPage()(getRequest()))
+          await(controller().displayPage(getRequest()))
         } mustBe ReturnToStartException
       }
     }
@@ -107,7 +107,7 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
         val result = controller(answers).saveLocation()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.SummaryController.displayPage().url
+        redirectLocation(result).value mustBe routes.SummaryController.displayPage.url
       }
     }
 
@@ -121,7 +121,7 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
         val result = controller(answers).saveLocation()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe routes.TransportController.displayPage().url
+        thePageNavigatedTo.url mustBe routes.TransportController.displayPage.url
       }
     }
 

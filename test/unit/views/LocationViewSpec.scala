@@ -70,7 +70,7 @@ class LocationViewSpec extends ViewSpec with Injector {
 
       backButton mustBe defined
       backButton.get must containMessage("site.back.previousQuestion")
-      backButton.get must haveHref(routes.MovementDetailsController.displayPage())
+      backButton.get must haveHref(routes.MovementDetailsController.displayPage)
     }
 
     checkAllSaveButtonsAreDisplayed(view(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))

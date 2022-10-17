@@ -30,6 +30,7 @@ import views.html.departure_details
 
 import java.text.DecimalFormat
 import java.time.{LocalDate, LocalTime}
+import scala.jdk.CollectionConverters.IterableHasAsScala
 
 class DepartureDetailsViewSpec extends ViewSpec with Injector {
 
@@ -66,7 +67,7 @@ class DepartureDetailsViewSpec extends ViewSpec with Injector {
         val backButton = createView(movementDetails.departureForm()).getBackButton
 
         backButton mustBe defined
-        backButton.get must haveHref(SpecificDateTimeController.displayPage())
+        backButton.get must haveHref(SpecificDateTimeController.displayPage)
         backButton.get must containMessage("site.back.previousQuestion")
       }
 
@@ -81,9 +82,7 @@ class DepartureDetailsViewSpec extends ViewSpec with Injector {
       "have date section" which {
 
         "contains label" in {
-          import scala.collection.JavaConverters.collectionAsScalaIterable
-
-          collectionAsScalaIterable(emptyView.getElementsByTag("legend")).exists { elem =>
+          emptyView.getElementsByTag("legend").asScala.exists { elem =>
             elem.text() == messages("departureDetails.date.question")
           }
         }
@@ -111,9 +110,7 @@ class DepartureDetailsViewSpec extends ViewSpec with Injector {
       "have time section" which {
 
         "contains label" in {
-          import scala.collection.JavaConverters.collectionAsScalaIterable
-
-          collectionAsScalaIterable(emptyView.getElementsByTag("legend")).exists { elem =>
+          emptyView.getElementsByTag("legend").asScala.exists { elem =>
             elem.text() == messages("departureDetails.time.question")
           }
         }

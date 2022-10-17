@@ -65,7 +65,7 @@ class ShutMucrSummaryViewSpec extends ViewSpec with Injector {
     "display correct change button when on a NON-'Find a consignment' journey" in {
       val changeButton = shutMucrSummaryPage(shutMucr).getElementsByClass("govuk-link").get(1)
 
-      changeButton must haveHref(ShutMucrController.displayPage())
+      changeButton must haveHref(ShutMucrController.displayPage)
       changeButton.text() must include(messages("site.edit"))
     }
 

@@ -43,7 +43,7 @@ class AssociateUcrSummaryController @Inject() (
 )(implicit executionContext: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType(ASSOCIATE_UCR)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(ASSOCIATE_UCR)) { implicit request =>
     val answers = request.answersAs[AssociateUcrAnswers]
     val mucrOptions = answers.mucrOptions.getOrElse(throw ReturnToStartException)
     val associateUcr = answers.associateUcr.getOrElse(throw ReturnToStartException)
@@ -54,9 +54,9 @@ class AssociateUcrSummaryController @Inject() (
     else Ok(associateUcrSummaryNoChangePage(associateUcr.ucr, mucrOptions.mucr, UcrType.Mucr, answers.manageMucrChoice))
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen journeyType(ASSOCIATE_UCR)).async { implicit request =>
+  def submit: Action[AnyContent] = (authenticate andThen journeyType(ASSOCIATE_UCR)).async { implicit request =>
     submissionService.submit(request.eori, request.answersAs[AssociateUcrAnswers]).map { _ =>
-      Redirect(AssociateUcrConfirmationController.displayPage())
+      Redirect(AssociateUcrConfirmationController.displayPage)
         .flashing(FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString)
     }
   }

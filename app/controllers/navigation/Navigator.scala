@@ -28,8 +28,8 @@ class Navigator {
 
   def continueTo(redirectTo: Call)(implicit request: RequestWithAnswers[AnyContent]): Result =
     (FormAction.bindFromRequest, request.answers.`type`) match {
-      case (Some(SaveAndReturnToSummary), JourneyType.ASSOCIATE_UCR) => Redirect(AssociateUcrSummaryController.displayPage())
-      case (Some(SaveAndReturnToSummary), _)                         => Redirect(SummaryController.displayPage())
+      case (Some(SaveAndReturnToSummary), JourneyType.ASSOCIATE_UCR) => Redirect(AssociateUcrSummaryController.displayPage)
+      case (Some(SaveAndReturnToSummary), _)                         => Redirect(SummaryController.displayPage)
       case _                                                         => Redirect(redirectTo)
     }
 }

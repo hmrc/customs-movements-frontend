@@ -55,7 +55,7 @@ class NavigatorSpec extends UnitSpec {
         val result = navigator.continueTo(Call("GET", "/"))(request)
 
         result.header.status mustBe SEE_OTHER
-        result.header.headers.get(LOCATION) mustBe Some(controllers.routes.SummaryController.displayPage().url)
+        result.header.headers.get(LOCATION) mustBe Some(controllers.routes.SummaryController.displayPage.url)
       }
 
       "Go to the associate ucr summary page when Save and return to summary form action" in {

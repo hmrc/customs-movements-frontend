@@ -53,7 +53,7 @@ class DisassociateUcrViewSpec extends ViewSpec with Injector with MockitoSugar {
 
       backButton mustBe defined
       backButton.foreach { button =>
-        button must haveHref(DucrPartChiefController.displayPage())
+        button must haveHref(DucrPartChiefController.displayPage)
         button must containMessage("site.back.previousQuestion")
       }
     }

@@ -29,7 +29,7 @@ class DissociateUcrSpec extends IntegrationSpec {
         givenCacheFor("eori", DisassociateUcrAnswers(ucr = Some(DisassociateUcr(kind = UcrType.Mucr, mucr = Some("GB/321-54321"), ducr = None))))
 
         // When
-        val response = get(controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage())
+        val response = get(controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage)
 
         // Then
         status(response) mustBe OK
@@ -48,7 +48,7 @@ class DissociateUcrSpec extends IntegrationSpec {
 
         // Then
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.DisassociateUcrConfirmationController.displayPage().url)
+        redirectLocation(response) mustBe Some(controllers.consolidations.routes.DisassociateUcrConfirmationController.displayPage.url)
         theAnswersFor("eori") mustBe None
         verify(
           postRequestedForConsolidation()

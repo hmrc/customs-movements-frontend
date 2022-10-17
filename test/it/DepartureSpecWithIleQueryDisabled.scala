@@ -32,7 +32,7 @@ class DepartureSpecWithIleQueryDisabled extends IntegrationSpec {
         givenCacheFor("eori", DepartureAnswers())
 
         // When
-        val response = get(controllers.routes.ConsignmentReferencesController.displayPage())
+        val response = get(controllers.routes.ConsignmentReferencesController.displayPage)
 
         // TThen
         status(response) mustBe OK
@@ -51,7 +51,7 @@ class DepartureSpecWithIleQueryDisabled extends IntegrationSpec {
 
         // Then
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.routes.SpecificDateTimeController.displayPage().url)
+        redirectLocation(response) mustBe Some(controllers.routes.SpecificDateTimeController.displayPage.url)
         theAnswersFor("eori") mustBe Some(DepartureAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
       }
     }

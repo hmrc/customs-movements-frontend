@@ -40,19 +40,18 @@ object Countries {
       .toList
 
   private val countries: List[Country] = {
-    val jsonFile =
-      getClass.getResourceAsStream("/location-autocomplete-canonical-list.json")
+    val jsonFile = getClass.getResourceAsStream("/location-autocomplete-canonical-list.json")
 
     def fromJsonFile: List[Country] =
       Json.parse(jsonFile) match {
         case JsArray(cs) =>
-          cs.toList.collect { case JsArray(Seq(c: JsString, cc: JsString)) =>
+          // Using collection.Seq instead of Seq due to Json.parse return type
+          cs.toList.collect { case JsArray(collection.Seq(c: JsString, cc: JsString)) =>
             Country(c.value, countryCode(cc.value))
           }
         case _ =>
           throw new IllegalArgumentException("Could not read JSON array of countries from : " + jsonFile)
       }
-
     fromJsonFile.sortBy(_.countryName)
   }
 

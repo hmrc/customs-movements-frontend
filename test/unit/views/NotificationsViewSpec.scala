@@ -23,7 +23,7 @@ import play.twirl.api.Html
 import testdata.CommonTestData
 import views.html.notifications
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters.ListHasAsScala
 
 class NotificationsViewSpec extends ViewSpec with Injector {
 

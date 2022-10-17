@@ -35,7 +35,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.ViewSpec
 import views.html.choice
 
-import scala.collection.JavaConverters.asScalaIteratorConverter
+import scala.jdk.CollectionConverters.IterableHasAsScala
 
 class TimeoutDialogSpec extends ViewSpec with Injector with MockitoSugar {
 
@@ -54,7 +54,7 @@ class TimeoutDialogSpec extends ViewSpec with Injector with MockitoSugar {
       val injector = new OverridableInjector(bind[TimeoutDialogConfig].toInstance(timeoutDialogConfig))
       val choicePage = injector.instanceOf[choice]
       val view = choicePage(form)(authenticatedRequest, messages)
-      val elements = view.getElementsByTag("meta").iterator.asScala.toList
+      val elements = view.getElementsByTag("meta").asScala.toList
       val metas = elements.filter(_.attr("name") == "hmrc-timeout-dialog")
       assert(metas.nonEmpty)
       metas.head.dataset.get("sign-out-url") mustBe SignOutController.signOut(SessionTimeout).url

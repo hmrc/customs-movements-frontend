@@ -96,7 +96,7 @@ class IleQueryController @Inject() (
       }
     }
 
-  private def loadingPageResult()(implicit request: Request[AnyContent]) =
+  private def loadingPageResult(implicit request: Request[AnyContent]) =
     Ok(loadingScreenPage()).withHeaders("refresh" -> "5")
 
   private def processQueryResults(queryResponse: IleQueryResponseExchange)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
@@ -116,7 +116,7 @@ class IleQueryController @Inject() (
               Ok(ileQueryMucrResponsePage(mucrInfo, response.parentMucr, response.sortedChildrenUcrs))
             }
 
-          case _ => Future.successful(loadingPageResult())
+          case _ => Future.successful(loadingPageResult)
         }
 
       case Some(response: UcrNotFoundResponseExchangeData) =>
@@ -154,6 +154,6 @@ class IleQueryController @Inject() (
     IleQueryExchange(eori, ucrBlock)
   }
 
-  private def retrieveSessionId()(implicit hc: HeaderCarrier): String =
+  private def retrieveSessionId(implicit hc: HeaderCarrier): String =
     hc.sessionId.getOrElse(throw new Exception("Session ID is missing")).value
 }

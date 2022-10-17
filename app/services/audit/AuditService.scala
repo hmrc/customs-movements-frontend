@@ -19,7 +19,6 @@ package services.audit
 import com.google.inject.Inject
 import connectors.exchanges.MovementRequest
 import forms._
-import javax.inject.Named
 import models.cache.{Answers, ArrivalAnswers, DepartureAnswers, JourneyType}
 import play.api.Logger
 import play.api.libs.json.{JsObject, JsString, Json}
@@ -30,6 +29,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Suc
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 
+import javax.inject.Named
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuditService @Inject() (connector: AuditConnector, @Named("appName") appName: String)(implicit ec: ExecutionContext) {

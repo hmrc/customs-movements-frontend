@@ -49,7 +49,7 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector with MockitoSugar 
 
           val link = inset.getElementsByClass("govuk-link").first()
           link must containMessage("confirmation.notification.timeline.link")
-          link must haveHref(SubmissionsController.displayPage())
+          link must haveHref(SubmissionsController.displayPage)
         }
 
         "render Exit Survey link" in {

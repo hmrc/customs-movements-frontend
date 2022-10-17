@@ -34,7 +34,7 @@ class MovementConfirmationController @Inject() (
   confirmationPage: confirmation_page
 ) extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = authenticate { implicit request =>
+  def displayPage: Action[AnyContent] = authenticate { implicit request =>
     val movementType = flashExtractor.extractMovementType(request).getOrElse(throw ReturnToStartException)
     movementType match {
       case ARRIVE | DEPART => Ok(confirmationPage(movementType))

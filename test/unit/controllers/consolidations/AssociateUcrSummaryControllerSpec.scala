@@ -92,7 +92,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
 
       "display page is invoked on non-'Find a consignment' journey" in {
         val answer = AssociateUcrAnswers(None, Some(mucrOptions), Some(associateUcr))
-        val result = controller(answer, false).displayPage()(getRequest())
+        val result = controller(answer, false).displayPage(getRequest())
 
         status(result) mustBe OK
         verify(mockAssociateDucrSummaryPage).apply(any(), any())(any(), any())
@@ -105,7 +105,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
       "display page when queried ducr" in {
         val result =
           controller(AssociateUcrAnswers(None, Some(MucrOptions(MucrOptions.Create, "MUCR")), Some(AssociateUcr(Ducr, "Queried DUCR"))))
-            .displayPage()(getRequest())
+            .displayPage(getRequest())
 
         status(result) mustBe OK
         verify(mockAssociateDucrSummaryNoChangePage).apply(any(), any(), any(), any())(any(), any())
@@ -123,7 +123,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
             Some(MucrOptions(MucrOptions.Create, "MUCR")),
             Some(AssociateUcr(Mucr, "Queried MUCR"))
           )
-        ).displayPage()(getRequest())
+        ).displayPage(getRequest())
 
         status(result) mustBe OK
         verify(mockAssociateDucrSummaryNoChangePage).apply(any(), any(), any(), any())(any(), any())
@@ -141,7 +141,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
             Some(MucrOptions(MucrOptions.Create, "Queried MUCR")),
             Some(AssociateUcr(Ducr, "DUCR"))
           )
-        ).displayPage()(getRequest())
+        ).displayPage(getRequest())
 
         status(result) mustBe OK
         verify(mockAssociateDucrSummaryNoChangePage).apply(any(), any(), any(), any())(any(), any())
@@ -157,13 +157,13 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
 
       "Mucr Options is missing during displaying page" in {
         intercept[RuntimeException] {
-          await(controller(AssociateUcrAnswers(mucrOptions = None, associateUcr = Some(associateUcr))).displayPage()(getRequest()))
+          await(controller(AssociateUcrAnswers(mucrOptions = None, associateUcr = Some(associateUcr))).displayPage(getRequest()))
         } mustBe ReturnToStartException
       }
 
       "Associate Ducr is missing during displaying page" in {
         intercept[RuntimeException] {
-          await(controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = None)).displayPage()(getRequest()))
+          await(controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = None)).displayPage(getRequest()))
         } mustBe ReturnToStartException
       }
     }
@@ -177,7 +177,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
         when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
         val cachedAnswers = AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))
 
-        controller(cachedAnswers).submit()(postRequest()).futureValue
+        controller(cachedAnswers).submit(postRequest()).futureValue
 
         val expectedEori = SuccessfulAuth().operator.eori
         verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers))(any())
@@ -187,17 +187,17 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
         when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
 
         val result =
-          controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))).submit()(postRequest(Json.obj()))
+          controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))).submit(postRequest(Json.obj()))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.consolidations.routes.AssociateUcrConfirmationController.displayPage().url)
+        redirectLocation(result) mustBe Some(controllers.consolidations.routes.AssociateUcrConfirmationController.displayPage.url)
       }
 
       "return response with Movement Type in flash" in {
         when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
 
         val result =
-          controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))).submit()(postRequest(Json.obj()))
+          controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))).submit(postRequest(Json.obj()))
 
         flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.ASSOCIATE_UCR.toString)
       }

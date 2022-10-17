@@ -41,7 +41,7 @@
   title = Title(headerKey, Some(sectionHeaderKey)),
   backButton = Some(BackButton(messages("site.back.toStartPage"), ChoiceController.displayChoices))
 ) {
-  @formHelper(action = DucrPartChiefController.submit(), 'autoComplete -> "off") {
+  @formHelper(action = DucrPartChiefController.submit, 'autoComplete -> "off") {
     @errorSummary(form.errors)
 
     @sectionHeader(messages(sectionHeaderKey))

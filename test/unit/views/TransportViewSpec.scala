@@ -73,7 +73,7 @@ class TransportViewSpec extends ViewSpec with Injector {
       val backButton = createPage().getElementById("back-link")
 
       backButton.text() must be(messages("site.back.previousQuestion"))
-      backButton must haveHref(routes.LocationController.displayPage())
+      backButton must haveHref(routes.LocationController.displayPage)
     }
 
     checkSaveAndReturnToSummaryButtonIsHidden(createPage())

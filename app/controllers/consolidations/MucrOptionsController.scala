@@ -47,7 +47,7 @@ class MucrOptionsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen getJourney(ASSOCIATE_UCR)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen getJourney(ASSOCIATE_UCR)) { implicit request =>
     val mucrOptions = request.answersAs[AssociateUcrAnswers].mucrOptions
     Ok(buildPage(mucrOptions.fold(form)(form.fill)))
   }
@@ -56,19 +56,18 @@ class MucrOptionsController @Inject() (
     page(form, request.cache.ucrBlock, request.answersAs[AssociateUcrAnswers].manageMucrChoice)
 
   def save(): Action[AnyContent] = (authenticate andThen getJourney(ASSOCIATE_UCR)).async { implicit request =>
-    form
-      .bindFromRequest()
+    form.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(buildPage(formWithErrors))),
         validForm => {
           val updatedAnswers = request.answersAs[AssociateUcrAnswers].copy(mucrOptions = Some(validForm))
           if (request.cache.ucrBlockFromIleQuery || request.cache.isDucrPartChief)
             cacheRepository.upsert(request.cache.update(updatedAnswers.copy(readyToSubmit = Some(true)))).map { _ =>
-              Redirect(AssociateUcrSummaryController.displayPage())
+              Redirect(AssociateUcrSummaryController.displayPage)
             }
           else
             cacheRepository.upsert(request.cache.update(updatedAnswers)).map { _ =>
-              navigator.continueTo(AssociateUcrController.displayPage())
+              navigator.continueTo(AssociateUcrController.displayPage)
             }
         }
       )

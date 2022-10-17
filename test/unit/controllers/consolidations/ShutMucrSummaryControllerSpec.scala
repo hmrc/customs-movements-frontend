@@ -56,7 +56,7 @@ class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with ScalaFuture
     "return 200 (OK)" when {
 
       "cache contains information from shut mucr page" in {
-        val result = controller(ShutMucrAnswers(Some(shutMucr))).displayPage()(getRequest())
+        val result = controller(ShutMucrAnswers(Some(shutMucr))).displayPage(getRequest())
 
         status(result) mustBe OK
         verify(page).apply(any())(any(), any())
@@ -67,7 +67,7 @@ class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with ScalaFuture
 
       "cache is empty for displayPage method" in {
         intercept[RuntimeException] {
-          await(controller(ShutMucrAnswers()).displayPage()(getRequest()))
+          await(controller(ShutMucrAnswers()).displayPage(getRequest()))
         } mustBe ReturnToStartException
       }
     }
@@ -81,7 +81,7 @@ class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with ScalaFuture
         when(submissionService.submit(any(), any[ShutMucrAnswers])(any())).thenReturn(Future.successful((): Unit))
         val cachedAnswers = ShutMucrAnswers(shutMucr = Some(shutMucr))
 
-        controller(cachedAnswers).submit()(postRequest()).futureValue
+        controller(cachedAnswers).submit(postRequest()).futureValue
 
         val expectedEori = SuccessfulAuth().operator.eori
         verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers))(any())
@@ -90,16 +90,16 @@ class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with ScalaFuture
       "return 303 (SEE_OTHER) that redirects to ShutMucrConfirmationController" in {
         when(submissionService.submit(any(), any[ShutMucrAnswers])(any())).thenReturn(Future.successful((): Unit))
 
-        val result = controller(ShutMucrAnswers(Some(shutMucr))).submit()(postRequest(JsObject(Seq.empty)))
+        val result = controller(ShutMucrAnswers(Some(shutMucr))).submit(postRequest(JsObject(Seq.empty)))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.consolidations.routes.ShutMucrConfirmationController.displayPage().url)
+        redirectLocation(result) mustBe Some(controllers.consolidations.routes.ShutMucrConfirmationController.displayPage.url)
       }
 
       "return response with Movement Type in flash" in {
         when(submissionService.submit(any(), any[ShutMucrAnswers])(any())).thenReturn(Future.successful((): Unit))
 
-        val result = controller(ShutMucrAnswers(Some(shutMucr))).submit()(postRequest(JsObject(Seq.empty)))
+        val result = controller(ShutMucrAnswers(Some(shutMucr))).submit(postRequest(JsObject(Seq.empty)))
 
         flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.SHUT_MUCR.toString)
       }

@@ -76,7 +76,7 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
   "SpecificDateTimeController" should {
     "return 200 (OK)" when {
       "display page method is invoked and cache is empty" in {
-        val result = controller(ArrivalAnswers(consignmentReferences = Some(consignmentReferences))).displayPage()(getRequest())
+        val result = controller(ArrivalAnswers(consignmentReferences = Some(consignmentReferences))).displayPage(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value mustBe empty
@@ -87,7 +87,7 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
           val cachedData = SpecificDateTimeChoice(SpecificDateTimeChoice.CurrentDateTime)
 
           val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences), specificDateTimeChoice = Some(cachedData))
-          val result = controller(answers).displayPage()(getRequest())
+          val result = controller(answers).displayPage(getRequest())
 
           status(result) mustBe OK
           theResponseForm.value.value mustBe cachedData
@@ -97,7 +97,7 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
           val cachedData = SpecificDateTimeChoice(SpecificDateTimeChoice.UserDateTime)
 
           val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences), specificDateTimeChoice = Some(cachedData))
-          val result = controller(answers).displayPage()(getRequest())
+          val result = controller(answers).displayPage(getRequest())
 
           status(result) mustBe OK
           theResponseForm.value.value mustBe cachedData
@@ -109,7 +109,7 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
       "form is incorrect" in {
         val incorrectForm = Json.toJson(SpecificDateTimeChoice("invalid"))
 
-        val result = controller(ArrivalAnswers(consignmentReferences = Some(consignmentReferences))).submit()(postRequest(incorrectForm))
+        val result = controller(ArrivalAnswers(consignmentReferences = Some(consignmentReferences))).submit(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -120,10 +120,10 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
         val dateTimeChoice = SpecificDateTimeChoice(SpecificDateTimeChoice.UserDateTime)
         val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences))
 
-        val result = controller(answers).submit()(postRequest(Json.toJson(dateTimeChoice)))
+        val result = controller(answers).submit(postRequest(Json.toJson(dateTimeChoice)))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe MovementDetailsController.displayPage().url
+        thePageNavigatedTo.url mustBe MovementDetailsController.displayPage.url
         theCacheUpserted.answers mustBe Some(answers.copy(specificDateTimeChoice = Some(dateTimeChoice)))
       }
 
@@ -132,10 +132,10 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
         val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences))
 
         val result =
-          controller(answers).submit()(postRequest(Json.toJson(dateTimeChoice)))
+          controller(answers).submit(postRequest(Json.toJson(dateTimeChoice)))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe LocationController.displayPage().url
+        thePageNavigatedTo.url mustBe LocationController.displayPage.url
         theCacheUpserted.answers mustBe Some(
           answers
             .copy(specificDateTimeChoice = Some(dateTimeChoice), arrivalDetails = Some(ArrivalDetails(fixedDate, fixedTime)))
@@ -146,10 +146,10 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
         val dateTimeChoice = SpecificDateTimeChoice(SpecificDateTimeChoice.UserDateTime)
         val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
 
-        val result = controller(answers).submit()(postRequest(Json.toJson(dateTimeChoice)))
+        val result = controller(answers).submit(postRequest(Json.toJson(dateTimeChoice)))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe MovementDetailsController.displayPage().url
+        thePageNavigatedTo.url mustBe MovementDetailsController.displayPage.url
         theCacheUpserted.answers mustBe Some(answers.copy(specificDateTimeChoice = Some(dateTimeChoice)))
       }
 
@@ -158,10 +158,10 @@ class SpecificDataTimeControllerSpec extends ControllerLayerSpec with MockCache 
         val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
 
         val result =
-          controller(answers).submit()(postRequest(Json.toJson(dateTimeChoice)))
+          controller(answers).submit(postRequest(Json.toJson(dateTimeChoice)))
 
         status(result) mustBe SEE_OTHER
-        thePageNavigatedTo.url mustBe LocationController.displayPage().url
+        thePageNavigatedTo.url mustBe LocationController.displayPage.url
         theCacheUpserted.answers mustBe Some(
           answers
             .copy(specificDateTimeChoice = Some(dateTimeChoice), departureDetails = Some(DepartureDetails(fixedDate, fixedTime)))

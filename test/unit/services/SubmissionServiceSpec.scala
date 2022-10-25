@@ -23,9 +23,10 @@ import forms._
 import models.ReturnToStartException
 import models.cache.{AssociateUcrAnswers, DisassociateUcrAnswers, MovementAnswers, ShutMucrAnswers}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.BDDMockito._
-import org.mockito.Mockito._
+import org.mockito.BDDMockito.`given`
+import org.mockito.Mockito.never
 import org.mockito.{ArgumentCaptor, Mockito}
+import org.mockito.MockitoSugar.{mock, reset, verify, verifyNoMoreInteractions}
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import repositories.CacheRepository

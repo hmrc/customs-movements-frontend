@@ -16,9 +16,9 @@
 
 package forms
 
-import base.BaseSpec
+import base.UnitSpec
 
-class UcrTypeSpec extends BaseSpec {
+class UcrTypeSpec extends UnitSpec {
 
   "UCR type model" should {
 

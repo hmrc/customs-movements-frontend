@@ -20,11 +20,10 @@ import models.notifications.Notification
 import models.submissions.Submission
 import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar.{mock, when}
 import play.twirl.api.HtmlFormat
 
-object MockFactory extends MockitoSugar {
+object MockFactory {
 
   private lazy val notificationsPageElement = NotificationsPageSingleElement("", "", HtmlFormat.empty)
 

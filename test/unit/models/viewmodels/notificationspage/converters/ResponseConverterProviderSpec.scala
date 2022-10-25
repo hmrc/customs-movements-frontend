@@ -16,17 +16,17 @@
 
 package models.viewmodels.notificationspage.converters
 
-import base.BaseSpec
+import base.UnitSpec
 import models.notifications.ResponseType._
 import models.viewmodels.decoder.ActionCode
 import models.viewmodels.notificationspage.MovementTotalsResponseType.{EMR, ERS}
+import org.mockito.MockitoSugar.mock
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 
-class ResponseConverterProviderSpec extends BaseSpec with MockitoSugar with BeforeAndAfterEach {
+class ResponseConverterProviderSpec extends UnitSpec with BeforeAndAfterEach {
 
   implicit val messages: Messages = stubMessages()
 

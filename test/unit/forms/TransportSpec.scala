@@ -16,13 +16,13 @@
 
 package forms
 
-import base.BaseSpec
+import base.UnitSpec
 import forms.Transport.ModesOfTransport._
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 import utils.TestDataHelper.createRandomAlphanumericString
 
-class TransportSpec extends BaseSpec {
+class TransportSpec extends UnitSpec {
 
   "Transport model" should {
 

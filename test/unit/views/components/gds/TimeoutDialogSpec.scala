@@ -24,7 +24,6 @@ import forms.Choice
 import models.SignOutReason.SessionTimeout
 import models.SignedInUser
 import models.requests.AuthenticatedRequest
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.Configuration
 import play.api.data.Form
 import play.api.inject.bind
@@ -37,7 +36,7 @@ import views.html.choice
 
 import scala.jdk.CollectionConverters.IterableHasAsScala
 
-class TimeoutDialogSpec extends ViewSpec with Injector with MockitoSugar {
+class TimeoutDialogSpec extends ViewSpec with Injector {
 
   "Timeout Dialog" should {
     "display the timeout dialog when user is signed in" in {

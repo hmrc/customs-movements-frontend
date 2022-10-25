@@ -16,11 +16,11 @@
 
 package forms
 
-import base.BaseSpec
+import base.UnitSpec
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 
-class ShutMucrSpec extends BaseSpec {
+class ShutMucrSpec extends UnitSpec {
 
   import ShutMucrSpec._
 

@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.IleQueryConfig
 import controllers.consolidations.routes.ShutMucrController
 import controllers.ileQuery.routes.FindConsignmentController
 import controllers.routes.{DucrPartChiefController, SubmissionsController}
@@ -27,7 +26,7 @@ import models.UcrBlock
 import models.cache._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
@@ -41,12 +40,9 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
   private val choicePage = mock[choice]
 
-  private val ileQueryConfig = mock[IleQueryConfig]
-
   override def beforeEach(): Unit = {
     super.beforeEach()
     when(choicePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(ileQueryConfig.isIleQueryEnabled).thenReturn(true)
   }
 
   override def afterEach(): Unit = {
@@ -60,7 +56,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
     captor.getValue
   }
 
-  val controller = new ChoiceController(SuccessfulAuth(), cacheRepository, stubMessagesControllerComponents(), ileQueryConfig, choicePage)(global)
+  val controller = new ChoiceController(SuccessfulAuth(), cacheRepository, stubMessagesControllerComponents(), choicePage)(global)
 
   "ChoiceController.displayChoices" should {
 
@@ -111,17 +107,6 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
         val result = controller.submitChoice(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-      }
-    }
-
-    "throw a MatchError" when {
-      "ileQuery is disabled and choice is Find Consignment" in {
-        val findConsignmentForm = JsObject(Map("choice" -> JsString(FindConsignment.value)))
-
-        when(ileQueryConfig.isIleQueryEnabled).thenReturn(false)
-        intercept[MatchError] {
-          controller.submitChoice(postRequest(findConsignmentForm))
-        }
       }
     }
 

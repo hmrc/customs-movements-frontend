@@ -17,14 +17,13 @@
 package controllers
 
 import base.{MockNavigator, UnitSpec}
-import config.IleQueryConfig
 import controllers.actions._
-import controllers.exception.InvalidFeatureStateException
 import forms.DucrPartChiefChoice
 import models.cache.JourneyType.JourneyType
 import models.cache.{Answers, Cache}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import models.{SignedInUser, UcrBlock}
+import org.mockito.MockitoSugar.mock
 import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.Messages
 import play.api.libs.json.Writes
@@ -83,15 +82,5 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
   case object InValidJourney extends JourneyRefiner(mock[CacheRepository], mock[ArriveDepartAllowList]) {
     override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
       Future.successful(Left(Results.Forbidden))
-  }
-
-  case object IleQueryEnabled extends IleQueryAction(mock[IleQueryConfig]) {
-    override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      block(request)
-  }
-
-  case object IleQueryDisabled extends IleQueryAction(mock[IleQueryConfig]) {
-    override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      throw InvalidFeatureStateException
   }
 }

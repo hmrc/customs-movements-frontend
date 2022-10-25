@@ -19,11 +19,10 @@ package config
 import com.typesafe.config.{Config, ConfigFactory}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-class AppConfigSpec extends AnyWordSpec with Matchers with MockitoSugar {
+class AppConfigSpec extends AnyWordSpec with Matchers {
 
   private val environment = Environment.simple()
   private val validAppConfig: Config =

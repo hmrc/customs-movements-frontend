@@ -21,9 +21,10 @@ import controllers.ControllerLayerSpec
 import controllers.exception.IncompleteApplication
 import controllers.routes.RootController
 import models.ReturnToStartException
-import org.mockito.ArgumentMatchers._
-import org.mockito.BDDMockito._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchersSugar.refEq
+import org.mockito.BDDMockito.`given`
+import org.mockito.MockitoSugar.{mock, reset, verify}
 import play.api.http.{HeaderNames, Status}
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.RequestHeader

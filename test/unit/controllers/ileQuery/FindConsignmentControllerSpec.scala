@@ -17,13 +17,11 @@
 package controllers.ileQuery
 
 import controllers.ControllerLayerSpec
-import controllers.actions.IleQueryAction
-import controllers.exception.InvalidFeatureStateException
 import controllers.ileQuery.routes.IleQueryController
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.MockitoSugar.{mock, reset, when}
 import play.api.libs.json.{JsString, Json}
-import play.api.test.Helpers.{status, _}
+import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import repository.{MockCache, MockIleQueryCache}
 import testdata.CommonTestData.correctUcr
@@ -33,22 +31,15 @@ class FindConsignmentControllerSpec extends ControllerLayerSpec with MockIleQuer
 
   private val ileQueryPage = mock[ile_query]
 
-  private def controllerWithIleQuery(ileQueryAction: IleQueryAction): FindConsignmentController =
-    new FindConsignmentController(SuccessfulAuth(), ileQueryAction, stubMessagesControllerComponents(), ileQueryPage)
-
-  private val controller = controllerWithIleQuery(IleQueryEnabled)
+  private val controller = new FindConsignmentController(SuccessfulAuth(), stubMessagesControllerComponents(), ileQueryPage)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-
-    reset(ileQueryPage)
-
     when(ileQueryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     reset(ileQueryPage)
-
     super.afterEach()
   }
 
@@ -88,26 +79,6 @@ class FindConsignmentControllerSpec extends ControllerLayerSpec with MockIleQuer
         val result = controller.submitPage(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-      }
-    }
-  }
-
-  "FindConsignmentController when ileQuery disabled" should {
-
-    val controllerIleQueryDisabled = controllerWithIleQuery(IleQueryDisabled)
-
-    "block access to query form" in {
-      intercept[RuntimeException] {
-        await(controllerIleQueryDisabled.displayPage(getRequest()))
-      } mustBe InvalidFeatureStateException
-
-    }
-
-    "block access when posting query form" in {
-      val correctForm = Json.obj(("ucr", JsString(correctUcr)))
-
-      intercept[RuntimeException] {
-        await(controllerIleQueryDisabled.submitPage(postRequest(correctForm)))
       }
     }
   }

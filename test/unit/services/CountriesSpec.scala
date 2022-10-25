@@ -16,10 +16,10 @@
 
 package services
 
-import base.BaseSpec
+import base.UnitSpec
 import services.Countries.allCountries
 
-class CountriesSpec extends BaseSpec {
+class CountriesSpec extends UnitSpec {
 
   "Countries" should {
     "give all countries with codes in alphabetical order of country name with filtering according to permitted MDG values" in {

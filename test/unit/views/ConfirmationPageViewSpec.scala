@@ -19,12 +19,11 @@ package views
 import base.Injector
 import controllers.routes.SubmissionsController
 import models.cache._
-import org.scalatestplus.mockito.MockitoSugar
 import views.html.confirmation_page
 import views.tags.ViewTest
 
 @ViewTest
-class ConfirmationPageViewSpec extends ViewSpec with Injector with MockitoSugar {
+class ConfirmationPageViewSpec extends ViewSpec with Injector {
 
   private val page = instanceOf[confirmation_page]
 

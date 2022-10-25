@@ -18,16 +18,15 @@ package views
 
 import base.OverridableInjector
 import config.AppConfig
-import org.mockito.Mockito.{reset, when}
+import org.mockito.MockitoSugar.{mock, reset, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import views.html.components.gds.phaseBanner
 
-class PhaseBannerSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
+class PhaseBannerSpec extends ViewSpec with BeforeAndAfterEach {
 
   private val appConfig = mock[AppConfig]
   private val injector = new OverridableInjector(bind[AppConfig].toInstance(appConfig))

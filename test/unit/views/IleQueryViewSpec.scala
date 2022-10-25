@@ -20,7 +20,6 @@ import base.Injector
 import controllers.routes.ChoiceController
 import forms.IleQueryForm
 import org.jsoup.nodes.Element
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
@@ -28,7 +27,7 @@ import views.html.ile_query
 import views.tags.ViewTest
 
 @ViewTest
-class IleQueryViewSpec extends ViewSpec with Injector with MockitoSugar {
+class IleQueryViewSpec extends ViewSpec with Injector {
 
   private implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
 

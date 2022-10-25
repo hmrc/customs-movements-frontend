@@ -22,13 +22,12 @@ import forms._
 import forms.common.{Date, Time}
 import models.UcrBlock
 import models.cache.DepartureAnswers
-import org.scalatestplus.mockito.MockitoSugar
 import views.html.summary.departure_summary_page
 
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalTime}
 
-class DepartureSummaryViewSpec extends ViewSpec with Injector with MockitoSugar {
+class DepartureSummaryViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(DepartureAnswers())
 

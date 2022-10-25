@@ -27,9 +27,8 @@ import models.UcrBlock
 import models.requests.AuthenticatedRequest
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.MockitoSugar.{mock, reset, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -39,7 +38,7 @@ import views.html.choice_on_consignment
 import views.tags.ViewTest
 
 @ViewTest
-class ChoiceOnConsignmentViewSpec extends ViewSpec with BeforeAndAfterEach with Injector with MockitoSugar {
+class ChoiceOnConsignmentViewSpec extends ViewSpec with BeforeAndAfterEach with Injector {
 
   private val arriveDepartAllowList = mock[ArriveDepartAllowList]
 

@@ -16,6 +16,11 @@
 
 package base
 
-import org.scalatestplus.mockito.MockitoSugar
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.must.Matchers
+import play.api.data.Form
 
-trait UnitSpec extends BaseSpec with MockitoSugar
+trait UnitSpec extends AnyWordSpec with Matchers {
+
+  val JsonBindMaxChars: Long = Form.FromJsonMaxChars
+}

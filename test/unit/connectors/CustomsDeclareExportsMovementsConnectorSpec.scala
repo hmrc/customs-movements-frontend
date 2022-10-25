@@ -16,7 +16,6 @@
 
 package connectors
 
-import java.time.Instant
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.AppConfig
 import connectors.exception.MovementsConnectorException
@@ -29,13 +28,16 @@ import models.notifications.queries.DucrInfo
 import models.notifications.queries.IleQueryResponseExchangeData.SuccessfulResponseExchangeData
 import models.submissions.Submission
 import org.mockito.BDDMockito.given
+import org.mockito.MockitoSugar.mock
 import play.api.http.Status
 import play.api.libs.json.{Format, Json}
 import play.api.test.Helpers._
-import testdata.CommonTestData.{conversationId, _}
+import testdata.CommonTestData._
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+
+import java.time.Instant
 
 class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
 

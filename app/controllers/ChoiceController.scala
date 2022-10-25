@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.IleQueryConfig
 import controllers.actions.AuthAction
 import controllers.consolidations.routes.ShutMucrController
 import controllers.ileQuery.routes.FindConsignmentController
@@ -37,14 +36,9 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ChoiceController @Inject() (
-  authenticate: AuthAction,
-  cacheRepository: CacheRepository,
-  mcc: MessagesControllerComponents,
-  ileQueryConfig: IleQueryConfig,
-  choicePage: choice
-)(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
+class ChoiceController @Inject() (authenticate: AuthAction, cacheRepository: CacheRepository, mcc: MessagesControllerComponents, choicePage: choice)(
+  implicit ec: ExecutionContext
+) extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
   val displayChoices: Action[AnyContent] = authenticate.async { implicit request =>
     cacheRepository.findByEori(request.eori).map(_.flatMap(_.answers)).map {
@@ -60,13 +54,13 @@ class ChoiceController @Inject() (
 
   private def nextPage(choice: Choice)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     choice match {
+      case FindConsignment => resetCache(request.eori, FindConsignmentController.displayPage)
       case Arrival         => saveCache(request.eori, ArrivalAnswers.fromUcr, DucrPartChiefController.displayPage)
       case Departure       => saveCache(request.eori, DepartureAnswers.fromUcr, DucrPartChiefController.displayPage)
       case AssociateUCR    => saveCache(request.eori, AssociateUcrAnswers.fromUcr, DucrPartChiefController.displayPage)
       case DisassociateUCR => saveCache(request.eori, DisassociateUcrAnswers.fromUcr, DucrPartChiefController.displayPage)
       case ShutMUCR        => saveCache(request.eori, ShutMucrAnswers.fromUcr, ShutMucrController.displayPage)
       case Submissions     => resetCache(request.eori, SubmissionsController.displayPage)
-      case FindConsignment if ileQueryConfig.isIleQueryEnabled => resetCache(request.eori, FindConsignmentController.displayPage)
     }
 
   def resetCache(eori: String, call: Call): Future[Result] =

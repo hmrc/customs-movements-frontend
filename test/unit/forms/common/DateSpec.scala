@@ -18,10 +18,10 @@ package forms.common
 
 import java.time.LocalDate
 
-import base.BaseSpec
+import base.UnitSpec
 import play.api.data.{Form, FormError}
 
-class DateSpec extends BaseSpec {
+class DateSpec extends UnitSpec {
 
   val form: Form[Date] = Form(Date.mapping(""))
 

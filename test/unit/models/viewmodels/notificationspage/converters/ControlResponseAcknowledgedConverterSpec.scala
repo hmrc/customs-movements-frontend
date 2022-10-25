@@ -16,11 +16,10 @@
 
 package models.viewmodels.notificationspage.converters
 
-import base.{BaseSpec, OverridableInjector}
+import base.{OverridableInjector, UnitSpec}
 import models.notifications.ResponseType
 import models.viewmodels.decoder.ActionCode
 import modules.DateTimeModule
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import testdata.NotificationTestData
@@ -28,7 +27,7 @@ import testdata.NotificationTestData.exampleNotificationFrontendModel
 import utils.DateTimeTestModule
 import views.MessagesStub
 
-class ControlResponseAcknowledgedConverterSpec extends BaseSpec with MockitoSugar with MessagesStub {
+class ControlResponseAcknowledgedConverterSpec extends UnitSpec with MessagesStub {
 
   import ControlResponseAcknowledgedConverterSpec._
 

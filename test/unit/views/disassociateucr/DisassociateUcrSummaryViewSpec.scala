@@ -23,14 +23,13 @@ import forms.DucrPartChiefChoice.IsDucrPart
 import forms.{DisassociateUcr, DucrPartChiefChoice}
 import forms.UcrType.Ducr
 import models.cache.{Cache, DisassociateUcrAnswers}
-import org.scalatestplus.mockito.MockitoSugar
 import testdata.CommonTestData.validEori
 import views.ViewSpec
 import views.html.disassociateucr.disassociate_ucr_summary
 import views.tags.ViewTest
 
 @ViewTest
-class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector with MockitoSugar {
+class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(DisassociateUcrAnswers())
 

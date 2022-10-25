@@ -19,7 +19,7 @@ package services.audit
 import base.UnitSpec
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsValue, Json}
 import testdata.{CommonTestData, MovementsTestData}

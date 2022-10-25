@@ -35,5 +35,4 @@ trait MovementsMetricsStub {
   def timer(name: String): Timer = registry.getTimers.get(name)
 
   def counter(name: String): Counter = registry.getCounters.get(name)
-
 }

@@ -21,7 +21,7 @@ import forms.{DucrPartDetails, UcrType}
 import models.UcrBlock
 import models.cache.{Answers, ArrivalAnswers, Cache}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito._
+import org.mockito.MockitoSugar.{mock, reset, verify, verifyNoMoreInteractions, when}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.libs.json.Json
 import play.api.test.Helpers._

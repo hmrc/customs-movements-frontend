@@ -15,7 +15,6 @@
  *@
 
 @import components.gds._
-@import config.IleQueryConfig
 @import controllers.actions.ArriveDepartAllowList
 @import controllers.routes.ChoiceController
 @import forms.Choice._
@@ -31,8 +30,7 @@
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
   formHelper: FormWithCSRF,
-  arriveDepartAllowList: ArriveDepartAllowList,
-  ileQueryConfig: IleQueryConfig
+  arriveDepartAllowList: ArriveDepartAllowList
 )
 
 @(form: Form[Choice])(implicit request: AuthenticatedRequest[_], messages: Messages)
@@ -86,12 +84,8 @@
         )
     )
 
-    (ileQueryConfig.isIleQueryEnabled, arriveDepartAllowList.contains(request.user.eori)) match {
-        case (true, true) => findConsignmentChoice ++ arriveDepartChoices ++ commonChoices
-        case (true, false) => findConsignmentChoice ++ commonChoices
-        case (false, true) => arriveDepartChoices ++ commonChoices
-        case _ => commonChoices
-    }
+    if (arriveDepartAllowList.contains(request.user.eori)) findConsignmentChoice ++ arriveDepartChoices ++ commonChoices
+    else findConsignmentChoice ++ commonChoices
 }
 
 @govukLayout(title = Title("movement.choice.title")) {

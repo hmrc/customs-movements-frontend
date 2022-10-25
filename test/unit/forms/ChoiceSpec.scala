@@ -16,12 +16,12 @@
 
 package forms
 
-import base.BaseSpec
+import base.UnitSpec
 import forms.Choice._
 import org.scalatest.OptionValues
 import play.api.libs.json._
 
-class ChoiceSpec extends BaseSpec with OptionValues {
+class ChoiceSpec extends UnitSpec with OptionValues {
   import ChoiceSpec._
 
   "Validation defined in Choice mapping" should {

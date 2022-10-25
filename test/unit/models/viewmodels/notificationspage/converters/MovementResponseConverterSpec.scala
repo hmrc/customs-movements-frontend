@@ -16,18 +16,16 @@
 
 package models.viewmodels.notificationspage.converters
 
-import java.time.{Instant, LocalDate, ZoneOffset}
-import base.BaseSpec
+import base.UnitSpec
 import com.google.inject.{AbstractModule, Guice}
+import models.UcrBlock
 import models.notifications.{Entry, EntryStatus, ResponseType}
 import models.viewmodels.decoder.{CRCCode, Decoder}
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import models.viewmodels.notificationspage.converters.ERSResponseConverterSpec.{roeKeyFromDecoder, soeKeyFromDecoder}
-import models.UcrBlock
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.MockitoSugar.{mock, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.HtmlFormat
@@ -35,7 +33,9 @@ import testdata.CommonTestData.correctUcr
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import utils.DateTimeTestModule
 
-class MovementResponseConverterSpec extends BaseSpec with MockitoSugar with BeforeAndAfterEach {
+import java.time.{Instant, LocalDate, ZoneOffset}
+
+class MovementResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
 
   private val testTimestamp: Instant = LocalDate.of(2019, 10, 31).atStartOfDay().toInstant(ZoneOffset.UTC)
 

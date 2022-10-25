@@ -18,11 +18,11 @@ package forms
 
 import java.time.{LocalDate, LocalTime, ZoneId}
 
-import base.BaseSpec
+import base.UnitSpec
 import forms.common.{Date, Time}
 import play.api.data.Mapping
 
-class ArrivalDetailsSpec extends BaseSpec {
+class ArrivalDetailsSpec extends UnitSpec {
 
   private val date = LocalDate.now().minusDays(1)
 

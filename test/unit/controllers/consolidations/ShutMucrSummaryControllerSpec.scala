@@ -22,7 +22,7 @@ import forms.ShutMucr
 import models.ReturnToStartException
 import models.cache.{JourneyType, ShutMucrAnswers}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.libs.json.JsObject
 import play.api.test.Helpers._

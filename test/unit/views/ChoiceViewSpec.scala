@@ -17,7 +17,6 @@
 package views
 
 import base.{Injector, OverridableInjector}
-import config.IleQueryConfig
 import controllers.actions.ArriveDepartAllowList
 import controllers.routes.ChoiceController
 import forms.Choice
@@ -25,9 +24,8 @@ import forms.Choice._
 import models.requests.AuthenticatedRequest
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.MockitoSugar.{mock, reset, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -37,28 +35,23 @@ import views.html.choice
 import views.tags.ViewTest
 
 @ViewTest
-class ChoiceViewSpec extends ViewSpec with BeforeAndAfterEach with Injector with MockitoSugar {
+class ChoiceViewSpec extends ViewSpec with BeforeAndAfterEach with Injector {
 
   private val arriveDepartAllowList = mock[ArriveDepartAllowList]
-  private val ileQueryConfig = mock[IleQueryConfig]
 
-  private val injector =
-    new OverridableInjector(bind[ArriveDepartAllowList].toInstance(arriveDepartAllowList), bind[IleQueryConfig].toInstance(ileQueryConfig))
+  private val injector = new OverridableInjector(bind[ArriveDepartAllowList].toInstance(arriveDepartAllowList))
 
   private val choicePage = injector.instanceOf[choice]
 
-  def setIleQuery(enabled: Boolean): Unit = when(ileQueryConfig.isIleQueryEnabled).thenReturn(enabled)
   def setArriveDepartAllowList(present: Boolean): Unit = when(arriveDepartAllowList.contains(any())).thenReturn(present)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-
-    setIleQuery(true)
     setArriveDepartAllowList(true)
   }
 
   override def afterEach(): Unit = {
-    reset(arriveDepartAllowList, ileQueryConfig)
+    reset(arriveDepartAllowList)
     super.afterEach()
   }
 
@@ -97,13 +90,11 @@ class ChoiceViewSpec extends ViewSpec with BeforeAndAfterEach with Injector with
   "Choice View" should {
 
     "render the choices in the expected order depending on the configuration flags" in {
-      List((true, true), (true, false), (false, true), (false, false)).foreach { case (arriveDepartAllowListFlag, ileQueryFlag) =>
+      List(true, false).foreach { arriveDepartAllowListFlag =>
         setArriveDepartAllowList(arriveDepartAllowListFlag)
-        setIleQuery(ileQueryFlag)
 
         allChoices
           .filterNot(choice => !arriveDepartAllowListFlag && (choice.isArrival || choice.isDeparture))
-          .filterNot(!ileQueryFlag && _.isFindConsignment)
           .zipWithIndex
           .foreach { case (choice, index) =>
             val element = createView().getElementsByAttributeValue("value", choice.value).get(0)

@@ -21,6 +21,8 @@
 @import views.components.BackButton
 @import views.html.components.gds.{exportsInputText, link}
 @import views.Title
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+
 
 @this(
     govukLayout: gds_main_template,
@@ -42,7 +44,7 @@
         @exportsInputText(
           field = form("ucr"),
             labelKey = "ileQuery.title",
-            hintContent = Some(Text(messages("ileQuery.hint"))),
+            hintContent = Some(HtmlContent(messages("ileQuery.hint"))),
             isPageHeading = true,
             headingClasses = "govuk-label--xl",
             inputClasses = "govuk-input govuk-input--width-20"

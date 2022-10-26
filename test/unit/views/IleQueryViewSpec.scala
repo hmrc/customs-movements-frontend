@@ -69,7 +69,7 @@ class IleQueryViewSpec extends ViewSpec with Injector with MockitoSugar {
     }
 
     "contain input field hint" in {
-      view.getElementById("ucr-hint").text mustBe messages("ileQuery.hint")
+      view.getElementById("ucr-hint").html.contains(messages("ileQuery.hint"))
     }
 
     "contain submit button" in {

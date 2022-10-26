@@ -17,14 +17,13 @@
 package controllers.consolidations
 
 import controllers.ControllerLayerSpec
-import controllers.actions.IleQueryAction
 import controllers.exception.InvalidFeatureStateException
 import forms.{ManageMucrChoice, UcrType}
 import models.UcrBlock
 import models.cache.AssociateUcrAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -39,14 +38,9 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
 
   private val page = mock[manage_mucr]
 
-  private def controller(
-    answers: AssociateUcrAnswers,
-    ileQueryAction: IleQueryAction = IleQueryEnabled,
-    ucrBlock: Option[UcrBlock] = Some(UcrBlock("mucr", UcrType.Mucr))
-  ) =
+  private def controller(answers: AssociateUcrAnswers, ucrBlock: Option[UcrBlock] = Some(UcrBlock("mucr", UcrType.Mucr))): ManageMucrController =
     new ManageMucrController(
       SuccessfulAuth(),
-      ileQueryAction,
       ValidJourney(answers, ucrBlock, true),
       stubMessagesControllerComponents(),
       cacheRepository,
@@ -92,7 +86,6 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "form is incorrect during saving" in {
         val incorrectForm = Json.toJson(ManageMucrChoice("invalid"))
 
@@ -140,18 +133,10 @@ class ManageMucrControllerSpec extends ControllerLayerSpec with MockCache with O
   }
 
   "Manage Mucr Controller when accessed in illegal state" should {
-
     "block access" when {
-
-      "ileQuery feature disabled" in {
-        intercept[RuntimeException] {
-          await(controller(AssociateUcrAnswers(), IleQueryDisabled).displayPage(getRequest()))
-        } mustBe InvalidFeatureStateException
-      }
-
       "queried ucr not available in cache" in {
         intercept[RuntimeException] {
-          await(controller(AssociateUcrAnswers(), IleQueryEnabled, ucrBlock = None).displayPage(getRequest()))
+          await(controller(AssociateUcrAnswers(), ucrBlock = None).displayPage(getRequest()))
         } mustBe InvalidFeatureStateException
       }
     }

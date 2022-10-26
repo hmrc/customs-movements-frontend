@@ -22,7 +22,6 @@ import forms.DisassociateUcr
 import forms.UcrType.{Ducr, Mucr}
 import models.cache.DisassociateUcrAnswers
 import org.jsoup.nodes.Document
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.twirl.api.Html
 import views.ViewSpec
@@ -30,7 +29,7 @@ import views.html.disassociateucr.disassociate_ucr
 import views.tags.ViewTest
 
 @ViewTest
-class DisassociateUcrViewSpec extends ViewSpec with Injector with MockitoSugar {
+class DisassociateUcrViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(DisassociateUcrAnswers())
 

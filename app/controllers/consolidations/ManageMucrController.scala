@@ -16,7 +16,7 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, IleQueryAction, JourneyRefiner}
+import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.consolidations.routes.MucrOptionsController
 import controllers.exception.InvalidFeatureStateException
 import controllers.navigation.Navigator
@@ -37,7 +37,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ManageMucrController @Inject() (
   authenticate: AuthAction,
-  ileQueryFeatureEnabled: IleQueryAction,
   getJourney: JourneyRefiner,
   mcc: MessagesControllerComponents,
   cacheRepository: CacheRepository,
@@ -46,7 +45,7 @@ class ManageMucrController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  private val journeyActions = authenticate andThen ileQueryFeatureEnabled andThen getJourney(ASSOCIATE_UCR)
+  private val journeyActions = authenticate andThen getJourney(ASSOCIATE_UCR)
 
   def displayPage: Action[AnyContent] = journeyActions { implicit request =>
     if (request.cache.ucrBlock.map(_.isNot(UcrType.Mucr)).getOrElse(throw InvalidFeatureStateException))

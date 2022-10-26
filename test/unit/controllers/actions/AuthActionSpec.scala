@@ -21,10 +21,9 @@ import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito.verify
+import org.mockito.MockitoSugar.{mock, verify}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,7 +35,7 @@ import utils.Stubs
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuthActionSpec extends AnyWordSpec with Matchers with MockitoSugar with Stubs {
+class AuthActionSpec extends AnyWordSpec with Matchers with Stubs {
 
   private val connector = mock[AuthConnector]
   private val allowList = mock[EoriAllowList]

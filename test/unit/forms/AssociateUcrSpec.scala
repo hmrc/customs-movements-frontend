@@ -16,12 +16,12 @@
 
 package forms
 
-import base.BaseSpec
+import base.UnitSpec
 import models.UcrBlock
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 
-class AssociateUcrSpec extends BaseSpec {
+class AssociateUcrSpec extends UnitSpec {
 
   "AssociateUcr" should {
 

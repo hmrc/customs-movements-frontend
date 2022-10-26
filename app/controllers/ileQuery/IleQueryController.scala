@@ -18,7 +18,7 @@ package controllers.ileQuery
 
 import connectors.CustomsDeclareExportsMovementsConnector
 import connectors.exchanges.IleQueryExchange
-import controllers.actions.{AuthAction, IleQueryAction}
+import controllers.actions.AuthAction
 import controllers.ileQuery.routes.IleQueryController
 import forms.IleQueryForm.form
 import forms.UcrType._
@@ -44,7 +44,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class IleQueryController @Inject() (
   authenticate: AuthAction,
-  ileQueryFeatureEnabled: IleQueryAction,
   mcc: MessagesControllerComponents,
   errorHandler: ErrorHandler,
   cacheRepository: CacheRepository,
@@ -61,7 +60,7 @@ class IleQueryController @Inject() (
 
   private val logger = Logger(this.getClass)
 
-  def getConsignmentData(ucr: String): Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled).async { implicit request =>
+  def getConsignmentData(ucr: String): Action[AnyContent] = authenticate.async { implicit request =>
     ileQueryRepository.findBySessionIdAndUcr(retrieveSessionId, ucr).flatMap {
       case Some(query) => checkForNotifications(query)
       case None        => sendIleQuery(ucr)

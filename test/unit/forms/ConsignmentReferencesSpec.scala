@@ -16,12 +16,12 @@
 
 package forms
 
-import base.BaseSpec
+import base.UnitSpec
 import models.cache.JourneyType
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 
-class ConsignmentReferencesSpec extends BaseSpec {
+class ConsignmentReferencesSpec extends UnitSpec {
 
   val validDucr = "9GB123456"
   val validMucr = "GB/ABC-12342"

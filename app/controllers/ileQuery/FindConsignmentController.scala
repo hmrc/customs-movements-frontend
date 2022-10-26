@@ -16,7 +16,7 @@
 
 package controllers.ileQuery
 
-import controllers.actions.{AuthAction, IleQueryAction}
+import controllers.actions.AuthAction
 import controllers.ileQuery.routes.IleQueryController
 import forms.IleQueryForm.form
 import play.api.i18n.I18nSupport
@@ -28,18 +28,14 @@ import views.html.ile_query
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class FindConsignmentController @Inject() (
-  authenticate: AuthAction,
-  ileQueryFeatureEnabled: IleQueryAction,
-  mcc: MessagesControllerComponents,
-  ileQueryPage: ile_query
-) extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
+class FindConsignmentController @Inject() (authenticate: AuthAction, mcc: MessagesControllerComponents, ileQueryPage: ile_query)
+    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
 
-  val displayPage: Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled) { implicit request =>
+  val displayPage: Action[AnyContent] = authenticate { implicit request =>
     Ok(ileQueryPage(form))
   }
 
-  val submitPage: Action[AnyContent] = (authenticate andThen ileQueryFeatureEnabled) { implicit request =>
+  val submitPage: Action[AnyContent] = authenticate { implicit request =>
     form.bindFromRequest
       .fold(formWithErrors => BadRequest(ileQueryPage(formWithErrors)), validUcr => Redirect(IleQueryController.getConsignmentData(validUcr)))
   }

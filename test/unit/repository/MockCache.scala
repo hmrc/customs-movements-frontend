@@ -17,19 +17,18 @@
 package repository
 
 import models.cache.Cache
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito.verify
+import org.mockito.MockitoSugar.{mock, reset, verify}
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.Answer
-import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.{BeforeAndAfterEach, Suite}
-import org.scalatestplus.mockito.MockitoSugar
 import repositories.CacheRepository
 
 import scala.concurrent.Future
 
-trait MockCache extends MockitoSugar with BeforeAndAfterEach {
+trait MockCache extends BeforeAndAfterEach {
   this: Suite =>
 
   protected val cacheRepository: CacheRepository = mock[CacheRepository]
@@ -41,7 +40,7 @@ trait MockCache extends MockitoSugar with BeforeAndAfterEach {
   }
 
   override protected def afterEach(): Unit = {
-    Mockito.reset(cacheRepository)
+    reset(cacheRepository)
     super.afterEach()
   }
 

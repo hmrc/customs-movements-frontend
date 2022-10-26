@@ -24,12 +24,11 @@ import forms.UcrType.Ducr
 import models.cache.{ArrivalAnswers, JourneyType}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.{Form, FormError}
 import play.twirl.api.HtmlFormat.Appendable
 import views.html.consignment_references
 
-class ConsignmentReferenceViewSpec extends ViewSpec with Injector with MockitoSugar {
+class ConsignmentReferenceViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(ArrivalAnswers())
 

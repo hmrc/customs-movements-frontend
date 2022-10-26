@@ -21,13 +21,13 @@ object AppDependencies {
   )
 
   val test = Seq(
-    "com.typesafe.play"      %% "play-test"          % PlayVersion.current % "test, it",
+    "com.typesafe.play"      %% "play-test"          % PlayVersion.current  % "test, it",
     "org.scalatest"          %% "scalatest"          % "3.2.12"             % "test, it",
-    "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0"             % "test, it",
-    "org.scalatestplus"      %% "mockito-3-4"        % "3.2.10.0"           % "test",
-    "com.vladsch.flexmark"   %  "flexmark-all"       % "0.62.2"            % "test, it",
-    "org.jsoup"              %  "jsoup"              % "1.14.3"            % "test, it",
-    "com.github.tomakehurst" %  "wiremock-jre8"      % "2.33.2"            % "test, it"
+    "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0"              % "test, it",
+    "org.mockito"            %% "mockito-scala"      % "1.17.12"            % "test",
+    "com.vladsch.flexmark"   %  "flexmark-all"       % "0.62.2"             % "test, it",
+    "org.jsoup"              %  "jsoup"              % "1.14.3"             % "test, it",
+    "com.github.tomakehurst" %  "wiremock-jre8"      % "2.33.2"             % "test, it"
   )
 
   def apply(): Seq[ModuleID] = (compile ++ test).map(_.withSources)

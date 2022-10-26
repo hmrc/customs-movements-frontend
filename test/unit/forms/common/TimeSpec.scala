@@ -18,12 +18,12 @@ package forms.common
 
 import java.time.LocalTime
 
-import base.BaseSpec
+import base.UnitSpec
 import forms.common.Time._
 import helpers.FormMatchers
 import play.api.data.{Form, FormError}
 
-class TimeSpec extends BaseSpec with FormMatchers {
+class TimeSpec extends UnitSpec with FormMatchers {
 
   val form: Form[Time] = Form(Time.mapping(""))
 

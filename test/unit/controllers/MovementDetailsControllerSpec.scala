@@ -24,7 +24,7 @@ import models.ReturnToStartException
 import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.{Form, FormError}
 import play.api.libs.json._

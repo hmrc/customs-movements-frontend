@@ -16,14 +16,13 @@
 
 package models.viewmodels.notificationspage.converters
 
-import base.{BaseSpec, OverridableInjector}
+import base.{OverridableInjector, UnitSpec}
 import models.notifications.ResponseType
 import models.viewmodels.decoder.{ActionCode, Decoder, ILEError}
 import modules.DateTimeModule
 import org.mockito.ArgumentMatchers.{anyString, eq => meq}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.Helpers.stubMessages
@@ -31,7 +30,7 @@ import testdata.NotificationTestData
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import utils.DateTimeTestModule
 
-class ControlResponseRejectedConverterSpec extends BaseSpec with MockitoSugar with BeforeAndAfterEach {
+class ControlResponseRejectedConverterSpec extends UnitSpec with BeforeAndAfterEach {
 
   import ControlResponseRejectedConverterSpec._
 
@@ -51,7 +50,6 @@ class ControlResponseRejectedConverterSpec extends BaseSpec with MockitoSugar wi
   "ControlResponseRejectedConverter on convert" should {
 
     "return NotificationsPageSingleElement with correct title" in {
-
       val input = RejectedControlResponseSingleError
       val expectedTitle = messages("notifications.elem.title.inventoryLinkingControlResponse.Rejected")
 
@@ -61,7 +59,6 @@ class ControlResponseRejectedConverterSpec extends BaseSpec with MockitoSugar wi
     }
 
     "return NotificationsPageSingleElement with correct timestampInfo" in {
-
       val input = RejectedControlResponseSingleError
       val expectedTimestampInfo = "23 October 2019 at 12:34pm"
 
@@ -76,7 +73,6 @@ class ControlResponseRejectedConverterSpec extends BaseSpec with MockitoSugar wi
     "response contains single error" should {
 
       "call Decoder for Error once" in {
-
         val input = RejectedControlResponseSingleError
 
         converter.convert(input)
@@ -85,7 +81,6 @@ class ControlResponseRejectedConverterSpec extends BaseSpec with MockitoSugar wi
       }
 
       "return NotificationsPageSingleElement with correct content" in {
-
         val input = RejectedControlResponseSingleError
         val expectedContentHeader =
           messages("notifications.elem.content.inventoryLinkingControlResponse.Rejected.singleError")
@@ -102,7 +97,6 @@ class ControlResponseRejectedConverterSpec extends BaseSpec with MockitoSugar wi
     "response contains multiple errors" should {
 
       "call Decoder for every Error" in {
-
         val input = RejectedControlResponseMultipleErrors
 
         converter.convert(input)
@@ -113,7 +107,6 @@ class ControlResponseRejectedConverterSpec extends BaseSpec with MockitoSugar wi
       }
 
       "return NotificationsPageSingleElement with correct content" in {
-
         val input = RejectedControlResponseMultipleErrors
         val expectedContentHeader =
           messages("notifications.elem.content.inventoryLinkingControlResponse.Rejected.multiError")
@@ -129,7 +122,6 @@ class ControlResponseRejectedConverterSpec extends BaseSpec with MockitoSugar wi
       }
     }
   }
-
 }
 
 object ControlResponseRejectedConverterSpec {
@@ -144,5 +136,4 @@ object ControlResponseRejectedConverterSpec {
 
   val RejectedControlResponseMultipleErrors =
     RejectedControlResponse.copy(errorCodes = Seq("07", "E3481", "29", "E607"))
-
 }

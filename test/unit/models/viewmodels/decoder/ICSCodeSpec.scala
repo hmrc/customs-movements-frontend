@@ -16,9 +16,9 @@
 
 package models.viewmodels.decoder
 
-import base.BaseSpec
+import base.UnitSpec
 
-class ICSCodeSpec extends BaseSpec {
+class ICSCodeSpec extends UnitSpec {
 
   "ICSCode" should {
 

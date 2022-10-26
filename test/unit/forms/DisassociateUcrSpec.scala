@@ -16,12 +16,12 @@
 
 package forms
 
-import base.BaseSpec
+import base.UnitSpec
 import models.UcrBlock
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 
-class DisassociateUcrSpec extends BaseSpec {
+class DisassociateUcrSpec extends UnitSpec {
 
   "DisassociateUcr" should {
 

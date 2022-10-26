@@ -18,7 +18,7 @@ package models.viewmodels.notificationspage
 
 import java.time.Instant
 
-import base.BaseSpec
+import base.UnitSpec
 import com.google.inject.Guice
 import connectors.exchanges.ActionType.{ConsolidationType, MovementType}
 import models.UcrBlock
@@ -26,9 +26,8 @@ import models.notifications.Notification
 import models.submissions.Submission
 import models.viewmodels.notificationspage.converters._
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.twirl.api.Html
@@ -38,7 +37,7 @@ import testdata.NotificationTestData.exampleNotificationFrontendModel
 import utils.DateTimeTestModule
 import views.{MessagesStub, ViewDates}
 
-class NotificationPageSingleElementFactorySpec extends BaseSpec with MockitoSugar with MessagesStub with BeforeAndAfterEach {
+class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStub with BeforeAndAfterEach {
 
   private val testTimestamp: Instant = Instant.parse("2019-10-31T00:00:00Z")
 

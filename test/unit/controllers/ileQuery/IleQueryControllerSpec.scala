@@ -19,8 +19,6 @@ package controllers.ileQuery
 import connectors.CustomsDeclareExportsMovementsConnector
 import connectors.exchanges.IleQueryExchange
 import controllers.ControllerLayerSpec
-import controllers.actions.IleQueryAction
-import controllers.exception.InvalidFeatureStateException
 import controllers.ileQuery.routes.IleQueryController
 import forms.IleQueryForm
 import forms.UcrType.Mucr
@@ -31,7 +29,7 @@ import models.notifications.queries.IleQueryResponseExchangeData.{SuccessfulResp
 import models.notifications.queries._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
-import org.mockito.Mockito._
+import org.mockito.MockitoSugar.{mock, reset, verify, verifyNoMoreInteractions, when}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Headers, Request}
 import play.api.test.Helpers._
@@ -57,24 +55,20 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
   private val consignmentNotFoundPage = mock[consignment_not_found_page]
   private val ileQueryTimeoutPage = mock[ile_query_timeout]
 
-  private def controllerWithIleQuery(ileQueryAction: IleQueryAction): IleQueryController =
-    new IleQueryController(
-      SuccessfulAuth(),
-      ileQueryAction,
-      stubMessagesControllerComponents(),
-      errorHandler,
-      cacheRepository,
-      ileQueryRepository,
-      connector,
-      ileQueryPage,
-      loadingScreenPage,
-      ileQueryDucrResponsePage,
-      ileQueryMucrResponsePage,
-      consignmentNotFoundPage,
-      ileQueryTimeoutPage
-    )(global)
-
-  private val controller = controllerWithIleQuery(IleQueryEnabled)
+  private val controller = new IleQueryController(
+    SuccessfulAuth(),
+    stubMessagesControllerComponents(),
+    errorHandler,
+    cacheRepository,
+    ileQueryRepository,
+    connector,
+    ileQueryPage,
+    loadingScreenPage,
+    ileQueryDucrResponsePage,
+    ileQueryMucrResponsePage,
+    consignmentNotFoundPage,
+    ileQueryTimeoutPage
+  )(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -124,10 +118,11 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
 
   "IleQueryController on getConsignmentData" should {
     "call IleQueryRepository to find ILE Query cache document" in {
-
       when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString()))
         .thenReturn(Future.successful(Some(IleQuery("sessionId", "mucr", conversationId))))
+
       when(ileQueryRepository.removeByConversationId(anyString())).thenReturn(Future.successful((): Unit))
+
       val backendResponse = HttpResponse(status = OK, json = Json.toJson(Seq(successfulMucrResponseExchange)), headers = Map.empty)
       when(connector.fetchQueryNotifications(anyString(), anyString())(any())).thenReturn(Future.successful(backendResponse))
 
@@ -142,11 +137,9 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
     "ileQuery cache is empty for the user" when {
 
       "provided with correct DUCR" should {
-
         val correctDucr = "9GB123456789012-QWERTY7890"
 
         "call Backend Connector to submit IleQuery, passing constructed IleQuery object" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString())).thenReturn(Future.successful(None))
           when(ileQueryRepository.insertOne(any[IleQuery])).thenReturn(Future.successful(Right(exampleIleQuery())))
           when(connector.submit(any[IleQueryExchange])(any())).thenReturn(Future.successful(conversationId))
@@ -162,7 +155,6 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
         }
 
         "call IleQueryRepository to insert cache document" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString())).thenReturn(Future.successful(None))
           when(ileQueryRepository.insertOne(any[IleQuery])).thenReturn(Future.successful(Right(exampleIleQuery())))
           when(connector.submit(any[IleQueryExchange])(any())).thenReturn(Future.successful(conversationId))
@@ -179,7 +171,6 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
         }
 
         "redirect to the same endpoint" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString())).thenReturn(Future.successful(None))
           when(ileQueryRepository.insertOne(any[IleQuery])).thenReturn(Future.successful(Right(exampleIleQuery())))
           when(connector.submit(any[IleQueryExchange])(any())).thenReturn(Future.successful(conversationId))
@@ -192,11 +183,9 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
       }
 
       "provided with correct MUCR" should {
-
         val correctMucr = "GB/123-QWERTY456"
 
         "call Backend Connector to submit IleQuery, passing constructed IleQuery object" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString())).thenReturn(Future.successful(None))
           when(ileQueryRepository.insertOne(any[IleQuery])).thenReturn(Future.successful(Right(exampleIleQuery())))
           when(connector.submit(any[IleQueryExchange])(any())).thenReturn(Future.successful(conversationId))
@@ -212,7 +201,6 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
         }
 
         "call IleQueryRepository to insert cache document" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString())).thenReturn(Future.successful(None))
           when(ileQueryRepository.insertOne(any[IleQuery])).thenReturn(Future.successful(Right(exampleIleQuery())))
           when(connector.submit(any[IleQueryExchange])(any())).thenReturn(Future.successful(conversationId))
@@ -229,7 +217,6 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
         }
 
         "redirect to the same endpoint" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString())).thenReturn(Future.successful(None))
           when(ileQueryRepository.insertOne(any[IleQuery])).thenReturn(Future.successful(Right(exampleIleQuery())))
           when(connector.submit(any[IleQueryExchange])(any())).thenReturn(Future.successful(conversationId))
@@ -242,11 +229,9 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
       }
 
       "provided with semantically incorrect UCR" should {
-
         val incorrectUCR = "123ABC-789456POIUYT"
 
         "return BadRequest (400) status" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString())).thenReturn(Future.successful(None))
 
           val result = controller.getConsignmentData(incorrectUCR)(request)
@@ -255,7 +240,6 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
         }
 
         "return Find Consignment page, passing form with errors" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString())).thenReturn(Future.successful(None))
 
           await(controller.getConsignmentData(incorrectUCR)(request))
@@ -268,10 +252,11 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
 
     "ileQuery cache contains record for queried UCR" should {
       "call Backend Connector to fetch ILE Query Notifications" in {
-
         when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString()))
           .thenReturn(Future.successful(Some(IleQuery("sessionId", "mucr", conversationId))))
+
         when(ileQueryRepository.removeByConversationId(anyString())).thenReturn(Future.successful((): Unit))
+
         val backendResponse = HttpResponse(status = OK, json = Json.toJson(Seq(successfulMucrResponseExchange)), headers = Map.empty)
         when(connector.fetchQueryNotifications(anyString(), anyString())(any())).thenReturn(Future.successful(backendResponse))
 
@@ -284,12 +269,12 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
     "ileQuery cache contains record for queried UCR" when {
 
       "Backend Connector returns OK (200) response with empty body" should {
-
         "return Loading page with 'refresh' header" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString()))
             .thenReturn(Future.successful(Some(IleQuery("sessionId", "mucr", conversationId))))
+
           when(ileQueryRepository.removeByConversationId(anyString())).thenReturn(Future.successful((): Unit))
+
           val backendResponse = HttpResponse(status = OK, json = Json.toJson(Seq.empty[IleQueryResponseExchange]), headers = Map.empty)
           when(connector.fetchQueryNotifications(anyString(), anyString())(any())).thenReturn(Future.successful(backendResponse))
 
@@ -303,10 +288,11 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
       "Backend Connector returns OK (200) response with Notifications in body" should {
 
         "call IleQueryRepository to remove cache document" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString()))
             .thenReturn(Future.successful(Some(IleQuery("sessionId", "mucr", conversationId))))
+
           when(ileQueryRepository.removeByConversationId(anyString())).thenReturn(Future.successful((): Unit))
+
           val backendResponse = HttpResponse(status = OK, json = Json.toJson(Seq(successfulMucrResponseExchange)), headers = Map.empty)
           when(connector.fetchQueryNotifications(anyString(), anyString())(any())).thenReturn(Future.successful(backendResponse))
 
@@ -317,10 +303,11 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
         }
 
         "return ConsignmentNotFound page, if Notification has UcrNotFoundResponseExchangeData" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString()))
             .thenReturn(Future.successful(Some(IleQuery("sessionId", "mucr", conversationId))))
+
           when(ileQueryRepository.removeByConversationId(anyString())).thenReturn(Future.successful((): Unit))
+
           val backendResponse = HttpResponse(status = OK, json = Json.toJson(Seq(ucrNotFoundResponseExchange)), headers = Map.empty)
           when(connector.fetchQueryNotifications(anyString(), anyString())(any())).thenReturn(Future.successful(backendResponse))
 
@@ -331,10 +318,11 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
         }
 
         "return DUCR query response page, if Notification has SuccessfulResponseExchangeData with 'queriedDucr'" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString()))
             .thenReturn(Future.successful(Some(IleQuery("sessionId", "ducr", conversationId))))
+
           when(ileQueryRepository.removeByConversationId(anyString())).thenReturn(Future.successful((): Unit))
+
           val backendResponse = HttpResponse(status = OK, json = Json.toJson(Seq(successfulDucrResponseExchange)), headers = Map.empty)
           when(connector.fetchQueryNotifications(anyString(), anyString())(any())).thenReturn(Future.successful(backendResponse))
 
@@ -348,10 +336,11 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
         }
 
         "return MUCR query response page, if Notification has SuccessfulResponseExchangeData with 'queriedMucr'" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString()))
             .thenReturn(Future.successful(Some(IleQuery("sessionId", "mucr", conversationId))))
+
           when(ileQueryRepository.removeByConversationId(anyString())).thenReturn(Future.successful((): Unit))
+
           val backendResponse = HttpResponse(status = OK, json = Json.toJson(Seq(successfulMucrResponseExchange)), headers = Map.empty)
           when(connector.fetchQueryNotifications(anyString(), anyString())(any())).thenReturn(Future.successful(backendResponse))
 
@@ -369,10 +358,11 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
 
         "Notification has UcrNotFoundResponseExchangeData" should {
           "return ConsignmentNotFound page" in {
-
             when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString()))
               .thenReturn(Future.successful(Some(IleQuery("sessionId", "mucr", conversationId))))
+
             when(ileQueryRepository.removeByConversationId(anyString())).thenReturn(Future.successful((): Unit))
+
             val backendResponse = HttpResponse(status = OK, json = Json.toJson(Seq(ucrNotFoundResponseExchange)), headers = Map.empty)
             when(connector.fetchQueryNotifications(anyString(), anyString())(any())).thenReturn(Future.successful(backendResponse))
 
@@ -386,10 +376,11 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
         "Notification has SuccessfulResponseExchangeData with 'queriedDucr'" should {
 
           "call CacheRepository to upsert queried DUCR" in {
-
             when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString()))
               .thenReturn(Future.successful(Some(IleQuery("sessionId", "ducr", conversationId))))
+
             when(ileQueryRepository.removeByConversationId(anyString())).thenReturn(Future.successful((): Unit))
+
             val backendResponse = HttpResponse(status = OK, json = Json.toJson(Seq(successfulDucrResponseExchange)), headers = Map.empty)
             when(connector.fetchQueryNotifications(anyString(), anyString())(any())).thenReturn(Future.successful(backendResponse))
 
@@ -405,10 +396,11 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
           }
 
           "return DUCR query response page" in {
-
             when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString()))
               .thenReturn(Future.successful(Some(IleQuery("sessionId", "ducr", conversationId))))
+
             when(ileQueryRepository.removeByConversationId(anyString())).thenReturn(Future.successful((): Unit))
+
             val backendResponse = HttpResponse(status = OK, json = Json.toJson(Seq(successfulDucrResponseExchange)), headers = Map.empty)
             when(connector.fetchQueryNotifications(anyString(), anyString())(any())).thenReturn(Future.successful(backendResponse))
 
@@ -425,10 +417,11 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
         "Notification has SuccessfulResponseExchangeData with 'queriedMucr'" should {
 
           "call CacheRepository to upsert queried MUCR" in {
-
             when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString()))
               .thenReturn(Future.successful(Some(IleQuery("sessionId", "mucr", conversationId))))
+
             when(ileQueryRepository.removeByConversationId(anyString())).thenReturn(Future.successful((): Unit))
+
             val backendResponse = HttpResponse(status = OK, json = Json.toJson(Seq(successfulMucrResponseExchange)), headers = Map.empty)
             when(connector.fetchQueryNotifications(anyString(), anyString())(any())).thenReturn(Future.successful(backendResponse))
 
@@ -444,10 +437,11 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
           }
 
           "return MUCR query response page" in {
-
             when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString()))
               .thenReturn(Future.successful(Some(IleQuery("sessionId", "mucr", conversationId))))
+
             when(ileQueryRepository.removeByConversationId(anyString())).thenReturn(Future.successful((): Unit))
+
             val backendResponse = HttpResponse(status = OK, json = Json.toJson(Seq(successfulMucrResponseExchange)), headers = Map.empty)
             when(connector.fetchQueryNotifications(anyString(), anyString())(any())).thenReturn(Future.successful(backendResponse))
 
@@ -465,10 +459,11 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
       "Backend Connector returns a response other than OK (200)" should {
 
         "call IleQueryRepository to remove cache document" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString()))
             .thenReturn(Future.successful(Some(IleQuery("sessionId", "mucr", conversationId))))
+
           when(ileQueryRepository.removeByConversationId(anyString())).thenReturn(Future.successful((): Unit))
+
           val backendResponse = HttpResponse(status = SERVICE_UNAVAILABLE, body = "")
           when(connector.fetchQueryNotifications(anyString(), anyString())(any())).thenReturn(Future.successful(backendResponse))
 
@@ -478,10 +473,11 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
         }
 
         "return InternalServerError response" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString()))
             .thenReturn(Future.successful(Some(IleQuery("sessionId", "mucr", conversationId))))
+
           when(ileQueryRepository.removeByConversationId(anyString())).thenReturn(Future.successful((): Unit))
+
           val backendResponse = HttpResponse(status = SERVICE_UNAVAILABLE, body = "")
           when(connector.fetchQueryNotifications(anyString(), anyString())(any())).thenReturn(Future.successful(backendResponse))
 
@@ -494,10 +490,11 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
       "Backend Connector returns FailedDependency (424) response" should {
 
         "call IleQueryRepository to remove cache document" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString()))
             .thenReturn(Future.successful(Some(IleQuery("sessionId", "mucr", conversationId))))
+
           when(ileQueryRepository.removeByConversationId(anyString())).thenReturn(Future.successful((): Unit))
+
           val backendResponse = HttpResponse(status = FAILED_DEPENDENCY, body = "")
           when(connector.fetchQueryNotifications(anyString(), anyString())(any())).thenReturn(Future.successful(backendResponse))
 
@@ -507,10 +504,11 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
         }
 
         "return timeout page" in {
-
           when(ileQueryRepository.findBySessionIdAndUcr(anyString(), anyString()))
             .thenReturn(Future.successful(Some(IleQuery("sessionId", "mucr", conversationId))))
+
           when(ileQueryRepository.removeByConversationId(anyString())).thenReturn(Future.successful((): Unit))
+
           val backendResponse = HttpResponse(status = FAILED_DEPENDENCY, body = "")
           when(connector.fetchQueryNotifications(anyString(), anyString())(any())).thenReturn(Future.successful(backendResponse))
 
@@ -520,18 +518,6 @@ class IleQueryControllerSpec extends ControllerLayerSpec with MockIleQueryCache 
 
         }
       }
-    }
-  }
-
-  "IleQueryController when ileQuery disabled" should {
-
-    val controllerIleQueryDisabled = controllerWithIleQuery(IleQueryDisabled)
-
-    "block access when getting query results" in {
-
-      intercept[RuntimeException] {
-        await(controllerIleQueryDisabled.getConsignmentData("mucr")(getRequest().withHeaders(Headers(("X-Session-ID", "123456")))))
-      } mustBe InvalidFeatureStateException
     }
   }
 

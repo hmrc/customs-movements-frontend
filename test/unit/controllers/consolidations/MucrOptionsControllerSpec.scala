@@ -24,7 +24,7 @@ import forms.{DucrPartChiefChoice, MucrOptions}
 import models.cache.AssociateUcrAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.{JsValue, Json}

@@ -20,7 +20,7 @@ import forms.DucrPartChiefChoice
 import models.cache.ArrivalAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString, JsValue}

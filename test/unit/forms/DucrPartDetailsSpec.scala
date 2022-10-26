@@ -16,12 +16,12 @@
 
 package forms
 
-import base.BaseSpec
+import base.UnitSpec
 import models.UcrBlock
 import play.api.data.FormError
 import testdata.CommonTestData.{validDucr, validDucrPartId, validWholeDucrParts}
 
-class DucrPartDetailsSpec extends BaseSpec {
+class DucrPartDetailsSpec extends UnitSpec {
 
   "DucrPartDetails mapping" should {
 

@@ -20,7 +20,7 @@ import controllers.storage.FlashKeys
 import forms.ConsignmentReferences
 import models.cache.{ArrivalAnswers, DepartureAnswers, JourneyType, MovementAnswers}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._

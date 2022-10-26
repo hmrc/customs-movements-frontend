@@ -16,7 +16,7 @@
 
 package models.viewmodels.notificationspage.converters
 
-import base.BaseSpec
+import base.UnitSpec
 import com.google.inject.{AbstractModule, Guice}
 import models.UcrBlock
 import models.notifications.{Entry, EntryStatus, ResponseType}
@@ -24,9 +24,8 @@ import models.viewmodels.decoder.{Decoder, ICSCode, ROECode, SOECode}
 import models.viewmodels.notificationspage.MovementTotalsResponseType.ERS
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.MockitoSugar.{mock, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
@@ -34,7 +33,7 @@ import testdata.CommonTestData._
 import testdata.NotificationTestData.{exampleNotificationFrontendModel, testTimestamp}
 import utils.DateTimeTestModule
 
-class ERSResponseConverterSpec extends BaseSpec with MockitoSugar with BeforeAndAfterEach {
+class ERSResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
 
   import ERSResponseConverterSpec._
 

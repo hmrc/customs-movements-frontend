@@ -20,13 +20,12 @@ import models.SignedInUser
 import models.cache._
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers._
-import org.mockito.BDDMockito._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.any
+import org.mockito.BDDMockito.`given`
+import org.mockito.MockitoSugar.{mock, reset, verify}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,7 +35,7 @@ import uk.gov.hmrc.auth.core.Enrolments
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class TypedJourneyRefinerTest extends AnyWordSpec with Matchers with MockitoSugar with BeforeAndAfterEach {
+class TypedJourneyRefinerTest extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
   private val movementRepository = mock[CacheRepository]
   private val arriveDepartAllowList = mock[ArriveDepartAllowList]

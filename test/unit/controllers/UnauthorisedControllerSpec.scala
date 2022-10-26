@@ -17,7 +17,7 @@
 package controllers
 
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.unauthorised
@@ -29,22 +29,17 @@ class UnauthorisedControllerSpec extends ControllerLayerSpec {
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-
     when(mockUnauthorisedPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     reset(mockUnauthorisedPage)
-
     super.afterEach()
   }
 
   "Unauthorised Controller" must {
-
     "return 200 (OK)" when {
-
       "on page load method is invoked" in {
-
         val result = controller.onPageLoad()(getRequest())
 
         status(result) mustBe OK

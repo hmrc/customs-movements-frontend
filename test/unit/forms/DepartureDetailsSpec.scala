@@ -18,12 +18,12 @@ package forms
 
 import java.time.{LocalDate, LocalTime}
 
-import base.BaseSpec
+import base.UnitSpec
 import forms.common.{Date, Time}
 import helpers.FormMatchers
 import testdata.MovementsTestData
 
-class DepartureDetailsSpec extends BaseSpec with FormMatchers {
+class DepartureDetailsSpec extends UnitSpec with FormMatchers {
 
   val movementDetails = MovementsTestData.movementDetails
 

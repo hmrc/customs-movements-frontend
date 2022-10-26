@@ -21,8 +21,7 @@ import controllers.actions.{AuthActionImpl, EoriAllowList}
 import models.SignedInUser
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar.{mock, when}
 import play.api.mvc.PlayBodyParsers
 import testdata.CommonTestData.validEori
 import testdata.MovementsTestData._
@@ -33,7 +32,7 @@ import utils.Stubs
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-trait MockAuthConnector extends MockitoSugar with Stubs {
+trait MockAuthConnector extends Stubs {
 
   val authConnectorMock: AuthConnector = mock[AuthConnector]
 
@@ -43,14 +42,12 @@ trait MockAuthConnector extends MockitoSugar with Stubs {
     new AuthActionImpl(authConnectorMock, eoriAllowListMock, PlayBodyParsers()(NoMaterializer))(global)
 
   def authorizedUser(user: SignedInUser = newUser(validEori)): Unit = {
-    when(authConnectorMock.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any()))
-      .thenReturn(Future.successful(user.enrolments))
+    when(authConnectorMock.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any())).thenReturn(Future.successful(user.enrolments))
     when(eoriAllowListMock.contains(any())).thenReturn(true)
   }
 
   def userWithoutEori(user: SignedInUser = newUser("")): Unit = {
-    when(authConnectorMock.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any()))
-      .thenThrow(InsufficientEnrolments())
+    when(authConnectorMock.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any())).thenThrow(InsufficientEnrolments())
     when(eoriAllowListMock.contains(any())).thenReturn(true)
   }
 }

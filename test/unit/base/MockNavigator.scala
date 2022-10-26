@@ -18,15 +18,15 @@ package base
 
 import controllers.navigation.Navigator
 import models.requests.RequestWithAnswers
-import org.mockito.ArgumentMatchers._
-import org.mockito.BDDMockito._
-import org.mockito.{ArgumentCaptor, Mockito}
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.mockito.BDDMockito.`given`
+import org.mockito.MockitoSugar.{mock, reset, verify}
 import org.scalatest.{BeforeAndAfterEach, Suite}
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status
 import play.api.mvc._
 
-trait MockNavigator extends MockitoSugar with BeforeAndAfterEach { self: MockitoSugar with Suite =>
+trait MockNavigator extends BeforeAndAfterEach { self: Suite =>
 
   protected val navigator: Navigator = mock[Navigator]
   protected val aRedirectToTheNextPage: Result = mock[Result]
@@ -39,12 +39,12 @@ trait MockNavigator extends MockitoSugar with BeforeAndAfterEach { self: Mockito
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    Mockito.reset(navigator)
+    reset(navigator)
   }
 
   protected def thePageNavigatedTo: Call = {
     val callCaptor: ArgumentCaptor[Call] = ArgumentCaptor.forClass(classOf[Call])
-    Mockito.verify(navigator).continueTo(callCaptor.capture())(any())
+    verify(navigator).continueTo(callCaptor.capture())(any())
     callCaptor.getValue
   }
 

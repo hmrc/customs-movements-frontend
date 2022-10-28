@@ -21,7 +21,7 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import views.html.components.exit_survey
-@import views.html.components.gds.{gds_main_template, link, pageTitle}
+@import views.html.components.gds.{gds_main_template, link, pageTitle, heading}
 @import views.Title
 
 @this(
@@ -30,6 +30,7 @@
     link: link,
     govukInsetText: GovukInsetText,
     exitSurvey: exit_survey,
+    heading: heading
 )
 
 @(journeyType: JourneyType)(implicit request: Request[_], messages: Messages)
@@ -46,12 +47,20 @@
     @pageTitle(text = messages(s"confirmation.title.$journeyType"), classes = "govuk-heading-xl")
 
     @govukInsetText(InsetText(
-        content = HtmlContent(messages("confirmation.insetText")+"<br>"+messages("confirmation.insetText.check", gotoTimelineLink))
+        content = HtmlContent(messages("confirmation.insetText", gotoTimelineLink))
     ))
 
-    <p class="govuk-body">
+    @heading(
+        messages("confirmation.subheading"), "govuk-heading-m", "h2"
+    )
+<ul>
+    <li class="govuk-body">
         @link(message = Html(messages("confirmation.redirect.choice.link")), href = ChoiceController.displayChoices)
-    </p>
+    </li>
 
+    <li class="govuk-body">
+        @link(message = Html(messages("confirmation.redirect.summary.link")), href = ChoiceController.displayChoices)
+    </li>
+</ul>
   @exitSurvey()
 }

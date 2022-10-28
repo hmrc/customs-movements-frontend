@@ -18,6 +18,7 @@ package config
 
 import com.google.inject.{Inject, Singleton}
 import play.api.i18n.Lang
+import play.api.mvc.Call
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -105,6 +106,9 @@ class AppConfig @Inject() (
   )
 
   lazy val gtmContainer: String = servicesConfig.getString("tracking-consent-frontend.gtm.container")
+
+  def routeToSwitchLanguage: String => Call =
+    (lang: String) => controllers.routes.LanguageSwitchController.switchToLanguage(lang)
 
   def languageMap: Map[String, Lang] =
     Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))

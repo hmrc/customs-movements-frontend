@@ -68,6 +68,7 @@ lazy val scoverageSettings: Seq[Setting[_]] = Seq(
     "Reverse.*",
     "metrics\\..*",
     "features\\..*",
+    ".*LanguageSwitchController",
     "test\\..*",
     ".*(BuildInfo|Routes|Options|TestingUtilitiesController).*"
   ).mkString(";"),

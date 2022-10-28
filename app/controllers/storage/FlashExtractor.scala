@@ -23,8 +23,9 @@ import play.api.mvc.Request
 class FlashExtractor {
 
   def extractValue(key: String, request: Request[_]): Option[String] = request.flash.get(key)
-
   def extractMovementType(request: Request[_]): Option[JourneyType] =
     extractValue(FlashKeys.MOVEMENT_TYPE, request).map(JourneyType.withName)
 
+  def extractUcr(request: Request[_]): Option[String] =
+    extractValue(FlashKeys.UCR, request)
 }

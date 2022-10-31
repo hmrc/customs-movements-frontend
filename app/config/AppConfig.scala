@@ -107,9 +107,6 @@ class AppConfig @Inject() (
 
   lazy val gtmContainer: String = servicesConfig.getString("tracking-consent-frontend.gtm.container")
 
-  def routeToSwitchLanguage: String => Call =
-    (lang: String) => controllers.routes.LanguageSwitchController.switchToLanguage(lang)
-
   def languageMap: Map[String, Lang] =
     Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
 }

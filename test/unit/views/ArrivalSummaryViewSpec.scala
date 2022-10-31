@@ -65,8 +65,8 @@ class ArrivalSummaryViewSpec extends ViewSpec with Injector {
     }
 
     "render 'Consignment details' section in summary list" in {
-      val answer_consignment_type_link_index = answer_consignment_type + 1
-      val answer_consignment_reference_link_index = answer_consignment_reference + 1
+      val answer_consignment_type_link_index = answer_consignment_type + 2
+      val answer_consignment_reference_link_index = answer_consignment_reference + 2
 
       val view = page(answers)
       view.getElementsByClass("govuk-heading-m").get(section_consignment_details) must containMessage("summary.consignmentDetails")
@@ -108,8 +108,8 @@ class ArrivalSummaryViewSpec extends ViewSpec with Injector {
     }
 
     "render 'Arrival date and time' section in summary list" in {
-      val answer_date_link_index = answer_date + 1
-      val answer_time_link_index = answer_time + 1
+      val answer_date_link_index = answer_date + 2
+      val answer_time_link_index = answer_time + 2
 
       val view = page(answers)
       view.getElementsByClass("govuk-heading-m").get(section_arrival_datetime) must containMessage("arrivalDetails.title")
@@ -130,7 +130,7 @@ class ArrivalSummaryViewSpec extends ViewSpec with Injector {
     }
 
     "render 'Location' section in summary list" in {
-      val answer_location_link_index = answer_location + 1
+      val answer_location_link_index = answer_location + 2
 
       val view = page(answers)
       view.getElementsByClass("govuk-heading-m").get(section_location) must containMessage("location.title")

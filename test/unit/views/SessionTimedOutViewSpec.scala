@@ -56,7 +56,7 @@ class SessionTimedOutViewSpec extends ViewSpec with Injector {
 
     "display back to gov.uk link" in {
 
-      val link = view.getElementsByClass("govuk-link").first()
+      val link = view.getElementsByClass("govuk-link").get(1)
 
       link.text() mustBe messages("site.link.backToGovUk")
       link.attr("href") mustBe "https://www.gov.uk/"

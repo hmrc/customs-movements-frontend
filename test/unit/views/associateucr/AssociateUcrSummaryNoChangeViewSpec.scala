@@ -35,7 +35,7 @@ class AssociateUcrSummaryNoChangeViewSpec extends ViewSpec with Injector {
   private val page = instanceOf[associate_ucr_summary_no_change]
 
   private def createView(consignmentRef: String, associateWith: String, associateKind: UcrType, manageMucrChoice: Option[ManageMucrChoice]): Html =
-    page(consignmentRef, associateWith, associateKind, manageMucrChoice)(request, messages)
+    page(consignmentRef, associateWith, associateKind, manageMucrChoice)
 
   "AssociateUcrSummaryNoChange View" should {
 
@@ -78,7 +78,7 @@ class AssociateUcrSummaryNoChangeViewSpec extends ViewSpec with Injector {
 
     "render change link" when {
       def validateChangeLink(view: Html, call: Call): Unit = {
-        val changeUcr = view.getElementsByClass("govuk-link").get(1)
+        val changeUcr = view.getElementsByClass("govuk-link").get(2)
         changeUcr must containMessage("site.change")
         changeUcr must haveHref(call)
       }

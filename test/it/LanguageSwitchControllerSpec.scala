@@ -32,45 +32,45 @@ class LanguageSwitchControllerSpec extends IntegrationSpec with OptionValues {
 
   "LanguageSwitch Controller" when {
 
-      "English selected" must {
-        "switch to English" in {
+    "English selected" must {
+      "switch to English" in {
 
-          val application = new GuiceApplicationBuilder()
-            .build()
+        val application = new GuiceApplicationBuilder()
+          .build()
 
-          val request = FakeRequest(GET, switchLanguageRoute(english)).withHeaders(requestHeaders)
+        val request = FakeRequest(GET, switchLanguageRoute(english)).withHeaders(requestHeaders)
 
-          val result = route(fakeApplication(), request).value
+        val result = route(fakeApplication(), request).value
 
-          status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual fakeUrl
+        redirectLocation(result).value mustEqual fakeUrl
 
-          cookies(result).find(_.name == "PLAY_LANG").get.value mustEqual "en"
+        cookies(result).find(_.name == "PLAY_LANG").get.value mustEqual "en"
 
-          application.stop()
-        }
+        application.stop()
       }
+    }
 
-      "Welsh selected" must {
-        "switch to Welsh" in {
+    "Welsh selected" must {
+      "switch to Welsh" in {
 
-          val application = new GuiceApplicationBuilder()
-            .build()
+        val application = new GuiceApplicationBuilder()
+          .build()
 
-          val request = FakeRequest(GET, switchLanguageRoute(welsh)).withHeaders(requestHeaders)
+        val request = FakeRequest(GET, switchLanguageRoute(welsh)).withHeaders(requestHeaders)
 
-          val result = route(fakeApplication(), request).value
+        val result = route(fakeApplication(), request).value
 
-          status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual fakeUrl
+        redirectLocation(result).value mustEqual fakeUrl
 
-          cookies(result).find(_.name == "PLAY_LANG").get.value mustEqual "cy"
+        cookies(result).find(_.name == "PLAY_LANG").get.value mustEqual "cy"
 
-          application.stop()
-        }
+        application.stop()
       }
+    }
 
   }
 }

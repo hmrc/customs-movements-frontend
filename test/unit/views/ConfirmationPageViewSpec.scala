@@ -17,7 +17,9 @@
 package views
 
 import base.Injector
+import controllers.routes
 import controllers.routes.SubmissionsController
+import forms.ConsignmentReferences
 import models.cache._
 import views.html.confirmation_page
 import views.tags.ViewTest
@@ -26,13 +28,14 @@ import views.tags.ViewTest
 class ConfirmationPageViewSpec extends ViewSpec with Injector {
 
   private val page = instanceOf[confirmation_page]
+  private val dummyUcr = "dummyUcr"
 
   "ConfirmationPageView" when {
 
     List(ArrivalAnswers(), DepartureAnswers(), AssociateUcrAnswers(), DisassociateUcrAnswers(), ShutMucrAnswers()).foreach { answer =>
       s"provided with ${answer.`type`} Journey Type" should {
         implicit val request = journeyRequest(answer)
-        val view = page(answer.`type`)
+        val view = page(answer.`type`, Some(dummyUcr))
 
         "render title" in {
           view.getTitle must containMessage(s"confirmation.title.${answer.`type`}")
@@ -44,11 +47,29 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
 
         "render inset text with link to View Requests page" in {
           val inset = view.getElementsByClass("govuk-inset-text").first()
-          inset must containMessage("confirmation.insetText")
+          inset must containMessage("confirmation.insetText", messages("confirmation.notification.timeline.link"))
 
           val link = inset.getElementsByClass("govuk-link").first()
-          link must containMessage("confirmation.notification.timeline.link")
           link must haveHref(SubmissionsController.displayPage)
+        }
+
+        "render sub-heading" in {
+          val subHeading = view.getElementsByClass("govuk-heading-m").first()
+          subHeading must containMessage("confirmation.subheading")
+        }
+
+        "render link to consignment information" in {
+          val link = view.getElementById("summary-link")
+
+          link must containMessage("confirmation.redirect.summary.link")
+          link must haveHref(controllers.ileQuery.routes.IleQueryController.getConsignmentData(dummyUcr))
+        }
+
+        "render link to choice page" in {
+          val link = view.getElementById("choice-link")
+
+          link must containMessage("confirmation.redirect.choice.link")
+          link must haveHref(controllers.routes.ChoiceController.displayChoices)
         }
 
         "render Exit Survey link" in {

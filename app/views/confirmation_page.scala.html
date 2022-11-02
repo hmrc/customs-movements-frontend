@@ -54,17 +54,17 @@
     @heading(
         messages("confirmation.subheading"), "govuk-heading-m", "h2"
     )
-<ul>
-    @maybeUcr.map { ucr =>
+    <ul>
+        @maybeUcr.map { ucr =>
+            <li class="govuk-body">
+                @link(message = Html(messages("confirmation.redirect.summary.link")), href = IleQueryController.getConsignmentData(ucr), id = Some("summary-link"))
+            </li>
+        }
+
+
         <li class="govuk-body">
-            @link(message = Html(messages("confirmation.redirect.summary.link")), href = IleQueryController.getConsignmentData(ucr))
+            @link(message = Html(messages("confirmation.redirect.choice.link")), href = ChoiceController.displayChoices, id = Some("choice-link"))
         </li>
-    }
-
-
-    <li class="govuk-body">
-        @link(message = Html(messages("confirmation.redirect.choice.link")), href = ChoiceController.displayChoices)
-    </li>
-</ul>
+    </ul>
   @exitSurvey()
 }

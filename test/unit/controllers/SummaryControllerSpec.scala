@@ -37,6 +37,9 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
   private val arrivalSummaryPage = mock[arrival_summary_page]
   private val departureSummaryPage = mock[departure_summary_page]
 
+  private val dummyUcr = "dummyUcr"
+  private val consignmentRefs = Some(ConsignmentReferences("", dummyUcr))
+
   private def controller(answers: MovementAnswers) =
     new SummaryController(
       SuccessfulAuth(),
@@ -87,7 +90,7 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
 
       "call SubmissionService" in {
         when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
-        val cachedAnswers = ArrivalAnswers()
+        val cachedAnswers = ArrivalAnswers(consignmentRefs)
 
         controller(cachedAnswers).submitMovementRequest()(postRequest(emptyForm)).futureValue
 
@@ -98,18 +101,19 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
       "return SEE_OTHER (303) that redirects to MovementConfirmationController" in {
         when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
 
-        val result = controller(ArrivalAnswers()).submitMovementRequest()(postRequest(emptyForm))
+        val result = controller(ArrivalAnswers(consignmentRefs)).submitMovementRequest()(postRequest(emptyForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.displayPage.url)
       }
 
-      "return response with Movement Type in flash" in {
+      "return response with Movement Type and UCR in flash" in {
         when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
 
-        val result = controller(ArrivalAnswers()).submitMovementRequest()(postRequest(emptyForm))
+        val result = controller(ArrivalAnswers(consignmentRefs)).submitMovementRequest()(postRequest(emptyForm))
 
         flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.ARRIVE.toString)
+        flash(result).get(FlashKeys.UCR) mustBe Some(dummyUcr)
       }
     }
 
@@ -117,7 +121,7 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
 
       "call SubmissionService" in {
         when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
-        val cachedAnswers = DepartureAnswers()
+        val cachedAnswers = DepartureAnswers(consignmentRefs)
 
         controller(cachedAnswers).submitMovementRequest()(postRequest(emptyForm)).futureValue
 
@@ -128,18 +132,19 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
       "return SEE_OTHER (303) that redirects to MovementConfirmationController" in {
         when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
 
-        val result = controller(DepartureAnswers()).submitMovementRequest()(postRequest(emptyForm))
+        val result = controller(DepartureAnswers(consignmentRefs)).submitMovementRequest()(postRequest(emptyForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.displayPage.url)
       }
 
-      "return response with Movement Type in flash" in {
+      "return response with Movement Type and UCR in flash" in {
         when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
 
-        val result = controller(DepartureAnswers()).submitMovementRequest()(postRequest(emptyForm))
+        val result = controller(DepartureAnswers(consignmentRefs)).submitMovementRequest()(postRequest(emptyForm))
 
         flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.DEPART.toString)
+        flash(result).get(FlashKeys.UCR) mustBe Some(dummyUcr)
       }
     }
   }

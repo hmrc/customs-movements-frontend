@@ -32,7 +32,6 @@ class LanguageSwitchControllerSpec extends IntegrationSpec with OptionValues {
 
   private def switchLanguageRoute(lang: String): String = controllers.routes.LanguageSwitchController.switchToLanguage(lang).url
 
-
   "LanguageSwitch Controller" when {
 
     "English selected" must {

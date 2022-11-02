@@ -59,10 +59,7 @@ class AssociateUcrSummaryController @Inject() (
     val associateUcr = answers.associateUcr.getOrElse(throw ReturnToStartException)
     submissionService.submit(request.eori, request.answersAs[AssociateUcrAnswers]).map { _ =>
       Redirect(AssociateUcrConfirmationController.displayPage)
-        .flashing(
-          FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString,
-          FlashKeys.UCR -> associateUcr.ucr
-        )
+        .flashing(FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString, FlashKeys.UCR -> associateUcr.ucr)
 
     }
   }

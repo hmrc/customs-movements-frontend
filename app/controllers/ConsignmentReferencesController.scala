@@ -65,7 +65,6 @@ class ConsignmentReferencesController @Inject() (
 
   private def saveAndContinue(answers: Answers)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     cacheRepository.upsert(request.cache.update(answers)).map { _ =>
-
       navigator.continueTo(SpecificDateTimeController.displayPage)
     }
 }

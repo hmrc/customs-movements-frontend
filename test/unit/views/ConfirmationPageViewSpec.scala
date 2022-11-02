@@ -54,6 +54,10 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
         "render Exit Survey link" in {
           view.getElementById("exit-survey") must containMessage("exitSurvey.header")
         }
+
+        "hide language switch" in {
+          view.getElementsByClass("hmrc-language-select").text() must be(empty)
+        }
       }
     }
   }

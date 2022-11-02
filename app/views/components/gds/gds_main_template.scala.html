@@ -48,9 +48,10 @@
 )
 
 @(
-  title: Title,
-  backButton: Option[BackButton] = None,
-  useCustomContentWidth: Boolean = false
+    title: Title,
+    backButton: Option[BackButton] = None,
+    useCustomContentWidth: Boolean = false,
+    showLanguageSwitch: Boolean = true
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @useTimeoutDialog = @{ request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]]}
@@ -89,7 +90,9 @@
     @if(betaBannerConfig.isBetaBannerEnabled) {
       @phaseBanner("beta")
     }
-    @hmrcLanguageSelectHelper()
+    @if(showLanguageSwitch && appConfig.languages.contains("cy")) {
+        @hmrcLanguageSelectHelper()
+    }
 }
 
 @content = {

@@ -38,7 +38,10 @@
   link(message = Html(messages("confirmation.notification.timeline.link")), href = SubmissionsController.displayPage)
 }
 
-@govukLayout(title = Title(s"confirmation.title.$journeyType")) {
+@govukLayout(
+    title = Title(s"confirmation.title.$journeyType"),
+    showLanguageSwitch = false
+) {
 
     @pageTitle(text = messages(s"confirmation.title.$journeyType"), classes = "govuk-heading-xl")
 

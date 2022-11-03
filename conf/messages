@@ -81,7 +81,8 @@ global.error.title = There is a problem - Declare customs exports for CDS Export
 global.error.heading = There is a problem with a service.
 global.error.message = Please try again later.
 
-movement.sectionHeading = {0} consignment {1}
+movement.sectionHeading.depart = Depart consignment {0}
+movement.sectionHeading.arrive = Arrive consignment {0}
 
 movement.choice.title = What do you want to do?
 movement.choice.title.consignment = What do you want to do with this consignment?

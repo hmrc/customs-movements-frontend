@@ -43,13 +43,13 @@ class LocationViewSpec extends ViewSpec with Injector {
 
     "have the correct section header for the Arrival journey" in {
 
-      view().getElementById("section-header") must containMessage("movement.sectionHeading", "Arrive", "some-reference")
+      view().getElementById("section-header") must containMessage("movement.sectionHeading.arrive", "some-reference")
     }
 
     "have the correct section header for the Departure journey" in {
 
       val departureView = locationPage(form, "some-reference", None)(journeyRequest(DepartureAnswers()), messages)
-      departureView.getElementById("section-header") must containMessage("movement.sectionHeading", "Depart", "some-reference")
+      departureView.getElementById("section-header") must containMessage("movement.sectionHeading.depart", "some-reference")
     }
 
     "display body text" in {

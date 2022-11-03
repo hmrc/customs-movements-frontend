@@ -106,6 +106,8 @@ class AppConfig @Inject() (
 
   lazy val gtmContainer: String = servicesConfig.getString("tracking-consent-frontend.gtm.container")
 
+  lazy val languages: Seq[String] = runModeConfiguration.get[Seq[String]]("play.i18n.langs")
+
   def languageMap: Map[String, Lang] =
     Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
 }

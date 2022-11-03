@@ -23,32 +23,35 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{En, Cy}
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcHead, HmrcTimeoutDialogHelper, HmrcStandardFooter, HmrcTrackingConsentSnippet}
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLanguageSelectHelper
 @import views.Title
 @import views.components.BackButton
 @import views.html.components.gds.govukFlexibleLayout
 
 @this(
-  govukHeader: GovukHeader,
-  govukLayout: GovukLayout,
-  govukFlexibleLayout: govukFlexibleLayout,
-  govukBackLink: GovukBackLink,
-  siteHeader: siteHeader,
-        hmrcHead: HmrcHead,
-        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-  phaseBanner: phaseBanner,
-  timeoutDialogConfig: TimeoutDialogConfig,
-  betaBannerConfig: BetaBannerConfig,
-  hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
-  hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
-  hmrcFooter: HmrcStandardFooter,
-  appConfig: AppConfig
+    govukHeader: GovukHeader,
+    govukLayout: GovukLayout,
+    govukFlexibleLayout: govukFlexibleLayout,
+    govukBackLink: GovukBackLink,
+    siteHeader: siteHeader,
+    hmrcHead: HmrcHead,
+    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+    phaseBanner: phaseBanner,
+    timeoutDialogConfig: TimeoutDialogConfig,
+    betaBannerConfig: BetaBannerConfig,
+    hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
+    hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
+    hmrcFooter: HmrcStandardFooter,
+    appConfig: AppConfig
 )
 
 @(
-  title: Title,
-  backButton: Option[BackButton] = None,
-  useCustomContentWidth: Boolean = false
+    title: Title,
+    backButton: Option[BackButton] = None,
+    useCustomContentWidth: Boolean = false,
+    showLanguageSwitch: Boolean = true
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @useTimeoutDialog = @{ request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]]}
@@ -86,6 +89,9 @@
 @beforeContentBlock = {
     @if(betaBannerConfig.isBetaBannerEnabled) {
       @phaseBanner("beta")
+    }
+    @if(showLanguageSwitch && appConfig.languages.contains("cy")) {
+        @hmrcLanguageSelectHelper()
     }
 }
 

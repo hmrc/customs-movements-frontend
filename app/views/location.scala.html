@@ -60,7 +60,7 @@
     @formHelper(action = controllers.routes.LocationController.saveLocation(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("movement.sectionHeading", request.answers.`type`.toString.toLowerCase.capitalize, consignmentReference))
+        @sectionHeader(messages(s"movement.sectionHeading.${request.answers.`type`.toString.toLowerCase}", consignmentReference))
 
         @heading
 

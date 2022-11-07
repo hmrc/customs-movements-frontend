@@ -36,8 +36,6 @@ class DisassociateUcrConfirmationControllerSpec extends ControllerLayerSpec with
   private val flashExtractor = mock[FlashExtractor]
   private val confirmationPage = mock[confirmation_page]
 
-  private val dummyUcr = "dummyUcr"
-
   private val controller =
     new DisassociateUcrConfirmationController(SuccessfulAuth(), stubMessagesControllerComponents(), flashExtractor, confirmationPage)
 
@@ -62,8 +60,6 @@ class DisassociateUcrConfirmationControllerSpec extends ControllerLayerSpec with
 
       when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.DISSOCIATE_UCR))
       val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.DISSOCIATE_UCR.toString)
-
-      // val result = controller.displayPage(request)
 
       when(flashExtractor.extractUcr(any[Request[_]])).thenReturn(None)
       val result = controller.displayPage(getRequest)

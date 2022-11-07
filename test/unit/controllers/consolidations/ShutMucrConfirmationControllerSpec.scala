@@ -64,8 +64,6 @@ class ShutMucrConfirmationControllerSpec extends ControllerLayerSpec with ScalaF
       when(flashExtractor.extractUcr(any[Request[_]])).thenReturn(None)
       val result = controller.displayPage(getRequest)
 
-      // val result = controller.displayPage(request)
-
       status(result) mustBe OK
       verify(confirmationPage).apply(meq(JourneyType.SHUT_MUCR), meq(None))(any(), any())
     }

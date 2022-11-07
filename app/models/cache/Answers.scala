@@ -66,7 +66,6 @@ case class AssociateUcrAnswers(
   manageMucrChoice: Option[ManageMucrChoice] = None,
   mucrOptions: Option[MucrOptions] = None,
   associateUcr: Option[AssociateUcr] = None,
-  disassociateUcr: Option[DisassociateUcr] = None,
   override val readyToSubmit: Option[Boolean] = Some(false)
 ) extends Answers {
   override val `type`: JourneyType.Value = ASSOCIATE_UCR

@@ -44,7 +44,7 @@ class ShutMucrConfirmationControllerSpec extends ControllerLayerSpec with ScalaF
 
     reset(flashExtractor, confirmationPage)
     when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(None)
-    when(confirmationPage.apply(any[JourneyType])(any(), any())).thenReturn(HtmlFormat.empty)
+    when(confirmationPage.apply(any[JourneyType], any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override def afterEach(): Unit = {
@@ -61,10 +61,11 @@ class ShutMucrConfirmationControllerSpec extends ControllerLayerSpec with ScalaF
       when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.SHUT_MUCR))
       val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.SHUT_MUCR.toString)
 
-      val result = controller.displayPage(request)
+      when(flashExtractor.extractUcr(any[Request[_]])).thenReturn(None)
+      val result = controller.displayPage(getRequest)
 
       status(result) mustBe OK
-      verify(confirmationPage).apply(meq(JourneyType.SHUT_MUCR))(any(), any())
+      verify(confirmationPage).apply(meq(JourneyType.SHUT_MUCR), meq(None))(any(), any())
     }
 
     "call FlashValuesExtractor" in {

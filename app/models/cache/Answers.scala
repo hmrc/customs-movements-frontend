@@ -83,6 +83,7 @@ object AssociateUcrAnswers {
 
 case class DisassociateUcrAnswers(ucr: Option[DisassociateUcr] = None) extends Answers {
   override val `type`: JourneyType.Value = DISSOCIATE_UCR
+
 }
 
 object DisassociateUcrAnswers {

@@ -16,12 +16,13 @@
 
 @import config.AppConfig
 @import controllers.routes.{ChoiceController, SubmissionsController}
+@import controllers.ileQuery.routes.IleQueryController
 @import models.cache.JourneyType.JourneyType
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukInsetText
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import views.html.components.exit_survey
-@import views.html.components.gds.{gds_main_template, link, pageTitle}
+@import views.html.components.gds.{gds_main_template, link, pageTitle, heading}
 @import views.Title
 
 @this(
@@ -30,9 +31,10 @@
     link: link,
     govukInsetText: GovukInsetText,
     exitSurvey: exit_survey,
+    heading: heading
 )
 
-@(journeyType: JourneyType)(implicit request: Request[_], messages: Messages)
+@(journeyType: JourneyType, maybeUcr: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
 @gotoTimelineLink = @{
   link(message = Html(messages("confirmation.notification.timeline.link")), href = SubmissionsController.displayPage)
@@ -46,12 +48,23 @@
     @pageTitle(text = messages(s"confirmation.title.$journeyType"), classes = "govuk-heading-xl")
 
     @govukInsetText(InsetText(
-        content = HtmlContent(messages("confirmation.insetText")+"<br>"+messages("confirmation.insetText.check", gotoTimelineLink))
+        content = HtmlContent(messages("confirmation.insetText", gotoTimelineLink))
     ))
 
-    <p class="govuk-body">
-        @link(message = Html(messages("confirmation.redirect.choice.link")), href = ChoiceController.displayChoices)
-    </p>
+    @heading(
+        messages("confirmation.subheading"), "govuk-heading-m", "h2"
+    )
+    <ul>
+        @maybeUcr.map { ucr =>
+            <li class="govuk-body">
+                @link(message = Html(messages("confirmation.redirect.summary.link")), href = IleQueryController.getConsignmentData(ucr), id = Some("summary-link"))
+            </li>
+        }
 
+
+        <li class="govuk-body">
+            @link(message = Html(messages("confirmation.redirect.choice.link")), href = ChoiceController.displayChoices, id = Some("choice-link"))
+        </li>
+    </ul>
   @exitSurvey()
 }

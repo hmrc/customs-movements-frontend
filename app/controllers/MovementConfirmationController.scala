@@ -18,13 +18,14 @@ package controllers
 
 import controllers.actions.AuthAction
 import controllers.storage.FlashExtractor
-import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
 import models.cache.JourneyType._
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.confirmation_page
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class MovementConfirmationController @Inject() (
@@ -36,8 +37,9 @@ class MovementConfirmationController @Inject() (
 
   def displayPage: Action[AnyContent] = authenticate { implicit request =>
     val movementType = flashExtractor.extractMovementType(request).getOrElse(throw ReturnToStartException)
+    val ucr = flashExtractor.extractUcr(request)
     movementType match {
-      case ARRIVE | DEPART => Ok(confirmationPage(movementType))
+      case ARRIVE | DEPART => Ok(confirmationPage(movementType, ucr))
       case _               => throw ReturnToStartException
     }
   }

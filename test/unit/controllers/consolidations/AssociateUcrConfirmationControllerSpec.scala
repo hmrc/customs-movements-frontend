@@ -39,12 +39,14 @@ class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec with Sc
   private val controller =
     new AssociateUcrConfirmationController(SuccessfulAuth(), stubMessagesControllerComponents(), flashExtractor, confirmationPage)
 
+  val dummyUcr = "dummyUcr"
+
   override def beforeEach(): Unit = {
     super.beforeEach()
 
     reset(flashExtractor, confirmationPage)
     when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(None)
-    when(confirmationPage.apply(any[JourneyType])(any(), any())).thenReturn(HtmlFormat.empty)
+    when(confirmationPage.apply(any[JourneyType], any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override def afterEach(): Unit = {
@@ -61,10 +63,13 @@ class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec with Sc
       when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.ASSOCIATE_UCR))
       val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ASSOCIATE_UCR.toString)
 
-      val result = controller.displayPage(request)
+      // val result = controller.displayPage(request)
+
+      when(flashExtractor.extractUcr(any[Request[_]])).thenReturn(None)
+      val result = controller.displayPage(getRequest)
 
       status(result) must be(OK)
-      verify(confirmationPage).apply(meq(JourneyType.ASSOCIATE_UCR))(any(), any())
+      verify(confirmationPage).apply(meq(JourneyType.ASSOCIATE_UCR), meq(None))(any(), any())
     }
 
     "call FlashValuesExtractor" in {

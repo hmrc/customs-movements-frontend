@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package controllers.storage
+@this()
 
-import models.cache.JourneyType
-import models.cache.JourneyType.JourneyType
-import play.api.mvc.Request
+@(message: String, classes: String = "govuk-heading-xl", tier: String = "h1")
 
-class FlashExtractor {
-
-  def extractValue(key: String, request: Request[_]): Option[String] = request.flash.get(key)
-  def extractMovementType(request: Request[_]): Option[JourneyType] =
-    extractValue(FlashKeys.MOVEMENT_TYPE, request).map(JourneyType.withName)
-
-  def extractUcr(request: Request[_]): Option[String] =
-    extractValue(FlashKeys.UCR, request)
-}
+<@tier class="@classes">@message</@tier>

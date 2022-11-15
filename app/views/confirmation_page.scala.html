@@ -21,15 +21,21 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukInsetText
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.exit_survey
-@import views.html.components.gds.{gds_main_template, link, pageTitle, heading}
+@import views.html.components.gds.{gds_main_template, link, pageTitle, heading, paragraphBody, summaryList}
 @import views.Title
 
 @this(
     govukLayout: gds_main_template,
+    govukPanel: GovukPanel,
+    paragraphBody: paragraphBody,
+    summaryList: summaryList,
     pageTitle: pageTitle,
+    govukTable: GovukTable,
     link: link,
     govukInsetText: GovukInsetText,
+    govukSummaryList : GovukSummaryList,
     exitSurvey: exit_survey,
     heading: heading
 )
@@ -45,23 +51,41 @@
     showLanguageSwitch = false
 ) {
 
-    @pageTitle(text = messages(s"confirmation.title.$journeyType"), classes = "govuk-heading-xl")
+    @govukPanel(Panel(title = Text(messages(s"confirmation.title.$journeyType"))))
 
-    @govukInsetText(InsetText(
-        content = HtmlContent(messages("confirmation.insetText", gotoTimelineLink))
+    @govukTable(Table(
+        rows = Seq(
+            maybeUcr.map { ucr =>
+            Seq(
+                TableRow(
+                    content = Text(messages("confirmation.DUCR")), classes = "govuk-!-font-weight-bold"
+                ),
+                TableRow(
+                    content = HtmlContent(link(message = Html(ucr),
+                        href = IleQueryController.getConsignmentData(ucr)
+                    ))
+                )
+            )},
+            Some(Seq(
+                TableRow(
+                    content = Text(messages("confirmation.MUCR")), classes = "govuk-!-font-weight-bold"
+                ),
+                TableRow(
+                    content = HtmlContent(link(message = Html(""),
+                        href = IleQueryController.getConsignmentData("")
+                    ))
+                )
+            ))
+        ).flatten
+    ))
+
+    @paragraphBody(messages("confirmation.insetText", gotoTimelineLink
     ))
 
     @heading(
         messages("confirmation.subheading"), "govuk-heading-m", "h2"
     )
     <ul>
-        @maybeUcr.map { ucr =>
-            <li class="govuk-body">
-                @link(message = Html(messages("confirmation.redirect.summary.link")), href = IleQueryController.getConsignmentData(ucr), id = Some("summary-link"))
-            </li>
-        }
-
-
         <li class="govuk-body">
             @link(message = Html(messages("confirmation.redirect.choice.link")), href = ChoiceController.displayChoices, id = Some("choice-link"))
         </li>

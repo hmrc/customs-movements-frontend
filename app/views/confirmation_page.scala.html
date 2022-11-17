@@ -24,19 +24,17 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.exit_survey
-@import views.html.components.gds.{gds_main_template, link, pageTitle, heading, paragraphBody, summaryList}
+@import views.html.components.gds.{gds_main_template, link, pageTitle, heading, paragraphBody}
 @import views.Title
 
 @this(
     govukLayout: gds_main_template,
     govukPanel: GovukPanel,
     paragraphBody: paragraphBody,
-    summaryList: summaryList,
     pageTitle: pageTitle,
     govukTable: GovukTable,
     link: link,
     govukInsetText: GovukInsetText,
-    govukSummaryList : GovukSummaryList,
     exitSurvey: exit_survey,
     heading: heading
 )
@@ -62,7 +60,8 @@
                     ),
                     TableRow(
                         content = HtmlContent(link(message = Html(ucrValue),
-                            href = IleQueryController.getConsignmentData(ucrValue)
+                            href = IleQueryController.getConsignmentData(ucrValue),
+                            id = Some("summary-link")
                         ))
                     )
                 )

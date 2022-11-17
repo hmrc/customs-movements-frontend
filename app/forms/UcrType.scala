@@ -29,12 +29,6 @@ object UcrType {
   case object Ducr extends UcrType("ducr", "D")
   case object DucrPart extends UcrType("ducrPart", "DP")
 
-  val codeLookup: PartialFunction[String, UcrType] = {
-    case Mucr.codeValue     => Mucr
-    case Ducr.codeValue     => Ducr
-    case DucrPart.codeValue => DucrPart
-  }
-
   private val lookup: PartialFunction[String, UcrType] = {
     case Mucr.formValue     => Mucr
     case Ducr.formValue     => Ducr

@@ -314,11 +314,11 @@ associate.ucr.summary.kind.mucr = MUCR
 associate.ucr.summary.kind.ducr = DUCR
 associate.ucr.summary.kind.ducrPart = DUCR Part
 
-confirmation.title.ARRIVE = Your arrival request has been submitted and is pending
-confirmation.title.DEPART = Your departure request has been submitted and is pending
+confirmation.title.ARRIVE = Your request to arrive has been submitted and is pending
+confirmation.title.DEPART = Your request to depart has been submitted and is pending
 confirmation.title.ASSOCIATE_UCR = Your request to associate has been submitted and is pending
 confirmation.title.DISSOCIATE_UCR = Your request to dissociate has been submitted and is pending
-confirmation.title.SHUT_MUCR = Your request to shut a MUCR has been submitted and is pending
+confirmation.title.SHUT_MUCR = Your request to shut has been submitted and is pending
 confirmation.bodyText = It might take a few minutes before we know if your request to associate has been successful. Go to the {0} to check the status.
 confirmation.subheading = You are also able to:
 confirmation.notification.timeline.link = consignment’s notification timeline

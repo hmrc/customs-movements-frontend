@@ -44,7 +44,7 @@ class DisassociateUcrConfirmationControllerSpec extends ControllerLayerSpec with
 
     reset(flashExtractor, confirmationPage)
     when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(None)
-    when(confirmationPage.apply(any[JourneyType], any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(confirmationPage.apply(any[JourneyType], any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -59,13 +59,12 @@ class DisassociateUcrConfirmationControllerSpec extends ControllerLayerSpec with
     "return 200 (OK)" in {
 
       when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.DISSOCIATE_UCR))
-      val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.DISSOCIATE_UCR.toString)
 
-      when(flashExtractor.extractUcr(any[Request[_]])).thenReturn(None)
+      when(flashExtractor.extractConsignmentRefs(any[Request[_]])).thenReturn(None)
       val result = controller.displayPage(getRequest)
 
       status(result) mustBe OK
-      verify(confirmationPage).apply(meq(JourneyType.DISSOCIATE_UCR), meq(None))(any(), any())
+      verify(confirmationPage).apply(meq(JourneyType.DISSOCIATE_UCR), meq(None), meq(None))(any(), any())
     }
 
     "call FlashValuesExtractor" in {

@@ -38,7 +38,8 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
   private val departureSummaryPage = mock[departure_summary_page]
 
   private val dummyUcr = "dummyUcr"
-  private val consignmentRefs = Some(ConsignmentReferences("", dummyUcr))
+  private val dummyUcrType = "dummyUcrType"
+  private val consignmentRefs = ConsignmentReferences(dummyUcrType, dummyUcr)
 
   private def controller(answers: MovementAnswers) =
     new SummaryController(
@@ -89,8 +90,8 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
     "everything works correctly and user is on Arrival journey" should {
 
       "call SubmissionService" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
-        val cachedAnswers = ArrivalAnswers(consignmentRefs)
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
+        val cachedAnswers = ArrivalAnswers(Some(consignmentRefs))
 
         controller(cachedAnswers).submitMovementRequest()(postRequest(emptyForm)).futureValue
 
@@ -99,29 +100,30 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
       }
 
       "return SEE_OTHER (303) that redirects to MovementConfirmationController" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
 
-        val result = controller(ArrivalAnswers(consignmentRefs)).submitMovementRequest()(postRequest(emptyForm))
+        val result = controller(ArrivalAnswers(Some(consignmentRefs))).submitMovementRequest()(postRequest(emptyForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.displayPage.url)
       }
 
-      "return response with Movement Type and UCR in flash" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
+      "return response with Movement Type, UCR, and UCR Type in flash" in {
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
 
-        val result = controller(ArrivalAnswers(consignmentRefs)).submitMovementRequest()(postRequest(emptyForm))
+        val result = controller(ArrivalAnswers(Some(consignmentRefs))).submitMovementRequest()(postRequest(emptyForm))
 
         flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.ARRIVE.toString)
         flash(result).get(FlashKeys.UCR) mustBe Some(dummyUcr)
+        flash(result).get(FlashKeys.UCR_TYPE) mustBe Some(dummyUcrType)
       }
     }
 
     "everything works correctly and user is on Departure journey" should {
 
       "call SubmissionService" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
-        val cachedAnswers = DepartureAnswers(consignmentRefs)
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
+        val cachedAnswers = DepartureAnswers(Some(consignmentRefs))
 
         controller(cachedAnswers).submitMovementRequest()(postRequest(emptyForm)).futureValue
 
@@ -130,21 +132,22 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
       }
 
       "return SEE_OTHER (303) that redirects to MovementConfirmationController" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
 
-        val result = controller(DepartureAnswers(consignmentRefs)).submitMovementRequest()(postRequest(emptyForm))
+        val result = controller(DepartureAnswers(Some(consignmentRefs))).submitMovementRequest()(postRequest(emptyForm))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.displayPage.url)
       }
 
-      "return response with Movement Type and UCR in flash" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
+      "return response with Movement Type, UCR, and UCR Type in flash" in {
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
 
-        val result = controller(DepartureAnswers(consignmentRefs)).submitMovementRequest()(postRequest(emptyForm))
+        val result = controller(DepartureAnswers(Some(consignmentRefs))).submitMovementRequest()(postRequest(emptyForm))
 
         flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.DEPART.toString)
         flash(result).get(FlashKeys.UCR) mustBe Some(dummyUcr)
+        flash(result).get(FlashKeys.UCR_TYPE) mustBe Some(dummyUcrType)
       }
     }
   }

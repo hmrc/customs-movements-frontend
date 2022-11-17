@@ -16,6 +16,7 @@
 
 package controllers.storage
 
+import forms.ConsignmentReferences
 import models.cache.JourneyType
 import models.cache.JourneyType.JourneyType
 import play.api.mvc.Request
@@ -28,4 +29,16 @@ class FlashExtractor {
 
   def extractUcr(request: Request[_]): Option[String] =
     extractValue(FlashKeys.UCR, request)
+
+  def extractUcrType(request: Request[_]): Option[String] =
+    extractValue(FlashKeys.UCR_TYPE, request)
+
+  def extractMucrToAssociate(request: Request[_]): Option[String] =
+    extractValue(FlashKeys.MUCR_TO_ASSOCIATE, request)
+
+  def extractConsignmentRefs(request: Request[_]): Option[ConsignmentReferences] =
+    for {
+      ucr <- extractUcr(request)
+      ucrType <- extractUcrType(request)
+    } yield ConsignmentReferences(ucrType, ucr)
 }

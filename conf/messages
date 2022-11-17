@@ -380,7 +380,7 @@ notifications.elem.content.DucrDisassociation = Your request to disassociate thi
 notifications.elem.content.DucrPartDisassociation = Your request to disassociate this DUCR Part has been received.
 notifications.elem.content.MucrDisassociation = Your request to disassociate this MUCR has been received.
 notifications.elem.content.ShutMucr = Your request to shut this MUCR has been received.
-notifications.elem.content.footer = We will notify you when it has been successful.
+notifications.elem.content.footer = Check back later to see if it has been successful.
 
 notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Your request has been acknowledged and processed.
 notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed.singleError = The following error is blocking your request:

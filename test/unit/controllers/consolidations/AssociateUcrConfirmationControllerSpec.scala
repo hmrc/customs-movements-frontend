@@ -46,7 +46,7 @@ class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec with Sc
 
     reset(flashExtractor, confirmationPage)
     when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(None)
-    when(confirmationPage.apply(any[JourneyType], any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(confirmationPage.apply(any[JourneyType], any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override def afterEach(): Unit = {
@@ -61,27 +61,27 @@ class AssociateUcrConfirmationControllerSpec extends ControllerLayerSpec with Sc
     "return 200 (OK)" in {
 
       when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.ASSOCIATE_UCR))
-      val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ASSOCIATE_UCR.toString)
+      when(flashExtractor.extractConsignmentRefs(any[Request[_]])).thenReturn(None)
+      when(flashExtractor.extractMucrToAssociate(any[Request[_]])).thenReturn(None)
 
-      // val result = controller.displayPage(request)
-
-      when(flashExtractor.extractUcr(any[Request[_]])).thenReturn(None)
       val result = controller.displayPage(getRequest)
 
-      status(result) must be(OK)
-      verify(confirmationPage).apply(meq(JourneyType.ASSOCIATE_UCR), meq(None))(any(), any())
+      status(result) mustBe OK
+      verify(confirmationPage).apply(meq(JourneyType.ASSOCIATE_UCR), meq(None), meq(None))(any(), any())
     }
 
     "call FlashValuesExtractor" in {
 
       when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.ASSOCIATE_UCR))
-      val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ASSOCIATE_UCR.toString)
+      val request = getRequest.withFlash(FlashKeys.MOVEMENT_TYPE -> JourneyType.ASSOCIATE_UCR.toString, FlashKeys.MUCR_TO_ASSOCIATE -> dummyUcr)
 
       controller.displayPage(request).futureValue
 
       val requestCaptor: ArgumentCaptor[Request[_]] = ArgumentCaptor.forClass(classOf[Request[_]])
       verify(flashExtractor).extractMovementType(requestCaptor.capture())
+      verify(flashExtractor).extractConsignmentRefs(requestCaptor.capture())
       requestCaptor.getValue.flash.get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.ASSOCIATE_UCR.toString)
+      requestCaptor.getValue.flash.get(FlashKeys.MUCR_TO_ASSOCIATE) mustBe Some(dummyUcr)
     }
 
     "throw ReturnToStartException" when {

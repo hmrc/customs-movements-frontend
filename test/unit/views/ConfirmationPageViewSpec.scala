@@ -17,26 +17,29 @@
 package views
 
 import base.Injector
-import controllers.routes
 import controllers.routes.SubmissionsController
-import forms.{ConsignmentReferences, DisassociateUcr}
-import forms.UcrType.{Ducr, Mucr}
+import forms.UcrType.{Ducr, DucrPart, Mucr}
+import forms.{ConsignmentReferences, UcrType}
 import models.cache._
 import views.html.confirmation_page
 import views.tags.ViewTest
+import controllers.ileQuery.routes.IleQueryController
 
 @ViewTest
 class ConfirmationPageViewSpec extends ViewSpec with Injector {
 
   private val page = instanceOf[confirmation_page]
   private val dummyUcr = "dummyUcr"
+  private val call = IleQueryController.getConsignmentData(dummyUcr)
+
+  private def consignmentRefs(ucrType: UcrType = Ducr) = ConsignmentReferences(ucrType, dummyUcr)
 
   "ConfirmationPageView" when {
 
     List(ArrivalAnswers(), DepartureAnswers(), AssociateUcrAnswers(), DisassociateUcrAnswers(), ShutMucrAnswers()).foreach { answer =>
       s"provided with ${answer.`type`} Journey Type" should {
         implicit val request = journeyRequest(answer)
-        val view = page(answer.`type`, Some(dummyUcr))
+        val view = page(answer.`type`, Some(consignmentRefs()))
 
         "render title" in {
           view.getTitle must containMessage(s"confirmation.title.${answer.`type`}")
@@ -78,48 +81,72 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
     }
 
     for {
-      ucrType <- List(Mucr, Ducr)
-      answers <- List(ArrivalAnswers(consignmentRefs), DepartureAnswers(consignmentRefs), DisassociateUcrAnswers())
+      ucrType <- List(Mucr, Ducr, DucrPart)
+      answers <- List(ArrivalAnswers(), DepartureAnswers(), DisassociateUcrAnswers())
     }
-      s"provided with ${answers.`type`} Journey Type" should {
+      s"provided with ${answers.`type`} Journey Type and $ucrType" should {
         implicit val request = journeyRequest(answers)
-        val view = page(answers.`type`, Some(ConsignmentReferences(ucrType, dummyUcr)))
+        val view = page(answers.`type`, Some(consignmentRefs(ucrType)))
 
         "render table with one row" in {
           view.getElementsByClass("govuk-table__row").size mustBe 1
         }
 
-        "render a row with DUCR if we're getting a DUCR" in {}
+        "render a row with DUCR or MUCR based on input" in {
+          ucrType match {
+            case Ducr | DucrPart => view.getElementsByClass("govuk-table__cell").first must containMessage("confirmation.D")
+            case Mucr            => view.getElementsByClass("govuk-table__cell").first() must containMessage("confirmation.MUCR")
+          }
 
-        "render a row with MUCR if we're getting a MUCR" in {}
+          view.getElementsByClass("govuk-table__cell").get(1) must containText(dummyUcr)
+          view.getElementsByClass("govuk-table__cell").get(1).child(0) must haveHref(call)
+        }
       }
 
-    List(AssociateUcrAnswers()).foreach { answer =>
-      s"provided with ${answer.`type`} Journey Type" should {
-        implicit val request = journeyRequest(answer)
-        val view = page(answer.`type`, Some(dummyUcr))
+    for {
+      ucrType <- List(Mucr, Ducr, DucrPart)
+      answer <- List(AssociateUcrAnswers())
+    } s"provided with ${answer.`type`} Journey Type and $ucrType" should {
+      implicit val request = journeyRequest(answer)
+      val view = page(answer.`type`, Some(consignmentRefs(ucrType)), Some(dummyUcr))
 
-        "render table with two rows" in {
-          view.getElementsByClass("govuk-table__row").size mustBe 2
+      "render table with two rows" in {
+        view.getElementsByClass("govuk-table__row").size mustBe 2
+      }
+
+      "render a row with DUCR or MUCR based on input" in {
+        ucrType match {
+          case Ducr | DucrPart => view.getElementsByClass("govuk-table__cell").first must containMessage("confirmation.D")
+          case Mucr            => view.getElementsByClass("govuk-table__cell").first() must containMessage("confirmation.MUCR")
         }
 
-        "render a row with DUCR and a MUCR if we're associating  a DUCR" in {}
+        view.getElementsByClass("govuk-table__cell").get(1) must containText(dummyUcr)
+        view.getElementsByClass("govuk-table__cell").get(1).child(0) must haveHref(call)
+      }
 
-        "render a row with a MUCR and a MUCR if we're associating a MUCR" in {}
+      "render a second row with MUCR" in {
+        view.getElementsByClass("govuk-table__cell").get(2) must containMessage("confirmation.MUCR")
+        view.getElementsByClass("govuk-table__cell").get(3) must containText(dummyUcr)
+        view.getElementsByClass("govuk-table__cell").get(3).child(0) must haveHref(call)
       }
     }
+  }
 
-    List(ShutMucrAnswers()).foreach { answer =>
-      s"provided with ${answer.`type`} Journey Type" should {
-        implicit val request = journeyRequest(answer)
-        val view = page(answer.`type`, Some(dummyUcr))
+  for {
+    ucrType <- List(Mucr)
+    answer <- List(ShutMucrAnswers())
+  } s"provided with ${answer.`type`} Journey Type" should {
+    implicit val request = journeyRequest(answer)
+    val view = page(answer.`type`, Some(consignmentRefs(ucrType)))
 
-        "render table with one row" in {
-          view.getElementsByClass("govuk-table__row").size mustBe 2
-        }
+    "render table with one row" in {
+      view.getElementsByClass("govuk-table__row").size mustBe 1
+    }
 
-        "render a row with the MUCR" in {}
-      }
+    "render a row with MUCR based on input" in {
+      view.getElementsByClass("govuk-table__cell").first() must containMessage("confirmation.MUCR")
+      view.getElementsByClass("govuk-table__cell").get(1) must containText(dummyUcr)
+      view.getElementsByClass("govuk-table__cell").get(1).child(0) must haveHref(call)
     }
   }
 }

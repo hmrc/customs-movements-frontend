@@ -16,7 +16,7 @@
 
 package controllers.consolidations
 
-import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.actions.AuthAction
 import controllers.storage.FlashExtractor
 import models.ReturnToStartException
 import models.cache.JourneyType.{JOURNEY_NOT_SELECTED, SHUT_MUCR}

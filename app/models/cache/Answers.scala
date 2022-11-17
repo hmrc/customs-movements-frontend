@@ -84,7 +84,7 @@ object AssociateUcrAnswers {
 
 case class DisassociateUcrAnswers(ucr: Option[DisassociateUcr] = None) extends Answers {
   override val `type`: JourneyType.Value = DISSOCIATE_UCR
-  override val consignmentReferences: Option[ConsignmentReferences] = ucr.map(ucr => ConsignmentReferences(ucr.kind, ucr.ucr))
+  override def consignmentReferences: Option[ConsignmentReferences] = ucr.map(ucr => ConsignmentReferences(ucr.kind, ucr.ucr))
 }
 
 object DisassociateUcrAnswers {
@@ -115,7 +115,7 @@ object JourneyNotSelectedAnswers extends Answers {
 trait Answers {
   val `type`: JourneyType
   val readyToSubmit: Option[Boolean] = None
-  val consignmentReferences: Option[ConsignmentReferences] = None
+  def consignmentReferences: Option[ConsignmentReferences] = None
 }
 
 object Answers {

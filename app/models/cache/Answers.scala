@@ -16,6 +16,7 @@
 
 package models.cache
 
+import forms.UcrType.Mucr
 import forms.{AssociateUcr, MucrOptions, _}
 import models.UcrBlock
 import models.cache.JourneyType._
@@ -57,7 +58,6 @@ object DepartureAnswers {
 }
 
 trait MovementAnswers extends Answers {
-  val consignmentReferences: Option[ConsignmentReferences]
   val location: Option[Location]
   val specificDateTimeChoice: Option[SpecificDateTimeChoice]
 }
@@ -69,6 +69,7 @@ case class AssociateUcrAnswers(
   override val readyToSubmit: Option[Boolean] = Some(false)
 ) extends Answers {
   override val `type`: JourneyType.Value = ASSOCIATE_UCR
+  override val consignmentReferences: Option[ConsignmentReferences] = associateUcr.map(ucr => ConsignmentReferences(ucr.kind, ucr.ucr))
 
   def isAssociateAnotherMucr: Boolean = manageMucrChoice.exists(_.choice == ManageMucrChoice.AssociateAnotherMucr)
   def isAssociateThisMucr: Boolean = manageMucrChoice.exists(_.choice == ManageMucrChoice.AssociateThisMucr)
@@ -83,7 +84,7 @@ object AssociateUcrAnswers {
 
 case class DisassociateUcrAnswers(ucr: Option[DisassociateUcr] = None) extends Answers {
   override val `type`: JourneyType.Value = DISSOCIATE_UCR
-
+  override val consignmentReferences: Option[ConsignmentReferences] = ucr.map(ucr => ConsignmentReferences(ucr.kind, ucr.ucr))
 }
 
 object DisassociateUcrAnswers {
@@ -95,6 +96,7 @@ object DisassociateUcrAnswers {
 
 case class ShutMucrAnswers(shutMucr: Option[ShutMucr] = None) extends Answers {
   override val `type`: JourneyType.Value = SHUT_MUCR
+  override val consignmentReferences: Option[ConsignmentReferences] = shutMucr.map(mucr => ConsignmentReferences(Mucr, mucr.mucr))
 }
 
 object ShutMucrAnswers {
@@ -113,6 +115,7 @@ object JourneyNotSelectedAnswers extends Answers {
 trait Answers {
   val `type`: JourneyType
   val readyToSubmit: Option[Boolean] = None
+  val consignmentReferences: Option[ConsignmentReferences] = None
 }
 
 object Answers {

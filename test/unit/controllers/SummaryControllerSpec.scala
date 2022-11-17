@@ -38,7 +38,8 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
   private val departureSummaryPage = mock[departure_summary_page]
 
   private val dummyUcr = "dummyUcr"
-  private val consignmentRefs = Some(ConsignmentReferences("", dummyUcr))
+  private val dummyUcrType = "dummyUcrType"
+  private val consignmentRefs = Some(ConsignmentReferences(dummyUcrType, dummyUcr))
 
   private def controller(answers: MovementAnswers) =
     new SummaryController(
@@ -107,13 +108,14 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
         redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.displayPage.url)
       }
 
-      "return response with Movement Type and UCR in flash" in {
+      "return response with Movement Type, UCR, and UCR Type in flash" in {
         when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
 
         val result = controller(ArrivalAnswers(consignmentRefs)).submitMovementRequest()(postRequest(emptyForm))
 
         flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.ARRIVE.toString)
         flash(result).get(FlashKeys.UCR) mustBe Some(dummyUcr)
+        flash(result).get(FlashKeys.UCR_TYPE) mustBe Some(dummyUcrType)
       }
     }
 
@@ -138,13 +140,14 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
         redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.displayPage.url)
       }
 
-      "return response with Movement Type and UCR in flash" in {
+      "return response with Movement Type, UCR, and UCR Type in flash" in {
         when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(ConsignmentReferences("ref", "value")))
 
         val result = controller(DepartureAnswers(consignmentRefs)).submitMovementRequest()(postRequest(emptyForm))
 
         flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.DEPART.toString)
         flash(result).get(FlashKeys.UCR) mustBe Some(dummyUcr)
+        flash(result).get(FlashKeys.UCR_TYPE) mustBe Some(dummyUcrType)
       }
     }
   }

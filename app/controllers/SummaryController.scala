@@ -18,7 +18,6 @@ package controllers
 
 import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.storage.FlashKeys
-import models.ReturnToStartException
 import models.cache.{ArrivalAnswers, DepartureAnswers, JourneyType, MovementAnswers}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -49,11 +48,14 @@ class SummaryController @Inject() (
   def submitMovementRequest(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)).async {
     implicit request =>
       val answers = request.answersAs[MovementAnswers]
-      val ucr = answers.consignmentReferences.getOrElse(throw ReturnToStartException).referenceValue
 
-      submissionService.submit(request.eori, request.answersAs[MovementAnswers]).map { _ =>
+      submissionService.submit(request.eori, answers).map { consignmentRefs =>
         Redirect(controllers.routes.MovementConfirmationController.displayPage)
-          .flashing(FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString, FlashKeys.UCR -> ucr)
+          .flashing(
+            FlashKeys.MOVEMENT_TYPE -> answers.`type`.toString,
+            FlashKeys.UCR -> consignmentRefs.referenceValue,
+            FlashKeys.UCR_TYPE -> consignmentRefs.reference
+          )
       }
   }
 }

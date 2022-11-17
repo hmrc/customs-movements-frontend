@@ -47,11 +47,17 @@ class ShutMucrSummaryController @Inject() (
 
   def submit: Action[AnyContent] = (authenticate andThen getJourney(JourneyType.SHUT_MUCR)).async { implicit request =>
     val answers = request.answersAs[ShutMucrAnswers]
-    val shutMucrFlash = answers.shutMucr.getOrElse(throw ReturnToStartException)
+    val ucrType = answers.consignmentReferences.map(_.reference)
+    val ucr = answers.consignmentReferences.map(_.referenceValue)
+    val flash = Seq(
+      Some(FlashKeys.MOVEMENT_TYPE -> answers.`type`.toString),
+      ucr.map(ucr => FlashKeys.UCR -> ucr),
+      ucrType.map(ucrType => FlashKeys.UCR_TYPE -> ucrType)
+    ).flatten
 
     submissionService.submit(request.eori, answers).map { _ =>
       Redirect(ShutMucrConfirmationController.displayPage)
-        .flashing(FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString, FlashKeys.UCR -> shutMucrFlash.mucr)
+        .flashing(flash: _*)
     }
   }
 }

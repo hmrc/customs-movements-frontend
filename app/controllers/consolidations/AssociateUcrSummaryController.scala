@@ -56,11 +56,20 @@ class AssociateUcrSummaryController @Inject() (
 
   def submit: Action[AnyContent] = (authenticate andThen journeyType(ASSOCIATE_UCR)).async { implicit request =>
     val answers = request.answersAs[AssociateUcrAnswers]
-    val associateUcr = answers.associateUcr.getOrElse(throw ReturnToStartException)
-    submissionService.submit(request.eori, request.answersAs[AssociateUcrAnswers]).map { _ =>
-      Redirect(AssociateUcrConfirmationController.displayPage)
-        .flashing(FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString, FlashKeys.UCR -> associateUcr.ucr)
+    val ucrType = answers.consignmentReferences.map(_.reference)
+    val ucr = answers.consignmentReferences.map(_.referenceValue)
+    val mucrToAssociate = answers.mucrOptions.map(_.mucr)
 
+    val flash = Seq(
+      Some(FlashKeys.MOVEMENT_TYPE -> answers.`type`.toString),
+      ucr.map(ucr => FlashKeys.UCR -> ucr),
+      ucrType.map(ucrType => FlashKeys.UCR_TYPE -> ucrType),
+      mucrToAssociate.map(mucr => FlashKeys.MUCR_TO_ASSOCIATE -> mucr)
+    ).flatten
+
+    submissionService.submit(request.eori, answers).map { _ =>
+      Redirect(AssociateUcrConfirmationController.displayPage)
+        .flashing(flash: _*)
     }
   }
 }

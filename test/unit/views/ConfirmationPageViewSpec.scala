@@ -19,7 +19,8 @@ package views
 import base.Injector
 import controllers.routes
 import controllers.routes.SubmissionsController
-import forms.ConsignmentReferences
+import forms.{ConsignmentReferences, DisassociateUcr}
+import forms.UcrType.{Ducr, Mucr}
 import models.cache._
 import views.html.confirmation_page
 import views.tags.ViewTest
@@ -41,28 +42,22 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
           view.getTitle must containMessage(s"confirmation.title.${answer.`type`}")
         }
 
-        "render header" in {
-          view.getElementsByClass("govuk-heading-xl").first() must containMessage(s"confirmation.title.${answer.`type`}")
+        "render panel with heading" in {
+          Option(view.getElementsByClass("govuk-panel").first()) mustBe defined
+          view.getElementsByTag("h1").first() must containMessage(s"confirmation.title.${answer.`type`}")
         }
 
-        "render inset text with link to View Requests page" in {
-          val inset = view.getElementsByClass("govuk-inset-text").first()
-          inset must containMessage("confirmation.insetText", messages("confirmation.notification.timeline.link"))
+        "render body text with link to View Requests page" in {
+          val bodyText = view.getElementsByClass("govuk-body").first()
+          bodyText must containMessage("confirmation.bodyText", messages("confirmation.notification.timeline.link"))
 
-          val link = inset.getElementsByClass("govuk-link").first()
+          val link = bodyText.getElementsByClass("govuk-link").first()
           link must haveHref(SubmissionsController.displayPage)
         }
 
         "render sub-heading" in {
           val subHeading = view.getElementsByClass("govuk-heading-m").first()
           subHeading must containMessage("confirmation.subheading")
-        }
-
-        "render link to consignment information" in {
-          val link = view.getElementById("summary-link")
-
-          link must containMessage("confirmation.redirect.summary.link")
-          link must haveHref(controllers.ileQuery.routes.IleQueryController.getConsignmentData(dummyUcr))
         }
 
         "render link to choice page" in {
@@ -79,6 +74,51 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
         "hide language switch" in {
           view.getElementsByClass("hmrc-language-select").text() must be(empty)
         }
+      }
+    }
+
+    for {
+      ucrType <- List(Mucr, Ducr)
+      answers <- List(ArrivalAnswers(consignmentRefs), DepartureAnswers(consignmentRefs), DisassociateUcrAnswers())
+    }
+      s"provided with ${answers.`type`} Journey Type" should {
+        implicit val request = journeyRequest(answers)
+        val view = page(answers.`type`, Some(ConsignmentReferences(ucrType, dummyUcr)))
+
+        "render table with one row" in {
+          view.getElementsByClass("govuk-table__row").size mustBe 1
+        }
+
+        "render a row with DUCR if we're getting a DUCR" in {}
+
+        "render a row with MUCR if we're getting a MUCR" in {}
+      }
+
+    List(AssociateUcrAnswers()).foreach { answer =>
+      s"provided with ${answer.`type`} Journey Type" should {
+        implicit val request = journeyRequest(answer)
+        val view = page(answer.`type`, Some(dummyUcr))
+
+        "render table with two rows" in {
+          view.getElementsByClass("govuk-table__row").size mustBe 2
+        }
+
+        "render a row with DUCR and a MUCR if we're associating  a DUCR" in {}
+
+        "render a row with a MUCR and a MUCR if we're associating a MUCR" in {}
+      }
+    }
+
+    List(ShutMucrAnswers()).foreach { answer =>
+      s"provided with ${answer.`type`} Journey Type" should {
+        implicit val request = journeyRequest(answer)
+        val view = page(answer.`type`, Some(dummyUcr))
+
+        "render table with one row" in {
+          view.getElementsByClass("govuk-table__row").size mustBe 2
+        }
+
+        "render a row with the MUCR" in {}
       }
     }
   }

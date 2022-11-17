@@ -37,6 +37,7 @@ class MovementConfirmationControllerSpec extends ControllerLayerSpec with ScalaF
   private val confirmationPage = mock[confirmation_page]
 
   private val dummyUcr = "dummyUCR"
+  private val dummyUcrType = "dummyUcrType"
 
   private val controller =
     new MovementConfirmationController(SuccessfulAuth(), stubMessagesControllerComponents(), flashExtractor, confirmationPage)
@@ -64,20 +65,22 @@ class MovementConfirmationControllerSpec extends ControllerLayerSpec with ScalaF
 
         when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.ARRIVE))
         when(flashExtractor.extractUcr(any[Request[_]])).thenReturn(None)
+        when(flashExtractor.extractUcrType(any[Request[_]])).thenReturn(None)
         val result = controller.displayPage(getRequest)
 
         status(result) mustBe Status.OK
-        verify(confirmationPage).apply(meq(JourneyType.ARRIVE), meq(None))(any(), any())
+        verify(confirmationPage).apply(meq(JourneyType.ARRIVE), meq(None), meq(None))(any(), any())
       }
 
       "journey type is DEPARTURE" in {
 
         when(flashExtractor.extractMovementType(any[Request[_]])).thenReturn(Some(JourneyType.DEPART))
         when(flashExtractor.extractUcr(any[Request[_]])).thenReturn(None)
+        when(flashExtractor.extractUcrType(any[Request[_]])).thenReturn(None)
         val result = controller.displayPage(getRequest)
 
         status(result) mustBe Status.OK
-        verify(confirmationPage).apply(meq(JourneyType.DEPART), meq(None))(any(), any())
+        verify(confirmationPage).apply(meq(JourneyType.DEPART), meq(None), meq(None))(any(), any())
       }
     }
 
@@ -91,10 +94,13 @@ class MovementConfirmationControllerSpec extends ControllerLayerSpec with ScalaF
 
         val requestCaptorMovementType: ArgumentCaptor[Request[_]] = ArgumentCaptor.forClass(classOf[Request[_]])
         val requestCaptorUcr: ArgumentCaptor[Request[_]] = ArgumentCaptor.forClass(classOf[Request[_]])
+        val requestCaptorUcrType: ArgumentCaptor[Request[_]] = ArgumentCaptor.forClass(classOf[Request[_]])
         verify(flashExtractor).extractMovementType(requestCaptorMovementType.capture())
         verify(flashExtractor).extractUcr(requestCaptorUcr.capture())
+        verify(flashExtractor).extractUcrType(requestCaptorUcr.capture())
         requestCaptorMovementType.getValue.flash.get(FlashKeys.MOVEMENT_TYPE) mustBe Some(journeyType.toString)
         requestCaptorUcr.getValue.flash.get(FlashKeys.UCR) mustBe Some(dummyUcr)
+        requestCaptorUcrType.getValue.flash.get(FlashKeys.UCR_TYPE) mustBe Some(dummyUcrType)
       }
     }
 

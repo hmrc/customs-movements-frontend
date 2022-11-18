@@ -28,8 +28,7 @@ import views.html.components.notification_errors
 import views.html.components.gds.paragraphBody
 
 @Singleton
-class ControlResponseBlockedConverter @Inject() (decoder: Decoder, viewDates: ViewDates, paragraphBody: paragraphBody)
-    extends NotificationPageSingleElementConverter {
+class ControlResponseBlockedConverter @Inject() (decoder: Decoder, viewDates: ViewDates) extends NotificationPageSingleElementConverter {
 
   private val logger = Logger(this.getClass)
 

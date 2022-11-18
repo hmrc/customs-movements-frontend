@@ -14,8 +14,6 @@
  * limitations under the License.
  *@
 
-@this()
-
 @(message: String, classes: String = "govuk-body", id: Option[String] = None)
 
 <p class="@classes" @id.map{id => id="@id" }>@Html(message)</p>

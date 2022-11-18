@@ -30,11 +30,7 @@ import views.html.components.gds.paragraphBody
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class NotificationPageSingleElementFactory @Inject() (
-  responseConverterProvider: ResponseConverterProvider,
-  viewDates: ViewDates,
-  paragraphBody: paragraphBody
-) {
+class NotificationPageSingleElementFactory @Inject() (responseConverterProvider: ResponseConverterProvider, viewDates: ViewDates) {
 
   def build(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement =
     submission.actionType match {

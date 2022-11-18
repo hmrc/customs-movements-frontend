@@ -20,7 +20,7 @@
 @import play.twirl.api.HtmlFormat.fill
 @import scala.collection.immutable.Seq
 
-@this(govukDetails : GovukDetails, govukHint: GovukHint, link: link, paragraph: paragraphBody, appConfig: AppConfig)
+@this(govukDetails : GovukDetails, govukHint: GovukHint, link: link, appConfig: AppConfig)
 
 @()(implicit messages: Messages)
 
@@ -37,15 +37,15 @@
 }
 
 @expanderContent = {
-    @paragraph(messages("location.expander.intro"))
+    @paragraphBody(messages("location.expander.intro"))
 
-    @paragraph(messages("location.expander.paragraph1.title"), "bold")
+    @paragraphBody(messages("location.expander.paragraph1.title"), "bold")
     @govukHint(Hint(content = paragraphLayout(1)))
 
-    @paragraph(messages("location.expander.paragraph2.title"), "bold")
+    @paragraphBody(messages("location.expander.paragraph2.title"), "bold")
     @govukHint(Hint(content = paragraphLayout(2)))
 
-    @paragraph(messages("location.expander.paragraph3.title"), "bold")
+    @paragraphBody(messages("location.expander.paragraph3.title"), "bold")
     @govukHint(Hint(
         content = HtmlContent(link(
             message = Html(messages("location.expander.paragraph3.link1.text")),
@@ -54,7 +54,7 @@
         ))
     ))
 
-    @paragraph(messages("location.expander.paragraph4.title"), "bold")
+    @paragraphBody(messages("location.expander.paragraph4.title"), "bold")
     @govukHint(Hint(
         content = HtmlContent(link(
             message = Html(messages("location.expander.paragraph4.link1.text")),
@@ -63,7 +63,7 @@
         ))
     ))
 
-    @paragraph(messages("location.expander.paragraph5.title"), "bold")
+    @paragraphBody(messages("location.expander.paragraph5.title"), "bold")
     @govukHint(Hint(
         content = HtmlContent(link(
             message = Html(messages("location.expander.paragraph5.link1.text")),
@@ -72,7 +72,7 @@
         ))
     ))
 
-    @paragraph(messages("location.expander.paragraph6.title"), "bold")
+    @paragraphBody(messages("location.expander.paragraph6.title"), "bold")
     @govukHint(Hint(
         content = HtmlContent(link(
             message = Html(messages("location.expander.paragraph6.link1.text")),
@@ -81,7 +81,7 @@
         ))
     ))
 
-    @paragraph(messages("location.expander.paragraph7.title"), "bold")
+    @paragraphBody(messages("location.expander.paragraph7.title"), "bold")
     @govukHint(Hint(
         content = HtmlContent(link(
             message = Html(messages("location.expander.paragraph7.link1.text")),
@@ -90,7 +90,7 @@
         ))
     ))
 
-    @paragraph(messages("location.expander.paragraph8.title"), "bold")
+    @paragraphBody(messages("location.expander.paragraph8.title"), "bold")
     @govukHint(Hint(
         content = HtmlContent(messages("location.expander.paragraph8.text",
             link(

@@ -34,7 +34,6 @@ import testdata.CommonTestData._
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import utils.DateTimeTestModule
-import views.html.components.gds.paragraphBody
 import views.{MessagesStub, ViewDates}
 
 class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStub with BeforeAndAfterEach {
@@ -45,9 +44,7 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
 
   private val responseConverterProvider = mock[ResponseConverterProvider]
   private val formatter = new ViewDates
-  private val paragraphBody = new paragraphBody
-  private val factory = new NotificationPageSingleElementFactory(responseConverterProvider, formatter, paragraphBody)
-
+  private val factory = new NotificationPageSingleElementFactory(responseConverterProvider, formatter)
   private val injector = Guice.createInjector(new DateTimeTestModule())
   private val unknownResponseConverter = injector.getInstance(classOf[UnknownResponseConverter])
 

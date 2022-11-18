@@ -24,10 +24,12 @@ import play.api.Logger
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import views.ViewDates
-import views.html.components.{notification_errors, paragraph}
+import views.html.components.notification_errors
+import views.html.components.gds.paragraphBody
 
 @Singleton
-class ControlResponseBlockedConverter @Inject() (decoder: Decoder, viewDates: ViewDates) extends NotificationPageSingleElementConverter {
+class ControlResponseBlockedConverter @Inject() (decoder: Decoder, viewDates: ViewDates, paragraphBody: paragraphBody)
+    extends NotificationPageSingleElementConverter {
 
   private val logger = Logger(this.getClass)
 
@@ -42,7 +44,7 @@ class ControlResponseBlockedConverter @Inject() (decoder: Decoder, viewDates: Vi
     )
 
   private def buildContent(notification: Notification)(implicit messages: Messages): Html = {
-    val contentHeader = paragraph(messages(ContentHeaderMessagesKey + contentHeaderSuffix(notification)))
+    val contentHeader = paragraphBody(messages(ContentHeaderMessagesKey + contentHeaderSuffix(notification)))
     val errorsExplanations = buildErrorsExplanations(notification.errorCodes)
 
     new Html(List(contentHeader, errorsExplanations))

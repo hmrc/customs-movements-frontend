@@ -22,7 +22,7 @@ import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import views.ViewDates
-import views.html.components.paragraph
+import views.html.components.gds.paragraphBody
 
 import javax.inject.{Inject, Singleton}
 
@@ -51,6 +51,6 @@ class MovementResponseConverter @Inject() (val decoder: Decoder, viewDates: View
   private def buildCrcCodeExplanation(crcCode: String)(implicit messages: Messages): Option[Html] = {
     val CrcCodeHeader = messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")
 
-    decoder.crc(crcCode).map(code => paragraph(s"$CrcCodeHeader ${messages(code.messageKey)}"))
+    decoder.crc(crcCode).map(code => paragraphBody(s"$CrcCodeHeader ${messages(code.messageKey)}"))
   }
 }

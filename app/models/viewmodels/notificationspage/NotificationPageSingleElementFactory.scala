@@ -18,7 +18,6 @@ package models.viewmodels.notificationspage
 
 import connectors.exchanges.ActionType.ConsolidationType._
 import connectors.exchanges.ActionType.MovementType._
-import javax.inject.{Inject, Singleton}
 import models.UcrBlock
 import models.notifications.Notification
 import models.submissions.Submission
@@ -26,7 +25,9 @@ import models.viewmodels.notificationspage.converters._
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import views.ViewDates
-import views.html.components.paragraph
+import views.html.components.gds.paragraphBody
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class NotificationPageSingleElementFactory @Inject() (responseConverterProvider: ResponseConverterProvider, viewDates: ViewDates) {
@@ -45,8 +46,8 @@ class NotificationPageSingleElementFactory @Inject() (responseConverterProvider:
 
     val content = HtmlFormat.fill(
       List(
-        paragraph(messages(s"notifications.elem.content.${submission.actionType.typeName}", ucrMessage)),
-        paragraph(messages("notifications.elem.content.footer"))
+        paragraphBody(messages(s"notifications.elem.content.${submission.actionType.typeName}", ucrMessage)),
+        paragraphBody(messages("notifications.elem.content.footer"))
       )
     )
 
@@ -60,9 +61,9 @@ class NotificationPageSingleElementFactory @Inject() (responseConverterProvider:
   private def buildForDucrAssociation(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement = {
     val ducrs: List[UcrBlock] = submission.ucrBlocks.filter(_.ucrType == "D").toList
     val content = HtmlFormat.fill(
-      paragraph(messages(s"notifications.elem.content.${submission.actionType.typeName}")) +:
-        ducrs.map(block => paragraph(block.ucr)) :+
-        paragraph(messages("notifications.elem.content.footer"))
+      paragraphBody(messages(s"notifications.elem.content.${submission.actionType.typeName}")) +:
+        ducrs.map(block => paragraphBody(block.ucr)) :+
+        paragraphBody(messages("notifications.elem.content.footer"))
     )
 
     buildForRequest(submission).copy(content = content)
@@ -71,9 +72,9 @@ class NotificationPageSingleElementFactory @Inject() (responseConverterProvider:
   private def buildForDucrPartAssociation(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement = {
     val ducrs: List[UcrBlock] = submission.ucrBlocks.filter(_.ucrType == "DP").toList
     val content = HtmlFormat.fill(
-      paragraph(messages(s"notifications.elem.content.${submission.actionType.typeName}")) +:
-        ducrs.map(block => paragraph(block.fullUcr)) :+
-        paragraph(messages("notifications.elem.content.footer"))
+      paragraphBody(messages(s"notifications.elem.content.${submission.actionType.typeName}")) +:
+        ducrs.map(block => paragraphBody(block.fullUcr)) :+
+        paragraphBody(messages("notifications.elem.content.footer"))
     )
 
     buildForRequest(submission).copy(content = content)

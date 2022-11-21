@@ -18,13 +18,14 @@ package controllers.consolidations
 
 import controllers.actions.AuthAction
 import controllers.storage.FlashExtractor
-import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
-import models.cache.JourneyType.DISSOCIATE_UCR
+import models.cache.JourneyType.{DISSOCIATE_UCR, JOURNEY_NOT_SELECTED}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.confirmation_page
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class DisassociateUcrConfirmationController @Inject() (
@@ -35,10 +36,11 @@ class DisassociateUcrConfirmationController @Inject() (
 ) extends FrontendController(mcc) with I18nSupport {
 
   def displayPage: Action[AnyContent] = authenticate { implicit request =>
-    val journeyType = flashExtractor.extractMovementType(request).getOrElse(throw ReturnToStartException)
-    val ucr = flashExtractor.extractUcr(request)
+    val journeyType = flashExtractor.extractMovementType(request).getOrElse(JOURNEY_NOT_SELECTED)
+    val consignmentRefs = flashExtractor.extractConsignmentRefs(request)
+
     journeyType match {
-      case DISSOCIATE_UCR => Ok(confirmationPage(journeyType, ucr))
+      case DISSOCIATE_UCR => Ok(confirmationPage(journeyType, consignmentRefs))
       case _              => throw ReturnToStartException
     }
   }

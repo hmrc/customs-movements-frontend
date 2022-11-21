@@ -18,23 +18,28 @@
 @import controllers.routes.{ChoiceController, SubmissionsController}
 @import controllers.ileQuery.routes.IleQueryController
 @import models.cache.JourneyType.JourneyType
+@import forms.ConsignmentReferences
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukInsetText
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.exit_survey
-@import views.html.components.gds.{gds_main_template, link, pageTitle, heading}
+@import views.html.components.gds.{gds_main_template, link, pageTitle, heading, paragraphBody}
 @import views.Title
 
 @this(
     govukLayout: gds_main_template,
+    govukPanel: GovukPanel,
+
     pageTitle: pageTitle,
+    govukTable: GovukTable,
     link: link,
     govukInsetText: GovukInsetText,
     exitSurvey: exit_survey,
     heading: heading
 )
 
-@(journeyType: JourneyType, maybeUcr: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(journeyType: JourneyType, consignmentRefs: Option[ConsignmentReferences], mucrToAssociate: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
 @gotoTimelineLink = @{
   link(message = Html(messages("confirmation.notification.timeline.link")), href = SubmissionsController.displayPage)
@@ -44,27 +49,49 @@
     title = Title(s"confirmation.title.$journeyType"),
     showLanguageSwitch = false
 ) {
+    @govukPanel(Panel(title = Text(messages(s"confirmation.title.$journeyType"))))
 
-    @pageTitle(text = messages(s"confirmation.title.$journeyType"), classes = "govuk-heading-xl")
-
-    @govukInsetText(InsetText(
-        content = HtmlContent(messages("confirmation.insetText", gotoTimelineLink))
+    @govukTable(Table(
+        rows = Seq(
+            consignmentRefs.map { case ConsignmentReferences(ucrType, ucrValue) =>
+                Seq(
+                    TableRow(
+                        content = Text(messages(s"confirmation.${ucrType.toString.toUpperCase}")), classes = "govuk-!-font-weight-bold"
+                    ),
+                    TableRow(
+                        content = HtmlContent(link(message = Html(ucrValue),
+                            href = IleQueryController.getConsignmentData(ucrValue),
+                            id = Some("summary-link")
+                        ))
+                    )
+                )
+            },
+            mucrToAssociate.map { mucr =>
+                Seq(
+                    TableRow(
+                        content = Text(messages("confirmation.MUCR")), classes = "govuk-!-font-weight-bold"
+                    ),
+                    TableRow(
+                        content = HtmlContent(link(message = Html(mucr),
+                            href = IleQueryController.getConsignmentData(mucr)
+                        ))
+                    )
+                )
+            }
+        ).flatten
     ))
+
+    @paragraphBody(messages("confirmation.bodyText", gotoTimelineLink))
 
     @heading(
         messages("confirmation.subheading"), "govuk-heading-m", "h2"
     )
+
     <ul>
-        @maybeUcr.map { ucr =>
-            <li class="govuk-body">
-                @link(message = Html(messages("confirmation.redirect.summary.link")), href = IleQueryController.getConsignmentData(ucr), id = Some("summary-link"))
-            </li>
-        }
-
-
         <li class="govuk-body">
             @link(message = Html(messages("confirmation.redirect.choice.link")), href = ChoiceController.displayChoices, id = Some("choice-link"))
         </li>
     </ul>
-  @exitSurvey()
+
+    @exitSurvey()
 }

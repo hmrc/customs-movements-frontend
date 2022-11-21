@@ -48,11 +48,17 @@ class DisassociateUcrSummaryController @Inject() (
 
   def submit: Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DISSOCIATE_UCR)).async { implicit request =>
     val answers = request.answersAs[DisassociateUcrAnswers]
-    val disassociateUcr = answers.ucr.getOrElse(throw ReturnToStartException)
+    val ucrType = answers.consignmentReferences.map(_.reference)
+    val ucr = answers.consignmentReferences.map(_.referenceValue)
+    val flash = Seq(
+      Some(FlashKeys.MOVEMENT_TYPE -> answers.`type`.toString),
+      ucr.map(ucr => FlashKeys.UCR -> ucr),
+      ucrType.map(ucrType => FlashKeys.UCR_TYPE -> ucrType)
+    ).flatten
 
     submissionService.submit(request.eori, answers).map { _ =>
-      Redirect(routes.DisassociateUcrConfirmationController.displayPage)
-        .flashing(FlashKeys.MOVEMENT_TYPE -> request.answers.`type`.toString, FlashKeys.UCR -> disassociateUcr.ucr)
+      Redirect(routes.DisassociateUcrConfirmationController.displayPage())
+        .flashing(flash: _*)
     }
   }
 }

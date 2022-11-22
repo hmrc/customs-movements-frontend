@@ -6,6 +6,8 @@ title.withSection.format={0} - {1} - {2} - GOV.UK
 feedback=This is a new service - your {0} will help us to improve it.
 feedback.link=feedback
 
+site.print = Print this page
+
 exitSurvey.header = Tell us what you think
 exitSurvey.line.1 = This is a new service and we want to know what you think of it.
 exitSurvey.line.2 = {0}. Your thoughts and ideas will help us to make improvements.

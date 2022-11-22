@@ -77,6 +77,10 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
         "hide language switch" in {
           view.getElementsByClass("hmrc-language-select").text() must be(empty)
         }
+
+        "display a 'Print' button" in {
+          view.getElementsByClass("gem-c-print-link__button").size() mustBe 1
+        }
       }
     }
 

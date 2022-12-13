@@ -29,11 +29,13 @@
     sectionHeader: sectionHeader,
     formHelper: FormWithCSRF,
     saveButtons: saveButtons,
+    heading: heading
 )
 
 @(form: Form[DucrPartChiefChoice])(implicit request: JourneyRequest[_], messages: Messages)
 
 @headerKey = @{s"ducrPartChief.${request.answers.`type`}.question"}
+@body = @{paragraphBody(message = messages("ducrPartChief.bodyParagraph"), id = Some("code-body-para"))}
 @sectionHeaderKey = @{s"ducrPartChief.${request.answers.`type`}.heading"}
 @radioNoKey = @{s"ducrPartChief.${request.answers.`type`}.notDucrPart"}
 
@@ -46,11 +48,15 @@
 
     @sectionHeader(messages(sectionHeaderKey))
 
+    @heading(messages(headerKey))
+
+    @body
+
     @govukRadios(Radios(
       name = "choice",
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages(headerKey)),
+          content = Text(messages("")),
           isPageHeading = true,
           classes = "govuk-fieldset__legend govuk-fieldset__legend--l"
         ))

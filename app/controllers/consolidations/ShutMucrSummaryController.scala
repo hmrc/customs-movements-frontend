@@ -17,11 +17,12 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
-import controllers.consolidations.routes.ShutMucrConfirmationController
-import controllers.storage.FlashKeys
+import controllers.consolidations.routes.MovementConfirmationController
 import forms.ShutMucr
 import models.ReturnToStartException
-import models.cache.{JourneyType, ShutMucrAnswers}
+import models.cache.JourneyType.SHUT_MUCR
+import models.cache.ShutMucrAnswers
+import models.confirmation.FlashKeys._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SubmissionService
@@ -33,31 +34,34 @@ import scala.concurrent.ExecutionContext
 
 class ShutMucrSummaryController @Inject() (
   authenticate: AuthAction,
-  getJourney: JourneyRefiner,
+  journeyRefiner: JourneyRefiner,
   mcc: MessagesControllerComponents,
   submissionService: SubmissionService,
   page: shut_mucr_summary
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen getJourney(JourneyType.SHUT_MUCR)) { implicit request =>
+  private val authAndValidJourney = authenticate andThen journeyRefiner(SHUT_MUCR)
+
+  val displayPage: Action[AnyContent] = authAndValidJourney { implicit request =>
     val mucr: ShutMucr = request.answersAs[ShutMucrAnswers].shutMucr.getOrElse(throw ReturnToStartException)
     Ok(page(mucr))
   }
 
-  def submit: Action[AnyContent] = (authenticate andThen getJourney(JourneyType.SHUT_MUCR)).async { implicit request =>
+  val submit: Action[AnyContent] = authAndValidJourney.async { implicit request =>
     val answers = request.answersAs[ShutMucrAnswers]
     val ucrType = answers.consignmentReferences.map(_.reference)
     val ucr = answers.consignmentReferences.map(_.referenceValue)
-    val flash = Seq(
-      Some(FlashKeys.MOVEMENT_TYPE -> answers.`type`.toString),
-      ucr.map(ucr => FlashKeys.UCR -> ucr),
-      ucrType.map(ucrType => FlashKeys.UCR_TYPE -> ucrType)
-    ).flatten
 
-    submissionService.submit(request.eori, answers).map { _ =>
-      Redirect(ShutMucrConfirmationController.displayPage)
-        .flashing(flash: _*)
+    submissionService.submit(request.eori, answers).map { conversationId =>
+      val flash = List(
+        Some(CONVERSATION_ID -> conversationId),
+        Some(JOURNEY_TYPE -> answers.`type`.toString),
+        ucr.map(ucr => UCR -> ucr),
+        ucrType.map(ucrType => UCR_TYPE -> ucrType)
+      ).flatten
+
+      Redirect(MovementConfirmationController.displayPage).flashing(flash: _*)
     }
   }
 }

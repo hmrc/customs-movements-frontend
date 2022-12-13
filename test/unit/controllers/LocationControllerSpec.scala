@@ -16,6 +16,7 @@
 
 package controllers
 
+import controllers.consolidations.routes.ArriveOrDepartSummaryController
 import forms.{ConsignmentReferences, Location}
 import models.ReturnToStartException
 import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
@@ -48,9 +49,13 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
   }
 
   private def controller(answers: MovementAnswers = ArrivalAnswers()) =
-    new LocationController(SuccessfulAuth(), ValidJourney(answers), cacheRepository, stubMessagesControllerComponents(), mockLocationPage, navigator)(
-      global
-    )
+    new LocationController(
+      SuccessfulAuth(),
+      ValidJourney(answers),
+      stubMessagesControllerComponents(),
+      mockLocationPage,
+      navigator
+    )(global)
 
   private def theResponseForm: Form[Location] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Location]])
@@ -63,7 +68,6 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-
         val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences))
 
         val result = controller(answers).displayPage(getRequest())
@@ -73,7 +77,6 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
       }
 
       "display page method is invoked and cache contains data" in {
-
         val cachedData = Location("PLAYlocationCode")
         val answers = ArrivalAnswers(location = Some(cachedData), consignmentReferences = Some(consignmentReferences))
 
@@ -85,9 +88,7 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
     }
 
     "return to start" when {
-
       "consignment reference is missing" in {
-
         intercept[RuntimeException] {
           await(controller().displayPage(getRequest()))
         } mustBe ReturnToStartException
@@ -98,23 +99,19 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
   "Location Controller on saveLocation" should {
 
     "return 303 (SEE_OTHER) and redirect to summary page" when {
-
       "form is correct and user is during arrival journey" in {
-
         val correctForm: JsValue = Json.toJson(Location("PLAYlocationCode"))
         val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences))
 
         val result = controller(answers).saveLocation()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.SummaryController.displayPage.url
+        redirectLocation(result).value mustBe ArriveOrDepartSummaryController.displayPage.url
       }
     }
 
     "return 303 (SEE_OTHER) and redirect to transport page" when {
-
       "form is correct and user is during departure journey" in {
-
         val correctForm: JsValue = Json.toJson(Location("PLAYlocationCode"))
         val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
 
@@ -126,9 +123,7 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "form is incorrect" in {
-
         val incorrectForm: JsValue = Json.toJson(Location("PLincorrectYlocationCode"))
         val answers = ArrivalAnswers(consignmentReferences = Some(consignmentReferences))
 
@@ -139,9 +134,7 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
     }
 
     "return to start" when {
-
       "consignment reference is missing" in {
-
         val correctForm: JsValue = Json.toJson(Location("PLAYlocationCode"))
 
         intercept[RuntimeException] {
@@ -150,5 +143,4 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
       }
     }
   }
-
 }

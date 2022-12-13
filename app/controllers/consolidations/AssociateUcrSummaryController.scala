@@ -17,12 +17,12 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
-import controllers.consolidations.routes.AssociateUcrConfirmationController
-import controllers.storage.FlashKeys
+import controllers.consolidations.routes.MovementConfirmationController
 import forms.UcrType
 import models.ReturnToStartException
 import models.cache.AssociateUcrAnswers
 import models.cache.JourneyType.ASSOCIATE_UCR
+import models.confirmation.FlashKeys._
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.SubmissionService
@@ -35,7 +35,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class AssociateUcrSummaryController @Inject() (
   authenticate: AuthAction,
-  journeyType: JourneyRefiner,
+  journeyRefiner: JourneyRefiner,
   mcc: MessagesControllerComponents,
   submissionService: SubmissionService,
   associateUcrSummaryPage: associate_ucr_summary,
@@ -43,7 +43,9 @@ class AssociateUcrSummaryController @Inject() (
 )(implicit executionContext: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(ASSOCIATE_UCR)) { implicit request =>
+  private val authAndValidJourney = authenticate andThen journeyRefiner(ASSOCIATE_UCR)
+
+  val displayPage: Action[AnyContent] = authAndValidJourney { implicit request =>
     val answers = request.answersAs[AssociateUcrAnswers]
     val mucrOptions = answers.mucrOptions.getOrElse(throw ReturnToStartException)
     val associateUcr = answers.associateUcr.getOrElse(throw ReturnToStartException)
@@ -54,22 +56,22 @@ class AssociateUcrSummaryController @Inject() (
     else Ok(associateUcrSummaryNoChangePage(associateUcr.ucr, mucrOptions.mucr, UcrType.Mucr, answers.manageMucrChoice))
   }
 
-  def submit: Action[AnyContent] = (authenticate andThen journeyType(ASSOCIATE_UCR)).async { implicit request =>
+  val submit: Action[AnyContent] = authAndValidJourney.async { implicit request =>
     val answers = request.answersAs[AssociateUcrAnswers]
     val ucrType = answers.consignmentReferences.map(_.reference)
     val ucr = answers.consignmentReferences.map(_.referenceValue)
-    val mucrToAssociate = answers.mucrOptions.map(_.mucr)
+    val mucr = answers.mucrOptions.map(_.mucr)
 
-    val flash = Seq(
-      Some(FlashKeys.MOVEMENT_TYPE -> answers.`type`.toString),
-      ucr.map(ucr => FlashKeys.UCR -> ucr),
-      ucrType.map(ucrType => FlashKeys.UCR_TYPE -> ucrType),
-      mucrToAssociate.map(mucr => FlashKeys.MUCR_TO_ASSOCIATE -> mucr)
-    ).flatten
+    submissionService.submit(request.eori, answers).map { conversationId =>
+      val flash = List(
+        Some(CONVERSATION_ID -> conversationId),
+        Some(JOURNEY_TYPE -> answers.`type`.toString),
+        mucr.map(mucr => MUCR -> mucr),
+        ucr.map(ucr => UCR -> ucr),
+        ucrType.map(ucrType => UCR_TYPE -> ucrType)
+      ).flatten
 
-    submissionService.submit(request.eori, answers).map { _ =>
-      Redirect(AssociateUcrConfirmationController.displayPage)
-        .flashing(flash: _*)
+      Redirect(MovementConfirmationController.displayPage).flashing(flash: _*)
     }
   }
 }

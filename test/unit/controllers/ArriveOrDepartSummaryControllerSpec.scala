@@ -16,9 +16,10 @@
 
 package controllers
 
-import controllers.storage.FlashKeys
+import controllers.consolidations.{ArriveOrDepartSummaryController, MovementConfirmationController}
 import forms.ConsignmentReferences
 import models.cache.{ArrivalAnswers, DepartureAnswers, JourneyType, MovementAnswers}
+import models.confirmation.FlashKeys
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -31,7 +32,7 @@ import views.html.summary.{arrival_summary_page, departure_summary_page}
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with IntegrationPatience {
+class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with IntegrationPatience {
 
   private val submissionService = mock[SubmissionService]
   private val arrivalSummaryPage = mock[arrival_summary_page]
@@ -42,7 +43,7 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
   private val consignmentRefs = ConsignmentReferences(dummyUcrType, dummyUcr)
 
   private def controller(answers: MovementAnswers) =
-    new SummaryController(
+    new ArriveOrDepartSummaryController(
       SuccessfulAuth(),
       ValidJourney(answers),
       submissionService,
@@ -85,7 +86,7 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
     }
   }
 
-  "Movement Summary Controller on submitMovementRequest" when {
+  "Movement Summary Controller on submit" when {
 
     "everything works correctly and user is on Arrival journey" should {
 
@@ -93,7 +94,7 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
         when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
         val cachedAnswers = ArrivalAnswers(Some(consignmentRefs))
 
-        controller(cachedAnswers).submitMovementRequest()(postRequest(emptyForm)).futureValue
+        controller(cachedAnswers).submit()(postRequest(emptyForm)).futureValue
 
         val expectedEori = SuccessfulAuth().operator.eori
         verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers))(any())
@@ -102,18 +103,18 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
       "return SEE_OTHER (303) that redirects to MovementConfirmationController" in {
         when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
 
-        val result = controller(ArrivalAnswers(Some(consignmentRefs))).submitMovementRequest()(postRequest(emptyForm))
+        val result = controller(ArrivalAnswers(Some(consignmentRefs))).submit()(postRequest(emptyForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.displayPage.url)
+        redirectLocation(result) mustBe Some(MovementConfirmationController.displayPage.url)
       }
 
       "return response with Movement Type, UCR, and UCR Type in flash" in {
         when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
 
-        val result = controller(ArrivalAnswers(Some(consignmentRefs))).submitMovementRequest()(postRequest(emptyForm))
+        val result = controller(ArrivalAnswers(Some(consignmentRefs))).submit()(postRequest(emptyForm))
 
-        flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.ARRIVE.toString)
+        flash(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.ARRIVE.toString)
         flash(result).get(FlashKeys.UCR) mustBe Some(dummyUcr)
         flash(result).get(FlashKeys.UCR_TYPE) mustBe Some(dummyUcrType)
       }
@@ -125,7 +126,7 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
         when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
         val cachedAnswers = DepartureAnswers(Some(consignmentRefs))
 
-        controller(cachedAnswers).submitMovementRequest()(postRequest(emptyForm)).futureValue
+        controller(cachedAnswers).submit()(postRequest(emptyForm)).futureValue
 
         val expectedEori = SuccessfulAuth().operator.eori
         verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers))(any())
@@ -134,18 +135,18 @@ class SummaryControllerSpec extends ControllerLayerSpec with ScalaFutures with I
       "return SEE_OTHER (303) that redirects to MovementConfirmationController" in {
         when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
 
-        val result = controller(DepartureAnswers(Some(consignmentRefs))).submitMovementRequest()(postRequest(emptyForm))
+        val result = controller(DepartureAnswers(Some(consignmentRefs))).submit()(postRequest(emptyForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.MovementConfirmationController.displayPage.url)
+        redirectLocation(result) mustBe Some(MovementConfirmationController.displayPage.url)
       }
 
       "return response with Movement Type, UCR, and UCR Type in flash" in {
         when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
 
-        val result = controller(DepartureAnswers(Some(consignmentRefs))).submitMovementRequest()(postRequest(emptyForm))
+        val result = controller(DepartureAnswers(Some(consignmentRefs))).submit()(postRequest(emptyForm))
 
-        flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.DEPART.toString)
+        flash(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.DEPART.toString)
         flash(result).get(FlashKeys.UCR) mustBe Some(dummyUcr)
         flash(result).get(FlashKeys.UCR_TYPE) mustBe Some(dummyUcrType)
       }

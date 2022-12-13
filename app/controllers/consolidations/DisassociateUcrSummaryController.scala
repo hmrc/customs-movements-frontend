@@ -17,9 +17,11 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
-import controllers.storage.FlashKeys
+import controllers.consolidations.routes.MovementConfirmationController
 import models.ReturnToStartException
-import models.cache.{DisassociateUcrAnswers, JourneyType}
+import models.cache.DisassociateUcrAnswers
+import models.cache.JourneyType.DISSOCIATE_UCR
+import models.confirmation.FlashKeys._
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.SubmissionService
@@ -32,33 +34,36 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class DisassociateUcrSummaryController @Inject() (
   authenticate: AuthAction,
-  getJourney: JourneyRefiner,
+  journeyRefiner: JourneyRefiner,
   mcc: MessagesControllerComponents,
   submissionService: SubmissionService,
   page: disassociate_ucr_summary
 )(implicit executionContext: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DISSOCIATE_UCR)) { implicit request =>
+  private val authAndValidJourney = authenticate andThen journeyRefiner(DISSOCIATE_UCR)
+
+  val displayPage: Action[AnyContent] = authAndValidJourney { implicit request =>
     request.answersAs[DisassociateUcrAnswers].ucr match {
       case Some(ucr) => Ok(page(ucr))
       case _         => throw ReturnToStartException
     }
   }
 
-  def submit: Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DISSOCIATE_UCR)).async { implicit request =>
+  val submit: Action[AnyContent] = authAndValidJourney.async { implicit request =>
     val answers = request.answersAs[DisassociateUcrAnswers]
     val ucrType = answers.consignmentReferences.map(_.reference)
     val ucr = answers.consignmentReferences.map(_.referenceValue)
-    val flash = Seq(
-      Some(FlashKeys.MOVEMENT_TYPE -> answers.`type`.toString),
-      ucr.map(ucr => FlashKeys.UCR -> ucr),
-      ucrType.map(ucrType => FlashKeys.UCR_TYPE -> ucrType)
-    ).flatten
 
-    submissionService.submit(request.eori, answers).map { _ =>
-      Redirect(routes.DisassociateUcrConfirmationController.displayPage())
-        .flashing(flash: _*)
+    submissionService.submit(request.eori, answers).map { conversationId =>
+      val flash = List[Option[(String, String)]](
+        Some(CONVERSATION_ID -> conversationId),
+        Some(JOURNEY_TYPE -> answers.`type`.toString),
+        ucr.map(ucr => UCR -> ucr),
+        ucrType.map(ucrType => UCR_TYPE -> ucrType)
+      ).flatten
+
+      Redirect(MovementConfirmationController.displayPage).flashing(flash: _*)
     }
   }
 }

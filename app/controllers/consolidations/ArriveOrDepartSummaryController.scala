@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
-import controllers.storage.FlashKeys
-import models.cache.{ArrivalAnswers, DepartureAnswers, JourneyType, MovementAnswers}
+import controllers.consolidations.routes.MovementConfirmationController
+import models.cache.JourneyType.{ARRIVE, DEPART}
+import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
+import models.confirmation.FlashKeys._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SubmissionService
@@ -28,9 +30,9 @@ import views.html.summary.{arrival_summary_page, departure_summary_page}
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class SummaryController @Inject() (
+class ArriveOrDepartSummaryController @Inject()(
   authenticate: AuthAction,
-  getJourney: JourneyRefiner,
+  journeyRefiner: JourneyRefiner,
   submissionService: SubmissionService,
   mcc: MessagesControllerComponents,
   arrivalSummaryPage: arrival_summary_page,
@@ -38,24 +40,26 @@ class SummaryController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)) { implicit request =>
+  private val authAndValidJourney = authenticate andThen journeyRefiner(ARRIVE, DEPART)
+
+  val displayPage: Action[AnyContent] = authAndValidJourney { implicit request =>
     request.answers match {
       case arrivalAnswers: ArrivalAnswers     => Ok(arrivalSummaryPage(arrivalAnswers))
       case departureAnswers: DepartureAnswers => Ok(departureSummaryPage(departureAnswers))
     }
   }
 
-  def submitMovementRequest(): Action[AnyContent] = (authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)).async {
-    implicit request =>
-      val answers = request.answersAs[MovementAnswers]
+  val submit: Action[AnyContent] = authAndValidJourney.async { implicit request =>
+    val answers = request.answersAs[MovementAnswers]
 
-      submissionService.submit(request.eori, answers).map { consignmentRefs =>
-        Redirect(controllers.routes.MovementConfirmationController.displayPage)
-          .flashing(
-            FlashKeys.MOVEMENT_TYPE -> answers.`type`.toString,
-            FlashKeys.UCR -> consignmentRefs.referenceValue,
-            FlashKeys.UCR_TYPE -> consignmentRefs.reference
-          )
-      }
+    submissionService.submit(request.eori, answers).map { submissionResult =>
+      Redirect(MovementConfirmationController.displayPage)
+        .flashing(
+          CONVERSATION_ID -> submissionResult.conversationId,
+          JOURNEY_TYPE -> answers.`type`.toString,
+          UCR -> submissionResult.consignmentReferences.referenceValue,
+          UCR_TYPE -> submissionResult.consignmentReferences.reference
+        )
+    }
   }
 }

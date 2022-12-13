@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.consolidations
 
 import controllers.actions.AuthAction
-import controllers.storage.FlashExtractor
 import models.ReturnToStartException
-import models.cache.JourneyType._
+import models.confirmation.Confirmation
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -28,20 +27,15 @@ import views.html.confirmation_page
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class MovementConfirmationController @Inject() (
+class MovementConfirmationController @Inject()(
   authenticate: AuthAction,
   mcc: MessagesControllerComponents,
-  flashExtractor: FlashExtractor,
   confirmationPage: confirmation_page
 ) extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage: Action[AnyContent] = authenticate { implicit request =>
-    val movementType = flashExtractor.extractMovementType(request).getOrElse(JOURNEY_NOT_SELECTED)
-    val consignmentRefs = flashExtractor.extractConsignmentRefs(request)
-
-    movementType match {
-      case ARRIVE | DEPART => Ok(confirmationPage(movementType, consignmentRefs))
-      case _               => throw ReturnToStartException
-    }
+  val displayPage: Action[AnyContent] = authenticate { implicit request =>
+    Confirmation()
+      .map(confirmation => Ok(confirmationPage(confirmation)))
+      .getOrElse(throw ReturnToStartException)
   }
 }

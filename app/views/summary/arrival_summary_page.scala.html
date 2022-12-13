@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import controllers.consolidations.routes.ArriveOrDepartSummaryController
 @import controllers.routes._
 @import forms.UcrType._
 @import models.cache.ArrivalAnswers
@@ -60,7 +61,7 @@
     backButton = Some(BackButton(messages("site.back"), LocationController.displayPage)),
     useCustomContentWidth = true
 ) {
-    @formHelper(action = SummaryController.submitMovementRequest, 'autoComplete -> "off") {
+    @formHelper(action = ArriveOrDepartSummaryController.submit, 'autoComplete -> "off") {
 
         @pageTitle(messages("summary.arrival.title"))
 

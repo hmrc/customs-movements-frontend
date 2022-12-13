@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.storage
+package models.confirmation
 
 object FlashKeys {
-  val MOVEMENT_TYPE = "MOVEMENT_TYPE"
+  val CONVERSATION_ID = "CONVERSATION_ID"
+  val JOURNEY_TYPE = "JOURNEY_TYPE"
+  val MUCR = "MUCR"
   val UCR = "UCR"
   val UCR_TYPE = "UCR_TYPE"
-  val MUCR_TO_ASSOCIATE = "MUCR_TO_ASSOCIATE"
 }

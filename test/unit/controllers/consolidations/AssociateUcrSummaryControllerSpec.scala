@@ -17,11 +17,11 @@
 package controllers.consolidations
 
 import controllers.ControllerLayerSpec
-import controllers.storage.FlashKeys
 import forms.UcrType._
 import forms._
 import models.ReturnToStartException
 import models.cache.{AssociateUcrAnswers, JourneyType}
+import models.confirmation.FlashKeys
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.MockitoSugar.{mock, reset, verify, when}
@@ -199,7 +199,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
         val result =
           controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))).submit(postRequest(Json.obj()))
 
-        flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.ASSOCIATE_UCR.toString)
+        flash(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.ASSOCIATE_UCR.toString)
       }
     }
   }

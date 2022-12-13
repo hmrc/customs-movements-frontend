@@ -17,10 +17,10 @@
 package controllers.consolidations
 
 import controllers.ControllerLayerSpec
-import controllers.storage.FlashKeys
-import forms.{UcrType, _}
+import forms._
 import models.ReturnToStartException
 import models.cache.{DisassociateUcrAnswers, JourneyType}
+import models.confirmation.FlashKeys
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.MockitoSugar.{mock, reset, verify, when}
@@ -124,7 +124,7 @@ class DisassociateUcrSummaryControllerSpec extends ControllerLayerSpec with Scal
         val result =
           controller(DisassociateUcrAnswers(Some(ucr))).submit(postRequest(Json.obj()))
 
-        flash(result).get(FlashKeys.MOVEMENT_TYPE) mustBe Some(JourneyType.DISSOCIATE_UCR.toString)
+        flash(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.DISSOCIATE_UCR.toString)
 
       }
     }

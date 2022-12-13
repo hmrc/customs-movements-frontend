@@ -16,6 +16,7 @@
 
 package controllers
 
+import controllers.consolidations.routes.ArriveOrDepartSummaryController
 import forms.Transport.ModesOfTransport.Sea
 import forms.{ConsignmentReferences, Transport}
 import models.ReturnToStartException
@@ -70,7 +71,6 @@ class TransportControllerSpec extends ControllerLayerSpec with MockCache with Op
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-
         val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
 
         val result = controller(answers).displayPage()(getRequest())
@@ -80,7 +80,6 @@ class TransportControllerSpec extends ControllerLayerSpec with MockCache with Op
       }
 
       "display page method is invoked and cache contains data" in {
-
         val cachedData = Transport(Sea, "PL", "")
         val answers = DepartureAnswers(transport = Some(cachedData), consignmentReferences = Some(consignmentReferences))
 
@@ -92,9 +91,7 @@ class TransportControllerSpec extends ControllerLayerSpec with MockCache with Op
     }
 
     "return to start" when {
-
       "consignment reference is missing" in {
-
         intercept[RuntimeException] {
           await(controller(DepartureAnswers()).displayPage()(getRequest()))
         } mustBe ReturnToStartException
@@ -105,9 +102,7 @@ class TransportControllerSpec extends ControllerLayerSpec with MockCache with Op
   "Transport Controller on saveTransport" should {
 
     "return 303 (SEE_OTHER) and redirect to summary page" when {
-
       "form is correct" in {
-
         val correctForm: JsValue =
           JsObject(Map("modeOfTransport" -> JsString(Sea), "nationality" -> JsString("PL"), "transportId" -> JsString("someReference")))
         val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
@@ -115,14 +110,12 @@ class TransportControllerSpec extends ControllerLayerSpec with MockCache with Op
         val result = controller(answers).saveTransport()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.SummaryController.displayPage().url
+        redirectLocation(result).value mustBe ArriveOrDepartSummaryController.displayPage.url
       }
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "form is incorrect" in {
-
         val incorrectForm: JsValue = JsObject(Map("modeOfTransport" -> JsString("transport"), "nationality" -> JsString("Country")))
         val answers = DepartureAnswers(consignmentReferences = Some(consignmentReferences))
 
@@ -133,9 +126,7 @@ class TransportControllerSpec extends ControllerLayerSpec with MockCache with Op
     }
 
     "return to start" when {
-
       "consignment reference is missing" in {
-
         val correctForm: JsValue =
           JsObject(Map("modeOfTransport" -> JsString(Sea), "nationality" -> JsString("PL"), "transportId" -> JsString("someReference")))
 
@@ -145,5 +136,4 @@ class TransportControllerSpec extends ControllerLayerSpec with MockCache with Op
       }
     }
   }
-
 }

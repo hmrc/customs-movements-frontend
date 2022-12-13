@@ -15,9 +15,9 @@
  *@
 
 @import config.AppConfig
-@import controllers.routes.{ChoiceController, SubmissionsController}
+@import controllers.routes.{ChoiceController, NotificationsController, SubmissionsController}
 @import controllers.ileQuery.routes.IleQueryController
-@import models.cache.JourneyType.JourneyType
+@import models.confirmation.Confirmation
 @import forms.ConsignmentReferences
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukInsetText
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
@@ -39,21 +39,24 @@
     heading: heading
 )
 
-@(journeyType: JourneyType, consignmentRefs: Option[ConsignmentReferences], mucrToAssociate: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(confirmation: Confirmation)(implicit request: Request[_], messages: Messages)
 
 @gotoTimelineLink = @{
-  link(message = Html(messages("confirmation.notification.timeline.link")), href = SubmissionsController.displayPage)
+  link(
+    message = Html(messages("confirmation.notification.timeline.link")),
+    href = NotificationsController.listOfNotifications(confirmation.conversationId)
+  )
 }
 
 @govukLayout(
-    title = Title(s"confirmation.title.$journeyType"),
+    title = Title(s"confirmation.title.${confirmation.journeyType}"),
     showLanguageSwitch = false
 ) {
-    @govukPanel(Panel(title = Text(messages(s"confirmation.title.$journeyType"))))
+    @govukPanel(Panel(title = Text(messages(s"confirmation.title.${confirmation.journeyType}"))))
 
     @govukTable(Table(
         rows = Seq(
-            consignmentRefs.map { case ConsignmentReferences(ucrType, ucrValue) =>
+            confirmation.consignmentRefs.map { case ConsignmentReferences(ucrType, ucrValue) =>
                 Seq(
                     TableRow(
                         content = Text(messages(s"confirmation.${ucrType.toString.toUpperCase}")), classes = "govuk-!-font-weight-bold"
@@ -66,7 +69,7 @@
                     )
                 )
             },
-            mucrToAssociate.map { mucr =>
+            confirmation.mucr.map { mucr =>
                 Seq(
                     TableRow(
                         content = Text(messages("confirmation.MUCR")), classes = "govuk-!-font-weight-bold"
@@ -83,9 +86,7 @@
 
     @paragraphBody(messages("confirmation.bodyText", gotoTimelineLink))
 
-    @heading(
-        messages("confirmation.subheading"), "govuk-heading-m", "h2"
-    )
+    @heading(messages("confirmation.subheading"), "govuk-heading-m", "h2")
 
     <ul>
         <li class="govuk-body">

@@ -17,6 +17,7 @@
 package controllers
 
 import controllers.actions.{AuthAction, JourneyRefiner}
+import controllers.consolidations.routes.ArriveOrDepartSummaryController
 import controllers.navigation.Navigator
 import forms.Transport
 import forms.Transport._
@@ -60,7 +61,7 @@ class TransportController @Inject() (
         validForm => {
           val movementAnswers = answers.copy(transport = Some(validForm), readyToSubmit = Some(true))
           cache.upsert(request.cache.update(movementAnswers)).map { _ =>
-            Redirect(controllers.routes.SummaryController.displayPage)
+            Redirect(ArriveOrDepartSummaryController.displayPage)
           }
         }
       )

@@ -42,6 +42,10 @@ class DucrPartChiefViewSpec extends ViewSpec with Injector {
       page(form).getElementById("section-header") must containMessage("ducrPartChief.ARRIVE.heading", "mucr")
     }
 
+    "have the correct body text" in {
+      page(form).getElementById("code-body-para").text mustBe messages("ducrPartChief.bodyParagraph")
+    }
+
     "render the correct labels" in {
       val view = page(form)
       view.getElementsByAttributeValue("for", "choice").first() must containMessage("ducrPartChief.isDucrPart")

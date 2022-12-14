@@ -43,7 +43,7 @@ object ConsignmentReferences {
 
   import UcrType._
 
-  val allowedReferenceAnswers: Seq[String] = Seq(Ducr, Mucr).map(_.codeValue)
+  private val allowedReferenceAnswers: Seq[String] = Seq(Ducr, Mucr).map(_.codeValue)
 
   private def form2Model: (String, Option[String], Option[String]) => ConsignmentReferences = { case (reference, ducrValue, mucrValue) =>
     reference match {

@@ -17,7 +17,8 @@
 package controllers.consolidations
 
 import controllers.ControllerLayerSpec
-import controllers.consolidations.routes.{AssociateUcrController, AssociateUcrSummaryController}
+import controllers.consolidations.routes.AssociateUcrController
+import controllers.summary.routes.AssociateUcrSummaryController
 import forms.DucrPartChiefChoice.IsDucrPart
 import forms.MucrOptions.Create
 import forms.{DucrPartChiefChoice, MucrOptions}
@@ -33,7 +34,7 @@ import play.twirl.api.HtmlFormat
 import repository.MockCache
 import testdata.CommonTestData
 import testdata.CommonTestData.validMucr
-import views.html.associateucr.mucr_options
+import views.html.consolidations.mucr_options
 
 import scala.concurrent.ExecutionContext.global
 

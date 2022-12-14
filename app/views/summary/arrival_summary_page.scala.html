@@ -15,6 +15,7 @@
  *@
 
 @import controllers.routes._
+@import controllers.summary.routes.ArriveOrDepartSummaryController
 @import forms.UcrType._
 @import models.cache.ArrivalAnswers
 @import models.requests.JourneyRequest
@@ -60,7 +61,7 @@
     backButton = Some(BackButton(messages("site.back"), LocationController.displayPage)),
     useCustomContentWidth = true
 ) {
-    @formHelper(action = SummaryController.submitMovementRequest, 'autoComplete -> "off") {
+    @formHelper(action = ArriveOrDepartSummaryController.submit, 'autoComplete -> "off") {
 
         @pageTitle(messages("summary.arrival.title"))
 

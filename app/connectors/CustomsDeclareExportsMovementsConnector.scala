@@ -41,23 +41,23 @@ class CustomsDeclareExportsMovementsConnector @Inject() (appConfig: AppConfig, h
 
   private val JsonHeaders = Seq(HeaderNames.CONTENT_TYPE -> ContentTypes.JSON, HeaderNames.ACCEPT -> ContentTypes.JSON)
 
-  def submit(request: MovementRequest)(implicit hc: HeaderCarrier): Future[Unit] =
+  def submit(request: MovementRequest)(implicit hc: HeaderCarrier): Future[String] =
     httpClient
       .POST[MovementRequest, HttpResponse](appConfig.customsDeclareExportsMovements + Movements, request, JsonHeaders)
       .andThen {
         case Success(response)  => logSuccessfulExchange("Submit Movement", response.body)
         case Failure(exception) => logFailedExchange("Submit Movement", exception)
       }
-      .map(handleResponse(_, (): Unit))
+      .map(response => handleResponse(response, response.body))
 
-  def submit(request: Consolidation)(implicit hc: HeaderCarrier): Future[Unit] =
+  def submit(request: Consolidation)(implicit hc: HeaderCarrier): Future[String] =
     httpClient
-      .POST[Consolidation, HttpResponse](appConfig.customsDeclareExportsMovements + Consolidations, request, JsonHeaders)
+      .POST[Consolidation, HttpResponse](appConfig.customsDeclareExportsMovements + consolidation, request, JsonHeaders)
       .andThen {
         case Success(response)  => logSuccessfulExchange("Submit Consolidation", response.body)
         case Failure(exception) => logFailedExchange("Submit Consolidation", exception)
       }
-      .map(handleResponse(_, (): Unit))
+      .map(response => handleResponse(response, response.body))
 
   def submit(request: IleQueryExchange)(implicit hc: HeaderCarrier): Future[String] =
     httpClient
@@ -66,7 +66,7 @@ class CustomsDeclareExportsMovementsConnector @Inject() (appConfig: AppConfig, h
         case Success(response)  => logSuccessfulExchange("Submit ILE Query", response.body)
         case Failure(exception) => logFailedExchange("Submit ILE Query", exception)
       }
-      .map(res => handleResponse(res, res.body))
+      .map(response => handleResponse(response, response.body))
 
   def fetchAllSubmissions(eori: String)(implicit hc: HeaderCarrier): Future[Seq[Submission]] =
     httpClient
@@ -100,7 +100,7 @@ class CustomsDeclareExportsMovementsConnector @Inject() (appConfig: AppConfig, h
   private def logFailedExchange(`type`: String, exception: Throwable): Unit =
     logger.warn(`type` + " failed", exception)
 
-  private def handleResponse[T](response: HttpResponse, value: T) =
+  private def handleResponse[T](response: HttpResponse, value: T): T =
     response.status match {
       case Status.ACCEPTED => value
       case _               => throw new MovementsConnectorException(s"Failed with response $response")
@@ -109,7 +109,7 @@ class CustomsDeclareExportsMovementsConnector @Inject() (appConfig: AppConfig, h
 
 object CustomsDeclareExportsMovementsConnector {
   val Movements = "/movements"
-  val Consolidations = "/consolidation"
+  val consolidation = "/consolidation"
   val Submissions = "/submissions"
   val Notifications = "/notifications"
   val IleQuery = "/consignment-query"

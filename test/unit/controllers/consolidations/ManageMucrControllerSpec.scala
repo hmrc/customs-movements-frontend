@@ -30,7 +30,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import repository.MockCache
-import views.html.associateucr.manage_mucr
+import views.html.consolidations.manage_mucr
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

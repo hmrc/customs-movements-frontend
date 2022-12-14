@@ -22,11 +22,12 @@ import connectors.exchanges._
 import forms._
 import models.ReturnToStartException
 import models.cache.{AssociateUcrAnswers, DisassociateUcrAnswers, MovementAnswers, ShutMucrAnswers}
+import models.confirmation.SubmissionResult
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.BDDMockito.`given`
 import org.mockito.Mockito.never
-import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.MockitoSugar.{mock, reset, verify, verifyNoMoreInteractions}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import repositories.CacheRepository
@@ -49,6 +50,8 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
   private val movementBuilder = mock[MovementBuilder]
   private val service = new SubmissionService(repository, connector, audit, movementsMetricsStub, movementBuilder)
 
+  private val conversationId = "conversationId"
+
   private val mucr = correctUcr_2
   private val ucr = correctUcr
 
@@ -67,7 +70,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
     "delegate to connector" when {
 
       "Associate DUCR" in {
-        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful((): Unit))
+        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful(conversationId))
         given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
 
         val answers = AssociateUcrAnswers(None, Some(MucrOptions(MucrOptions.Create, mucr)), Some(AssociateUcr(UcrType.Ducr, ucr)))
@@ -79,7 +82,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
       }
 
       "Associate MUCR" in {
-        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful((): Unit))
+        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful(conversationId))
         given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
 
         val answers = AssociateUcrAnswers(None, Some(MucrOptions(MucrOptions.Create, mucr)), Some(AssociateUcr(UcrType.Mucr, ucr)))
@@ -91,7 +94,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
       }
 
       "Associate DUCR Part" in {
-        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful((): Unit))
+        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful(conversationId))
         given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
 
         val answers = AssociateUcrAnswers(None, Some(MucrOptions(MucrOptions.Create, mucr)), Some(AssociateUcr(UcrType.DucrPart, ucr)))
@@ -138,7 +141,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
     "delegate to connector" when {
 
       "Disassociate MUCR" in {
-        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful((): Unit))
+        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful(conversationId))
         given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
 
         val answers = DisassociateUcrAnswers(Some(DisassociateUcr(UcrType.Mucr, None, Some(ucr))))
@@ -150,7 +153,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
       }
 
       "Disassociate DUCR" in {
-        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful((): Unit))
+        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful(conversationId))
         given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
 
         val answers = DisassociateUcrAnswers(Some(DisassociateUcr(UcrType.Ducr, Some(ucr), None)))
@@ -162,7 +165,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
       }
 
       "Disassociate DUCR Part" in {
-        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful((): Unit))
+        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful(conversationId))
         given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
 
         val answers = DisassociateUcrAnswers(Some(DisassociateUcr(UcrType.DucrPart, Some(ucr), None)))
@@ -243,7 +246,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
   "Submit ShutMUCR" should {
 
     "delegate to connector" in {
-      given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful((): Unit))
+      given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful(conversationId))
       given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
 
       val answers = ShutMucrAnswers(Some(ShutMucr(mucr)))
@@ -292,7 +295,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
         "return same UCR as in the answers" in {
           given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
-          given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful((): Unit))
+          given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful(conversationId))
           given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit])(any()))
             .willReturn(Future.successful(AuditResult.Success))
@@ -300,14 +303,13 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
           val answers = validArrivalAnswers
 
-          val consignmentReferences = await(service.submit(validEori, answers))
-
-          consignmentReferences mustBe answers.consignmentReferences.get
+          val submissionResult = await(service.submit(validEori, answers))
+          submissionResult mustBe SubmissionResult(conversationId, answers.consignmentReferences.get)
         }
 
         "call MovementBuilder, AuditService, backend Connector, CacheRepository and AuditService again" in {
           given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
-          given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful((): Unit))
+          given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful(conversationId))
           given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit])(any()))
             .willReturn(Future.successful(AuditResult.Success))
@@ -396,7 +398,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
         "return same UCR as in the answers" in {
           given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
-          given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful((): Unit))
+          given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful(conversationId))
           given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit])(any()))
             .willReturn(Future.successful(AuditResult.Success))
@@ -404,14 +406,13 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
           val answers = validDepartureAnswers
 
-          val consignmentReferences = await(service.submit(validEori, answers))
-
-          consignmentReferences mustBe answers.consignmentReferences.get
+          val submissionResult = await(service.submit(validEori, answers))
+          submissionResult mustBe SubmissionResult(conversationId, answers.consignmentReferences.get)
         }
 
         "call MovementBuilder, AuditService, backend Connector, CacheRepository and AuditService again" in {
           given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
-          given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful((): Unit))
+          given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful(conversationId))
           given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit])(any()))
             .willReturn(Future.successful(AuditResult.Success))

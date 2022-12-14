@@ -34,7 +34,7 @@ class MovementBuilder @Inject() (zoneId: ZoneId) {
     case departureAnswers: DepartureAnswers => createMovementDepartureRequest(providerId, departureAnswers)
   }
 
-  private def createMovementArrivalRequest(eori: String, answers: ArrivalAnswers) =
+  private def createMovementArrivalRequest(eori: String, answers: ArrivalAnswers): MovementRequest =
     MovementRequest(
       eori = eori,
       choice = MovementType.Arrival,
@@ -43,7 +43,7 @@ class MovementBuilder @Inject() (zoneId: ZoneId) {
       location = answers.location
     )
 
-  private def createMovementDepartureRequest(eori: String, answers: DepartureAnswers) =
+  private def createMovementDepartureRequest(eori: String, answers: DepartureAnswers): MovementRequest =
     MovementRequest(
       eori = eori,
       choice = MovementType.Departure,
@@ -53,14 +53,14 @@ class MovementBuilder @Inject() (zoneId: ZoneId) {
       transport = answers.transport
     )
 
-  private def movementDetails(answers: ArrivalAnswers) =
+  private def movementDetails(answers: ArrivalAnswers): MovementDetailsRequest =
     MovementDetailsRequest(
       answers.arrivalDetails
         .map(arrival => movementDateTimeFormatter.format(arrival.goodsArrivalMoment(zoneId)))
         .getOrElse("")
     )
 
-  private def movementDetails(answers: DepartureAnswers) =
+  private def movementDetails(answers: DepartureAnswers): MovementDetailsRequest =
     MovementDetailsRequest(
       answers.departureDetails
         .map(departure => movementDateTimeFormatter.format(departure.goodsDepartureMoment(zoneId)))

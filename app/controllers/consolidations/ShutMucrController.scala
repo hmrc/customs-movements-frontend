@@ -17,7 +17,7 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
-import controllers.consolidations.routes.ShutMucrSummaryController
+import controllers.summary.routes.ShutMucrSummaryController
 import forms.ShutMucr
 import forms.ShutMucr.form
 import models.cache.JourneyType.SHUT_MUCR
@@ -27,7 +27,7 @@ import play.api.mvc._
 import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.shutmucr.shut_mucr
+import views.html.consolidations.shut_mucr
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

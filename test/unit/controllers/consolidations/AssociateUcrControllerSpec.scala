@@ -17,6 +17,7 @@
 package controllers.consolidations
 
 import controllers.ControllerLayerSpec
+import controllers.summary.routes.AssociateUcrSummaryController
 import forms.UcrType._
 import forms.{AssociateUcr, MucrOptions}
 import models.ReturnToStartException
@@ -30,7 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import repository.MockCache
 import testdata.CommonTestData.validDucr
-import views.html.associateucr.associate_ucr
+import views.html.consolidations.associate_ucr
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -113,7 +114,7 @@ class AssociateUcrControllerSpec extends ControllerLayerSpec with MockCache {
 
         val result = controller(AssociateUcrAnswers(None, Some(mucrOptions))).submit(postRequest(validDUCR))
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(routes.AssociateUcrSummaryController.displayPage.url)
+        redirectLocation(result) mustBe Some(AssociateUcrSummaryController.displayPage.url)
       }
     }
   }

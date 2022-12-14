@@ -1,115 +1,106 @@
 # microservice specific routes
 
-->          /hmrc-frontend                         hmrcfrontend.Routes
+->          /hmrc-frontend                       hmrcfrontend.Routes
 
-GET         /assets/*file                          controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                        controllers.Assets.versioned(path="/public", file: Asset)
 
-GET        /language/:lang                         controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET        /language/:lang                       controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET         /unauthorised                          controllers.UnauthorisedController.onPageLoad
+GET         /unauthorised                        controllers.UnauthorisedController.onPageLoad
 
 # Root Url
 
-GET         /                                      controllers.RootController.displayPage
+GET         /                                    controllers.RootController.displayPage
 
 # Choice page
-GET         /choice                                controllers.ChoiceController.displayChoices
-POST        /choice                                controllers.ChoiceController.submitChoice
+GET         /choice                              controllers.ChoiceController.displayChoices
+POST        /choice                              controllers.ChoiceController.submitChoice
 
 # Choice on selected Consignment page
-GET         /choice-on-consignment                 controllers.ChoiceOnConsignmentController.displayChoices
-POST        /choice-on-consignment                 controllers.ChoiceOnConsignmentController.submitChoice
+GET         /choice-on-consignment               controllers.ChoiceOnConsignmentController.displayChoices
+POST        /choice-on-consignment               controllers.ChoiceOnConsignmentController.submitChoice
 
 # ILE Query - entry point
-GET         /consignment-query                     controllers.ileQuery.FindConsignmentController.displayPage
-POST        /consignment-query                     controllers.ileQuery.FindConsignmentController.submitPage
+GET         /consignment-query                   controllers.ileQuery.FindConsignmentController.displayPage
+POST        /consignment-query                   controllers.ileQuery.FindConsignmentController.submitPage
 
-GET         /consignment-query/:ucr                controllers.ileQuery.IleQueryController.getConsignmentData(ucr: String)
+GET         /consignment-query/:ucr              controllers.ileQuery.IleQueryController.getConsignmentData(ucr: String)
 
 # DUCR Part CHIEF page
-GET         /ducr-part-created-chief               controllers.DucrPartChiefController.displayPage()
-POST        /ducr-part-created-chief               controllers.DucrPartChiefController.submit()
+GET         /ducr-part-created-chief             controllers.DucrPartChiefController.displayPage()
+POST        /ducr-part-created-chief             controllers.DucrPartChiefController.submit()
 
 # DUCR Part details page
-GET         /ducr-part-details                     controllers.DucrPartDetailsController.displayPage()
-POST        /ducr-part-details                     controllers.DucrPartDetailsController.submitDucrPartDetails()
+GET         /ducr-part-details                   controllers.DucrPartDetailsController.displayPage()
+POST        /ducr-part-details                   controllers.DucrPartDetailsController.submitDucrPartDetails()
 
 # MUCR Options
-GET         /mucr-options                          controllers.consolidations.MucrOptionsController.displayPage()
-POST        /mucr-options                          controllers.consolidations.MucrOptionsController.save()
+GET         /mucr-options                        controllers.consolidations.MucrOptionsController.displayPage()
+POST        /mucr-options                        controllers.consolidations.MucrOptionsController.save()
 
 #Manage MUCR
-GET         /manage-mucr                          controllers.consolidations.ManageMucrController.displayPage()
-POST        /manage-mucr                          controllers.consolidations.ManageMucrController.submit()
+GET         /manage-mucr                         controllers.consolidations.ManageMucrController.displayPage()
+POST        /manage-mucr                         controllers.consolidations.ManageMucrController.submit()
 
 #Associate UCR
-GET         /associate-ucr                        controllers.consolidations.AssociateUcrController.displayPage()
-POST        /associate-ucr                        controllers.consolidations.AssociateUcrController.submit()
-
-#Associate UCR Summary
-GET         /associate-ucr-summary                controllers.consolidations.AssociateUcrSummaryController.displayPage()
-POST        /associate-ucr-summary                controllers.consolidations.AssociateUcrSummaryController.submit()
-
-# Associate UCR Confirmation
-GET         /associate-ucr-confirmation           controllers.consolidations.AssociateUcrConfirmationController.displayPage()
+GET         /associate-ucr                       controllers.consolidations.AssociateUcrController.displayPage()
+POST        /associate-ucr                       controllers.consolidations.AssociateUcrController.submit()
 
 # Disassociate UCR page
 GET         /dissociate-ucr                      controllers.consolidations.DisassociateUcrController.displayPage()
 POST        /dissociate-ucr                      controllers.consolidations.DisassociateUcrController.submit()
 
-# Disassociate UCR Summary
-GET         /dissociate-ucr-summary              controllers.consolidations.DisassociateUcrSummaryController.displayPage()
-POST        /dissociate-ucr-summary              controllers.consolidations.DisassociateUcrSummaryController.submit()
-
-# Disassociate UCR Confirmation page
-GET         /dissociate-ucr-confirmation         controllers.consolidations.DisassociateUcrConfirmationController.displayPage()
-
 # Enter DUCR page
-GET         /consignment-references               controllers.ConsignmentReferencesController.displayPage()
-POST        /consignment-references               controllers.ConsignmentReferencesController.saveConsignmentReferences()
+GET         /consignment-references              controllers.ConsignmentReferencesController.displayPage()
+POST        /consignment-references              controllers.ConsignmentReferencesController.saveConsignmentReferences()
 
 # Movement details page
-GET         /movement-details                     controllers.MovementDetailsController.displayPage()
-POST        /movement-details                     controllers.MovementDetailsController.saveMovementDetails()
+GET         /movement-details                    controllers.MovementDetailsController.displayPage()
+POST        /movement-details                    controllers.MovementDetailsController.saveMovementDetails()
 
 # Specific date-time page
-GET         /specific-date-and-time               controllers.SpecificDateTimeController.displayPage()
-POST        /specific-date-and-time               controllers.SpecificDateTimeController.submit()
+GET         /specific-date-and-time              controllers.SpecificDateTimeController.displayPage()
+POST        /specific-date-and-time              controllers.SpecificDateTimeController.submit()
 
 # Goods location page
-GET         /location                              controllers.LocationController.displayPage()
-POST        /location                              controllers.LocationController.saveLocation()
+GET         /location                            controllers.LocationController.displayPage()
+POST        /location                            controllers.LocationController.saveLocation()
 
 # Transport page
-GET         /transport                             controllers.TransportController.displayPage()
-POST        /transport                             controllers.TransportController.saveTransport()
-
-# Summary
-GET         /summary                               controllers.SummaryController.displayPage()
-POST        /summary                               controllers.SummaryController.submitMovementRequest()
-
-# Movement confirmation page
-GET         /movement-confirmation                 controllers.MovementConfirmationController.displayPage()
+GET         /transport                           controllers.TransportController.displayPage()
+POST        /transport                           controllers.TransportController.saveTransport()
 
 # Shut a MUCR
-GET         /shut-mucr                             controllers.consolidations.ShutMucrController.displayPage()
-POST        /shut-mucr                             controllers.consolidations.ShutMucrController.submitForm()
+GET         /shut-mucr                           controllers.consolidations.ShutMucrController.displayPage()
+POST        /shut-mucr                           controllers.consolidations.ShutMucrController.submitForm()
+
+# Arrive | Depart Summary
+GET         /summary                             controllers.summary.ArriveOrDepartSummaryController.displayPage
+POST        /summary                             controllers.summary.ArriveOrDepartSummaryController.submit
+
+#Associate UCR Summary
+GET         /associate-ucr-summary               controllers.summary.AssociateUcrSummaryController.displayPage
+POST        /associate-ucr-summary               controllers.summary.AssociateUcrSummaryController.submit
+
+# Disassociate UCR Summary
+GET         /dissociate-ucr-summary              controllers.summary.DisassociateUcrSummaryController.displayPage
+POST        /dissociate-ucr-summary              controllers.summary.DisassociateUcrSummaryController.submit
 
 # Shut a MUCR summary page
-GET         /shut-mucr-summary                     controllers.consolidations.ShutMucrSummaryController.displayPage()
-POST        /shut-mucr-summary                     controllers.consolidations.ShutMucrSummaryController.submit()
+GET         /shut-mucr-summary                   controllers.summary.ShutMucrSummaryController.displayPage
+POST        /shut-mucr-summary                   controllers.summary.ShutMucrSummaryController.submit
 
-# Shut a MUCR confirmation page
-GET         /shut-mucr-confirmation                controllers.consolidations.ShutMucrConfirmationController.displayPage()
+# Confirmation page
+GET         /movement-confirmation               controllers.summary.MovementConfirmationController.displayPage
 
 # Submissions page
-GET         /movements                             controllers.SubmissionsController.displayPage()
+GET         /movements                           controllers.SubmissionsController.displayPage()
 
 # Notifications page
-GET         /notifications/:conversationId         controllers.NotificationsController.listOfNotifications(conversationId)
+GET         /notifications/:conversationId       controllers.NotificationsController.listOfNotifications(conversationId)
 
 # Sign out
-GET         /sign-out                              controllers.SignOutController.signOut(signOutReason: models.SignOutReason)
+GET         /sign-out                            controllers.SignOutController.signOut(signOutReason: models.SignOutReason)
 
-GET         /we-signed-you-out                     controllers.SignOutController.sessionTimeoutSignedOut()
-GET         /you-have-signed-out                   controllers.SignOutController.userSignedOut()
+GET         /we-signed-you-out                   controllers.SignOutController.sessionTimeoutSignedOut()
+GET         /you-have-signed-out                 controllers.SignOutController.userSignedOut()

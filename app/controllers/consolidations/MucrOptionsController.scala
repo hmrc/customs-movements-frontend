@@ -17,7 +17,8 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
-import controllers.consolidations.routes.{AssociateUcrController, AssociateUcrSummaryController}
+import controllers.consolidations.routes.AssociateUcrController
+import controllers.summary.routes.AssociateUcrSummaryController
 import controllers.navigation.Navigator
 import forms.MucrOptions
 import forms.MucrOptions.form
@@ -31,7 +32,7 @@ import play.twirl.api.HtmlFormat.Appendable
 import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.associateucr.mucr_options
+import views.html.consolidations.mucr_options
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

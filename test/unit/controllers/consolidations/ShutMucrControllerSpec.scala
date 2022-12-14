@@ -17,7 +17,7 @@
 package controllers.consolidations
 
 import controllers.ControllerLayerSpec
-import controllers.consolidations.routes.ShutMucrSummaryController
+import controllers.summary.routes.ShutMucrSummaryController
 import forms.ShutMucr
 import models.cache.{Cache, ShutMucrAnswers}
 import org.mockito.ArgumentCaptor
@@ -30,7 +30,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import repository.MockCache
 import testdata.CommonTestData.validMucr
-import views.html.shutmucr.shut_mucr
+import views.html.consolidations.shut_mucr
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

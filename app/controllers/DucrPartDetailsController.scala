@@ -17,9 +17,10 @@
 package controllers
 
 import controllers.actions.{AuthAction, JourneyRefiner}
-import controllers.consolidations.routes.{DisassociateUcrSummaryController, MucrOptionsController}
+import controllers.consolidations.routes.MucrOptionsController
 import controllers.navigation.Navigator
 import controllers.routes.SpecificDateTimeController
+import controllers.summary.routes.DisassociateUcrSummaryController
 import forms.DucrPartDetails.form
 import forms._
 import models.UcrBlock

@@ -18,6 +18,8 @@ package controllers
 
 import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.navigation.Navigator
+import controllers.routes.TransportController
+import controllers.summary.routes.ArriveOrDepartSummaryController
 import forms.Location
 import forms.Location._
 
@@ -28,6 +30,7 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.twirl.api.HtmlFormat.Appendable
 import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -61,17 +64,17 @@ class LocationController @Inject() (
           request.answers match {
             case arrivalAnswers: ArrivalAnswers =>
               cache.upsert(request.cache.update(arrivalAnswers.copy(location = Some(validForm), readyToSubmit = Some(true)))).map { _ =>
-                Redirect(controllers.routes.SummaryController.displayPage)
+                Redirect(ArriveOrDepartSummaryController.displayPage)
               }
             case departureAnswers: DepartureAnswers =>
               cache.upsert(request.cache.update(departureAnswers.copy(location = Some(validForm)))).map { _ =>
-                navigator.continueTo(controllers.routes.TransportController.displayPage)
+                navigator.continueTo(TransportController.displayPage)
               }
           }
       )
   }
 
-  private def buildPage(form: Form[Location])(implicit request: JourneyRequest[_]) = {
+  private def buildPage(form: Form[Location])(implicit request: JourneyRequest[_]): Appendable = {
     val answers = request.answersAs[MovementAnswers]
     locationPage(form, answers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException), answers.specificDateTimeChoice)
   }

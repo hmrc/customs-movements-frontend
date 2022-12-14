@@ -17,6 +17,7 @@
 package controllers.consolidations
 
 import controllers.ControllerLayerSpec
+import controllers.consolidations.routes.MovementConfirmationController
 import forms._
 import models.ReturnToStartException
 import models.cache.{DisassociateUcrAnswers, JourneyType}
@@ -69,11 +70,11 @@ class DisassociateUcrSummaryControllerSpec extends ControllerLayerSpec with Scal
 
   private val ucr = DisassociateUcr(UcrType.Ducr, ducr = Some("DUCR"), mucr = None)
 
-  "Disassociate Ucr Summary Controller on displayPage" should {
+  "DisassociateUcrSummaryController.displayPage" should {
 
     "return 200 (OK)" when {
 
-      "display page is invoked with data in cache" in {
+      "invoked with data in cache" in {
         val result = controller(DisassociateUcrAnswers(Some(ucr))).displayPage(getRequest())
 
         status(result) mustBe OK
@@ -93,12 +94,13 @@ class DisassociateUcrSummaryControllerSpec extends ControllerLayerSpec with Scal
     }
   }
 
-  "Disassociate Ucr Summary Controller on displayPage" when {
+  "DisassociateUcrSummaryController.submit" when {
 
     "everything works correctly" should {
+      val conversationId = "conversationId"
 
       "call SubmissionService" in {
-        when(submissionService.submit(any(), any[DisassociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
+        when(submissionService.submit(any(), any[DisassociateUcrAnswers])(any())).thenReturn(Future.successful(conversationId))
         val cachedAnswers = DisassociateUcrAnswers(Some(ucr))
 
         controller(cachedAnswers).submit(postRequest()).futureValue
@@ -108,24 +110,23 @@ class DisassociateUcrSummaryControllerSpec extends ControllerLayerSpec with Scal
       }
 
       "return SEE_OTHER (303) that redirects to DisassociateUcrConfirmation" in {
-        when(submissionService.submit(any(), any[DisassociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
+        when(submissionService.submit(any(), any[DisassociateUcrAnswers])(any())).thenReturn(Future.successful(conversationId))
 
         val result =
           controller(DisassociateUcrAnswers(Some(ucr))).submit(postRequest(Json.obj()))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.consolidations.routes.DisassociateUcrConfirmationController.displayPage.url)
+        redirectLocation(result) mustBe Some(MovementConfirmationController.displayPage.url)
 
       }
 
-      "return response with Movement Type in flash" in {
-        when(submissionService.submit(any(), any[DisassociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
+      "return response with Movement Type and Conversation Id in flash" in {
+        when(submissionService.submit(any(), any[DisassociateUcrAnswers])(any())).thenReturn(Future.successful(conversationId))
 
-        val result =
-          controller(DisassociateUcrAnswers(Some(ucr))).submit(postRequest(Json.obj()))
+        val result = controller(DisassociateUcrAnswers(Some(ucr))).submit(postRequest(Json.obj()))
 
         flash(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.DISSOCIATE_UCR.toString)
-
+        flash(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
       }
     }
   }

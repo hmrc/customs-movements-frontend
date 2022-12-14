@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
+import base.IntegrationSpec
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
-import controllers.consolidations.routes.ArriveOrDepartSummaryController
-import controllers.routes._
+import controllers.consolidations.routes.{ArriveOrDepartSummaryController, MovementConfirmationController}
+import controllers.routes.{LocationController, MovementDetailsController, SpecificDateTimeController, TransportController}
 import forms._
 import forms.common.{Date, Time}
 import models.cache.DepartureAnswers

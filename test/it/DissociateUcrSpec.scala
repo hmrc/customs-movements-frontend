@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+import base.IntegrationSpec
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
+import controllers.consolidations.routes.{DisassociateUcrSummaryController, MovementConfirmationController}
 import forms.{DisassociateUcr, UcrType}
 import models.cache.DisassociateUcrAnswers
 import play.api.test.Helpers._
@@ -29,7 +31,7 @@ class DissociateUcrSpec extends IntegrationSpec {
         givenCacheFor("eori", DisassociateUcrAnswers(ucr = Some(DisassociateUcr(kind = UcrType.Mucr, mucr = Some("GB/321-54321"), ducr = None))))
 
         // When
-        val response = get(controllers.consolidations.routes.DisassociateUcrSummaryController.displayPage)
+        val response = get(DisassociateUcrSummaryController.displayPage)
 
         // Then
         status(response) mustBe OK
@@ -44,11 +46,11 @@ class DissociateUcrSpec extends IntegrationSpec {
         givenMovementsBackendAcceptsTheConsolidation()
 
         // When
-        val response = post(controllers.consolidations.routes.DisassociateUcrSummaryController.submit())
+        val response = post(DisassociateUcrSummaryController.submit)
 
         // Then
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.DisassociateUcrConfirmationController.displayPage.url)
+        redirectLocation(response) mustBe Some(MovementConfirmationController.displayPage.url)
         theAnswersFor("eori") mustBe None
         verify(
           postRequestedForConsolidation()

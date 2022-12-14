@@ -103,7 +103,7 @@ class CustomsDeclareExportsMovementsConnector @Inject() (appConfig: AppConfig, h
   private def handleResponse[T](response: HttpResponse, value: T): T =
     response.status match {
       case Status.ACCEPTED => value
-      case _ => throw new MovementsConnectorException(s"Failed with response $response")
+      case _               => throw new MovementsConnectorException(s"Failed with response $response")
     }
 }
 

@@ -17,6 +17,7 @@
 package controllers.consolidations
 
 import controllers.ControllerLayerSpec
+import controllers.consolidations.routes.MovementConfirmationController
 import forms.ShutMucr
 import models.ReturnToStartException
 import models.cache.{JourneyType, ShutMucrAnswers}
@@ -51,7 +52,7 @@ class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with ScalaFuture
 
   private val shutMucr = ShutMucr(validMucr)
 
-  "Shut Mucr Summary Controller on displayPage" should {
+  "ShutMucrSummaryController.displayPage" should {
 
     "return 200 (OK)" when {
 
@@ -73,12 +74,13 @@ class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with ScalaFuture
     }
   }
 
-  "Shut Mucr Summary Controller on submit" when {
+  "ShutMucrSummaryController.submit" when {
 
     "everything works correctly" should {
+      val conversationId = "conversationId"
 
       "call SubmissionService" in {
-        when(submissionService.submit(any(), any[ShutMucrAnswers])(any())).thenReturn(Future.successful((): Unit))
+        when(submissionService.submit(any(), any[ShutMucrAnswers])(any())).thenReturn(Future.successful(conversationId))
         val cachedAnswers = ShutMucrAnswers(shutMucr = Some(shutMucr))
 
         controller(cachedAnswers).submit(postRequest()).futureValue
@@ -88,20 +90,21 @@ class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with ScalaFuture
       }
 
       "return 303 (SEE_OTHER) that redirects to ShutMucrConfirmationController" in {
-        when(submissionService.submit(any(), any[ShutMucrAnswers])(any())).thenReturn(Future.successful((): Unit))
+        when(submissionService.submit(any(), any[ShutMucrAnswers])(any())).thenReturn(Future.successful(conversationId))
 
         val result = controller(ShutMucrAnswers(Some(shutMucr))).submit(postRequest(JsObject(Seq.empty)))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.consolidations.routes.ShutMucrConfirmationController.displayPage.url)
+        redirectLocation(result) mustBe Some(MovementConfirmationController.displayPage.url)
       }
 
-      "return response with Movement Type in flash" in {
-        when(submissionService.submit(any(), any[ShutMucrAnswers])(any())).thenReturn(Future.successful((): Unit))
+      "return response with Movement Type and Conversation Id in flash" in {
+        when(submissionService.submit(any(), any[ShutMucrAnswers])(any())).thenReturn(Future.successful(conversationId))
 
         val result = controller(ShutMucrAnswers(Some(shutMucr))).submit(postRequest(JsObject(Seq.empty)))
 
         flash(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.SHUT_MUCR.toString)
+        flash(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
       }
     }
   }

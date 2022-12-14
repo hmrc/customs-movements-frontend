@@ -22,12 +22,7 @@ import models.cache.JourneyType.JourneyType
 import models.confirmation.FlashKeys._
 import play.api.mvc.Request
 
-case class Confirmation(
-  journeyType: JourneyType,
-  conversationId: String,
-  consignmentRefs: Option[ConsignmentReferences],
-  mucr: Option[String]
-)
+case class Confirmation(journeyType: JourneyType, conversationId: String, consignmentRefs: Option[ConsignmentReferences], mucr: Option[String])
 
 object Confirmation {
 
@@ -43,7 +38,6 @@ object Confirmation {
     for {
       journeyType <- extractValue(JOURNEY_TYPE).map(JourneyType.withName)
       conversationId <- extractValue(CONVERSATION_ID)
-    }
-    yield new Confirmation(journeyType, conversationId, consignmentReferences, extractValue(MUCR))
+    } yield new Confirmation(journeyType, conversationId, consignmentReferences, extractValue(MUCR))
   }
 }

@@ -27,11 +27,8 @@ import views.html.confirmation_page
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class MovementConfirmationController @Inject()(
-  authenticate: AuthAction,
-  mcc: MessagesControllerComponents,
-  confirmationPage: confirmation_page
-) extends FrontendController(mcc) with I18nSupport {
+class MovementConfirmationController @Inject() (authenticate: AuthAction, mcc: MessagesControllerComponents, confirmationPage: confirmation_page)
+    extends FrontendController(mcc) with I18nSupport {
 
   val displayPage: Action[AnyContent] = authenticate { implicit request =>
     Confirmation()

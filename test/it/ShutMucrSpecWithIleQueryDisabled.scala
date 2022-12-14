@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import base.IntegrationSpec
 import forms.ShutMucr
 import models.cache.ShutMucrAnswers
 import play.api.Configuration

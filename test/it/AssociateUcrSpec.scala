@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
+import base.IntegrationSpec
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
 import controllers.consolidations.routes.{
-  AssociateUcrConfirmationController,
   AssociateUcrController,
   AssociateUcrSummaryController,
   ManageMucrController,
+  MovementConfirmationController,
   MucrOptionsController
 }
 import forms._
@@ -178,10 +179,10 @@ class AssociateUcrSpec extends IntegrationSpec {
         )
         givenMovementsBackendAcceptsTheConsolidation()
 
-        val response = post(AssociateUcrSummaryController.submit())
+        val response = post(AssociateUcrSummaryController.submit)
 
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(AssociateUcrConfirmationController.displayPage.url)
+        redirectLocation(response) mustBe Some(MovementConfirmationController.displayPage.url)
         theAnswersFor("eori") mustBe None
         verify(
           postRequestedForConsolidation()

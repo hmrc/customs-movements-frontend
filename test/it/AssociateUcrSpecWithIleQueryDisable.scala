@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
+import base.IntegrationSpec
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
+import controllers.consolidations.routes.{
+  AssociateUcrController,
+  AssociateUcrSummaryController,
+  MovementConfirmationController,
+  MucrOptionsController
+}
 import forms.{AssociateUcr, MucrOptions, UcrType}
 import models.cache.AssociateUcrAnswers
 import play.api.Configuration
@@ -31,7 +38,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
         givenAuthSuccess("eori")
         givenCacheFor("eori", AssociateUcrAnswers())
 
-        val response = get(controllers.consolidations.routes.MucrOptionsController.displayPage)
+        val response = get(MucrOptionsController.displayPage)
 
         status(response) mustBe OK
       }
@@ -42,15 +49,10 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
         givenAuthSuccess("eori")
         givenCacheFor("eori", AssociateUcrAnswers())
 
-        val response = post(
-          controllers.consolidations.routes.MucrOptionsController.save(),
-          "createOrAdd" -> "create",
-          "newMucr" -> "GB/123-12345",
-          "existingMucr" -> ""
-        )
+        val response = post(MucrOptionsController.save(), "createOrAdd" -> "create", "newMucr" -> "GB/123-12345", "existingMucr" -> "")
 
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrController.displayPage.url)
+        redirectLocation(response) mustBe Some(AssociateUcrController.displayPage.url)
         theAnswersFor("eori") mustBe Some(AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345"))))
       }
     }
@@ -62,7 +64,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
         givenAuthSuccess("eori")
         givenCacheFor("eori", AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345"))))
 
-        val response = get(controllers.consolidations.routes.AssociateUcrController.displayPage)
+        val response = get(AssociateUcrController.displayPage)
 
         status(response) mustBe OK
       }
@@ -73,10 +75,10 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
         givenAuthSuccess("eori")
         givenCacheFor("eori", AssociateUcrAnswers(mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345"))))
 
-        val response = post(controllers.consolidations.routes.AssociateUcrController.submit, "kind" -> "mucr", "mucr" -> "GB/321-54321")
+        val response = post(AssociateUcrController.submit, "kind" -> "mucr", "mucr" -> "GB/321-54321")
 
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrSummaryController.displayPage.url)
+        redirectLocation(response) mustBe Some(AssociateUcrSummaryController.displayPage.url)
         theAnswersFor("eori") mustBe Some(
           AssociateUcrAnswers(
             mucrOptions = Some(MucrOptions(createOrAdd = "create", mucr = "GB/123-12345")),
@@ -100,7 +102,7 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
           )
         )
 
-        val response = get(controllers.consolidations.routes.AssociateUcrSummaryController.displayPage)
+        val response = get(AssociateUcrSummaryController.displayPage)
 
         status(response) mustBe OK
       }
@@ -118,10 +120,10 @@ class AssociateUcrSpecWithIleQueryDisable extends IntegrationSpec {
         )
         givenMovementsBackendAcceptsTheConsolidation()
 
-        val response = post(controllers.consolidations.routes.AssociateUcrSummaryController.submit())
+        val response = post(AssociateUcrSummaryController.submit)
 
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.AssociateUcrConfirmationController.displayPage.url)
+        redirectLocation(response) mustBe Some(MovementConfirmationController.displayPage.url)
         theAnswersFor("eori") mustBe None
         verify(
           postRequestedForConsolidation()

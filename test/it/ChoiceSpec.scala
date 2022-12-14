@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import base.IntegrationSpec
 import controllers.routes.ChoiceController
 import forms.Choice
 import forms.UcrType.Mucr

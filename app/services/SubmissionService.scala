@@ -100,13 +100,10 @@ class SubmissionService @Inject() (
     (for {
       conversationId <- connector.submit(data)
       _ <- repository.removeByEori(eori)
-    }
-    yield SubmissionResult(conversationId, data.consignmentReference))
-    .andThen {
+    } yield SubmissionResult(conversationId, data.consignmentReference)).andThen {
       case Success(_) => auditService.auditMovements(data, success, movementAuditType(journeyType))
       case Failure(_) => auditService.auditMovements(data, failed, movementAuditType(journeyType))
-    }
-    .andThen { case _ =>
+    }.andThen { case _ =>
       metrics.incrementCounter(Choice(journeyType))
       timer.stop()
     }

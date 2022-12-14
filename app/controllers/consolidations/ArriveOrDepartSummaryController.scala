@@ -30,7 +30,7 @@ import views.html.summary.{arrival_summary_page, departure_summary_page}
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class ArriveOrDepartSummaryController @Inject()(
+class ArriveOrDepartSummaryController @Inject() (
   authenticate: AuthAction,
   journeyRefiner: JourneyRefiner,
   submissionService: SubmissionService,

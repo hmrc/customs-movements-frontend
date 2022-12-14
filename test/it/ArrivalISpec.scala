@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+import base.IntegrationSpec
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
-import controllers.consolidations.routes.ArriveOrDepartSummaryController
+import controllers.consolidations.routes.{ArriveOrDepartSummaryController, MovementConfirmationController}
 import controllers.routes._
 import forms.common.{Date, Time}
 import forms.{ArrivalDetails, ConsignmentReferences, Location, SpecificDateTimeChoice}
@@ -26,7 +27,7 @@ import play.api.test.Helpers._
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDateTime, LocalTime}
 
-class ArrivalSpec extends IntegrationSpec {
+class ArrivalISpec extends IntegrationSpec {
 
   private val date = dateTimeProvider.dateNow.date.minusDays(1)
   private val time = LocalTime.of(22, 15)

@@ -32,7 +32,7 @@ class NavigatorSpec extends UnitSpec {
 
   private val navigator = new Navigator()
 
-  "Continue To" should {
+  "Navigator.continueTo" should {
 
     "go to the URL provided" when {
       "Save And Continue" in {
@@ -71,7 +71,7 @@ class NavigatorSpec extends UnitSpec {
         val result = navigator.continueTo(Call("GET", "/"))(request)
 
         result.header.status mustBe SEE_OTHER
-        result.header.headers.get(LOCATION) mustBe Some(AssociateUcrSummaryController.displayPage().url)
+        result.header.headers.get(LOCATION) mustBe Some(AssociateUcrSummaryController.displayPage.url)
       }
     }
   }

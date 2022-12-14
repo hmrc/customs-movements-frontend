@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import base.IntegrationSpec
 import forms._
 import models.cache.DepartureAnswers
 import play.api.Configuration

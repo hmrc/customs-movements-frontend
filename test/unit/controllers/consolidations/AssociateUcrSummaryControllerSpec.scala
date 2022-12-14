@@ -17,6 +17,7 @@
 package controllers.consolidations
 
 import controllers.ControllerLayerSpec
+import controllers.consolidations.routes.MovementConfirmationController
 import forms.UcrType._
 import forms._
 import models.ReturnToStartException
@@ -86,11 +87,11 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
   private val mucrOptions = MucrOptions(MucrOptions.Create, "MUCR")
   private val associateUcr = AssociateUcr(Ducr, "DUCR")
 
-  "Associate Ducr Summary Controller on displayPage" should {
+  "AssociateUcrSummaryController.displayPage" should {
 
     "return 200 (OK)" when {
 
-      "display page is invoked on non-'Find a consignment' journey" in {
+      "invoked on non-'Find a consignment' journey" in {
         val answer = AssociateUcrAnswers(None, Some(mucrOptions), Some(associateUcr))
         val result = controller(answer, false).displayPage(getRequest())
 
@@ -102,7 +103,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
         viewOptions mustBe "MUCR"
       }
 
-      "display page when queried ducr" in {
+      "on queried ducr" in {
         val result =
           controller(AssociateUcrAnswers(None, Some(MucrOptions(MucrOptions.Create, "MUCR")), Some(AssociateUcr(Ducr, "Queried DUCR"))))
             .displayPage(getRequest())
@@ -116,7 +117,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
         associateKind mustBe UcrType.Mucr
       }
 
-      "display page when queried mucr and 'Associate this consignment to another'" in {
+      "on queried mucr and 'Associate this consignment to another'" in {
         val result = controller(
           AssociateUcrAnswers(
             Some(ManageMucrChoice(ManageMucrChoice.AssociateThisMucr)),
@@ -134,7 +135,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
         associateKind mustBe UcrType.Mucr
       }
 
-      "display page when queried mucr and 'Associate another consignment to this one'" in {
+      "on queried mucr and 'Associate another consignment to this one'" in {
         val result = controller(
           AssociateUcrAnswers(
             Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr)),
@@ -169,12 +170,13 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
     }
   }
 
-  "Associate Ducr Summary Controller on submit" when {
+  "AssociateUcrSummaryController.submit" when {
 
     "everything works correctly" should {
+      val conversationId = "conversationId"
 
       "call SubmissionService" in {
-        when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
+        when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful(conversationId))
         val cachedAnswers = AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))
 
         controller(cachedAnswers).submit(postRequest()).futureValue
@@ -184,22 +186,23 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
       }
 
       "return SEE_OTHER (303) that redirects to AssociateUcrConfirmation" in {
-        when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
+        when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful(conversationId))
 
         val result =
           controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))).submit(postRequest(Json.obj()))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.consolidations.routes.AssociateUcrConfirmationController.displayPage.url)
+        redirectLocation(result) mustBe Some(MovementConfirmationController.displayPage.url)
       }
 
-      "return response with Movement Type in flash" in {
-        when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful((): Unit))
+      "return response with Movement Type and Conversation Id in flash" in {
+        when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful(conversationId))
 
         val result =
           controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))).submit(postRequest(Json.obj()))
 
         flash(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.ASSOCIATE_UCR.toString)
+        flash(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
       }
     }
   }

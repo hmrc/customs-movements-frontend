@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+import base.IntegrationSpec
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
+import controllers.consolidations.routes.{MovementConfirmationController, ShutMucrSummaryController}
 import forms.ShutMucr
 import models.cache.ShutMucrAnswers
 import play.api.test.Helpers._
@@ -29,7 +31,7 @@ class ShutMucrSpec extends IntegrationSpec {
         givenCacheFor("eori", ShutMucrAnswers(shutMucr = Some(ShutMucr("GB/123-12345"))))
 
         // When
-        val response = get(controllers.consolidations.routes.ShutMucrSummaryController.displayPage)
+        val response = get(ShutMucrSummaryController.displayPage)
 
         // Then
         status(response) mustBe OK
@@ -44,11 +46,11 @@ class ShutMucrSpec extends IntegrationSpec {
         givenMovementsBackendAcceptsTheConsolidation()
 
         // When
-        val response = post(controllers.consolidations.routes.ShutMucrSummaryController.submit())
+        val response = post(ShutMucrSummaryController.submit)
 
         // Then
         status(response) mustBe SEE_OTHER
-        redirectLocation(response) mustBe Some(controllers.consolidations.routes.ShutMucrConfirmationController.displayPage.url)
+        redirectLocation(response) mustBe Some(MovementConfirmationController.displayPage.url)
         theCacheFor("eori") mustBe None
         verify(
           postRequestedForConsolidation()

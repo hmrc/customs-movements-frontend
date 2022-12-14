@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.consolidations
 
-import controllers.consolidations.{ArriveOrDepartSummaryController, MovementConfirmationController}
+import controllers.ControllerLayerSpec
+import controllers.consolidations.routes.MovementConfirmationController
 import forms.ConsignmentReferences
 import models.cache.{ArrivalAnswers, DepartureAnswers, JourneyType, MovementAnswers}
-import models.confirmation.FlashKeys
+import models.confirmation.{FlashKeys, SubmissionResult}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -38,9 +39,11 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
   private val arrivalSummaryPage = mock[arrival_summary_page]
   private val departureSummaryPage = mock[departure_summary_page]
 
+  private val conversationId = "conversationId"
   private val dummyUcr = "dummyUcr"
   private val dummyUcrType = "dummyUcrType"
   private val consignmentRefs = ConsignmentReferences(dummyUcrType, dummyUcr)
+  private val submissionResult = SubmissionResult(conversationId, consignmentRefs)
 
   private def controller(answers: MovementAnswers) =
     new ArriveOrDepartSummaryController(
@@ -74,13 +77,11 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
 
       "cache contains data and user is during Arrival journey" in {
         val result = controller(ArrivalAnswers()).displayPage(getRequest())
-
         status(result) mustBe OK
       }
 
       "cache contains data and user is during Departure journey" in {
         val result = controller(DepartureAnswers()).displayPage(getRequest())
-
         status(result) mustBe OK
       }
     }
@@ -91,7 +92,7 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
     "everything works correctly and user is on Arrival journey" should {
 
       "call SubmissionService" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(submissionResult))
         val cachedAnswers = ArrivalAnswers(Some(consignmentRefs))
 
         controller(cachedAnswers).submit()(postRequest(emptyForm)).futureValue
@@ -101,7 +102,7 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
       }
 
       "return SEE_OTHER (303) that redirects to MovementConfirmationController" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(submissionResult))
 
         val result = controller(ArrivalAnswers(Some(consignmentRefs))).submit()(postRequest(emptyForm))
 
@@ -109,12 +110,13 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
         redirectLocation(result) mustBe Some(MovementConfirmationController.displayPage.url)
       }
 
-      "return response with Movement Type, UCR, and UCR Type in flash" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
+      "return response with Movement Type, Conversation Id, UCR, and UCR Type in flash" in {
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(submissionResult))
 
         val result = controller(ArrivalAnswers(Some(consignmentRefs))).submit()(postRequest(emptyForm))
 
         flash(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.ARRIVE.toString)
+        flash(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
         flash(result).get(FlashKeys.UCR) mustBe Some(dummyUcr)
         flash(result).get(FlashKeys.UCR_TYPE) mustBe Some(dummyUcrType)
       }
@@ -123,7 +125,7 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
     "everything works correctly and user is on Departure journey" should {
 
       "call SubmissionService" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(submissionResult))
         val cachedAnswers = DepartureAnswers(Some(consignmentRefs))
 
         controller(cachedAnswers).submit()(postRequest(emptyForm)).futureValue
@@ -133,7 +135,7 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
       }
 
       "return SEE_OTHER (303) that redirects to MovementConfirmationController" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(submissionResult))
 
         val result = controller(DepartureAnswers(Some(consignmentRefs))).submit()(postRequest(emptyForm))
 
@@ -141,12 +143,13 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
         redirectLocation(result) mustBe Some(MovementConfirmationController.displayPage.url)
       }
 
-      "return response with Movement Type, UCR, and UCR Type in flash" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(consignmentRefs))
+      "return response with Movement Type, Conversation Id, UCR, and UCR Type in flash" in {
+        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(submissionResult))
 
         val result = controller(DepartureAnswers(Some(consignmentRefs))).submit()(postRequest(emptyForm))
 
         flash(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.DEPART.toString)
+        flash(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
         flash(result).get(FlashKeys.UCR) mustBe Some(dummyUcr)
         flash(result).get(FlashKeys.UCR_TYPE) mustBe Some(dummyUcrType)
       }

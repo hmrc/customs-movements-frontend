@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+import base.IntegrationSpec
 import config.AppConfig
 import org.scalatest.OptionValues
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Headers
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,66 +36,49 @@ class LanguageSwitchControllerSpec extends IntegrationSpec with OptionValues {
 
     "English selected" must {
       "switch to English" in {
-
         val request = FakeRequest(GET, switchLanguageRoute(english)).withHeaders(requestHeaders)
 
         val result = route(fakeApplication(), request).value
 
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual fakeUrl
-
         cookies(result).find(_.name == "PLAY_LANG").get.value mustEqual "en"
-
       }
     }
 
     "Welsh selected" must {
       "switch to Welsh" in {
-
         val request = FakeRequest(GET, switchLanguageRoute(welsh)).withHeaders(requestHeaders)
 
         val result = route(fakeApplication(), request).value
 
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual fakeUrl
-
         cookies(result).find(_.name == "PLAY_LANG").get.value mustEqual "cy"
-
       }
     }
 
     "Other selected" must {
       "default to English" in {
-
         val request = FakeRequest(GET, switchLanguageRoute(other)).withHeaders(requestHeaders)
 
         val result = route(fakeApplication(), request).value
 
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual fakeUrl
-
         cookies(result).find(_.name == "PLAY_LANG").get.value mustEqual "en"
-
       }
     }
 
     "no referer in header" must {
-
       "redirect to login continue url" in {
-
         val request = FakeRequest(GET, switchLanguageRoute(welsh))
 
         val result = route(fakeApplication(), request).value
 
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual fakeApplication().injector.instanceOf[AppConfig].loginContinueUrl
-
       }
     }
-
   }
 }

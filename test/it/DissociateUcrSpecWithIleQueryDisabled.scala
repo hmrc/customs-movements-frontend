@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import base.IntegrationSpec
 import forms.{DisassociateUcr, UcrType}
 import models.cache.DisassociateUcrAnswers
 import play.api.Configuration

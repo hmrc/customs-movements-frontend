@@ -49,13 +49,9 @@ class LocationControllerSpec extends ControllerLayerSpec with MockCache with Opt
   }
 
   private def controller(answers: MovementAnswers = ArrivalAnswers()) =
-    new LocationController(
-      SuccessfulAuth(),
-      ValidJourney(answers),
-      stubMessagesControllerComponents(),
-      mockLocationPage,
-      navigator
-    )(global)
+    new LocationController(SuccessfulAuth(), ValidJourney(answers), cacheRepository, stubMessagesControllerComponents(), mockLocationPage, navigator)(
+      global
+    )
 
   private def theResponseForm: Form[Location] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Location]])

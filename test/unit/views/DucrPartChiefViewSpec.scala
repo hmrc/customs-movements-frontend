@@ -19,7 +19,7 @@ package views
 import base.Injector
 import controllers.routes.ChoiceController
 import forms.DucrPartChiefChoice
-import models.cache.ArrivalAnswers
+import models.cache.{ArrivalAnswers, AssociateUcrAnswers, DepartureAnswers, DisassociateUcrAnswers}
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import views.html.ducr_part_chief
@@ -34,27 +34,33 @@ class DucrPartChiefViewSpec extends ViewSpec with Injector {
 
   "DucrPartChiefView options" should {
 
-    "have the correct title" in {
-      page(form).getTitle must containMessage("ducrPartChief.ARRIVE.question")
-    }
+    Seq(ArrivalAnswers(), DepartureAnswers(), AssociateUcrAnswers(), DisassociateUcrAnswers()).foreach { answers =>
+      s"have the correct title with $answers" in {
+        implicit val request = journeyRequest(answers)
+        page(form).getTitle must containMessage(s"ducrPartChief.${request.answers.`type`.toString}.question")
+      }
 
-    "have the correct heading" in {
-      page(form).getElementById("section-header") must containMessage("ducrPartChief.ARRIVE.heading", "mucr")
+      s"have the correct heading with $answers" in {
+        implicit val request = journeyRequest(answers)
+        page(form).getElementById("section-header") must containMessage(s"ducrPartChief.${request.answers.`type`.toString}.heading", "mucr")
+      }
+
+      s"render the correct labels with $answers" in {
+        implicit val request = journeyRequest(answers)
+        val view = page(form)
+        view.getElementsByAttributeValue("for", "choice").first() must containMessage("ducrPartChief.isDucrPart")
+        view.getElementsByAttributeValue("for", "choice-2").first() must containMessage(
+          s"ducrPartChief.${request.answers.`type`.toString}.notDucrPart"
+        )
+      }
     }
 
     "have the correct body text" in {
       page(form).getElementById("code-body-para").text mustBe messages("ducrPartChief.bodyParagraph")
     }
 
-    "render the correct labels" in {
-      val view = page(form)
-      view.getElementsByAttributeValue("for", "choice").first() must containMessage("ducrPartChief.isDucrPart")
-      view.getElementsByAttributeValue("for", "choice-2").first() must containMessage("ducrPartChief.ARRIVE.notDucrPart")
-    }
-
     "display 'Back' button" in {
       val backButton = page(form).getBackButton
-
       backButton mustBe defined
       backButton.foreach { button =>
         button must haveHref(ChoiceController.displayChoices)

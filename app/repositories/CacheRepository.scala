@@ -23,10 +23,11 @@ import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
 import java.util.concurrent.TimeUnit.SECONDS
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
+@Singleton
 class CacheRepository @Inject() (mc: MongoComponent)(implicit ec: ExecutionContext)
     extends PlayMongoRepository[Cache](mc, "cache", Cache.format, CacheRepository.indexes) with RepositoryOps[Cache] {
 

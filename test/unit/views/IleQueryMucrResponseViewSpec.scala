@@ -76,5 +76,8 @@ class IleQueryMucrResponseViewSpec extends ViewSpec with Injector {
       view(info = mucrInfo.copy(isShut = Some(true)), parent = Some(MucrInfo("mucr"))).getElementById("isShutMucr") must be(null)
     }
 
+    "display a 'Print' button" in {
+      view().getElementsByClass("gem-c-print-link__button").size() mustBe 2
+    }
   }
 }

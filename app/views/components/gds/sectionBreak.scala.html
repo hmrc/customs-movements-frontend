@@ -14,12 +14,6 @@
  * limitations under the License.
  *@
 
-@this()
+@()
 
-@(marginTop: Int = 40, marginBottom: Int = 40, classes: String = "")(implicit messages: Messages)
-
-<div class="gem-c-print-link govuk-!-display-none-print govuk-!-margin-top-@{marginTop} govuk-!-margin-bottom-@{marginBottom} @classes">
-    <button class="govuk-link govuk-body-s gem-c-print-link__button" onclick="window.print()">
-        @messages("site.print")
-    </button>
-</div>
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">

@@ -86,5 +86,9 @@ class NotificationsViewSpec extends ViewSpec with Injector {
         children(2).text mustBe s"CONTENT $index"
       }
     }
+
+    "display a 'Print' button" in {
+      pageWithoutNotifications.getElementsByClass("gem-c-print-link__button").size() mustBe 1
+    }
   }
 }

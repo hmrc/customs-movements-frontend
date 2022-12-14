@@ -55,5 +55,9 @@ class IleQueryDucrResponseViewSpec extends ViewSpec with Injector {
     "render parent" in {
       view(parent = Some(parentInfo)).getElementById("parentConsignment") must containMessage("ileQueryResponse.parent")
     }
+
+    "display a 'Print' button" in {
+      view().getElementsByClass("gem-c-print-link__button").size() mustBe 2
+    }
   }
 }

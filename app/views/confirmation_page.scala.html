@@ -24,7 +24,7 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.{exit_survey, print_page_button}
-@import views.html.components.gds.{gds_main_template, link, pageTitle, heading, paragraphBody}
+@import views.html.components.gds.{gds_main_template, link, pageTitle, heading, paragraphBody, sectionBreak}
 @import views.Title
 
 @this(
@@ -94,6 +94,8 @@
     </ul>
 
     @printButton()
+
+    @sectionBreak()
 
     @exitSurvey()
 }

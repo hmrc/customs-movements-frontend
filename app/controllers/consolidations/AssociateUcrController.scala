@@ -17,7 +17,7 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
-import controllers.consolidations.routes.AssociateUcrSummaryController
+import controllers.summary.routes.AssociateUcrSummaryController
 import forms.AssociateUcr.form
 import models.ReturnToStartException
 import models.cache.AssociateUcrAnswers
@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.associateucr.associate_ucr
+import views.html.consolidations.associate_ucr
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

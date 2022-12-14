@@ -17,7 +17,7 @@
 package controllers.navigation
 
 import base.UnitSpec
-import controllers.consolidations.routes.{ArriveOrDepartSummaryController, AssociateUcrSummaryController}
+import controllers.summary.routes.{ArriveOrDepartSummaryController, AssociateUcrSummaryController}
 import forms.SaveAndReturnToSummary
 import models.SignedInUser
 import models.cache.{AssociateUcrAnswers, Cache}

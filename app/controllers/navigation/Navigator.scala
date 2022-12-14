@@ -16,7 +16,7 @@
 
 package controllers.navigation
 
-import controllers.consolidations.routes.{ArriveOrDepartSummaryController, AssociateUcrSummaryController}
+import controllers.summary.routes.{ArriveOrDepartSummaryController, AssociateUcrSummaryController}
 import forms.{FormAction, SaveAndReturnToSummary}
 import models.cache.JourneyType
 import models.requests.RequestWithAnswers

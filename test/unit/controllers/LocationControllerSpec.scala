@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.consolidations.routes.ArriveOrDepartSummaryController
+import controllers.summary.routes.ArriveOrDepartSummaryController
 import forms.{ConsignmentReferences, Location}
 import models.ReturnToStartException
 import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}

@@ -16,21 +16,21 @@
 
 import base.IntegrationSpec
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, matchingJsonPath, verify}
+import controllers.routes.{LocationController, MovementDetailsController, SpecificDateTimeController, TransportController}
 import controllers.summary.routes.{ArriveOrDepartSummaryController, MovementConfirmationController}
-import controllers.routes._
+import forms._
 import forms.common.{Date, Time}
-import forms.{ArrivalDetails, ConsignmentReferences, Location, SpecificDateTimeChoice}
-import models.cache.ArrivalAnswers
+import models.cache.DepartureAnswers
 import modules.DateTimeModule
 import play.api.test.Helpers._
 
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDateTime, LocalTime}
 
-class ArrivalISpec extends IntegrationSpec {
+class DepartureISpec extends IntegrationSpec {
 
   private val date = dateTimeProvider.dateNow.date.minusDays(1)
-  private val time = LocalTime.of(22, 15)
+  private val time = LocalTime.of(10, 15)
   private val datetime = LocalDateTime.of(date, time).atZone(DateTimeModule.timezone).toInstant
 
   "Specific Date/Time Page" when {
@@ -38,7 +38,7 @@ class ArrivalISpec extends IntegrationSpec {
       "return 200" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+        givenCacheFor("eori", DepartureAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
 
         // When
         val response = get(SpecificDateTimeController.displayPage)
@@ -53,7 +53,7 @@ class ArrivalISpec extends IntegrationSpec {
         "user elects to enter date time" in {
           // Given
           givenAuthSuccess("eori")
-          givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+          givenCacheFor("eori", DepartureAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
 
           // When
           val response = post(SpecificDateTimeController.submit, "choice" -> SpecificDateTimeChoice.UserDateTime)
@@ -62,7 +62,7 @@ class ArrivalISpec extends IntegrationSpec {
           status(response) mustBe SEE_OTHER
           redirectLocation(response) mustBe Some(MovementDetailsController.displayPage.url)
           theAnswersFor("eori") mustBe Some(
-            ArrivalAnswers(
+            DepartureAnswers(
               consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
               specificDateTimeChoice = Some(SpecificDateTimeChoice(SpecificDateTimeChoice.UserDateTime))
             )
@@ -71,7 +71,7 @@ class ArrivalISpec extends IntegrationSpec {
         "user elects to current date time" in {
           // Given
           givenAuthSuccess("eori")
-          givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+          givenCacheFor("eori", DepartureAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
 
           // When
           val response = post(SpecificDateTimeController.submit, "choice" -> SpecificDateTimeChoice.CurrentDateTime)
@@ -80,9 +80,9 @@ class ArrivalISpec extends IntegrationSpec {
           status(response) mustBe SEE_OTHER
           redirectLocation(response) mustBe Some(LocationController.displayPage.url)
           theAnswersFor("eori") mustBe Some(
-            ArrivalAnswers(
+            DepartureAnswers(
               consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
-              arrivalDetails = Some(ArrivalDetails(dateTimeProvider.dateNow, dateTimeProvider.timeNow)),
+              departureDetails = Some(DepartureDetails(dateTimeProvider.dateNow, dateTimeProvider.timeNow)),
               specificDateTimeChoice = Some(SpecificDateTimeChoice(SpecificDateTimeChoice.CurrentDateTime))
             )
           )
@@ -96,7 +96,7 @@ class ArrivalISpec extends IntegrationSpec {
       "return 200" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+        givenCacheFor("eori", DepartureAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
 
         // When
         val response = get(MovementDetailsController.displayPage)
@@ -110,26 +110,26 @@ class ArrivalISpec extends IntegrationSpec {
       "continue" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+        givenCacheFor("eori", DepartureAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
 
         // When
         val response = post(
           MovementDetailsController.saveMovementDetails(),
-          "dateOfArrival.day" -> date.getDayOfMonth.toString,
-          "dateOfArrival.month" -> date.getMonthValue.toString,
-          "dateOfArrival.year" -> date.getYear.toString,
-          "timeOfArrival.hour" -> "10",
-          "timeOfArrival.minute" -> "15",
-          "timeOfArrival.ampm" -> "PM"
+          "dateOfDeparture.day" -> date.getDayOfMonth.toString,
+          "dateOfDeparture.month" -> date.getMonthValue.toString,
+          "dateOfDeparture.year" -> date.getYear.toString,
+          "timeOfDeparture.hour" -> "10",
+          "timeOfDeparture.minute" -> "15",
+          "timeOfDeparture.ampm" -> "AM"
         )
 
         // Then
         status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(LocationController.displayPage.url)
         theAnswersFor("eori") mustBe Some(
-          ArrivalAnswers(
+          DepartureAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
-            arrivalDetails = Some(ArrivalDetails(Date(date), Time(time)))
+            departureDetails = Some(DepartureDetails(Date(date), Time(time)))
           )
         )
       }
@@ -143,9 +143,9 @@ class ArrivalISpec extends IntegrationSpec {
         givenAuthSuccess("eori")
         givenCacheFor(
           "eori",
-          ArrivalAnswers(
+          DepartureAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
-            arrivalDetails = Some(ArrivalDetails(Date(date), Time(time)))
+            departureDetails = Some(DepartureDetails(Date(date), Time(time)))
           )
         )
 
@@ -163,9 +163,9 @@ class ArrivalISpec extends IntegrationSpec {
         givenAuthSuccess("eori")
         givenCacheFor(
           "eori",
-          ArrivalAnswers(
+          DepartureAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
-            arrivalDetails = Some(ArrivalDetails(Date(date), Time(time)))
+            departureDetails = Some(DepartureDetails(Date(date), Time(time)))
           )
         )
 
@@ -174,12 +174,66 @@ class ArrivalISpec extends IntegrationSpec {
 
         // Then
         status(response) mustBe SEE_OTHER
+        redirectLocation(response) mustBe Some(TransportController.displayPage.url)
+        theAnswersFor("eori") mustBe Some(
+          DepartureAnswers(
+            consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
+            departureDetails = Some(DepartureDetails(Date(date), Time(time))),
+            location = Some(Location("GBAUEMAEMAEMA"))
+          )
+        )
+      }
+    }
+  }
+
+  "Transport Page" when {
+    "GET" should {
+      "return 200" in {
+        // Given
+        givenAuthSuccess("eori")
+        givenCacheFor(
+          "eori",
+          DepartureAnswers(
+            consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
+            departureDetails = Some(DepartureDetails(Date(date), Time(time))),
+            location = Some(Location("GBAUEMAEMAEMA"))
+          )
+        )
+
+        // When
+        val response = get(TransportController.displayPage)
+
+        // TThen
+        status(response) mustBe OK
+      }
+    }
+
+    "POST" should {
+      "continue" in {
+        // Given
+        givenAuthSuccess("eori")
+        givenCacheFor(
+          "eori",
+          DepartureAnswers(
+            consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
+            departureDetails = Some(DepartureDetails(Date(date), Time(time))),
+            location = Some(Location("GBAUEMAEMAEMA"))
+          )
+        )
+
+        // When
+        val response =
+          post(TransportController.saveTransport(), "modeOfTransport" -> "1", "nationality" -> "FR", "transportId" -> "123")
+
+        // Then
+        status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(ArriveOrDepartSummaryController.displayPage.url)
         theAnswersFor("eori") mustBe Some(
-          ArrivalAnswers(
+          DepartureAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
-            arrivalDetails = Some(ArrivalDetails(Date(date), Time(time))),
+            departureDetails = Some(DepartureDetails(Date(date), Time(time))),
             location = Some(Location("GBAUEMAEMAEMA")),
+            transport = Some(Transport("1", "123", "FR")),
             readyToSubmit = Some(true)
           )
         )
@@ -194,10 +248,11 @@ class ArrivalISpec extends IntegrationSpec {
         givenAuthSuccess("eori")
         givenCacheFor(
           "eori",
-          ArrivalAnswers(
+          DepartureAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
-            arrivalDetails = Some(ArrivalDetails(Date(date), Time(time))),
-            location = Some(Location("GBAUEMAEMAEMA"))
+            departureDetails = Some(DepartureDetails(Date(date), Time(time))),
+            location = Some(Location("GBAUEMAEMAEMA")),
+            transport = Some(Transport("1", "123", "FR"))
           )
         )
 
@@ -215,10 +270,11 @@ class ArrivalISpec extends IntegrationSpec {
         givenAuthSuccess("eori")
         givenCacheFor(
           "eori",
-          ArrivalAnswers(
+          DepartureAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
-            arrivalDetails = Some(ArrivalDetails(Date(date), Time(time))),
-            location = Some(Location("GBAUEMAEMAEMA"))
+            departureDetails = Some(DepartureDetails(Date(date), Time(time))),
+            location = Some(Location("GBAUEMAEMAEMA")),
+            transport = Some(Transport("1", "123", "FR"))
           )
         )
         givenTheMovementsBackendAcceptsTheMovement()
@@ -234,29 +290,33 @@ class ArrivalISpec extends IntegrationSpec {
           postRequestedForMovement()
             .withRequestBody(equalToJson(s"""{
                    |"eori":"eori",
-                   |"choice":"Arrival",
+                   |"choice":"Departure",
                    |"consignmentReference":{"reference":"M","referenceValue":"GB/123-12345"},
-                   |"movementDetails":{"dateTime":"${datetime}"},
-                   |"location":{"code":"GBAUEMAEMAEMA"}
+                   |"movementDetails":{"dateTime":"$datetime"},
+                   |"location":{"code":"GBAUEMAEMAEMA"},
+                   |"transport":{"modeOfTransport":"1","transportId":"123", "nationality":"FR"}
                    |}""".stripMargin))
         )
 
         val expectedTimeFormatted = time.format(DateTimeFormatter.ISO_TIME)
         val submissionPayloadRequestBuilder = postRequestedForAudit()
-          .withRequestBody(matchingJsonPath("auditType", equalTo("arrival")))
+          .withRequestBody(matchingJsonPath("auditType", equalTo("departure")))
           .withRequestBody(matchingJsonPath("detail.eori", equalTo("eori")))
-          .withRequestBody(matchingJsonPath("detail.MovementDetails.dateOfArrival.date", equalTo(date.toString)))
-          .withRequestBody(matchingJsonPath("detail.MovementDetails.timeOfArrival.time", equalTo(expectedTimeFormatted)))
+          .withRequestBody(matchingJsonPath("detail.MovementDetails.dateOfDeparture.date", equalTo(date.toString)))
+          .withRequestBody(matchingJsonPath("detail.MovementDetails.timeOfDeparture.time", equalTo(expectedTimeFormatted)))
+          .withRequestBody(matchingJsonPath("detail.Transport.modeOfTransport", equalTo("1")))
+          .withRequestBody(matchingJsonPath("detail.Transport.transportId", equalTo("123")))
+          .withRequestBody(matchingJsonPath("detail.Transport.nationality", equalTo("FR")))
           .withRequestBody(matchingJsonPath("detail.ConsignmentReferences.reference", equalTo("M")))
           .withRequestBody(matchingJsonPath("detail.ConsignmentReferences.referenceValue", equalTo("GB/123-12345")))
           .withRequestBody(matchingJsonPath("detail.Location.code", equalTo("GBAUEMAEMAEMA")))
 
         val submissionResultRequestBuilder = postRequestedForAudit()
-          .withRequestBody(matchingJsonPath("auditType", equalTo("arrival")))
+          .withRequestBody(matchingJsonPath("auditType", equalTo("departure")))
           .withRequestBody(matchingJsonPath("detail.eori", equalTo("eori")))
           .withRequestBody(matchingJsonPath("detail.ucr", equalTo("GB/123-12345")))
           .withRequestBody(matchingJsonPath("detail.ucrType", equalTo("M")))
-          .withRequestBody(matchingJsonPath("detail.messageCode", equalTo("EAL")))
+          .withRequestBody(matchingJsonPath("detail.messageCode", equalTo("EDL")))
           .withRequestBody(matchingJsonPath("detail.submissionResult", equalTo("Success")))
 
         verifyEventually(submissionPayloadRequestBuilder)

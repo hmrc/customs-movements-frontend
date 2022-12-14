@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.consolidations.routes.ArriveOrDepartSummaryController
+import controllers.summary.routes.ArriveOrDepartSummaryController
 import forms.Transport.ModesOfTransport.Sea
 import forms.{ConsignmentReferences, Transport}
 import models.ReturnToStartException

@@ -17,7 +17,7 @@
 package controllers.consolidations
 
 import controllers.actions.{AuthAction, JourneyRefiner}
-import controllers.consolidations.routes.DisassociateUcrSummaryController
+import controllers.summary.routes.DisassociateUcrSummaryController
 import forms.DisassociateUcr.form
 import models.cache.DisassociateUcrAnswers
 import models.cache.JourneyType.DISSOCIATE_UCR
@@ -26,7 +26,7 @@ import play.api.mvc._
 import repositories.CacheRepository
 import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.disassociateucr.disassociate_ucr
+import views.html.consolidations.disassociate_ucr
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

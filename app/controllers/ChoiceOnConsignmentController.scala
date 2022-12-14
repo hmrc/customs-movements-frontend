@@ -17,8 +17,9 @@
 package controllers
 
 import controllers.actions.{ArriveDepartAllowList, AuthAction}
-import controllers.consolidations.routes.{DisassociateUcrSummaryController, ManageMucrController, ShutMucrSummaryController}
+import controllers.consolidations.routes.ManageMucrController
 import controllers.routes.{ChoiceController, SpecificDateTimeController}
+import controllers.summary.routes.{DisassociateUcrSummaryController, ShutMucrSummaryController}
 import forms.Choice
 import forms.Choice._
 import models.UcrBlock

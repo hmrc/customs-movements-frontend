@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions.{AuthAction, JourneyRefiner}
-import controllers.consolidations.routes.ArriveOrDepartSummaryController
+import controllers.summary.routes.ArriveOrDepartSummaryController
 import controllers.navigation.Navigator
 import forms.Transport
 import forms.Transport._

@@ -75,23 +75,23 @@ GET         /shut-mucr                           controllers.consolidations.Shut
 POST        /shut-mucr                           controllers.consolidations.ShutMucrController.submitForm()
 
 # Arrive | Depart Summary
-GET         /summary                             controllers.consolidations.ArriveOrDepartSummaryController.displayPage
-POST        /summary                             controllers.consolidations.ArriveOrDepartSummaryController.submit
+GET         /summary                             controllers.summary.ArriveOrDepartSummaryController.displayPage
+POST        /summary                             controllers.summary.ArriveOrDepartSummaryController.submit
 
 #Associate UCR Summary
-GET         /associate-ucr-summary               controllers.consolidations.AssociateUcrSummaryController.displayPage
-POST        /associate-ucr-summary               controllers.consolidations.AssociateUcrSummaryController.submit
+GET         /associate-ucr-summary               controllers.summary.AssociateUcrSummaryController.displayPage
+POST        /associate-ucr-summary               controllers.summary.AssociateUcrSummaryController.submit
 
 # Disassociate UCR Summary
-GET         /dissociate-ucr-summary              controllers.consolidations.DisassociateUcrSummaryController.displayPage
-POST        /dissociate-ucr-summary              controllers.consolidations.DisassociateUcrSummaryController.submit
+GET         /dissociate-ucr-summary              controllers.summary.DisassociateUcrSummaryController.displayPage
+POST        /dissociate-ucr-summary              controllers.summary.DisassociateUcrSummaryController.submit
 
 # Shut a MUCR summary page
-GET         /shut-mucr-summary                   controllers.consolidations.ShutMucrSummaryController.displayPage
-POST        /shut-mucr-summary                   controllers.consolidations.ShutMucrSummaryController.submit
+GET         /shut-mucr-summary                   controllers.summary.ShutMucrSummaryController.displayPage
+POST        /shut-mucr-summary                   controllers.summary.ShutMucrSummaryController.submit
 
 # Confirmation page
-GET         /movement-confirmation               controllers.consolidations.MovementConfirmationController.displayPage
+GET         /movement-confirmation               controllers.summary.MovementConfirmationController.displayPage
 
 # Submissions page
 GET         /movements                           controllers.SubmissionsController.displayPage()

@@ -17,7 +17,7 @@
 package controllers.consolidations
 
 import controllers.ControllerLayerSpec
-import controllers.consolidations.routes.DisassociateUcrSummaryController
+import controllers.summary.routes.DisassociateUcrSummaryController
 import forms._
 import models.cache.DisassociateUcrAnswers
 import org.mockito.ArgumentCaptor
@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import repository.MockCache
 import testdata.CommonTestData.validDucr
-import views.html.disassociateucr.disassociate_ucr
+import views.html.consolidations.disassociate_ucr
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

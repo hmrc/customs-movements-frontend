@@ -26,10 +26,11 @@ import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
 import java.util.concurrent.TimeUnit.SECONDS
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
+@Singleton
 class IleQueryRepository @Inject() (mongo: MongoComponent, appConfig: AppConfig)(implicit ec: ExecutionContext)
     extends PlayMongoRepository[IleQuery](mongo, "ileQueries", IleQuery.format, IleQueryRepository.indexes) with RepositoryOps[IleQuery] {
 

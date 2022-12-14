@@ -20,6 +20,7 @@
 @import views.components.BackButton
 @import views.html.components.gds.gds_main_template
 @import views.html.components.ilequery._
+@import views.html.components.print_page_button
 @import views.Title
 
 @this(
@@ -29,7 +30,8 @@
     previousMovementsSection: response_previous_movements,
     associatedConsignmentsSection: response_associated_consignments,
     responseButtons: response_buttons,
-    govukTag: GovukTag
+    govukTag: GovukTag,
+    printButton: print_page_button
 )
 
 @(info: MucrInfo, parentMucr: Option[MucrInfo], associatedConsignments: Seq[UcrInfo])(implicit request: Request[_], messages: Messages)
@@ -54,6 +56,8 @@
             }
         </div>
 
+        @printButton(4, 0, "govuk-grid-column-two-thirds")
+
         @summarySection(info)
 
         @responseButtons()
@@ -63,5 +67,7 @@
         @parentSection(parentMucr)
 
         @associatedConsignmentsSection(associatedConsignments)
+
+        @printButton(0, 0, "govuk-grid-column-two-thirds")
     </div>
 }

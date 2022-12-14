@@ -6,7 +6,7 @@ import sbt.Keys._
 import sbt._
 import uk.gov.hmrc.DefaultBuildSettings._
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
-import uk.gov.hmrc.{ForkedJvmPerTestSettings, SbtAutoBuildPlugin}
+import uk.gov.hmrc.SbtAutoBuildPlugin
 
 val appName = "customs-movements-frontend"
 
@@ -40,7 +40,7 @@ lazy val microservice = Project(appName, file("."))
       (Test / baseDirectory).value / "test/util"
     ),
     addTestReportOption(IntegrationTest, "int-test-reports"),
-    IntegrationTest / testGrouping := ForkedJvmPerTestSettings.oneForkedJvmPerTest((IntegrationTest / definedTests).value),
+    IntegrationTest / testGrouping := oneForkedJvmPerTest((IntegrationTest / definedTests).value),
     IntegrationTest / parallelExecution := false
   )
   .settings(

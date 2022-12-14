@@ -19,6 +19,7 @@
 @import models.notifications.queries.{DucrInfo, MucrInfo}
 @import views.components.BackButton
 @import views.html.components.gds.gds_main_template
+@import views.html.components.print_page_button
 @import views.Title
 
 @this(
@@ -27,6 +28,7 @@
     parentSection: response_parent,
     previousMovementsSection: response_previous_movements,
     responseButtons: response_buttons,
+    printButton: print_page_button
 )
 
 @(info: DucrInfo, parentMucr: Option[MucrInfo])(implicit request: Request[_], messages: Messages)
@@ -43,6 +45,8 @@
             <span class="govuk-caption-xl govuk-!-margin-bottom-9">@info.ucr</span>
         </div>
 
+        @printButton(4, 0, "govuk-grid-column-two-thirds")
+
         @summarySection(info)
 
         @responseButtons()
@@ -50,5 +54,7 @@
         @previousMovementsSection(info.movements)
 
         @parentSection(parentMucr)
+
+        @printButton(0, 0, "govuk-grid-column-two-thirds")
     </div>
 }

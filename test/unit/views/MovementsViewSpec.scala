@@ -228,6 +228,17 @@ class MovementsViewSpec extends ViewSpec with Injector {
 
         firstDataRowUcrCell.selectFirst(".ucr").child(0) must haveHref(routes.NotificationsController.listOfNotifications(conversationId))
       }
+
+      "there are no notifications for the submission" in {
+        val submission = exampleSubmission(requestTimestamp = dateTime)
+        val notifications = Seq.empty
+
+        val page: Document = createView(Seq((submission, notifications)))
+
+        val firstDataRowUcrCell = page.selectFirst(".govuk-table__body .govuk-table__row:nth-child(1)")
+
+        firstDataRowUcrCell.selectFirst(".ucr").child(0) must haveHref(routes.NotificationsController.listOfNotifications(conversationId))
+      }
     }
   }
 }

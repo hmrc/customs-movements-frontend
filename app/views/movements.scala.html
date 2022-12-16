@@ -29,15 +29,11 @@
 @(submissions: Seq[(Submission, Seq[Notification])])(implicit request: Request[_], messages: Messages)
 
 @ucrCellContent(submission: Submission, notifications: Seq[Notification]) = {
-  @if(notifications.isEmpty) {
-    @elements_in_separate_lines(submission.ucrBlocks.map(_.fullUcr))
-  } else {
     @link(
       message = elements_in_separate_lines(submission.ucrBlocks.map(_.fullUcr)),
       textHidden = Some(messages("submissions.hidden.text", submission.ucrBlocks.map(_.fullUcr).mkString(", "))),
       href = routes.NotificationsController.listOfNotifications(submission.conversationId)
     )
-  }
 }
 
 @ucrClass = @{"ucr"}

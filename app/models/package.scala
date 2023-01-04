@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package config
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
-import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+package object models {
 
-import scala.concurrent.duration.{Duration, FiniteDuration}
-
-@Singleton
-class TimeoutDialogConfig @Inject() (config: ServicesConfig) {
-
-  val timeout: Duration = config.getDuration("timeoutDialog.timeout").asInstanceOf[FiniteDuration]
-  val countdown: Duration = config.getDuration("timeoutDialog.countdown").asInstanceOf[FiniteDuration]
+  def now: Instant = Instant.now().truncatedTo(ChronoUnit.MILLIS)
 }

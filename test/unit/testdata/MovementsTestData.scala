@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import connectors.exchanges.{ActionType, MovementDetailsRequest, MovementRequest
 import forms.Transport.ModesOfTransport
 import forms._
 import forms.common.{Date, Time}
+import models.now
 import models.cache.{ArrivalAnswers, DepartureAnswers, IleQuery}
 import models.submissions.Submission
 import models.{SignedInUser, UcrBlock}
@@ -43,7 +44,7 @@ object MovementsTestData {
     ucr: String = correctUcr,
     ucrType: String = "D",
     actionType: ActionType = MovementType.Arrival,
-    requestTimestamp: Instant = Instant.now()
+    requestTimestamp: Instant = now
   ): Submission =
     Submission(
       eori = eori,
@@ -95,8 +96,7 @@ object MovementsTestData {
     sessionId: String = "sessionId",
     ucr: String = correctUcr,
     conversationId: String = conversationId,
-    createdAt: Instant = Instant.now()
+    createdAt: Instant = now
   ): IleQuery =
     IleQuery(sessionId = sessionId, ucr = ucr, conversationId = conversationId, createdAt = createdAt)
-
 }

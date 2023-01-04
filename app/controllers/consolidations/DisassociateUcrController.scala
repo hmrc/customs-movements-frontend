@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import models.cache.JourneyType.DISSOCIATE_UCR
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.consolidations.disassociate_ucr
 
@@ -39,17 +39,18 @@ class DisassociateUcrController @Inject() (
   cacheRepository: CacheRepository,
   page: disassociate_ucr
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen getJourney(DISSOCIATE_UCR)) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen getJourney(DISSOCIATE_UCR)) { implicit request =>
     request.answersAs[DisassociateUcrAnswers].ucr match {
       case Some(ucr) => Ok(page(form.fill(ucr)))
       case _         => Ok(page(form))
     }
   }
 
-  def submit: Action[AnyContent] = (authenticate andThen getJourney(DISSOCIATE_UCR)).async { implicit request =>
-    form.bindFromRequest
+  val submit: Action[AnyContent] = (authenticate andThen getJourney(DISSOCIATE_UCR)).async { implicit request =>
+    form
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(page(formWithErrors))),
         validForm => {

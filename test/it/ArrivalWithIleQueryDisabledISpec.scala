@@ -48,7 +48,7 @@ class ArrivalWithIleQueryDisabledISpec extends IntegrationSpec {
 
         // When
         val response =
-          post(controllers.routes.ConsignmentReferencesController.saveConsignmentReferences(), "reference" -> "M", "mucrValue" -> "GB/123-12345")
+          post(controllers.routes.ConsignmentReferencesController.saveConsignmentReferences, "reference" -> "M", "mucrValue" -> "GB/123-12345")
 
         // Then
         status(response) mustBe SEE_OTHER

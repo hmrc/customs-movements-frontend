@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package controllers
 
+import controllers.routes.SignOutController
 import models.SignOutReason
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -29,18 +30,17 @@ class SignOutController @Inject() (mcc: MessagesControllerComponents, sessionTim
 
   def signOut(signOutReason: SignOutReason): Action[AnyContent] = Action { _ =>
     val redirectionTarget: Call = signOutReason match {
-      case SignOutReason.SessionTimeout => routes.SignOutController.sessionTimeoutSignedOut()
-      case SignOutReason.UserAction     => routes.SignOutController.userSignedOut()
+      case SignOutReason.SessionTimeout => SignOutController.sessionTimeoutSignedOut
+      case SignOutReason.UserAction     => SignOutController.userSignedOut
     }
     Redirect(redirectionTarget).withNewSession
   }
 
-  def sessionTimeoutSignedOut(): Action[AnyContent] = Action { implicit request =>
+  val sessionTimeoutSignedOut: Action[AnyContent] = Action { implicit request =>
     Ok(sessionTimedOut())
   }
 
-  def userSignedOut(): Action[AnyContent] = Action { implicit request =>
+  val userSignedOut: Action[AnyContent] = Action { implicit request =>
     Ok(userSignedOutPage())
   }
-
 }

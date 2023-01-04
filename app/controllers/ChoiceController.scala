@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import models.requests.AuthenticatedRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.choice
 
@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ChoiceController @Inject() (authenticate: AuthAction, cacheRepository: CacheRepository, mcc: MessagesControllerComponents, choicePage: choice)(
   implicit ec: ExecutionContext
-) extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
+) extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
   val displayChoices: Action[AnyContent] = authenticate.async { implicit request =>
     cacheRepository.findByEori(request.eori).map(_.flatMap(_.answers)).map {
@@ -48,12 +48,13 @@ class ChoiceController @Inject() (authenticate: AuthAction, cacheRepository: Cac
   }
 
   val submitChoice: Action[AnyContent] = authenticate.async { implicit request =>
-    form.bindFromRequest
+    form
+      .bindFromRequest()
       .fold(formWithErrors => Future.successful(BadRequest(choicePage(formWithErrors))), nextPage)
   }
 
   private def nextPage(choice: Choice)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
-    choice match {
+    (choice: @unchecked) match {
       case FindConsignment => resetCache(request.eori, FindConsignmentController.displayPage)
       case Arrival         => saveCache(request.eori, ArrivalAnswers.fromUcr, DucrPartChiefController.displayPage)
       case Departure       => saveCache(request.eori, DepartureAnswers.fromUcr, DucrPartChiefController.displayPage)

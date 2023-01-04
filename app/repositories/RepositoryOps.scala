@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,12 @@ import org.mongodb.scala.bson.BsonDocument
 import org.mongodb.scala.model.Filters.equal
 import org.mongodb.scala.model.{FindOneAndReplaceOptions, FindOneAndUpdateOptions}
 import org.mongodb.scala.{Document, MongoCollection, MongoWriteException}
-import play.api.Logging
 import play.api.libs.json.{Json, Writes}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
-trait RepositoryOps[T] extends Logging {
+trait RepositoryOps[T] {
 
   implicit def classTag: ClassTag[T]
   implicit val executionContext: ExecutionContext

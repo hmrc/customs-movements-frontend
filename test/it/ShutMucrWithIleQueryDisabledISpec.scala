@@ -49,7 +49,7 @@ class ShutMucrWithIleQueryDisabledISpec extends IntegrationSpec {
         givenCacheFor("eori", ShutMucrAnswers())
 
         // When
-        val response = post(ShutMucrController.submitForm(), "mucr" -> "GB/123-12345")
+        val response = post(ShutMucrController.submitForm, "mucr" -> "GB/123-12345")
 
         // Then
         status(response) mustBe SEE_OTHER

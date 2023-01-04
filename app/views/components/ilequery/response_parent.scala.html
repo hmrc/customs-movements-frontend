@@ -1,5 +1,5 @@
 @*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
   govukSummaryList : GovukSummaryList
 )
 
-@(parentMucr: Option[MucrInfo])(implicit request: Request[_], messages: Messages)
+@(parentMucr: Option[MucrInfo])(implicit messages: Messages)
 
 @if(parentMucr.isDefined){
     <div class="govuk-grid-column-two-thirds" id="parentConsignment">

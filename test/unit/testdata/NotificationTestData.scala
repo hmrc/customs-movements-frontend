@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 
 package testdata
 
-import java.time.{Instant, LocalDateTime}
-
-import models.UcrBlock
 import models.notifications.{Entry, Notification, ResponseType}
+import models.{now, UcrBlock}
 import modules.DateTimeModule
 import testdata.CommonTestData._
+
+import java.time.{Instant, LocalDateTime}
 
 object NotificationTestData {
 
@@ -34,7 +34,7 @@ object NotificationTestData {
     entries: Seq[Entry] = Seq(Entry(ucrBlock = Some(UcrBlock(ucr = correctUcr, ucrType = "D")))),
     crcCode: Option[String] = None,
     actionCode: Option[String] = None,
-    timestampReceived: Instant = Instant.now(),
+    timestampReceived: Instant = now,
     errorCodes: Seq[String] = Seq.empty,
     messageCode: String = ""
   ): Notification =

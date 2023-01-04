@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ class IleQueryController @Inject() (
 
         case OK =>
           val queryResponse = Json.parse(response.body).as[Seq[IleQueryResponseExchange]]
-          queryResponse match {
+          (queryResponse: @unchecked) match {
             case Seq() => Future.successful(loadingPageResult)
             case response +: _ =>
               ileQueryRepository.removeByConversationId(query.conversationId).flatMap { _ =>

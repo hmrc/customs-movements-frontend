@@ -114,7 +114,7 @@ class DepartureISpec extends IntegrationSpec {
 
         // When
         val response = post(
-          MovementDetailsController.saveMovementDetails(),
+          MovementDetailsController.saveMovementDetails,
           "dateOfDeparture.day" -> date.getDayOfMonth.toString,
           "dateOfDeparture.month" -> date.getMonthValue.toString,
           "dateOfDeparture.year" -> date.getYear.toString,
@@ -170,7 +170,7 @@ class DepartureISpec extends IntegrationSpec {
         )
 
         // When
-        val response = post(LocationController.saveLocation(), "code" -> "GBAUEMAEMAEMA")
+        val response = post(LocationController.saveLocation, "code" -> "GBAUEMAEMAEMA")
 
         // Then
         status(response) mustBe SEE_OTHER
@@ -223,7 +223,7 @@ class DepartureISpec extends IntegrationSpec {
 
         // When
         val response =
-          post(TransportController.saveTransport(), "modeOfTransport" -> "1", "nationality" -> "FR", "transportId" -> "123")
+          post(TransportController.saveTransport, "modeOfTransport" -> "1", "nationality" -> "FR", "transportId" -> "123")
 
         // Then
         status(response) mustBe SEE_OTHER

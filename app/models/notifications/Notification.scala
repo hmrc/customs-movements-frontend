@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,14 @@
 
 package models.notifications
 
-import java.time.Instant
-import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import models.now
 import play.api.libs.json.{Format, Json, OFormat}
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+
+import java.time.Instant
 
 final case class Notification(
-  timestampReceived: Instant = Instant.now(),
+  timestampReceived: Instant = now,
   conversationId: String,
   responseType: ResponseType,
   entries: Seq[Entry],

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,17 @@
 package forms.common
 
 import forms.{AdditionalConstraintsMapping, ConditionalConstraint}
-
-import java.text.DecimalFormat
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoField
 import play.api.data.Forms.text
 import play.api.data.{Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.voa.play.form.Condition
 import utils.validators.forms.FieldValidator._
 
+import java.text.DecimalFormat
+import java.time.LocalTime
+import java.time.format.DateTimeFormatterBuilder
+import java.time.temporal.ChronoField
+import java.util.Locale
 import scala.util.Try
 
 case class Time(time: LocalTime) {
@@ -44,17 +44,21 @@ object Time {
   val hourKey = "hour"
   val minuteKey = "minute"
   val ampmKey = "ampm"
-
-  val time12HourFormatter = DateTimeFormatter.ofPattern("h:mma")
   val formatter = new DecimalFormat("00")
-  def timeString(hour: String, minutes: String, ampm: String) = s"${hour.toInt}:${f"${minutes.toInt}%02d"}$ampm"
 
   val am = "AM"
   val pm = "PM"
 
-  def isValidTimeOrAnyEmptyFields(hours: String, minutes: String, ampm: String): Boolean =
+  private lazy val time12HourFormatter =
+    new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("h:mma").toFormatter(Locale.ENGLISH)
+
+  private def isValidTimeOrAnyEmptyFields(hours: String, minutes: String, ampm: String): Boolean =
     if (isAnyFieldEmpty(Seq(hours, minutes, ampm))) true
     else Try(LocalTime.parse(timeString(hours, minutes, ampm), time12HourFormatter)).isSuccess
+
+  private def timeString(hour: String, minutes: String, ampm: String) =
+    s"${hour.toInt}:${f"${minutes.toInt}%02d"}$ampm"
+
   def isAnyFieldPopulated(fields: Seq[String]): Boolean = fields.exists(_.nonEmpty)
   def isAnyFieldEmpty(fields: Seq[String]): Boolean = fields.exists(_.isEmpty)
   def isAnyFieldPopulatedCondition(fields: Seq[String]): Condition = mapping => fields.exists(field => mapping.getOrElse(field, "").nonEmpty)
@@ -84,7 +88,9 @@ object Time {
     Seq(ConditionalConstraint(isAnyFieldPopulatedCondition(Seq(prefix + minuteKey, prefix + hourKey)), "time.ampm.error", nonEmpty))
   )
 
-  private def bind(hour: String, minutes: String, ampm: String): Time = Time(LocalTime.parse(timeString(hour, minutes, ampm), time12HourFormatter))
+  private def bind(hour: String, minutes: String, ampm: String): Time =
+    Time(LocalTime.parse(timeString(hour, minutes, ampm), time12HourFormatter))
 
-  private def unbind(time: Time): (String, String, String) = (time.getClockHour.toString, formatter.format(time.getMinute), time.getAmPm)
+  private def unbind(time: Time): (String, String, String) =
+    (time.getClockHour.toString, formatter.format(time.getMinute.toLong), time.getAmPm)
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ import controllers.routes.TransportController
 import controllers.summary.routes.ArriveOrDepartSummaryController
 import forms.Location
 import forms.Location._
-
-import javax.inject.{Inject, Singleton}
 import models.ReturnToStartException
 import models.cache._
 import models.requests.JourneyRequest
@@ -32,10 +30,11 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat.Appendable
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.location
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -47,25 +46,27 @@ class LocationController @Inject() (
   locationPage: location,
   navigator: Navigator
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ARRIVE, JourneyType.DEPART)) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ARRIVE, JourneyType.DEPART)) { implicit request =>
     val location = request.answersAs[MovementAnswers].location
     Ok(buildPage(location.fold(form())(form().fill(_))))
   }
 
-  def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ARRIVE, JourneyType.DEPART)).async { implicit request =>
+  val saveLocation: Action[AnyContent] = (authenticate andThen journeyType(JourneyType.ARRIVE, JourneyType.DEPART)).async { implicit request =>
     if (request.answersAs[MovementAnswers].consignmentReferences.map(_.referenceValue).isEmpty) throw ReturnToStartException
 
-    form().bindFromRequest
+    form()
+      .bindFromRequest()
       .fold(
         (formWithErrors: Form[Location]) => Future.successful(BadRequest(buildPage(formWithErrors))),
         validForm =>
-          request.answers match {
+          (request.answers: @unchecked) match {
             case arrivalAnswers: ArrivalAnswers =>
               cache.upsert(request.cache.update(arrivalAnswers.copy(location = Some(validForm), readyToSubmit = Some(true)))).map { _ =>
                 Redirect(ArriveOrDepartSummaryController.displayPage)
               }
+
             case departureAnswers: DepartureAnswers =>
               cache.upsert(request.cache.update(departureAnswers.copy(location = Some(validForm)))).map { _ =>
                 navigator.continueTo(TransportController.displayPage)

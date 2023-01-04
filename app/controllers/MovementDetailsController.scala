@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import play.twirl.api.Html
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{arrival_details, departure_details}
 
@@ -46,14 +46,24 @@ class MovementDetailsController @Inject() (
   departureDetailsPage: departure_details,
   navigator: Navigator
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
-  val journeyAction = authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)
+  private val journeyAction = authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)
 
-  def displayPage: Action[AnyContent] = journeyAction { implicit request =>
-    request.answers match {
+  val displayPage: Action[AnyContent] = journeyAction { implicit request =>
+    (request.answers: @unchecked) match {
       case arrivalAnswers: ArrivalAnswers     => Ok(arrivalPage(arrivalAnswers))
       case departureAnswers: DepartureAnswers => Ok(departurePage(departureAnswers))
+    }
+  }
+
+  val saveMovementDetails: Action[AnyContent] = journeyAction.async { implicit request =>
+    ((request.answers: @unchecked) match {
+      case arrivalAnswers: ArrivalAnswers     => handleSavingArrival(arrivalAnswers)
+      case departureAnswers: DepartureAnswers => handleSavingDeparture(departureAnswers)
+    }).flatMap {
+      case Left(resultView) => Future.successful(BadRequest(resultView))
+      case Right(call)      => Future.successful(navigator.continueTo(call))
     }
   }
 
@@ -69,16 +79,6 @@ class MovementDetailsController @Inject() (
       departureAnswers.consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException)
     )
 
-  def saveMovementDetails: Action[AnyContent] = journeyAction.async { implicit request =>
-    (request.answers match {
-      case arrivalAnswers: ArrivalAnswers     => handleSavingArrival(arrivalAnswers)
-      case departureAnswers: DepartureAnswers => handleSavingDeparture(departureAnswers)
-    }).flatMap {
-      case Left(resultView) => Future.successful(BadRequest(resultView))
-      case Right(call)      => Future.successful(navigator.continueTo(call))
-    }
-  }
-
   private def handleSavingArrival(arrivalAnswers: ArrivalAnswers)(implicit request: JourneyRequest[AnyContent]): Future[Either[Html, Call]] = {
     def withDateSpecificErrors(formWithErrors: Form[ArrivalDetails]): Form[ArrivalDetails] =
       formWithErrors.copy(errors = formLevelErrors("Arrival", formWithErrors.errors))
@@ -89,7 +89,7 @@ class MovementDetailsController @Inject() (
 
     details
       .arrivalForm()
-      .bindFromRequest
+      .bindFromRequest()
       .fold(
         (formWithErrors: Form[ArrivalDetails]) =>
           Future.successful(Left(arrivalDetailsPage(withDateSpecificErrors(formWithErrors), consignmentReferenceValue))),
@@ -110,7 +110,7 @@ class MovementDetailsController @Inject() (
 
     details
       .departureForm()
-      .bindFromRequest
+      .bindFromRequest()
       .fold(
         (formWithErrors: Form[DepartureDetails]) =>
           Future.successful(Left(departureDetailsPage(withDateSpecificErrors(formWithErrors), consignmentReferenceValue))),

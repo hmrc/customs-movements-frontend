@@ -95,7 +95,7 @@ class AssociateUcrISpec extends IntegrationSpec {
         givenCacheFor("eori", AssociateUcrAnswers(), UcrBlock("8GB123457359100-TEST0002", UcrType.Ducr))
 
         val response =
-          post(MucrOptionsController.save(), "createOrAdd" -> "create", "newMucr" -> "GB/82F9-0N2F6500040010TO120P0A30068", "existingMucr" -> "")
+          post(MucrOptionsController.save, "createOrAdd" -> "create", "newMucr" -> "GB/82F9-0N2F6500040010TO120P0A30068", "existingMucr" -> "")
 
         status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(AssociateUcrController.displayPage.url)

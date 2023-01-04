@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,11 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
   protected def postRequest(): Request[AnyContent] = FakeRequest(POST, "/").withCSRFToken
   protected def postRequest[T](body: T)(implicit wts: Writes[T]): Request[AnyContentAsJson] =
     FakeRequest("POST", "/").withJsonBody(wts.writes(body)).withCSRFToken
+
+  protected def postRequestAsFormUrlEncoded(body: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
+    FakeRequest("POST", "/")
+      .withFormUrlEncodedBody(body: _*)
+      .withCSRFToken
 
   protected implicit def messages(implicit request: Request[_]): Messages = stubMessagesControllerComponents().messagesApi.preferred(request)
   protected implicit val flashApi: Flash = Flash()

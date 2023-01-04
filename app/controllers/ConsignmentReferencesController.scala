@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.consignment_references
 
@@ -44,19 +44,20 @@ class ConsignmentReferencesController @Inject() (
   consignmentReferencesPage: consignment_references,
   navigator: Navigator
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)) { implicit request =>
     val references = request.answersAs[MovementAnswers].consignmentReferences
     Ok(consignmentReferencesPage(references.fold(form(request.answers.`type`))(form(request.answers.`type`).fill(_))))
   }
 
-  def saveConsignmentReferences(): Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)).async { implicit request =>
-    form(request.answers.`type`).bindFromRequest
+  val saveConsignmentReferences: Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)).async { implicit request =>
+    form(request.answers.`type`)
+      .bindFromRequest()
       .fold(
         (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
         validForm =>
-          request.answers match {
+          (request.answers: @unchecked) match {
             case arrivalAnswers: ArrivalAnswers     => saveAndContinue(arrivalAnswers.copy(consignmentReferences = Some(validForm)))
             case departureAnswers: DepartureAnswers => saveAndContinue(departureAnswers.copy(consignmentReferences = Some(validForm)))
           }

@@ -27,52 +27,52 @@ POST        /consignment-query                   controllers.ileQuery.FindConsig
 GET         /consignment-query/:ucr              controllers.ileQuery.IleQueryController.getConsignmentData(ucr: String)
 
 # DUCR Part CHIEF page
-GET         /ducr-part-created-chief             controllers.DucrPartChiefController.displayPage()
-POST        /ducr-part-created-chief             controllers.DucrPartChiefController.submit()
+GET         /ducr-part-created-chief             controllers.DucrPartChiefController.displayPage
+POST        /ducr-part-created-chief             controllers.DucrPartChiefController.submit
 
 # DUCR Part details page
-GET         /ducr-part-details                   controllers.DucrPartDetailsController.displayPage()
-POST        /ducr-part-details                   controllers.DucrPartDetailsController.submitDucrPartDetails()
+GET         /ducr-part-details                   controllers.DucrPartDetailsController.displayPage
+POST        /ducr-part-details                   controllers.DucrPartDetailsController.submitDucrPartDetails
 
 # MUCR Options
-GET         /mucr-options                        controllers.consolidations.MucrOptionsController.displayPage()
-POST        /mucr-options                        controllers.consolidations.MucrOptionsController.save()
+GET         /mucr-options                        controllers.consolidations.MucrOptionsController.displayPage
+POST        /mucr-options                        controllers.consolidations.MucrOptionsController.save
 
 #Manage MUCR
-GET         /manage-mucr                         controllers.consolidations.ManageMucrController.displayPage()
-POST        /manage-mucr                         controllers.consolidations.ManageMucrController.submit()
+GET         /manage-mucr                         controllers.consolidations.ManageMucrController.displayPage
+POST        /manage-mucr                         controllers.consolidations.ManageMucrController.submit
 
 #Associate UCR
-GET         /associate-ucr                       controllers.consolidations.AssociateUcrController.displayPage()
-POST        /associate-ucr                       controllers.consolidations.AssociateUcrController.submit()
+GET         /associate-ucr                       controllers.consolidations.AssociateUcrController.displayPage
+POST        /associate-ucr                       controllers.consolidations.AssociateUcrController.submit
 
 # Disassociate UCR page
-GET         /dissociate-ucr                      controllers.consolidations.DisassociateUcrController.displayPage()
-POST        /dissociate-ucr                      controllers.consolidations.DisassociateUcrController.submit()
+GET         /dissociate-ucr                      controllers.consolidations.DisassociateUcrController.displayPage
+POST        /dissociate-ucr                      controllers.consolidations.DisassociateUcrController.submit
 
 # Enter DUCR page
-GET         /consignment-references              controllers.ConsignmentReferencesController.displayPage()
-POST        /consignment-references              controllers.ConsignmentReferencesController.saveConsignmentReferences()
+GET         /consignment-references              controllers.ConsignmentReferencesController.displayPage
+POST        /consignment-references              controllers.ConsignmentReferencesController.saveConsignmentReferences
 
 # Movement details page
-GET         /movement-details                    controllers.MovementDetailsController.displayPage()
-POST        /movement-details                    controllers.MovementDetailsController.saveMovementDetails()
+GET         /movement-details                    controllers.MovementDetailsController.displayPage
+POST        /movement-details                    controllers.MovementDetailsController.saveMovementDetails
 
 # Specific date-time page
-GET         /specific-date-and-time              controllers.SpecificDateTimeController.displayPage()
-POST        /specific-date-and-time              controllers.SpecificDateTimeController.submit()
+GET         /specific-date-and-time              controllers.SpecificDateTimeController.displayPage
+POST        /specific-date-and-time              controllers.SpecificDateTimeController.submit
 
 # Goods location page
-GET         /location                            controllers.LocationController.displayPage()
-POST        /location                            controllers.LocationController.saveLocation()
+GET         /location                            controllers.LocationController.displayPage
+POST        /location                            controllers.LocationController.saveLocation
 
 # Transport page
-GET         /transport                           controllers.TransportController.displayPage()
-POST        /transport                           controllers.TransportController.saveTransport()
+GET         /transport                           controllers.TransportController.displayPage
+POST        /transport                           controllers.TransportController.saveTransport
 
 # Shut a MUCR
-GET         /shut-mucr                           controllers.consolidations.ShutMucrController.displayPage()
-POST        /shut-mucr                           controllers.consolidations.ShutMucrController.submitForm()
+GET         /shut-mucr                           controllers.consolidations.ShutMucrController.displayPage
+POST        /shut-mucr                           controllers.consolidations.ShutMucrController.submitForm
 
 # Arrive | Depart Summary
 GET         /summary                             controllers.summary.ArriveOrDepartSummaryController.displayPage
@@ -94,7 +94,7 @@ POST        /shut-mucr-summary                   controllers.summary.ShutMucrSum
 GET         /movement-confirmation               controllers.summary.MovementConfirmationController.displayPage
 
 # Submissions page
-GET         /movements                           controllers.SubmissionsController.displayPage()
+GET         /movements                           controllers.SubmissionsController.displayPage
 
 # Notifications page
 GET         /notifications/:conversationId       controllers.NotificationsController.listOfNotifications(conversationId)
@@ -102,5 +102,5 @@ GET         /notifications/:conversationId       controllers.NotificationsContro
 # Sign out
 GET         /sign-out                            controllers.SignOutController.signOut(signOutReason: models.SignOutReason)
 
-GET         /we-signed-you-out                   controllers.SignOutController.sessionTimeoutSignedOut()
-GET         /you-have-signed-out                 controllers.SignOutController.userSignedOut()
+GET         /we-signed-you-out                   controllers.SignOutController.sessionTimeoutSignedOut
+GET         /you-have-signed-out                 controllers.SignOutController.userSignedOut

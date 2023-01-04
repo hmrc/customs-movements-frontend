@@ -1,5 +1,5 @@
 @*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 @import controllers.actions.ArriveDepartAllowList
 @import controllers.ileQuery.routes.IleQueryController
 @import controllers.routes.ChoiceOnConsignmentController
-@import forms.UcrType.{DucrPart, Mucr}
+@import forms.UcrType.Mucr
 @import models.requests.AuthenticatedRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.BackButton
@@ -83,7 +83,7 @@
     title = Title("movement.choice.title.consignment"),
     backButton = Some(BackButton(messages("site.back"), IleQueryController.getConsignmentData(ucrBlock.ucr)))
 ) {
-    @formHelper(action = ChoiceOnConsignmentController.submitChoice, 'autoComplete -> "off") {
+    @formHelper(action = ChoiceOnConsignmentController.submitChoice, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("movement.choice.section", ucrBlock.ucr))

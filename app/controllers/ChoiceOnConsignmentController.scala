@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.choice_on_consignment
 
@@ -44,7 +44,7 @@ class ChoiceOnConsignmentController @Inject() (
   arriveDepartAllowList: ArriveDepartAllowList,
   choicePage: choice_on_consignment
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
   val displayChoices: Action[AnyContent] = authenticate.async { implicit request =>
     def okPage(cacheAndUcr: CacheAndUcr): Future[Result] = {
@@ -59,7 +59,8 @@ class ChoiceOnConsignmentController @Inject() (
     def badRequestPage(formWithErrors: Form[Choice]): CacheAndUcr => Future[Result] =
       (cacheAndUcr: CacheAndUcr) => Future.successful(BadRequest(choicePage(formWithErrors, cacheAndUcr.ucrBlock)))
 
-    form.bindFromRequest
+    form
+      .bindFromRequest()
       .fold(formWithErrors => processWithCacheAndUcr(request.eori, badRequestPage(formWithErrors)), process)
   }
 

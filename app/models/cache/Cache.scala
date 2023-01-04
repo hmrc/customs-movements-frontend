@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package models.cache
 
 import forms.{DucrPartChiefChoice, UcrType}
-import models.UcrBlock
+import models.{now, UcrBlock}
 import play.api.libs.json._
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
@@ -29,14 +29,14 @@ case class Cache(
   ucrBlock: Option[UcrBlock],
   ucrBlockFromIleQuery: Boolean,
   ducrPartChiefChoice: Option[DucrPartChiefChoice],
-  updated: Option[Instant] = Some(Instant.now())
+  updated: Option[Instant] = Some(now)
 ) {
 
   def is(ucrType: UcrType): Boolean = ucrBlock.exists(_.is(ucrType))
 
   def isDucrPartChief: Boolean = ducrPartChiefChoice.exists(_.isDucrPart)
 
-  def update(answers: Answers): Cache = this.copy(answers = Some(answers), updated = Some(Instant.now()))
+  def update(answers: Answers): Cache = this.copy(answers = Some(answers), updated = Some(now))
 }
 
 object Cache {

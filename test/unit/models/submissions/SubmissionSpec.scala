@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,9 @@
 
 package models.submissions
 
-import java.time.Instant
-
 import base.UnitSpec
 import connectors.exchanges.ActionType.MovementType
-import models.UcrBlock
+import models.{now, UcrBlock}
 import org.scalatest.OptionValues
 import testdata.CommonTestData._
 
@@ -31,28 +29,24 @@ class SubmissionSpec extends UnitSpec with OptionValues {
     conversationId = conversationId,
     ucrBlocks = Seq(UcrBlock(ucr = correctUcr, ucrType = "M"), UcrBlock(ucr = correctUcr_2, ucrType = "DP")),
     actionType = MovementType.Arrival,
-    requestTimestamp = Instant.now()
+    requestTimestamp = now
   )
 
   "Submission Frontend Model" should {
 
     "return correct value for hasMucr method" in {
-
       submission.hasMucr mustBe true
     }
 
     "return correct value for hasDucrPart method" in {
-
       submission.hasDucrPart mustBe true
     }
 
     "extract MUCR correctly" in {
-
       submission.extractMucr.value mustBe correctUcr
     }
 
     "extract first UCR" in {
-
       submission.extractFirstUcr.value mustBe correctUcr
     }
   }

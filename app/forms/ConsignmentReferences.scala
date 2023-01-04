@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ object ConsignmentReferences {
   private val allowedReferenceAnswers: Seq[String] = Seq(Ducr, Mucr).map(_.codeValue)
 
   private def form2Model: (String, Option[String], Option[String]) => ConsignmentReferences = { case (reference, ducrValue, mucrValue) =>
-    reference match {
+    (reference: @unchecked) match {
       case Ducr.codeValue => ConsignmentReferences(Ducr, ducrValue.map(_.toUpperCase).getOrElse(""))
       case Mucr.codeValue => ConsignmentReferences(Mucr, mucrValue.map(_.toUpperCase).getOrElse(""))
     }

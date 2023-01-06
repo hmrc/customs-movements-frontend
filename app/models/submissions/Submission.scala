@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,14 @@
 
 package models.submissions
 
-import java.time.Instant
-import java.util.UUID
 import connectors.exchanges.ActionType
 import forms.UcrType.{DucrPart, Mucr}
-import models.UcrBlock
+import models.{now, UcrBlock}
 import play.api.libs.json._
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+
+import java.time.Instant
+import java.util.UUID
 
 case class Submission(
   uuid: String = UUID.randomUUID().toString,
@@ -30,7 +31,7 @@ case class Submission(
   conversationId: String,
   ucrBlocks: Seq[UcrBlock],
   actionType: ActionType,
-  requestTimestamp: Instant = Instant.now()
+  requestTimestamp: Instant = now
 ) {
 
   def hasMucr: Boolean = ucrBlocks.exists(_.ucrType == Mucr.codeValue)

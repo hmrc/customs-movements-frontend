@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,12 +52,13 @@ object Date {
   val monthKey = "month"
   val dayKey = "day"
 
-  val twoDigitFormatter = new DecimalFormat("00")
-  val fourDigitFormatter = new DecimalFormat("0000")
+  private lazy val twoDigitFormatter = new DecimalFormat("00")
+  private lazy val fourDigitFormatter = new DecimalFormat("0000")
 
-  def isValidDateOrAnyEmptyFields(day: String, month: String, year: String): Boolean =
+  private def isValidDateOrAnyEmptyFields(day: String, month: String, year: String): Boolean =
     if (isAnyFieldEmpty(Seq(day, month, year))) true
     else Try(LocalDate.of(year.toInt, month.toInt, day.toInt)).isSuccess
+
   def isAnyFieldPopulated(fields: Seq[String]): Boolean = fields.exists(_.nonEmpty)
   def isAnyFieldEmpty(fields: Seq[String]): Boolean = fields.exists(_.isEmpty)
   def isAnyFieldPopulatedCondition(fields: Seq[String]): Condition = mapping => fields.exists(field => mapping.getOrElse(field, "").nonEmpty)
@@ -99,6 +100,10 @@ object Date {
 
   private def model2form(date: Date): (String, String, String) = {
     val value = date.date
-    (twoDigitFormatter.format(value.getDayOfMonth), twoDigitFormatter.format(value.getMonthValue), fourDigitFormatter.format(value.getYear))
+    (
+      twoDigitFormatter.format(value.getDayOfMonth.toLong),
+      twoDigitFormatter.format(value.getMonthValue.toLong),
+      fourDigitFormatter.format(value.getYear.toLong)
+    )
   }
 }

@@ -114,7 +114,7 @@ class ArrivalISpec extends IntegrationSpec {
 
         // When
         val response = post(
-          MovementDetailsController.saveMovementDetails(),
+          MovementDetailsController.saveMovementDetails,
           "dateOfArrival.day" -> date.getDayOfMonth.toString,
           "dateOfArrival.month" -> date.getMonthValue.toString,
           "dateOfArrival.year" -> date.getYear.toString,
@@ -170,7 +170,7 @@ class ArrivalISpec extends IntegrationSpec {
         )
 
         // When
-        val response = post(LocationController.saveLocation(), "code" -> "GBAUEMAEMAEMA")
+        val response = post(LocationController.saveLocation, "code" -> "GBAUEMAEMAEMA")
 
         // Then
         status(response) mustBe SEE_OTHER

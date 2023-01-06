@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,7 @@ class TimeSpec extends UnitSpec with FormMatchers {
   val form: Form[Time] = Form(Time.mapping(""))
 
   "Time object" should {
-
     "contain all necessary, correct keys" in {
-
       hourKey must be("hour")
       minuteKey must be("minute")
       ampmKey must be("ampm")
@@ -86,9 +84,7 @@ class TimeSpec extends UnitSpec with FormMatchers {
     }
 
     "return no error" when {
-
       "time has correct values" in {
-
         val inputTime = Map(hourKey -> "10", minuteKey -> "10", ampmKey -> "AM")
         val forms = form.bind(inputTime)
 
@@ -99,7 +95,6 @@ class TimeSpec extends UnitSpec with FormMatchers {
     "bind correct time" when {
 
       "time is am" in {
-
         val inputTime = Map(hourKey -> "10", minuteKey -> "15", ampmKey -> "AM")
         val boundForm = form.bind(inputTime)
 
@@ -107,19 +102,16 @@ class TimeSpec extends UnitSpec with FormMatchers {
       }
 
       "time is pm" in {
-
         val inputTime = Map(hourKey -> "8", minuteKey -> "5", ampmKey -> "PM")
         val boundForm = form.bind(inputTime)
 
         boundForm.value mustBe Some(Time(LocalTime.of(20, 5)))
       }
-
     }
 
     "unbind correct time" when {
 
       "time is am" in {
-
         val filledForm = form.fill(Time(LocalTime.of(9, 25)))
 
         filledForm.data(Time.hourKey) mustBe "9"
@@ -128,7 +120,6 @@ class TimeSpec extends UnitSpec with FormMatchers {
       }
 
       "time is pm" in {
-
         val filledForm = form.fill(Time(LocalTime.of(20, 5)))
 
         filledForm.data(Time.hourKey) mustBe "8"
@@ -137,7 +128,6 @@ class TimeSpec extends UnitSpec with FormMatchers {
       }
 
       "after midnight" in {
-
         val filledForm = form.fill(Time(LocalTime.of(0, 5)))
 
         filledForm.data(Time.hourKey) mustBe "12"

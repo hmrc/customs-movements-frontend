@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,9 @@
 
 package controllers
 
-import java.time.Instant
-
 import connectors.CustomsDeclareExportsMovementsConnector
 import models.notifications.Notification
+import models.now
 import models.submissions.Submission
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
@@ -59,7 +58,6 @@ class SubmissionsControllerSpec extends ControllerLayerSpec with ScalaFutures {
   "Submissions Controller on displayPage" should {
 
     "return 200 (OK)" in {
-
       when(connector.fetchAllSubmissions(any[String])(any())).thenReturn(Future.successful(Seq.empty))
       when(connector.fetchAllNotificationsForUser(any[String])(any())).thenReturn(Future.successful(Seq.empty))
 
@@ -69,7 +67,6 @@ class SubmissionsControllerSpec extends ControllerLayerSpec with ScalaFutures {
     }
 
     "call connector for all Submissions" in {
-
       when(connector.fetchAllSubmissions(any[String])(any())).thenReturn(Future.successful(Seq.empty))
       when(connector.fetchAllNotificationsForUser(any[String])(any())).thenReturn(Future.successful(Seq.empty))
 
@@ -79,7 +76,6 @@ class SubmissionsControllerSpec extends ControllerLayerSpec with ScalaFutures {
     }
 
     "call connector for all Notifications" in {
-
       val submission = MovementsTestData.exampleSubmission()
       when(connector.fetchAllSubmissions(any[String])(any())).thenReturn(Future.successful(Seq(submission)))
       when(connector.fetchAllNotificationsForUser(any[String])(any())).thenReturn(Future.successful(Seq.empty))
@@ -92,10 +88,9 @@ class SubmissionsControllerSpec extends ControllerLayerSpec with ScalaFutures {
     "call submissions view, passing Submissions in descending order" when {
 
       "there are no Notifications for the Submissions" in {
-
-        val submission1 = exampleSubmission(requestTimestamp = Instant.now().minusSeconds(60))
-        val submission2 = exampleSubmission(requestTimestamp = Instant.now().minusSeconds(30))
-        val submission3 = exampleSubmission(requestTimestamp = Instant.now())
+        val submission1 = exampleSubmission(requestTimestamp = now.minusSeconds(60))
+        val submission2 = exampleSubmission(requestTimestamp = now.minusSeconds(30))
+        val submission3 = exampleSubmission(requestTimestamp = now)
 
         when(connector.fetchAllSubmissions(any[String])(any()))
           .thenReturn(Future.successful(Seq(submission1, submission2, submission3)))
@@ -110,10 +105,9 @@ class SubmissionsControllerSpec extends ControllerLayerSpec with ScalaFutures {
       }
 
       "there are Notifications for the Submissions" in {
-
-        val submission1 = exampleSubmission(conversationId = conversationId, requestTimestamp = Instant.now().minusSeconds(60))
-        val submission2 = exampleSubmission(conversationId = conversationId_2, requestTimestamp = Instant.now().minusSeconds(30))
-        val submission3 = exampleSubmission(conversationId = conversationId_3, requestTimestamp = Instant.now())
+        val submission1 = exampleSubmission(conversationId = conversationId, requestTimestamp = now.minusSeconds(60))
+        val submission2 = exampleSubmission(conversationId = conversationId_2, requestTimestamp = now.minusSeconds(30))
+        val submission3 = exampleSubmission(conversationId = conversationId_3, requestTimestamp = now)
 
         val notification1 = exampleNotificationFrontendModel(conversationId = conversationId)
         val notification2 = exampleNotificationFrontendModel(conversationId = conversationId_2)
@@ -122,6 +116,7 @@ class SubmissionsControllerSpec extends ControllerLayerSpec with ScalaFutures {
 
         when(connector.fetchAllSubmissions(any[String])(any()))
           .thenReturn(Future.successful(Seq(submission1, submission2, submission3)))
+
         when(connector.fetchAllNotificationsForUser(any[String])(any()))
           .thenReturn(Future.successful(Seq(notification1, notification2, notification3, notification4)))
 
@@ -132,17 +127,15 @@ class SubmissionsControllerSpec extends ControllerLayerSpec with ScalaFutures {
         val submissions: Seq[Submission] = viewArguments.map(_._1)
         val notifications: Seq[Seq[Notification]] = viewArguments.map(_._2)
         submissions mustBe Seq(submission3, submission2, submission1)
-        notifications mustBe Seq(Seq(notification4, notification3), Seq(notification2), Seq(notification1))
+        notifications mustBe Seq(Seq(notification3, notification4), Seq(notification2), Seq(notification1))
       }
     }
 
     "return 200 (OK)" when {
-
       "display page is invoked with submissions in descending order" in {
-
-        val submission1 = exampleSubmission(requestTimestamp = Instant.now().minusSeconds(60))
-        val submission2 = exampleSubmission(requestTimestamp = Instant.now().minusSeconds(30))
-        val submission3 = exampleSubmission(requestTimestamp = Instant.now())
+        val submission1 = exampleSubmission(requestTimestamp = now.minusSeconds(60))
+        val submission2 = exampleSubmission(requestTimestamp = now.minusSeconds(30))
+        val submission3 = exampleSubmission(requestTimestamp = now)
 
         when(connector.fetchAllSubmissions(anyString())(any()))
           .thenReturn(Future.successful(Seq(submission1, submission2, submission3)))
@@ -170,5 +163,4 @@ class SubmissionsControllerSpec extends ControllerLayerSpec with ScalaFutures {
     verify(mockMovementsPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
-
 }

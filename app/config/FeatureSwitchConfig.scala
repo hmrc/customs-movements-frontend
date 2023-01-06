@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,10 @@ class FeatureSwitchConfig @Inject() (configuration: Configuration) {
 
   def isFeatureOn(feature: Feature): Boolean = featureStatus(feature) == FeatureStatus.enabled
 
-  def setFeatureStatus(feature: Feature, status: FeatureStatus): Unit =
+  def setFeatureStatus(feature: Feature, status: FeatureStatus): Unit = {
     sys.props += (feature2Key(feature) -> status.toString)
+    ()
+  }
 
   def featureStatus(feature: Feature): FeatureStatus =
     getFeatureStatusFromProperties(feature).getOrElse(getFeatureStatusFromConfig(feature))

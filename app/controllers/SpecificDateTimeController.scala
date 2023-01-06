@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat.Appendable
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.specific_date_and_time
 
@@ -47,25 +47,26 @@ class SpecificDateTimeController @Inject() (
   dateTimeProvider: DateTimeProvider,
   navigator: Navigator
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)) { implicit request =>
     val choice = request.answersAs[MovementAnswers].specificDateTimeChoice
     Ok(buildPage(choice.fold(form())(form().fill(_))))
   }
 
-  def submit: Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)).async { implicit request =>
-    form().bindFromRequest
+  val submit: Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)).async { implicit request =>
+    form()
+      .bindFromRequest()
       .fold(
         (formWithErrors: Form[SpecificDateTimeChoice]) => Future.successful(BadRequest(buildPage(formWithErrors))),
         validForm => {
-          val answers = request.answers match {
+          val answers = (request.answers: @unchecked) match {
             case arrivalAnswers: ArrivalAnswers     => updateArrivalAnswers(arrivalAnswers, validForm)
             case departureAnswers: DepartureAnswers => updateDepartureAnswers(departureAnswers, validForm)
           }
           cache.upsert(request.cache.update(answers)).map { _ =>
             navigator.continueTo {
-              validForm.choice match {
+              (validForm.choice: @unchecked) match {
                 case SpecificDateTimeChoice.UserDateTime    => MovementDetailsController.displayPage
                 case SpecificDateTimeChoice.CurrentDateTime => LocationController.displayPage
               }
@@ -79,19 +80,21 @@ class SpecificDateTimeController @Inject() (
     specificDateTimePage(form, request.answersAs[MovementAnswers].consignmentReferences.map(_.referenceValue).getOrElse(throw ReturnToStartException))
 
   private def updateArrivalAnswers(arrivalAnswers: ArrivalAnswers, specificDateTimeChoice: SpecificDateTimeChoice): ArrivalAnswers = {
-    def createArrivalDetails(existingDetails: Option[ArrivalDetails]): Option[ArrivalDetails] = specificDateTimeChoice.choice match {
-      case SpecificDateTimeChoice.UserDateTime    => existingDetails
-      case SpecificDateTimeChoice.CurrentDateTime => Some(ArrivalDetails(dateTimeProvider.dateNow, dateTimeProvider.timeNow))
-    }
+    def createArrivalDetails(existingDetails: Option[ArrivalDetails]): Option[ArrivalDetails] =
+      (specificDateTimeChoice.choice: @unchecked) match {
+        case SpecificDateTimeChoice.UserDateTime    => existingDetails
+        case SpecificDateTimeChoice.CurrentDateTime => Some(ArrivalDetails(dateTimeProvider.dateNow, dateTimeProvider.timeNow))
+      }
 
     arrivalAnswers.copy(specificDateTimeChoice = Some(specificDateTimeChoice), arrivalDetails = createArrivalDetails(arrivalAnswers.arrivalDetails))
   }
 
   private def updateDepartureAnswers(departureAnswers: DepartureAnswers, specificDateTimeChoice: SpecificDateTimeChoice): DepartureAnswers = {
-    def createDepartureDetails(existingDetails: Option[DepartureDetails]): Option[DepartureDetails] = specificDateTimeChoice.choice match {
-      case SpecificDateTimeChoice.UserDateTime    => existingDetails
-      case SpecificDateTimeChoice.CurrentDateTime => Some(DepartureDetails(dateTimeProvider.dateNow, dateTimeProvider.timeNow))
-    }
+    def createDepartureDetails(existingDetails: Option[DepartureDetails]): Option[DepartureDetails] =
+      (specificDateTimeChoice.choice: @unchecked) match {
+        case SpecificDateTimeChoice.UserDateTime    => existingDetails
+        case SpecificDateTimeChoice.CurrentDateTime => Some(DepartureDetails(dateTimeProvider.dateNow, dateTimeProvider.timeNow))
+      }
 
     departureAnswers.copy(
       specificDateTimeChoice = Some(specificDateTimeChoice),

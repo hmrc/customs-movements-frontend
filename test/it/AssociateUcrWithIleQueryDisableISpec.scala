@@ -45,7 +45,7 @@ class AssociateUcrWithIleQueryDisableISpec extends IntegrationSpec {
         givenAuthSuccess("eori")
         givenCacheFor("eori", AssociateUcrAnswers())
 
-        val response = post(MucrOptionsController.save(), "createOrAdd" -> "create", "newMucr" -> "GB/123-12345", "existingMucr" -> "")
+        val response = post(MucrOptionsController.save, "createOrAdd" -> "create", "newMucr" -> "GB/123-12345", "existingMucr" -> "")
 
         status(response) mustBe SEE_OTHER
         redirectLocation(response) mustBe Some(AssociateUcrController.displayPage.url)

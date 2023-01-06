@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import models.cache.JourneyType.ASSOCIATE_UCR
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.consolidations.manage_mucr
 
@@ -43,11 +43,11 @@ class ManageMucrController @Inject() (
   page: manage_mucr,
   navigator: Navigator
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
   private val journeyActions = authenticate andThen getJourney(ASSOCIATE_UCR)
 
-  def displayPage: Action[AnyContent] = journeyActions { implicit request =>
+  val displayPage: Action[AnyContent] = journeyActions { implicit request =>
     if (request.cache.ucrBlock.map(_.isNot(UcrType.Mucr)).getOrElse(throw InvalidFeatureStateException))
       Redirect(MucrOptionsController.displayPage)
     else {
@@ -56,8 +56,9 @@ class ManageMucrController @Inject() (
     }
   }
 
-  def submit: Action[AnyContent] = journeyActions.async { implicit request =>
-    form.bindFromRequest
+  val submit: Action[AnyContent] = journeyActions.async { implicit request =>
+    form
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(page(formWithErrors, request.cache.ucrBlock))),
         validForm => {
@@ -66,7 +67,7 @@ class ManageMucrController @Inject() (
           val newManageMucrChoice = Some(validForm)
           val updatedAnswers = answers.copy(manageMucrChoice = newManageMucrChoice)
 
-          validForm.choice match {
+          (validForm.choice: @unchecked) match {
 
             case AssociateThisMucr =>
               // Here we need to create AssociateUCR from query and clear MucrOptions if ManageMucrChoice has changed

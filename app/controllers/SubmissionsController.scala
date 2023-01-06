@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ class SubmissionsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage: Action[AnyContent] = authenticate.async { implicit request =>
+  val displayPage: Action[AnyContent] = authenticate.async { implicit request =>
     for {
       submissions <- connector.fetchAllSubmissions(request.user.eori)
       notifications <- connector.fetchAllNotificationsForUser(request.user.eori)

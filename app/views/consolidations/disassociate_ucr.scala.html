@@ -1,5 +1,5 @@
 @*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@
     title = Title("disassociate.ucr.title"),
     backButton = Some(BackButton(messages("site.back.previousQuestion"), DucrPartChiefController.displayPage))
 ) {
-    @formHelper(action = DisassociateUcrController.submit, 'autoComplete -> "off") {
+    @formHelper(action = DisassociateUcrController.submit, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("disassociate.ucr.heading"))

@@ -1,5 +1,5 @@
 @*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@
 
 @govukLayout(title = Title("ileQuery.title"), backButton = Some(BackButton(messages("site.back.toStartPage"), ChoiceController.displayChoices))) {
 
-    @formHelper(action = FindConsignmentController.submitPage, 'autoComplete -> "off") {
+    @formHelper(action = FindConsignmentController.submitPage, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @exportsInputText(

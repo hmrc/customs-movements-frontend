@@ -1,5 +1,5 @@
 @*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@
     title = Title("location.question"),
     backButton = Some(BackButton(messages("site.back.previousQuestion"), backUrl))
 ) {
-    @formHelper(action = controllers.routes.LocationController.saveLocation(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.routes.LocationController.saveLocation, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages(s"movement.sectionHeading.${request.answers.`type`.toString.toLowerCase}", consignmentReference))

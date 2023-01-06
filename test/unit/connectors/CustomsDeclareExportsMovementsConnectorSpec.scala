@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -127,9 +127,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
   }
 
   "fetch all Submissions" should {
-
     "send GET request to the backend" in {
-
       val expectedSubmission = exampleSubmission()
       val submissionsJson =
         s"""[
@@ -160,9 +158,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
   }
 
   "fetch single Submission" should {
-
     "send GET request to the backend" in {
-
       val submission = Submission(
         eori = "eori",
         conversationId = conversationId,
@@ -201,9 +197,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
   }
 
   "fetch user Notifications" should {
-
     "send GET request to the backend" in {
-
       val expectedNotification = exampleNotificationFrontendModel()
       val notificationsJson =
         s"""[
@@ -239,9 +233,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
   }
 
   "fetch Notifications" should {
-
     "send GET request to the backend" in {
-
       val expectedNotification = exampleNotificationFrontendModel()
       val notificationsJson =
         s"""[
@@ -277,7 +269,6 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
   }
 
   "fetch Query Notifications" when {
-
     val expectedDucrInfo = DucrInfo(ucr = correctUcr, declarationId = "declarationId")
     val expectedNotification = SuccessfulResponseExchangeData(queriedDucr = Some(expectedDucrInfo))
     val notificationJson =
@@ -297,7 +288,6 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
     "everything works correctly" should {
 
       "send GET request to the backend" in {
-
         stubFor(
           get(s"/consignment-query/$conversationId?eori=eori")
             .willReturn(aResponse().withStatus(OK).withBody(notificationJson))
@@ -310,7 +300,6 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
       }
 
       "return HttpResponse with Ok (200) status and Notification in body" in {
-
         stubFor(
           get(s"/consignment-query/$conversationId?eori=eori")
             .willReturn(aResponse().withStatus(OK).withBody(notificationJson))
@@ -324,9 +313,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
     }
 
     "received FailedDependency (424) response" should {
-
       "return HttpResponse with FailedDependency status" in {
-
         stubFor(
           get(s"/consignment-query/$conversationId?eori=eori")
             .willReturn(aResponse().withStatus(FAILED_DEPENDENCY))
@@ -339,9 +326,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
     }
 
     "received InternalServerError (500) response" should {
-
       "return Internal server error" in {
-
         stubFor(
           get(s"/consignment-query/$conversationId?eori=eori")
             .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))

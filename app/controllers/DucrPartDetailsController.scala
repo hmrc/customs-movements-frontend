@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.ducr_part_details
 
@@ -45,11 +45,11 @@ class DucrPartDetailsController @Inject() (
   ducrPartsDetailsPage: ducr_part_details,
   navigator: Navigator
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
   private val journeyActions = authenticate andThen getJourney(ARRIVE, DEPART, ASSOCIATE_UCR, DISSOCIATE_UCR)
 
-  def displayPage: Action[AnyContent] = journeyActions.async { implicit request =>
+  val displayPage: Action[AnyContent] = journeyActions.async { implicit request =>
     cacheRepository
       .findByEori(request.eori)
       .map {
@@ -61,13 +61,14 @@ class DucrPartDetailsController @Inject() (
       .map(form => Ok(ducrPartsDetailsPage(form)))
   }
 
-  def submitDucrPartDetails(): Action[AnyContent] = journeyActions.async { implicit request =>
-    form().bindFromRequest
+  val submitDucrPartDetails: Action[AnyContent] = journeyActions.async { implicit request =>
+    form()
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(ducrPartsDetailsPage(formWithErrors))),
         validDucrPartDetails => {
           val ucrBlock = Some(validDucrPartDetails.toUcrBlock)
-          request.answers.`type` match {
+          (request.answers.`type`: @unchecked) match {
             case ARRIVE         => handleArrival(ucrBlock)
             case DEPART         => handleDeparture(ucrBlock)
             case ASSOCIATE_UCR  => handleAssociate(ucrBlock)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,13 +43,13 @@ object MucrOptions {
 
   val mapping = {
     def bind(creatOrAdd: String, newMucr: Option[String], existingMucr: Option[String]): MucrOptions =
-      creatOrAdd match {
+      (creatOrAdd: @unchecked) match {
         case Create => MucrOptions(Create, newMucr.getOrElse("").toUpperCase)
         case Add    => MucrOptions(Add, existingMucr.getOrElse("").toUpperCase)
       }
 
     def unbind(value: MucrOptions): Option[(String, Option[String], Option[String])] =
-      value.createOrAdd match {
+      (value.createOrAdd: @unchecked) match {
         case Create => Some((Create, Some(value.mucr), None))
         case Add    => Some((Add, None, Some(value.mucr)))
       }

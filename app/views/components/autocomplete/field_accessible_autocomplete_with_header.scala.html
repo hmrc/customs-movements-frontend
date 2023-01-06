@@ -1,5 +1,5 @@
 @*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,13 @@
 @import views.html.components.autocomplete.input_accessible_autocomplete
 
 @(field: Field, label: String, labelClass: Option[String], section: Option[String], hintText: Option[String], emptySelectValue: String, items: List[AutoCompleteItem], isPageHeading: Boolean, args: (Symbol, Any)*)(implicit messages: Messages)
+
 @*
 Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
 JQuery treats [] as element's attribute and tried evaluated this.
 To avoid problems, we need to remove [] from field.
 *@
+
 @fieldNameWithoutBrackets = @{
     field.name.replace("[]", "").replace(".", "_")
 }
@@ -34,7 +36,7 @@ To avoid problems, we need to remove [] from field.
 
 @allErrors = @{
     elements.errors ++ args.flatMap {
-        case ('otherErrors, otherErrors: Seq[_]) => otherErrors.map(_.toString)
+        case (Symbol("otherErrors"), otherErrors: Seq[_]) => otherErrors.map(_.toString)
         case _ => Seq.empty
     }
 }

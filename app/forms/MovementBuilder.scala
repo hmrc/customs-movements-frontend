@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,11 @@ class MovementBuilder @Inject() (zoneId: ZoneId) {
 
   private val movementDateTimeFormatter = DateTimeFormatter.ISO_INSTANT
 
-  def createMovementRequest(providerId: String, answers: Answers): MovementRequest = answers match {
-    case arrivalAnswers: ArrivalAnswers     => createMovementArrivalRequest(providerId, arrivalAnswers)
-    case departureAnswers: DepartureAnswers => createMovementDepartureRequest(providerId, departureAnswers)
-  }
+  def createMovementRequest(providerId: String, answers: Answers): MovementRequest =
+    (answers: @unchecked) match {
+      case arrivalAnswers: ArrivalAnswers     => createMovementArrivalRequest(providerId, arrivalAnswers)
+      case departureAnswers: DepartureAnswers => createMovementDepartureRequest(providerId, departureAnswers)
+    }
 
   private def createMovementArrivalRequest(eori: String, answers: ArrivalAnswers): MovementRequest =
     MovementRequest(

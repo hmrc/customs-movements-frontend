@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.ducr_part_chief
 
@@ -46,17 +46,18 @@ class DucrPartChiefController @Inject() (
   ducrPartChiefPage: ducr_part_chief,
   navigator: Navigator
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
   private val requiredActions = authenticate andThen getJourney(ARRIVE, DEPART, ASSOCIATE_UCR, DISSOCIATE_UCR)
 
-  def displayPage: Action[AnyContent] = requiredActions { implicit request =>
+  val displayPage: Action[AnyContent] = requiredActions { implicit request =>
     val choice = request.cache.ducrPartChiefChoice
     Ok(ducrPartChiefPage(choice.fold(form())(form().fill(_))))
   }
 
-  def submit: Action[AnyContent] = requiredActions.async { implicit request =>
-    form().bindFromRequest
+  val submit: Action[AnyContent] = requiredActions.async { implicit request =>
+    form()
+      .bindFromRequest()
       .fold(
         (formWithErrors: Form[DucrPartChiefChoice]) => Future.successful(BadRequest(ducrPartChiefPage(formWithErrors))),
         choice => updateCache(request.cache, choice)
@@ -74,7 +75,7 @@ class DucrPartChiefController @Inject() (
     if (choice.choice == DucrPartChiefChoice.IsDucrPart)
       navigator.continueTo(DucrPartDetailsController.displayPage)
     else
-      journeyType match {
+      (journeyType: @unchecked) match {
         case ARRIVE | DEPART => navigator.continueTo(ConsignmentReferencesController.displayPage)
         case ASSOCIATE_UCR   => navigator.continueTo(MucrOptionsController.displayPage)
         case DISSOCIATE_UCR  => navigator.continueTo(DisassociateUcrController.displayPage)

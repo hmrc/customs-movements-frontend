@@ -1,5 +1,5 @@
 @*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,14 @@
 
 @import views.components.autocomplete.AutoCompleteItem
 
-@(field: Field, emptySelectValue: String, items: List[AutoCompleteItem])(implicit messages: Messages)
+@(field: Field, emptySelectValue: String, items: List[AutoCompleteItem])
+
 @*
 Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
 JQuery treats [] as element's attribute and tried evaluated this.
 To avoid problems, we need to remove [] from field.
 *@
+
 @fieldNameWithoutBrackets = @{
     field.name.replace("[]", "").replace(".", "_")
 }

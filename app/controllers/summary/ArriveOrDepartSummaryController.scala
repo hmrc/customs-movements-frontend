@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ class ArriveOrDepartSummaryController @Inject() (
   private val authAndValidJourney = authenticate andThen journeyRefiner(ARRIVE, DEPART)
 
   val displayPage: Action[AnyContent] = authAndValidJourney { implicit request =>
-    request.answers match {
+    (request.answers: @unchecked) match {
       case arrivalAnswers: ArrivalAnswers     => Ok(arrivalSummaryPage(arrivalAnswers))
       case departureAnswers: DepartureAnswers => Ok(departureSummaryPage(departureAnswers))
     }

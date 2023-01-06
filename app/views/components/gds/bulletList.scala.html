@@ -1,5 +1,5 @@
 @*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 @this()
 
-@(title: Option[String] = None, elements: Seq[Html])(implicit messages: Messages)
+@(title: Option[String] = None, elements: Seq[Html])
 
 <nav>
     @title.map(paragraphBody(_, "govuk-body"))

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import controllers.ileQuery.routes.IleQueryController
 import forms.IleQueryForm.form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.ile_query
 
@@ -29,14 +29,15 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class FindConsignmentController @Inject() (authenticate: AuthAction, mcc: MessagesControllerComponents, ileQueryPage: ile_query)
-    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
   val displayPage: Action[AnyContent] = authenticate { implicit request =>
     Ok(ileQueryPage(form))
   }
 
   val submitPage: Action[AnyContent] = authenticate { implicit request =>
-    form.bindFromRequest
+    form
+      .bindFromRequest()
       .fold(formWithErrors => BadRequest(ileQueryPage(formWithErrors)), validUcr => Redirect(IleQueryController.getConsignmentData(validUcr)))
   }
 }

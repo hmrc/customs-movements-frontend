@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat.Appendable
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.consolidations.mucr_options
 
@@ -46,18 +46,16 @@ class MucrOptionsController @Inject() (
   page: mucr_options,
   navigator: Navigator
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen getJourney(ASSOCIATE_UCR)) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen getJourney(ASSOCIATE_UCR)) { implicit request =>
     val mucrOptions = request.answersAs[AssociateUcrAnswers].mucrOptions
     Ok(buildPage(mucrOptions.fold(form)(form.fill)))
   }
 
-  private def buildPage(form: Form[MucrOptions])(implicit request: JourneyRequest[_]): Appendable =
-    page(form, request.cache.ucrBlock, request.answersAs[AssociateUcrAnswers].manageMucrChoice)
-
-  def save(): Action[AnyContent] = (authenticate andThen getJourney(ASSOCIATE_UCR)).async { implicit request =>
-    form.bindFromRequest
+  val save: Action[AnyContent] = (authenticate andThen getJourney(ASSOCIATE_UCR)).async { implicit request =>
+    form
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(buildPage(formWithErrors))),
         validForm => {
@@ -73,4 +71,7 @@ class MucrOptionsController @Inject() (
         }
       )
   }
+
+  private def buildPage(form: Form[MucrOptions])(implicit request: JourneyRequest[_]): Appendable =
+    page(form, request.cache.ucrBlock, request.answersAs[AssociateUcrAnswers].manageMucrChoice)
 }

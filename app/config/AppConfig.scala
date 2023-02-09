@@ -67,12 +67,8 @@ class AppConfig @Inject() (
   lazy val customsDeclareExportsMovements = servicesConfig.baseUrl("customs-declare-exports-movements")
 
   lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("play.frontend.host")
-  val giveFeedbackLink: String = {
-    val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")
-    val contactFrontendServiceIdentifier: String = loadConfig("microservice.services.contact-frontend.serviceId")
-
-    s"$contactFrontendUrl?service=$contactFrontendServiceIdentifier"
-  }
+  val giveFeedbackLink: String =
+    loadConfig("urls.exportsFeedbackForm")
 
   lazy val movementsSubmissionUri = servicesConfig.getConfString(
     "customs-declare-exports-movements.submit-movements",

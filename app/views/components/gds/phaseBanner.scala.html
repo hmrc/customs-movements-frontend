@@ -19,10 +19,9 @@
 
 @this(govukPhaseBanner: GovukPhaseBanner, appConfig: AppConfig)
 
-@(phase: String)(implicit request: Request[_], messages: Messages)
+@(phase: String)(implicit messages: Messages)
 
-@backUrl = @{ appConfig.selfBaseUrl.map(url => s"&backUrl=$url${request.uri}").getOrElse("") }
-@betaFeedbackUrl = @{s"${appConfig.giveFeedbackLink}$backUrl"}
+@betaFeedbackUrl = @{s"${appConfig.giveFeedbackLink}"}
 @link = {<a href="@betaFeedbackUrl">@messages("feedback.link")</a>}
 
 @feedbackBanner = {

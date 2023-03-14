@@ -96,6 +96,15 @@ movement.choice.submissions.label = Bwrw golwg dros geisiadau
 movement.arrival = Nodi bod nwyddau wedi cyrraedd
 movement.departure = Nodi bod nwyddau wedi ymadael
 
+movement.choice.findconsignment.hint = Gwirio cynnydd MUCR neu DUCR penodol drwy’r tollau. Er enghraifft, er mwyn gweld a yw’r llwyth yn barod i ‘gyrraedd’.
+movement.choice.arrival.hint = Defnyddir negeseuon ‘cyrraedd’ i roi gwybod i’r tollau fod nwyddau wedi cyrraedd maes awyr neu borthladd codi.
+movement.choice.departure.hint = Defnyddir negeseuon ‘ymadael’ i roi gwybod i’r tollau fod nwyddau wedi gadael y DU.
+movement.choice.associateucr.hint = Gellir cysylltu rhifau Cyfeirnod Unigryw y Llwyth (UCR) â rhifau UCR eraill. Er enghraifft, gellir symud sawl allforyn sydd â gwahanol DUCR i gynhwysydd o dan un MUCR.
+movement.choice.disassociateucr.hint = Gellir hefyd datgysylltu rhifau UCR rhag rhifau UCR eraill. Er enghraifft, pan fydd allforyn yn cael ei symud allan o gynhwysydd.
+movement.choice.shutmucr.hint = Mae’r weithred o gau yn atal unrhyw gysylltiadau eraill â MUCR. Er enghraifft, os bydd cynhwysydd â MUCR yn cael ei gau a fyddai’n atal unrhyw gysylltiadau eraill achos ei fod yn llawn.
+movement.choice.submissions.hint = Bwrw golwg dros yr holl geisiadau rydych wedi eu gwneud gan ddefnyddio’r gwasanaeth hwn i wneud y canlynol i’r llwythi: cyrraedd, ymadael, cysylltu, datgysylltu a chau.
+
+
 startPage.title.sectionHeader = Arweiniad
 startPage.title = Rhoi gwybod i CThEF pan fydd nwyddau’n cyrraedd neu’n gadael porthladd yn y DU
 startPage.description = Defnyddiwch y Gwasanaeth Datganiadau Tollau i roi gwybod i CThEF pan fydd nwyddau sydd i’w hallforio o’r UE wedi cyrraedd neu adael porthladd yn y DU.

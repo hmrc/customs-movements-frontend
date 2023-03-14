@@ -101,7 +101,7 @@ class ChoiceViewSpec extends ViewSpec with BeforeAndAfterEach with Injector {
             element.tagName() mustBe "input"
             val ix = if (index == 0) "" else s"-${index + 1}"
             element.id() mustBe s"choice$ix"
-            element.lastElementSibling().text() mustBe messages(s"movement.choice.${choice.value.toLowerCase}.label")
+            element.lastElementSibling().text() mustBe messages(s"movement.choice.${choice.value.toLowerCase}.hint")
           }
       }
     }

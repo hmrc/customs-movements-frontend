@@ -99,6 +99,15 @@ movement.choice.submissions.label = View requests
 movement.arrival = Arrive goods
 movement.departure = Depart goods
 
+movement.choice.findconsignment.hint = Check the progress of a particular MUCR or DUCR through customs. For example, to see if a consignment is ready to be arrived.
+movement.choice.arrival.hint = Arrival messages are used to notify customs that goods have arrived at an airport or container port.
+movement.choice.departure.hint = Departure messages are used to notify customs that goods have left the UK.
+movement.choice.associateucr.hint = UCR numbers can be associated with other UCR numbers. For example, multiple exports with different DUCRs may be moved into a container under a single MUCR.
+movement.choice.disassociateucr.hint = UCR numbers can also be dissociated from other UCR numbers. For example, an export may be moved out of a container.
+movement.choice.shutmucr.hint = Shut stops further associations to a MUCR. For example, a container with a MUCR might be closed to further associations because it is full.
+movement.choice.submissions.hint = View all requests you have made using this service to arrive, depart, associate, dissociate, and shut consignments.
+
+
 startPage.title.sectionHeader = Guidance
 startPage.title = Tell HMRC when goods arrive at or leave a UK port
 startPage.description = Use the Customs Declaration Service to tell HMRC when goods to be exported out of the EU have arrived at or left a UK port.

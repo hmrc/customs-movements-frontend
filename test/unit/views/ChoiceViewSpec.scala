@@ -34,6 +34,8 @@ import testdata.MovementsTestData.newUser
 import views.html.choice
 import views.tags.ViewTest
 
+import scala.jdk.CollectionConverters._
+
 @ViewTest
 class ChoiceViewSpec extends ViewSpec with BeforeAndAfterEach with Injector {
 
@@ -93,16 +95,18 @@ class ChoiceViewSpec extends ViewSpec with BeforeAndAfterEach with Injector {
       List(true, false).foreach { arriveDepartAllowListFlag =>
         setArriveDepartAllowList(arriveDepartAllowListFlag)
 
-        allChoices
+        val view = createView()
+        val radios = view.getElementsByClass("govuk-radios__item").iterator().asScala.toList
+        val choices = allChoices
           .filterNot(choice => !arriveDepartAllowListFlag && (choice.isArrival || choice.isDeparture))
-          .zipWithIndex
-          .foreach { case (choice, index) =>
-            val element = createView().getElementsByAttributeValue("value", choice.value).get(0)
-            element.tagName() mustBe "input"
-            val ix = if (index == 0) "" else s"-${index + 1}"
-            element.id() mustBe s"choice$ix"
-            element.lastElementSibling().text() mustBe messages(s"movement.choice.${choice.value.toLowerCase}.label")
-          }
+
+        radios.size mustBe choices.size
+        choices.zip(radios).foreach { case (choice, element) =>
+          val children = element.children()
+          children.get(0).tagName() mustBe "input"
+          children.get(1).text() mustBe messages(s"movement.choice.${choice.value.toLowerCase}.label")
+          children.get(2).text() mustBe messages(s"movement.choice.${choice.value.toLowerCase}.hint")
+        }
       }
     }
 

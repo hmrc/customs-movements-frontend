@@ -57,7 +57,7 @@ error.ile.InvalidGoodsDateTime = The date and time is invalid
 error.ile.MucrNotShutDeparture = Shut MUCR before departing
 error.ile.FutureDateTimeOverExceeded = Cannot be more than 25 hours in the future
 error.ile.UcrIsNotMucr = This UCR is not for a MUCR
-error.ile.UcrNotExist = Enter a valid UCR
+error.ile.UcrNotExist = The UCR you have entered does not exist
 error.ile.UcrAlreadyDisassociated = The UCR needs to be associated before it can be disassociated
 error.ile.EmptyMucr = A MUCR is needed
 error.ile.LocationBasedPermissionFailed = Location-Based Permission failed
@@ -70,7 +70,7 @@ error.ile.AlreadyArrived = Cannot retrospectively arrive this MUCR/DUCR because 
 error.ile.UCRDoesNotExist = Cannot retrospectively arrive this DUCR/MUCR as it does not exist
 
 error.chief.MucrAlreadyShut = Consolidation already shut
-error.chief.UcrNotExist = Enter a valid UCR
+error.chief.UcrNotExist = The UCR you have entered does not exist
 error.chief.Refused = Refused - User Role not matched on MUCR Arrivals
 error.chief.UcrAlreadyAssociated = UCR is already associated to Master
 error.chief.InvalidUcrFormat = Invalid format of DUCR/MUCR

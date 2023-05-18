@@ -28,24 +28,18 @@ class DateSpec extends UnitSpec {
   "Date" should {
 
     "correct convert date to 102 format" in {
-
       val dateInput = Date(LocalDate.of(2019, 1, 1))
-
       dateInput.to102Format must be("20190101")
     }
 
     "return string in uuuu-MM-dd format for toString method" in {
-
       val dateInput = Date(LocalDate.of(2020, 3, 3))
-
       dateInput.toString must be("2020-03-03")
     }
   }
 
   "Object Date" should {
-
     "contains all necessary, correct keys" in {
-
       Date.dayKey must be("day")
       Date.monthKey must be("month")
       Date.yearKey must be("year")
@@ -57,7 +51,6 @@ class DateSpec extends UnitSpec {
     "return error" when {
 
       "date has incorrect format" in {
-
         val dateInput = Map("day" -> "31", "month" -> "2", "year" -> "2020")
         val errors = form.bind(dateInput).errors
 
@@ -66,7 +59,6 @@ class DateSpec extends UnitSpec {
       }
 
       "date has missing day" in {
-
         val dateInput = Map("day" -> "", "month" -> "2", "year" -> "2020")
         val errors = form.bind(dateInput).errors
 
@@ -75,7 +67,6 @@ class DateSpec extends UnitSpec {
       }
 
       "date has day out of range" in {
-
         val dateInput = Map("day" -> "32", "month" -> "2", "year" -> "2020")
         val errors = form.bind(dateInput).errors
 
@@ -84,7 +75,6 @@ class DateSpec extends UnitSpec {
       }
 
       "date has missing month" in {
-
         val dateInput = Map("day" -> "1", "month" -> "", "year" -> "2020")
         val errors = form.bind(dateInput).errors
 
@@ -93,7 +83,6 @@ class DateSpec extends UnitSpec {
       }
 
       "date has month out of range" in {
-
         val dateInput = Map("day" -> "1", "month" -> "13", "year" -> "2020")
         val errors = form.bind(dateInput).errors
 
@@ -102,7 +91,6 @@ class DateSpec extends UnitSpec {
       }
 
       "date has missing year" in {
-
         val dateInput = Map("day" -> "1", "month" -> "2", "year" -> "")
         val errors = form.bind(dateInput).errors
 
@@ -111,7 +99,6 @@ class DateSpec extends UnitSpec {
       }
 
       "date has year out of range" in {
-
         val dateInput = Map("day" -> "1", "month" -> "2", "year" -> "1999")
         val errors = form.bind(dateInput).errors
 
@@ -129,8 +116,7 @@ class DateSpec extends UnitSpec {
     }
 
     "return no error for correct date" in {
-
-      val dateInput = Map("day" -> "15", "month" -> "1", "year" -> "2020")
+      val dateInput = Map("day" -> " 15 ", "month" -> " 1 ", "year" -> " 2020 ")
       val errors = form.bind(dateInput).errors
 
       errors.length must be(0)

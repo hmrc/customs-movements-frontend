@@ -24,7 +24,7 @@ import models.confirmation.{FlashKeys, SubmissionResult}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import play.api.libs.json.{JsObject, JsString}
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.SubmissionService
@@ -69,7 +69,7 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
     super.afterEach()
   }
 
-  private val emptyForm = JsObject(Map("" -> JsString("")))
+  private val emptyForm = Json.obj("" -> "")
 
   "Movement Summary Controller on displayPage" should {
 

@@ -18,7 +18,7 @@ package forms
 
 import base.UnitSpec
 import play.api.data.FormError
-import play.api.libs.json.{JsObject, JsString, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 
 class ShutMucrSpec extends UnitSpec {
 
@@ -29,7 +29,6 @@ class ShutMucrSpec extends UnitSpec {
     "return error" when {
 
       "provided MUCR is empty" in {
-
         val errors = ShutMucr.form().bind(emptyShutMucrJSON, JsonBindMaxChars).errors
 
         errors.length must be(1)
@@ -37,7 +36,6 @@ class ShutMucrSpec extends UnitSpec {
       }
 
       "provided MUCR is in incorrect format" in {
-
         val errors = ShutMucr.form().bind(incorrectShutMucrJSON, JsonBindMaxChars).errors
 
         errors.length must be(1)
@@ -45,8 +43,7 @@ class ShutMucrSpec extends UnitSpec {
       }
 
       "provided MUCR length is over 35 characters long" in {
-
-        val errors = ShutMucr.form().bind(JsObject(Map("mucr" -> JsString("gb/abced1234-15804test12345678901234"))), JsonBindMaxChars).errors
+        val errors = ShutMucr.form().bind(Json.obj("mucr" -> "gb/abced1234-15804test12345678901234"), JsonBindMaxChars).errors
 
         errors.length must be(1)
         errors.head must equal(FormError("mucr", "error.mucr.format"))
@@ -54,9 +51,7 @@ class ShutMucrSpec extends UnitSpec {
     }
 
     "return no errors" when {
-
       "provided MUCR is correct" in {
-
         ShutMucr.form().bind(correctShutMucrJSON, JsonBindMaxChars).errors must be(empty)
       }
     }
@@ -64,15 +59,13 @@ class ShutMucrSpec extends UnitSpec {
     "convert to upper case" when {
 
       "provided MUCR is lower case" in {
-        val form = ShutMucr.form().bind(JsObject(Map("mucr" -> JsString("gb/abced1234-15804test"))), JsonBindMaxChars)
-
+        val form = ShutMucr.form().bind(Json.obj("mucr" -> " gb/abced1234-15804test "), JsonBindMaxChars)
         form.errors mustBe empty
         form.value.map(_.mucr) must be(Some("GB/ABCED1234-15804TEST"))
       }
 
       "provided MUCR is lower case and is 35 characters long" in {
-        val form = ShutMucr.form().bind(JsObject(Map("mucr" -> JsString("gb/abced1234-15804test1234567890123"))), JsonBindMaxChars)
-
+        val form = ShutMucr.form().bind(Json.obj("mucr" -> " gb/abced1234-15804test1234567890123 "), JsonBindMaxChars)
         form.errors mustBe empty
         form.value.map(_.mucr) must be(Some("GB/ABCED1234-15804TEST1234567890123"))
       }
@@ -82,10 +75,9 @@ class ShutMucrSpec extends UnitSpec {
 }
 
 object ShutMucrSpec {
-
-  val correctMucr: String = "GB/44ZKKLA1VD-AWLUD26N35DA"
+  val correctMucr: String = " GB/44ZKKLA1VD-AWLUD26N35DA "
   val incorrectMucr: String = "GB/44ZKKLA1VD-AWLUD26N35DA!@#$%^&*"
   val correctShutMucrJSON: JsValue = Json.toJson(ShutMucr(correctMucr))
   val incorrectShutMucrJSON: JsValue = Json.toJson(ShutMucr(incorrectMucr))
-  val emptyShutMucrJSON: JsValue = Json.toJson(ShutMucr(""))
+  val emptyShutMucrJSON: JsValue = Json.toJson(ShutMucr(" "))
 }

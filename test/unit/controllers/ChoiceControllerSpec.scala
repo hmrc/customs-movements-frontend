@@ -28,7 +28,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, JsString}
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import repository.MockCache
@@ -102,10 +102,8 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
     "throw an IllegalArgumentException" when {
       "form is incorrect" in {
-        val incorrectForm = JsObject(Map("choice" -> JsString("Incorrect")))
-
+        val incorrectForm = Json.obj("choice" -> "Incorrect")
         val result = controller.submitChoice(postRequest(incorrectForm))
-
         status(result) mustBe BAD_REQUEST
       }
     }
@@ -113,17 +111,15 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
     "create cache and return 303 (SEE_OTHER)" when {
 
       "choice is Find Consignment" in {
-        val findConsignmentForm = JsObject(Map("choice" -> JsString(FindConsignment.value)))
-
+        val findConsignmentForm = Json.obj("choice" -> FindConsignment.value)
         val result = controller.submitChoice(postRequest(findConsignmentForm))
-
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(FindConsignmentController.displayPage.url)
         theCacheUpserted.answers mustBe None
       }
 
       "choice is Arrival" in {
-        val arrivalForm = JsObject(Map("choice" -> JsString(Arrival.value)))
+        val arrivalForm = Json.obj("choice" -> Arrival.value)
 
         val result = controller.submitChoice(postRequest(arrivalForm))
 
@@ -133,7 +129,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
       }
 
       "choice is Departure" in {
-        val departureForm = JsObject(Map("choice" -> JsString(Departure.value)))
+        val departureForm = Json.obj("choice" -> Departure.value)
 
         val result = controller.submitChoice(postRequest(departureForm))
 
@@ -143,7 +139,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
       }
 
       "choice is Associate Ducr" in {
-        val associateDUCRForm = JsObject(Map("choice" -> JsString(AssociateUCR.value)))
+        val associateDUCRForm = Json.obj("choice" -> AssociateUCR.value)
 
         val result = controller.submitChoice(postRequest(associateDUCRForm))
 
@@ -153,7 +149,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
       }
 
       "choice is Disassociate Ducr" in {
-        val disassociateDUCRForm = JsObject(Map("choice" -> JsString(DisassociateUCR.value)))
+        val disassociateDUCRForm = Json.obj("choice" -> DisassociateUCR.value)
 
         val result = controller.submitChoice(postRequest(disassociateDUCRForm))
 
@@ -163,7 +159,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
       }
 
       "choice is Shut Mucr" in {
-        val shutMucrForm = JsObject(Map("choice" -> JsString(ShutMUCR.value)))
+        val shutMucrForm = Json.obj("choice" -> ShutMUCR.value)
 
         val result = controller.submitChoice(postRequest(shutMucrForm))
 
@@ -173,7 +169,7 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
       }
 
       "choice is Submission" in {
-        val submissionsForm = JsObject(Map("choice" -> JsString(Submissions.value)))
+        val submissionsForm = Json.obj("choice" -> Submissions.value)
 
         val result = controller.submitChoice(postRequest(submissionsForm))
 

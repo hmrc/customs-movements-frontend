@@ -42,42 +42,36 @@ class TimeSpec extends UnitSpec with FormMatchers {
       "hour is empty" in {
         val inputTime = Map(hourKey -> "", minuteKey -> "10", ampmKey -> "AM")
         val errors = form.bind(inputTime).errors
-
         errors must contain theSameElementsAs List(FormError("hour", "time.hour.missing"))
       }
 
       "hour is out of range" in {
         val inputTime = Map(hourKey -> "0", minuteKey -> "10", ampmKey -> "AM")
         val errors = form.bind(inputTime).errors
-
         errors must contain theSameElementsAs List(FormError("hour", "time.hour.error"))
       }
 
       "minute is empty" in {
         val inputTime = Map(hourKey -> "10", minuteKey -> "", ampmKey -> "AM")
         val errors = form.bind(inputTime).errors
-
         errors must contain theSameElementsAs List(FormError("minute", "time.minute.missing"))
       }
 
       "minute is out of range" in {
         val inputTime = Map(hourKey -> "10", minuteKey -> "60", ampmKey -> "AM")
         val errors = form.bind(inputTime).errors
-
         errors must contain theSameElementsAs List(FormError("minute", "time.minute.error"))
       }
 
       "am/pm is incorrect" in {
         val inputTime = Map(hourKey -> "10", minuteKey -> "10", ampmKey -> "am")
         val errors = form.bind(inputTime).errors
-
         errors must contain theSameElementsAs List(FormError("ampm", "time.ampm.error"))
       }
 
       "all three fields are missing" in {
         val inputTime = Map(hourKey -> "", minuteKey -> "", ampmKey -> "")
         val errors = form.bind(inputTime).errors
-
         errors.length mustBe 1
         errors must contain theSameElementsAs List(FormError("", "time.error.allEmpty"))
       }
@@ -87,7 +81,6 @@ class TimeSpec extends UnitSpec with FormMatchers {
       "time has correct values" in {
         val inputTime = Map(hourKey -> "10", minuteKey -> "10", ampmKey -> "AM")
         val forms = form.bind(inputTime)
-
         forms mustBe withoutErrors
       }
     }
@@ -95,16 +88,14 @@ class TimeSpec extends UnitSpec with FormMatchers {
     "bind correct time" when {
 
       "time is am" in {
-        val inputTime = Map(hourKey -> "10", minuteKey -> "15", ampmKey -> "AM")
+        val inputTime = Map(hourKey -> " 10 ", minuteKey -> " 15 ", ampmKey -> "AM")
         val boundForm = form.bind(inputTime)
-
         boundForm.value mustBe Some(Time(LocalTime.of(10, 15)))
       }
 
       "time is pm" in {
-        val inputTime = Map(hourKey -> "8", minuteKey -> "5", ampmKey -> "PM")
+        val inputTime = Map(hourKey -> " 8 ", minuteKey -> " 5 ", ampmKey -> "PM")
         val boundForm = form.bind(inputTime)
-
         boundForm.value mustBe Some(Time(LocalTime.of(20, 5)))
       }
     }
@@ -113,7 +104,6 @@ class TimeSpec extends UnitSpec with FormMatchers {
 
       "time is am" in {
         val filledForm = form.fill(Time(LocalTime.of(9, 25)))
-
         filledForm.data(Time.hourKey) mustBe "9"
         filledForm.data(Time.minuteKey) mustBe "25"
         filledForm.data(Time.ampmKey) mustBe "AM"
@@ -121,7 +111,6 @@ class TimeSpec extends UnitSpec with FormMatchers {
 
       "time is pm" in {
         val filledForm = form.fill(Time(LocalTime.of(20, 5)))
-
         filledForm.data(Time.hourKey) mustBe "8"
         filledForm.data(Time.minuteKey) mustBe "05"
         filledForm.data(Time.ampmKey) mustBe "PM"
@@ -129,7 +118,6 @@ class TimeSpec extends UnitSpec with FormMatchers {
 
       "after midnight" in {
         val filledForm = form.fill(Time(LocalTime.of(0, 5)))
-
         filledForm.data(Time.hourKey) mustBe "12"
         filledForm.data(Time.minuteKey) mustBe "05"
         filledForm.data(Time.ampmKey) mustBe "AM"

@@ -18,14 +18,12 @@ package forms
 
 import base.UnitSpec
 import play.api.data.FormError
-import play.api.libs.json.{JsObject, JsString}
+import play.api.libs.json.Json
 
 class LocationSpec extends UnitSpec {
 
   "Location model" should {
-
     "has correct formId value" in {
-
       Location.formId must be("Location")
     }
   }
@@ -35,50 +33,38 @@ class LocationSpec extends UnitSpec {
     "contains error" when {
 
       "location is empty" in {
-
         val inputData = Location("")
         val errors = Location.form().fillAndValidate(inputData).errors
-
         errors mustBe Seq(FormError("code", "location.code.empty"))
       }
 
       "location has incorrect country" in {
-
         val inputData = Location("XXAUcorrect")
         val errors = Location.form().fillAndValidate(inputData).errors
-
         errors mustBe Seq(FormError("code", "location.code.error"))
       }
 
       "location has incorrect type" in {
-
         val inputData = Location("GBEUcorrect")
         val errors = Location.form().fillAndValidate(inputData).errors
-
         errors mustBe Seq(FormError("code", "location.code.error"))
       }
 
       "location has incorrect qualifier code" in {
-
         val inputData = Location("GBAZcorrect")
         val errors = Location.form().fillAndValidate(inputData).errors
-
         errors mustBe Seq(FormError("code", "location.code.error"))
       }
 
       "location is shorter than 10 characters" in {
-
         val inputData = Location("GBAZ123")
         val errors = Location.form().fillAndValidate(inputData).errors
-
         errors mustBe Seq(FormError("code", "location.code.error"))
       }
 
       "location is longer than 17 characters" in {
-
         val inputData = Location("GBAU12345678912345")
         val errors = Location.form().fillAndValidate(inputData).errors
-
         errors mustBe Seq(FormError("code", "location.code.error"))
       }
     }
@@ -86,20 +72,13 @@ class LocationSpec extends UnitSpec {
     "not contains any errors" when {
 
       "data is correct" in {
-
-        val inputData = Location("PLAUcorrect")
+        val inputData = Location(" PLAUcorrect ")
         val errors = Location.form().fillAndValidate(inputData).errors
-
         errors.length must be(0)
       }
 
       "data converted to upper case" in {
-
-        def formData(code: String) =
-          JsObject(Map("code" -> JsString(code)))
-
-        val form = Location.form().bind(formData("plaucorrect"), JsonBindMaxChars)
-
+        val form = Location.form().bind(Json.obj("code" -> " plaucorrect "), JsonBindMaxChars)
         form.value.map(_.code) must be(Some("PLAUCORRECT"))
       }
     }

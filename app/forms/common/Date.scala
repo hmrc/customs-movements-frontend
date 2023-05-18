@@ -70,7 +70,7 @@ object Date {
       // This will never fire if any individual field-level "missing" errors have fired (see dayMapping below)
       .verifying("date.error.allEmpty", date => isAnyFieldPopulated(Seq(date._1, date._2, date._3)))
       // This error only fires if all fields have a value to check it's a valid date
-      .verifying("date.error.invalid", date => isValidDateOrAnyEmptyFields(date._1, date._2, date._3))
+      .verifying("date.error.invalid", date => isValidDateOrAnyEmptyFields(date._1.trim, date._2.trim, date._3.trim))
       .transform((form2model _).tupled, model2form)
 
   private def dayMapping(prefix: String): Mapping[String] = AdditionalConstraintsMapping(
@@ -96,7 +96,7 @@ object Date {
   )
 
   private def form2model(day: String, month: String, year: String): Date =
-    Date(LocalDate.of(year.toInt, month.toInt, day.toInt))
+    Date(LocalDate.of(year.trim.toInt, month.trim.toInt, day.trim.toInt))
 
   private def model2form(date: Date): (String, String, String) = {
     val value = date.date

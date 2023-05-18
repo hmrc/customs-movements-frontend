@@ -57,8 +57,7 @@ object Transport {
   )(form2Data)(Transport.unapply)
 
   private def form2Data(modeOfTransport: String, transportId: String, nationality: String): Transport =
-    new Transport(modeOfTransport, transportId, nationality.toUpperCase)
+    new Transport(modeOfTransport.trim, transportId.trim, nationality.trim.toUpperCase)
 
-  def form: Form[Transport] =
-    Form(mapping)
+  def form: Form[Transport] = Form(mapping)
 }

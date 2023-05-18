@@ -48,14 +48,15 @@ object DucrPartDetails {
     }
 
   val mapping: Mapping[DucrPartDetails] = {
-    def bind(ducr: String, ducrPartId: String): DucrPartDetails = DucrPartDetails(ducr.toUpperCase, ducrPartId.toUpperCase)
+    def bind(ducr: String, ducrPartId: String): DucrPartDetails =
+      DucrPartDetails(ducr.trim.toUpperCase, ducrPartId.trim.toUpperCase)
 
     Forms.mapping(
       "ducr" -> text()
         .verifying("ducrPartDetails.ducr.empty", nonEmpty)
         .verifying("ducrPartDetails.ducr.invalid", isEmpty or validDucrIgnoreCase),
       "ducrPartId" -> text()
-        .transform(_.toUpperCase, (o: String) => o)
+        .transform[String](_.trim.toUpperCase, identity)
         .verifying("ducrPartDetails.ducrPartId.empty", nonEmpty)
         .verifying("ducrPartDetails.ducrPartId.invalid", isEmpty or isValidDucrPartId)
     )(bind)(unapply)

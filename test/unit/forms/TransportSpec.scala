@@ -19,7 +19,7 @@ package forms
 import base.UnitSpec
 import forms.Transport.ModesOfTransport._
 import play.api.data.FormError
-import play.api.libs.json.{JsObject, JsString}
+import play.api.libs.json.Json
 import utils.TestDataHelper.createRandomAlphanumericString
 
 class TransportSpec extends UnitSpec {
@@ -27,12 +27,10 @@ class TransportSpec extends UnitSpec {
   "Transport model" should {
 
     "has correct formId value" in {
-
       Transport.formId must be("Transport")
     }
 
     "has correct values of Mode of Transport" in {
-
       Sea must be("1")
       Rail must be("2")
       Road must be("3")
@@ -44,7 +42,6 @@ class TransportSpec extends UnitSpec {
     }
 
     "contains all allowed modes of transport" in {
-
       Transport.allowedModeOfTransport.length must be(8)
       Transport.allowedModeOfTransport must contain(Sea)
       Transport.allowedModeOfTransport must contain(Rail)
@@ -63,7 +60,6 @@ class TransportSpec extends UnitSpec {
     "return error" when {
 
       "mode of transport, reference and nationality are empty" in {
-
         val inputData = Transport("", "", "")
         val errors = Transport.form.fillAndValidate(inputData).errors
 
@@ -75,7 +71,6 @@ class TransportSpec extends UnitSpec {
       }
 
       "mode of transport, reference and nationality are incorrect" in {
-
         val inputData = Transport("incorrect", createRandomAlphanumericString(36), "incorrect")
         val errors = Transport.form.fillAndValidate(inputData).errors
 
@@ -87,23 +82,19 @@ class TransportSpec extends UnitSpec {
     }
 
     "return no error" when {
-
       "values are correct for different country codes" in {
-        val transportPoland = Transport(Sea, "Reference", "PL")
+        val transportPoland = Transport(Sea, "Reference", " PL ")
         Transport.form.fillAndValidate(transportPoland).errors mustBe empty
 
-        val transportFinland = Transport(Rail, "SHIP-123", "FI")
+        val transportFinland = Transport(Rail, "SHIP-123", " FI ")
         Transport.form.fillAndValidate(transportFinland).errors mustBe empty
       }
     }
 
     "convert to upper case" when {
-
       "country is lower case" in {
-        val form = Transport.form.bind(
-          JsObject(Map("modeOfTransport" -> JsString("2"), "transportId" -> JsString("xwercwrxwy"), "nationality" -> JsString("pl"))),
-          JsonBindMaxChars
-        )
+        val form =
+          Transport.form.bind(Json.obj("modeOfTransport" -> " 2 ", "transportId" -> " xwercwrxwy ", "nationality" -> " pl "), JsonBindMaxChars)
 
         form.errors mustBe empty
         form.value.map(_.modeOfTransport) must be(Some("2"))

@@ -30,7 +30,6 @@ class DepartureDetailsSpec extends UnitSpec with FormMatchers {
   "Departure mapping" should {
 
     "format the date correctly" when {
-
       "date is in ISO 8601 format " in {
         val inputData = DepartureDetails(Date(LocalDate.of(2019, 1, 1)), Time(LocalTime.of(0, 0)))
         inputData.toString must be("2019-01-01T00:00:00")
@@ -60,10 +59,12 @@ class DepartureDetailsSpec extends UnitSpec with FormMatchers {
     }
 
     "return no errors" when {
-
       "date is correct" in {
-        val inputData = Date.mapping("dateOfDeparture.").withPrefix("dateOfDeparture").unbind(Date(LocalDate.now().minusDays(1))) ++
-          Time.mapping("timeOfDeparture.").withPrefix("timeOfDeparture").unbind(Time(LocalTime.now()))
+        val localDate = Date(LocalDate.now().minusDays(1))
+        val date = Date.mapping("dateOfDeparture.").withPrefix("dateOfDeparture").unbind(localDate)
+        val time = Time.mapping("timeOfDeparture.").withPrefix("timeOfDeparture").unbind(Time(LocalTime.now()))
+
+        val inputData = date ++ time
         val form = movementDetails.departureForm().bind(inputData)
         form mustBe withoutErrors
       }

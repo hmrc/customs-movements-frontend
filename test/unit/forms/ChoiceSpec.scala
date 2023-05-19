@@ -19,7 +19,7 @@ package forms
 import base.UnitSpec
 import forms.Choice._
 import org.scalatest.OptionValues
-import play.api.libs.json._
+import play.api.libs.json.{JsError, JsNumber, JsString, JsSuccess, JsValue, Json}
 
 class ChoiceSpec extends UnitSpec with OptionValues {
   import ChoiceSpec._
@@ -29,7 +29,6 @@ class ChoiceSpec extends UnitSpec with OptionValues {
     "attach errors to form" when {
       "provided with empty input" in {
         val form = Choice.form.bind(emptyChoiceJSON, JsonBindMaxChars)
-
         form.hasErrors mustBe true
         form.errors.length must equal(1)
         form.errors.head.message must equal("choicePage.input.error.empty")
@@ -37,7 +36,6 @@ class ChoiceSpec extends UnitSpec with OptionValues {
 
       "provided with an incorrect value" in {
         val form = Choice.form.bind(incorrectChoiceJSON, JsonBindMaxChars)
-
         form.hasErrors mustBe true
         form.errors.length must equal(1)
         form.errors.head.message must equal("choicePage.input.error.incorrectValue")
@@ -47,7 +45,6 @@ class ChoiceSpec extends UnitSpec with OptionValues {
     "not attach any error" when {
       "provided with valid input" in {
         val form = Choice.form.bind(correctChoiceJSON, JsonBindMaxChars)
-
         form.hasErrors mustBe false
       }
     }
@@ -122,10 +119,9 @@ class ChoiceSpec extends UnitSpec with OptionValues {
 
 object ChoiceSpec {
 
-  val correctChoiceJSON: JsValue = createChoiceJSON(Arrival.value)
-  val incorrectChoiceJSON: JsValue = createChoiceJSON("InvalidChoice")
-  val emptyChoiceJSON: JsValue = createChoiceJSON()
+  val correctChoiceJSON = createChoiceJSON(Arrival.value)
+  val incorrectChoiceJSON = createChoiceJSON("InvalidChoice")
+  val emptyChoiceJSON = createChoiceJSON()
 
-  def createChoiceJSON(choiceValue: String = ""): JsValue =
-    JsObject(Map("choice" -> JsString(choiceValue)))
+  def createChoiceJSON(choiceValue: String = ""): JsValue = Json.obj("choice" -> choiceValue)
 }

@@ -24,10 +24,11 @@ import utils.validators.forms.FieldValidator._
 
 class FieldValidatorSpec extends AnyWordSpec with Matchers {
 
-  val anyString = "Any string"
+  val anyString = " Any string "
   val emptyString = ""
 
   "Predicate operations" should {
+
     "correctly apply and logic for booleans" in {
       (true and true) mustBe true
       (true and false) mustBe false
@@ -92,6 +93,7 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
   }
 
   "FormFieldValidator isEmpty" should {
+
     "return false" when {
       "provided with non empty value" in {
         isEmpty(anyString) mustBe false
@@ -106,6 +108,7 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
   }
 
   "FormFieldValidation nonEmpty" should {
+
     "return false" when {
       "provided with empty value" in {
         nonEmpty(emptyString) mustBe false
@@ -120,87 +123,83 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
   }
 
   "FormFieldValidator noLongerThan" should {
+
     "return false" when {
+
       "provided with negative length value" in {
         val length = -1
-
         noLongerThan(length)(anyString) mustBe false
       }
 
       "provided with String longer than provided length value" in {
         val length = 1
-
         noLongerThan(length)(anyString) mustBe false
       }
     }
 
     "return true" when {
+
       "provided with String shorter than provided length value" in {
         val length = 20
-
         noLongerThan(length)(anyString) mustBe true
       }
 
       "provided with String with length equal to provided value" in {
         val length = 10
-
         noLongerThan(length)(anyString) mustBe true
       }
 
       "provided with empty String and length value equal 0" in {
         val length = 0
-
         noLongerThan(length)(emptyString) mustBe true
       }
     }
   }
 
   "FormFieldValidation noShorterThan" should {
+
     "return false" when {
       "provided with shorter string" in {
         val length = 20
-
         noShorterThan(length)(anyString) mustBe false
       }
     }
 
     "return true" when {
+
       "provided with negative length value" in {
         val length = -1
-
         noShorterThan(length)(anyString) mustBe true
       }
+
       "provided with string longer than provided length value" in {
         val length = 1
-
         noShorterThan(length)(anyString) mustBe true
       }
 
       "provided with string exactly the same length that provided" in {
         val length = 10
-
         noShorterThan(length)(anyString) mustBe true
       }
 
       "provided with empty string and length equal 0" in {
         val length = 0
-
         noShorterThan(length)(emptyString) mustBe true
       }
     }
   }
 
   "FormFieldValidation hasSpecificLength" should {
+
     "return false" when {
+
       "provided with string shorter than expected value" in {
         val length = 20
-
         hasSpecificLength(length)(anyString) mustBe false
       }
 
       "provided with string longer than expected value" in {
         val length = 5
-
         hasSpecificLength(length)(anyString) mustBe false
       }
     }
@@ -208,14 +207,15 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
     "return true" when {
       "provided with string has the same length like expected value" in {
         val length = 10
-
         hasSpecificLength(length)(anyString) mustBe true
       }
     }
   }
 
   "FormFieldValidator isNumeric" should {
+
     "return false" when {
+
       "provided with alphabetic character" in {
         val input = "A"
         isNumeric(input) mustBe false
@@ -238,42 +238,43 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
     }
 
     "return true" when {
+
       "provided with single numeric character" in {
-        val input = "1"
+        val input = " 1 "
         isNumeric(input) mustBe true
       }
 
       "provided with multiple numeric characters" in {
-        val input = "1234567890"
+        val input = " 1234567890 "
         isNumeric(input) mustBe true
       }
 
       "provided with empty String" in {
-        val input = ""
+        val input = " "
         isNumeric(input) mustBe true
       }
     }
   }
 
   "FormFieldValidator isAllCapitalLetter" should {
+
     "return false" when {
+
       "provided with string with numbers" in {
         val input = "ASD123ASD"
-
         isAllCapitalLetter(input) mustBe false
       }
 
       "provided with string with lowercase" in {
         val input = "ASDzxcASD"
-
         isAllCapitalLetter(input) mustBe false
       }
     }
 
     "return true" when {
-      "provided with string with uppercase letters" in {
-        val input = "ABCDEF"
 
+      "provided with string with uppercase letters" in {
+        val input = " ABCDEF "
         isAllCapitalLetter(input) mustBe true
       }
 
@@ -284,7 +285,9 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
   }
 
   "FormFieldValidator on isAlphabetic" should {
+
     "return false" when {
+
       "provided with numeric character" in {
         val input = "1"
         isAlphabetic(input) mustBe false
@@ -307,25 +310,28 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
     }
 
     "return true" when {
+
       "provided with single alphabetic character" in {
-        val input = "A"
+        val input = " A "
         isAlphabetic(input) mustBe true
       }
 
       "provided with multiple alphabetic characters" in {
-        val input = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        val input = " ABCDEFGHIJKLMNOPQRSTUVWXYZ "
         isAlphabetic(input) mustBe true
       }
 
       "provided with empty String" in {
-        val input = ""
+        val input = " "
         isAlphabetic(input) mustBe true
       }
     }
   }
 
   "FormFieldValidator isAlphanumeric" should {
+
     "return false" when {
+
       "provided with special character" in {
         val input = "%"
         isAlphanumeric(input) mustBe false
@@ -338,75 +344,75 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
     }
 
     "return true" when {
+
       "provided with single numeric character" in {
-        val input = "8"
+        val input = " 8 "
         isAlphanumeric(input) mustBe true
       }
 
       "provided with single alphabetic character" in {
-        val input = "A"
+        val input = " A "
         isAlphanumeric(input) mustBe true
       }
 
       "provided with both numeric and alphabetic characters" in {
-        val input = "ABCD2358"
+        val input = " ABCD2358 "
         isAlphanumeric(input) mustBe true
       }
 
       "provided with empty String" in {
-        val input = ""
+        val input = " "
         isAlphanumeric(input) mustBe true
       }
     }
   }
 
   "FormFieldValidation isAlphanumericWithSpecialCharacters" should {
+
     "return false" when {
+
       "provided with string contains special characters not present in allowed characters set" in {
         val specialCharacters = Set(' ', '$', '@')
         val inputWithOtherSpecialChars = "as!$ &*3sda"
-
         isAlphanumericWithSpecialCharacters(specialCharacters)(inputWithOtherSpecialChars) mustBe false
       }
 
       "provided with string contains special characters but allowed special characters set is empty" in {
         val specialCharacters: Set[Char] = Set()
         val input = "asd!@#$%gh"
-
         isAlphanumericWithSpecialCharacters(specialCharacters)(input) mustBe false
       }
     }
 
     "return true" when {
+
       "provided with string doesn't have special characters" in {
         val specialCharacters = Set(' ', '$', '@')
-        val input = "asd213"
-
+        val input = " asd213 "
         isAlphanumericWithSpecialCharacters(specialCharacters)(input) mustBe true
       }
 
       "provided with string contains only special characters from the list" in {
         val specialCharacters = Set(' ', '$', '@')
-        val input = "A a B$ b$ C@ c@"
-
+        val input = " A a B$ b$ C@ c@ "
         isAlphanumericWithSpecialCharacters(specialCharacters)(input) mustBe true
       }
     }
   }
 
   "FormFieldValidation isAlphanumericWithAllowedSpecialCharacters" should {
+
     "return false" when {
       "provided with unsupported special characters" in {
         val input = "%$%$#@"
-
         isAlphanumericWithAllowedSpecialCharacters(input) mustBe false
       }
     }
 
     "return true" when {
-      "provided with only numeric characters" in {
-        val input = "1234"
 
+      "provided with only numeric characters" in {
+        val input = " 1234 "
         isAlphanumericWithAllowedSpecialCharacters(input) mustBe true
       }
 
@@ -415,24 +421,23 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
       }
 
       "provided with string with both alphabetic and numeric characters" in {
-        val input = "123abc"
-
+        val input = " 123abc "
         isAlphanumericWithAllowedSpecialCharacters(input) mustBe true
       }
 
       "provided with supported special characters" in {
-        val input = "Special characters a,.-'/"
-
+        val input = " Special characters a,.-'/ "
         isAlphanumericWithAllowedSpecialCharacters(input) mustBe true
       }
     }
   }
 
   "FormFieldValidator startsWithCapitalLetter" should {
+
     "return false" when {
+
       "input start with lowercase" in {
         val input = "lowercaseString"
-
         startsWithCapitalLetter(input) mustBe false
       }
 
@@ -443,15 +448,16 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
 
     "return true" when {
       "string start with capital letter" in {
-        val input = "CapitalLetter"
-
+        val input = " CapitalLetter "
         startsWithCapitalLetter(input) mustBe true
       }
     }
   }
 
   "FormFieldValidator isContainedIn" should {
+
     "return false" when {
+
       "list is empty" in {
         isContainedIn(List())("element") mustBe false
       }
@@ -464,14 +470,15 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
     "return true" when {
       "element is on the list" in {
         val list = List("A", "B", "C")
-
-        isContainedIn(list)("A") mustBe true
+        isContainedIn(list)(" A ") mustBe true
       }
     }
   }
 
   "FormFieldValidator containsNotOnlyZeros" should {
+
     "return false" when {
+
       "string contains only zero" in {
         containsNotOnlyZeros("0") mustBe false
       }
@@ -483,32 +490,32 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
     }
 
     "return true" when {
+
       "string is empty" in {
-        containsNotOnlyZeros("") mustBe true
+        containsNotOnlyZeros(" ") mustBe true
       }
 
       "string contains different digits than 0" in {
-        val input = "1230"
-
+        val input = " 1230 "
         containsNotOnlyZeros(input) mustBe true
       }
 
       "string contains alphabetic characters" in {
-        val input = "asv"
-
+        val input = " asv "
         containsNotOnlyZeros(input) mustBe true
       }
 
       "string contains alphabetic characters and 0" in {
-        val input = "0asd00"
-
+        val input = " 0asd00 "
         containsNotOnlyZeros(input) mustBe true
       }
     }
   }
 
   "FormFieldValidator isTailNumeric" should {
+
     "return false" when {
+
       "input is empty" in {
         isTailNumeric("") mustBe false
       }
@@ -523,15 +530,16 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
     }
 
     "return true" when {
-
       "input contains all numeric characters starts from 2nd char" in {
-        isTailNumeric("a1241") mustBe true
+        isTailNumeric(" a1241 ") mustBe true
       }
     }
   }
 
   "FormFieldValidator hasNoMoreDecimalPlacesThan" should {
+
     "return false" when {
+
       "input contains non-numeric characters" in {
         val input = "123A"
         val decimalPlaces = 1
@@ -558,26 +566,27 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
     }
 
     "return true" when {
+
       "input contains less digits after decimal place than required" in {
-        val input = "123.4"
+        val input = " 123.4 "
         val decimalPlaces = 3
         isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces)(input) mustBe true
       }
 
       "input contains the exact number of digits after decimal place to what is required" in {
-        val input = "123.456"
+        val input = " 123.456 "
         val decimalPlaces = 3
         isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces)(input) mustBe true
       }
 
       "input contains no decimal separator" in {
-        val input = "12345"
+        val input = " 12345 "
         val decimalPlaces = 3
         isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces)(input) mustBe true
       }
 
       "input contains no digit before decimal place" in {
-        val input = ".123"
+        val input = " .123 "
         val decimalPlaces = 3
         isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces)(input) mustBe true
       }
@@ -588,60 +597,55 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
   val decimalPlaces = 5
 
   "FormFieldValidator validate decimal" should {
+
     "return false" when {
+
       "input contains letters" in {
         val input = "123.asd213"
-
         validateDecimal(totalDecimalLength)(decimalPlaces)(input) mustBe false
       }
 
       "input contains two or more dots" in {
         val firstInput = "123.123.123"
         val secondInput = "1243.1423.121233.135423.124"
-
         validateDecimal(totalDecimalLength)(decimalPlaces)(firstInput) mustBe false
         validateDecimal(totalDecimalLength)(decimalPlaces)(secondInput) mustBe false
       }
 
       "input without decimal places, but longer than allowed" in {
         val input = "12345678901"
-
         validateDecimal(totalDecimalLength)(decimalPlaces)(input) mustBe false
       }
 
       "input longer than length" in {
         val input = "123456.12345"
-
         validateDecimal(totalDecimalLength)(decimalPlaces)(input) mustBe false
       }
 
       "input with more decimal places than allowed" in {
         val input = "12.123456"
-
         validateDecimal(totalDecimalLength)(decimalPlaces)(input) mustBe false
       }
     }
 
     "return true" when {
+
       "input is empty" in {
         validateDecimal(totalDecimalLength)(decimalPlaces)(emptyString) mustBe true
       }
 
       "input without decimal places" in {
-        val input = "123456"
-
+        val input = " 123456 "
         validateDecimal(totalDecimalLength)(decimalPlaces)(input) mustBe true
       }
 
       "input with dot and without decimal places" in {
-        val input = "123456."
-
+        val input = " 123456. "
         validateDecimal(totalDecimalLength)(decimalPlaces)(input) mustBe true
       }
 
       "input with whole decimal number" in {
-        val input = "1234.1234"
-
+        val input = " 1234.1234 "
         validateDecimal(totalDecimalLength)(decimalPlaces)(input) mustBe true
       }
     }
@@ -650,6 +654,7 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
   "FormFieldValidator containsDuplicates" should {
 
     "return false" when {
+
       "input contains no value" in {
         val input = Seq.empty
         containsDuplicates(input) mustBe false
@@ -667,6 +672,7 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
     }
 
     "return true" when {
+
       "input contains 2 identical values" in {
         val input = Seq("value", "value")
         containsDuplicates(input) mustBe true
@@ -678,7 +684,7 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
       }
 
       "input contains 2 identical values mixed with uniques" in {
-        val input = Seq("value", "value_1", "value_2", "value", "value_3")
+        val input = Seq("value", "value_1", "value_2 ", "value", "value_3")
         containsDuplicates(input) mustBe true
       }
 
@@ -692,6 +698,7 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
   "FormFieldValidator containsUniques" should {
 
     "return false" when {
+
       "input contains 2 identical values" in {
         val input = Seq("value", "value")
         areAllElementsUnique(input) mustBe false
@@ -714,18 +721,19 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
     }
 
     "return true" when {
+
       "input contains no value" in {
         val input = Seq.empty
         areAllElementsUnique(input) mustBe true
       }
 
       "input contains single value" in {
-        val input = Seq("value")
+        val input = Seq(" value ")
         areAllElementsUnique(input) mustBe true
       }
 
       "input contains only unique values" in {
-        val input = Seq("value_1", "value_2", "value_3")
+        val input = Seq(" value_1 ", " value_2 ", " value_3 ")
         areAllElementsUnique(input) mustBe true
       }
     }
@@ -742,21 +750,27 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
      */
 
     "return false" when {
+
       "first format first section too short" in {
         validMucr("GB/12-ABCDE") mustBe false
       }
+
       "first format first section too long" in {
         validMucr("GB/12345-ABCDE") mustBe false
       }
+
       "first format first section contains illegal character" in {
         validMucr("GB/12e-ABCDE") mustBe false
       }
+
       "first format second section too short" in {
         validMucr("GB/123-ABCD") mustBe false
       }
+
       "first format second section too long" in {
         validMucr("GB/123-ABCDEFGHIJABCDEFGHIJABCDEFGHIJ") mustBe false
       }
+
       "first format second section contains illegal character" in {
         validMucr("GB/123-ABCDe") mustBe false
       }
@@ -767,15 +781,19 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
       "second format first section too long" in {
         validMucr("GB/1234567890123-A") mustBe false
       }
+
       "second format first section contains illegal character" in {
         validMucr("GB/12345678a-A") mustBe false
       }
+
       "second format second section too short" in {
         validMucr("GB/123456789-") mustBe false
       }
+
       "second format second section too long" in {
         validMucr("GB/123456789-ABCDEFGHIJABCDEFGHIJABCDEFGHIJ") mustBe false
       }
+
       "second format second section contains illegal character" in {
         validMucr("GB/123456789-a") mustBe false
       }
@@ -783,12 +801,15 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
       "third format first section wrong size" in {
         validMucr("A:AB12345678") mustBe false
       }
+
       "third format first section contains illegal character" in {
         validMucr("A:aBC12345678") mustBe false
       }
+
       "third format second section wrong size" in {
         validMucr("A:ABC123456789") mustBe false
       }
+
       "third format second section contains illegal character" in {
         validMucr("A:ABC1234567e") mustBe false
       }
@@ -796,44 +817,56 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
       "fourth format first section wrong size" in {
         validMucr("C:AB12345") mustBe false
       }
+
       "fourth format first section contains illegal character" in {
         validMucr("C:ABc123") mustBe false
       }
+
       "fourth format second section too short" in {
         validMucr("C:ABC12") mustBe false
       }
+
       "fourth format second section too long" in {
         validMucr("C:ABC1234567890123456789012345678901") mustBe false
       }
+
       "fourth format second section contains illegal character" in {
         validMucr("C:ABC12e") mustBe false
       }
     }
 
     "return true" when {
+
       "using test constant" in {
         validMucr(CommonTestData.validMucr) mustBe true
       }
+
       "is minimum first format" in {
-        validMucr("GB/123-ABCDE") mustBe true
+        validMucr(" GB/123-ABCDE ") mustBe true
       }
+
       "is minimum second format" in {
-        validMucr("GB/123456789-A") mustBe true
+        validMucr(" GB/123456789-A ") mustBe true
       }
+
       "is third format" in {
-        validMucr("A:ABC12345678") mustBe true
+        validMucr(" A:ABC12345678 ") mustBe true
       }
+
       "is minimum fourth format" in {
-        validMucr("C:ABC123") mustBe true
+        validMucr(" C:ABC123 ") mustBe true
       }
+
       "is maximum first format" in {
-        validMucr("GB/ABCD-1234567890123456789012345678") mustBe true
+        validMucr(" GB/ABCD-1234567890123456789012345678 ") mustBe true
       }
+
       "is maximum second format" in {
-        validMucr("GB/ABCDEFGHIJKL-12345678901234567890123") mustBe true
+        validMucr(" GB/ABCDEFGHIJKL-12345678901234567890123 ") mustBe true
       }
+
       "is maximum fourth format" in {
-        validMucr("C:ABC123456789012345678901234567890") mustBe true
+        validMucr(" C:ABC123456789012345678901234567890 ") mustBe true
       }
     }
   }
@@ -845,49 +878,62 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
      */
 
     "return false" when {
+
       "first character not a number" in {
         validDucr("GB1234567890") mustBe false
       }
+
       "second character not upper alpha" in {
         validDucr("91R123456789012") mustBe false
         validDucr("9gB123456789012") mustBe false
       }
+
       "third character not upper alpha" in {
         validDucr("9G0123456789012-") mustBe false
         validDucr("9Gb123456789012-") mustBe false
       }
+
       "contains less than 6 additional characters" in {
         validDucr("9GB12345") mustBe false
       }
+
       "contains more than 32 additional characters" in {
         validDucr("9GB123456789012345678901234567890123") mustBe false
       }
+
       "contains lower case alpha" in {
         validDucr("9GB123456a") mustBe false
       }
+
       "contains non-allow special character" in {
         validDucr("9GB123456_") mustBe false
       }
     }
 
     "return true" when {
+
       "using test constant" in {
         validDucr(CommonTestData.validDucr) mustBe true
       }
+
       "is minimum acceptable example" in {
-        validDucr("9GB123456789012-1") mustBe true
+        validDucr(" 9GB123456789012-1 ") mustBe true
       }
+
       "is maximum acceptable example" in {
-        validDucr("9GB123456789012-1234567890123456789") mustBe true
+        validDucr(" 9GB123456789012-1234567890123456789 ") mustBe true
       }
+
       "contains dash" in {
-        validDucr("9GB123456789012-VALID-MUCR") mustBe true
+        validDucr(" 9GB123456789012-VALID-MUCR ") mustBe true
       }
+
       "post-hyphen contains forward-slash" in {
-        validDucr("""9GB123456789012-VALID/MUCR""") mustBe true
+        validDucr(""" 9GB123456789012-VALID/MUCR """) mustBe true
       }
+
       "post-hyphen contains parentheses" in {
-        validDucr("9GB123456789012-VALID(MUCR)") mustBe true
+        validDucr(" 9GB123456789012-VALID(MUCR) ") mustBe true
       }
     }
   }
@@ -897,31 +943,31 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
     "return true" when {
 
       "provided with DucrPartId containing one digit" in {
-        isValidDucrPartId("1") mustBe true
+        isValidDucrPartId(" 1 ") mustBe true
       }
 
       "provided with DucrPartId containing one digit and a trailing upper case alpha" in {
-        isValidDucrPartId("1A") mustBe true
+        isValidDucrPartId(" 1A ") mustBe true
       }
 
       "provided with DucrPartId containing two digits" in {
-        isValidDucrPartId("12") mustBe true
+        isValidDucrPartId(" 12 ") mustBe true
       }
 
       "provided with DucrPartId containing two digits and a trailing upper case alpha" in {
-        isValidDucrPartId("12B") mustBe true
+        isValidDucrPartId(" 12B ") mustBe true
       }
 
       "provided with DucrPartId containing three digits" in {
-        isValidDucrPartId("123") mustBe true
+        isValidDucrPartId(" 123 ") mustBe true
       }
 
       "provided with DucrPartId containing three digits and a trailing upper case alpha" in {
-        isValidDucrPartId("123C") mustBe true
+        isValidDucrPartId(" 123C ") mustBe true
       }
 
       "provided with DucrPartId containing just one upper case alpha" in {
-        isValidDucrPartId("123D") mustBe true
+        isValidDucrPartId(" 123D ") mustBe true
       }
     }
 
@@ -962,30 +1008,25 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
     "return true" when {
 
       "input string has minimum length" in {
-
-        lengthInRange(5)(10)(TestDataHelper.createRandomString(5)) mustBe true
+        lengthInRange(5)(10)(" " + TestDataHelper.createRandomString(5) + " ") mustBe true
       }
 
       "input string is between minimum and maximum length" in {
-
-        lengthInRange(5)(10)(TestDataHelper.createRandomString(7)) mustBe true
+        lengthInRange(5)(10)(" " + TestDataHelper.createRandomString(7) + " ") mustBe true
       }
 
       "input string has maximum length" in {
-
-        lengthInRange(5)(10)(TestDataHelper.createRandomString(10)) mustBe true
+        lengthInRange(5)(10)(" " + TestDataHelper.createRandomString(10) + " ") mustBe true
       }
     }
 
     "return false" when {
 
       "input string is shorter than allowed" in {
-
         lengthInRange(5)(10)(TestDataHelper.createRandomString(2)) mustBe false
       }
 
       "input string is longer than allowed" in {
-
         lengthInRange(5)(10)(TestDataHelper.createRandomString(11)) mustBe false
       }
     }
@@ -994,17 +1035,13 @@ class FieldValidatorSpec extends AnyWordSpec with Matchers {
   "FormFieldValidator ofPattern" should {
 
     "return true" when {
-
       "input matches pattern" in {
-
-        ofPattern("[0-9]{1,5}")("1234") mustBe true
+        ofPattern("[0-9]{1,5}")(" 1234 ") mustBe true
       }
     }
 
     "return false" when {
-
       "input doesn't match pattern" in {
-
         ofPattern("[0-9]{1,5}")("abcd") mustBe false
       }
     }

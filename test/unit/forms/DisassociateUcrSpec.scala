@@ -19,7 +19,7 @@ package forms
 import base.UnitSpec
 import models.UcrBlock
 import play.api.data.FormError
-import play.api.libs.json.{JsObject, JsString}
+import play.api.libs.json.Json
 
 class DisassociateUcrSpec extends UnitSpec {
 
@@ -28,17 +28,14 @@ class DisassociateUcrSpec extends UnitSpec {
     "apply UcrBlock" when {
 
       "provided with Mucr" in {
-
         DisassociateUcr.apply(UcrBlock("ucr", UcrType.Mucr)) mustBe DisassociateUcr(UcrType.Mucr, None, Some("ucr"))
       }
 
       "provided with Ducr" in {
-
         DisassociateUcr.apply(UcrBlock("ucr", UcrType.Ducr)) mustBe DisassociateUcr(UcrType.Ducr, Some("ucr"), None)
       }
 
       "provided with Ducr Part" in {
-
         DisassociateUcr.apply(UcrBlock("ucr", UcrType.DucrPart)) mustBe DisassociateUcr(UcrType.DucrPart, Some("ucr"), None)
       }
     }
@@ -46,28 +43,19 @@ class DisassociateUcrSpec extends UnitSpec {
     "convert to upper case" when {
 
       "provided with Mucr" in {
-
-        val form =
-          DisassociateUcr.form.bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString("gb/abced1234-15804test"))), JsonBindMaxChars)
-
+        val form = DisassociateUcr.form.bind(Json.obj("kind" -> "mucr", "mucr" -> " gb/abced1234-15804test "), JsonBindMaxChars)
         form.errors mustBe empty
         form.value.map(_.ucr) must be(Some("GB/ABCED1234-15804TEST"))
       }
 
       "provided with Mucr that is 35 characters long" in {
-
-        val form = DisassociateUcr.form
-          .bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString("gb/abced1234-15804test1234567890123"))), JsonBindMaxChars)
-
+        val form = DisassociateUcr.form.bind(Json.obj("kind" -> "mucr", "mucr" -> " gb/abced1234-15804test1234567890123 "), JsonBindMaxChars)
         form.errors mustBe empty
         form.value.map(_.ucr) must be(Some("GB/ABCED1234-15804TEST1234567890123"))
       }
 
       "provided with Ducr" in {
-
-        val form =
-          DisassociateUcr.form.bind(JsObject(Map("kind" -> JsString("ducr"), "ducr" -> JsString("8gb123457359100-test0001"))), JsonBindMaxChars)
-
+        val form = DisassociateUcr.form.bind(Json.obj("kind" -> "ducr", "ducr" -> " 8gb123457359100-test0001 "), JsonBindMaxChars)
         form.errors mustBe empty
         form.value.map(_.ucr) must be(Some("8GB123457359100-TEST0001"))
       }
@@ -75,13 +63,9 @@ class DisassociateUcrSpec extends UnitSpec {
 
     "return an error" when {
       "provided with Mucr that is over 35 characters long" in {
-
-        val form = DisassociateUcr.form
-          .bind(JsObject(Map("kind" -> JsString("mucr"), "mucr" -> JsString("gb/abced1234-15804test12345678901234"))), JsonBindMaxChars)
-
+        val form = DisassociateUcr.form.bind(Json.obj("kind" -> "mucr", "mucr" -> " gb/abced1234-15804test12345678901234 "), JsonBindMaxChars)
         form.errors mustBe Seq(FormError("mucr", "disassociate.ucr.mucr.error"))
       }
     }
   }
-
 }

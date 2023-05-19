@@ -33,7 +33,7 @@ case class DepartureDetails(dateOfDeparture: Date, timeOfDeparture: Time) {
 object DepartureDetails {
   implicit val format: OFormat[DepartureDetails] = Json.format[DepartureDetails]
 
-  def mapping(zoneId: ZoneId) =
+  def mapping(zoneId: ZoneId): Mapping[DepartureDetails] =
     Forms
       .mapping("dateOfDeparture" -> Date.mapping("dateOfDeparture."), "timeOfDeparture" -> Time.mapping("timeOfDeparture."))(DepartureDetails.apply)(
         DepartureDetails.unapply

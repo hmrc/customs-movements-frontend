@@ -21,9 +21,7 @@ import base.UnitSpec
 class MovementDetailsSpec extends UnitSpec {
 
   "Movement Details object" should {
-
     "contain correct formId" in {
-
       MovementDetails.formId must be("MovementDetails")
     }
   }

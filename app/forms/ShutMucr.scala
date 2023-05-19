@@ -28,13 +28,13 @@ object ShutMucr {
 
   val formId = "ShutMucr"
 
+  private val form2Data = (mucr: String) => ShutMucr(mucr.trim.toUpperCase)
+
   val mapping = Forms.mapping(
     "mucr" -> text()
       .verifying("error.mucr.empty", nonEmpty)
       .verifying("error.mucr.format", isEmpty or validMucrIgnoreCase)
   )(form2Data)(ShutMucr.unapply)
-
-  def form2Data(mucr: String): ShutMucr = ShutMucr(mucr.toUpperCase)
 
   def form(): Form[ShutMucr] = Form(mapping)
 }

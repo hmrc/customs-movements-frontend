@@ -44,8 +44,8 @@ object MucrOptions {
   val mapping = {
     def bind(creatOrAdd: String, newMucr: Option[String], existingMucr: Option[String]): MucrOptions =
       (creatOrAdd: @unchecked) match {
-        case Create => MucrOptions(Create, newMucr.getOrElse("").toUpperCase)
-        case Add    => MucrOptions(Add, existingMucr.getOrElse("").toUpperCase)
+        case Create => MucrOptions(Create, newMucr.fold("")(_.trim.toUpperCase))
+        case Add    => MucrOptions(Add, existingMucr.fold("")(_.trim.toUpperCase))
       }
 
     def unbind(value: MucrOptions): Option[(String, Option[String], Option[String])] =

@@ -30,7 +30,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.Assertion
 import play.api.data.Form
-import play.api.libs.json.{JsObject, JsString}
+import play.api.libs.json.Json
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -116,13 +116,13 @@ class ChoiceOnConsignmentControllerSpec extends ControllerLayerSpec with MockCac
     "throw an IllegalArgumentException" when {
       "form is incorrect" in {
         givenTheCacheContains(cache)
-        val incorrectForm = JsObject(Map("choice" -> JsString("Incorrect")))
+        val incorrectForm = Json.obj("choice" -> "Incorrect")
         status(controller.submitChoice(postRequest(incorrectForm))) mustBe BAD_REQUEST
       }
     }
 
     "redirect to the /choice page" when {
-      val request = postRequest(JsObject(Map("choice" -> JsString(Arrival.value))))
+      val request = postRequest(Json.obj("choice" -> Arrival.value))
 
       "there's no cache for the eori" in {
         givenTheCacheIsEmpty()
@@ -147,7 +147,7 @@ class ChoiceOnConsignmentControllerSpec extends ControllerLayerSpec with MockCac
           when(arriveDepartAllowList.contains(any())).thenReturn(false)
 
           givenTheCacheContains(cache)
-          val arrivalForm = JsObject(Map("choice" -> JsString(Arrival.value)))
+          val arrivalForm = Json.obj("choice" -> Arrival.value)
           val result = controller.submitChoice(postRequest(arrivalForm))
 
           status(result) mustBe SEE_OTHER
@@ -158,7 +158,7 @@ class ChoiceOnConsignmentControllerSpec extends ControllerLayerSpec with MockCac
           when(arriveDepartAllowList.contains(any())).thenReturn(false)
 
           givenTheCacheContains(cache)
-          val departureForm = JsObject(Map("choice" -> JsString(Departure.value)))
+          val departureForm = Json.obj("choice" -> Departure.value)
           val result = controller.submitChoice(postRequest(departureForm))
 
           status(result) mustBe SEE_OTHER
@@ -205,7 +205,7 @@ class ChoiceOnConsignmentControllerSpec extends ControllerLayerSpec with MockCac
 
   private def testRedirection(choice: Choice, expectedCall: Call): Answers = {
     givenTheCacheContains(cache)
-    val body = JsObject(Map("choice" -> JsString(choice.value)))
+    val body = Json.obj("choice" -> choice.value)
 
     val result = controller.submitChoice(postRequest(body))
 

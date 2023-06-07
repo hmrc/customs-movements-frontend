@@ -16,16 +16,23 @@
 
 package controllers
 
+import config.TdrUnauthorisedMsgConfig
+
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.unauthorised
+import views.html.{unauthorised, unauthorisedEoriInTdr}
 
-class UnauthorisedController @Inject() (mcc: MessagesControllerComponents, unauthorisedPage: unauthorised)
-    extends FrontendController(mcc) with I18nSupport {
+class UnauthorisedController @Inject() (
+  mcc: MessagesControllerComponents,
+  unauthorisedPage: unauthorised,
+  unauthorisedEoriInTdrPage: unauthorisedEoriInTdr,
+  tdrUnauthorisedMsgConfig: TdrUnauthorisedMsgConfig
+) extends FrontendController(mcc) with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action { implicit request =>
-    Ok(unauthorisedPage())
+    val page = if (tdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled) unauthorisedEoriInTdrPage() else unauthorisedPage()
+    Ok(page)
   }
 }

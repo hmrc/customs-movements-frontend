@@ -79,6 +79,9 @@ unauthorised.paragraph.1.bullet.2.link = get access to the Customs Declaration S
 unauthorised.paragraph.2 = If you’ve already applied for an EORI number, you can {0}.
 unauthorised.paragraph.2.link = check the status of your application
 
+unauthorised.tdr.heading = The CDS Trader Dress Rehearsal Service for Making an Export Declaration Online is temporarily unavailable whilst we carry out a system update
+unauthorised.tdr.body = We will advise as soon as the update is complete.
+
 global.error.title = There is a problem - Declare customs exports for CDS Exports - GOV.UK
 global.error.heading = There is a problem with a service.
 global.error.message = Please try again later.

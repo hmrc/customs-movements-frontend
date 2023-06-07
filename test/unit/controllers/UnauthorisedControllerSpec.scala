@@ -16,20 +16,26 @@
 
 package controllers
 
+import config.TdrUnauthorisedMsgConfig
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.verifyNoInteractions
 import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.unauthorised
+import views.html.{unauthorised, unauthorisedEoriInTdr}
 
 class UnauthorisedControllerSpec extends ControllerLayerSpec {
 
+  private val mockTdrUnauthorisedMsgConfig: TdrUnauthorisedMsgConfig = mock[TdrUnauthorisedMsgConfig]
   private val mockUnauthorisedPage = mock[unauthorised]
-  private val controller = new UnauthorisedController(stubMessagesControllerComponents(), mockUnauthorisedPage)
+  private val mockUnauthorisedEoriInTdrPage = mock[unauthorisedEoriInTdr]
+  private val controller =
+    new UnauthorisedController(stubMessagesControllerComponents(), mockUnauthorisedPage, mockUnauthorisedEoriInTdrPage, mockTdrUnauthorisedMsgConfig)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     when(mockUnauthorisedPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockUnauthorisedEoriInTdrPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -45,6 +51,24 @@ class UnauthorisedControllerSpec extends ControllerLayerSpec {
         status(result) mustBe OK
         verify(mockUnauthorisedPage).apply()(any(), any())
       }
+    }
+
+    "display the normal unauthorised page when not in TDR env" in {
+      when(mockTdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled).thenReturn(false)
+      val result = controller.onPageLoad()(getRequest())
+
+      status(result) mustBe OK
+      verify(mockUnauthorisedPage).apply()(any(), any())
+      verifyNoInteractions(mockUnauthorisedEoriInTdrPage)
+    }
+
+    "display the TDR unauthorised page when in TDR env" in {
+      when(mockTdrUnauthorisedMsgConfig.isTdrUnauthorisedMessageEnabled).thenReturn(true)
+      val result = controller.onPageLoad()(getRequest())
+
+      status(result) mustBe OK
+      verify(mockUnauthorisedEoriInTdrPage).apply()(any(), any())
+      verifyNoInteractions(mockUnauthorisedPage)
     }
   }
 }

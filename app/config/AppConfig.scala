@@ -36,10 +36,15 @@ class AppConfig @Inject() (
       .getOptional[String](key)
       .getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
+  private def loadOptionalConfig(key: String): Option[String] =
+    runModeConfiguration.getOptional[String](key)
+
   lazy val appName: String = namedAppName
   lazy val keyStoreUrl: String = servicesConfig.baseUrl("keystore")
   lazy val sessionCacheDomain: String =
     servicesConfig.getConfString("cachable.session-cache.domain", throw new Exception(s"Could not find config 'cachable.session-cache.domain'"))
+
+  val maybeTdrHashSalt = loadOptionalConfig("secret.tdrHashSalt")
 
   val analyticsToken = loadConfig(s"google-analytics.token")
   val analyticsHost = loadConfig(s"google-analytics.host")
@@ -66,7 +71,7 @@ class AppConfig @Inject() (
 
   lazy val customsDeclareExportsMovements = servicesConfig.baseUrl("customs-declare-exports-movements")
 
-  lazy val selfBaseUrl: Option[String] = runModeConfiguration.getOptional[String]("play.frontend.host")
+  lazy val selfBaseUrl: Option[String] = loadOptionalConfig("play.frontend.host")
   val giveFeedbackLink: String =
     loadConfig("urls.exportsFeedbackForm")
 

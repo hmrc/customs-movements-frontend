@@ -27,6 +27,7 @@ import models.now
 import models.cache.{ArrivalAnswers, DepartureAnswers, IleQuery}
 import models.submissions.Submission
 import models.{SignedInUser, UcrBlock}
+import models.AuthKey.{enrolment, eoriIdentifierKey, hashIdentifierKey}
 import testdata.CommonTestData._
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
 
@@ -35,8 +36,13 @@ object MovementsTestData {
   private val zoneId: ZoneId = ZoneId.of("Europe/London")
   val movementDetails = new MovementDetails(zoneId)
 
-  def newUser(eori: String): SignedInUser =
-    SignedInUser(eori, Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori))))
+  def newUser(eori: String, tdrSecret: Option[String] = None): SignedInUser = {
+    val eoriEnrolment = Set(Enrolment(enrolment).withIdentifier(eoriIdentifierKey, eori))
+    val enrolmentSet =
+      tdrSecret.map(secret => eoriEnrolment + Enrolment(enrolment).withIdentifier(hashIdentifierKey, secret)).getOrElse(eoriEnrolment)
+
+    SignedInUser(eori, Enrolments(enrolmentSet))
+  }
 
   def exampleSubmission(
     eori: String = validEori,

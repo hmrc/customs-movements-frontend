@@ -17,9 +17,11 @@
 @import config.ExternalServicesConfig
 @import views.html.components.gds._
 @import views.Title
+@import views.html.components.gds.link
 
 @this(
   govukLayout: gds_main_template,
+  link: link,
   pageTitle: pageTitle
 )
 
@@ -29,5 +31,13 @@
 
  @pageTitle(messages("unauthorised.tdr.heading"))
 
- @paragraphBody(messages("unauthorised.tdr.body"))
+ @paragraphBody(messages("unauthorised.tdr.body",
+  link(
+   id = Some("contact_support_link"),
+   message = Html(messages("unauthorised.tdr.body.link")),
+   href = Call("GET", s"mailto:${messages("unauthorised.tdr.body.link")}"),
+   target = "_blank"
+  )
+
+ ))
 }

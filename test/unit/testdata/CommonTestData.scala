@@ -19,6 +19,7 @@ package testdata
 object CommonTestData {
 
   val validEori: String = "GB12345678"
+  val validTdrSecret = "8E077FEDD75D98AC8B9823E62C73F2E5598CCDEA42C6CF7041B1D394520DE330"
 
   val correctUcr: String = "GB/1UZYBD3XE-1J8MEBF9N6X65B"
   val correctUcr_2: String = "GB/1UZYBD3XE-1J8MEBF9N6X78C"

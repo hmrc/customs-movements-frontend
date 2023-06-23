@@ -37,7 +37,6 @@ class AppConfig @Inject() (
       .getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   lazy val appName: String = namedAppName
-  lazy val keyStoreUrl: String = servicesConfig.baseUrl("keystore")
   lazy val sessionCacheDomain: String =
     servicesConfig.getConfString("cachable.session-cache.domain", throw new Exception(s"Could not find config 'cachable.session-cache.domain'"))
 

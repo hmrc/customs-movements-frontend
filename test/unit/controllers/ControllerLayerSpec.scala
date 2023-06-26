@@ -16,7 +16,7 @@
 
 package controllers
 
-import base.{MockNavigator, UnitSpec}
+import base.{MockAuthConnector, MockNavigator, UnitSpec}
 import controllers.actions._
 import forms.DucrPartChiefChoice
 import models.cache.JourneyType.JourneyType
@@ -38,7 +38,7 @@ import utils.Stubs
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with CSRFSupport with Stubs with MockNavigator {
+abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with CSRFSupport with Stubs with MockNavigator with MockAuthConnector {
 
   protected val user = SignedInUser("eori", Enrolments(Set.empty))
   protected def getRequest(): Request[AnyContent] = FakeRequest(GET, "/").withCSRFToken
@@ -57,12 +57,13 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
   protected def contentAsHtml(of: Future[Result]): Html = Html(contentAsBytes(of).decodeString(charset(of).getOrElse("utf-8")))
 
   case class SuccessfulAuth(operator: SignedInUser = user)
-      extends AuthActionImpl(mock[AuthConnector], mock[EoriAllowList], stubMessagesControllerComponents().parsers) {
+      extends AuthActionImpl(mock[AuthConnector], mock[EoriAllowList], stubMessagesControllerComponents().parsers, appConfig) {
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       block(AuthenticatedRequest(request, operator))
   }
 
-  case object UnsuccessfulAuth extends AuthActionImpl(mock[AuthConnector], mock[EoriAllowList], stubMessagesControllerComponents().parsers) {
+  case object UnsuccessfulAuth
+      extends AuthActionImpl(mock[AuthConnector], mock[EoriAllowList], stubMessagesControllerComponents().parsers, appConfig) {
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       Future.successful(Results.Forbidden)
   }

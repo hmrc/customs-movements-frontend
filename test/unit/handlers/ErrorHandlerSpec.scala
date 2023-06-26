@@ -16,16 +16,16 @@
 
 package handlers
 
-import config.AppConfig
 import controllers.ControllerLayerSpec
 import controllers.exception.IncompleteApplication
-import controllers.routes.RootController
 import models.ReturnToStartException
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchersSugar.refEq
 import org.mockito.BDDMockito.`given`
 import org.mockito.MockitoSugar.{mock, reset, verify}
 import play.api.http.{HeaderNames, Status}
+import controllers.routes.RootController
+import models.AuthKey.enrolment
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.RequestHeader
 import play.api.test.FakeRequest
@@ -37,7 +37,6 @@ import scala.concurrent.Future.successful
 
 class ErrorHandlerSpec extends ControllerLayerSpec {
 
-  private val appConfig = mock[AppConfig]
   private val errorPage = mock[views.html.error_template]
   private val errorPageHTML = HtmlFormat.empty
   private val messagesApi = mock[MessagesApi]
@@ -101,7 +100,7 @@ class ErrorHandlerSpec extends ControllerLayerSpec {
 
     "handle insufficient enrolments authorisation exception" in {
       val res =
-        errorHandler.resolveError(req, InsufficientEnrolments("HMRC-CUS-ORG"))
+        errorHandler.resolveError(req, InsufficientEnrolments(enrolment))
       res.header.status must be(Status.SEE_OTHER)
       res.header.headers.get(HeaderNames.LOCATION) must be(Some(controllers.routes.UnauthorisedController.onPageLoad.url))
     }

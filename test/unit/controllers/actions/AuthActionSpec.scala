@@ -16,14 +16,18 @@
 
 package controllers.actions
 
+import base.MockAuthConnector
 import controllers.routes
 import models.requests.AuthenticatedRequest
+import models.AuthKey.{enrolment, eoriIdentifierKey, hashIdentifierKey}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito.given
+import org.mockito.Mockito.{reset, when}
 import org.mockito.MockitoSugar.{mock, verify}
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -35,35 +39,58 @@ import utils.Stubs
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuthActionSpec extends AnyWordSpec with Matchers with Stubs {
+class AuthActionSpec extends AnyWordSpec with Matchers with Stubs with MockAuthConnector with BeforeAndAfterEach {
 
-  private val connector = mock[AuthConnector]
   private val allowList = mock[EoriAllowList]
   private val parsers = stubControllerComponents().parsers
   private val block = mock[AuthenticatedRequest[AnyContent] => Future[Result]]
-  private val action = new AuthActionImpl(connector, allowList, parsers)
+  private val action = new AuthActionImpl(authConnectorMock, allowList, parsers, appConfig)
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    reset(appConfig)
+    reset(allowList)
+    reset(authConnectorMock)
+
+    when(appConfig.maybeTdrHashSalt).thenReturn(None)
+    when(allowList.allows(any())).thenReturn(true)
+  }
 
   "Auth Action" should {
     val controllerResponse = mock[Result]
 
     "delegate to controller" when {
 
-      "auth success for allow listed eori" in {
-        val enrolment = Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "eori")), "state")
-        given(block.apply(any())).willReturn(Future.successful(controllerResponse))
-        given(connector.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set(enrolment))))
-        given(allowList.contains(any())).willReturn(true)
+      "auth success for eori on allow list" when {
+        "TDRSecret is not required" in {
+          authorizedUser()
 
-        val result: Result = await(action.invokeBlock(FakeRequest(), block))
+          given(block.apply(any())).willReturn(Future.successful(controllerResponse))
 
-        result mustBe controllerResponse
-        theAuthCondition mustBe Enrolment("HMRC-CUS-ORG")
+          val result: Result = await(action.invokeBlock(FakeRequest(), block))
+
+          result mustBe controllerResponse
+          theAuthCondition mustBe Enrolment(enrolment)
+        }
+
+        "TDRSecret is required" in {
+          when(appConfig.maybeTdrHashSalt).thenReturn(Some("SomeSuperSecret"))
+          authorizedUser()
+
+          given(block.apply(any())).willReturn(Future.successful(controllerResponse))
+
+          val result: Result = await(action.invokeBlock(FakeRequest(), block))
+
+          result mustBe controllerResponse
+          theAuthCondition mustBe Enrolment(enrolment)
+        }
       }
     }
 
     "throw Insufficient Enrolments" when {
       "role is missing" in {
-        given(connector.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set.empty)))
+        given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set.empty)))
 
         intercept[InsufficientEnrolments] {
           await(action.invokeBlock(FakeRequest(), block))
@@ -71,8 +98,8 @@ class AuthActionSpec extends AnyWordSpec with Matchers with Stubs {
       }
 
       "eori is missing" in {
-        val enrolment = Enrolment("HMRC-CUS-ORG", Seq.empty, "state")
-        given(connector.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set(enrolment))))
+        val enrolments = Set(Enrolment(enrolment, Seq.empty, "state"))
+        given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(enrolments)))
 
         intercept[InsufficientEnrolments] {
           await(action.invokeBlock(FakeRequest(), block))
@@ -81,21 +108,46 @@ class AuthActionSpec extends AnyWordSpec with Matchers with Stubs {
     }
 
     "redirect to unauthorized" when {
-      val enrolment = Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "eori")), "state")
 
-      "eori missing from allowList" in {
-        given(connector.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set(enrolment))))
-        given(allowList.contains(any())).willReturn(false)
+      "eori value provided is missing from allowList" in {
+        val enrolments = Set(Enrolment(enrolment, Seq(EnrolmentIdentifier(eoriIdentifierKey, "eori")), "state"))
+        given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(enrolments)))
+        given(allowList.allows(any())).willReturn(false)
 
         val result: Result = await(action.invokeBlock(FakeRequest(), block))
 
         result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
       }
+
+      "maybeTdrHashSalt config key is set and" when {
+
+        "user does not provide a TDRSecret value" in {
+          when(appConfig.maybeTdrHashSalt).thenReturn(Some("SomeSuperSecret"))
+          val enrolments = Set(Enrolment(enrolment, Seq(EnrolmentIdentifier(eoriIdentifierKey, "eori")), "state"))
+          given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(enrolments)))
+
+          val result: Result = await(action.invokeBlock(FakeRequest(), block))
+
+          result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
+        }
+
+        "user provides an incorrect TDRSecret value" in {
+          when(appConfig.maybeTdrHashSalt).thenReturn(Some("SomeSuperSecret"))
+          val enrolments = Set(
+            Enrolment(enrolment, Seq(EnrolmentIdentifier(eoriIdentifierKey, "eori"), EnrolmentIdentifier(hashIdentifierKey, "tdrSecret")), "state")
+          )
+          given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(enrolments)))
+
+          val result: Result = await(action.invokeBlock(FakeRequest(), block))
+
+          result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
+        }
+      }
     }
 
     def theAuthCondition: Predicate = {
       val captor = ArgumentCaptor.forClass(classOf[Predicate])
-      verify(connector).authorise(captor.capture(), any[Retrieval[Option[Credentials]]])(any(), any())
+      verify(authConnectorMock).authorise(captor.capture(), any[Retrieval[Option[Credentials]]])(any(), any())
       captor.getValue
     }
   }

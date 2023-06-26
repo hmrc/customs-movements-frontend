@@ -12,7 +12,6 @@ lazy val microservice = Project(appName, file("."))
   .settings(commonSettings)
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
-  .settings(publishingSettings: _*)
   .settings(
     Test / unmanagedSourceDirectories := List((Test / baseDirectory).value / "test/unit", (Test / baseDirectory).value / "test/util"),
     addTestReportOption(Test, "test-reports")

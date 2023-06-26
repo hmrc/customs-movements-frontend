@@ -78,6 +78,8 @@ class AppConfigSpec extends AnyWordSpec with Matchers {
         |microservice.services.contact-frontend.url=/contact-frontend-url
         |microservice.services.contact-frontend.serviceId=Movements-Service-ID
         |play.frontend.host="self/base-url"
+        |
+        |secret.tdrHashSalt="SomeSuperSecret"
       """.stripMargin)
 
   private val missingValuesAppConfig: Config =
@@ -234,6 +236,14 @@ class AppConfigSpec extends AnyWordSpec with Matchers {
     "have selfBaseUrl" in {
       validConfigService.selfBaseUrl must be(defined)
       validConfigService.selfBaseUrl.get must be("self/base-url")
+    }
+
+    "have tdrHashSalt" in {
+      validConfigService.maybeTdrHashSalt must be(Some("SomeSuperSecret"))
+    }
+
+    "empty tdrHashSalt when the key is missing" in {
+      emptyConfigService.maybeTdrHashSalt must be(None)
     }
 
     "have feedback link" in {

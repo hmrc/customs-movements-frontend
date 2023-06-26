@@ -21,7 +21,8 @@ object AppDependencies {
     "ai.x"                         %% "play-json-extensions"          % "0.42.0",
     "com.github.tototoshi"         %% "scala-csv"                     % "1.3.10",
     "org.webjars.npm"              %  "govuk-frontend"                % "4.4.1",
-    "org.webjars.npm"              %  "accessible-autocomplete"       % "2.0.4"
+    "org.webjars.npm"              %  "accessible-autocomplete"       % "2.0.4",
+    "commons-codec"                %  "commons-codec"                 % "1.15"
   )
 
   val testScope = "test,it"

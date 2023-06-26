@@ -35,19 +35,18 @@ class EoriAllowListSpec extends UnitSpec {
     "is empty" should {
       "pass everyone" in {
         val allowList = new EoriAllowList(emptyListConfig)
-        allowList.contains(firstUser) mustBe true
-        allowList.contains(secondUser) mustBe true
+        allowList.allows(firstUser.eori) mustBe true
+        allowList.allows(secondUser.eori) mustBe true
       }
     }
     "has entry in list" should {
       val allowList = new EoriAllowList(config)
       "allow users on list" in {
-        allowList.contains(firstUser) mustBe true
+        allowList.allows(firstUser.eori) mustBe true
       }
       "block user absent on list" in {
-        allowList.contains(secondUser) mustBe false
+        allowList.allows(secondUser.eori) mustBe false
       }
     }
-
   }
 }

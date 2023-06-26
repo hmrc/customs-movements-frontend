@@ -17,6 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, urlEqualTo}
+import models.AuthKey.{enrolment, eoriIdentifierKey}
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.test.Helpers.{OK, UNAUTHORIZED}
@@ -26,7 +27,7 @@ trait AuthWiremockTestServer extends WiremockTestServer {
 
   protected val authConfiguration: Configuration = Configuration.from(Map("microservice.services.auth.port" -> wirePort))
 
-  protected def givenAuthSuccess(eori: String): Unit = givenAuthSuccess(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", eori)), ""))
+  protected def givenAuthSuccess(eori: String): Unit = givenAuthSuccess(Enrolment(enrolment, Seq(EnrolmentIdentifier(eoriIdentifierKey, eori)), ""))
 
   protected def givenAuthSuccess(roles: Enrolment*): Unit = {
     val response = Json.obj("allEnrolments" -> roles.map { role =>

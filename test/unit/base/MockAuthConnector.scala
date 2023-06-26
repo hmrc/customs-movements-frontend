@@ -17,13 +17,14 @@
 package base
 
 import akka.stream.testkit.NoMaterializer
+import config.AppConfig
 import controllers.actions.{AuthActionImpl, EoriAllowList}
 import models.SignedInUser
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar.{mock, when}
 import play.api.mvc.PlayBodyParsers
-import testdata.CommonTestData.validEori
+import testdata.CommonTestData.{validEori, validTdrSecret}
 import testdata.MovementsTestData._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
@@ -32,22 +33,24 @@ import utils.Stubs
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-trait MockAuthConnector extends Stubs {
+trait MockAuthConnector extends Stubs with Injector {
 
   val authConnectorMock: AuthConnector = mock[AuthConnector]
 
   val eoriAllowListMock: EoriAllowList = mock[EoriAllowList]
 
-  val mockAuthAction =
-    new AuthActionImpl(authConnectorMock, eoriAllowListMock, PlayBodyParsers()(NoMaterializer))(global)
+  val appConfig = mock[AppConfig]
 
-  def authorizedUser(user: SignedInUser = newUser(validEori)): Unit = {
+  val mockAuthAction =
+    new AuthActionImpl(authConnectorMock, eoriAllowListMock, PlayBodyParsers()(NoMaterializer), appConfig)(global)
+
+  def authorizedUser(user: SignedInUser = newUser(validEori, Some(validTdrSecret))): Unit = {
     when(authConnectorMock.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any())).thenReturn(Future.successful(user.enrolments))
-    when(eoriAllowListMock.contains(any())).thenReturn(true)
+    when(eoriAllowListMock.allows(any())).thenReturn(true)
   }
 
   def userWithoutEori(user: SignedInUser = newUser("")): Unit = {
     when(authConnectorMock.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any())).thenThrow(InsufficientEnrolments())
-    when(eoriAllowListMock.contains(any())).thenReturn(true)
+    when(eoriAllowListMock.allows(any())).thenReturn(true)
   }
 }

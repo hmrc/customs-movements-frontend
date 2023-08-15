@@ -63,7 +63,7 @@ class AssociateUcrSummaryController @Inject() (
     val mucr = answers.mucrOptions.map(_.mucr)
 
     submissionService.submit(request.eori, answers).map { conversationId =>
-      val flash = List(
+      val sessionValues = List(
         Some(CONVERSATION_ID -> conversationId),
         Some(JOURNEY_TYPE -> answers.`type`.toString),
         mucr.map(mucr => MUCR -> mucr),
@@ -71,7 +71,7 @@ class AssociateUcrSummaryController @Inject() (
         ucrType.map(ucrType => UCR_TYPE -> ucrType)
       ).flatten
 
-      Redirect(MovementConfirmationController.displayPage).flashing(flash: _*)
+      Redirect(MovementConfirmationController.displayPage).addingToSession(sessionValues: _*)
     }
   }
 }

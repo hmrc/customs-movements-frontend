@@ -62,7 +62,7 @@ class MovementConfirmationControllerSpec extends ControllerLayerSpec with GivenW
       maybeJourneyType: Option[JourneyType],
       maybeConversationId: Option[String] = Some(conversationId)
     ): FakeRequest[AnyContentAsEmpty.type] = {
-      val flash = List(
+      val sessionValues = List(
         maybeConversationId.map(conversationId => CONVERSATION_ID -> conversationId),
         maybeJourneyType.map(journeyType => JOURNEY_TYPE -> journeyType.toString),
         Some(MUCR -> dummyMucr),
@@ -70,7 +70,7 @@ class MovementConfirmationControllerSpec extends ControllerLayerSpec with GivenW
         Some(UCR_TYPE -> dummyUcrType)
       ).flatten
 
-      FakeRequest("GET", "/").withFlash(flash: _*)
+      FakeRequest("GET", "/").withSession(sessionValues: _*)
     }
 
     "return 200 when authenticated" in {

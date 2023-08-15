@@ -27,7 +27,8 @@ case class Confirmation(journeyType: JourneyType, conversationId: String, consig
 object Confirmation {
 
   def apply()(implicit request: Request[_]): Option[Confirmation] = {
-    val extractValue = request.flash.get(_)
+    def extractValue(key: String): Option[String] =
+      request.session.get(key)
 
     val consignmentReferences =
       for {

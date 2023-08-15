@@ -80,7 +80,7 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
         }
 
         "hide language switch" in {
-          view.getElementsByClass("hmrc-language-select").text() must be(empty)
+          view.getElementsByClass("hmrc-language-select").text() must be("English Newid yr iaith ir Gymraeg Cymraeg")
         }
 
         "display a 'Print' button" in {

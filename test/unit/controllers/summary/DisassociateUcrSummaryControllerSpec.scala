@@ -125,8 +125,8 @@ class DisassociateUcrSummaryControllerSpec extends ControllerLayerSpec with Scal
 
         val result = controller(DisassociateUcrAnswers(Some(ucr))).submit(postRequest(Json.obj()))
 
-        flash(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.DISSOCIATE_UCR.toString)
-        flash(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
+        session(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.DISSOCIATE_UCR.toString)
+        session(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
       }
     }
   }

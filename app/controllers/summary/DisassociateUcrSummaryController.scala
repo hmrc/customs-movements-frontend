@@ -56,14 +56,14 @@ class DisassociateUcrSummaryController @Inject() (
     val ucr = answers.consignmentReferences.map(_.referenceValue)
 
     submissionService.submit(request.eori, answers).map { conversationId =>
-      val flash = List[Option[(String, String)]](
+      val sessionValues = List[Option[(String, String)]](
         Some(CONVERSATION_ID -> conversationId),
         Some(JOURNEY_TYPE -> answers.`type`.toString),
         ucr.map(ucr => UCR -> ucr),
         ucrType.map(ucrType => UCR_TYPE -> ucrType)
       ).flatten
 
-      Redirect(MovementConfirmationController.displayPage).flashing(flash: _*)
+      Redirect(MovementConfirmationController.displayPage).addingToSession(sessionValues: _*)
     }
   }
 }

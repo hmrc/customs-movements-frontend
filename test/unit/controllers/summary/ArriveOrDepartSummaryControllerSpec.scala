@@ -115,10 +115,10 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
 
         val result = controller(ArrivalAnswers(Some(consignmentRefs))).submit()(postRequest(emptyForm))
 
-        flash(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.ARRIVE.toString)
-        flash(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
-        flash(result).get(FlashKeys.UCR) mustBe Some(dummyUcr)
-        flash(result).get(FlashKeys.UCR_TYPE) mustBe Some(dummyUcrType)
+        session(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.ARRIVE.toString)
+        session(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
+        session(result).get(FlashKeys.UCR) mustBe Some(dummyUcr)
+        session(result).get(FlashKeys.UCR_TYPE) mustBe Some(dummyUcrType)
       }
     }
 
@@ -148,10 +148,10 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
 
         val result = controller(DepartureAnswers(Some(consignmentRefs))).submit()(postRequest(emptyForm))
 
-        flash(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.DEPART.toString)
-        flash(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
-        flash(result).get(FlashKeys.UCR) mustBe Some(dummyUcr)
-        flash(result).get(FlashKeys.UCR_TYPE) mustBe Some(dummyUcrType)
+        session(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.DEPART.toString)
+        session(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
+        session(result).get(FlashKeys.UCR) mustBe Some(dummyUcr)
+        session(result).get(FlashKeys.UCR_TYPE) mustBe Some(dummyUcrType)
       }
     }
   }

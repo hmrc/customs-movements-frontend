@@ -103,8 +103,8 @@ class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with ScalaFuture
 
         val result = controller(ShutMucrAnswers(Some(shutMucr))).submit(postRequest(JsObject(Seq.empty)))
 
-        flash(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.SHUT_MUCR.toString)
-        flash(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
+        session(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.SHUT_MUCR.toString)
+        session(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
       }
     }
   }

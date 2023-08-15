@@ -54,7 +54,7 @@ class ArriveOrDepartSummaryController @Inject() (
 
     submissionService.submit(request.eori, answers).map { submissionResult =>
       Redirect(MovementConfirmationController.displayPage)
-        .flashing(
+        .addingToSession(
           CONVERSATION_ID -> submissionResult.conversationId,
           JOURNEY_TYPE -> answers.`type`.toString,
           UCR -> submissionResult.consignmentReferences.referenceValue,

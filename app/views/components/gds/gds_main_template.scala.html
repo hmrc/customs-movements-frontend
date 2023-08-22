@@ -75,6 +75,42 @@
     <meta name="format-detection" content="telephone=no" />
         <!--[if lte IE 8]><link href='@controllers.routes.Assets.versioned("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
         <!--[if gt IE 8]><!--><link href='@routes.Assets.versioned("stylesheets/customsdecexfrontend-app.css")' media="screen" rel="stylesheet" type="text/css" /><!--<![endif]-->
+    <style>
+      @@media print {
+        .hmrc-sign-out-nav, .govuk-phase-banner, .govuk-back-link, .hmrc-report-technical-issue, .govuk-footer, .hmrc-language-select__list-item a {
+          display: none;
+        }
+        .govuk-header__container {
+          margin-bottom: 0;
+          padding-top: 0;
+          border: none;
+        }
+        .hmrc-header__service-name--linked:link, .hmrc-header__service-name--linked:visited {
+          color: #000;
+        }
+        .hmrc-language-select__list-item {
+          &:first-child::after {
+            border: none;
+          }
+        }
+        .govuk-link[href^="/"]::after, .govuk-link[href^="http://"]::after, .govuk-link[href^="https://"]::after {
+          content: normal;
+        }
+        .govuk-body, .govuk-table {
+          font-size: 12pt;
+          line-height: 1.5;
+        }
+        .govuk-heading-m {
+          font-size: 14pt;
+        }
+        .govuk-panel {
+          padding: 20px;
+        }
+        .govuk-panel__title {
+          font-size: 18pt;
+        }
+      }
+    </style>
 }
 
 @scripts = {

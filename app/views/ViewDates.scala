@@ -27,16 +27,18 @@ import javax.inject.Singleton
 class ViewDates() {
   def timezone = ZoneId.of("Europe/London")
 
-  private val dateAtTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu 'at' h:mma").withZone(timezone)
+  private val atTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(" 'at' h:mma").withZone(timezone)
   private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("h:mma").withZone(timezone)
   private val dayFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d").withZone(timezone)
   private val monthFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("M").withZone(timezone)
   private val yearFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("uuu").withZone(timezone)
 
-  def formatDateAtTime(temporal: TemporalAccessor): String =
+  def formatDateAtTime(temporal: TemporalAccessor)(implicit messages: Messages): String =
     formatAmPm(
-      dateAtTimeFormatter
-        .format(temporal)
+      dayFormatter.format(temporal)
+        + s" ${messages(s"month.${monthFormatter.format(temporal)}")} "
+        + yearFormatter.format(temporal)
+        + atTimeFormatter.format(temporal)
     )
 
   def formatDate(temporal: TemporalAccessor)(implicit messages: Messages): String =

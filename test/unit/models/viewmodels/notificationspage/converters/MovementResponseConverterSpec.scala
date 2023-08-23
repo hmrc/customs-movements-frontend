@@ -99,7 +99,7 @@ class MovementResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
           crcCode = Some(crcCodeKeyFromDecoder.code)
         )
         val expectedTitle = messages("notifications.elem.title.inventoryLinkingMovementResponse")
-        val expectedTimestampInfo = "31 October 2019 at 12:00am"
+        val expectedTimestampInfo = s"31 ${messages("month.10")} 2019 at 12:00am"
         val expectedCrcContent = s"${messages("notifications.elem.content.inventoryLinkingMovementResponse.crc")} ${crcCodeKeyFromDecoder.messageKey}"
         val expectedSoeContent = s"${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} ${soeKeyFromDecoder.code}"
         val expectedRoeContent = s"${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} ${roeKeyFromDecoder.code}"
@@ -130,7 +130,7 @@ class MovementResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
         val input = exampleNotificationFrontendModel(responseType = ResponseType.MovementResponse, timestampReceived = testTimestamp)
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
-          timestampInfo = "31 October 2019 at 12:00am",
+          timestampInfo = s"31 ${messages("month.10")} 2019 at 12:00am",
           content = HtmlFormat.empty
         )
 
@@ -160,7 +160,7 @@ class MovementResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
           exampleNotificationFrontendModel(responseType = ResponseType.MovementResponse, timestampReceived = testTimestamp, crcCode = Some(crcCode))
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
-          timestampInfo = "31 October 2019 at 12:00am",
+          timestampInfo = s"31 ${messages("month.10")} 2019 at 12:00am",
           content = HtmlFormat.empty
         )
 

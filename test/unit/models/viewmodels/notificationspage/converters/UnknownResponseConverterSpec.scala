@@ -42,7 +42,7 @@ class UnknownResponseConverterSpec extends UnitSpec with Injector {
       val result = converter.convert(input)
 
       result.title mustBe messages("notifications.elem.title.unknown")
-      result.timestampInfo mustBe "23 October 2019 at 12:34pm"
+      result.timestampInfo mustBe s"23 ${messages("month.10")} 2019 at 12:34pm"
       result.content mustBe HtmlFormat.empty
     }
   }

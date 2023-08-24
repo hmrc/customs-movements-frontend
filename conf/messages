@@ -1,10 +1,10 @@
-service.name=Arrive and depart CDS exports
+service.name = Arrive and depart CDS exports
 
-title.format={0} - {1} - GOV.UK
-title.withSection.format={0} - {1} - {2} - GOV.UK
+title.format = {0} - {1} - GOV.UK
+title.withSection.format = {0} - {1} - {2} - GOV.UK
 
-feedback=This is a new service - your {0} will help us to improve it.
-feedback.link=feedback
+feedback = This is a new service - your {0} will help us to improve it.
+feedback.link = feedback
 
 site.print = Print this page
 
@@ -207,28 +207,28 @@ location.hint.paragraph = Most goods location codes contain just letters. For ex
 location.code.empty = Enter a goods location code
 location.code.error = Enter a goods location code in the correct format
 
-location.expander.title=Find the goods location code
-location.expander.intro=Select the location type, and then look up the code (links open in a new tab).
-location.expander.paragraph1.title=RoRo ports for road transport
-location.expander.paragraph1.text=Download the Tariff supplement and search for appendix 16R.
-location.expander.paragraph1.link1.text=RoRo ports location codes, including all trucks and containers using Eurotunnel
-location.expander.paragraph2.title=Terminals for rail transport
-location.expander.paragraph2.text=Download the Tariff supplement and search for appendix 16M.
-location.expander.paragraph2.link1.text=Rail terminal location codes
-location.expander.paragraph3.title=Airports
-location.expander.paragraph3.link1.text=Airport location codes
-location.expander.paragraph4.title=Certificate of Agreement airports
-location.expander.paragraph4.link1.text=Certificate of agreement airports location codes
-location.expander.paragraph5.title=Maritime ports and wharves
-location.expander.paragraph5.link1.text=Maritime ports and wharves location codes
-location.expander.paragraph6.title=Internal temporary storage facilities (ITSFs)
-location.expander.paragraph6.link1.text=Internal temporary storage facilities (ITSFs) location codes
-location.expander.paragraph7.title=Designated Export Places (DEPs)
-location.expander.paragraph7.link1.text=Designated Export Places location codes
-location.expander.paragraph8.title=Customs Supervised Export (CSE) premises
-location.expander.paragraph8.text=If your goods location is not covered by the above guidance, refer to the codes for {0}, or check the latest additions to the CDS location codes in the {1}.
-location.expander.paragraph8.link1.text=data element 5/23 of the Customs Declaration Service (CDS) (Appendix 16)
-location.expander.paragraph8.link2.text=Tariff Volume 3 Great Britain Supplement CDS and CHIEF
+location.expander.title = Find the goods location code
+location.expander.intro = Select the location type, and then look up the code (links open in a new tab).
+location.expander.paragraph1.title = RoRo ports for road transport
+location.expander.paragraph1.text = Download the Tariff supplement and search for appendix 16R.
+location.expander.paragraph1.link1.text = RoRo ports location codes, including all trucks and containers using Eurotunnel
+location.expander.paragraph2.title = Terminals for rail transport
+location.expander.paragraph2.text = Download the Tariff supplement and search for appendix 16M.
+location.expander.paragraph2.link1.text = Rail terminal location codes
+location.expander.paragraph3.title = Airports
+location.expander.paragraph3.link1.text = Airport location codes
+location.expander.paragraph4.title = Certificate of Agreement airports
+location.expander.paragraph4.link1.text = Certificate of agreement airports location codes
+location.expander.paragraph5.title = Maritime ports and wharves
+location.expander.paragraph5.link1.text = Maritime ports and wharves location codes
+location.expander.paragraph6.title = Internal temporary storage facilities (ITSFs)
+location.expander.paragraph6.link1.text = Internal temporary storage facilities (ITSFs) location codes
+location.expander.paragraph7.title = Designated Export Places (DEPs)
+location.expander.paragraph7.link1.text = Designated Export Places location codes
+location.expander.paragraph8.title = Customs Supervised Export (CSE) premises
+location.expander.paragraph8.text = If your goods location is not covered by the above guidance, refer to the codes for {0}, or check the latest additions to the CDS location codes in the {1}.
+location.expander.paragraph8.link1.text = data element 5/23 of the Customs Declaration Service (CDS) (Appendix 16)
+location.expander.paragraph8.link2.text = Tariff Volume 3 Great Britain Supplement CDS and CHIEF
 
 transport.title = Transport
 transport.heading = Depart consignment {0}
@@ -295,17 +295,17 @@ disassociate.ucr.summary.kind.ducrPart = DUCR Part
 
 shutMucr.tabTitle = Shut a MUCR
 shutMucr.title = Which master unique consignment (MUCR) do you want to shut?
-shutMucr.expander.title = Help with MUCR
-shutMucr.expander.content = Master Unique Consignments (MUCRs) are normally used to associate or link several Declaration Unique Consignment References (DUCRs). For example, when a container holds a number of consignments from different exporters, each of whom has a DUCR. The format of MUCRs varies depending on the type of transport across the border, for example air. For more information see {0}.
-shutMucr.expander.content.link = volume 3 of the trade tariff for CDS (opens in new tab)
-
 shutMucr.summary.title = Check your answers before you submit this shut request
 shutMucr.summary.header = Shut master consignment
 shutMucr.summary.type = MUCR
 
+shutMucr.expander.title = Help with MUCR
+shutMucr.expander.content = Master Unique Consignments (MUCRs) are normally used to associate or link several Declaration Unique Consignment References (DUCRs). For example, when a container holds a number of consignments from different exporters, each of whom has a DUCR. The format of MUCRs varies depending on the type of transport across the border, for example air. For more information see {0}.
+shutMucr.expander.content.link = volume 3 of the trade tariff for CDS (opens in new tab)
+
 mucrOptions.heading = Associate consignment {0}
 mucrOptions.paragraph = To check the correct format, see the ‘Notes’ section on {0}.
-mucrOptions.paragraph.link =  data element 2/1 Previous Documents (opens in new tab)
+mucrOptions.paragraph.link = data element 2/1 Previous Documents (opens in new tab)
 mucrOptions.title = Create or enter a Master Consignment Reference (MUCR) to associate with
 mucrOptions.create = Create a MUCR
 mucrOptions.add = Add to an existing MUCR
@@ -351,7 +351,6 @@ confirmation.bodyText = It might take a few minutes before we know if your reque
 confirmation.subheading = You are also able to:
 confirmation.notification.timeline.link = consignment’s notification timeline
 confirmation.redirect.choice.link = Submit another request
-confirmation.redirect.summary.link = See more information about this consignment
 confirmation.M = MUCR
 confirmation.MUCR = MUCR
 confirmation.D = DUCR
@@ -508,10 +507,9 @@ sessionTimout.signin.button = Sign in
 
 timeoutDialog.title = Your session will timeout soon
 timeoutDialog.message = For your security, we will sign you out in
-timeoutDialog.keepAlive.text= Stay signed in
-timeoutDialog.signout.text= Sign out
+timeoutDialog.keepAlive.text = Stay signed in
+timeoutDialog.signout.text = Sign out
 
 userSignedOut.title = For your security we have signed you out
 userSignedOut.information = To use the service again, you will need to
 userSignedOut.startPageLink = return to the start page and sign in.
-

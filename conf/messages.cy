@@ -6,6 +6,8 @@ title.withSection.format = {0} {1} - {2} - GOV.UK
 feedback = Gwasanaeth newydd yn hwn – bydd eich {0} yn ein helpu i’w wella.
 feedback.link = adborth
 
+site.print = Argraffu’r dudalen hon
+
 exitSurvey.header = Rhowch eich barn
 exitSurvey.line.1 = Mae hwn yn wasanaeth newydd ac rydym eisiau gwybod beth yw’ch barn amdano.
 exitSurvey.line.2 = {0}. Bydd eich meddyliau a’ch syniadau’n ein helpu i wneud gwelliannau.
@@ -45,6 +47,7 @@ error.mucr.format = Mae’n rhaid i Brif Gyfeirnod Unigryw y Llwyth (MUCR) gynnw
 
 site.back = Yn ôl
 site.back.toStartPage = Yn ôl i’r dudalen ddewis
+site.back.previousQuestion = Yn ôl i’r cwestiwn blaenorol
 site.link.backToGovUk = Yn ôl i GOV.UK
 site.edit = Newid
 site.save_and_continue = Cadw ac yn eich blaen
@@ -54,6 +57,7 @@ site.submit = Cyflwyno
 site.add = Ychwanegu
 site.remove = Diddymu
 site.change = Newid
+site.saveAndReturnToSummary = Cadw a mynd yn ôl i’r crynodeb
 site.change.hint.disassociate.ucr = Newid {0} i’w dynnu.
 site.change.hint.associate.ucr = Newid {0} i’w ychwanegu.
 site.change.hint.associate.mucr = Newid MUCR.
@@ -75,11 +79,14 @@ unauthorised.paragraph.1.bullet.2.link = gael mynediad at y Gwasanaeth Datganiad
 unauthorised.paragraph.2 = Os ydych wedi gwneud cais am rif EORI eisoes, gallwch {0}.
 unauthorised.paragraph.2.link = wirio statws eich cais
 
+unauthorised.tdr.heading = Nid yw’r EORI a nodwyd gennych yn ddilys eto ar wasanaeth prawf y CDS
+unauthorised.tdr.body = Cysylltwch â {0} i sicrhau bod mynediad wedi’i drefnu ar gyfer eich rhif EORI.
+unauthorised.tdr.body.link = cdsexportsuiteam@hmrc.gov.uk
+
 global.error.title = Mae yna broblem – Gwneud datganiad allforion tollau ar gyfer Allforion y Gwasanaeth Datganiadau Tollau (CDS) - GOV.UK
 global.error.heading = Mae problem gyda’r gwasanaeth hwn.
 global.error.message = Rhowch gynnig arall arni yn nes ymlaen.
 
-movement.sectionHeading = {0} llwyth {1}
 movement.sectionHeading.depart = Ymadael llwyth {0}
 movement.sectionHeading.arrive = Cyrraedd llwyth {0}
 
@@ -275,14 +282,17 @@ disassociate.ucr.summary.kind.ducrPart = Rhan DUCR
 
 shutMucr.tabTitle = Cau MUCR
 shutMucr.title = brif lwyth (MUCR) ydych?
-
 shutMucr.summary.title = Gwiriwch eich atebion cyn i chi gyflwyno’r cais hwn i gau
 shutMucr.summary.header = Cau’r prif lwyth
 shutMucr.summary.type = MUCR
 
+shutMucr.expander.title	= Help â MUCR
+shutMucr.expander.content = Fel arfer, defnyddir Prif Gyfeirnod Unigryw y Llwyth (MUCRau) i gysylltu Datganiadau o Gyfeirnod Unigryw y Llwyth (DUCRau) lluosog. Er enghraifft, pan fydd cynhwysydd yn dal nifer o lwythi gan wahanol allforwyr, ac mae gan bob un ohonynt DUCR. Mae fformat MUCRau yn amrywio yn dibynnu ar y math o gludiant dros y ffin, er enghraifft awyr. I gael rhagor o wybodaeth, gweler [].
+shutMucr.expander.content.link = cyfrol 3 o’r tariff masnach ar gyfer CDS (yn agor tab newydd)
+
 mucrOptions.heading = Cysylltu llwyth {0}
 mucrOptions.paragraph = I wirio’r fformat cywir, gweler yr adran ‘Nodiadau’ ar {0}.
-mucrOptions.paragraph.link =  elfen ddata 2/1 Dogfennau Blaenorol (yn agor tab newydd)
+mucrOptions.paragraph.link = elfen ddata 2/1 Dogfennau Blaenorol (yn agor tab newydd)
 mucrOptions.title = Crëwch neu nodwch Brif Gyfeirnod Unigryw y Llwyth (MUCR) i gysylltu ag ef
 mucrOptions.create = Creu MUCR
 mucrOptions.add = Ychwanegu at MUCR presennol
@@ -324,12 +334,14 @@ confirmation.title.DEPART = Mae’ch cais i nodi bod nwyddau’n ymadael wedi’
 confirmation.title.ASSOCIATE_UCR = Mae’ch cais i gysylltu wedi’i gyflwyno
 confirmation.title.DISSOCIATE_UCR = Mae’ch cais i ddatgysylltu wedi’i gyflwyno
 confirmation.title.SHUT_MUCR = Mae’ch cais i gau MUCR wedi’i gyflwyno
-confirmation.insetText = Gall gymryd ychydig funudau cyn dod i benderfyniad.
-confirmation.insetText.check = Ewch i’r {0} i wirio’r statws.
 confirmation.bodyText = Gall gymryd ychydig o funudau cyn y byddwn yn gwybod a yw eich cais i gysylltu wedi bod yn llwyddiannus. Ewch i {0} i wirio’r statws.
+confirmation.subheading	= Gallwch hefyd wneud y canlynol:
 confirmation.notification.timeline.link = amserlen hysbysiadau mewn perthynas â’r llwyth
-confirmation.redirect.query.link = Dod o hyd i lwyth arall
 confirmation.redirect.choice.link = Yn ôl i’r dechrau
+confirmation.M = MUCR
+confirmation.MUCR = MUCR
+confirmation.D = DUCR
+confirmation.DP = DUCR
 
 submissions.title = Ceisiadau
 submissions.summary = Mae’r dudalen hon yn dangos yr holl geisiadau sydd wedi’u cyflwyno ynghyd ag unrhyw hysbysiadau sy’n berthnasol iddynt.
@@ -355,7 +367,8 @@ submissions.ducrpartdisassociation = Datgysylltu Rhan o’r DUCR
 submissions.mucrdisassociation = Datgysylltu MUCR
 
 notifications.title = Manylion yr hysbysiad
-notifications.mucr = MUCR
+notifications.mucr = MUCR: {0}
+notifications.ducr = DUCR: {0}
 
 notifications.elem.title.Arrival = Mae’r cais i nodi bod nwyddau’n cyrraedd wedi dod i law
 notifications.elem.title.Departure = Mae’r cais i nodi bod nwyddau’n ymadael wedi dod i law
@@ -400,9 +413,6 @@ ileQuery.title = Dod o hyd i lwyth
 ileQuery.hint = Chwilio yn ôl Prif Gyfeirnod Unigryw y Llwyth (MUCR) neu Ddatganiad o Gyfeirnod Unigryw y Llwyth (DUCR). </br></br>Er enghraifft 'GB/123456789100-AB123'.
 ileQuery.ucr.empty = Nodwch Gyfeirnod Unigryw y Llwyth
 ileQuery.ucr.incorrect = Mae Cyfeirnod Unigryw y Llwyth yn anghywir
-
-ileQuery.link.requests = Bwrw golwg dros geisiadau blaenorol
-ileQuery.link.ducrPart = Nodwch Ran o’r DUCR
 
 ileQuery.loading.title = Chwilio am lwyth
 ileQuery.loading.hint = Dylai hyn gymryd ychydig funudau’n unig, peidiwch ag adnewyddu’r dudalen.
@@ -482,8 +492,8 @@ sessionTimout.signin.button = Mewngofnodi
 
 timeoutDialog.title = Bydd eich sesiwn yn dod i ben cyn hir
 timeoutDialog.message = Er eich diogelwch, byddwn yn eich allgofnodi ymhen
-timeoutDialog.keepAlive.text =  Parhau i fod wedi’ch mewngofnodi
-timeoutDialog.signout.text =  Allgofnodi
+timeoutDialog.keepAlive.text = Parhau i fod wedi’ch mewngofnodi
+timeoutDialog.signout.text = Allgofnodi
 
 userSignedOut.title = Er eich diogelwch, rydym wedi’ch allgofnodi
 userSignedOut.information = I ddefnyddio’r gwasanaeth eto, bydd yn rhaid i chi

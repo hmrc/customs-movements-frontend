@@ -54,7 +54,7 @@ class UnauthorisedViewSpec extends ViewSpec with Injector {
       val link = view.getElementById("check_cds_application_status_link")
 
       link must containMessage("unauthorised.paragraph.2.link")
-      link must haveHref("https://www.tax.service.gov.uk/customs/register-for-cds/are-you-based-in-uk")
+      link must haveHref("http://localhost:6750/customs-enrolment-services/cds/subscribe")
       link.attr("target") mustBe "_self"
     }
   }

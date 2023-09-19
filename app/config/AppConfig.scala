@@ -54,7 +54,7 @@ class AppConfig @Inject() (
 
   val eoriService: String = loadConfig("urls.eoriService")
   val cdsRegister: String = loadConfig("urls.cdsRegister")
-  val cdsCheckStatus: String = loadConfig("urls.cdsCheckStatus")
+  val cdsSubscribe: String = loadConfig("urls.cdsSubscribe")
 
   val customsDecCompletionRequirements = loadConfig("urls.customsDecCompletionRequirements")
   val locationCodeForAirports = loadConfig("urls.locationCodeForAirports")

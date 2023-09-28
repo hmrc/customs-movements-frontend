@@ -17,6 +17,12 @@
 @import views.components.autocomplete.AutoCompleteItem
 @import views.html.components.autocomplete.field_accessible_autocomplete_with_header
 
-@(field: Field, label: String, labelClass: Option[String], hintText: Option[String], emptySelectValue: String, items: List[AutoCompleteItem], args: (Symbol, Any)*)(implicit messages: Messages)
+@(field: Field,
+        label: String,
+        labelClass: Option[String],
+        hintText: Option[String],
+        emptySelectValue: String,
+        items: List[AutoCompleteItem],
+        args: (Symbol, Any)*)(implicit request: Request[_], messages: Messages)
 
 @field_accessible_autocomplete_with_header(field, label, labelClass, None, hintText, emptySelectValue, items, false, args:_*)

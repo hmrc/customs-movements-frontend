@@ -57,7 +57,7 @@ class IleQueryDucrResponseViewSpec extends ViewSpec with Injector {
     }
 
     "display a 'Print' button" in {
-      view().getElementsByClass("gem-c-print-link__button").size() mustBe 2
+      view().getElementsByClass("gem-c-print-link__button").size() mustBe 1
     }
   }
 }

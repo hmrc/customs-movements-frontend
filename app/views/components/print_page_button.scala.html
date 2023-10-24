@@ -14,12 +14,26 @@
  * limitations under the License.
  *@
 
+@import views.html.helper.CSPNonce
+
 @this()
 
-@(marginTop: Int = 40, marginBottom: Int = 40, classes: String = "")(implicit messages: Messages)
+@(marginTop: Int = 40, marginBottom: Int = 40, classes: String = "")(implicit request: Request[_], messages: Messages)
+
+    <script @CSPNonce.attr>
+        document.addEventListener('DOMContentLoaded', function() {
+            var printButton = document.getElementById('printButton');
+            if (printButton) {
+                printButton.addEventListener('click', function(event) {
+                    window.print();
+                    event.preventDefault(); // Prevent the default behavior of the anchor element
+                });
+            }
+        });
+    </script>
 
 <div class="gem-c-print-link govuk-!-display-none-print govuk-!-margin-top-@{marginTop} govuk-!-margin-bottom-@{marginBottom} @classes">
-    <button class="govuk-link govuk-body-s gem-c-print-link__button" onclick="window.print()">
+    <button class="govuk-link govuk-body-s gem-c-print-link__button" id="printButton">
         @messages("site.print")
     </button>
 </div>

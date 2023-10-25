@@ -18,22 +18,18 @@
 
 @this()
 
-@(marginTop: Int = 40, marginBottom: Int = 40, classes: String = "")(implicit request: Request[_], messages: Messages)
-
-    <script @CSPNonce.attr>
-        document.addEventListener('DOMContentLoaded', function() {
-            var printButton = document.getElementById('printButton');
-            if (printButton) {
-                printButton.addEventListener('click', function(event) {
-                    window.print();
-                    event.preventDefault(); // Prevent the default behavior of the anchor element
-                });
-            }
-        });
-    </script>
+@(marginTop: Int = 40, marginBottom: Int = 40, classes: String = "", buttonId: Int = 1)(implicit request: Request[_], messages: Messages)
 
 <div class="gem-c-print-link govuk-!-display-none-print govuk-!-margin-top-@{marginTop} govuk-!-margin-bottom-@{marginBottom} @classes">
-    <button class="govuk-link govuk-body-s gem-c-print-link__button" id="printButton">
+    <button class="govuk-link govuk-body-s gem-c-print-link__button" id="print-button-@{buttonId}">
         @messages("site.print")
     </button>
 </div>
+
+<script @CSPNonce.attr>
+
+    var printButton = document.getElementById('print-button-@{buttonId}');
+        printButton.addEventListener('click', function() {
+            window.print();
+        });
+</script>

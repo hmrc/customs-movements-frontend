@@ -30,6 +30,7 @@
 
 @if(associatedUcrs.size > 0) {
     <div class="govuk-grid-column-full" id="associatedUcrs">
+        <h2 class="govuk-heading-m">@messages("ileQueryResponse.associated")</h2>
         @govukTable(Table(
             rows = associatedUcrs.zipWithIndex.map(indexedUcr => {
                 Seq(
@@ -61,7 +62,7 @@
             )),
             classes = "govuk-table govuk-!-margin-bottom-9",
             caption = Some(messages("ileQueryResponse.associated")),
-            captionClasses = "govuk-table__caption govuk-heading-m",
+            captionClasses = "govuk-visually-hidden",
             firstCellIsHeader = true
         ))
     </div>

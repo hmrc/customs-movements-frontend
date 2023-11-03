@@ -24,6 +24,7 @@
 
     @if(movements.nonEmpty) {
         <div class="govuk-grid-column-full" id="previousMovements">
+            <h2 class="govuk-heading-m">@messages("ileQueryResponse.previousMovements")</h2>
         @govukTable(Table(
             rows = movements.sortBy(_.movementDateTime).reverse.zipWithIndex.map(indexedMovement => {
                 Seq(
@@ -55,7 +56,7 @@
             )),
             classes = "govuk-table govuk-!-margin-bottom-9",
             caption = Some(messages("ileQueryResponse.previousMovements")),
-            captionClasses = "govuk-table__caption govuk-heading-m",
+            captionClasses = "govuk-visually-hidden",
             firstCellIsHeader = true
         ))
         </div>

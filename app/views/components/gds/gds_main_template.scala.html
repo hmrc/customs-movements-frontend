@@ -69,8 +69,6 @@
       )
   }
 
-    @hmrcTrackingConsentSnippet()
-
     <link rel="shortcut icon" href='@routes.Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />
     <link rel="shortcut icon" href='@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")' rel="stylesheet" type="text/css" />
     <meta name="format-detection" content="telephone=no" />
@@ -89,10 +87,9 @@
         .hmrc-header__service-name--linked:link, .hmrc-header__service-name--linked:visited {
           color: #000;
         }
-        .hmrc-language-select__list-item {
-          &:first-child::after {
-            border: none;
-          }
+        .hmrc-language-select__list-item,
+        .hmrc-language-select__list-item:first-child::after {
+          border: none;
         }
         .govuk-link[href^="/"]::after, .govuk-link[href^="http://"]::after, .govuk-link[href^="https://"]::after {
           content: normal;

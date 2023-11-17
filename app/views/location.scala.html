@@ -42,10 +42,8 @@
 }}
 
 @heading = {
-    <h1 class="govuk-label-wrapper">
-        <label class="govuk-label govuk-label--l" for="code">
-            @messages("location.question")
-        </label>
+    <h1 class="govuk-heading govuk-heading-xl">
+        @messages("location.question")
     </h1>
 }
 
@@ -69,9 +67,8 @@
         @exportsInputText(
             field = form("code"),
             labelKey = "location.question",
-            hintContent = Some(HtmlContent(hint)),
-            isPageHeading = true,
-            headingClasses = "govuk-visually-hidden"
+            labelClasses = "govuk-visually-hidden",
+            hintContent = Some(HtmlContent(hint))
         )
 
         @goodsLocationExpander()

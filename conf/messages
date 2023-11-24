@@ -436,6 +436,7 @@ ileQueryResponse.ducr.title = Consignment information
 ileQueryResponse.mucr.title = Consignment information
 ileQueryResponse.previousMovements = Previous movement requests
 ileQueryResponse.previousMovements.type = Type
+ileQueryResponse.previousMovements.type.eaa = Anticipated arrival request (EAA)
 ileQueryResponse.previousMovements.type.eal = Arrival request (EAL)
 ileQueryResponse.previousMovements.type.edl = Departure request (EDL)
 ileQueryResponse.previousMovements.type.ret = Retrospective arrival request (RET)

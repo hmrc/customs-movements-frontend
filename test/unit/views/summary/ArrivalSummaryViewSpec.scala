@@ -32,8 +32,6 @@ class ArrivalSummaryViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(ArrivalAnswers())
 
-  private val viewDates = new ViewDates()
-
   private val page = instanceOf[arrival_summary_page]
 
   private val date = Date(LocalDate.now())
@@ -116,14 +114,14 @@ class ArrivalSummaryViewSpec extends ViewSpec with Injector {
       view.getElementsByClass("govuk-heading-m").get(section_arrival_datetime) must containMessage("arrivalDetails.title")
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_date) must containMessage("summary.arrival.date")
-      view.getElementsByClass("govuk-summary-list__value").get(answer_date).text mustBe viewDates.formatDate(date.date)
+      view.getElementsByClass("govuk-summary-list__value").get(answer_date).text mustBe ViewDates.formatDate(date.date)
 
       val changeDate = view.getElementsByClass("govuk-link").get(answer_date_link_index)
       changeDate must containMessage("site.change")
       changeDate must haveHref(MovementDetailsController.displayPage)
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_time) must containMessage("summary.arrival.time")
-      view.getElementsByClass("govuk-summary-list__value").get(answer_time).text mustBe viewDates.formatTime(time.time)
+      view.getElementsByClass("govuk-summary-list__value").get(answer_time).text mustBe ViewDates.formatTime(time.time)
 
       val changeTime = view.getElementsByClass("govuk-link").get(answer_time_link_index)
       changeTime must containMessage("site.change")

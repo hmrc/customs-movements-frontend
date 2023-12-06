@@ -40,7 +40,6 @@ import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 class MovementsViewSpec extends ViewSpec with Injector {
 
   implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
-  private val viewDates = new ViewDates()
 
   private val page = instanceOf[movements]
   private val dateTime: Instant = LocalDate.of(2019, 10, 31).atStartOfDay().toInstant(ZoneOffset.UTC)
@@ -163,7 +162,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
 
       firstDataRowElements.selectFirst(".ucr").text() mustBe s"$validMucr ${messages("submissions.hidden.text", validMucr)}"
       firstDataRowElements.selectFirst(".submission-type") must containMessage("submissions.submissionType.M")
-      firstDataRowElements.selectFirst(".date-of-request").text() mustBe viewDates.formatDateAtTime(
+      firstDataRowElements.selectFirst(".date-of-request").text() mustBe ViewDates.formatDateAtTime(
         LocalDateTime
           .of(2019, 10, 31, 0, 0)
       ) // "31 Oct 2019 at 00:00"
@@ -171,7 +170,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
 
       secondDataRowElements.selectFirst(".ucr").text() mustBe s"$validDucr ${messages("submissions.hidden.text", validDucr)}"
       secondDataRowElements.selectFirst(".submission-type") must containMessage("submissions.submissionType.D")
-      secondDataRowElements.selectFirst(".date-of-request").text() mustBe viewDates.formatDateAtTime(
+      secondDataRowElements.selectFirst(".date-of-request").text() mustBe ViewDates.formatDateAtTime(
         LocalDateTime
           .of(2019, 10, 31, 0, 31)
       ) // "31 Oct 2019 at 00:31"
@@ -179,7 +178,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
 
       thirdDataRowElements.selectFirst(".ucr").text() mustBe s"$validWholeDucrParts ${messages("submissions.hidden.text", validWholeDucrParts)}"
       thirdDataRowElements.selectFirst(".submission-type") must containMessage("submissions.submissionType.DP")
-      thirdDataRowElements.selectFirst(".date-of-request").text() mustBe viewDates.formatDateAtTime(
+      thirdDataRowElements.selectFirst(".date-of-request").text() mustBe ViewDates.formatDateAtTime(
         LocalDateTime
           .of(2019, 10, 31, 0, 33)
       ) // "31 Oct 2019 at 00:33"
@@ -189,7 +188,7 @@ class MovementsViewSpec extends ViewSpec with Injector {
         .selectFirst(".ucr")
         .text() mustBe s"$validDucr $validMucr ${messages("submissions.hidden.text", validDucr + ", " + validMucr)}"
       fourthDataRowElements.selectFirst(".submission-type") must containMessage("submissions.submissionType.D")
-      fourthDataRowElements.selectFirst(".date-of-request").text() mustBe viewDates.formatDateAtTime(
+      fourthDataRowElements.selectFirst(".date-of-request").text() mustBe ViewDates.formatDateAtTime(
         LocalDateTime
           .of(2019, 10, 31, 0, 30)
       ) // "31 Oct 2019 at 00:30"

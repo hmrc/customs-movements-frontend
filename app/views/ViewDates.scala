@@ -16,38 +16,98 @@
 
 package views
 
+import play.api.Logging
 import play.api.i18n.Messages
 
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAccessor
-import javax.inject.Singleton
+import java.time.{Instant, LocalDate, LocalDateTime, Month, OffsetDateTime, ZoneId, ZonedDateTime}
+import scala.util.{Failure, Success, Try}
 
-@Singleton
-class ViewDates() {
-  def timezone = ZoneId.of("Europe/London")
-
-  private val atTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(" 'at' h:mma").withZone(timezone)
-  private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("h:mma").withZone(timezone)
-  private val dayFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d").withZone(timezone)
-  private val monthFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("M").withZone(timezone)
-  private val yearFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("uuu").withZone(timezone)
-
-  def formatDateAtTime(temporal: TemporalAccessor)(implicit messages: Messages): String =
-    formatAmPm(
-      dayFormatter.format(temporal)
-        + s" ${messages(s"month.${monthFormatter.format(temporal)}")} "
-        + yearFormatter.format(temporal)
-        + atTimeFormatter.format(temporal)
-    )
+object ViewDates extends Logging {
 
   def formatDate(temporal: TemporalAccessor)(implicit messages: Messages): String =
-    dayFormatter.format(temporal) + s" ${messages(s"month.${monthFormatter.format(temporal)}")} " + yearFormatter.format(temporal)
+    Try(translateMonthOnWelsh(temporal, dateFormatter.format(temporal))) match {
+      case Success(result) => result
+      case Failure(exc) =>
+        val className = temporal.getClass.getSimpleName
+        logger.warn(s"Cannot extract date from a [$className] instance")
+        throw exc
+    }
 
-  def formatTime(temporal: TemporalAccessor): String = formatAmPm(timeFormatter.format(temporal))
+  def formatDateAtTime(temporal: TemporalAccessor)(implicit messages: Messages): String = {
+    val result =
+      Try(translateAmPmOnWelsh(dateTimeFormatter.format(temporal))) match {
+        case Success(result) => result
+        case Failure(exc) =>
+          val className = temporal.getClass.getSimpleName
+          logger.warn(s"Cannot extract date and time from a [$className] instance")
+          throw exc
+      }
 
-  private def formatAmPm(value: String) =
-    value
-      .replace("AM", "am")
-      .replace("PM", "pm")
+    translateMonthOnWelsh(temporal, result)
+  }
+
+  def formatTime(temporal: TemporalAccessor)(implicit messages: Messages): String =
+    Try(translateAmPmOnWelsh(timeFormatter.format(temporal))) match {
+      case Success(result) => result
+      case Failure(exc) =>
+        val className = temporal.getClass.getSimpleName
+        logger.warn(s"Cannot extract the time from a [$className] instance")
+        throw exc
+    }
+
+  private def translateAmPmOnWelsh(result: String)(implicit messages: Messages): String =
+    if (messages.lang.code.toLowerCase != "cy")
+      result
+        .replace("AM", "am")
+        .replace("PM", "pm")
+    else
+      result
+        .replaceFirst("(?i)am", "yb")
+        .replaceFirst("(?i)pm", "yh")
+        .replace(" at ", " am ")
+
+  private def translateMonthOnWelsh(temporal: TemporalAccessor, result: String)(implicit messages: Messages): String =
+    if (messages.lang.code.toLowerCase != "cy") result
+    else
+      Try(monthsForWelsh(monthValue(temporal) - 1)) match {
+        case Success(translation) => result.replace(translation._1, translation._2)
+        case Failure(_) =>
+          val className = temporal.getClass.getSimpleName
+          logger.warn(s"Cannot extract the month from a [$className] instance (while translating to Welsh)")
+          result
+      }
+
+  private def monthValue(temporal: TemporalAccessor): Int =
+    temporal match {
+      case instant: Instant               => instant.atZone(zoneId).getMonthValue
+      case localDate: LocalDate           => localDate.getMonthValue
+      case localDateTime: LocalDateTime   => localDateTime.getMonthValue
+      case zonedDateTime: ZonedDateTime   => zonedDateTime.getMonthValue
+      case offsetDateTime: OffsetDateTime => offsetDateTime.getMonthValue
+      case month: Month                   => month.getValue
+      case _                              => -1
+    }
+
+  val zoneId = ZoneId.of("Europe/London")
+
+  private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM uuu").withZone(zoneId)
+  private val dateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu 'at' h:mma").withZone(zoneId)
+  private val timeFormatter = DateTimeFormatter.ofPattern("h:mma").withZone(zoneId)
+
+  private val monthsForWelsh = Array(
+    "January" -> "Ionawr",
+    "February" -> "Chwefror",
+    "March" -> "Mawrth",
+    "April" -> "Ebrill",
+    "May" -> "Mai",
+    "June" -> "Mehefin",
+    "July" -> "Gorffennaf",
+    "August" -> "Awst",
+    "September" -> "Medi",
+    "October" -> "Hydref",
+    "November" -> "Tachwedd",
+    "December" -> "Rhagfyr"
+  )
 }

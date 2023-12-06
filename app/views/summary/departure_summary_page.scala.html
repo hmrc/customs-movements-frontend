@@ -33,7 +33,6 @@
     pageTitle: pageTitle,
     govukSummaryList : GovukSummaryList,
     linkContent: linkContent,
-    viewDates: ViewDates,
     formHelper: FormWithCSRF
 )
 
@@ -112,7 +111,7 @@
                             content = Text(messages("summary.departure.date"))
                         ),
                         value = Value(
-                            content = Text(data.departureDetails.map(departure => viewDates.formatDate(departure.dateOfDeparture.date)).getOrElse(""))
+                            content = Text(data.departureDetails.map(departure => ViewDates.formatDate(departure.dateOfDeparture.date)).getOrElse(""))
                         ),
                         actions = Some(Actions(
                             items = Seq(
@@ -129,7 +128,7 @@
                             content = Text(messages("summary.departure.time"))
                         ),
                         value = Value(
-                            content = Text(data.departureDetails.map(departure => viewDates.formatTime(departure.timeOfDeparture.time)).getOrElse(""))
+                            content = Text(data.departureDetails.map(departure => ViewDates.formatTime(departure.timeOfDeparture.time)).getOrElse(""))
                         ),
                         actions = Some(Actions(
                             items = Seq(

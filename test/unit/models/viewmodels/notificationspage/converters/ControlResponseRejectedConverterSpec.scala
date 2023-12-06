@@ -60,7 +60,7 @@ class ControlResponseRejectedConverterSpec extends UnitSpec with BeforeAndAfterE
 
     "return NotificationsPageSingleElement with correct timestampInfo" in {
       val input = RejectedControlResponseSingleError
-      val expectedTimestampInfo = s"23 ${messages("month.10")} 2019 at 12:34pm"
+      val expectedTimestampInfo = "23 October 2019 at 12:34pm"
 
       val result = converter.convert(input)
 

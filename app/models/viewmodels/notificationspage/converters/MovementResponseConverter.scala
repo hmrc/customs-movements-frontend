@@ -27,8 +27,7 @@ import views.html.components.gds.paragraphBody
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class MovementResponseConverter @Inject() (val decoder: Decoder, viewDates: ViewDates)
-    extends NotificationPageSingleElementConverter with CommonResponseConverter {
+class MovementResponseConverter @Inject() (val decoder: Decoder) extends NotificationPageSingleElementConverter with CommonResponseConverter {
 
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement = {
 
@@ -43,7 +42,7 @@ class MovementResponseConverter @Inject() (val decoder: Decoder, viewDates: View
 
     NotificationsPageSingleElement(
       title = messages("notifications.elem.title.inventoryLinkingMovementResponse"),
-      timestampInfo = viewDates.formatDateAtTime(notification.timestampReceived),
+      timestampInfo = ViewDates.formatDateAtTime(notification.timestampReceived),
       content = new Html(List(crcCodeExplanation, roeCodeExplanation, soeCodeExplanation, icsCodeExplanation))
     )
   }

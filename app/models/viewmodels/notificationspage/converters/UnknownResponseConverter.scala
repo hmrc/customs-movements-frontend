@@ -16,20 +16,21 @@
 
 package models.viewmodels.notificationspage.converters
 
-import javax.inject.{Inject, Singleton}
 import models.notifications.Notification
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import views.ViewDates
 
+import javax.inject.Singleton
+
 @Singleton
-class UnknownResponseConverter @Inject() (viewDates: ViewDates) extends NotificationPageSingleElementConverter {
+class UnknownResponseConverter extends NotificationPageSingleElementConverter {
 
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
       title = messages("notifications.elem.title.unknown"),
-      timestampInfo = viewDates.formatDateAtTime(notification.timestampReceived),
+      timestampInfo = ViewDates.formatDateAtTime(notification.timestampReceived),
       content = HtmlFormat.empty
     )
 }

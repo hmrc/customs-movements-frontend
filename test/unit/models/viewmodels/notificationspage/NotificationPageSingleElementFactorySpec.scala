@@ -16,7 +16,6 @@
 
 package models.viewmodels.notificationspage
 
-import java.time.Instant
 import base.UnitSpec
 import com.google.inject.Guice
 import connectors.exchanges.ActionType.{ConsolidationType, MovementType}
@@ -34,7 +33,9 @@ import testdata.CommonTestData._
 import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData.exampleNotificationFrontendModel
 import utils.DateTimeTestModule
-import views.{MessagesStub, ViewDates}
+import views.MessagesStub
+
+import java.time.Instant
 
 class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStub with BeforeAndAfterEach {
 
@@ -43,8 +44,7 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
   private implicit val fakeRequest = FakeRequest()
 
   private val responseConverterProvider = mock[ResponseConverterProvider]
-  private val formatter = new ViewDates
-  private val factory = new NotificationPageSingleElementFactory(responseConverterProvider, formatter)
+  private val factory = new NotificationPageSingleElementFactory(responseConverterProvider)
   private val injector = Guice.createInjector(new DateTimeTestModule())
   private val unknownResponseConverter = injector.getInstance(classOf[UnknownResponseConverter])
 

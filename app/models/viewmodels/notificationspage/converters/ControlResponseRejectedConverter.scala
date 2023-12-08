@@ -16,7 +16,6 @@
 
 package models.viewmodels.notificationspage.converters
 
-import javax.inject.{Inject, Singleton}
 import models.notifications.Notification
 import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
@@ -26,8 +25,10 @@ import play.twirl.api.Html
 import views.ViewDates
 import views.html.components.{notification_errors, paragraph}
 
+import javax.inject.{Inject, Singleton}
+
 @Singleton
-class ControlResponseRejectedConverter @Inject() (decoder: Decoder, viewDates: ViewDates) extends NotificationPageSingleElementConverter {
+class ControlResponseRejectedConverter @Inject() (decoder: Decoder) extends NotificationPageSingleElementConverter {
 
   private val logger = Logger(this.getClass)
 
@@ -37,7 +38,7 @@ class ControlResponseRejectedConverter @Inject() (decoder: Decoder, viewDates: V
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
       title = messages(TitleMessagesKey),
-      timestampInfo = viewDates.formatDateAtTime(notification.timestampReceived),
+      timestampInfo = ViewDates.formatDateAtTime(notification.timestampReceived),
       content = buildContent(notification)
     )
 

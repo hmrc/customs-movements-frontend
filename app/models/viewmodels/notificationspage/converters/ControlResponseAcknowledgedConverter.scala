@@ -16,7 +16,6 @@
 
 package models.viewmodels.notificationspage.converters
 
-import javax.inject.{Inject, Singleton}
 import models.notifications.Notification
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
@@ -24,8 +23,10 @@ import play.twirl.api.Html
 import views.ViewDates
 import views.html.components.paragraph
 
+import javax.inject.Singleton
+
 @Singleton
-class ControlResponseAcknowledgedConverter @Inject() (viewDates: ViewDates) extends NotificationPageSingleElementConverter {
+class ControlResponseAcknowledgedConverter extends NotificationPageSingleElementConverter {
 
   private val TitleMessagesKey = "notifications.elem.title.inventoryLinkingControlResponse.AcknowledgedAndProcessed"
   private val ContentHeaderMessagesKey = "notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed"
@@ -33,7 +34,7 @@ class ControlResponseAcknowledgedConverter @Inject() (viewDates: ViewDates) exte
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
       title = messages(TitleMessagesKey),
-      timestampInfo = viewDates.formatDateAtTime(notification.timestampReceived),
+      timestampInfo = ViewDates.formatDateAtTime(notification.timestampReceived),
       content = buildContent()
     )
 

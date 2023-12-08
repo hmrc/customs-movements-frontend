@@ -30,7 +30,7 @@ import views.html.components.gds.paragraphBody
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class NotificationPageSingleElementFactory @Inject() (responseConverterProvider: ResponseConverterProvider, viewDates: ViewDates) {
+class NotificationPageSingleElementFactory @Inject() (responseConverterProvider: ResponseConverterProvider) {
 
   def build(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement =
     (submission.actionType: @unchecked) match {
@@ -54,7 +54,7 @@ class NotificationPageSingleElementFactory @Inject() (responseConverterProvider:
 
     NotificationsPageSingleElement(
       title = messages(s"notifications.elem.title.${submission.actionType.typeName}"),
-      timestampInfo = viewDates.formatDateAtTime(submission.requestTimestamp),
+      timestampInfo = ViewDates.formatDateAtTime(submission.requestTimestamp),
       content = content
     )
   }
@@ -85,5 +85,4 @@ class NotificationPageSingleElementFactory @Inject() (responseConverterProvider:
     val responseConverter = responseConverterProvider.provideResponseConverter(notification)
     responseConverter.convert(notification)
   }
-
 }

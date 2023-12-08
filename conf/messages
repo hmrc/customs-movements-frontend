@@ -25,19 +25,6 @@ date.year.error = Year must be between 2000 and 3000
 date.error.invalid = Date must be in the correct format
 date.error.allEmpty = Enter a date
 
-month.1 = January
-month.2 = February
-month.3 = March
-month.4 = April
-month.5 = May
-month.6 = June
-month.7 = July
-month.8 = August
-month.9 = September
-month.10 = October
-month.11 = November
-month.12 = December
-
 time.hour = Hour
 time.minute = Minute
 time.ampm = am or pm
@@ -50,7 +37,6 @@ time.am = am
 time.pm = pm
 time.error.invalid = Time must be in the correct format
 time.error.allEmpty = Enter a time
-
 
 error.summary.title = There is a problem
 error.ducr = Declaration Unique Consignment Reference (DUCR) must be in the correct format.

@@ -26,8 +26,7 @@ import views.ViewDates
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ERSResponseConverter @Inject() (val decoder: Decoder, viewDates: ViewDates)
-    extends NotificationPageSingleElementConverter with CommonResponseConverter {
+class ERSResponseConverter @Inject() (val decoder: Decoder) extends NotificationPageSingleElementConverter with CommonResponseConverter {
 
   override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement = {
 
@@ -40,7 +39,7 @@ class ERSResponseConverter @Inject() (val decoder: Decoder, viewDates: ViewDates
 
     NotificationsPageSingleElement(
       title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-      timestampInfo = viewDates.formatDateAtTime(notification.timestampReceived),
+      timestampInfo = ViewDates.formatDateAtTime(notification.timestampReceived),
       content = new Html(List(roeCodeExplanation, soeCodeExplanation, icsCodeExplanation))
     )
   }

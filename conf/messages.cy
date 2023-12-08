@@ -38,19 +38,6 @@ time.pm = pm
 time.error.invalid = Mae’n rhaid i’r amser fod yn y fformat cywir
 time.error.allEmpty = Nodwch amser
 
-month.1 = Ionawr
-month.2 = Chwefror
-month.3 = Mawrth
-month.4 = Ebrill
-month.5 = Mai
-month.6 = Mehefin
-month.7 = Gorffennaf
-month.8 = Awst
-month.9 = Medi
-month.10 = Hydref
-month.11 = Tachwedd
-month.12 = Rhagfyr
-
 error.summary.title = Mae problem wedi codi
 error.ducr = Mae’n rhaid i’r Datganiad o Gyfeirnod Unigryw y Llwyth (DUCR) fod yn y fformat cywir.
 error.ducr.empty = Nodwch Ddatganiad o Gyfeirnod Unigryw y Llwyth (DUCR)

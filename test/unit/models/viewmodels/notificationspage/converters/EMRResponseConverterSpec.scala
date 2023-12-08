@@ -80,7 +80,7 @@ class EMRResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
 
         val input = emrResponseAllCodes
         val expectedTitle = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
-        val expectedTimestampInfo = s"23 ${messages("month.10")} 2019 at 12:34pm"
+        val expectedTimestampInfo = "23 October 2019 at 12:34pm"
         val expectedContentElements = Seq(
           crcKeyFromDecoder.code,
           messages(crcKeyFromDecoder.messageKey),
@@ -121,7 +121,7 @@ class EMRResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
 
         val input = emrResponseMissingCodes
         val expectedTitle = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse")
-        val expectedTimestampInfo = s"23 ${messages("month.10")} 2019 at 12:34pm"
+        val expectedTimestampInfo = "23 October 2019 at 12:34pm"
         val expectedContentElements =
           Seq(messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe"), messages(roeKeyFromDecoder.messageKey))
 
@@ -159,7 +159,7 @@ class EMRResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
         val input = emrResponseUnknownCodes
         val expectedResult = NotificationsPageSingleElement(
           title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-          timestampInfo = s"23 ${messages("month.10")} 2019 at 12:34pm",
+          timestampInfo = "23 October 2019 at 12:34pm",
           content = Html("")
         )
 

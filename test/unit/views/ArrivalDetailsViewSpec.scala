@@ -41,6 +41,7 @@ class ArrivalDetailsViewSpec extends ViewSpec with Injector {
   private val consignmentReferencesValue = "M-ref"
 
   private val form = movementDetails.arrivalForm()
+
   private def createView(form: Form[ArrivalDetails])(implicit request: JourneyRequest[_]): Html =
     page(form, consignmentReferencesValue)
 
@@ -57,6 +58,13 @@ class ArrivalDetailsViewSpec extends ViewSpec with Injector {
   "ArrivalDetails View" when {
 
     implicit val request = journeyRequest(ArrivalAnswers())
+
+    "the page has errors" should {
+      "have the page's title prefixed with 'Error:'" in {
+        val view = createView(form.withGlobalError("error.summary.title"))
+        view.head.getElementsByTag("title").first.text must startWith("Error: ")
+      }
+    }
 
     "provided with empty form" should {
       val emptyView = createView(form)

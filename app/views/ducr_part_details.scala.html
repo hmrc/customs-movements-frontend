@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.BackButton
 @import views.html.components.gds._
-@import views.Title
+@import views.helpers.Title
 @import config.ExternalServicesConfig
 
 @this(
@@ -43,7 +43,7 @@
 }
 
 @govukLayout(
-  title = Title("ducrPartDetails.title", Some("ducrPartDetails.heading")),
+  title = Title("ducrPartDetails.title", Some("ducrPartDetails.heading"), hasErrors = form.hasErrors || form.hasGlobalErrors),
   backButton = Some(BackButton(messages("site.back.previousQuestion"), DucrPartChiefController.displayPage))
 ) {
     @formHelper(action = DucrPartDetailsController.submitDucrPartDetails, Symbol("autoComplete") -> "off") {

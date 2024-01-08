@@ -55,6 +55,13 @@ class DucrPartChiefViewSpec extends ViewSpec with Injector {
       }
     }
 
+    "have the page's title prefixed with 'Error:'" when {
+      "the page has errors" in {
+        val view = page(form.withGlobalError("error.summary.title"))
+        view.head.getElementsByTag("title").first.text must startWith("Error: ")
+      }
+    }
+
     "have the correct body text" in {
       page(form).getElementById("code-body-para").text mustBe messages("ducrPartChief.bodyParagraph")
     }

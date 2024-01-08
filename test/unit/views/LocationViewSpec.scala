@@ -28,53 +28,57 @@ import views.html.location
 class LocationViewSpec extends ViewSpec with Injector {
 
   private val form: Form[Location] = Location.form()
-  private val locationPage = instanceOf[location]
+  private val page = instanceOf[location]
 
   private implicit val request = journeyRequest(ArrivalAnswers())
 
-  private def view(implicit request: JourneyRequest[_] = request): Html = locationPage(form, "some-reference", None)
+  private def createView(implicit request: JourneyRequest[_] = request): Html = page(form, "some-reference", None)
 
   "Location View on empty page" should {
 
-    "display page title" in {
+    "have the page's title prefixed with 'Error:'" when {
+      "the page has errors" in {
+        val view = page(form.withGlobalError("error.summary.title"), "some-reference", None)
+        view.head.getElementsByTag("title").first.text must startWith("Error: ")
+      }
+    }
 
-      view().getElementsByTag("h1").first() must containMessage("location.question")
+    "display page title" in {
+      createView().getElementsByTag("h1").first() must containMessage("location.question")
     }
 
     "have the correct section header for the Arrival journey" in {
-
-      view().getElementById("section-header") must containMessage("movement.sectionHeading.arrive", "some-reference")
+      createView().getElementById("section-header") must containMessage("movement.sectionHeading.arrive", "some-reference")
     }
 
     "have the correct section header for the Departure journey" in {
-
-      val departureView = locationPage(form, "some-reference", None)(journeyRequest(DepartureAnswers()), messages)
+      val departureView = page(form, "some-reference", None)(journeyRequest(DepartureAnswers()), messages)
       departureView.getElementById("section-header") must containMessage("movement.sectionHeading.depart", "some-reference")
     }
 
     "display body text" in {
-      view().getElementById("code-body-para").text() mustBe messages("location.body.paragraph")
+      createView().getElementById("code-body-para").text() mustBe messages("location.body.paragraph")
     }
 
     "display input hint" in {
-      view().getElementById("code-hint-para").text() mustBe messages("location.hint.paragraph")
+      createView().getElementById("code-hint-para").text() mustBe messages("location.hint.paragraph")
     }
 
     "display goods location expander" in {
-      view().getElementsByClass("govuk-details__summary-text").first() must containHtml(messages("location.expander.title"))
+      createView().getElementsByClass("govuk-details__summary-text").first() must containHtml(messages("location.expander.title"))
     }
 
-    "display \"Back\" button that links to Movement Details" in {
+    "display 'Back' button that links to Movement Details" in {
 
-      val backButton = view().getBackButton
+      val backButton = createView().getBackButton
 
       backButton mustBe defined
       backButton.get must containMessage("site.back.previousQuestion")
       backButton.get must haveHref(routes.MovementDetailsController.displayPage)
     }
 
-    checkAllSaveButtonsAreDisplayed(view(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))
+    checkAllSaveButtonsAreDisplayed(createView(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))
 
-    checkSaveAndReturnToSummaryButtonIsHidden(view())
+    checkSaveAndReturnToSummaryButtonIsHidden(createView())
   }
 }

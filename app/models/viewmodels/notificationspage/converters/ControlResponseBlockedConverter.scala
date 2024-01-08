@@ -22,7 +22,7 @@ import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.Logger
 import play.api.i18n.Messages
 import play.twirl.api.Html
-import views.ViewDates
+import views.helpers.ViewDates
 import views.html.components.gds.paragraphBody
 import views.html.components.notification_errors
 

@@ -20,7 +20,7 @@ import models.notifications.Notification
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 import play.twirl.api.Html
-import views.ViewDates
+import views.helpers.ViewDates
 import views.html.components.paragraph
 
 import javax.inject.Singleton

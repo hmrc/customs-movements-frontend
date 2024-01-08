@@ -18,7 +18,7 @@
 @import forms.Transport
 @import forms.Transport.ModesOfTransport._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.Title
+@import views.helpers.Title
 @import views.components.autocomplete.AutoCompleteItem
 @import views.components.BackButton
 @import components.gds._
@@ -39,7 +39,7 @@
 @(form: Form[Transport], consignmentReference: String)(implicit request: RequestWithAnswers[_], messages: Messages)
 
 @govukLayout(
-    title = Title("transport.title"),
+    title = Title("transport.title", hasErrors = form.hasErrors || form.hasGlobalErrors),
     backButton = Some(BackButton(messages("site.back.previousQuestion"), LocationController.displayPage))
 ) {
     @formHelper(action = TransportController.saveTransport, Symbol("autoComplete") -> "off") {

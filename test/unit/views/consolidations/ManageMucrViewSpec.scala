@@ -39,6 +39,13 @@ class ManageMucrViewSpec extends ViewSpec with Injector {
 
   "MUCR options" should {
 
+    "have the page's title prefixed with 'Error:'" when {
+      "the page has errors" in {
+        val view = page(form.withGlobalError("error.summary.title"), ucrBlock)
+        view.head.getElementsByTag("title").first.text must startWith("Error: ")
+      }
+    }
+
     "have the correct title" in {
       page(form, ucrBlock).getTitle must containMessage("manageMucr.title")
     }

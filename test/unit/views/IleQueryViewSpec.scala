@@ -36,6 +36,13 @@ class IleQueryViewSpec extends ViewSpec with Injector {
 
   "Ile Query page" should {
 
+    "have the page's title prefixed with 'Error:'" when {
+      "the page has errors" in {
+        val view = page(IleQueryForm.form.withGlobalError("error.summary.title"))
+        view.head.getElementsByTag("title").first.text must startWith("Error: ")
+      }
+    }
+
     "render title" in {
       view.getTitle must containMessage("ileQuery.title")
     }

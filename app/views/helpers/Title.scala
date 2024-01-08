@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package views
+package views.helpers
 
 import play.api.i18n.Messages
 
-case class Title(headingKey: String, sectionKey: Option[String] = None, headingArgs: Seq[String] = Seq.empty) {
-
+case class Title(headingKey: String, sectionKey: Option[String] = None, headingArgs: Seq[String] = Seq.empty, hasErrors: Boolean = false) {
   def format(implicit messages: Messages): String = {
     val heading = messages(headingKey, headingArgs: _*)
     val service = messages("service.name")
+    val withErrors = if (hasErrors) ".withErrors" else ""
 
     sectionKey match {
-      case Some(section) => messages("title.withSection.format", heading, messages(section), service)
-      case _             => messages("title.format", heading, service)
+      case Some(section) => messages(s"title${withErrors}.withSection.format", heading, messages(section), service)
+      case _             => messages(s"title${withErrors}.format", heading, service)
     }
-
   }
 }

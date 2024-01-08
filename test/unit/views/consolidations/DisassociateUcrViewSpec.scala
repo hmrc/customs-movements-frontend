@@ -33,6 +33,7 @@ class DisassociateUcrViewSpec extends ViewSpec with Injector {
 
   private implicit val request = journeyRequest(DisassociateUcrAnswers())
 
+  private val form = DisassociateUcr.form
   private val disassociatePage: disassociate_ucr = instanceOf[disassociate_ucr]
 
   private def createView(form: Form[DisassociateUcr]): Html = disassociatePage(form)(request, messages)
@@ -47,8 +48,15 @@ class DisassociateUcrViewSpec extends ViewSpec with Injector {
       messages must haveTranslationFor("disassociate.ucr.mucr")
     }
 
+    "the page has errors" should {
+      "have the page's title prefixed with 'Error:'" in {
+        val view = createView(form.withGlobalError("error.summary.title"))
+        view.head.getElementsByTag("title").first.text must startWith("Error: ")
+      }
+    }
+
     "display 'Back' button that links to Ducr Part Chief" in {
-      val backButton = createView(DisassociateUcr.form).getBackButton
+      val backButton = createView(form).getBackButton
 
       backButton mustBe defined
       backButton.foreach { button =>
@@ -58,7 +66,7 @@ class DisassociateUcrViewSpec extends ViewSpec with Injector {
     }
 
     "form is empty" should {
-      val emptyView = createView(DisassociateUcr.form)
+      val emptyView = createView(form)
 
       "have title" in {
         emptyView.getTitle must containMessage("disassociate.ucr.title")
@@ -108,48 +116,48 @@ class DisassociateUcrViewSpec extends ViewSpec with Injector {
     }
 
     "form contains 'MUCR' with value" should {
-      val mucrView = createView(DisassociateUcr.form.fill(DisassociateUcr(Mucr, ducr = None, mucr = Some("1234"))))
+      val mucrView = createView(form.fill(DisassociateUcr(Mucr, ducr = None, mucr = Some("1234"))))
       "display value" in {
         mucrView.getElementById("mucr").`val`() mustBe "1234"
       }
     }
 
     "form contains input text labels" in {
-      val mucrView = createView(DisassociateUcr.form.fill(DisassociateUcr(Mucr, ducr = None, mucr = Some("1234"))))
+      val mucrView = createView(form.fill(DisassociateUcr(Mucr, ducr = None, mucr = Some("1234"))))
       mucrView.getElementsByAttributeValue("for", "mucr").first() must containMessage("site.inputText.mucr.label")
       mucrView.getElementsByAttributeValue("for", "ducr").first() must containMessage("site.inputText.ducr.label")
     }
 
     "form contains 'DUCR' with value" should {
-      val ducrView = createView(DisassociateUcr.form.fill(DisassociateUcr(Ducr, ducr = Some("1234"), mucr = None)))
+      val ducrView = createView(form.fill(DisassociateUcr(Ducr, ducr = Some("1234"), mucr = None)))
       "display value" in {
         ducrView.getElementById("ducr").`val`() mustBe "1234"
       }
     }
 
     "display DUCR empty" in {
-      val view: Document = createView(DisassociateUcr.form.fillAndValidate(DisassociateUcr(Ducr, ducr = Some(""), mucr = None)))
+      val view: Document = createView(form.fillAndValidate(DisassociateUcr(Ducr, ducr = Some(""), mucr = None)))
 
       view must haveGovUkGlobalErrorSummary
       view must haveGovUkFieldError("ducr", messages("disassociate.ucr.ducr.empty"))
     }
 
     "display DUCR invalid" in {
-      val view: Document = createView(DisassociateUcr.form.fillAndValidate(DisassociateUcr(Ducr, ducr = Some("DUCR"), mucr = None)))
+      val view: Document = createView(form.fillAndValidate(DisassociateUcr(Ducr, ducr = Some("DUCR"), mucr = None)))
 
       view must haveGovUkGlobalErrorSummary
       view must haveGovUkFieldError("ducr", messages("disassociate.ucr.ducr.error"))
     }
 
     "display MUCR empty" in {
-      val view: Document = createView(DisassociateUcr.form.fillAndValidate(DisassociateUcr(Mucr, ducr = None, mucr = Some(""))))
+      val view: Document = createView(form.fillAndValidate(DisassociateUcr(Mucr, ducr = None, mucr = Some(""))))
 
       view must haveGovUkGlobalErrorSummary
       view must haveGovUkFieldError("mucr", messages("disassociate.ucr.mucr.empty"))
     }
 
     "display MUCR invalid" in {
-      val view: Document = createView(DisassociateUcr.form.fillAndValidate(DisassociateUcr(Mucr, ducr = None, mucr = Some("MUCR"))))
+      val view: Document = createView(form.fillAndValidate(DisassociateUcr(Mucr, ducr = None, mucr = Some("MUCR"))))
 
       view must haveGovUkGlobalErrorSummary
       view must haveGovUkFieldError("mucr", messages("disassociate.ucr.mucr.error"))

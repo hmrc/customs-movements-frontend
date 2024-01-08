@@ -49,6 +49,13 @@ class AssociateUcrViewSpec extends ViewSpec with Injector {
       messages must haveTranslationFor("associate.ucr.hint")
     }
 
+    "the page has errors" should {
+      "have the page's title prefixed with 'Error:'" in {
+        val view = page(form.withGlobalError("error.summary.title"), mucrOptions)
+        view.head.getElementsByTag("title").first.text must startWith("Error: ")
+      }
+    }
+
     "form is empty" should {
       val emptyView = createView(mucrOptions, AssociateUcr.form)
       "have 'DUCR' section" which {

@@ -40,6 +40,13 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector {
 
   "View" should {
 
+    "have the page's title prefixed with 'Error:'" when {
+      "the page has errors" in {
+        val view = createView(form(goodsDirection).withGlobalError("error.summary.title"))
+        view.head.getElementsByTag("title").first.text must startWith("Error: ")
+      }
+    }
+
     "render title" in {
       createView().getTitle must containMessage("consignment.references.ARRIVE.question")
     }

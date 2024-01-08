@@ -32,6 +32,7 @@ import views.tags.ViewTest
 @ViewTest
 class DucrPartDetailsViewSpec extends ViewSpec with Injector with ViewMatchers {
 
+  private val form = DucrPartDetails.form()
   private val page = instanceOf[ducr_part_details]
 
   private def createView(form: Form[DucrPartDetails])(implicit request: RequestWithAnswers[_]): Html = page(form)
@@ -40,8 +41,15 @@ class DucrPartDetailsViewSpec extends ViewSpec with Injector with ViewMatchers {
 
     implicit val request = journeyRequest(ArrivalAnswers())
 
+    "the page has errors" should {
+      "have the page's title prefixed with 'Error:'" in {
+        val view = createView(form.withGlobalError("error.summary.title"))
+        view.head.getElementsByTag("title").first.text must startWith("Error: ")
+      }
+    }
+
     "provided with empty form" should {
-      val view = createView(DucrPartDetails.form())
+      val view = createView(form)
 
       "render title" in {
         view.getTitle must containMessage("ducrPartDetails.title")
@@ -51,7 +59,7 @@ class DucrPartDetailsViewSpec extends ViewSpec with Injector with ViewMatchers {
         for (answers <- Seq(ArrivalAnswers(), DepartureAnswers(), AssociateUcrAnswers(), DisassociateUcrAnswers())) {
           implicit val request = journeyRequest(answers)
 
-          val view = createView(DucrPartDetails.form())
+          val view = createView(form)
 
           val text = view.getElementById("section-header")
           text must containMessage(s"ducrPartDetails.${request.answers.`type`.toString.toLowerCase}.heading")
@@ -67,7 +75,7 @@ class DucrPartDetailsViewSpec extends ViewSpec with Injector with ViewMatchers {
       }
 
       "render 'Back' button leading to 'Ducr Part Chief' page" in {
-        val view = createView(DucrPartDetails.form())
+        val view = createView(form)
 
         view.getBackButton mustBe defined
         view.getBackButton.get must haveHref(DucrPartChiefController.displayPage)
@@ -107,14 +115,14 @@ class DucrPartDetailsViewSpec extends ViewSpec with Injector with ViewMatchers {
         text.child(0) must haveAttribute("target", "_blank")
       }
 
-      checkAllSaveButtonsAreDisplayed(createView(DucrPartDetails.form())(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))
+      checkAllSaveButtonsAreDisplayed(createView(form)(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))
 
-      checkSaveAndReturnToSummaryButtonIsHidden(createView(DucrPartDetails.form()))
+      checkSaveAndReturnToSummaryButtonIsHidden(createView(form))
     }
 
     "provided with filled form" should {
-      val form = DucrPartDetails.form().fill(DucrPartDetails(ducr = validDucr, ducrPartId = validDucrPartId))
-      val view = createView(form)
+      val frm = form.fill(DucrPartDetails(ducr = validDucr, ducrPartId = validDucrPartId))
+      val view = createView(frm)
 
       "fill DUCR input field" in {
         view.getElementById("ducr").`val`() mustBe validDucr
@@ -126,8 +134,8 @@ class DucrPartDetailsViewSpec extends ViewSpec with Injector with ViewMatchers {
     }
 
     "provided with form containing DUCR error" should {
-      val form = DucrPartDetails.form().withError(FormError("ducr", "ducrPartDetails.ducr.invalid"))
-      val view: Document = createView(form)
+      val frm = form.withError(FormError("ducr", "ducrPartDetails.ducr.invalid"))
+      val view: Document = createView(frm)
 
       "render error summary" in {
         view must haveGovUkGlobalErrorSummary
@@ -139,8 +147,8 @@ class DucrPartDetailsViewSpec extends ViewSpec with Injector with ViewMatchers {
     }
 
     "provided with form containing DUCR Part ID error" should {
-      val form = DucrPartDetails.form().withError(FormError("ducrPartId", "ducrPartDetails.ducrPartId.invalid"))
-      val view: Document = createView(form)
+      val frm = form.withError(FormError("ducrPartId", "ducrPartDetails.ducrPartId.invalid"))
+      val view: Document = createView(frm)
 
       "render error summary" in {
         view must haveGovUkGlobalErrorSummary

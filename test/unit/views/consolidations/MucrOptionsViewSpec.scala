@@ -50,6 +50,13 @@ class MucrOptionsViewSpec extends ViewSpec with Injector {
     val answer = AssociateUcrAnswers(manageMucrChoice)
     implicit val request = journeyRequest(answer)
 
+    "have the page's title prefixed with 'Error:'" when {
+      "the page has errors" in {
+        val view = createView(form.withGlobalError("error.summary.title"))
+        view.head.getElementsByTag("title").first.text must startWith("Error: ")
+      }
+    }
+
     "have the correct title" in {
       createView().getTitle must containMessage("mucrOptions.title")
     }

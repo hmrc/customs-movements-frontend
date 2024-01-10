@@ -39,6 +39,13 @@ class SpecificDateTimeViewSpec extends ViewSpec with Injector {
 
   "SpecificDateTime View on empty page" should {
 
+    "have the page's title prefixed with 'Error:'" when {
+      "the page has errors" in {
+        val view = page(form.withGlobalError("error.summary.title"), "some-reference")
+        view.head.getElementsByTag("title").first.text must startWith("Error: ")
+      }
+    }
+
     "display page title" in {
       createView().getElementsByTag("h1").first() must containMessage("specific.datetime.heading")
     }

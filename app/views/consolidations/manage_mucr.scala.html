@@ -19,7 +19,7 @@
 @import forms.ManageMucrChoice
 @import models.requests.RequestWithAnswers
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.Title
+@import views.helpers.Title
 @import views.components.BackButton
 @import views.html.components.gds._
 
@@ -35,8 +35,8 @@
 @(form: Form[ManageMucrChoice], ucrBlock: Option[UcrBlock])(implicit request: RequestWithAnswers[_], messages: Messages)
 
 @govukLayout(
-    title = Title("manageMucr.title"),
-    backButton = Some(BackButton(messages("site.back.previousQuestion"), ChoiceOnConsignmentController.displayChoices))
+  title = Title("manageMucr.title", hasErrors = form.hasErrors || form.hasGlobalErrors),
+  backButton = Some(BackButton(messages("site.back.previousQuestion"), ChoiceOnConsignmentController.displayChoices))
 ) {
     @formHelper(action = ManageMucrController.submit, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)

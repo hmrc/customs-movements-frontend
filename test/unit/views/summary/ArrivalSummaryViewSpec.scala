@@ -23,7 +23,8 @@ import forms.{ArrivalDetails, ConsignmentReferences, Location, UcrType}
 import models.UcrBlock
 import models.cache.ArrivalAnswers
 import views.html.summary.arrival_summary_page
-import views.{ViewDates, ViewSpec}
+import views.ViewSpec
+import views.helpers.ViewDates
 
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalTime}

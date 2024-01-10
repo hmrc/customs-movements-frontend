@@ -21,7 +21,7 @@ import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import views.ViewDates
+import views.helpers.ViewDates
 
 import javax.inject.{Inject, Singleton}
 

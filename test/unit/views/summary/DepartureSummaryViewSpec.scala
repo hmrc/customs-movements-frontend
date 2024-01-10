@@ -23,7 +23,8 @@ import forms.common.{Date, Time}
 import models.UcrBlock
 import models.cache.DepartureAnswers
 import views.html.summary.departure_summary_page
-import views.{ViewDates, ViewSpec}
+import views.ViewSpec
+import views.helpers.ViewDates
 
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalTime}

@@ -24,7 +24,7 @@ import models.submissions.Submission
 import models.viewmodels.notificationspage.converters._
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import views.ViewDates
+import views.helpers.ViewDates
 import views.html.components.gds.paragraphBody
 
 import javax.inject.{Inject, Singleton}

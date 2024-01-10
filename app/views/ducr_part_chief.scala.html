@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.BackButton
 @import views.html.components.gds._
-@import views.Title
+@import views.helpers.Title
 
 @this(
     govukLayout: gds_main_template,
@@ -40,7 +40,7 @@
 @radioNoKey = @{s"ducrPartChief.${request.answers.`type`}.notDucrPart"}
 
 @govukLayout(
-  title = Title(headerKey, Some(sectionHeaderKey)),
+  title = Title(headerKey, Some(sectionHeaderKey), hasErrors = form.hasErrors || form.hasGlobalErrors),
   backButton = Some(BackButton(messages("site.back.toStartPage"), ChoiceController.displayChoices))
 ) {
   @formHelper(action = DucrPartChiefController.submit, Symbol("autoComplete") -> "off") {

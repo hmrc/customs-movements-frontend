@@ -27,13 +27,20 @@ import views.html.transport
 
 class TransportViewSpec extends ViewSpec with Injector {
 
-  private val transportPage = instanceOf[transport]
+  private val page = instanceOf[transport]
 
   private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())
 
-  private def createPage(implicit request: JourneyRequest[_] = request): Html = transportPage(Transport.form, "some-reference")
+  private def createPage(implicit request: JourneyRequest[_] = request): Html = page(Transport.form, "some-reference")
 
   "Transport View" should {
+
+    "have the page's title prefixed with 'Error:'" when {
+      "the page has errors" in {
+        val view = page(Transport.form.withGlobalError("error.summary.title"), "some-reference")
+        view.head.getElementsByTag("title").first.text must startWith("Error: ")
+      }
+    }
 
     "have the correct title" in {
       createPage().getTitle must containMessage("transport.title")

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package views
+package views.helpers
 
 import base.UnitSpec
 import play.api.i18n.Lang
 import play.api.test.Helpers.{stubLangs, stubMessagesApi}
-import views.ViewDates.zoneId
+import views.helpers.ViewDates.zoneId
 
-import java.time.{Instant, LocalDate, LocalDateTime, LocalTime, ZonedDateTime}
+import java.time._
 import java.util.Locale
 
 class ViewDatesSpec extends UnitSpec {

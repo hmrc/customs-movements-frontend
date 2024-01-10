@@ -22,7 +22,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.BackButton
 @import views.html.components.gds._
-@import views.Title
+@import views.helpers.Title
 
 @this(
     govukLayout: gds_main_template,
@@ -52,8 +52,10 @@
     else DucrPartChiefController.displayPage
 }
 
-@govukLayout(title = Title("mucrOptions.title"), backButton = Some(BackButton(messages("site.back.previousQuestion"), backUrl))) {
-
+@govukLayout(
+  title = Title("mucrOptions.title", hasErrors = form.hasErrors || form.hasGlobalErrors),
+  backButton = Some(BackButton(messages("site.back.previousQuestion"), backUrl))
+) {
     @formHelper(action = MucrOptionsController.save, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 

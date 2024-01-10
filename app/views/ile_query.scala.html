@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.{Button, FormWithCSRF, GovukButton, Text}
 @import views.components.BackButton
 @import views.html.components.gds.{exportsInputText, link}
-@import views.Title
+@import views.helpers.Title
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 
@@ -36,8 +36,10 @@
 
 @(form: Form[String])(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title("ileQuery.title"), backButton = Some(BackButton(messages("site.back.toStartPage"), ChoiceController.displayChoices))) {
-
+@govukLayout(
+  title = Title("ileQuery.title", hasErrors = form.hasErrors || form.hasGlobalErrors),
+  backButton = Some(BackButton(messages("site.back.toStartPage"), ChoiceController.displayChoices))
+) {
     @formHelper(action = FindConsignmentController.submitPage, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 

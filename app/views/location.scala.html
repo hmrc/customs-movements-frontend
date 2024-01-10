@@ -21,7 +21,7 @@
 @import views.components.BackButton
 @import views.html.components.goodsLocationExpander
 @import views.html.components.gds._
-@import views.Title
+@import views.helpers.Title
 
 @this(
     govukLayout: gds_main_template,
@@ -52,8 +52,8 @@
 @hint = @{paragraphBody(message = messages("location.hint.paragraph"), id = Some("code-hint-para"), classes="govuk-hint")}
 
 @govukLayout(
-    title = Title("location.question"),
-    backButton = Some(BackButton(messages("site.back.previousQuestion"), backUrl))
+  title = Title("location.question", hasErrors = form.hasErrors || form.hasGlobalErrors),
+  backButton = Some(BackButton(messages("site.back.previousQuestion"), backUrl))
 ) {
     @formHelper(action = controllers.routes.LocationController.saveLocation, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)

@@ -38,7 +38,9 @@ class DepartureDetailsViewSpec extends ViewSpec with Injector {
 
   private val movementDetails = MovementsTestData.movementDetails
 
+  private val form = movementDetails.departureForm()
   private val consignmentReferencesValue = "M-ref"
+
   private def createView(form: Form[DepartureDetails])(implicit request: JourneyRequest[_]): Html =
     page(form, consignmentReferencesValue)
 
@@ -56,15 +58,22 @@ class DepartureDetailsViewSpec extends ViewSpec with Injector {
 
     implicit val request = journeyRequest(DepartureAnswers())
 
+    "the page has errors" should {
+      "have the page's title prefixed with 'Error:'" in {
+        val view = createView(form.withGlobalError("error.summary.title"))
+        view.head.getElementsByTag("title").first.text must startWith("Error: ")
+      }
+    }
+
     "provided with empty form" should {
-      val emptyView = createView(movementDetails.departureForm())
+      val emptyView = createView(form)
 
       "have title" in {
         emptyView.getTitle must containMessage("departureDetails.header")
       }
 
       "have 'Back' button linking to /specific-date-and-time page" in {
-        val backButton = createView(movementDetails.departureForm()).getBackButton
+        val backButton = createView(form).getBackButton
 
         backButton mustBe defined
         backButton.get must haveHref(SpecificDateTimeController.displayPage)
@@ -130,7 +139,7 @@ class DepartureDetailsViewSpec extends ViewSpec with Injector {
         }
       }
 
-      checkAllSaveButtonsAreDisplayed(createView(movementDetails.departureForm())(journeyRequest(DepartureAnswers(readyToSubmit = Some(true)))))
+      checkAllSaveButtonsAreDisplayed(createView(form)(journeyRequest(DepartureAnswers(readyToSubmit = Some(true)))))
 
       checkSaveAndReturnToSummaryButtonIsHidden(emptyView)
 
@@ -139,7 +148,7 @@ class DepartureDetailsViewSpec extends ViewSpec with Injector {
     "provided with form containing data" should {
       val date = LocalDate.now().minusDays(1)
       val time = LocalTime.of(1, 2)
-      val viewWithData = createView(movementDetails.departureForm().fill(DepartureDetails(Date(date), Time(time))))
+      val viewWithData = createView(form.fill(DepartureDetails(Date(date), Time(time))))
 
       "have value in day field" in {
         viewWithData.getElementById("dateOfDeparture_day").`val`() mustBe convertIntoTwoDigitFormat(date.getDayOfMonth)
@@ -163,7 +172,7 @@ class DepartureDetailsViewSpec extends ViewSpec with Injector {
     }
 
     "provided with Date error" should {
-      val viewWithDateError: Document = createView(movementDetails.departureForm().withError("dateOfDeparture", "date.error.invalid"))
+      val viewWithDateError: Document = createView(form.withError("dateOfDeparture", "date.error.invalid"))
 
       "have error summary" in {
         viewWithDateError must haveGovUkGlobalErrorSummary
@@ -176,7 +185,7 @@ class DepartureDetailsViewSpec extends ViewSpec with Injector {
     }
 
     "provided with Time error" should {
-      val viewWithTimeError: Document = createView(movementDetails.departureForm().withError("timeOfDeparture", "time.error.invalid"))
+      val viewWithTimeError: Document = createView(form.withError("timeOfDeparture", "time.error.invalid"))
 
       "have error summary" in {
         viewWithTimeError must haveGovUkGlobalErrorSummary
@@ -198,8 +207,6 @@ class DepartureDetailsViewSpec extends ViewSpec with Injector {
       "have single error in summary" in {
         viewWithDateError.getElementsByClass("govuk-list govuk-error-summary__list").text() mustBe (messages("departure.details.error.future"))
       }
-
     }
   }
-
 }

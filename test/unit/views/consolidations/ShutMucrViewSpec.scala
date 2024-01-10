@@ -37,6 +37,13 @@ class ShutMucrViewSpec extends ViewSpec with Injector {
 
   "View" should {
 
+    "have the page's title prefixed with 'Error:'" when {
+      "the page has errors" in {
+        val view = createView(form().withGlobalError("error.summary.title"))
+        view.head.getElementsByTag("title").first.text must startWith("Error: ")
+      }
+    }
+
     "render title" in {
       createView().getTitle must containMessage("shutMucr.title")
     }

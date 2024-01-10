@@ -73,6 +73,13 @@ class ChoiceOnConsignmentViewSpec extends ViewSpec with BeforeAndAfterEach with 
       messages must haveTranslationFor("choicePage.input.error.incorrectValue")
     }
 
+    "have the page's title prefixed with 'Error:'" when {
+      "the page has errors" in {
+        val view = createView(form.withGlobalError("error.summary.title"))
+        view.head.getElementsByTag("title").first.text must startWith("Error: ")
+      }
+    }
+
     val view = createView()
 
     "have a form for submission to ChoiceController" in {

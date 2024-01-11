@@ -65,11 +65,19 @@ class AuthActionImpl @Inject() (
         val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments)
         val maybeHiddenSalt = appConfig.maybeTdrHashSalt
 
-        if (allowListAuthentication(cdsLoggedInUser.eori) && tdrSecretAuthentication(cdsLoggedInUser.eori, maybeHiddenSalt, userProvidedEoriHash))
-          block(AuthenticatedRequest(request, cdsLoggedInUser))
-        else
+        val onAllowList = allowListAuthentication(cdsLoggedInUser.eori)
+        val tdrSecretMatches = tdrSecretAuthentication(cdsLoggedInUser.eori, maybeHiddenSalt, userProvidedEoriHash)
+
+        if (onAllowList && tdrSecretMatches)
+          block(new AuthenticatedRequest(request, cdsLoggedInUser))
+        else {
+          logger.warn(s"User rejected with onAllowList=$onAllowList & tdrSecretMatches=$tdrSecretMatches")
           Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad))
-      }
+        }
+      } recover { case e @ (_: AuthorisationException | _: NoActiveSession) =>
+      logger.warn(s"User rejected with ${e.getMessage}")
+      Results.Redirect(routes.UnauthorisedController.onPageLoad)
+    }
   }
 
   private def validateEnrolments(eori: Option[EnrolmentIdentifier]): Unit =

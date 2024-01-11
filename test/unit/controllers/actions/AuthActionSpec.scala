@@ -88,25 +88,6 @@ class AuthActionSpec extends AnyWordSpec with Matchers with Stubs with MockAuthC
       }
     }
 
-    "throw Insufficient Enrolments" when {
-      "role is missing" in {
-        given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set.empty)))
-
-        intercept[InsufficientEnrolments] {
-          await(action.invokeBlock(FakeRequest(), block))
-        }
-      }
-
-      "eori is missing" in {
-        val enrolments = Set(Enrolment(enrolment, Seq.empty, "state"))
-        given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(enrolments)))
-
-        intercept[InsufficientEnrolments] {
-          await(action.invokeBlock(FakeRequest(), block))
-        }
-      }
-    }
-
     "redirect to unauthorized" when {
 
       "eori value provided is missing from allowList" in {
@@ -115,7 +96,21 @@ class AuthActionSpec extends AnyWordSpec with Matchers with Stubs with MockAuthC
         given(allowList.allows(any())).willReturn(false)
 
         val result: Result = await(action.invokeBlock(FakeRequest(), block))
+        result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
+      }
 
+      "role is missing" in {
+        given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set.empty)))
+
+        val result: Result = await(action.invokeBlock(FakeRequest(), block))
+        result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
+      }
+
+      "eori is missing" in {
+        val enrolments = Set(Enrolment(enrolment, Seq.empty, "state"))
+        given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(enrolments)))
+
+        val result: Result = await(action.invokeBlock(FakeRequest(), block))
         result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
       }
 
@@ -127,7 +122,6 @@ class AuthActionSpec extends AnyWordSpec with Matchers with Stubs with MockAuthC
           given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(enrolments)))
 
           val result: Result = await(action.invokeBlock(FakeRequest(), block))
-
           result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
         }
 
@@ -139,9 +133,23 @@ class AuthActionSpec extends AnyWordSpec with Matchers with Stubs with MockAuthC
           given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(enrolments)))
 
           val result: Result = await(action.invokeBlock(FakeRequest(), block))
-
           result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
         }
+      }
+
+      "an NoActiveSession exception is thrown" in {
+        given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.failed(new MissingBearerToken("")))
+
+        val result: Result = await(action.invokeBlock(FakeRequest(), block))
+        result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
+      }
+
+      "an AuthorisationException exception is thrown" in {
+        given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any()))
+          .willReturn(Future.failed(new IncorrectCredentialStrength("")))
+
+        val result: Result = await(action.invokeBlock(FakeRequest(), block))
+        result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
       }
     }
 

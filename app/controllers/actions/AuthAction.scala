@@ -74,9 +74,13 @@ class AuthActionImpl @Inject() (
           logger.warn(s"User rejected with onAllowList=$onAllowList & tdrSecretMatches=$tdrSecretMatches")
           Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad))
         }
-      } recover { case e @ (_: AuthorisationException | _: NoActiveSession) =>
-      logger.warn(s"User rejected with ${e.getMessage}")
-      Results.Redirect(routes.UnauthorisedController.onPageLoad)
+      } recover {
+      case s: NoActiveSession =>
+        logger.warn(s"User rejected with ${s.getMessage}")
+        Results.Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.loginContinueUrl)))
+      case e: AuthorisationException =>
+        logger.warn(s"User rejected with ${e.getMessage}")
+        Results.Redirect(routes.UnauthorisedController.onPageLoad)
     }
   }
 

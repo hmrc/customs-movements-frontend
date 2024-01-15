@@ -141,7 +141,7 @@ class AuthActionSpec extends AnyWordSpec with Matchers with Stubs with MockAuthC
         given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.failed(new MissingBearerToken("")))
 
         val result: Result = await(action.invokeBlock(FakeRequest(), block))
-        result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
+        result mustBe Results.Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.loginContinueUrl)))
       }
 
       "an AuthorisationException exception is thrown" in {

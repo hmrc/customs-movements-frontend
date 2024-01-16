@@ -56,7 +56,8 @@ class SubmissionService @Inject() (
     connector
       .submit(exchange)
       .andThen {
-        case Success(_) => repository.removeByEori(eori).flatMap(_ => auditService.auditDisassociate(eori, ucr, success))
+        case Success(conversationId) =>
+          repository.removeByEori(eori).flatMap(_ => auditService.auditDisassociate(eori, ucr, success, Some(conversationId)))
         case Failure(_) => auditService.auditDisassociate(eori, ucr, failed)
       }
   }
@@ -74,8 +75,9 @@ class SubmissionService @Inject() (
     connector
       .submit(exchange)
       .andThen {
-        case Success(_) => repository.removeByEori(eori).map(_ => auditService.auditAssociate(eori, mucr, ucr, success))
-        case Failure(_) => auditService.auditAssociate(eori, mucr, ucr, failed)
+        case Success(conversationId) =>
+          repository.removeByEori(eori).map(_ => auditService.auditAssociate(eori, mucr, ucr, success, Some(conversationId)))
+        case Failure(conversationId) => auditService.auditAssociate(eori, mucr, ucr, failed)
       }
   }
 
@@ -85,7 +87,8 @@ class SubmissionService @Inject() (
     connector
       .submit(ShutMUCRRequest(eori, mucr))
       .andThen {
-        case Success(_) => repository.removeByEori(eori).flatMap(_ => auditService.auditShutMucr(eori, mucr, success))
+        case Success(conversationId) =>
+          repository.removeByEori(eori).flatMap(_ => auditService.auditShutMucr(eori, mucr, success, Some(conversationId)))
         case Failure(_) => auditService.auditShutMucr(eori, mucr, failed)
       }
   }
@@ -101,8 +104,8 @@ class SubmissionService @Inject() (
       conversationId <- connector.submit(data)
       _ <- repository.removeByEori(eori)
     } yield SubmissionResult(conversationId, data.consignmentReference)).andThen {
-      case Success(_) => auditService.auditMovements(data, success, movementAuditType(journeyType))
-      case Failure(_) => auditService.auditMovements(data, failed, movementAuditType(journeyType))
+      case Success(subResult) => auditService.auditMovements(data, success, movementAuditType(journeyType), Some(subResult.conversationId))
+      case Failure(_)         => auditService.auditMovements(data, failed, movementAuditType(journeyType))
     }.andThen { case _ =>
       metrics.incrementCounter(Choice(journeyType))
       timer.stop()

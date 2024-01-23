@@ -96,7 +96,7 @@ movement.choice.arrival.label = Cyrraedd
 movement.choice.departure.label = Ymadael
 movement.choice.associateucr.label = Cysylltu
 movement.choice.disassociateucr.label = Datgysylltu
-movement.choice.findconsignment.label = Dod o hyd i lwyth
+movement.choice.findconsignment.label = Dod o hyd i lwyth CDS
 movement.choice.shutmucr.label = Cau
 movement.choice.submissions.label = Bwrw golwg dros geisiadau
 movement.arrival = Nodi bod nwyddau wedi cyrraedd
@@ -230,7 +230,7 @@ transport.modeOfTransport.6 = Gosodiadau cludiant sefydlog
 transport.modeOfTransport.7 = Cludiant dyfrffyrdd mewndirol
 transport.modeOfTransport.8 = Arall, er enghraifft hunan-yriad
 transport.transportId.question = Beth yw’r ID ar gyfer y math o gludiant a ddewiswyd?
-transport.transportId.hint = Gall hyn fod hyd at 35 o gymeriadau. Er enghraifft, rhif cofrestru’r cerbyd neu rif hediad IATA. Os dewisoch drwy’r post neu osodiad sefydlog, teipiwch “Anhysbys” yn y blwch.
+transport.transportId.hint = Gall hyn fod hyd at 35 o gymeriadau. Er enghraifft, rhif cofrestru’r cerbyd neu rif hediad IATA. Os dewisoch drwy’r post neu osodiad sefydlog, teipiwch “Dadgysylltiol” yn y blwch.
 transport.transportId.empty = Nodwch yr ID cludiant
 transport.transportId.error = Nodwch ID cludiant sy’n cynnwys llythrennau a rhifau yn unig
 transport.nationality.question = Ym mha wlad y mae’r cludiant wedi’i gofrestru?
@@ -408,7 +408,7 @@ notifications.elem.content.inventoryLinkingMovementResponse.crc = CRC
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Y llwybr mynediad yw
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Y statws mynediad yw
 
-ileQuery.title = Dod o hyd i lwyth
+ileQuery.title = Dod o hyd i lwyth CDS
 ileQuery.hint = Chwilio yn ôl Prif Gyfeirnod Unigryw y Llwyth (MUCR) neu Ddatganiad o Gyfeirnod Unigryw y Llwyth (DUCR). </br></br>Er enghraifft 'GB/123456789100-AB123'.
 ileQuery.ucr.empty = Nodwch Gyfeirnod Unigryw y Llwyth
 ileQuery.ucr.incorrect = Mae Cyfeirnod Unigryw y Llwyth yn anghywir
@@ -440,12 +440,12 @@ ileQueryResponse.associated.reference = Cyfeirnod
 ileQueryResponse.associated.route = Llwybr
 ileQueryResponse.associated.status = Statws
 ileQueryResponse.links.manageConsignment = Rheoli’r llwyth hwn
-ileQueryResponse.links.findConsignment = Dod o hyd i lwyth arall
+ileQueryResponse.links.findConsignment = Dod o hyd i lwyth arall CDS
 
 ileQueryResponse.ucrNotFound.title = Nid yw’r UCR y gofynnwyd amdano’n bodoli
 ileQueryResponse.ucrNotFound.message = Nid yw {0} yn bodoli
 
-ileCode.unknown = Anhysbys
+ileCode.unknown = Dadgysylltiol
 
 ileQueryResponse.timeout.title = Mae problem wedi codi
 ileQueryResponse.timeout.heading = Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth

@@ -123,11 +123,11 @@ function completePage() {
         document.getElementById("ducr").value = `5GB123456789000-${now.valueOf()}IIIII`
         document.getElementsByClassName('govuk-button')[0].click()
     }
-    if(currentPageIs("/customs-movements/dissociate-ucr-summary")){}
-    if(currentPageIs("/customs-movements/dissociate-ucr-confirmation")){
+    if(currentPageIs("/customs-movements/disassociate-ucr-summary")){}
+    if(currentPageIs("/customs-movements/disassociate-ucr-confirmation")){
         document.getElementsByClassName('govuk-button')[0].click()
     }
-    if(currentPageIs("/customs-movements/dissociate-ucr")){
+    if(currentPageIs("/customs-movements/disassociate-ucr")){
         document.getElementById("kind").checked = true;
         const now = new Date()
         document.getElementById("ducr").value = `5GB123456789000-${now.valueOf()}IIIII`

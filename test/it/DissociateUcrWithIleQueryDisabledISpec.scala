@@ -27,7 +27,7 @@ class DissociateUcrWithIleQueryDisabledISpec extends IntegrationSpec {
   override def ileQueryFeatureConfiguration: Configuration =
     Configuration.from(Map("microservice.services.features.ileQuery" -> "disabled"))
 
-  "Dissociate UCR Page" when {
+  "Disassociate UCR Page" when {
     "GET" should {
       "return 200" in {
         // Given

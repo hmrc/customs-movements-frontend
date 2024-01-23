@@ -47,8 +47,8 @@ GET         /associate-ucr                       controllers.consolidations.Asso
 POST        /associate-ucr                       controllers.consolidations.AssociateUcrController.submit
 
 # Disassociate UCR page
-GET         /dissociate-ucr                      controllers.consolidations.DisassociateUcrController.displayPage
-POST        /dissociate-ucr                      controllers.consolidations.DisassociateUcrController.submit
+GET         /disassociate-ucr                      controllers.consolidations.DisassociateUcrController.displayPage
+POST        /disassociate-ucr                      controllers.consolidations.DisassociateUcrController.submit
 
 # Enter DUCR page
 GET         /consignment-references              controllers.ConsignmentReferencesController.displayPage
@@ -83,8 +83,8 @@ GET         /associate-ucr-summary               controllers.summary.AssociateUc
 POST        /associate-ucr-summary               controllers.summary.AssociateUcrSummaryController.submit
 
 # Disassociate UCR Summary
-GET         /dissociate-ucr-summary              controllers.summary.DisassociateUcrSummaryController.displayPage
-POST        /dissociate-ucr-summary              controllers.summary.DisassociateUcrSummaryController.submit
+GET         /disassociate-ucr-summary              controllers.summary.DisassociateUcrSummaryController.displayPage
+POST        /disassociate-ucr-summary              controllers.summary.DisassociateUcrSummaryController.submit
 
 # Shut a MUCR summary page
 GET         /shut-mucr-summary                   controllers.summary.ShutMucrSummaryController.displayPage

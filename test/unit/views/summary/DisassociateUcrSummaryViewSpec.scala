@@ -89,7 +89,7 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector {
       }
     }
 
-    "have a 'Back' button linking to the /dissociate-ucr page" when {
+    "have a 'Back' button linking to the /disassociate-ucr page" when {
       "on NON-'Find a consignment' journey and" when {
         "Ucr is DucrPart" in {
           val backButton = page(disassociateUcr).getBackButton

@@ -73,7 +73,7 @@ class ChoiceISpec extends IntegrationSpec {
         theAnswersFor("eori") mustBe Some(AssociateUcrAnswers())
       }
 
-      "Dissociate UCR" in {
+      "Disassociate UCR" in {
         givenAuthSuccess("eori")
 
         val response = post(ChoiceController.submitChoice, "choice" -> Choice.DisassociateUCR.value)

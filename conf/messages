@@ -105,7 +105,7 @@ movement.choice.submissions.label = View requests
 movement.arrival = Arrive goods
 movement.departure = Depart goods
 
-movement.choice.findconsignment.hint = Check MUCR or DUCR progress for CDS consignments. For example, to see if a consignment is ready to be arrived. CHIEF consignments can not be viewed here, please use you current CHIEF software to check consignment status.
+movement.choice.findconsignment.hint = Check MUCR or DUCR progress for CDS consignments. For example, to see if a consignment is ready to be arrived. CHIEF consignments can not be viewed here, please use your current CHIEF software to check consignment status.
 movement.choice.arrival.hint = Arrival messages are used to notify customs that goods have arrived at an airport or container port.
 movement.choice.departure.hint = Departure messages are used to notify customs that goods have left the UK.
 movement.choice.associateucr.hint = UCR numbers can be associated with other UCR numbers. For example, multiple exports with different DUCRs may be moved into a container under a single MUCR.

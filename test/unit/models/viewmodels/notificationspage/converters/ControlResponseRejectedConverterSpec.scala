@@ -45,6 +45,7 @@ class ControlResponseRejectedConverterSpec extends UnitSpec with BeforeAndAfterE
 
     reset(decoder)
     when(decoder.error(anyString)).thenReturn(Some(ILEError("CODE", "Messages.Key")))
+    when(decoder.error(meq(unknownErrorCode))).thenReturn(None)
   }
 
   "ControlResponseRejectedConverter on convert" should {
@@ -70,7 +71,7 @@ class ControlResponseRejectedConverterSpec extends UnitSpec with BeforeAndAfterE
 
   "ControlResponseBlockedConverter on convert" when {
 
-    "response contains single error" should {
+    "response contains single known error" should {
 
       "call Decoder for Error once" in {
         val input = RejectedControlResponseSingleError
@@ -94,7 +95,31 @@ class ControlResponseRejectedConverterSpec extends UnitSpec with BeforeAndAfterE
       }
     }
 
-    "response contains multiple errors" should {
+    "response contains single unknown error" should {
+
+      "call Decoder for Error once" in {
+        val input = RejectedControlResponseSingleUnknownError
+
+        converter.convert(input)
+
+        verify(decoder).error(meq(input.errorCodes.head))
+      }
+
+      "return NotificationsPageSingleElement with correct content" in {
+        val input = RejectedControlResponseSingleUnknownError
+        val expectedContentHeader =
+          messages("notifications.elem.content.inventoryLinkingControlResponse.Rejected.singleError")
+        val expectedErrorExplanation = unknownErrorCode
+
+        val result = converter.convert(input)
+
+        val contentAsString = result.content.toString
+        contentAsString must include(expectedContentHeader)
+        contentAsString must include(expectedErrorExplanation)
+      }
+    }
+
+    "response contains multiple known errors" should {
 
       "call Decoder for every Error" in {
         val input = RejectedControlResponseMultipleErrors
@@ -121,10 +146,41 @@ class ControlResponseRejectedConverterSpec extends UnitSpec with BeforeAndAfterE
         }
       }
     }
+
+    "response contains multiple known and unknown errors" should {
+
+      "call Decoder for every Error" in {
+        val input = RejectedControlResponseMultipleErrorsWithUnknown
+
+        converter.convert(input)
+
+        input.errorCodes.foreach { errorCode =>
+          verify(decoder).error(meq(errorCode))
+        }
+      }
+
+      "return NotificationsPageSingleElement with correct content" in {
+        val input = RejectedControlResponseMultipleErrorsWithUnknown
+        val expectedContentHeader =
+          messages("notifications.elem.content.inventoryLinkingControlResponse.Rejected.multiError")
+        val expectedErrorExplanations = List.fill(input.errorCodes.length)(messages("Messages.Key"))
+
+        val result = converter.convert(input)
+
+        val contentAsString = result.content.toString
+        contentAsString must include(expectedContentHeader)
+        expectedErrorExplanations.foreach { errorExplanation =>
+          contentAsString must include(errorExplanation)
+        }
+        contentAsString must include(RejectedControlResponseMultipleErrorsWithUnknown.errorCodes.last)
+      }
+    }
   }
 }
 
 object ControlResponseRejectedConverterSpec {
+
+  val unknownErrorCode = "E533"
 
   private val RejectedControlResponse = exampleNotificationFrontendModel(
     responseType = ResponseType.ControlResponse,
@@ -134,6 +190,11 @@ object ControlResponseRejectedConverterSpec {
 
   val RejectedControlResponseSingleError = RejectedControlResponse.copy(errorCodes = Seq("07"))
 
+  val RejectedControlResponseSingleUnknownError = RejectedControlResponse.copy(errorCodes = Seq(unknownErrorCode))
+
   val RejectedControlResponseMultipleErrors =
     RejectedControlResponse.copy(errorCodes = Seq("07", "E3481", "29", "E607"))
+
+  val RejectedControlResponseMultipleErrorsWithUnknown =
+    RejectedControlResponse.copy(errorCodes = Seq("07", "E3481", "29", "E607", unknownErrorCode))
 }

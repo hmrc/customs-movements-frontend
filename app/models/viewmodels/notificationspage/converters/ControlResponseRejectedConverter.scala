@@ -64,7 +64,7 @@ class ControlResponseRejectedConverter @Inject() (decoder: Decoder) extends Noti
       .map(code => messages(code.messageKey))
       .orElse {
         logger.info(s"Received inventoryLinkingControlResponse with unknown error code: $errorCode")
-        None
+        Some(errorCode)
       }
 
 }

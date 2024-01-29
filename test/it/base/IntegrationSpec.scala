@@ -16,7 +16,7 @@ package base
  * limitations under the License.
  */
 
-import com.codahale.metrics.SharedMetricRegistries
+import com.codahale.metrics.{MetricRegistry, SharedMetricRegistries}
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder
 import connectors.{AuditWiremockTestServer, AuthWiremockTestServer, MovementsBackendWiremockTestServer}
@@ -57,7 +57,7 @@ trait IntegrationSpec
 
   override def fakeApplication(): Application =
     new GuiceApplicationBuilder()
-      .disable[com.kenshoo.play.metrics.PlayModule]
+      .disable[MetricRegistry]
       .configure(disableMetricsConfiguration)
       .configure(authConfiguration)
       .configure(movementsBackendConfiguration)

@@ -18,13 +18,13 @@ package forms
 
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.{isEmpty, nonEmpty, validMucrIgnoreCase, PredicateOpsForFunctions}
 
 case class ShutMucr(mucr: String)
 
 object ShutMucr {
-  implicit val format = Json.format[ShutMucr]
+  implicit val format: OFormat[ShutMucr] = Json.format[ShutMucr]
 
   val formId = "ShutMucr"
 

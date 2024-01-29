@@ -23,13 +23,14 @@ import models.cache.ShutMucrAnswers
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
+import play.api.mvc.AnyContentAsEmpty
 import play.twirl.api.HtmlFormat.Appendable
 import views.ViewSpec
 import views.html.consolidations.shut_mucr
 
 class ShutMucrViewSpec extends ViewSpec with Injector {
 
-  private implicit val request = journeyRequest(ShutMucrAnswers())
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ShutMucrAnswers())
 
   private val page = instanceOf[shut_mucr]
 

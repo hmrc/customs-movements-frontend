@@ -16,7 +16,7 @@
 
 package base
 
-import akka.stream.testkit.NoMaterializer
+import org.apache.pekko.stream.testkit.NoMaterializer
 import config.AppConfig
 import controllers.actions.{AuthActionImpl, EoriAllowList}
 import models.SignedInUser

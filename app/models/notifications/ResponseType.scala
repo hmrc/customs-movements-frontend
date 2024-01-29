@@ -25,7 +25,7 @@ object ResponseType {
   case object MovementResponse extends ResponseType("inventoryLinkingMovementResponse")
   case object MovementTotalsResponse extends ResponseType("inventoryLinkingMovementTotalsResponse")
 
-  implicit val format = new Format[ResponseType] {
+  implicit val format: Format[ResponseType] = new Format[ResponseType] {
     override def writes(responseType: ResponseType): JsValue = JsString(responseType.value)
 
     override def reads(json: JsValue): JsResult[ResponseType] = json match {

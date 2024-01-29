@@ -35,7 +35,7 @@ class IleQueryRepository @Inject() (mongo: MongoComponent, appConfig: AppConfig)
     extends PlayMongoRepository[IleQuery](mongo, "ileQueries", IleQuery.format, IleQueryRepository.indexes) with RepositoryOps[IleQuery] {
 
   override def classTag: ClassTag[IleQuery] = implicitly[ClassTag[IleQuery]]
-  implicit val executionContext = ec
+  implicit val executionContext: ExecutionContext = ec
 
   def findBySessionIdAndUcr(sessionId: String, ucr: String): Future[Option[IleQuery]] = {
     val query = Json.obj("sessionId" -> sessionId, "ucr" -> ucr)

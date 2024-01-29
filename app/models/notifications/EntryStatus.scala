@@ -17,10 +17,10 @@
 package models.notifications
 
 import models.viewmodels.decoder.ROECode
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 final case class EntryStatus(ics: Option[String] = None, roe: Option[ROECode] = None, soe: Option[String] = None)
 
 object EntryStatus {
-  implicit val format = Json.format[EntryStatus]
+  implicit val format: OFormat[EntryStatus] = Json.format[EntryStatus]
 }

@@ -17,8 +17,7 @@
 package models.notifications.queries
 
 import java.time.Instant
-
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class MovementInfo(
   messageCode: String,
@@ -29,5 +28,5 @@ case class MovementInfo(
 )
 
 object MovementInfo {
-  implicit val format = Json.format[MovementInfo]
+  implicit val format: OFormat[MovementInfo] = Json.format[MovementInfo]
 }

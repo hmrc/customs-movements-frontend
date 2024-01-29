@@ -32,7 +32,7 @@ class CacheRepository @Inject() (mc: MongoComponent)(implicit ec: ExecutionConte
     extends PlayMongoRepository[Cache](mc, "cache", Cache.format, CacheRepository.indexes) with RepositoryOps[Cache] {
 
   override def classTag: ClassTag[Cache] = implicitly[ClassTag[Cache]]
-  implicit val executionContext = ec
+  implicit val executionContext: ExecutionContext = ec
 
   def findByEori(eori: String): Future[Option[Cache]] = findOne("eori", eori)
 

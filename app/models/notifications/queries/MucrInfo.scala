@@ -17,7 +17,7 @@
 package models.notifications.queries
 
 import models.notifications.EntryStatus
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class MucrInfo(
   ucr: String,
@@ -28,5 +28,5 @@ case class MucrInfo(
 ) extends UcrInfo
 
 object MucrInfo {
-  implicit val format = Json.format[MucrInfo]
+  implicit val format: OFormat[MucrInfo] = Json.format[MucrInfo]
 }

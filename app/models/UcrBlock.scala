@@ -17,7 +17,7 @@
 package models
 
 import forms.UcrType
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 final case class UcrBlock(ucr: String, ucrPartNo: Option[String] = None, ucrType: String) {
 
@@ -29,7 +29,7 @@ final case class UcrBlock(ucr: String, ucrPartNo: Option[String] = None, ucrType
 }
 
 object UcrBlock {
-  implicit val format = Json.format[UcrBlock]
+  implicit val format: OFormat[UcrBlock] = Json.format[UcrBlock]
 
   def apply(ucr: String, ucrType: UcrType): UcrBlock = UcrBlock(ucr = ucr, ucrType = ucrType.codeValue)
 }

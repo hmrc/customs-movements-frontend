@@ -29,7 +29,7 @@ case class AssociateUcr(kind: UcrType, ucr: String)
 object AssociateUcr {
   val formId: String = "AssociateDucr"
 
-  implicit val format = Json.format[AssociateUcr]
+  implicit val format: OFormat[AssociateUcr] = Json.format[AssociateUcr]
 
   val mapping: Mapping[AssociateUcr] = {
     def bind(associateKind: UcrType, ducr: Option[String], mucr: Option[String]): AssociateUcr =

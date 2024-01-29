@@ -20,13 +20,15 @@ import base.Injector
 import controllers.routes.ChoiceController
 import forms.DucrPartChiefChoice
 import models.cache.{ArrivalAnswers, AssociateUcrAnswers, DepartureAnswers, DisassociateUcrAnswers}
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
+import play.api.mvc.AnyContentAsEmpty
 import views.html.ducr_part_chief
 
 class DucrPartChiefViewSpec extends ViewSpec with Injector {
 
-  private implicit val request = journeyRequest(ArrivalAnswers())
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())
   private val requestReadyToSubmit = journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))
 
   private val page = instanceOf[ducr_part_chief]

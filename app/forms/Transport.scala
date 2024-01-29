@@ -19,13 +19,13 @@ package forms
 import forms.EnhancedMapping.requiredRadio
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
 case class Transport(modeOfTransport: String, transportId: String, nationality: String)
 
 object Transport {
-  implicit val format = Json.format[Transport]
+  implicit val format: OFormat[Transport] = Json.format[Transport]
 
   val formId = "Transport"
 

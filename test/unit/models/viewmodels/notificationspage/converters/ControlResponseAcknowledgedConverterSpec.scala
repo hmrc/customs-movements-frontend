@@ -21,6 +21,7 @@ import models.notifications.ResponseType
 import models.viewmodels.decoder.ActionCode
 import modules.DateTimeModule
 import play.api.inject.bind
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import testdata.NotificationTestData
 import testdata.NotificationTestData.exampleNotificationFrontendModel
@@ -31,7 +32,7 @@ class ControlResponseAcknowledgedConverterSpec extends UnitSpec with MessagesStu
 
   import ControlResponseAcknowledgedConverterSpec._
 
-  private implicit val fakeRequest = FakeRequest()
+  private implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   private val injector = new OverridableInjector(bind[DateTimeModule].toInstance(new DateTimeTestModule))
   private val converter = injector.instanceOf[ControlResponseAcknowledgedConverter]

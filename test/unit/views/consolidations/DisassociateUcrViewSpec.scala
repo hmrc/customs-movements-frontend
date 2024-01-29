@@ -21,8 +21,10 @@ import controllers.routes.DucrPartChiefController
 import forms.DisassociateUcr
 import forms.UcrType.{Ducr, Mucr}
 import models.cache.DisassociateUcrAnswers
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.mvc.AnyContentAsEmpty
 import play.twirl.api.Html
 import views.ViewSpec
 import views.html.consolidations.disassociate_ucr
@@ -31,7 +33,7 @@ import views.tags.ViewTest
 @ViewTest
 class DisassociateUcrViewSpec extends ViewSpec with Injector {
 
-  private implicit val request = journeyRequest(DisassociateUcrAnswers())
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(DisassociateUcrAnswers())
 
   private val form = DisassociateUcr.form
   private val disassociatePage: disassociate_ucr = instanceOf[disassociate_ucr]

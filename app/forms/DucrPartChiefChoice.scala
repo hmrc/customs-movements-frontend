@@ -18,7 +18,7 @@ package forms
 
 import forms.EnhancedMapping.requiredRadio
 import play.api.data.{Form, Forms, Mapping}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
 case class DucrPartChiefChoice(choice: String) {
@@ -27,7 +27,7 @@ case class DucrPartChiefChoice(choice: String) {
 
 object DucrPartChiefChoice {
 
-  implicit val format = Json.format[DucrPartChiefChoice]
+  implicit val format: OFormat[DucrPartChiefChoice] = Json.format[DucrPartChiefChoice]
 
   val IsDucrPart = "ducr_part_yes"
   val NotDucrPart = "ducr_part_no"

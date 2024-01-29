@@ -25,12 +25,13 @@ import models.cache.{ArrivalAnswers, JourneyType}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
+import play.api.mvc.AnyContentAsEmpty
 import play.twirl.api.HtmlFormat.Appendable
 import views.html.consignment_references
 
 class ConsignmentReferenceViewSpec extends ViewSpec with Injector {
 
-  private implicit val request = journeyRequest(ArrivalAnswers())
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())
 
   private val page = instanceOf[consignment_references]
 

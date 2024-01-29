@@ -27,6 +27,7 @@ import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.Messages
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import testdata.CommonTestData._
@@ -41,7 +42,7 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
 
   private val testTimestamp: Instant = Instant.parse("2019-10-31T00:00:00Z")
 
-  private implicit val fakeRequest = FakeRequest()
+  private implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   private val responseConverterProvider = mock[ResponseConverterProvider]
   private val factory = new NotificationPageSingleElementFactory(responseConverterProvider)

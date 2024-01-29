@@ -22,6 +22,7 @@ import forms.Location
 import models.cache.{ArrivalAnswers, DepartureAnswers}
 import models.requests.JourneyRequest
 import play.api.data.Form
+import play.api.mvc.AnyContentAsEmpty
 import play.twirl.api.Html
 import views.html.location
 
@@ -30,7 +31,7 @@ class LocationViewSpec extends ViewSpec with Injector {
   private val form: Form[Location] = Location.form()
   private val page = instanceOf[location]
 
-  private implicit val request = journeyRequest(ArrivalAnswers())
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())
 
   private def createView(implicit request: JourneyRequest[_] = request): Html = page(form, "some-reference", None)
 

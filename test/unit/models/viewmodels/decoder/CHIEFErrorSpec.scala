@@ -16,13 +16,14 @@
 
 package models.viewmodels.decoder
 
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import views.ViewSpec
 import views.spec.ViewMatchers
 
 class CHIEFErrorSpec extends ViewSpec with ViewMatchers {
 
-  private implicit val request = FakeRequest().withCSRFToken
+  private implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
   val expectedCHIEFError = CHIEFError("E408", "error.chief.UcrNotExist")
 

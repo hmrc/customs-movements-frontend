@@ -16,10 +16,10 @@
 
 package models.notifications
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 final case class GoodsItem(commodityCode: Option[Int] = None, totalPackages: Option[Int] = None, totalNetMass: Option[BigDecimal] = None)
 
 object GoodsItem {
-  implicit val format = Json.format[GoodsItem]
+  implicit val format: OFormat[GoodsItem] = Json.format[GoodsItem]
 }

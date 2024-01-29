@@ -50,6 +50,6 @@ object UcrType {
   }
 
   // TODO: Before JSON formats can be updated to store the whole object, there needs to be an update in BE and DB migration performed
-  implicit val format =
+  implicit val format: Format[UcrType] =
     Format[UcrType](Reads.StringReads.collect(JsonValidationError("error.unknown"))(lookup), Writes(ucrType => JsString(ucrType.formValue)))
 }

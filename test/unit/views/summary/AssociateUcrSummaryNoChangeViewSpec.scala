@@ -20,8 +20,9 @@ import base.Injector
 import controllers.consolidations.routes.{AssociateUcrController, MucrOptionsController}
 import forms.{ManageMucrChoice, UcrType}
 import models.cache.AssociateUcrAnswers
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Element
-import play.api.mvc.Call
+import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.twirl.api.Html
 import views.ViewSpec
 import views.html.summary.associate_ucr_summary_no_change
@@ -30,7 +31,7 @@ import views.tags.ViewTest
 @ViewTest
 class AssociateUcrSummaryNoChangeViewSpec extends ViewSpec with Injector {
 
-  private implicit val request = journeyRequest(AssociateUcrAnswers())
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(AssociateUcrAnswers())
 
   private val page = instanceOf[associate_ucr_summary_no_change]
 

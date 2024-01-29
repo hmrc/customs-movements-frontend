@@ -22,6 +22,8 @@ import forms.common.{Date, Time}
 import forms.{ArrivalDetails, ConsignmentReferences, Location, UcrType}
 import models.UcrBlock
 import models.cache.ArrivalAnswers
+import models.requests.JourneyRequest
+import play.api.mvc.AnyContentAsEmpty
 import views.html.summary.arrival_summary_page
 import views.ViewSpec
 import views.helpers.ViewDates
@@ -31,7 +33,7 @@ import java.time.{LocalDate, LocalTime}
 
 class ArrivalSummaryViewSpec extends ViewSpec with Injector {
 
-  private implicit val request = journeyRequest(ArrivalAnswers())
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())
 
   private val page = instanceOf[arrival_summary_page]
 

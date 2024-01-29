@@ -17,11 +17,11 @@
 package connectors.exchanges
 
 import models.UcrBlock
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class IleQueryExchange(eori: String, ucrBlock: UcrBlock)
 
 object IleQueryExchange {
 
-  implicit val format = Json.format[IleQueryExchange]
+  implicit val format: OFormat[IleQueryExchange] = Json.format[IleQueryExchange]
 }

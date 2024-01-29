@@ -17,13 +17,14 @@
 package views
 
 import base.Injector
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import views.html.unauthorisedEoriInTdr
 
 class UnauthorisedEoriInTdrViewSpec extends ViewSpec with Injector {
 
-  private implicit val request = FakeRequest().withCSRFToken
+  private implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
   private val unauthorisedPage = instanceOf[unauthorisedEoriInTdr]
   private def view: Html = unauthorisedPage()(request, messages)

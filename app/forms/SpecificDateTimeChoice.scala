@@ -18,14 +18,14 @@ package forms
 
 import forms.EnhancedMapping.requiredRadio
 import play.api.data.{Form, Forms, Mapping}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
 case class SpecificDateTimeChoice(choice: String)
 
 object SpecificDateTimeChoice {
 
-  implicit val format = Json.format[SpecificDateTimeChoice]
+  implicit val format: OFormat[SpecificDateTimeChoice] = Json.format[SpecificDateTimeChoice]
 
   val UserDateTime = "userDateTime"
   val CurrentDateTime = "currentDateTime"

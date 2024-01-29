@@ -23,6 +23,8 @@ import forms.DucrPartChiefChoice.IsDucrPart
 import forms.UcrType.Ducr
 import forms.{DisassociateUcr, DucrPartChiefChoice}
 import models.cache.{Cache, DisassociateUcrAnswers}
+import models.requests.JourneyRequest
+import play.api.mvc.AnyContentAsEmpty
 import testdata.CommonTestData.validEori
 import views.ViewSpec
 import views.html.summary.disassociate_ucr_summary
@@ -31,7 +33,7 @@ import views.tags.ViewTest
 @ViewTest
 class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector {
 
-  private implicit val request = journeyRequest(DisassociateUcrAnswers())
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(DisassociateUcrAnswers())
 
   private val page = instanceOf[disassociate_ucr_summary]
 

@@ -17,13 +17,14 @@
 package models.viewmodels.decoder
 
 import org.scalatest.matchers.must.Matchers
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import views.ViewSpec
 import views.spec.ViewMatchers
 
 class ILEErrorSpec extends ViewSpec with Matchers with ViewMatchers {
 
-  private implicit val request = FakeRequest().withCSRFToken
+  private implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
   "ILE Error" should {
 

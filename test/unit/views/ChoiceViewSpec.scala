@@ -28,6 +28,7 @@ import org.mockito.MockitoSugar.{mock, reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.inject.bind
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import testdata.CommonTestData.validEori
 import testdata.MovementsTestData.newUser
@@ -57,7 +58,7 @@ class ChoiceViewSpec extends ViewSpec with BeforeAndAfterEach with Injector {
     super.afterEach()
   }
 
-  private implicit val request = AuthenticatedRequest(FakeRequest().withCSRFToken, newUser(validEori))
+  private implicit val request: AuthenticatedRequest[AnyContentAsEmpty.type] = AuthenticatedRequest(FakeRequest().withCSRFToken, newUser(validEori))
 
   def createView(f: Form[Choice] = form): Document = choicePage(f)
 

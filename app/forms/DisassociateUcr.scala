@@ -31,7 +31,7 @@ case class DisassociateUcr(kind: UcrType, ducr: Option[String], mucr: Option[Str
 object DisassociateUcr {
   val formId: String = "DisassociateUcr"
 
-  implicit val format = Json.format[DisassociateUcr]
+  implicit val format: OFormat[DisassociateUcr] = Json.format[DisassociateUcr]
 
   val mapping =
     Forms.mapping(

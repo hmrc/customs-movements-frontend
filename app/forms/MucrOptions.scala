@@ -20,7 +20,7 @@ import forms.EnhancedMapping.requiredRadio
 import models.UcrBlock
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
@@ -30,7 +30,7 @@ object MucrOptions {
 
   val formId = "MucrOptions"
 
-  implicit val format = Json.format[MucrOptions]
+  implicit val format: OFormat[MucrOptions] = Json.format[MucrOptions]
 
   val Create = "create"
   val Add = "add"

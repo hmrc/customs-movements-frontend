@@ -22,14 +22,16 @@ import forms.ManageMucrChoice
 import forms.UcrType.Mucr
 import models.UcrBlock
 import models.cache.AssociateUcrAnswers
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
+import play.api.mvc.AnyContentAsEmpty
 import views.ViewSpec
 import views.html.consolidations.manage_mucr
 
 class ManageMucrViewSpec extends ViewSpec with Injector {
 
-  private implicit val request = journeyRequest(AssociateUcrAnswers())
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(AssociateUcrAnswers())
   private val requestReadyToSubmit = journeyRequest(AssociateUcrAnswers(readyToSubmit = Some(true)))
 
   private val page = instanceOf[manage_mucr]

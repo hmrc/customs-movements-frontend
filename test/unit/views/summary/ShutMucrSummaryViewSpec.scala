@@ -21,13 +21,15 @@ import controllers.consolidations.routes.ShutMucrController
 import controllers.routes.ChoiceOnConsignmentController
 import forms.ShutMucr
 import models.cache.ShutMucrAnswers
+import models.requests.JourneyRequest
+import play.api.mvc.AnyContentAsEmpty
 import testdata.CommonTestData.validMucr
 import views.ViewSpec
 import views.html.summary.shut_mucr_summary
 
 class ShutMucrSummaryViewSpec extends ViewSpec with Injector {
 
-  private implicit val request = journeyRequest(ShutMucrAnswers())
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ShutMucrAnswers())
 
   private val shutMucrSummaryPage = instanceOf[shut_mucr_summary]
 

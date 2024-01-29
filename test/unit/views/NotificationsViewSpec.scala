@@ -18,6 +18,7 @@ package views
 
 import base.Injector
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import testdata.CommonTestData
@@ -27,7 +28,7 @@ import scala.jdk.CollectionConverters.ListHasAsScala
 
 class NotificationsViewSpec extends ViewSpec with Injector {
 
-  private implicit val request = FakeRequest()
+  private implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   private val page = instanceOf[notifications]
 

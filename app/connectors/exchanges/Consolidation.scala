@@ -26,13 +26,13 @@ trait Consolidation {
 }
 
 object Consolidation {
-  implicit val associateDucrFormat = Json.format[AssociateDUCRRequest]
-  implicit val associateMucrFormat = Json.format[AssociateMUCRRequest]
-  implicit val associateDucrPartFormat = Json.format[AssociateDUCRPartRequest]
-  implicit val disassociateDucrFormat = Json.format[DisassociateDUCRRequest]
-  implicit val disassociateMucrFormat = Json.format[DisassociateMUCRRequest]
-  implicit val disassociateDucrPartFormat = Json.format[DisassociateDUCRPartRequest]
-  implicit val shutMucrFormat = Json.format[ShutMUCRRequest]
+  implicit val associateDucrFormat: OFormat[AssociateDUCRRequest] = Json.format[AssociateDUCRRequest]
+  implicit val associateMucrFormat: OFormat[AssociateMUCRRequest] = Json.format[AssociateMUCRRequest]
+  implicit val associateDucrPartFormat: OFormat[AssociateDUCRPartRequest] = Json.format[AssociateDUCRPartRequest]
+  implicit val disassociateDucrFormat: OFormat[DisassociateDUCRRequest] = Json.format[DisassociateDUCRRequest]
+  implicit val disassociateMucrFormat: OFormat[DisassociateMUCRRequest] = Json.format[DisassociateMUCRRequest]
+  implicit val disassociateDucrPartFormat: OFormat[DisassociateDUCRPartRequest] = Json.format[DisassociateDUCRPartRequest]
+  implicit val shutMucrFormat: OFormat[ShutMUCRRequest] = Json.format[ShutMUCRRequest]
 
   implicit val format: Format[Consolidation] = Union
     .from[Consolidation](typeField = "consolidationType")

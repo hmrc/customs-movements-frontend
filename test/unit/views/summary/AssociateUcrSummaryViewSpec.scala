@@ -25,7 +25,7 @@ import models.UcrBlock
 import models.cache.{AssociateUcrAnswers, Cache}
 import models.requests.JourneyRequest
 import org.scalatest.Assertion
-import play.api.mvc.Call
+import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.twirl.api.Html
 import testdata.CommonTestData.validEori
 import views.ViewSpec
@@ -35,7 +35,7 @@ import views.tags.ViewTest
 @ViewTest
 class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
 
-  private implicit val request = journeyRequest(AssociateUcrAnswers())
+  private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(AssociateUcrAnswers())
 
   private val page = instanceOf[associate_ucr_summary]
 

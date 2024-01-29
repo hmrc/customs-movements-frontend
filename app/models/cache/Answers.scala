@@ -20,7 +20,7 @@ import forms.UcrType.Mucr
 import forms.{AssociateUcr, MucrOptions, _}
 import models.UcrBlock
 import models.cache.JourneyType._
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.play.json.Union
 
 case class ArrivalAnswers(
@@ -119,11 +119,11 @@ trait Answers {
 }
 
 object Answers {
-  implicit val arrivalAnswers = Json.format[ArrivalAnswers]
-  implicit val departureAnswers = Json.format[DepartureAnswers]
-  implicit val associateUcrAnswers = Json.format[AssociateUcrAnswers]
-  implicit val disassociateUcrAnswers = Json.format[DisassociateUcrAnswers]
-  implicit val shutMucrAnswers = Json.format[ShutMucrAnswers]
+  implicit val arrivalAnswers: OFormat[ArrivalAnswers] = Json.format[ArrivalAnswers]
+  implicit val departureAnswers: OFormat[DepartureAnswers] = Json.format[DepartureAnswers]
+  implicit val associateUcrAnswers: OFormat[AssociateUcrAnswers] = Json.format[AssociateUcrAnswers]
+  implicit val disassociateUcrAnswers: OFormat[DisassociateUcrAnswers] = Json.format[DisassociateUcrAnswers]
+  implicit val shutMucrAnswers: OFormat[ShutMucrAnswers] = Json.format[ShutMucrAnswers]
 
   implicit val format: Format[Answers] = Union
     .from[Answers]("type")

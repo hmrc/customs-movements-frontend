@@ -21,7 +21,7 @@ import models.UcrBlock
 import models.cache.JourneyType.JourneyType
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
@@ -31,7 +31,7 @@ case class ConsignmentReferences(reference: String, referenceValue: String) {
 }
 
 object ConsignmentReferences {
-  implicit val format = Json.format[ConsignmentReferences]
+  implicit val format: OFormat[ConsignmentReferences] = Json.format[ConsignmentReferences]
 
   val formId = "ConsignmentReferences"
 

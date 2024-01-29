@@ -17,7 +17,7 @@
 package models.notifications
 
 import models.UcrBlock
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 final case class Entry(ucrBlock: Option[UcrBlock] = None, goodsItem: Seq[GoodsItem] = Seq.empty, entryStatus: Option[EntryStatus] = None) {
   def ucrType: Option[String] = ucrBlock.map(_.ucrType)
@@ -27,5 +27,5 @@ final case class Entry(ucrBlock: Option[UcrBlock] = None, goodsItem: Seq[GoodsIt
 }
 
 object Entry {
-  implicit val format = Json.format[Entry]
+  implicit val format: OFormat[Entry] = Json.format[Entry]
 }

@@ -17,8 +17,7 @@
 package models.notifications.queries
 
 import java.time.Instant
-
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class IleQueryResponseExchange(
   timestampReceived: Instant,
@@ -28,5 +27,5 @@ case class IleQueryResponseExchange(
 )
 
 object IleQueryResponseExchange {
-  implicit val format = Json.format[IleQueryResponseExchange]
+  implicit val format: OFormat[IleQueryResponseExchange] = Json.format[IleQueryResponseExchange]
 }

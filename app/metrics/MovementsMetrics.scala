@@ -17,7 +17,7 @@
 package metrics
 
 import com.codahale.metrics.Timer.Context
-import com.kenshoo.play.metrics.Metrics
+import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import forms.Choice
 import forms.Choice._
 import javax.inject.{Inject, Singleton}

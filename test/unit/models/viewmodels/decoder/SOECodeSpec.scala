@@ -25,7 +25,7 @@ class SOECodeSpec extends UnitSpec {
 
     "have correct amount of DUCR codes" in {
 
-      val expectedCodesAmount = 19
+      val expectedCodesAmount = 20
       SOECode.DucrCodes.size mustBe expectedCodesAmount
     }
 
@@ -55,6 +55,7 @@ class SOECodeSpec extends UnitSpec {
         CustomsPositionDetermined,
         DeclarationClearanceAfterGoodsRelease,
         InsufficientGuarantees,
+        CompletedSuccessfully,
         Departed,
         Frustrated
       )

@@ -16,6 +16,7 @@ decoder.soe.DeclarationRisked = Passed risking
 decoder.soe.CustomsPositionDetermined = Customs position determined
 decoder.soe.DeclarationClearanceAfterGoodsRelease = Cleared after goods release
 decoder.soe.InsufficientGuarantees = Insufficient guarantees
+decoder.soe.CompletedSuccessfully = The departure has been successful and the declaration has completed
 decoder.soe.Departed = Departed
 decoder.soe.Frustrated = Frustrated
 

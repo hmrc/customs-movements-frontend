@@ -45,6 +45,7 @@ object SOECode {
     CustomsPositionDetermined,
     DeclarationClearanceAfterGoodsRelease,
     InsufficientGuarantees,
+    CompletedSuccessfully,
     Departed,
     Frustrated
   )
@@ -86,6 +87,8 @@ object SOECode {
   case object DeclarationClearanceAfterGoodsRelease extends SOECode(code = "16", messageKey = "decoder.soe.DeclarationClearanceAfterGoodsRelease")
 
   case object InsufficientGuarantees extends SOECode(code = "17", messageKey = "decoder.soe.InsufficientGuarantees")
+
+  case object CompletedSuccessfully extends SOECode(code = "22", messageKey = "decoder.soe.CompletedSuccessfully")
 
   case object Departed extends SOECode(code = "D", messageKey = "decoder.soe.Departed")
 

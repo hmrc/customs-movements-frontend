@@ -15,6 +15,7 @@ decoder.soe.DeclarationRisked = Wedi pasio’r cam risgio
 decoder.soe.CustomsPositionDetermined = Wedi pennu sefyllfa’r tollau
 decoder.soe.DeclarationClearanceAfterGoodsRelease = Wedi clirio ar ôl rhyddhau’r nwyddau
 decoder.soe.InsufficientGuarantees = Gwarantau Annigonol
+decoder.soe.CompletedSuccessfully = Mae’r ymadawiad wedi bod yn llwyddiannus ac mae’r datganiad wedi ei lenwi
 decoder.soe.Departed = Wedi ymadael
 decoder.soe.Frustrated = Wedi rhwystro
 		

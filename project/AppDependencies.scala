@@ -4,13 +4,14 @@ import sbt._
 object AppDependencies {
 
   val bootstrapPlayVersion = "8.3.0"
+  val frontendPlayVersion = "8.5.0"
   val hmrcMongoVersion = "1.7.0"
   val jacksonVersion = "2.14.2"
 
   val compile = Seq(
     ws,
     "uk.gov.hmrc"                       %% "bootstrap-frontend-play-30"               % bootstrapPlayVersion,
-    "uk.gov.hmrc"                       %% "play-frontend-hmrc-play-30"               % bootstrapPlayVersion,
+    "uk.gov.hmrc"                       %% "play-frontend-hmrc-play-30"               % frontendPlayVersion,
     "uk.gov.hmrc.mongo"                 %% "hmrc-mongo-play-30"                       % hmrcMongoVersion,
     "com.fasterxml.jackson.module"      %% "jackson-module-scala"                     % jacksonVersion,
     "uk.gov.hmrc"                       %% "play-allowlist-filter"                    % "1.2.0",

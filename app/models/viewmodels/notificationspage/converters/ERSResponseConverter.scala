@@ -16,7 +16,6 @@
 
 package models.viewmodels.notificationspage.converters
 
-import models.notifications.Notification
 import models.viewmodels.decoder.Decoder
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
@@ -28,18 +27,18 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class ERSResponseConverter @Inject() (val decoder: Decoder) extends NotificationPageSingleElementConverter with CommonResponseConverter {
 
-  override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement = {
+  override def convert(data: ConverterData)(implicit messages: Messages): NotificationsPageSingleElement = {
 
     val roeCodeExplanation =
-      findDucrEntry(notification.entries).flatMap(_.roe).flatMap(buildRoeCodeExplanation).getOrElse(HtmlFormat.empty)
+      findDucrEntry(data.notification.entries).flatMap(_.roe).flatMap(buildRoeCodeExplanation).getOrElse(HtmlFormat.empty)
     val soeCodeExplanation =
-      findDucrEntry(notification.entries).flatMap(_.soe).flatMap(buildSoeCodeExplanation).getOrElse(HtmlFormat.empty)
+      findDucrEntry(data.notification.entries).flatMap(_.soe).flatMap(buildSoeCodeExplanation).getOrElse(HtmlFormat.empty)
     val icsCodeExplanation =
-      findDucrEntry(notification.entries).flatMap(_.ics).flatMap(buildIcsCodeExplanation).getOrElse(HtmlFormat.empty)
+      findDucrEntry(data.notification.entries).flatMap(_.ics).flatMap(buildIcsCodeExplanation).getOrElse(HtmlFormat.empty)
 
     NotificationsPageSingleElement(
       title = messages("notifications.elem.title.inventoryLinkingMovementTotalsResponse"),
-      timestampInfo = ViewDates.formatDateAtTime(notification.timestampReceived),
+      timestampInfo = ViewDates.formatDateAtTime(data.notification.timestampReceived),
       content = new Html(List(roeCodeExplanation, soeCodeExplanation, icsCodeExplanation))
     )
   }

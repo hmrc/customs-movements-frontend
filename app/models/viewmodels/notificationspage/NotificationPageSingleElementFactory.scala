@@ -32,23 +32,23 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class NotificationPageSingleElementFactory @Inject() (responseConverterProvider: ResponseConverterProvider) {
 
-  def build(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement =
+  def build(submission: Submission, notificationsCount: Int)(implicit messages: Messages): NotificationsPageSingleElement =
     (submission.actionType: @unchecked) match {
       case Arrival | Departure | DucrDisassociation | DucrPartDisassociation | MucrAssociation | MucrDisassociation | ShutMucr =>
-        buildForRequest(submission)
+        buildForRequest(submission, notificationsCount)
 
-      case DucrAssociation     => buildForDucrAssociation(submission)
-      case DucrPartAssociation => buildForDucrPartAssociation(submission)
+      case DucrAssociation     => buildForDucrAssociation(submission, notificationsCount)
+      case DucrPartAssociation => buildForDucrPartAssociation(submission, notificationsCount)
     }
 
-  private def buildForRequest(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement = {
+  private def buildForRequest(submission: Submission, notificationsCount: Int)(implicit messages: Messages): NotificationsPageSingleElement = {
 
     val ucrMessage = if (submission.hasMucr) "MUCR" else if (submission.hasDucrPart) "DUCR Part" else "DUCR"
 
     val content = HtmlFormat.fill(
       List(
         paragraphBody(messages(s"notifications.elem.content.${submission.actionType.typeName}", ucrMessage)),
-        paragraphBody(messages("notifications.elem.content.footer"))
+        if (notificationsCount < 1) paragraphBody(messages("notifications.elem.content.footer")) else HtmlFormat.empty
       )
     )
 
@@ -59,30 +59,34 @@ class NotificationPageSingleElementFactory @Inject() (responseConverterProvider:
     )
   }
 
-  private def buildForDucrAssociation(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement = {
+  private def buildForDucrAssociation(submission: Submission, notificationsCount: Int)(
+    implicit messages: Messages
+  ): NotificationsPageSingleElement = {
     val ducrs: List[UcrBlock] = submission.ucrBlocks.filter(_.ucrType == "D").toList
     val content = HtmlFormat.fill(
-      paragraphBody(messages(s"notifications.elem.content.${submission.actionType.typeName}")) +:
-        ducrs.map(block => paragraphBody(block.ucr)) :+
-        paragraphBody(messages("notifications.elem.content.footer"))
+      (paragraphBody(messages(s"notifications.elem.content.${submission.actionType.typeName}")) +:
+        ducrs.map(block => paragraphBody(block.ucr))) ++
+        (if (notificationsCount < 1) Seq(paragraphBody(messages("notifications.elem.content.footer"))) else Seq.empty)
     )
 
-    buildForRequest(submission).copy(content = content)
+    buildForRequest(submission, notificationsCount).copy(content = content)
   }
 
-  private def buildForDucrPartAssociation(submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement = {
+  private def buildForDucrPartAssociation(submission: Submission, notificationsCount: Int)(
+    implicit messages: Messages
+  ): NotificationsPageSingleElement = {
     val ducrs: List[UcrBlock] = submission.ucrBlocks.filter(_.ucrType == "DP").toList
     val content = HtmlFormat.fill(
-      paragraphBody(messages(s"notifications.elem.content.${submission.actionType.typeName}")) +:
-        ducrs.map(block => paragraphBody(block.fullUcr)) :+
-        paragraphBody(messages("notifications.elem.content.footer"))
+      (paragraphBody(messages(s"notifications.elem.content.${submission.actionType.typeName}")) +:
+        ducrs.map(block => paragraphBody(block.ucr))) ++
+        (if (notificationsCount < 1) Seq(paragraphBody(messages("notifications.elem.content.footer"))) else Seq.empty)
     )
 
-    buildForRequest(submission).copy(content = content)
+    buildForRequest(submission, notificationsCount).copy(content = content)
   }
 
-  def build(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement = {
+  def build(notification: Notification, submission: Submission)(implicit messages: Messages): NotificationsPageSingleElement = {
     val responseConverter = responseConverterProvider.provideResponseConverter(notification)
-    responseConverter.convert(notification)
+    responseConverter.convert(ConverterData(notification, Some(submission)))
   }
 }

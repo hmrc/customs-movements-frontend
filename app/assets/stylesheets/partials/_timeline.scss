@@ -1,0 +1,25 @@
+.hmrc-timeline {
+  border-left: 0;
+  position: relative;
+}
+.hmrc-timeline li {
+  padding-left: 25px;
+}
+.hmrc-timeline:before {
+  position: absolute;
+  content: '';
+  background: #1d70b8;
+  width: 5px;
+  height: 100%;
+  top: 12px !important;
+  left: 0px;
+}
+.hmrc-timeline__event-title:before {
+  background-color: #1d70b8;
+  content: "";
+  height: 5px;
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 16px;
+}

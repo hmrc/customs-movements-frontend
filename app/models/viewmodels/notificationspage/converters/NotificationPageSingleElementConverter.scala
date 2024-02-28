@@ -17,9 +17,11 @@
 package models.viewmodels.notificationspage.converters
 
 import models.notifications.Notification
+import models.submissions.Submission
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 
 trait NotificationPageSingleElementConverter {
-  def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement
+  def convert(data: ConverterData)(implicit messages: Messages): NotificationsPageSingleElement
 }
+case class ConverterData(notification: Notification, maybeSubmission: Option[Submission] = None)

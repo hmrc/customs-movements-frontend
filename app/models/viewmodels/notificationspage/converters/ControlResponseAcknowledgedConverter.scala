@@ -29,7 +29,7 @@ import javax.inject.Singleton
 class ControlResponseAcknowledgedConverter extends NotificationPageSingleElementConverter {
 
   override def convert(data: ConverterData)(implicit messages: Messages): NotificationsPageSingleElement =
-    data.maybeSubmission.fold(throw new NoSuchElementException("Submission not found"))(submission =>
+    data.maybeSubmission.fold(throw new NoSuchElementException(s"Submission not found for notification: ${data.notification}"))(submission =>
       NotificationsPageSingleElement(
         title = messages(s"notifications.elem.title.${submission.actionType.typeName}.inventoryLinkingControlResponse.AcknowledgedAndProcessed"),
         timestampInfo = ViewDates.formatDateAtTime(data.notification.timestampReceived),

@@ -46,9 +46,9 @@ class NotificationsController @Inject() (
 
       submissionNotifications: Seq[Notification] <- connector.fetchNotifications(conversationId, eori)
       submissionElement: Option[NotificationsPageSingleElement] = submission.map(factory.build(_, submissionNotifications.length))
-      notificationElements: Seq[NotificationsPageSingleElement] = submissionNotifications.sorted.map(
-        factory.build(_, submission.getOrElse(throw new NoSuchElementException("Submission not found")))
-      )
+      notificationElements: Seq[NotificationsPageSingleElement] = submissionNotifications.sorted.map { notification =>
+        factory.build(notification, submission.getOrElse(throw new NoSuchElementException(s"Submission not found for notification: $notification")))
+      }
 
       submissionUcr: Option[String] = submission.flatMap(extractUcr)
     } yield (submissionUcr, submissionElement, notificationElements)

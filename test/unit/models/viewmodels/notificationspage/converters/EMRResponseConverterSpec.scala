@@ -67,7 +67,7 @@ class EMRResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
 
         val input = emrResponseAllCodes
 
-        contentBuilder.convert(input)
+        contentBuilder.convert(ConverterData(input))
 
         verify(decoder).crc(meq(crcKeyFromDecoder.code))
         verify(decoder).roe(meq(roeKeyFromDecoder.code))
@@ -92,7 +92,7 @@ class EMRResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
           messages(mucrSoeKeyFromDecoder.messageKey)
         )
 
-        val result = contentBuilder.convert(input)
+        val result = contentBuilder.convert(ConverterData(input))
 
         result.title mustBe expectedTitle
         result.timestampInfo mustBe expectedTimestampInfo
@@ -110,7 +110,7 @@ class EMRResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
 
         val input = emrResponseMissingCodes
 
-        contentBuilder.convert(input)
+        contentBuilder.convert(ConverterData(input))
 
         verify(decoder).roe(meq(roeKeyFromDecoder.code))
         verify(decoder, times(0)).crc(any())
@@ -125,7 +125,7 @@ class EMRResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
         val expectedContentElements =
           Seq(messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe"), messages(roeKeyFromDecoder.messageKey))
 
-        val result = contentBuilder.convert(input)
+        val result = contentBuilder.convert(ConverterData(input))
 
         result.title mustBe expectedTitle
         result.timestampInfo mustBe expectedTimestampInfo
@@ -143,7 +143,7 @@ class EMRResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
 
         val input = emrResponseUnknownCodes
 
-        contentBuilder.convert(input)
+        contentBuilder.convert(ConverterData(input))
 
         verify(decoder).crc(meq(UnknownCrcCode))
         verify(decoder).roe(meq(UnknownRoeCode().code))
@@ -163,7 +163,7 @@ class EMRResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
           content = Html("")
         )
 
-        contentBuilder.convert(input) mustBe expectedResult
+        contentBuilder.convert(ConverterData(input)) mustBe expectedResult
       }
     }
   }

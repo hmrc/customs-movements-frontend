@@ -44,6 +44,7 @@ class NotificationsControllerSpec extends ControllerLayerSpec with ScalaFutures 
   private val notificationsPage: notifications = mock[notifications]
 
   private val expectedSubmission = exampleSubmission()
+  private val expectedNotificationsCount = 2
   private val expectedNotifications =
     Seq(exampleNotificationFrontendModel(), exampleNotificationFrontendModel(responseType = ResponseType.MovementTotalsResponse))
   private val singleElementForSubmission = NotificationsPageSingleElement("REQUEST", "", HtmlFormat.empty)
@@ -62,8 +63,8 @@ class NotificationsControllerSpec extends ControllerLayerSpec with ScalaFutures 
 
     when(connector.fetchSingleSubmission(any(), any())(any())).thenReturn(Future.successful(Some(expectedSubmission)))
     when(connector.fetchNotifications(any(), any())(any())).thenReturn(Future.successful(expectedNotifications))
-    when(notificationPageSingleElementFactory.build(any[Submission])(any())).thenReturn(singleElementForSubmission)
-    when(notificationPageSingleElementFactory.build(any[Notification])(any())).thenReturn(singleElementForNotification)
+    when(notificationPageSingleElementFactory.build(any[Submission], any[Int])(any())).thenReturn(singleElementForSubmission)
+    when(notificationPageSingleElementFactory.build(any[Notification], any[Submission])(any())).thenReturn(singleElementForNotification)
     when(notificationsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -89,8 +90,10 @@ class NotificationsControllerSpec extends ControllerLayerSpec with ScalaFutures 
 
       "call NotificationPageSingleElementFactory, passing models returned by Connector" in {
         controller.listOfNotifications(conversationId)(FakeRequest()).futureValue
-        verify(notificationPageSingleElementFactory).build(meq(expectedSubmission))(any())
-        expectedNotifications.foreach(expNotification => verify(notificationPageSingleElementFactory).build(meq(expNotification))(any()))
+        verify(notificationPageSingleElementFactory).build(meq(expectedSubmission), meq(expectedNotificationsCount))(any())
+        expectedNotifications.foreach(expNotification =>
+          verify(notificationPageSingleElementFactory).build(meq(expNotification), meq(expectedSubmission))(any())
+        )
       }
 
       "call notification view template, passing UCR related to the submission" in {

@@ -80,7 +80,7 @@ class MovementResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
           )
         )
 
-        converter.convert(input)
+        converter.convert(ConverterData(input))
 
         verify(decoder).crc(meq(crcCodeKeyFromDecoder.code))
       }
@@ -104,7 +104,7 @@ class MovementResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
         val expectedSoeContent = s"${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe")} ${soeKeyFromDecoder.code}"
         val expectedRoeContent = s"${messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe")} ${roeKeyFromDecoder.code}"
 
-        val result = converter.convert(input)
+        val result = converter.convert(ConverterData(input))
 
         result.title mustBe expectedTitle
         result.timestampInfo mustBe expectedTimestampInfo
@@ -120,7 +120,7 @@ class MovementResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
 
         val input = exampleNotificationFrontendModel(responseType = ResponseType.MovementResponse)
 
-        converter.convert(input)
+        converter.convert(ConverterData(input))
 
         verify(decoder, times(0)).crc(any[String])
       }
@@ -134,7 +134,7 @@ class MovementResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
           content = HtmlFormat.empty
         )
 
-        converter.convert(input) mustBe expectedResult
+        converter.convert(ConverterData(input)) mustBe expectedResult
       }
     }
 
@@ -146,7 +146,7 @@ class MovementResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
         val input =
           exampleNotificationFrontendModel(responseType = ResponseType.MovementResponse, crcCode = Some(crcCode))
 
-        converter.convert(input)
+        converter.convert(ConverterData(input))
 
         verify(decoder).crc(meq(crcCode))
       }
@@ -164,7 +164,7 @@ class MovementResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
           content = HtmlFormat.empty
         )
 
-        converter.convert(input) mustBe expectedResult
+        converter.convert(ConverterData(input)) mustBe expectedResult
       }
     }
   }

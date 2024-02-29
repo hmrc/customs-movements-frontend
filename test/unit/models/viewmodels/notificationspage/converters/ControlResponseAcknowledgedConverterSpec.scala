@@ -17,14 +17,17 @@
 package models.viewmodels.notificationspage.converters
 
 import base.{OverridableInjector, UnitSpec}
+import connectors.exchanges.ActionType.MovementType
 import models.notifications.ResponseType
+import models.submissions.Submission
 import models.viewmodels.decoder.ActionCode
 import modules.DateTimeModule
 import play.api.inject.bind
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+import testdata.MovementsTestData.exampleSubmission
 import testdata.NotificationTestData
-import testdata.NotificationTestData.exampleNotificationFrontendModel
+import testdata.NotificationTestData.{exampleNotificationFrontendModel, testTimestamp}
 import utils.DateTimeTestModule
 import views.MessagesStub
 
@@ -36,12 +39,14 @@ class ControlResponseAcknowledgedConverterSpec extends UnitSpec with MessagesStu
 
   private val injector = new OverridableInjector(bind[DateTimeModule].toInstance(new DateTimeTestModule))
   private val converter = injector.instanceOf[ControlResponseAcknowledgedConverter]
+  private val submission: Submission =
+    exampleSubmission(actionType = MovementType.Arrival, requestTimestamp = testTimestamp)
 
   "ControlResponseAcknowledgedConverter on convert" should {
 
     "return NotificationsPageSingleElement with correct title" in {
-      val input = AcknowledgedControlResponse
-      val expectedTitle = messages("notifications.elem.title.inventoryLinkingControlResponse.AcknowledgedAndProcessed")
+      val input = ConverterData(AcknowledgedControlResponse, Some(submission))
+      val expectedTitle = messages("notifications.elem.title.Arrival.inventoryLinkingControlResponse.AcknowledgedAndProcessed")
 
       val result = converter.convert(input)
 
@@ -49,7 +54,7 @@ class ControlResponseAcknowledgedConverterSpec extends UnitSpec with MessagesStu
     }
 
     "return NotificationsPageSingleElement with correct timestampInfo" in {
-      val input = AcknowledgedControlResponse
+      val input = ConverterData(AcknowledgedControlResponse, Some(submission))
       val expectedTimestampInfo = "23 October 2019 at 12:34pm"
 
       val result = converter.convert(input)
@@ -57,8 +62,8 @@ class ControlResponseAcknowledgedConverterSpec extends UnitSpec with MessagesStu
     }
 
     "return NotificationsPageSingleElement with correct content" in {
-      val input = AcknowledgedControlResponse
-      val expectedContent = messages("notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed")
+      val input = ConverterData(AcknowledgedControlResponse, Some(submission))
+      val expectedContent = messages("notifications.elem.content.Arrival.inventoryLinkingControlResponse.AcknowledgedAndProcessed")
 
       val result = converter.convert(input)
       result.content.toString must include(expectedContent)

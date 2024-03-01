@@ -43,10 +43,12 @@ class NotificationsController @Inject() (
 
     val params = for {
       submission: Option[Submission] <- connector.fetchSingleSubmission(conversationId, eori)
-      submissionElement: Option[NotificationsPageSingleElement] = submission.map(factory.build)
 
       submissionNotifications: Seq[Notification] <- connector.fetchNotifications(conversationId, eori)
-      notificationElements: Seq[NotificationsPageSingleElement] = submissionNotifications.sorted.map(factory.build)
+      submissionElement: Option[NotificationsPageSingleElement] = submission.map(factory.build(_, submissionNotifications.length))
+      notificationElements: Seq[NotificationsPageSingleElement] = submissionNotifications.sorted.map { notification =>
+        factory.build(notification, submission.getOrElse(throw new NoSuchElementException(s"Submission not found for notification: $notification")))
+      }
 
       submissionUcr: Option[String] = submission.flatMap(extractUcr)
     } yield (submissionUcr, submissionElement, notificationElements)

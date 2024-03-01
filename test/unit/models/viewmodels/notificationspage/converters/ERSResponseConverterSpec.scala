@@ -67,7 +67,7 @@ class ERSResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
 
         val input = ersResponseAllCodes
 
-        contentBuilder.convert(input)
+        contentBuilder.convert(ConverterData(input))
 
         verify(decoder).ics(meq(icsKeyFromDecoder.code))
         verify(decoder).roe(meq(roeKeyFromDecoder.code))
@@ -92,7 +92,7 @@ class ERSResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
           messages(icsKeyFromDecoder.messageKey)
         )
 
-        val result = contentBuilder.convert(input)
+        val result = contentBuilder.convert(ConverterData(input))
 
         result.title mustBe expectedTitle
         result.timestampInfo mustBe expectedTimestampInfo
@@ -110,7 +110,7 @@ class ERSResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
 
         val input = ersResponseMissingCodes
 
-        contentBuilder.convert(input)
+        contentBuilder.convert(ConverterData(input))
 
         verify(decoder, times(0)).ics(any())
         verify(decoder, times(0)).roe(any())
@@ -125,7 +125,7 @@ class ERSResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
         val expectedContentElements =
           Seq(messages("notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe"), messages(soeKeyFromDecoder.messageKey))
 
-        val result = contentBuilder.convert(input)
+        val result = contentBuilder.convert(ConverterData(input))
 
         result.title mustBe expectedTitle
         result.timestampInfo mustBe expectedTimestampInfo
@@ -143,7 +143,7 @@ class ERSResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
 
         val input = ersResponseUnknownCodes
 
-        contentBuilder.convert(input)
+        contentBuilder.convert(ConverterData(input))
 
         verify(decoder).ics(meq(UnknownIcsCode))
         verify(decoder).roe(meq(UnknownRoeCode().code))
@@ -163,7 +163,7 @@ class ERSResponseConverterSpec extends UnitSpec with BeforeAndAfterEach {
           content = Html("")
         )
 
-        contentBuilder.convert(input) mustBe expectedResult
+        contentBuilder.convert(ConverterData(input)) mustBe expectedResult
       }
     }
   }

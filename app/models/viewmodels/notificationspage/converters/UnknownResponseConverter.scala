@@ -16,7 +16,6 @@
 
 package models.viewmodels.notificationspage.converters
 
-import models.notifications.Notification
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -27,10 +26,10 @@ import javax.inject.Singleton
 @Singleton
 class UnknownResponseConverter extends NotificationPageSingleElementConverter {
 
-  override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement =
+  override def convert(data: ConverterData)(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
       title = messages("notifications.elem.title.unknown"),
-      timestampInfo = ViewDates.formatDateAtTime(notification.timestampReceived),
+      timestampInfo = ViewDates.formatDateAtTime(data.notification.timestampReceived),
       content = HtmlFormat.empty
     )
 }

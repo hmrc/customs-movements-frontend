@@ -30,8 +30,8 @@ object MockFactory {
   def buildNotificationPageSingleElementFactoryMock: NotificationPageSingleElementFactory = {
     val notificationPageSingleElementFactoryMock = mock[NotificationPageSingleElementFactory]
 
-    when(notificationPageSingleElementFactoryMock.build(any[Submission])(any())).thenReturn(notificationsPageElement)
-    when(notificationPageSingleElementFactoryMock.build(any[Notification])(any())).thenReturn(notificationsPageElement)
+    when(notificationPageSingleElementFactoryMock.build(any[Submission], any[Int])(any())).thenReturn(notificationsPageElement)
+    when(notificationPageSingleElementFactoryMock.build(any[Notification], any[Submission])(any())).thenReturn(notificationsPageElement)
 
     notificationPageSingleElementFactoryMock
   }

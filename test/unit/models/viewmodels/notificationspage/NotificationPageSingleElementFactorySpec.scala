@@ -70,7 +70,7 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
         val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.Arrival", "DUCR"), messages("notifications.elem.content.footer"))
 
-        val result = factory.build(input)
+        val result = factory.build(input, 0)
 
         assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
@@ -84,7 +84,7 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
         val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.Departure", "DUCR"), messages("notifications.elem.content.footer"))
 
-        val result = factory.build(input)
+        val result = factory.build(input, 0)
 
         assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
@@ -104,7 +104,7 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
         val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.DucrAssociation"), messages("notifications.elem.content.footer"))
 
-        val result = factory.build(input)
+        val result = factory.build(input, 0)
 
         assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
@@ -130,7 +130,7 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
         val expectedContent =
           Seq(messages("notifications.elem.content.DucrPartAssociation"), validDucrPart, messages("notifications.elem.content.footer"))
 
-        val result = factory.build(input)
+        val result = factory.build(input, 0)
 
         assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
@@ -149,8 +149,7 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
         val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.MucrAssociation"), messages("notifications.elem.content.footer"))
 
-        val result = factory.build(input)
-
+        val result = factory.build(input, 0)
         assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
 
@@ -163,8 +162,7 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
         val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.DucrDisassociation"), messages("notifications.elem.content.footer"))
 
-        val result = factory.build(input)
-
+        val result = factory.build(input, 0)
         assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
 
@@ -177,8 +175,7 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
         val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.DucrPartDisassociation"), messages("notifications.elem.content.footer"))
 
-        val result = factory.build(input)
-
+        val result = factory.build(input, 0)
         assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
 
@@ -191,8 +188,7 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
         val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.MucrDisassociation"), messages("notifications.elem.content.footer"))
 
-        val result = factory.build(input)
-
+        val result = factory.build(input, 0)
         assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
 
@@ -205,8 +201,7 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
         val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.ShutMucr"), messages("notifications.elem.content.footer"))
 
-        val result = factory.build(input)
-
+        val result = factory.build(input, 0)
         assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
     }
@@ -218,11 +213,13 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
 
       "call ResponseConverterProvider" in {
 
-        val input = exampleNotificationFrontendModel()
+        val notification = exampleNotificationFrontendModel()
+        val submission: Submission =
+          exampleSubmission(actionType = MovementType.Arrival, requestTimestamp = testTimestamp)
 
-        factory.build(input)
+        factory.build(notification, submission)
 
-        verify(responseConverterProvider).provideResponseConverter(meq(input))
+        verify(responseConverterProvider).provideResponseConverter(meq(notification))
       }
 
       "call converter returned by ResponseConverterProvider" in {
@@ -230,17 +227,19 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
         val exampleNotificationPageElement =
           NotificationsPageSingleElement(title = "TITLE", timestampInfo = "TIMESTAMP", content = Html("<test>HTML</test>"))
         val responseConverter = mock[NotificationPageSingleElementConverter]
-        when(responseConverter.convert(any[Notification])(any()))
+        when(responseConverter.convert(any[ConverterData])(any()))
           .thenReturn(exampleNotificationPageElement)
 
         when(responseConverterProvider.provideResponseConverter(any[Notification]))
           .thenReturn(responseConverter)
 
-        val input = exampleNotificationFrontendModel()
+        val notification = exampleNotificationFrontendModel()
+        val submission: Submission =
+          exampleSubmission(actionType = MovementType.Arrival, requestTimestamp = testTimestamp)
 
-        factory.build(input)
+        factory.build(notification, submission)
 
-        verify(responseConverter).convert(meq(input))(any[Messages])
+        verify(responseConverter).convert(meq(ConverterData(notification, Some(submission))))(any[Messages])
       }
 
       "return NotificationsPageSingleElement returned by converter" in {
@@ -248,16 +247,17 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
         val exampleNotificationPageElement =
           NotificationsPageSingleElement(title = "TITLE", timestampInfo = "TIMESTAMP", content = Html("<test>HTML</test>"))
         val responseConverter = mock[NotificationPageSingleElementConverter]
-        when(responseConverter.convert(any[Notification])(any()))
+        when(responseConverter.convert(any[ConverterData])(any()))
           .thenReturn(exampleNotificationPageElement)
 
         when(responseConverterProvider.provideResponseConverter(any[Notification]))
           .thenReturn(responseConverter)
 
-        val input = exampleNotificationFrontendModel()
+        val notification = exampleNotificationFrontendModel()
+        val submission: Submission =
+          exampleSubmission(actionType = MovementType.Arrival, requestTimestamp = testTimestamp)
 
-        val result = factory.build(input)
-
+        val result = factory.build(notification, submission)
         result mustBe exampleNotificationPageElement
       }
     }

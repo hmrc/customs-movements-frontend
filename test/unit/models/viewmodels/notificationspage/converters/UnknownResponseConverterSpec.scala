@@ -39,7 +39,7 @@ class UnknownResponseConverterSpec extends UnitSpec with Injector {
         timestampReceived = NotificationTestData.testTimestamp
       )
 
-      val result = converter.convert(input)
+      val result = converter.convert(ConverterData(input))
 
       result.title mustBe messages("notifications.elem.title.unknown")
       result.timestampInfo mustBe "23 October 2019 at 12:34pm"

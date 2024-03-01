@@ -54,7 +54,7 @@ class ControlResponseRejectedConverterSpec extends UnitSpec with BeforeAndAfterE
       val input = RejectedControlResponseSingleError
       val expectedTitle = messages("notifications.elem.title.inventoryLinkingControlResponse.Rejected")
 
-      val result = converter.convert(input)
+      val result = converter.convert(ConverterData(input))
 
       result.title mustBe expectedTitle
     }
@@ -63,7 +63,7 @@ class ControlResponseRejectedConverterSpec extends UnitSpec with BeforeAndAfterE
       val input = RejectedControlResponseSingleError
       val expectedTimestampInfo = "23 October 2019 at 12:34pm"
 
-      val result = converter.convert(input)
+      val result = converter.convert(ConverterData(input))
 
       result.timestampInfo mustBe expectedTimestampInfo
     }
@@ -76,7 +76,7 @@ class ControlResponseRejectedConverterSpec extends UnitSpec with BeforeAndAfterE
       "call Decoder for Error once" in {
         val input = RejectedControlResponseSingleError
 
-        converter.convert(input)
+        converter.convert(ConverterData(input))
 
         verify(decoder).error(meq(input.errorCodes.head))
       }
@@ -87,7 +87,7 @@ class ControlResponseRejectedConverterSpec extends UnitSpec with BeforeAndAfterE
           messages("notifications.elem.content.inventoryLinkingControlResponse.Rejected.singleError")
         val expectedErrorExplanation = messages("Messages.Key")
 
-        val result = converter.convert(input)
+        val result = converter.convert(ConverterData(input))
 
         val contentAsString = result.content.toString
         contentAsString must include(expectedContentHeader)
@@ -100,7 +100,7 @@ class ControlResponseRejectedConverterSpec extends UnitSpec with BeforeAndAfterE
       "call Decoder for Error once" in {
         val input = RejectedControlResponseSingleUnknownError
 
-        converter.convert(input)
+        converter.convert(ConverterData(input))
 
         verify(decoder).error(meq(input.errorCodes.head))
       }
@@ -111,7 +111,7 @@ class ControlResponseRejectedConverterSpec extends UnitSpec with BeforeAndAfterE
           messages("notifications.elem.content.inventoryLinkingControlResponse.Rejected.singleError")
         val expectedErrorExplanation = unknownErrorCode
 
-        val result = converter.convert(input)
+        val result = converter.convert(ConverterData(input))
 
         val contentAsString = result.content.toString
         contentAsString must include(expectedContentHeader)
@@ -124,7 +124,7 @@ class ControlResponseRejectedConverterSpec extends UnitSpec with BeforeAndAfterE
       "call Decoder for every Error" in {
         val input = RejectedControlResponseMultipleErrors
 
-        converter.convert(input)
+        converter.convert(ConverterData(input))
 
         input.errorCodes.foreach { errorCode =>
           verify(decoder).error(meq(errorCode))
@@ -137,7 +137,7 @@ class ControlResponseRejectedConverterSpec extends UnitSpec with BeforeAndAfterE
           messages("notifications.elem.content.inventoryLinkingControlResponse.Rejected.multiError")
         val expectedErrorExplanations = List.fill(input.errorCodes.length)(messages("Messages.Key"))
 
-        val result = converter.convert(input)
+        val result = converter.convert(ConverterData(input))
 
         val contentAsString = result.content.toString
         contentAsString must include(expectedContentHeader)
@@ -152,7 +152,7 @@ class ControlResponseRejectedConverterSpec extends UnitSpec with BeforeAndAfterE
       "call Decoder for every Error" in {
         val input = RejectedControlResponseMultipleErrorsWithUnknown
 
-        converter.convert(input)
+        converter.convert(ConverterData(input))
 
         input.errorCodes.foreach { errorCode =>
           verify(decoder).error(meq(errorCode))
@@ -165,7 +165,7 @@ class ControlResponseRejectedConverterSpec extends UnitSpec with BeforeAndAfterE
           messages("notifications.elem.content.inventoryLinkingControlResponse.Rejected.multiError")
         val expectedErrorExplanations = List.fill(input.errorCodes.length)(messages("Messages.Key"))
 
-        val result = converter.convert(input)
+        val result = converter.convert(ConverterData(input))
 
         val contentAsString = result.content.toString
         contentAsString must include(expectedContentHeader)

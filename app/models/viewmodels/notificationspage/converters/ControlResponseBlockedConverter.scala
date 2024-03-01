@@ -36,11 +36,11 @@ class ControlResponseBlockedConverter @Inject() (decoder: Decoder) extends Notif
   private val TitleMessagesKey = "notifications.elem.title.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed"
   private val ContentHeaderMessagesKey = "notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed"
 
-  override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement =
+  override def convert(data: ConverterData)(implicit messages: Messages): NotificationsPageSingleElement =
     NotificationsPageSingleElement(
       title = messages(TitleMessagesKey),
-      timestampInfo = ViewDates.formatDateAtTime(notification.timestampReceived),
-      content = buildContent(notification)
+      timestampInfo = ViewDates.formatDateAtTime(data.notification.timestampReceived),
+      content = buildContent(data.notification)
     )
 
   private def buildContent(notification: Notification)(implicit messages: Messages): Html = {

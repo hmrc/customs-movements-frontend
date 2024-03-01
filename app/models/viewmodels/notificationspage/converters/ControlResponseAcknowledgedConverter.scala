@@ -16,7 +16,7 @@
 
 package models.viewmodels.notificationspage.converters
 
-import models.notifications.Notification
+import models.submissions.Submission
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.i18n.Messages
 import play.twirl.api.Html
@@ -28,16 +28,18 @@ import javax.inject.Singleton
 @Singleton
 class ControlResponseAcknowledgedConverter extends NotificationPageSingleElementConverter {
 
-  private val TitleMessagesKey = "notifications.elem.title.inventoryLinkingControlResponse.AcknowledgedAndProcessed"
-  private val ContentHeaderMessagesKey = "notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed"
-
-  override def convert(notification: Notification)(implicit messages: Messages): NotificationsPageSingleElement =
-    NotificationsPageSingleElement(
-      title = messages(TitleMessagesKey),
-      timestampInfo = ViewDates.formatDateAtTime(notification.timestampReceived),
-      content = buildContent()
+  override def convert(data: ConverterData)(implicit messages: Messages): NotificationsPageSingleElement =
+    data.maybeSubmission.fold(throw new NoSuchElementException(s"Submission not found for notification: ${data.notification}"))(submission =>
+      NotificationsPageSingleElement(
+        title = messages(s"notifications.elem.title.${submission.actionType.typeName}.inventoryLinkingControlResponse.AcknowledgedAndProcessed"),
+        timestampInfo = ViewDates.formatDateAtTime(data.notification.timestampReceived),
+        content = buildContent(submission)
+      )
     )
 
-  private def buildContent()(implicit messages: Messages): Html =
-    paragraph(messages(ContentHeaderMessagesKey), "govuk-body")
+  private def buildContent(submission: Submission)(implicit messages: Messages): Html =
+    paragraph(
+      messages(s"notifications.elem.content.${submission.actionType.typeName}.inventoryLinkingControlResponse.AcknowledgedAndProcessed"),
+      "govuk-body"
+    )
 }

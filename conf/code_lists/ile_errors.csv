@@ -8,6 +8,7 @@
 08,error.ile.UcrTypeNotMatchingUcrFormat
 10,error.ile.DeclarationNotExist
 11,error.ile.UcrAlreadyAssociated
+12,error.ile.DifferentLocation
 13,error.ile.NoPriorArrivalFoundAtDepartureLocation
 14,error.ile.DeclarationsMissingP2P
 15,error.ile.DeclarationCancelledOrTerminated
@@ -19,6 +20,7 @@
 21,error.ile.UcrIsNotMucr
 22,error.ile.UcrNotExist
 23,error.ile.UcrAlreadyDisassociated
+24,error.ile.MucrNotMatchingEac
 25,error.ile.EmptyMucr
 27,error.ile.LocationBasedPermissionFailed
 28,error.ile.InvalidGoodsLocation
@@ -28,3 +30,4 @@
 32,error.ile.PreviouslyArrivedDUCROrMUCR
 33,error.ile.AlreadyArrived
 34,error.ile.UCRDoesNotExist
+35,error.ile.DifferentSubmitterId

@@ -28,6 +28,11 @@ trait MessagesStub {
 
   protected def messages(key: String, args: Any*)(implicit request: Request[_]): String = messages(request)(key, args: _*)
 
+  protected def messagesCy: Messages =
+    new AllMessageKeysAreMandatoryMessages(realMessagesApi.preferred(Seq(Lang.apply("cy"))))
+
+  protected def messagesCy(key: String, args: Any*)(implicit request: Request[_]): String = messages(request)(key, args: _*)
+
   /*
     Fails the test if a view is configured with a message key that doesnt exist in the messages file
    */

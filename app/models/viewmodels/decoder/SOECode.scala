@@ -47,12 +47,22 @@ object SOECode {
     InsufficientGuarantees,
     CompletedSuccessfully,
     Departed,
-    Frustrated
+    Frustrated,
+    DeclarationReceived,
+    ProvisionalCustomsDebtCalculated,
+    FinalCustomsDebtCalculated,
+    GoodsExitResultsReceived,
+    AmendedNoQuotaAllocation,
+    ManualTaskRaised,
+    NonExistentDeclaration,
+    DeclarationUnderRisk
   )
 
   val MucrCodes: Set[SOECode] = Set(ConsolidationOpen, ConsolidationClosedWithoutP2P, ConsolidationHasP2P, ConsolidationWithEmptyMucr)
 
   val AllCodes: Set[SOECode] = MucrCodes ++ DucrCodes
+
+  case object NonExistentDeclaration extends SOECode(code = "0", messageKey = "decoder.soe.NonExistentDeclaration")
 
   case object DeclarationValidation extends SOECode(code = "1", messageKey = "decoder.soe.DeclarationValidation")
 
@@ -88,7 +98,21 @@ object SOECode {
 
   case object InsufficientGuarantees extends SOECode(code = "17", messageKey = "decoder.soe.InsufficientGuarantees")
 
+  case object DeclarationReceived extends SOECode(code = "18", messageKey = "decoder.soe.DeclarationReceived")
+
+  case object ProvisionalCustomsDebtCalculated extends SOECode(code = "19", messageKey = "decoder.soe.ProvisionalCustomsDebtCalculated")
+
+  case object FinalCustomsDebtCalculated extends SOECode(code = "20", messageKey = "decoder.soe.FinalCustomsDebtCalculated")
+
+  case object GoodsExitResultsReceived extends SOECode(code = "21", messageKey = "decoder.soe.GoodsExitResultsReceived")
+
   case object CompletedSuccessfully extends SOECode(code = "22", messageKey = "decoder.soe.CompletedSuccessfully")
+
+  case object AmendedNoQuotaAllocation extends SOECode(code = "23", messageKey = "decoder.soe.AmendedNoQuotaAllocation")
+
+  case object ManualTaskRaised extends SOECode(code = "24", messageKey = "decoder.soe.ManualTaskRaised")
+
+  case object DeclarationUnderRisk extends SOECode(code = "C", messageKey = "decoder.soe.DeclarationUnderRisk")
 
   case object Departed extends SOECode(code = "D", messageKey = "decoder.soe.Departed")
 

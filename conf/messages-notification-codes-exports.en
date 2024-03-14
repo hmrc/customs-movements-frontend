@@ -1,4 +1,4 @@
-
+decoder.soe.NonExistentDeclaration = Declaration does not exist
 decoder.soe.DeclarationValidation = Waiting for validation
 decoder.soe.DeclarationGoodsRelease = Provisional clearance
 decoder.soe.DeclarationClearance = Cleared
@@ -16,13 +16,20 @@ decoder.soe.DeclarationRisked = Passed risking
 decoder.soe.CustomsPositionDetermined = Customs position determined
 decoder.soe.DeclarationClearanceAfterGoodsRelease = Cleared after goods release
 decoder.soe.InsufficientGuarantees = Insufficient guarantees
-decoder.soe.CompletedSuccessfully = The departure has been successful and the declaration has completed
+decoder.soe.DeclarationReceived = Declaration Received
+decoder.soe.ProvisionalCustomsDebtCalculated = Provisional Customs Debt Calculated and Covered
+decoder.soe.FinalCustomsDebtCalculated = Final Customs Debt Calculated and Covered
+decoder.soe.GoodsExitResultsReceived = Goods Exit Results Received
+decoder.soe.CompletedSuccessfully = Completed Successfully
+decoder.soe.AmendedNoQuotaAllocation = Amended due to Partial or No Quota Allocation
+decoder.soe.ManualTaskRaised = Manual Task Raised
+decoder.soe.DeclarationUnderRisk = Declaration Under Re-arrivals Risk
 decoder.soe.Departed = Departed
 decoder.soe.Frustrated = Frustrated
 
-decoder.soe.ConsolidationOpen = MUCR is open or empty
-decoder.soe.ConsolidationClosedWithoutP2P = MUCR is closed but does not have permission to proceed
-decoder.soe.ConsolidationHasP2P = MUCR has permission to proceed
+decoder.soe.ConsolidationOpen = Consolidation is Open
+decoder.soe.ConsolidationClosedWithoutP2P = Consolidation is closed but does not have P2P
+decoder.soe.ConsolidationHasP2P = Consolidation has P2P
 decoder.soe.ConsolidationWithEmptyMucr = Consolidation with empty MUCR
 
 decoder.roe.DocumentaryControl = Additional documents needed before goods can be released

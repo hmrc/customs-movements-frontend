@@ -20,7 +20,7 @@ import base.UnitSpec
 import models.viewmodels.decoder.CRCCode.Success
 import models.viewmodels.decoder.ICSCode.InvalidationAtTraderRequest
 import models.viewmodels.decoder.ROECode.DocumentaryControl
-import models.viewmodels.decoder.SOECode.{ConsolidationOpen, Departed}
+import models.viewmodels.decoder.SOECode.{ConsolidationOpen, ConsolidationWithEmptyMucr, Departed}
 
 class DecoderSpec extends UnitSpec {
 
@@ -60,7 +60,7 @@ class DecoderSpec extends UnitSpec {
 
     "not find DUCR soe code when provided with MUCR soe code" in {
 
-      decoder.ducrSoe(ConsolidationOpen.code) mustBe None
+      decoder.ducrSoe(ConsolidationWithEmptyMucr.code) mustBe None
     }
 
     "find correct ILE error" in {

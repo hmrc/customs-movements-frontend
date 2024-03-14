@@ -1,3 +1,4 @@
+decoder.soe.NonExistentDeclaration =
 decoder.soe.DeclarationValidation = Wrthi’n aros am ddilysiad
 decoder.soe.DeclarationGoodsRelease = Cliriad dros dro
 decoder.soe.DeclarationClearance = Wedi clirio
@@ -15,13 +16,20 @@ decoder.soe.DeclarationRisked = Wedi pasio’r cam risgio
 decoder.soe.CustomsPositionDetermined = Wedi pennu sefyllfa’r tollau
 decoder.soe.DeclarationClearanceAfterGoodsRelease = Wedi clirio ar ôl rhyddhau’r nwyddau
 decoder.soe.InsufficientGuarantees = Gwarantau Annigonol
-decoder.soe.CompletedSuccessfully = Mae’r ymadawiad wedi bod yn llwyddiannus ac mae’r datganiad wedi ei lenwi
+decoder.soe.DeclarationReceived = Datganiad a dderbyniwyd
+decoder.soe.ProvisionalCustomsDebtCalculated = Dyled Tollau Dros Dro wedi’i Chyfrifo a’i Chwmpasu
+decoder.soe.FinalCustomsDebtCalculated = Dyled Tollau Derfynol wedi’i Chyfrifo a’i Chwmpasu
+decoder.soe.GoodsExitResultsReceived = Canlyniadau wedi dod i law o Nwyddau’n Gadael
+decoder.soe.CompletedSuccessfully = Wedi’i Gwblhau’n Llwyddiannus
+decoder.soe.AmendedNoQuotaAllocation = Diwygiwyd oherwydd i’r Cwota gael ei Ddyrannu’n Rhannol neu Ddim o Gwbl
+decoder.soe.ManualTaskRaised = Tasg â Llaw Wedi’i Chodi
+decoder.soe.DeclarationUnderRisk =
 decoder.soe.Departed = Wedi ymadael
 decoder.soe.Frustrated = Wedi rhwystro
 		
-decoder.soe.ConsolidationOpen = Mae’r MUCR ar agor neu’n wag
-decoder.soe.ConsolidationClosedWithoutP2P = Mae’r MUCR ar gau ond nid oes ganddo ganiatâd i fynd yn ei flaen
-decoder.soe.ConsolidationHasP2P = Mae gan yr MUCR ganiatâd i fynd yn ei flaen
+decoder.soe.ConsolidationOpen = Mae’r broses gyfuno ar agor
+decoder.soe.ConsolidationClosedWithoutP2P = Mae’r broses gyfuno ar gau ond nid oes ganddi ganiatâd i fynd yn ei blaen (P2P)
+decoder.soe.ConsolidationHasP2P = Mae gan y broses gyfuno ganiatâd i fynd yn ei blaen (P2P)
 decoder.soe.ConsolidationWithEmptyMucr = Cyfunwyd ag MUCR gwag
 		
 decoder.roe.DocumentaryControl = Mae angen dogfennau ychwanegol cyn y gellir rhyddhau’r nwyddau

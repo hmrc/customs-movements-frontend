@@ -71,15 +71,11 @@ class SOECodeSpec extends UnitSpec with MessagesStub with ViewMatchers {
     implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest()
 
     "have messages for all codes" in {
-      SOECode.AllCodes.foreach(soeCode =>
-        messages must haveTranslationFor(soeCode.messageKey)
-      )
+      SOECode.AllCodes.foreach(soeCode => messages must haveTranslationFor(soeCode.messageKey))
     }
 
     "have messages for all codes in welsh" in {
-      SOECode.AllCodes.foreach(soeCode =>
-        messagesCy must haveTranslationFor(soeCode.messageKey)
-      )
+      SOECode.AllCodes.foreach(soeCode => messagesCy must haveTranslationFor(soeCode.messageKey))
     }
   }
 }

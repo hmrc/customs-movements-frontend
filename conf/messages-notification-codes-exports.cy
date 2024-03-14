@@ -1,4 +1,4 @@
-decoder.soe.NonExistentDeclaration =
+#decoder.soe.NonExistentDeclaration =
 decoder.soe.DeclarationValidation = Wrthi’n aros am ddilysiad
 decoder.soe.DeclarationGoodsRelease = Cliriad dros dro
 decoder.soe.DeclarationClearance = Wedi clirio
@@ -23,7 +23,7 @@ decoder.soe.GoodsExitResultsReceived = Canlyniadau wedi dod i law o Nwyddau’n 
 decoder.soe.CompletedSuccessfully = Wedi’i Gwblhau’n Llwyddiannus
 decoder.soe.AmendedNoQuotaAllocation = Diwygiwyd oherwydd i’r Cwota gael ei Ddyrannu’n Rhannol neu Ddim o Gwbl
 decoder.soe.ManualTaskRaised = Tasg â Llaw Wedi’i Chodi
-decoder.soe.DeclarationUnderRisk =
+#decoder.soe.DeclarationUnderRisk =
 decoder.soe.Departed = Wedi ymadael
 decoder.soe.Frustrated = Wedi rhwystro
 		

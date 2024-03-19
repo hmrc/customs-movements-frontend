@@ -19,7 +19,7 @@ package views.components.ilequery
 import base.Injector
 import controllers.ileQuery.routes.IleQueryController
 import models.notifications.EntryStatus
-import models.notifications.queries.{MucrInfo, UcrInfo}
+import models.notifications.queries.{DucrInfo, MucrInfo, UcrInfo}
 import models.viewmodels.decoder.{ROECode, SOECode}
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
@@ -46,17 +46,28 @@ class AssociatedConsignmentsViewSpec extends ViewSpec with Injector {
 
     "render associate consignments section" in {
       val viewWithChild = view(associatedConsignments =
-        Seq(MucrInfo("childUcr", entryStatus = Some(EntryStatus(None, Some(ROECode.DocumentaryControl), Some(SOECode.Departed.code)))))
+        Seq(
+          MucrInfo("childUcr", entryStatus = Some(EntryStatus(None, Some(ROECode.DocumentaryControl), Some(SOECode.ConsolidationOpen.code)))),
+          DucrInfo(
+            "childUcr1",
+            declarationId = "",
+            entryStatus = Some(EntryStatus(None, Some(ROECode.DocumentaryControl), Some(SOECode.NonExistentDeclaration.code)))
+          )
+        )
       )
       viewWithChild.getElementById("associatedUcrs") must containMessage("ileQueryResponse.associated")
 
-      val elmChild = viewWithChild.getElementById("associateUcr_0_ucr")
-      elmChild must containText("childUcr")
-      elmChild.getElementsByClass("govuk-link").first() must haveHref(IleQueryController.getConsignmentData("childUcr"))
-
+      val elmChild0 = viewWithChild.getElementById("associateUcr_0_ucr")
+      elmChild0 must containText("childUcr")
+      elmChild0.getElementsByClass("govuk-link").first() must haveHref(IleQueryController.getConsignmentData("childUcr"))
       viewWithChild.getElementById("associateUcr_0_roe") must containMessage(ROECode.DocumentaryControl.messageKey)
+      viewWithChild.getElementById("associateUcr_0_soe") must containMessage(SOECode.ConsolidationOpen.messageKey)
 
-      viewWithChild.getElementById("associateUcr_0_soe") must containMessage(SOECode.Departed.messageKey)
+      val elmChild1 = viewWithChild.getElementById("associateUcr_1_ucr")
+      elmChild1 must containText("childUcr1")
+      elmChild1.getElementsByClass("govuk-link").first() must haveHref(IleQueryController.getConsignmentData("childUcr1"))
+      viewWithChild.getElementById("associateUcr_1_roe") must containMessage(ROECode.DocumentaryControl.messageKey)
+      viewWithChild.getElementById("associateUcr_1_soe") must containMessage(SOECode.NonExistentDeclaration.messageKey)
     }
   }
 }

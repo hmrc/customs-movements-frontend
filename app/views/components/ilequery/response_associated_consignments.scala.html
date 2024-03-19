@@ -15,6 +15,7 @@
  *@
 
 @import components.gds.link
+@import views.helpers.AssociatedConsignmentsHelper
 @import controllers.ileQuery.routes.IleQueryController
 @import models.notifications.queries.UcrInfo
 @import models.viewmodels.ilequery.IleQueryCodeConverter
@@ -32,23 +33,7 @@
     <div class="govuk-grid-column-full" id="associatedUcrs">
         <h2 class="govuk-heading-m">@messages("ileQueryResponse.associated")</h2>
         @govukTable(Table(
-            rows = associatedUcrs.zipWithIndex.map(indexedUcr => {
-                Seq(
-                    TableRow(
-                        content = HtmlContent(link(message = Html(indexedUcr._1.ucr), href = IleQueryController.getConsignmentData(indexedUcr._1.ucr))),
-                        attributes = Map("id" -> s"associateUcr_${indexedUcr._2}_ucr")
-                    ),
-                    TableRow(
-                        content = indexedUcr._1.entryStatus.flatMap(_.roe).map(converter.routeOfEntry(_)).getOrElse(Empty),
-                        attributes = Map("id" -> s"associateUcr_${indexedUcr._2}_roe")
-                    ),
-                    TableRow(
-                        content = indexedUcr._1.entryStatus.flatMap(_.soe).map(converter.statusOfEntryAll(_)).getOrElse(Empty),
-                        attributes = Map("id" -> s"associateUcr_${indexedUcr._2}_soe")
-                    )
-                )
-            })
-            ,
+            rows = AssociatedConsignmentsHelper.generateRowsForChildUcrs(associatedUcrs)(messages, converter),
             head = Some(List(
                 HeadCell(
                     content = Text(messages("ileQueryResponse.associated.reference"))

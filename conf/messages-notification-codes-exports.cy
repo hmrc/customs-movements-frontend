@@ -1,7 +1,7 @@
-#decoder.soe.NonExistentDeclaration =
+decoder.soe.NonExistentDeclaration = Nid yw’r datganiad yn bodoli
 decoder.soe.DeclarationValidation = Wrthi’n aros am ddilysiad
 decoder.soe.DeclarationGoodsRelease = Cliriad dros dro
-decoder.soe.DeclarationClearance = Wedi clirio
+decoder.soe.DeclarationClearance = Clirio Datganiad
 decoder.soe.DeclarationInvalidated = Annilys
 decoder.soe.DeclarationRejected = Wedi gwrthod
 decoder.soe.DeclarationHandledExternally = Datganiad wedi’i drin yn allanol
@@ -23,7 +23,7 @@ decoder.soe.GoodsExitResultsReceived = Canlyniadau wedi dod i law o Nwyddau’n 
 decoder.soe.CompletedSuccessfully = Wedi’i Gwblhau’n Llwyddiannus
 decoder.soe.AmendedNoQuotaAllocation = Diwygiwyd oherwydd i’r Cwota gael ei Ddyrannu’n Rhannol neu Ddim o Gwbl
 decoder.soe.ManualTaskRaised = Tasg â Llaw Wedi’i Chodi
-#decoder.soe.DeclarationUnderRisk =
+decoder.soe.DeclarationUnderRisk = 	Datganiad o dan wiriadau risg gan fod y nwyddau wedi cyrraedd eto
 decoder.soe.Departed = Wedi ymadael
 decoder.soe.Frustrated = Wedi rhwystro
 		

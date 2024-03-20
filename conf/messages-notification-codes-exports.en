@@ -1,7 +1,7 @@
 decoder.soe.NonExistentDeclaration = Declaration does not exist
 decoder.soe.DeclarationValidation = Waiting for validation
 decoder.soe.DeclarationGoodsRelease = Provisional clearance
-decoder.soe.DeclarationClearance = Cleared
+decoder.soe.DeclarationClearance = Declaration Clearance
 decoder.soe.DeclarationInvalidated = Invalid
 decoder.soe.DeclarationRejected = Rejected
 decoder.soe.DeclarationHandledExternally = Declaration handled externally

@@ -373,6 +373,9 @@ submissions.mucrdisassociation = Disassociate MUCR
 notifications.title = Notification details
 notifications.mucr = MUCR: {0}
 notifications.ducr = DUCR: {0}
+notifications.actions.title = Declaration actions
+notifications.actions.consignmentInformation.title = View consignment information
+notifications.actions.newMovementRequest.title = Make a new movement request
 
 notifications.elem.title.Arrival = Request to arrive is being processed
 notifications.elem.title.Departure = Request to depart is being processed

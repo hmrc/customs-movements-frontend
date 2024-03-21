@@ -17,6 +17,8 @@
 package views
 
 import base.Injector
+import controllers.ileQuery.routes.IleQueryController
+import controllers.routes.ChoiceController
 import models.viewmodels.notificationspage.NotificationsPageSingleElement
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -63,6 +65,20 @@ class NotificationsViewSpec extends ViewSpec with Injector {
 
         pageWithMUCR.getElementsByClass("notifications-ucr").first() must containText(text)
       }
+    }
+
+    "display the 'Declaration actions' table" in {
+      val view = pageWithoutNotifications
+      val tableTitle = view.getElementsByClass("declaration-actions-refs govuk-heading-s").first()
+      val consignmentInformation = view.getElementById("consignment-info")
+      val newRequest = view.getElementById("new-request")
+
+      tableTitle.text() mustBe messages("notifications.actions.title")
+      consignmentInformation.text mustBe messages("notifications.actions.consignmentInformation.title")
+      newRequest.text mustBe messages("notifications.actions.newMovementRequest.title")
+
+      consignmentInformation must haveAttribute("href", IleQueryController.getConsignmentData(CommonTestData.validMucr).url)
+      newRequest must haveAttribute("href", ChoiceController.displayChoices.url)
     }
 
     "contain elements for all notifications in correct order" in {

@@ -14,28 +14,73 @@
  * limitations under the License.
  *@
 
-@import components.gds.{gds_main_template, pageTitle, sectionHeader}
+@import components.gds.{gds_main_template, pageTitle, sectionHeader, link}
+@import controllers.routes.ChoiceController
+@import controllers.ileQuery.routes.IleQueryController
 @import models.viewmodels.notificationspage.NotificationsPageSingleElement
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.print_page_button
 @import views.components.BackButton
 @import views.helpers.Title
 
-@this(govukLayout: gds_main_template, pageTitle: pageTitle, sectionHeader: sectionHeader, printButton: print_page_button)
+@this(
+    govukLayout: gds_main_template,
+    pageTitle: pageTitle,
+    sectionHeader: sectionHeader,
+    printButton: print_page_button,
+    link: link
+)
 
 @(submissionUcr: String, elementsToDisplay: Seq[NotificationsPageSingleElement])(implicit request: Request[_], messages: Messages)
 
+@sectionHeading(text: String) = {
+  <h2 class="declaration-actions-refs govuk-heading-s">@text</h2>
+}
+
+@consignmentInformation = {
+        <p>
+            @link(
+                id = Some("consignment-info"),
+                message = Html(messages("notifications.actions.consignmentInformation.title")),
+                href = IleQueryController.getConsignmentData(submissionUcr)
+            )
+        </p>
+}
+
+@newMovementRequest = {
+    <div>
+        @link(
+            id = Some("new-request"),
+            message = Html(messages("notifications.actions.newMovementRequest.title")),
+            href = ChoiceController.displayChoices
+        )
+    </div>
+}
+
 @govukLayout(
   title = Title("notifications.title", None, Seq(submissionUcr)),
-  backButton = Some(BackButton(messages("site.back"), controllers.routes.SubmissionsController.displayPage))) {
+  backButton = Some(BackButton(messages("site.back"), controllers.routes.SubmissionsController.displayPage)),
+  useCustomContentWidth = true) {
 
-  @pageTitle(text = messages("notifications.title"), classes = "govuk-heading-l govuk-!-margin-bottom-2")
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @pageTitle(text = messages("notifications.title"), classes = "govuk-heading-l govuk-!-margin-bottom-2")
+        <span class="notifications-ucr govuk-caption-l">@{if(submissionUcr.matches("^[0-9].*")){messages("notifications.ducr", submissionUcr)}else{messages("notifications.mucr", submissionUcr)}}</span>
+        @printButton(4, 0)
+    </div>
 
-  <span class="notifications-ucr govuk-caption-l">@{if(submissionUcr.matches("^[0-9].*")){messages("notifications.ducr", submissionUcr)}else{messages("notifications.mucr", submissionUcr)}}</span>
+    <div class="govuk-grid-column-two-thirds">
+        <ol class="hmrc-timeline govuk-!-margin-top-5 govuk-!-margin-bottom-6">
+            @elementsToDisplay.map(components.notifications_single_element(_))
+        </ol>
+    </div>
 
-  @printButton(4, 0)
-
-  <ol class="hmrc-timeline govuk-!-margin-top-5 govuk-!-margin-bottom-6">
-    @elementsToDisplay.map(components.notifications_single_element(_))
-  </ol>
+    <div class="govuk-grid-column-one-third govuk-!-margin-top-5">
+        @sectionHeading(messages("notifications.actions.title"))
+        <div class="govuk-list">
+            @consignmentInformation
+            @newMovementRequest
+        </div>
+    </div>
+</div>
 }

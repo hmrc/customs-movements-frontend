@@ -17,10 +17,10 @@
 package models.notifications.queries
 
 import java.time.Instant
-
 import models.notifications.EntryStatus
+import play.api.libs.json.{Json, OFormat}
 
-abstract class UcrInfo {
+sealed abstract class UcrInfo {
   val ucr: String
   val parentMucr: Option[String]
   val entryStatus: Option[EntryStatus]
@@ -32,4 +32,29 @@ abstract class UcrInfo {
       .sortBy(_.movementDateTime)(Ordering.Option[Instant].reverse)
       .headOption
       .flatMap(_.transportDetails)
+}
+
+case class MucrInfo(
+  ucr: String,
+  parentMucr: Option[String] = None,
+  entryStatus: Option[EntryStatus] = None,
+  isShut: Option[Boolean] = None,
+  movements: Seq[MovementInfo] = Seq.empty
+) extends UcrInfo
+
+object MucrInfo {
+  implicit val format: OFormat[MucrInfo] = Json.format[MucrInfo]
+}
+
+case class DucrInfo(
+  ucr: String,
+  parentMucr: Option[String] = None,
+  declarationId: String,
+  entryStatus: Option[EntryStatus] = None,
+  movements: Seq[MovementInfo] = Seq.empty,
+  goodsItem: Seq[GoodsItemInfo] = Seq.empty
+) extends UcrInfo
+
+object DucrInfo {
+  implicit val format: OFormat[DucrInfo] = Json.format[DucrInfo]
 }

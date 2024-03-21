@@ -28,14 +28,47 @@ class ILEErrorSpec extends ViewSpec with Matchers with ViewMatchers {
 
   "ILE Error" should {
 
-    "have correct amount of codes" in {
+    "contain all expected errors" in {
+      val ileErrorsNames = Set(
+        "error.ile.InvalidUcrFormat",
+        "error.ile.ClientIdValidationFailed",
+        "error.ile.UcrNotAtTopOfConsolidation",
+        "error.ile.MucrNotShutConsolidation",
+        "error.ile.ParentMucrInSameConsolidation",
+        "error.ile.ConsolidationNotFound",
+        "error.ile.ConsolidationAlreadyShut",
+        "error.ile.UcrTypeNotMatchingUcrFormat",
+        "error.ile.DeclarationNotExist",
+        "error.ile.UcrAlreadyAssociated",
+        "error.ile.NoPriorArrivalFoundAtDepartureLocation",
+        "error.ile.DeclarationsMissingP2P",
+        "error.ile.DeclarationCancelledOrTerminated",
+        "error.ile.UnknownDeclarationIdentifier",
+        "error.ile.ConsolidationLevelLimitReached",
+        "error.ile.InvalidGoodsDateTime",
+        "error.ile.MucrNotShutDeparture",
+        "error.ile.FutureDateTimeOverExceeded",
+        "error.ile.UcrIsNotMucr",
+        "error.ile.UcrNotExist",
+        "error.ile.UcrAlreadyDisassociated",
+        "error.ile.EmptyMucr",
+        "error.ile.LocationBasedPermissionFailed",
+        "error.ile.InvalidGoodsLocation",
+        "error.ile.MucrAlreadyDeparted",
+        "error.ile.UcrRejectedUponArrival",
+        "error.ile.AlreadyRetrospectiveArrived",
+        "error.ile.PreviouslyArrivedDUCROrMUCR",
+        "error.ile.AlreadyArrived",
+        "error.ile.UCRDoesNotExist",
+        "error.ile.DifferentSubmitterId",
+        "error.ile.MucrNotMatchingEac",
+        "error.ile.DifferentLocation"
+      )
 
-      val expectedCodesAmount = 30
-      ILEError.allErrors.size mustBe expectedCodesAmount
+      ILEError.allErrors.map(_.messageKey).toSet mustBe ileErrorsNames
     }
 
     "contain non-empty code and description for every error" in {
-
       ILEError.allErrors.foreach { error =>
         error.code mustNot be(empty)
         error.messageKey mustNot be(empty)
@@ -43,43 +76,11 @@ class ILEErrorSpec extends ViewSpec with Matchers with ViewMatchers {
     }
 
     "have translations for all errors" in {
+      ILEError.allErrors.foreach(error => messages must haveTranslationFor(s"${error.messageKey}"))
+    }
 
-      val ileErrorsNames = Seq(
-        "InvalidUcrFormat",
-        "ClientIdValidationFailed",
-        "UcrNotAtTopOfConsolidation",
-        "MucrNotShutConsolidation",
-        "ParentMucrInSameConsolidation",
-        "ConsolidationNotFound",
-        "ConsolidationAlreadyShut",
-        "UcrTypeNotMatchingUcrFormat",
-        "DeclarationNotExist",
-        "UcrAlreadyAssociated",
-        "NoPriorArrivalFoundAtDepartureLocation",
-        "DeclarationsMissingP2P",
-        "DeclarationCancelledOrTerminated",
-        "UnknownDeclarationIdentifier",
-        "ConsolidationLevelLimitReached",
-        "InvalidGoodsDateTime",
-        "MucrNotShutDeparture",
-        "FutureDateTimeOverExceeded",
-        "UcrIsNotMucr",
-        "UcrNotExist",
-        "UcrAlreadyDisassociated",
-        "EmptyMucr",
-        "LocationBasedPermissionFailed",
-        "InvalidGoodsLocation",
-        "MucrAlreadyDeparted",
-        "UcrRejectedUponArrival",
-        "AlreadyRetrospectiveArrived",
-        "PreviouslyArrivedDUCROrMUCR",
-        "AlreadyArrived",
-        "UCRDoesNotExist"
-      )
-
-      ileErrorsNames.foreach { errorName =>
-        messages must haveTranslationFor(s"error.ile.$errorName")
-      }
+    "have translations for all errors in Welsh" in {
+      ILEError.allErrors.foreach(error => messagesCy must haveTranslationFor(s"${error.messageKey}"))
     }
   }
 

@@ -15,22 +15,34 @@
  *@
 
 @import components.gds._
+@import config.AppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.BackButton
 @import views.helpers.Title
 
-@this(govukLayout: gds_main_template, pageTitle: pageTitle)
+@this(govukLayout: gds_main_template, pageTitle: pageTitle, link: link, appConfig: AppConfig)
 
 @(ucr: String)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
+    useCustomContentWidth = true,
     title = Title("ileQueryResponse.timeout.title"),
     backButton = Some(BackButton(messages("site.back"), controllers.ileQuery.routes.FindConsignmentController.displayPage))) {
 
-  @pageTitle(text = messages("ileQueryResponse.timeout.heading"), classes = "govuk-heading-xl")
+  @pageTitle(text = messages("ileQueryResponse.timeout.heading"), classes = "govuk-heading-xl govuk-!-width-two-thirds")
 
-  <p class="govuk-body-l">'@{ucr}'</p>
+  <p class="govuk-body govuk-!-margin-bottom-4">@messages("ileQueryResponse.timeout.body", {ucr})</p>
 
-  <p class="govuk-body-l">@messages("ileQueryResponse.timeout.message")</p>
+  <p class="govuk-body govuk-!-margin-bottom-9">@messages("ileQueryResponse.timeout.message")</p>
+
+  <p class="govuk-body govuk-!-margin-bottom-6">
+      @Html(messages("ileQueryResponse.timeout.nch",
+        link(
+            message = Html(messages("ileQueryResponse.timeout.nch.linkText.0")),
+            href = Call("GET", appConfig.nationalClearanceHub),
+            target = "_blank"
+        )
+      ))
+  </p>
 }
 

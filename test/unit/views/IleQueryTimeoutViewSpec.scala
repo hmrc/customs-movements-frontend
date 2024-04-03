@@ -17,6 +17,7 @@
 package views
 
 import base.Injector
+import config.AppConfig
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
 import testdata.CommonTestData.correctUcr
@@ -27,6 +28,7 @@ class IleQueryTimeoutViewSpec extends ViewSpec with Injector {
   private implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
 
   private val page = instanceOf[ile_query_timeout]
+  private val appConfig = instanceOf[AppConfig]
   private val view = page(correctUcr)
 
   "ILE Query Timeout page" should {
@@ -48,12 +50,18 @@ class IleQueryTimeoutViewSpec extends ViewSpec with Injector {
 
     "display queried UCR" in {
 
-      view.getElementsByClass("govuk-body-l").first() must containText(correctUcr)
+      view.getElementsByClass("govuk-body").first() must containMessage("ileQueryResponse.timeout.body", correctUcr)
     }
 
     "display information paragraph" in {
 
-      view.getElementsByClass("govuk-body-l").get(1) must containMessage("ileQueryResponse.timeout.message")
+      view.getElementsByClass("govuk-body").get(1) must containMessage("ileQueryResponse.timeout.message")
+    }
+
+    "display National Clearance Hub paragraph" in {
+      val nchParagraph = view.getElementsByClass("govuk-body").get(2)
+      nchParagraph must containText(messages("ileQueryResponse.timeout.nch", messages("ileQueryResponse.timeout.nch.linkText.0")))
+      nchParagraph.child(0) must haveHref(appConfig.nationalClearanceHub)
     }
   }
 

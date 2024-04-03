@@ -29,6 +29,9 @@ class IleQueryCodeConverter @Inject() (decoder: Decoder) {
   private def htmlString(codeWithMessageKey: CodeWithMessageKey)(implicit messages: Messages): String =
     htmlString(codeWithMessageKey.code, codeWithMessageKey.messageKey)
 
+  private def htmlString(roeCode: ROECode)(implicit messages: Messages): String =
+    htmlString(roeCode.displayCode, roeCode.messageKey)
+
   private def htmlString(code: String, messageKey: String)(implicit messages: Messages): String =
     s"<strong>$code</strong> - ${messages(messageKey)}"
 

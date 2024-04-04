@@ -473,8 +473,11 @@ ileQueryResponse.ucrNotFound.message = {0} does not exist
 ileCode.unknown = Unknown
 
 ileQueryResponse.timeout.title = There is a problem
-ileQueryResponse.timeout.heading = Sorry, there is a problem with the service
-ileQueryResponse.timeout.message = Try again later
+ileQueryResponse.timeout.heading = Sorry, there is a problem with this service
+ileQueryResponse.timeout.body = UCR {0} is not currently returning any results.
+ileQueryResponse.timeout.message = Please try again later.
+ileQueryResponse.timeout.nch = If this problem persists, please use the help options on the {0}.
+ileQueryResponse.timeout.nch.linkText.0 = National Clearance Hub
 
 ducrPartDetails.title = DUCR Part details
 ducrPartDetails.heading = You can use this service if your original declaration was made in CHIEF.

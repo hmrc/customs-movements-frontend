@@ -67,6 +67,7 @@ class AppConfig @Inject() (
   val goodsLocationCodesForDataElement = loadConfig("urls.goodsLocationCodesForDataElement")
   val tariffCdsChiefSupplement = loadConfig("urls.tariffCdsChiefSupplement")
   val guidanceOnDucrAndMucr = loadConfig("urls.guidanceOnDucrAndMucr")
+  val nationalClearanceHub = loadConfig("urls.nationalClearanceHub")
 
   lazy val customsDeclareExportsMovements = servicesConfig.baseUrl("customs-declare-exports-movements")
 

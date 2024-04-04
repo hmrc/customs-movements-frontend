@@ -46,6 +46,7 @@ class AppConfigSpec extends AnyWordSpec with Matchers {
         |urls.goodsLocationCodesForDataElement="http://goodsLocationCodesForDataElement"
         |urls.tariffCdsChiefSupplement="http://tariffCdsChiefSupplement"
         |urls.guidanceOnDucrAndMucr="http://guidanceOnDucrAndMucr"
+        |urls.nationalClearanceHub = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/national-clearance-hub"
         |urls.exportsFeedbackForm="https://forms.gle/33N1X3kJqDpZsc289"
         |
         |mongodb.uri="mongodb://localhost:27017/customs-movements-frontend"
@@ -103,6 +104,7 @@ class AppConfigSpec extends AnyWordSpec with Matchers {
         |urls.goodsLocationCodesForDataElement="http://goodsLocationCodesForDataElement"
         |urls.tariffCdsChiefSupplement="http://tariffCdsChiefSupplement"
         |urls.guidanceOnDucrAndMucr="http://guidanceOnDucrAndMucr"
+        |urls.nationalClearanceHub = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/national-clearance-hub"
         |urls.exportsFeedbackForm="https://forms.gle/33N1X3kJqDpZsc289"
         |
         |mongodb.uri="mongodb://localhost:27017/customs-movements-frontend"
@@ -199,6 +201,10 @@ class AppConfigSpec extends AnyWordSpec with Matchers {
 
     "have tariffCdsChiefSupplement URL" in {
       validConfigService.tariffCdsChiefSupplement must be("http://tariffCdsChiefSupplement")
+    }
+
+    "have nationalClearanceHub URL" in {
+      validConfigService.nationalClearanceHub must be("https://www.gov.uk/government/organisations/hm-revenue-customs/contact/national-clearance-hub")
     }
 
     "have language map with English" in {

@@ -82,7 +82,7 @@ class IleQueryController @Inject() (
           }
 
         case FAILED_DEPENDENCY =>
-          logger.warn(s"ILE Query for Conversation ID: [${query.conversationId}] timed out")
+          logger.warn(s"ILE Query for ${query.ucr}, Conversation ID: [${query.conversationId}] timed out")
           ileQueryRepository.removeByConversationId(query.conversationId).map { _ =>
             Ok(timeoutPage(query.ucr))
           }

@@ -25,6 +25,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.{exit_survey, print_page_button}
 @import views.html.components.gds.{gds_main_template, link, pageTitle, heading, paragraphBody, sectionBreak}
+@import views.components.BackButton
 @import views.helpers.Title
 
 @this(
@@ -50,6 +51,7 @@
 
 @govukLayout(
     title = Title(s"confirmation.title.${confirmation.journeyType}"),
+    backButton = Some(BackButton(messages("site.back.toStartPage"), ChoiceController.displayChoices)),
     showLanguageSwitch = true
 ) {
     @govukPanel(Panel(title = Text(messages(s"confirmation.title.${confirmation.journeyType}"))))
@@ -62,10 +64,7 @@
                         content = Text(messages(s"confirmation.${ucrType.toString.toUpperCase}")), classes = "govuk-!-font-weight-bold"
                     ),
                     TableRow(
-                        content = HtmlContent(link(message = Html(ucrValue),
-                            href = IleQueryController.getConsignmentData(ucrValue),
-                            id = Some("summary-link")
-                        ))
+                        content = HtmlContent(ucrValue)
                     )
                 )
             },
@@ -75,26 +74,22 @@
                         content = Text(messages("confirmation.MUCR")), classes = "govuk-!-font-weight-bold"
                     ),
                     TableRow(
-                        content = HtmlContent(link(message = Html(mucr),
-                            href = IleQueryController.getConsignmentData(mucr)
-                        ))
+                        content = HtmlContent(mucr)
                     )
                 )
             }
         ).flatten
     ))
 
-    @paragraphBody(messages("confirmation.bodyText", gotoTimelineLink))
+    @heading(messages("confirmation.subheading.1"), "govuk-heading-m", "h2")
+    @paragraphBody(messages("confirmation.subheading.1.bodyText"))
 
-    @heading(messages("confirmation.subheading"), "govuk-heading-m", "h2")
+    @heading(messages("confirmation.subheading.2"), "govuk-heading-m", "h2")
+    @paragraphBody(messages("confirmation.subheading.2.bodyText"))
 
-    <ul>
-        <li class="govuk-body">
-            @link(message = Html(messages("confirmation.redirect.choice.link")), href = ChoiceController.displayChoices, id = Some("choice-link"))
-        </li>
-    </ul>
+    <p class="govuk-body"> @gotoTimelineLink </p>
 
-    @printButton()
+    @printButton(20, 0)
 
     @sectionBreak()
 

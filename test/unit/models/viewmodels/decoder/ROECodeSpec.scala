@@ -26,22 +26,14 @@ class ROECodeSpec extends UnitSpec {
 
     "have correct amount of codes" in {
 
-      val expectedCodesAmount = 7
+      val expectedCodesAmount = 6
       ROECode.codes.size mustBe expectedCodesAmount
     }
 
     "have correct list of codes" in {
 
       val expectedCodes =
-        Set(
-          DocumentaryControl,
-          PhysicalExternalPartyControl,
-          NonBlockingDocumentaryControl,
-          NoControlRequired,
-          RiskingNotPerformed,
-          PrelodgePrefix,
-          UnknownRoe()
-        )
+        Set(DocumentaryControl, PhysicalExternalPartyControl, NonBlockingDocumentaryControl, NoControlRequired, RiskingNotPerformed, UnknownRoe())
 
       ROECode.codes mustBe expectedCodes
     }
@@ -53,7 +45,6 @@ class ROECodeSpec extends UnitSpec {
       NonBlockingDocumentaryControl.priority mustBe 3
       NoControlRequired.priority mustBe 6
       RiskingNotPerformed.priority mustBe 4
-      PrelodgePrefix.priority mustBe 5
       UnknownRoe().priority mustBe 100
       NoneRoe.priority mustBe 101
     }
@@ -61,25 +52,27 @@ class ROECodeSpec extends UnitSpec {
     "parse ROE Code" when {
 
       "code is correct" in {
-
         ROECode.codes.map(roe => (roe, roe.code)).map { case (roe, code) =>
           ROECode.ROECodeFormat.reads(JsString(code)) mustBe JsSuccess(roe)
         }
       }
 
-      "code is incorrect" in {
+      "code is correct with prelodged prefix" in {
+        ROECode.codes.map(roe => (roe.withPrefix, prelodgedPrefix + roe.code)).map { case (roe, code) =>
+          ROECode.ROECodeFormat.reads(JsString(code)).get.displayCode mustBe JsSuccess(roe).get.displayCode
+        }
+      }
 
+      "code is incorrect" in {
         ROECode.ROECodeFormat.reads(JsString("incorrect")) mustBe JsSuccess(UnknownRoe("incorrect"))
       }
 
       "type of the code is incorrect" in {
-
         ROECode.ROECodeFormat.reads(JsNumber(1)) mustBe JsSuccess(NoneRoe)
       }
     }
 
     "write ROE to correct JsValue" in {
-
       ROECode.codes.map(roe => (roe, roe.code)).map { case (roe, code) =>
         ROECode.ROECodeFormat.writes(roe) mustBe JsString(code)
       }

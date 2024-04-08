@@ -17,12 +17,13 @@
 package views.summary
 
 import base.Injector
-import controllers.ileQuery.routes.IleQueryController
-import controllers.routes.{ChoiceController, NotificationsController}
+import controllers.routes.ChoiceController
 import forms.UcrType.{Ducr, DucrPart, Mucr}
 import forms.{ConsignmentReferences, UcrType}
 import models.cache._
 import models.confirmation.Confirmation
+import models.requests.JourneyRequest
+import play.api.mvc.AnyContentAsEmpty
 import views.ViewSpec
 import views.html.summary.confirmation_page
 import views.tags.ViewTest
@@ -35,16 +36,21 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
   private val conversationId = "conversationId"
   private val dummyUcr = "dummyUcr"
 
-  private val call = IleQueryController.getConsignmentData(dummyUcr)
-
   private def consignmentRefs(ucrType: UcrType = Ducr) = ConsignmentReferences(ucrType, dummyUcr)
 
   "Confirmation page" when {
 
     List(ArrivalAnswers(), DepartureAnswers(), AssociateUcrAnswers(), DisassociateUcrAnswers(), ShutMucrAnswers()).foreach { answer =>
       s"provided with ${answer.`type`} Journey Type" should {
-        implicit val request = journeyRequest(answer)
+        implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(answer)
         val view = page(Confirmation(answer.`type`, conversationId, Some(consignmentRefs()), None))
+
+        "render back button" in {
+          val backButton = view.getElementById("back-link")
+
+          backButton must containMessage("site.back.toStartPage")
+          backButton must haveHref(ChoiceController.displayChoices)
+        }
 
         "render title" in {
           view.getTitle must containMessage(s"confirmation.title.${answer.`type`}")
@@ -55,24 +61,18 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
           view.getElementsByTag("h1").first() must containMessage(s"confirmation.title.${answer.`type`}")
         }
 
-        "render body text with link to View Requests page" in {
-          val bodyText = view.getElementsByClass("govuk-body").first()
-          bodyText must containMessage("confirmation.bodyText", messages("confirmation.notification.timeline.link"))
-
-          val link = bodyText.getElementsByClass("govuk-link").first()
-          link must haveHref(NotificationsController.listOfNotifications(conversationId))
-        }
-
-        "render sub-heading" in {
+        "render 'What happens next' section" in {
           val subHeading = view.getElementsByClass("govuk-heading-m").first()
-          subHeading must containMessage("confirmation.subheading")
+          subHeading must containMessage("confirmation.subheading.1")
+          val bodyText = view.getElementsByClass("govuk-body").first()
+          bodyText must containMessage("confirmation.subheading.1.bodyText")
         }
 
-        "render link to choice page" in {
-          val link = view.getElementById("choice-link")
-
-          link must containMessage("confirmation.redirect.choice.link")
-          link must haveHref(ChoiceController.displayChoices)
+        "render 'Check progress' section" in {
+          val subHeading = view.getElementsByClass("govuk-heading-m").get(1)
+          subHeading must containMessage("confirmation.subheading.2")
+          val bodyText = view.getElementsByClass("govuk-body").get(1)
+          bodyText must containMessage("confirmation.subheading.2.bodyText")
         }
 
         "render Exit Survey link" in {
@@ -94,7 +94,7 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
       answer <- List(ArrivalAnswers(), DepartureAnswers(), DisassociateUcrAnswers())
     }
       s"provided with ${answer.`type`} Journey Type and $ucrType" should {
-        implicit val request = journeyRequest(answer)
+        implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(answer)
         val view = page(Confirmation(answer.`type`, conversationId, Some(consignmentRefs(ucrType)), None))
 
         "render table with one row" in {
@@ -108,7 +108,6 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
           }
 
           view.getElementsByClass("govuk-table__cell").get(1) must containText(dummyUcr)
-          view.getElementsByClass("govuk-table__cell").get(1).child(0) must haveHref(call)
         }
       }
 
@@ -116,7 +115,7 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
       ucrType <- List(Mucr, Ducr, DucrPart)
       answer <- List(AssociateUcrAnswers())
     } s"provided with ${answer.`type`} Journey Type and $ucrType" should {
-      implicit val request = journeyRequest(answer)
+      implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(answer)
       val view = page(Confirmation(answer.`type`, conversationId, Some(consignmentRefs(ucrType)), Some(dummyUcr)))
 
       "render table with two rows" in {
@@ -130,13 +129,11 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
         }
 
         view.getElementsByClass("govuk-table__cell").get(1) must containText(dummyUcr)
-        view.getElementsByClass("govuk-table__cell").get(1).child(0) must haveHref(call)
       }
 
       "render a second row with MUCR" in {
         view.getElementsByClass("govuk-table__cell").get(2) must containMessage("confirmation.MUCR")
         view.getElementsByClass("govuk-table__cell").get(3) must containText(dummyUcr)
-        view.getElementsByClass("govuk-table__cell").get(3).child(0) must haveHref(call)
       }
     }
   }
@@ -145,7 +142,7 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
     ucrType <- List(Mucr)
     answer <- List(ShutMucrAnswers())
   } s"provided with ${answer.`type`} Journey Type" should {
-    implicit val request = journeyRequest(answer)
+    implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(answer)
     val view = page(Confirmation(answer.`type`, conversationId, Some(consignmentRefs(ucrType)), None))
 
     "render table with one row" in {
@@ -155,7 +152,6 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
     "render a row with MUCR based on input" in {
       view.getElementsByClass("govuk-table__cell").first() must containMessage("confirmation.MUCR")
       view.getElementsByClass("govuk-table__cell").get(1) must containText(dummyUcr)
-      view.getElementsByClass("govuk-table__cell").get(1).child(0) must haveHref(call)
     }
   }
 }

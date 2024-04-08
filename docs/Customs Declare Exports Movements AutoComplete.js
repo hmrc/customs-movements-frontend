@@ -57,25 +57,23 @@ function currentPageIs(path) {
 function completePage() {
     if(currentPageIs("/customs-movements/choice")){
         document.getElementById("choice").checked = true
-        document.getElementsByClassName('govuk-button')[0].click()
+    }
+        if(currentPageIs("/customs-movements/consignment-query")){
+        document.getElementById("ucr").value = "GB/123456789100-AB123"
     }
     if(currentPageIs("/customs-movements/ducr-part-created-chief")){
         document.getElementById("choice").checked = true
-        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/ducr-part-details")){
         document.getElementById("ducr").value = "9GB123999746000-DUCR12345"
         document.getElementById("ducrPartId").value = "123"
-        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/specific-date-and-time")){
         document.getElementById("choice").checked = true
-        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/consignment-references")){
         document.getElementById("reference").checked = true
         document.getElementById('ducrValue').value = '8GB12345' + Math.floor(Math.random() * 8999) + 100 + '-101SHIP1';
-        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/movement-details")){
         let title = document.title.toLowerCase();
@@ -87,6 +85,7 @@ function completePage() {
             document.getElementById('dateOfDeparture_year').value = validDate.getFullYear();
             document.getElementById('timeOfDeparture_hour').value = '10';
             document.getElementById('timeOfDeparture_minute').value = '00';
+            document.getElementById('timeOfDeparture_ampm').options[2].setAttribute("selected", "selected")
         }
         if (title.indexOf('arrival') != -1) {
             document.getElementById('dateOfArrival_day').value = validDate.getDate();
@@ -94,55 +93,34 @@ function completePage() {
             document.getElementById('dateOfArrival_year').value = validDate.getFullYear();
             document.getElementById('timeOfArrival_hour').value = '10';
             document.getElementById('timeOfArrival_minute').value = '00';
+            document.getElementById('timeOfArrival_ampm').options[2].setAttribute("selected", "selected")
         }
-        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/location")){
         document.getElementById('code').value = 'GBAUEMAEMAEMA';
-        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/transport")){
         document.getElementById("modeOfTransport").checked = true;
         document.getElementById('transportId').value = 'TransportReference';
         selectFromAutoPredict(document.getElementById('nationality-container'), "GB");
-        document.getElementsByClassName('govuk-button')[0].click()
     }
-    if(currentPageIs("/customs-movements/summary")){}
     if(currentPageIs("/customs-movements/mucr-options")){
         document.getElementById("createOrAdd").checked = true;
         document.getElementById("newMucr").value = "GB/1234-123ABC456DEFIIIII"
-        document.getElementsByClassName('govuk-button')[0].click()
-    }
-    if(currentPageIs("/customs-movements/associate-ucr-summary")){}
-    if(currentPageIs("/customs-movements/associate-ucr-confirmation")){
-        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/associate-ucr")){
         document.getElementById("kind").checked = true;
         const now = new Date()
         document.getElementById("ducr").value = `5GB123456789000-${now.valueOf()}IIIII`
-        document.getElementsByClassName('govuk-button')[0].click()
-    }
-    if(currentPageIs("/customs-movements/disassociate-ucr-summary")){}
-    if(currentPageIs("/customs-movements/disassociate-ucr-confirmation")){
-        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-movements/disassociate-ucr")){
         document.getElementById("kind").checked = true;
         const now = new Date()
         document.getElementById("ducr").value = `5GB123456789000-${now.valueOf()}IIIII`
-        document.getElementsByClassName('govuk-button')[0].click()
-    }
-    if(currentPageIs("customs-movements/shut-mucr-summary")){}
-    if(currentPageIs("customs-movements/shut-mucr-confirmation")){
-        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("customs-movements/shut-mucr")){
         const now = new Date()
         document.getElementById("mucr").value = `GB/ABCDE1234-${now.valueOf()}IIIII`
-        document.getElementsByClassName('govuk-button')[0].click()
     }
-    if(currentPageIs("customs-movements/movement-confirmation")){
-        document.getElementsByClassName('govuk-button')[0].click()
-    }
+    document.getElementsByClassName('govuk-button')[0].click()
 }

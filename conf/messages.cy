@@ -368,6 +368,9 @@ submissions.mucrdisassociation = Datgysylltu MUCR
 notifications.title = Manylion yr hysbysiad
 notifications.mucr = MUCR: {0}
 notifications.ducr = DUCR: {0}
+notifications.actions.title = Camau’r datganiad
+notifications.actions.consignmentInformation.title = Bwrw golwg dros wybodaeth am y llwyth
+notifications.actions.newMovementRequest.title = Gwneud cais am symudiad newydd
 
 notifications.elem.title.Arrival = Mae’r cais i nodi bod nwyddau’n cyrraedd wedi dod i law
 notifications.elem.title.Departure = Mae’r cais i nodi bod nwyddau’n ymadael wedi dod i law

@@ -42,18 +42,27 @@ object ROECode {
   private[decoder] val prelodgedPrefix = "H"
 
   lazy val codes: Set[ROECode] =
-    Set(DocumentaryControl, PhysicalExternalPartyControl, NonBlockingDocumentaryControl, NoControlRequired, RiskingNotPerformed, UnknownRoe())
+    Set(
+      DocumentaryControl,
+      PhysicalExternalPartyControl,
+      NonBlockingDocumentaryControl,
+      NoControlRequired,
+      RiskingNotPerformed,
+      PrelodgePrefix,
+      UnknownRoe()
+    )
 
   case object DocumentaryControl extends ROECode(code = "1", messageKey = "decoder.roe.DocumentaryControl", priority = 2)
   case object PhysicalExternalPartyControl extends ROECode(code = "2", messageKey = "decoder.roe.PhysicalExternalPartyControl", priority = 1)
   case object NonBlockingDocumentaryControl extends ROECode(code = "3", messageKey = "decoder.roe.NonBlockingDocumentaryControl", priority = 3)
   case object NoControlRequired extends ROECode(code = "6", messageKey = "decoder.roe.NoControlRequired", priority = 6)
   case object RiskingNotPerformed extends ROECode(code = "0", messageKey = "decoder.roe.RiskingNotPerformed", priority = 4)
+  case object PrelodgePrefix extends ROECode(code = "H", messageKey = "decoder.roe.PrelodgePrefix", priority = 5)
   case class UnknownRoe(override val code: String = "") extends ROECode(code = code, messageKey = "ileCode.unknown", priority = 100)
   case object NoneRoe extends ROECode(code = "", messageKey = "", priority = 101)
 
   private def parseCode(code: String): ROECode = {
-    val prefixed = code.startsWith(prelodgedPrefix)
+    val prefixed = code.length == 2
     val baseCode = code.takeRight(1)
 
     codes.find(_.code == baseCode) match {

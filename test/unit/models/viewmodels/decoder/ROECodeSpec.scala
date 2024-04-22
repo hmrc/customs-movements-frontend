@@ -26,14 +26,22 @@ class ROECodeSpec extends UnitSpec {
 
     "have correct amount of codes" in {
 
-      val expectedCodesAmount = 6
+      val expectedCodesAmount = 7
       ROECode.codes.size mustBe expectedCodesAmount
     }
 
     "have correct list of codes" in {
 
       val expectedCodes =
-        Set(DocumentaryControl, PhysicalExternalPartyControl, NonBlockingDocumentaryControl, NoControlRequired, RiskingNotPerformed, UnknownRoe())
+        Set(
+          DocumentaryControl,
+          PhysicalExternalPartyControl,
+          NonBlockingDocumentaryControl,
+          NoControlRequired,
+          RiskingNotPerformed,
+          PrelodgePrefix,
+          UnknownRoe()
+        )
 
       ROECode.codes mustBe expectedCodes
     }
@@ -45,6 +53,7 @@ class ROECodeSpec extends UnitSpec {
       NonBlockingDocumentaryControl.priority mustBe 3
       NoControlRequired.priority mustBe 6
       RiskingNotPerformed.priority mustBe 4
+      PrelodgePrefix.priority mustBe 5
       UnknownRoe().priority mustBe 100
       NoneRoe.priority mustBe 101
     }

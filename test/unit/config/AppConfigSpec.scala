@@ -47,7 +47,6 @@ class AppConfigSpec extends AnyWordSpec with Matchers {
         |urls.tariffCdsChiefSupplement="http://tariffCdsChiefSupplement"
         |urls.guidanceOnDucrAndMucr="http://guidanceOnDucrAndMucr"
         |urls.nationalClearanceHub = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/national-clearance-hub"
-        |urls.exportsFeedbackForm="https://forms.gle/33N1X3kJqDpZsc289"
         |
         |mongodb.uri="mongodb://localhost:27017/customs-movements-frontend"
         |
@@ -105,7 +104,6 @@ class AppConfigSpec extends AnyWordSpec with Matchers {
         |urls.tariffCdsChiefSupplement="http://tariffCdsChiefSupplement"
         |urls.guidanceOnDucrAndMucr="http://guidanceOnDucrAndMucr"
         |urls.nationalClearanceHub = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/national-clearance-hub"
-        |urls.exportsFeedbackForm="https://forms.gle/33N1X3kJqDpZsc289"
         |
         |mongodb.uri="mongodb://localhost:27017/customs-movements-frontend"
         |
@@ -253,7 +251,7 @@ class AppConfigSpec extends AnyWordSpec with Matchers {
     }
 
     "have feedback link" in {
-      validConfigService.giveFeedbackLink must be("https://forms.gle/33N1X3kJqDpZsc289")
+      validConfigService.giveFeedbackLink must be("/contact-frontend-url?service=Movements-Service-ID")
     }
 
     "empty selfBaseUrl when the key is missing" in {

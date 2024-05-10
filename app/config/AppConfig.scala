@@ -40,8 +40,6 @@ class AppConfig @Inject() (
     runModeConfiguration.getOptional[String](key)
 
   lazy val appName: String = namedAppName
-  lazy val sessionCacheDomain: String =
-    servicesConfig.getConfString("cachable.session-cache.domain", throw new Exception(s"Could not find config 'cachable.session-cache.domain'"))
 
   val maybeTdrHashSalt = loadOptionalConfig("secret.tdrHashSalt")
 
@@ -72,8 +70,14 @@ class AppConfig @Inject() (
   lazy val customsDeclareExportsMovements = servicesConfig.baseUrl("customs-declare-exports-movements")
 
   lazy val selfBaseUrl: Option[String] = loadOptionalConfig("play.frontend.host")
-  val giveFeedbackLink: String =
-    loadConfig("urls.exportsFeedbackForm")
+
+  val giveFeedbackLink = {
+    val contactFrontendUrl = loadConfig("microservice.services.contact-frontend.url")
+    val contactFrontendServiceId = loadConfig("microservice.services.contact-frontend.serviceId").trim
+
+    if (contactFrontendServiceId.isEmpty) contactFrontendUrl
+    else s"$contactFrontendUrl?service=$contactFrontendServiceId"
+  }
 
   lazy val movementsSubmissionUri = servicesConfig.getConfString(
     "customs-declare-exports-movements.submit-movements",

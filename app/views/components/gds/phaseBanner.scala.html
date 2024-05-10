@@ -14,21 +14,27 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import config.AppConfig
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(govukPhaseBanner: GovukPhaseBanner, appConfig: AppConfig)
 
-@(phase: String)(implicit messages: Messages)
+@(phase: String)(implicit request: Request[_], messages: Messages)
 
-@betaFeedbackUrl = @{s"${appConfig.giveFeedbackLink}"}
-@link = {<a href="@betaFeedbackUrl">@messages("feedback.link")</a>}
+@feedbackBanner = @{
+  val betaFeedbackUrl =
+    if (!appConfig.giveFeedbackLink.contains("?service=")) appConfig.giveFeedbackLink
+    else {
+      val backUrl = appConfig.selfBaseUrl.map(url => s"&backUrl=$url${request.uri}").getOrElse("")
+      s"${appConfig.giveFeedbackLink}$backUrl"
+    }
 
-@feedbackBanner = {
-  @Html(messages("feedback", link))
+  val link = s"""<a class="govuk-link" href="$betaFeedbackUrl">${messages("feedback.link")}</a>"""
+  Html(messages("feedback", link))
 }
 
 @govukPhaseBanner(PhaseBanner(
-    tag = Some(Tag(content = Text(phase))),
-    content = HtmlContent(feedbackBanner)
+  tag = Some(Tag(content = Text(phase))),
+  content = HtmlContent(feedbackBanner),
+  classes ="govuk-!-display-none-print"
 ))

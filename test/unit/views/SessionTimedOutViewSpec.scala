@@ -32,7 +32,6 @@ class SessionTimedOutViewSpec extends ViewSpec with Injector {
   "SessionTimedOut View" should {
 
     "have proper messages for labels" in {
-
       val messages = instanceOf[MessagesApi].preferred(request)
 
       messages must haveTranslationFor("sessionTimout.title")
@@ -43,22 +42,17 @@ class SessionTimedOutViewSpec extends ViewSpec with Injector {
     val view = createView()
 
     "display same page header" in {
-
       view.getElementsByTag("h1").text() mustBe messages("sessionTimout.title")
     }
 
     "display sign-in button" in {
-
       val button = view.getElementsByClass("govuk-button").first()
-
       button.text() mustBe messages("sessionTimout.signin.button")
       button.attr("href") mustBe controllers.routes.ChoiceController.displayChoices.url
     }
 
     "display back to gov.uk link" in {
-
-      val link = view.getElementsByClass("govuk-link").get(1)
-
+      val link = view.getElementsByClass("govuk-link").get(2)
       link.text() mustBe messages("site.link.backToGovUk")
       link.attr("href") mustBe "https://www.gov.uk/"
     }

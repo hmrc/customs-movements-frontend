@@ -72,23 +72,22 @@ class DepartureSummaryViewSpec extends ViewSpec with Injector {
     }
 
     "render 'Consignment details' section in summary list" in {
-      val answer_consignment_type_link_index = answer_consignment_type + 2
-      val answer_consignment_reference_link_index = answer_consignment_reference + 2
-
       val view = page(answers)
       view.getElementsByClass("govuk-heading-m").get(section_consignment_details) must containMessage("summary.consignmentDetails")
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_consignment_type) must containMessage("summary.referenceType")
       view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_type) must containMessage("consignment.references.ducr")
 
-      val changeType = view.getElementsByClass("govuk-link").get(answer_consignment_type_link_index)
+      val links = view.getElementsByClass("govuk-link")
+
+      val changeType = links.get(answer_consignment_type + 3)
       changeType must containMessage("site.change")
       changeType must haveHref(ConsignmentReferencesController.displayPage)
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_consignment_reference) must containMessage("summary.referenceValue")
       view.getElementsByClass("govuk-summary-list__value").get(answer_consignment_reference).text() mustBe "ref-value"
 
-      val changeRef = view.getElementsByClass("govuk-link").get(answer_consignment_reference_link_index)
+      val changeRef = links.get(answer_consignment_reference + 3)
       changeRef must containMessage("site.change")
       changeRef must haveHref(ConsignmentReferencesController.displayPage)
     }
@@ -115,60 +114,53 @@ class DepartureSummaryViewSpec extends ViewSpec with Injector {
     }
 
     "render 'Departure date and time' section in summary list" in {
-      val answer_date_link_index = answer_date + 2
-      val answer_time_link_index = answer_time + 2
-
       val view = page(answers)
       view.getElementsByClass("govuk-heading-m").get(section_depart_datetime) must containMessage("departureDetails.title")
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_date) must containMessage("summary.departure.date")
       view.getElementsByClass("govuk-summary-list__value").get(answer_date).text mustBe ViewDates.formatDate(date.date)
 
-      val changeDate = view.getElementsByClass("govuk-link").get(answer_date_link_index)
+      val changeDate = view.getElementsByClass("govuk-link").get(answer_date + 3)
       changeDate must containMessage("site.change")
       changeDate must haveHref(MovementDetailsController.displayPage)
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_time) must containMessage("summary.departure.time")
       view.getElementsByClass("govuk-summary-list__value").get(answer_time).text mustBe ViewDates.formatTime(time.time)
 
-      val changeTime = view.getElementsByClass("govuk-link").get(answer_time_link_index)
+      val changeTime = view.getElementsByClass("govuk-link").get(answer_time + 3)
       changeTime must containMessage("site.change")
       changeTime must haveHref(MovementDetailsController.displayPage)
     }
 
     "render 'Location' section in summary list" in {
-      val answer_location_link_index = answer_location + 2
-
       val view = page(answers)
       view.getElementsByClass("govuk-heading-m").get(section_location) must containMessage("location.title")
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_location) must containMessage("summary.goodsLocation")
       view.getElementsByClass("govuk-summary-list__value").get(answer_location).text mustBe "location-ref"
 
-      val changeDate = view.getElementsByClass("govuk-link").get(answer_location_link_index)
+      val changeDate = view.getElementsByClass("govuk-link").get(answer_location + 3)
       changeDate must containMessage("site.change")
       changeDate must haveHref(LocationController.displayPage)
     }
 
     "render 'Transport' section in summary list" in {
-      val answer_transport_type_link_index = answer_transport_type + 2
-      val answer_transport_id_link_index = answer_transport_id + 1
-      val answer_transport_nationality_link_index = answer_transport_nationality + 1
-
       val view = page(answers)
       view.getElementsByClass("govuk-heading-m").get(section_transport) must containMessage("transport.title")
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_transport_type) must containMessage("summary.modeOfTransport")
       view.getElementsByClass("govuk-summary-list__value").get(answer_transport_type) must containMessage("transport.modeOfTransport.1")
 
-      val changeMode = view.getElementsByClass("govuk-link").get(answer_transport_type_link_index)
+      val links = view.getElementsByClass("govuk-link")
+
+      val changeMode = links.get(answer_transport_type + 3)
       changeMode must containMessage("site.change")
       changeMode must haveHref(TransportController.displayPage)
 
       view.getElementsByClass("govuk-summary-list__key").get(answer_transport_id) must containMessage("summary.transportId")
       view.getElementsByClass("govuk-summary-list__value").get(answer_transport_id).text mustBe "transport-id"
 
-      val changeId = view.getElementsByClass("govuk-link").get(answer_transport_id_link_index)
+      val changeId = links.get(answer_transport_id + 2)
       changeId must containMessage("site.change")
       changeId must haveHref(TransportController.displayPage)
 
@@ -178,7 +170,7 @@ class DepartureSummaryViewSpec extends ViewSpec with Injector {
         .get(answer_transport_nationality)
         .text mustBe "United Kingdom, Great Britain, Northern Ireland - GB"
 
-      val changeNationality = view.getElementsByClass("govuk-link").get(answer_transport_nationality_link_index)
+      val changeNationality = links.get(answer_transport_nationality + 2)
       changeNationality must containMessage("site.change")
       changeNationality must haveHref(TransportController.displayPage)
     }

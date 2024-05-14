@@ -57,7 +57,7 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector {
 
     "display 'Change' link when on NON-'Find a consignment' journey" in {
       val view = page(disassociateUcr)
-      val changeButton = view.getElementsByClass("govuk-link").get(2)
+      val changeButton = view.getElementsByClass("govuk-link").get(3)
       changeButton must containMessage("site.change")
       changeButton must haveAttribute("href", controllers.consolidations.routes.DisassociateUcrController.displayPage.url)
     }
@@ -65,7 +65,7 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector {
     "not display 'Change' link when on 'Find a consignment' journey" in {
       implicit val request = journeyRequest(DisassociateUcrAnswers(), None, true)
       val links = page(disassociateUcr).getElementsByClass("govuk-link")
-      links.size() mustBe 3
+      links.size() mustBe 4
     }
 
     "have a 'Back' button linking to the /choice-on-consignment page" when {

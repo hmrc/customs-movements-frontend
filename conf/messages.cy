@@ -344,7 +344,8 @@ confirmation.D = DUCR
 confirmation.DP = DUCR
 
 submissions.title = Ceisiadau
-submissions.summary = Mae’r dudalen hon yn dangos yr holl geisiadau sydd wedi’u cyflwyno ynghyd ag unrhyw hysbysiadau sy’n berthnasol iddynt.
+submissions.summary.1 = Mae’r dudalen hon yn dangos yr holl geisiadau sydd wedi’u cyflwyno, a’r hysbysiadau cysylltiedig.
+submissions.summary.2 = Bydd ceisiadau a hysbysiadau yn cael eu cadw am 122 diwrnod.
 submissions.submissionType = Math
 submissions.submissionType.D = DUCR
 submissions.submissionType.M = MUCR

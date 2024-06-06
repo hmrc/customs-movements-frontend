@@ -8,7 +8,7 @@ val appName = "customs-movements-frontend"
 PlayKeys.devSettings := List("play.server.http.port" -> "6796")
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin, SbtWeb)
+  .enablePlugins(PlayScala, SbtDistributablesPlugin, SbtWeb)
   .settings(commonSettings)
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
@@ -23,7 +23,6 @@ lazy val microservice = Project(appName, file("."))
       (Test / baseDirectory).value / "test/util"
     ),
     addTestReportOption(IntegrationTest, "int-test-reports"),
-    IntegrationTest / testGrouping := oneForkedJvmPerTest((IntegrationTest / definedTests).value),
     IntegrationTest / parallelExecution := false
   )
   .settings(jsSettings)

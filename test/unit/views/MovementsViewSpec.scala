@@ -67,7 +67,8 @@ class MovementsViewSpec extends ViewSpec with Injector {
     }
 
     "contain information paragraph" in {
-      emptyPage.getElementsByClass("govuk-body-l").first() must containMessage("submissions.summary")
+      emptyPage.getElementsByClass("govuk-body-l").first() must containMessage("submissions.summary.1")
+      emptyPage.getElementsByClass("govuk-body-l").first() must containMessage("submissions.summary.2")
     }
 
     "contain correct table headers" in {

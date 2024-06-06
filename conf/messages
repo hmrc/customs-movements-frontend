@@ -347,7 +347,8 @@ confirmation.D = DUCR
 confirmation.DP = DUCR
 
 submissions.title = Requests
-submissions.summary = This page displays all submitted requests and any notifications related to them.
+submissions.summary.1 = This page shows all submitted requests and related notifications.
+submissions.summary.2 = Requests and notifications are saved for 122 days.
 submissions.submissionType = Type
 submissions.submissionType.D = DUCR
 submissions.submissionType.M = MUCR

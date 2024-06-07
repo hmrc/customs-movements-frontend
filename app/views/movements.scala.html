@@ -31,9 +31,9 @@
   table: GovukTable
 )
 
-@(submissions: Seq[(Submission, Seq[Notification])])(implicit request: Request[_], messages: Messages)
+@(submissions: Seq[Submission])(implicit request: Request[_], messages: Messages)
 
-@ucrCellContent(submission: Submission, notifications: Seq[Notification]) = {
+@ucrCellContent(submission: Submission) = {
     @link(
       message = elements_in_separate_lines(submission.ucrBlocks.map(_.fullUcr)),
       textHidden = Some(messages("submissions.hidden.text", submission.ucrBlocks.map(_.fullUcr).mkString(", "))),
@@ -81,10 +81,10 @@
           )
         )),
         firstCellIsHeader = false,
-        rows = submissions.map { case (submission, notifications) =>
+        rows = submissions.map { submission =>
           Seq(
             TableRow(
-              content = HtmlContent(ucrCellContent(submission, notifications)),
+              content = HtmlContent(ucrCellContent(submission)),
               classes = ucrClass
             ),
             TableRow(

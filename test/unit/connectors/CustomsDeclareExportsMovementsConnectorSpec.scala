@@ -196,42 +196,6 @@ class CustomsDeclareExportsMovementsConnectorSpec extends ConnectorSpec {
     }
   }
 
-  "fetch user Notifications" should {
-    "send GET request to the backend" in {
-      val expectedNotification = exampleNotificationFrontendModel()
-      val notificationsJson =
-        s"""[
-           |   {
-           |     "timestampReceived":${Json.toJson(expectedNotification.timestampReceived)},
-           |     "conversationId":"$conversationId",
-           |     "responseType":"${ControlResponse.value}",
-           |     "entries":[
-           |       {
-           |         "ucrBlock":{
-           |           "ucr":"$correctUcr",
-           |           "ucrType":"D"
-           |         },
-           |         "goodsItem":[]
-           |       }
-           |     ],
-           |     "errorCodes":[],
-           |     "messageCode":""
-           |   }
-           |]""".stripMargin
-
-      stubFor(
-        get(s"/notifications?eori=eori")
-          .willReturn(aResponse().withStatus(OK).withBody(notificationsJson))
-      )
-
-      val response = connector.fetchAllNotificationsForUser("eori").futureValue
-
-      verify(getRequestedFor(urlEqualTo(s"/notifications?eori=eori")))
-
-      response mustBe Seq(expectedNotification)
-    }
-  }
-
   "fetch Notifications" should {
     "send GET request to the backend" in {
       val expectedNotification = exampleNotificationFrontendModel()

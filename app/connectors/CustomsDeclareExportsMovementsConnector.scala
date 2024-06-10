@@ -80,10 +80,6 @@ class CustomsDeclareExportsMovementsConnector @Inject() (appConfig: AppConfig, h
     httpClient
       .GET[Seq[Notification]](s"${appConfig.customsDeclareExportsMovements}$Notifications/$conversationId", eoriQueryParam(eori))
 
-  def fetchAllNotificationsForUser(eori: String)(implicit hc: HeaderCarrier): Future[Seq[Notification]] =
-    httpClient
-      .GET[Seq[Notification]](s"${appConfig.customsDeclareExportsMovements}$Notifications", eoriQueryParam(eori))
-
   def fetchQueryNotifications(conversationId: String, eori: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     httpClient
       .GET[HttpResponse](s"${appConfig.customsDeclareExportsMovements}$IleQuery/$conversationId", eoriQueryParam(eori))

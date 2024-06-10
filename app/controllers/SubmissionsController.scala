@@ -18,7 +18,6 @@ package controllers
 
 import connectors.CustomsDeclareExportsMovementsConnector
 import controllers.actions.AuthAction
-import models.notifications.Notification
 import models.submissions.Submission
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,23 +39,9 @@ class SubmissionsController @Inject() (
   val displayPage: Action[AnyContent] = authenticate.async { implicit request =>
     for {
       submissions <- connector.fetchAllSubmissions(request.user.eori)
-      notifications <- connector.fetchAllNotificationsForUser(request.user.eori)
-      submissionsWithNotifications = matchNotificationsAgainstSubmissions(submissions, notifications)
-    } yield Ok(movementsPage(sortWithOldestLast(submissionsWithNotifications)))
+    } yield Ok(movementsPage(sortWithOldestLast(submissions)))
   }
 
-  private def matchNotificationsAgainstSubmissions(
-    submissions: Seq[Submission],
-    notifications: Seq[Notification]
-  ): Seq[(Submission, Seq[Notification])] = {
-    val groupedNotifications: Map[String, Seq[Notification]] = notifications.groupBy(_.conversationId).withDefaultValue(Seq.empty)
-
-    submissions.map { submission =>
-      (submission, groupedNotifications(submission.conversationId))
-    }
-  }
-
-  private def sortWithOldestLast(submissionsWithNotifications: Seq[(Submission, Seq[Notification])]): Seq[(Submission, Seq[Notification])] =
-    submissionsWithNotifications.sortBy(_._1.requestTimestamp)(Ordering[Instant].reverse)
-
+  private def sortWithOldestLast(submissionsWithNotifications: Seq[Submission]): Seq[Submission] =
+    submissionsWithNotifications.sortBy(_.requestTimestamp)(Ordering[Instant].reverse)
 }

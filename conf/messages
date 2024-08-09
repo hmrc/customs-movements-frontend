@@ -89,6 +89,10 @@ global.error.title = There is a problem - Declare customs exports for CDS Export
 global.error.heading = There is a problem with a service.
 global.error.message = Please try again later.
 
+global.error.pageNotFound.title = Page not found
+global.error.pageNotFound.heading = This page can’t be found
+global.error.pageNotFound.message = Please check that you have entered the correct web address.
+
 movement.sectionHeading.depart = Depart consignment {0}
 movement.sectionHeading.arrive = Arrive consignment {0}
 

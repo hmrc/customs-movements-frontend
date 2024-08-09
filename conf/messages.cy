@@ -86,6 +86,10 @@ global.error.title = Mae yna broblem – Gwneud datganiad allforion tollau ar gy
 global.error.heading = Mae problem gyda’r gwasanaeth hwn.
 global.error.message = Rhowch gynnig arall arni yn nes ymlaen.
 
+global.error.pageNotFound.title = Heb ddod o hyd i’r dudalen
+global.error.pageNotFound.heading = Ni ellir dod o hyd i’r dudalen hon
+global.error.pageNotFound.message = Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywir.
+
 movement.sectionHeading.depart = Ymadael llwyth {0}
 movement.sectionHeading.arrive = Cyrraedd llwyth {0}
 

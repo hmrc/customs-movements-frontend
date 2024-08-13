@@ -16,7 +16,10 @@ lazy val microservice = Project(appName, file("."))
 lazy val it = (project in file("it"))
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test")
-  .settings(publish / skip := true)
+  .settings(
+    publish / skip := true,
+    Test / testOptions += Tests.Argument("-o", "-h", "it/target/html-report")
+  )
 
 lazy val commonSettings = List(
   scalacOptions ++= scalacFlags,
@@ -55,7 +58,7 @@ lazy val scoverageSettings = List(
     "test\\..*",
     ".*(BuildInfo|Routes|Options|TestingUtilitiesController).*"
   ).mkString(";"),
-  coverageMinimumStmtTotal := 84,
+  coverageMinimumStmtTotal := 90,
   coverageFailOnMinimum := true,
   coverageHighlighting := true,
   Test / parallelExecution := false

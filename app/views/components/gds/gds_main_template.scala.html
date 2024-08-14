@@ -68,6 +68,8 @@
                 countdown = Some(timeoutDialogConfig.countdown.toSeconds.toInt)
             ))
         )
+    } else {
+        @hmrcHead()
     }
 
     <link rel="shortcut icon" href='@routes.Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />
@@ -112,7 +114,7 @@
 
 @beforeContentBlock = {
     @if(betaBannerConfig.isBetaBannerEnabled) {
-      @phaseBanner("beta")
+      @phaseBanner("BETA")
     }
     @if(showLanguageSwitch && appConfig.languages.contains("cy")) {
         @hmrcLanguageSelectHelper()

@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@
     govukBackLink: GovukBackLink,
     siteHeader: siteHeader,
     hmrcHead: HmrcHead,
+    hmrcScripts: HmrcScripts,
     hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     phaseBanner: phaseBanner,
@@ -58,22 +59,22 @@
 @useTimeoutDialog = @{ request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]]}
 
 @head = {
-  @if(useTimeoutDialog) {
-      @hmrcHead(
-          headBlock = Some(hmrcTimeoutDialogHelper(
-              signOutUrl = controllers.routes.SignOutController.signOut(models.SignOutReason.SessionTimeout).url,
-              keepAliveUrl = Some(request.uri),
-              timeout = Some(timeoutDialogConfig.timeout.toSeconds.toInt),
-              countdown = Some(timeoutDialogConfig.countdown.toSeconds.toInt)
-          ))
-      )
-  }
+    @if(useTimeoutDialog) {
+        @hmrcHead(
+            headBlock = Some(hmrcTimeoutDialogHelper(
+                signOutUrl = controllers.routes.SignOutController.signOut(models.SignOutReason.SessionTimeout).url,
+                keepAliveUrl = Some(request.uri),
+                timeout = Some(timeoutDialogConfig.timeout.toSeconds.toInt),
+                countdown = Some(timeoutDialogConfig.countdown.toSeconds.toInt)
+            ))
+        )
+    } else {
+        @hmrcHead()
+    }
 
     <link rel="shortcut icon" href='@routes.Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />
-    <link rel="shortcut icon" href='@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")' rel="stylesheet" type="text/css" />
     <meta name="format-detection" content="telephone=no" />
-        <!--[if lte IE 8]><link href='@controllers.routes.Assets.versioned("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
-        <!--[if gt IE 8]><!--><link href='@routes.Assets.versioned("stylesheets/customsdecexfrontend-app.css")' media="screen" rel="stylesheet" type="text/css" /><!--<![endif]-->
+    <link href='@routes.Assets.versioned("stylesheets/movements-app.css")' media="screen" rel="stylesheet" type="text/css" />
     <style>
       @@media print {
         .hmrc-sign-out-nav, .govuk-phase-banner, .govuk-back-link, .hmrc-report-technical-issue, .govuk-footer, .hmrc-language-select__list-item a {
@@ -111,18 +112,9 @@
     </style>
 }
 
-@scripts = {
-  <script @CSPNonce.attr src='@routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
-  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/vendor/jquery-ui.min.css")' type="text/css">
-
-  <script @CSPNonce.attr src='@routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
-  <script @CSPNonce.attr>window.HMRCFrontend.initAll();</script>
-  <script @CSPNonce.attr>window.GOVUKFrontend.initAll();</script>
-}
-
 @beforeContentBlock = {
     @if(betaBannerConfig.isBetaBannerEnabled) {
-      @phaseBanner("beta")
+      @phaseBanner("BETA")
     }
     @if(showLanguageSwitch && appConfig.languages.contains("cy")) {
         @hmrcLanguageSelectHelper()
@@ -153,7 +145,7 @@
     headBlock = Some(head),
     beforeContentBlock = Some(beforeContentBlock),
     bodyEndBlock = None,
-    scriptsBlock = Some(scripts),
+    scriptsBlock = Some(hmrcScripts()),
     headerBlock = Some(siteHeader()),
     footerBlock = Some(hmrcFooter())
   )(content)
@@ -163,7 +155,7 @@
     headBlock = Some(head),
     beforeContentBlock = Some(beforeContentBlock),
     bodyEndBlock = None,
-    scriptsBlock = Some(scripts),
+    scriptsBlock = Some(hmrcScripts()),
     headerBlock = Some(siteHeader()),
     footerBlock = Some(hmrcFooter())
   )(content)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,9 +89,7 @@ class IleQueryController @Inject() (
 
         case _ =>
           logger.warn(s"Movements backend returned status: ${response.status}")
-          ileQueryRepository.removeByConversationId(query.conversationId).map { _ =>
-            InternalServerError(errorHandler.standardErrorTemplate())
-          }
+          ileQueryRepository.removeByConversationId(query.conversationId).map(_ => errorHandler.internalServerError)
       }
     }
 
@@ -121,10 +119,10 @@ class IleQueryController @Inject() (
       case Some(response: UcrNotFoundResponseExchangeData) =>
         response.ucrBlock match {
           case Some(UcrBlock(ucr, _, _)) => Future.successful(Ok(consignmentNotFound(ucr)))
-          case _                         => Future.successful(InternalServerError(errorHandler.standardErrorTemplate()))
+          case _                         => Future.successful(errorHandler.internalServerError)
         }
 
-      case _ => Future.successful(InternalServerError(errorHandler.standardErrorTemplate()))
+      case _ => Future.successful(errorHandler.internalServerError)
     }
 
   private def sendIleQuery(ucr: String)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =

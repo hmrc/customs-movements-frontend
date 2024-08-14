@@ -20,24 +20,18 @@
 @this(
     govukLayout: gds_main_template,
     pageTitle: pageTitle,
-
     linkButton: linkButton
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@govukLink = {
-    <p class="govuk-body">
-        <a class="govuk-link govuk-link--no-visited-state" href="https://www.gov.uk/">@messages("site.link.backToGovUk")</a>
-    </p>
-}
-
-@govukLayout(
-    title = Title("sessionTimout.title")) {
+@govukLayout(title = Title("sessionTimout.title")) {
 
     @pageTitle(messages("sessionTimout.title"))
 
     @linkButton("sessionTimout.signin.button", controllers.routes.ChoiceController.displayChoices)
 
-    @govukLink
+    <p class="govuk-body">
+        <a class="govuk-link govuk-link--no-visited-state" href="https://www.gov.uk/">@messages("site.link.backToGovUk")</a>
+    </p>
 }

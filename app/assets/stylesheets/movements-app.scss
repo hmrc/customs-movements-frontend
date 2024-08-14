@@ -12,14 +12,7 @@
 @import 'partials/_lists.scss';
 @import 'partials/_layout.scss';
 
-.text-right {
-  text-align: right;
-}
-
-$govuk-assets-path: '/customs-movements/assets/';
-$govuk-images-path: "/customs-movements/assets/lib/govuk-frontend/govuk/assets/images/";
-$govuk-fonts-path: "/customs-movements/assets/lib/govuk-frontend/govuk/assets/fonts/";
-$hmrc-assets-path: "/customs-movements/assets/lib/hmrc-frontend/hmrc/assets/";
+$govuk-assets-path: '/customs-movements/assets/lib/govuk-frontend/govuk/assets/';
 
 @import 'lib/accessible-autocomplete/dist/accessible-autocomplete.min';
 

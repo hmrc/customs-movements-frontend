@@ -46,14 +46,10 @@
     }.getOrElse("")
 }
 
-@hrefForReferenceType = @{
-  if (request.cache.isDucrPartChief) DucrPartChiefController.displayPage.url
-  else ConsignmentReferencesController.displayPage.url
+@hrefForReferenceType = @{ConsignmentReferencesController.displayPage.url
 }
 
-@hrefForReferenceValue = @{
-  if (request.cache.isDucrPartChief) DucrPartDetailsController.displayPage.url
-  else ConsignmentReferencesController.displayPage.url
+@hrefForReferenceValue = @{ConsignmentReferencesController.displayPage.url
 }
 
 @govukLayout(

@@ -17,9 +17,9 @@
 package controllers
 
 import controllers.actions.AuthAction
-import controllers.consolidations.routes.ShutMucrController
+import controllers.consolidations.routes.{DisassociateUcrController, MucrOptionsController, ShutMucrController}
 import controllers.ileQuery.routes.FindConsignmentController
-import controllers.routes.{DucrPartChiefController, SubmissionsController}
+import controllers.routes.{ConsignmentReferencesController, SubmissionsController}
 import forms.Choice
 import forms.Choice._
 import models.UcrBlock
@@ -56,10 +56,10 @@ class ChoiceController @Inject() (authenticate: AuthAction, cacheRepository: Cac
   private def nextPage(choice: Choice)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     (choice: @unchecked) match {
       case FindConsignment => resetCache(request.eori, FindConsignmentController.displayPage)
-      case Arrival         => saveCache(request.eori, ArrivalAnswers.fromUcr, DucrPartChiefController.displayPage)
-      case Departure       => saveCache(request.eori, DepartureAnswers.fromUcr, DucrPartChiefController.displayPage)
-      case AssociateUCR    => saveCache(request.eori, AssociateUcrAnswers.fromUcr, DucrPartChiefController.displayPage)
-      case DisassociateUCR => saveCache(request.eori, DisassociateUcrAnswers.fromUcr, DucrPartChiefController.displayPage)
+      case Arrival         => saveCache(request.eori, ArrivalAnswers.fromUcr, ConsignmentReferencesController.displayPage)
+      case Departure       => saveCache(request.eori, DepartureAnswers.fromUcr, ConsignmentReferencesController.displayPage)
+      case AssociateUCR    => saveCache(request.eori, AssociateUcrAnswers.fromUcr, MucrOptionsController.displayPage)
+      case DisassociateUCR => saveCache(request.eori, DisassociateUcrAnswers.fromUcr, DisassociateUcrController.displayPage)
       case ShutMUCR        => saveCache(request.eori, ShutMucrAnswers.fromUcr, ShutMucrController.displayPage)
       case Submissions     => resetCache(request.eori, SubmissionsController.displayPage)
     }

@@ -18,7 +18,7 @@ package views.consolidations
 
 import base.Injector
 import controllers.consolidations.routes.ManageMucrController
-import controllers.routes.{ChoiceOnConsignmentController, DucrPartChiefController, DucrPartDetailsController}
+import controllers.routes.{ChoiceController, ChoiceOnConsignmentController}
 import forms.DucrPartChiefChoice.IsDucrPart
 import forms.UcrType.Mucr
 import forms.{DucrPartChiefChoice, ManageMucrChoice, MucrOptions}
@@ -27,6 +27,7 @@ import models.cache.{AssociateUcrAnswers, Cache}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
+import play.api.mvc.AnyContentAsEmpty
 import play.twirl.api.HtmlFormat.Appendable
 import testdata.CommonTestData.validEori
 import views.ViewSpec
@@ -48,7 +49,7 @@ class MucrOptionsViewSpec extends ViewSpec with Injector {
 
     val manageMucrChoice = Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr))
     val answer = AssociateUcrAnswers(manageMucrChoice)
-    implicit val request = journeyRequest(answer)
+    implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(answer)
 
     "have the page's title prefixed with 'Error:'" when {
       "the page has errors" in {
@@ -95,7 +96,7 @@ class MucrOptionsViewSpec extends ViewSpec with Injector {
 
           backButton mustBe defined
           backButton.foreach { button =>
-            button must haveHref(DucrPartChiefController.displayPage)
+            button must haveHref(ChoiceController.displayChoices)
             button must containMessage("site.back.previousQuestion")
           }
         }
@@ -105,13 +106,13 @@ class MucrOptionsViewSpec extends ViewSpec with Injector {
     "display 'Back' button that links to /ducr-part-details page" when {
       "on a NON-'Find a consignment' journey and" when {
         "the Ucr is of DucrPart type" in {
-          val cache = Cache(validEori, Some(answer), None, false, Some(DucrPartChiefChoice(IsDucrPart)))
-          implicit val request = journeyRequest(cache)
+          val cache = Cache(validEori, Some(answer), None, ucrBlockFromIleQuery = false, Some(DucrPartChiefChoice(IsDucrPart)))
+          implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(cache)
           val backButton = createView().getBackButton
 
           backButton mustBe defined
           backButton.foreach { button =>
-            button must haveHref(DucrPartDetailsController.displayPage)
+            button must haveHref(ChoiceController.displayChoices)
             button must containMessage("site.back.previousQuestion")
           }
         }
@@ -121,7 +122,7 @@ class MucrOptionsViewSpec extends ViewSpec with Injector {
     "display 'Back' button that links to /manage-mucr page" when {
       "on a 'Find a consignment' journey and" when {
         "AssociateUcrAnswers.manageMucrChoice is defined" in {
-          implicit val request = journeyRequest(answer, None, true)
+          implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(answer, None, ucrBlockFromIleQuery = true)
           val backButton = createView().getBackButton
 
           backButton mustBe defined
@@ -136,7 +137,7 @@ class MucrOptionsViewSpec extends ViewSpec with Injector {
     "display 'Back' button that links to /choice-on-consignment page" when {
       "on a 'Find a consignment' journey and" when {
         "AssociateUcrAnswers.manageMucrChoice is NOT defined" in {
-          implicit val request = journeyRequest(answer, None, true)
+          implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(answer, None, ucrBlockFromIleQuery = true)
           val backButton = page(form, ucrBlock, None).getBackButton
 
           backButton mustBe defined

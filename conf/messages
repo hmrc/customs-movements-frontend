@@ -89,6 +89,10 @@ global.error.title = There is a problem - Declare customs exports for CDS Export
 global.error.heading = There is a problem with a service.
 global.error.message = Please try again later.
 
+global.error.pageNotFound.title = Page not found
+global.error.pageNotFound.heading = This page can’t be found
+global.error.pageNotFound.message = Please check that you have entered the correct web address.
+
 movement.sectionHeading.depart = Depart consignment {0}
 movement.sectionHeading.arrive = Arrive consignment {0}
 
@@ -99,13 +103,13 @@ movement.choice.arrival.label = Arrive
 movement.choice.departure.label = Depart
 movement.choice.associateucr.label = Associate
 movement.choice.disassociateucr.label = Disassociate
-movement.choice.findconsignment.label = Find a CDS consignment
+movement.choice.findconsignment.label = Find a consignment
 movement.choice.shutmucr.label = Shut
 movement.choice.submissions.label = View requests
 movement.arrival = Arrive goods
 movement.departure = Depart goods
 
-movement.choice.findconsignment.hint = Check MUCR or DUCR progress for CDS consignments. For example, to see if a consignment is ready to be arrived. CHIEF consignments can not be viewed here, please use your current CHIEF software to check consignment status.
+movement.choice.findconsignment.hint = Check MUCR or DUCR progress for CDS consignments. For example, to see if a consignment is ready to be arrived.
 movement.choice.arrival.hint = Arrival messages are used to notify customs that goods have arrived at an airport or container port.
 movement.choice.departure.hint = Departure messages are used to notify customs that goods have left the UK.
 movement.choice.associateucr.hint = UCR numbers can be associated with other UCR numbers. For example, multiple exports with different DUCRs may be moved into a container under a single MUCR.

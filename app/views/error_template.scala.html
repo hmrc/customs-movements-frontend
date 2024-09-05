@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,10 @@
   pageTitle: pageTitle
 )
 
-@(title: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
+@(titleKey: String, headingKey: String, messageKey: String)(implicit request: Request[_], messages: Messages)
 
-@govukLayout(title = Title(title)) {
+@govukLayout(title = Title(titleKey)) {
 
-  @pageTitle(text = heading, classes = "govuk-heading-xl")
-  <p class="govuk-body-m">@message</p>
-
+  @pageTitle(text = messages(headingKey), classes = "govuk-heading-xl")
+  <p class="govuk-body-m">@messages(messageKey)</p>
 }

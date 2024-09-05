@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,12 +25,9 @@ class ExternalServicesConfig @Inject() (val configuration: Configuration) {
   private def loadUrl(key: String): String =
     configuration.getOptional[String](s"urls.$key").getOrElse(throw new Exception(s"Missing configuration key: urls.$key"))
 
-  val customsDeclarationsGoodsTakenOutOfEuUrl: String = loadUrl("customsDeclarationsGoodsTakenOutOfEu")
-  val tradeTariffUrl: String = loadUrl("tradeTariff")
-  val serviceAvailabilityUrl: String = loadUrl("serviceAvailability")
   val exitSurveyUrl: String = loadUrl("exitSurveyUrl")
-  val previousDocumentsDataElementUrl = loadUrl("previousDocumentsDataElement")
-  val ucrInformationUrl = loadUrl("ucrInformation")
+  val previousDocumentsDataElementUrl: String = loadUrl("previousDocumentsDataElement")
+  val ucrInformationUrl: String = loadUrl("ucrInformation")
 
   val eoriService: String = loadUrl("eoriService")
   val cdsRegister: String = loadUrl("cdsRegister")

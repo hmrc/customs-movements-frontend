@@ -417,7 +417,7 @@ notifications.elem.content.inventoryLinkingMovementResponse.crc = CRC
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Y llwybr mynediad yw
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Y statws mynediad yw
 
-ileQuery.title = Dod o hyd i lwyth CDS
+ileQuery.title = Dod o hyd i lwyth
 ileQuery.hint = Chwilio yn ôl Prif Gyfeirnod Unigryw y Llwyth (MUCR) neu Ddatganiad o Gyfeirnod Unigryw y Llwyth (DUCR). </br></br>Er enghraifft 'GB/123456789100-AB123'.
 ileQuery.ucr.empty = Nodwch Gyfeirnod Unigryw y Llwyth
 ileQuery.ucr.incorrect = Mae Cyfeirnod Unigryw y Llwyth yn anghywir

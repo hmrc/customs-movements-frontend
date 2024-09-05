@@ -438,7 +438,7 @@ notifications.elem.content.inventoryLinkingMovementResponse.crc = CRC:
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Route of entry is:
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Status of entry is:
 
-ileQuery.title = Find a CDS consignment
+ileQuery.title = Find a consignment
 ileQuery.hint = Enter a Master Consignment Reference (MUCR) or Declaration Consignment Reference (DUCR) to find your consignment. </br></br>For example 'GB/123456789100-AB123'.
 ileQuery.ucr.empty = Enter a Unique Consignment Reference
 ileQuery.ucr.incorrect = Unique Consignment Reference is incorrect

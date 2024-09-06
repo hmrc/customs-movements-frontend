@@ -15,7 +15,7 @@
  *@
 
 @import controllers.consolidations.routes.DisassociateUcrController
-@import controllers.routes.{ChoiceOnConsignmentController, DucrPartDetailsController}
+@import controllers.routes.ChoiceOnConsignmentController
 @import controllers.summary.routes.DisassociateUcrSummaryController
 @import forms.DisassociateUcr
 @import models.requests.JourneyRequest
@@ -37,15 +37,12 @@
 
 @kind = @{ disassociateUcr.kind }
 
-@href = @{
-    if (kind.isDucrPart) DucrPartDetailsController.displayPage.url
-    else DisassociateUcrController.displayPage.url
+@href = @{DisassociateUcrController.displayPage.url
 }
 
 @backUrl = @{
     if (request.cache.ucrBlockFromIleQuery) ChoiceOnConsignmentController.displayChoices
-    else if (request.cache.isDucrPartChief) DucrPartDetailsController.displayPage
-    else DisassociateUcrController.displayPage
+    else  DisassociateUcrController.displayPage
 }
 
 @govukLayout(

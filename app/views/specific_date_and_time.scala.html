@@ -15,7 +15,7 @@
  *@
 
 @import components.gds._
-@import controllers.routes.{ChoiceOnConsignmentController, ConsignmentReferencesController, DucrPartDetailsController, SpecificDateTimeController}
+@import controllers.routes.{ChoiceOnConsignmentController, ConsignmentReferencesController, SpecificDateTimeController}
 @import forms.SpecificDateTimeChoice
 @import forms.UcrType.Ducr
 @import models.requests.JourneyRequest
@@ -39,8 +39,7 @@
 
 @backUrl = @{
     if (request.cache.ucrBlockFromIleQuery) ChoiceOnConsignmentController.displayChoices
-    else if (request.cache.isDucrPartChief) DucrPartDetailsController.displayPage
-    else ConsignmentReferencesController.displayPage
+    else  ConsignmentReferencesController.displayPage
 }
 
 @govukLayout(

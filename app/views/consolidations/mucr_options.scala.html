@@ -15,8 +15,8 @@
  *@
 
 @import config.ExternalServicesConfig
-@import controllers.consolidations.routes.{ManageMucrController, MucrOptionsController}
-@import controllers.routes.{ChoiceOnConsignmentController, DucrPartChiefController, DucrPartDetailsController}
+@import controllers.consolidations.routes.{ManageMucrController,MucrOptionsController}
+@import controllers.routes.{ChoiceOnConsignmentController, ChoiceController}
 @import forms.{ManageMucrChoice, MucrOptions}
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -48,8 +48,7 @@
         if (manageMucrChoice.isDefined) ManageMucrController.displayPage
         else ChoiceOnConsignmentController.displayChoices
     }
-    else if (request.cache.isDucrPartChief) DucrPartDetailsController.displayPage
-    else DucrPartChiefController.displayPage
+    else ChoiceController.displayChoices
 }
 
 @govukLayout(

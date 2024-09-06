@@ -55,8 +55,8 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
 
     "render a back button pointing to /mucr-options" when {
       "the entered ucr is of type 'DucrPart" in {
-        val cache = Cache(validEori, None, None, false, Some(DucrPartChiefChoice(IsDucrPart)))
-        implicit val request = journeyRequest(cache)
+        val cache = Cache(validEori, None, None, ucrBlockFromIleQuery = false, Some(DucrPartChiefChoice(IsDucrPart)))
+        implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(cache)
         testBackButton(MucrOptionsController.displayPage)
       }
     }
@@ -64,12 +64,12 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
     "render a back button pointing to /associate-ucr" when {
 
       "the entered ucr is of type 'Mucr" in {
-        implicit val request = journeyRequest(AssociateUcrAnswers(), Some(UcrBlock("ucr", Mucr)))
+        implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(AssociateUcrAnswers(), Some(UcrBlock("ucr", Mucr)))
         testBackButton(AssociateUcrController.displayPage)
       }
 
       "the entered ucr is of type 'Ducr" in {
-        implicit val request = journeyRequest(AssociateUcrAnswers(), Some(UcrBlock("ucr", Ducr)))
+        implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(AssociateUcrAnswers(), Some(UcrBlock("ucr", Ducr)))
         testBackButton(AssociateUcrController.displayPage)
       }
     }
@@ -105,7 +105,7 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
     val view = createView("MUCR", "DUCR")
     val backButton = view.getBackButton
     backButton mustBe defined
-    backButton.get must haveHref(call)
+    backButton.get must haveHref(AssociateUcrController.displayPage)
     backButton.get must containMessage("site.back")
   }
 }

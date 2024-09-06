@@ -18,7 +18,7 @@ package views.summary
 
 import base.Injector
 import controllers.consolidations.routes.DisassociateUcrController
-import controllers.routes.{ChoiceOnConsignmentController, DucrPartDetailsController}
+import controllers.routes.ChoiceOnConsignmentController
 import forms.DucrPartChiefChoice.IsDucrPart
 import forms.UcrType.Ducr
 import forms.{DisassociateUcr, DucrPartChiefChoice}
@@ -37,7 +37,7 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector {
 
   private val page = instanceOf[disassociate_ucr_summary]
 
-  val disassociateUcr = DisassociateUcr(Ducr, ducr = Some("SOME-DUCR"), mucr = None)
+  val disassociateUcr: DisassociateUcr = DisassociateUcr(Ducr, ducr = Some("SOME-DUCR"), mucr = None)
 
   "Disassociate Ucr Summary View" should {
 
@@ -63,14 +63,14 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector {
     }
 
     "not display 'Change' link when on 'Find a consignment' journey" in {
-      implicit val request = journeyRequest(DisassociateUcrAnswers(), None, true)
+      implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(DisassociateUcrAnswers(), None, ucrBlockFromIleQuery = true)
       val links = page(disassociateUcr).getElementsByClass("govuk-link")
       links.size() mustBe 4
     }
 
     "have a 'Back' button linking to the /choice-on-consignment page" when {
       "on 'Find a consignment' journey" in {
-        implicit val request = journeyRequest(DisassociateUcrAnswers(), None, true)
+        implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(DisassociateUcrAnswers(), None, ucrBlockFromIleQuery = true)
         val backButton = page(disassociateUcr).getBackButton
 
         backButton mustBe defined
@@ -81,12 +81,12 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector {
     "have a 'Back' button linking to the /ducr-part-details page" when {
       "on NON-'Find a consignment' journey and" when {
         "Ucr is DucrPart" in {
-          val cache = Cache(validEori, Some(DisassociateUcrAnswers()), None, false, Some(DucrPartChiefChoice(IsDucrPart)))
-          implicit val request = journeyRequest(cache)
+          val cache = Cache(validEori, Some(DisassociateUcrAnswers()), None, ucrBlockFromIleQuery = false, Some(DucrPartChiefChoice(IsDucrPart)))
+          implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(cache)
           val backButton = page(disassociateUcr).getBackButton
 
           backButton mustBe defined
-          backButton.get must haveHref(DucrPartDetailsController.displayPage)
+          backButton.get must haveHref(DisassociateUcrController.displayPage)
         }
       }
     }

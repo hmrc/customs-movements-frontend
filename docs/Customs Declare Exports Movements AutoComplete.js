@@ -61,13 +61,7 @@ function completePage() {
         if(currentPageIs("/customs-movements/consignment-query")){
         document.getElementById("ucr").value = "GB/123456789100-AB123"
     }
-    if(currentPageIs("/customs-movements/ducr-part-created-chief")){
-        document.getElementById("choice").checked = true
-    }
-    if(currentPageIs("/customs-movements/ducr-part-details")){
-        document.getElementById("ducr").value = "9GB123999746000-DUCR12345"
-        document.getElementById("ducrPartId").value = "123"
-    }
+
     if(currentPageIs("/customs-movements/specific-date-and-time")){
         document.getElementById("choice").checked = true
     }

@@ -17,7 +17,7 @@
 package views.consolidations
 
 import base.Injector
-import controllers.routes.DucrPartChiefController
+import controllers.routes.ChoiceController
 import forms.DisassociateUcr
 import forms.UcrType.{Ducr, Mucr}
 import models.cache.DisassociateUcrAnswers
@@ -62,7 +62,7 @@ class DisassociateUcrViewSpec extends ViewSpec with Injector {
 
       backButton mustBe defined
       backButton.foreach { button =>
-        button must haveHref(DucrPartChiefController.displayPage)
+        button must haveHref(ChoiceController.displayChoices)
         button must containMessage("site.back.previousQuestion")
       }
     }

@@ -15,7 +15,6 @@
  *@
 
 @import controllers.consolidations.routes.{AssociateUcrController, MucrOptionsController}
-@import controllers.routes.DucrPartDetailsController
 @import controllers.summary.routes.AssociateUcrSummaryController
 @import forms.AssociateUcr
 @import models.requests.JourneyRequest
@@ -35,14 +34,10 @@
 
 @(associateUcr: AssociateUcr, mucr: String)(implicit request: JourneyRequest[_], messages: Messages)
 
-@backlink = @{
-    if (request.cache.isDucrPartChief) MucrOptionsController.displayPage
-    else AssociateUcrController.displayPage
+@backlink = @{AssociateUcrController.displayPage
 }
 
-@href = @{
-    if (associateUcr.kind.isDucrPart) DucrPartDetailsController.displayPage.url
-    else AssociateUcrController.displayPage.url
+@href = @{AssociateUcrController.displayPage.url
 }
 
 @govukLayout(

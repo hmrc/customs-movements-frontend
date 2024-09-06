@@ -17,7 +17,7 @@
 package views
 
 import base.Injector
-import controllers.routes.{ChoiceOnConsignmentController, ConsignmentReferencesController, DucrPartDetailsController}
+import controllers.routes.{ChoiceOnConsignmentController, ConsignmentReferencesController}
 import forms.DucrPartChiefChoice.IsDucrPart
 import forms.{DucrPartChiefChoice, SpecificDateTimeChoice}
 import models.cache.{ArrivalAnswers, Cache, DepartureAnswers}
@@ -62,7 +62,7 @@ class SpecificDateTimeViewSpec extends ViewSpec with Injector {
 
     "display 'Back' button that links to the /choice-on-consignment page" when {
       "on a 'Find a consignment' journey" in {
-        implicit val request = journeyRequest(ArrivalAnswers(), None, true)
+        implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers(), None, ucrBlockFromIleQuery = true)
         val backButton = createView.getBackButton
 
         backButton mustBe defined
@@ -76,13 +76,13 @@ class SpecificDateTimeViewSpec extends ViewSpec with Injector {
     "display 'Back' button that links to the /ducr-part-details page" when {
       "on a NON-'Find a consignment' journey and" when {
         "the Ucr is of DucrPart type" in {
-          val cache = Cache(validEori, Some(ArrivalAnswers()), None, false, Some(DucrPartChiefChoice(IsDucrPart)))
-          implicit val request = journeyRequest(cache)
+          val cache = Cache(validEori, Some(ArrivalAnswers()), None, ucrBlockFromIleQuery = false, Some(DucrPartChiefChoice(IsDucrPart)))
+          implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(cache)
           val backButton = createView.getBackButton
 
           backButton mustBe defined
           backButton.foreach { button =>
-            button must haveHref(DucrPartDetailsController.displayPage)
+            button must haveHref(ConsignmentReferencesController.displayPage)
             button must containMessage("site.back.previousQuestion")
           }
         }

@@ -17,7 +17,6 @@
 package views
 
 import base.Injector
-import controllers.routes.DucrPartChiefController
 import forms.ConsignmentReferences
 import forms.ConsignmentReferences.form
 import forms.UcrType.Ducr
@@ -28,6 +27,7 @@ import play.api.data.{Form, FormError}
 import play.api.mvc.AnyContentAsEmpty
 import play.twirl.api.HtmlFormat.Appendable
 import views.html.consignment_references
+import controllers.routes.ChoiceController
 
 class ConsignmentReferenceViewSpec extends ViewSpec with Injector {
 
@@ -80,7 +80,7 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector {
       val backButton = createView().getBackButton
 
       backButton mustBe defined
-      backButton.get must haveHref(DucrPartChiefController.displayPage)
+      backButton.get must haveHref(ChoiceController.displayChoices)
       backButton.get must containMessage("site.back.previousQuestion")
 
     }

@@ -47,10 +47,9 @@ class SubmissionService @Inject() (
   def submit(eori: String, answers: DisassociateUcrAnswers)(implicit hc: HeaderCarrier): Future[String] = {
     val ucr = answers.ucr.getOrElse(throw ReturnToStartException).ucr
     val exchange = answers.ucr.map(_.kind) match {
-      case Some(UcrType.Ducr)     => DisassociateDUCRRequest(eori, ucr)
-      case Some(UcrType.Mucr)     => DisassociateMUCRRequest(eori, ucr)
-      case Some(UcrType.DucrPart) => DisassociateDUCRPartRequest(eori, ucr)
-      case _                      => throw new IllegalArgumentException("Incorrect Ucr type")
+      case Some(UcrType.Ducr) => DisassociateDUCRRequest(eori, ucr)
+      case Some(UcrType.Mucr) => DisassociateMUCRRequest(eori, ucr)
+      case _                  => throw new IllegalArgumentException("Incorrect Ucr type")
     }
 
     connector
@@ -66,10 +65,9 @@ class SubmissionService @Inject() (
     val mucr = answers.mucrOptions.map(_.mucr).getOrElse(throw ReturnToStartException)
     val ucr = answers.associateUcr.map(_.ucr).getOrElse(throw ReturnToStartException)
     val exchange = answers.associateUcr.map(_.kind) match {
-      case Some(UcrType.Ducr)     => AssociateDUCRRequest(eori, mucr, ucr)
-      case Some(UcrType.Mucr)     => AssociateMUCRRequest(eori, mucr, ucr)
-      case Some(UcrType.DucrPart) => AssociateDUCRPartRequest(eori, mucr, ucr)
-      case _                      => throw new IllegalArgumentException("Incorrect Ucr type")
+      case Some(UcrType.Ducr) => AssociateDUCRRequest(eori, mucr, ucr)
+      case Some(UcrType.Mucr) => AssociateMUCRRequest(eori, mucr, ucr)
+      case _                  => throw new IllegalArgumentException("Incorrect Ucr type")
     }
 
     connector

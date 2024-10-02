@@ -1,0 +1,126 @@
+[
+  {
+    "code": "01",
+    "messageKey": "error.ile.InvalidUcrFormat"
+  },
+  {
+    "code": "02",
+    "messageKey": "error.ile.ClientIdValidationFailed"
+  },
+  {
+    "code": "03",
+    "messageKey": "error.ile.UcrNotAtTopOfConsolidation"
+  },
+  {
+    "code": "04",
+    "messageKey": "error.ile.MucrNotShutConsolidation"
+  },
+  {
+    "code": "05",
+    "messageKey": "error.ile.ParentMucrInSameConsolidation"
+  },
+  {
+    "code": "06",
+    "messageKey": "error.ile.ConsolidationNotFound"
+  },
+  {
+    "code": "07",
+    "messageKey": "error.ile.ConsolidationAlreadyShut"
+  },
+  {
+    "code": "08",
+    "messageKey": "error.ile.UcrTypeNotMatchingUcrFormat"
+  },
+  {
+    "code": "10",
+    "messageKey": "error.ile.DeclarationNotExist"
+  },
+  {
+    "code": "11",
+    "messageKey": "error.ile.UcrAlreadyAssociated"
+  },
+  {
+    "code": "13",
+    "messageKey": "error.ile.NoPriorArrivalFoundAtDepartureLocation"
+  },
+  {
+    "code": "14",
+    "messageKey": "error.ile.DeclarationsMissingP2P"
+  },
+  {
+    "code": "15",
+    "messageKey": "error.ile.DeclarationCancelledOrTerminated"
+  },
+  {
+    "code": "16",
+    "messageKey": "error.ile.UnknownDeclarationIdentifier"
+  },
+  {
+    "code": "17",
+    "messageKey": "error.ile.ConsolidationLevelLimitReached"
+  },
+  {
+    "code": "18",
+    "messageKey": "error.ile.InvalidGoodsDateTime"
+  },
+  {
+    "code": "19",
+    "messageKey": "error.ile.MucrNotShutDeparture"
+  },
+  {
+    "code": "20",
+    "messageKey": "error.ile.FutureDateTimeOverExceeded"
+  },
+  {
+    "code": "21",
+    "messageKey": "error.ile.UcrIsNotMucr"
+  },
+  {
+    "code": "22",
+    "messageKey": "error.ile.UcrNotExist"
+  },
+  {
+    "code": "23",
+    "messageKey": "error.ile.UcrAlreadyDisassociated"
+  },
+  {
+    "code": "25",
+    "messageKey": "error.ile.EmptyMucr"
+  },
+  {
+    "code": "27",
+    "messageKey": "error.ile.LocationBasedPermissionFailed"
+  },
+  {
+    "code": "28",
+    "messageKey": "error.ile.InvalidGoodsLocation"
+  },
+  {
+    "code": "29",
+    "messageKey": "error.ile.MucrAlreadyDeparted"
+  },
+  {
+    "code": "30",
+    "messageKey": "error.ile.UcrRejectedUponArrival"
+  },
+  {
+    "code": "31",
+    "messageKey": "error.ile.AlreadyRetrospectiveArrived"
+  },
+  {
+    "code": "32",
+    "messageKey": "error.ile.PreviouslyArrivedDUCROrMUCR"
+  },
+  {
+    "code": "33",
+    "messageKey": "error.ile.AlreadyArrived"
+  },
+  {
+    "code": "34",
+    "messageKey": "error.ile.UCRDoesNotExist"
+  },
+  {
+    "code": "35",
+    "messageKey": "error.ile.DifferentSubmitterId"
+  }
+]

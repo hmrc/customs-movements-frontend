@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           elementFormDefault="qualified">
-    <xs:import namespace="http://gov.uk/customs/inventoryLinking/v1"
-               schemaLocation="../exports/inventoryLinkingRequestExternal.xsd"/>
-</xs:schema>

@@ -28,14 +28,12 @@ object ActionType {
   object ConsolidationType {
     case object DucrAssociation extends ConsolidationType("DucrAssociation", "EAC")
     case object MucrAssociation extends ConsolidationType("MucrAssociation", "EAC")
-    case object DucrPartAssociation extends ConsolidationType("DucrPartAssociation", "EAC")
     case object DucrDisassociation extends ConsolidationType("DucrDisassociation", "EAC")
     case object MucrDisassociation extends ConsolidationType("MucrDisassociation", "EAC")
-    case object DucrPartDisassociation extends ConsolidationType("DucrPartDisassociation", "EAC")
     case object ShutMucr extends ConsolidationType("ShutMucr", "CST")
 
     val allTypes: Set[ConsolidationType] =
-      Set(DucrAssociation, MucrAssociation, DucrPartAssociation, DucrDisassociation, MucrDisassociation, DucrPartDisassociation, ShutMucr)
+      Set(DucrAssociation, MucrAssociation, DucrDisassociation, MucrDisassociation, ShutMucr)
 
     def existsFor(typeName: String): Boolean = this.allTypes.map(_.typeName).contains(typeName)
 
@@ -43,14 +41,12 @@ object ActionType {
       override def writes(consolidationType: ConsolidationType): JsValue = JsString(consolidationType.typeName)
 
       override def reads(json: JsValue): JsResult[ConsolidationType] = json match {
-        case JsString("DucrAssociation")        => JsSuccess(DucrAssociation)
-        case JsString("MucrAssociation")        => JsSuccess(MucrAssociation)
-        case JsString("DucrPartAssociation")    => JsSuccess(DucrPartAssociation)
-        case JsString("DucrDisassociation")     => JsSuccess(DucrDisassociation)
-        case JsString("MucrDisassociation")     => JsSuccess(MucrDisassociation)
-        case JsString("DucrPartDisassociation") => JsSuccess(DucrPartDisassociation)
-        case JsString("ShutMucr")               => JsSuccess(ShutMucr)
-        case unknownType                        => JsError(s"Unknown ConsolidationType: [$unknownType]")
+        case JsString("DucrAssociation")    => JsSuccess(DucrAssociation)
+        case JsString("MucrAssociation")    => JsSuccess(MucrAssociation)
+        case JsString("DucrDisassociation") => JsSuccess(DucrDisassociation)
+        case JsString("MucrDisassociation") => JsSuccess(MucrDisassociation)
+        case JsString("ShutMucr")           => JsSuccess(ShutMucr)
+        case unknownType                    => JsError(s"Unknown ConsolidationType: [$unknownType]")
       }
     }
   }

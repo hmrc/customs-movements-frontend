@@ -34,11 +34,10 @@ class NotificationPageSingleElementFactory @Inject() (responseConverterProvider:
 
   def build(submission: Submission, notificationsCount: Int)(implicit messages: Messages): NotificationsPageSingleElement =
     (submission.actionType: @unchecked) match {
-      case Arrival | Departure | DucrDisassociation | DucrPartDisassociation | MucrAssociation | MucrDisassociation | ShutMucr =>
+      case Arrival | Departure | DucrDisassociation | MucrAssociation | MucrDisassociation | ShutMucr =>
         buildForRequest(submission, notificationsCount)
 
-      case DucrAssociation     => buildForDucrAssociation(submission, notificationsCount)
-      case DucrPartAssociation => buildForDucrPartAssociation(submission, notificationsCount)
+      case DucrAssociation => buildForDucrAssociation(submission, notificationsCount)
     }
 
   private def buildForRequest(submission: Submission, notificationsCount: Int)(implicit messages: Messages): NotificationsPageSingleElement = {
@@ -63,19 +62,6 @@ class NotificationPageSingleElementFactory @Inject() (responseConverterProvider:
     implicit messages: Messages
   ): NotificationsPageSingleElement = {
     val ducrs: List[UcrBlock] = submission.ucrBlocks.filter(_.ucrType == "D").toList
-    val content = HtmlFormat.fill(
-      (paragraphBody(messages(s"notifications.elem.content.${submission.actionType.typeName}")) +:
-        ducrs.map(block => paragraphBody(block.ucr))) ++
-        (if (notificationsCount < 1) Seq(paragraphBody(messages("notifications.elem.content.footer"))) else Seq.empty)
-    )
-
-    buildForRequest(submission, notificationsCount).copy(content = content)
-  }
-
-  private def buildForDucrPartAssociation(submission: Submission, notificationsCount: Int)(
-    implicit messages: Messages
-  ): NotificationsPageSingleElement = {
-    val ducrs: List[UcrBlock] = submission.ucrBlocks.filter(_.ucrType == "DP").toList
     val content = HtmlFormat.fill(
       (paragraphBody(messages(s"notifications.elem.content.${submission.actionType.typeName}")) +:
         ducrs.map(block => paragraphBody(block.ucr))) ++

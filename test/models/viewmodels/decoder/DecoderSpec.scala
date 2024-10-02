@@ -21,10 +21,13 @@ import models.viewmodels.decoder.CRCCode.Success
 import models.viewmodels.decoder.ICSCode.InvalidationAtTraderRequest
 import models.viewmodels.decoder.ROECode.DocumentaryControl
 import models.viewmodels.decoder.SOECode.{ConsolidationOpen, ConsolidationWithEmptyMucr, Departed}
+import play.api.{Environment, Mode}
+import utils.JsonFile
 
 class DecoderSpec extends UnitSpec {
 
-  val decoder = new Decoder()
+  private lazy val jsonFile = new JsonFile(Environment.simple(mode = Mode.Test))
+  val decoder = new Decoder(jsonFile)
 
   "Decoder" should {
 
@@ -68,13 +71,6 @@ class DecoderSpec extends UnitSpec {
       val mucrNotShutDeparture = ILEError("04", "error.ile.MucrNotShutConsolidation")
 
       decoder.error(mucrNotShutDeparture.code) mustBe Some(mucrNotShutDeparture)
-    }
-
-    "find correct CHIEF error description" in {
-
-      val chiefError = CHIEFError("E2898", "error.chief.AlreadyArrived")
-
-      decoder.error(chiefError.code) mustBe Some(chiefError)
     }
   }
 }

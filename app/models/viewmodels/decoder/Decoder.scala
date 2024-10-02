@@ -16,10 +16,12 @@
 
 package models.viewmodels.decoder
 
-import javax.inject.Singleton
+import utils.JsonFile
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Decoder {
+class Decoder @Inject() (jsonFile: JsonFile) {
 
   def crc(code: String): Option[CRCCode] = CRCCode.codes.find(_.code == code)
 
@@ -33,10 +35,12 @@ class Decoder {
 
   def allSoe(code: String): Option[SOECode] = SOECode.AllCodes.find(_.code == code)
 
-  def error(code: String): Option[CodeWithMessageKey] = {
-    val chiefErrorOpt = CHIEFError.allErrors.find(_.code == code)
+  private val ileErrors: List[ILEError] = {
+    val source = "/code_lists/ile_errors.json"
 
-    if (chiefErrorOpt.isDefined) chiefErrorOpt
-    else ILEError.allErrors.find(_.code == code)
+    jsonFile.getJsonArrayFromFile(source, ILEError.format)
   }
+
+  def error(code: String): Option[CodeWithMessageKey] =
+    ileErrors.find(_.code == code)
 }

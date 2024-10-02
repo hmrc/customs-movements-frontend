@@ -16,10 +16,7 @@
 
 package models.viewmodels.decoder
 
-import com.github.tototoshi.csv.CSVReader
-import play.api.Logger
-
-import scala.io.Source
+import play.api.libs.json.{Json, OFormat}
 
 /**
  * Inventory Linking Exports errors mapping based on Status DE-code document.
@@ -31,21 +28,5 @@ import scala.io.Source
 case class ILEError(override val code: String, override val messageKey: String) extends CodeWithMessageKey
 
 object ILEError {
-
-  private val logger = Logger(this.getClass)
-  private val sourcePath = "code_lists/ile_errors.csv"
-
-  def apply(rawCodeAndMessageKey: List[String]): ILEError = rawCodeAndMessageKey match {
-    case code :: messageKey :: Nil => ILEError(code, messageKey)
-    case error =>
-      logger.warn(s"Record in ILE errors config file [$sourcePath] is incorrect: " + error)
-      throw new IllegalArgumentException("Errors file has incorrect structure")
-  }
-
-  val allErrors: List[ILEError] = {
-    val source = Source.fromURL(getClass.getClassLoader.getResource(sourcePath), "UTF-8")
-    val reader = CSVReader.open(source)
-
-    reader.all().map(ILEError(_))
-  }
+  implicit val format: OFormat[ILEError] = Json.format[ILEError]
 }

@@ -109,32 +109,6 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
         assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
       }
 
-      "provided with DucrPartAssociation Submission" in {
-
-        val validDucrPart = "8GB123456789012-123456789-123"
-
-        val input: Submission = Submission(
-          eori = validEori,
-          conversationId = conversationId,
-          actionType = ConsolidationType.DucrPartAssociation,
-          requestTimestamp = testTimestamp,
-          ucrBlocks = Seq(
-            UcrBlock(ucr = correctUcr, ucrType = "M"),
-            UcrBlock(ucr = correctUcr_2, ucrType = "DP"),
-            UcrBlock(ucr = validDucrPart, ucrType = "DP")
-          )
-        )
-
-        val expectedTitle = messages("notifications.elem.title.DucrPartAssociation")
-        val expectedTimestampInfo = "31 October 2019 at 12:00am"
-        val expectedContent =
-          Seq(messages("notifications.elem.content.DucrPartAssociation"), validDucrPart, messages("notifications.elem.content.footer"))
-
-        val result = factory.build(input, 0)
-
-        assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
-      }
-
       "provided with MucrAssociation Submission" in {
 
         val input: Submission = Submission(
@@ -161,19 +135,6 @@ class NotificationPageSingleElementFactorySpec extends UnitSpec with MessagesStu
         val expectedTitle = messages("notifications.elem.title.DucrDisassociation")
         val expectedTimestampInfo = "31 October 2019 at 12:00am"
         val expectedContent = Seq(messages("notifications.elem.content.DucrDisassociation"), messages("notifications.elem.content.footer"))
-
-        val result = factory.build(input, 0)
-        assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)
-      }
-
-      "provided with DucrPartDisassociation Submission" in {
-
-        val input: Submission =
-          exampleSubmission(actionType = ConsolidationType.DucrPartDisassociation, requestTimestamp = testTimestamp, ucr = correctUcr, ucrType = "DP")
-
-        val expectedTitle = messages("notifications.elem.title.DucrPartDisassociation")
-        val expectedTimestampInfo = "31 October 2019 at 12:00am"
-        val expectedContent = Seq(messages("notifications.elem.content.DucrPartDisassociation"), messages("notifications.elem.content.footer"))
 
         val result = factory.build(input, 0)
         assertResult(result, expectedTitle, expectedTimestampInfo, expectedContent)

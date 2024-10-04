@@ -20,7 +20,7 @@ import play.api.mvc.PathBindable
 
 object Feature extends Enumeration {
   type Feature = Value
-  val default, ileQuery, ducrPart, betaBanner, tdrUnauthorisedMessage = Value
+  val default, betaBanner, tdrUnauthorisedMessage = Value
 
   implicit object featurePathStringBinder
       extends PathBindable.Parsing[Feature.Feature](
@@ -33,7 +33,7 @@ object Feature extends Enumeration {
 
 object FeatureStatus extends Enumeration {
   type FeatureStatus = Value
-  val enabled, disabled, suspended = Value
+  val enabled, disabled = Value
 
   implicit object featureStatusPathStringBinder
       extends PathBindable.Parsing[FeatureStatus.FeatureStatus](

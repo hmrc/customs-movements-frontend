@@ -18,8 +18,6 @@ package services
 
 import play.api.libs.json._
 
-import scala.io.Source
-
 case class Country(countryName: String, countryCode: String) {
   def asString(): String = s"$countryName - $countryCode"
 }
@@ -30,17 +28,8 @@ case object Country {
 
 object Countries {
 
-  private val mdgCountryCodes: List[String] =
-    Source
-      .fromInputStream(getClass.getResourceAsStream("/code_lists/mdg-country-codes.csv"))
-      .getLines()
-      .mkString
-      .split(',')
-      .map(_.replace("\"", ""))
-      .toList
-
-  private val countries: List[Country] = {
-    val jsonFile = getClass.getResourceAsStream("/location-autocomplete-canonical-list.json")
+  val allCountries: List[Country] = {
+    val jsonFile = getClass.getResourceAsStream("/code_lists/location-autocomplete-canonical-list.json")
 
     def fromJsonFile: List[Country] =
       Json.parse(jsonFile) match {
@@ -56,9 +45,6 @@ object Countries {
   }
 
   private def countryCode: String => String = cc => cc.split(":")(1).trim
-
-  val allCountries: List[Country] =
-    countries.filter(c => mdgCountryCodes contains c.countryCode)
 
   def countryName(code: String): String = allCountries.find(_.countryCode == code).map(_.countryName).getOrElse(code)
   def country(code: String): Option[Country] = allCountries.find(_.countryCode == code)

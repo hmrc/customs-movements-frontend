@@ -55,9 +55,7 @@ class AppConfigSpec extends AnyWordSpec with Matchers {
         |google-analytics.host=localhostGoogle
         |tracking-consent-frontend.gtm.container=a
         |
-        |countryCodesCsvFilename=code_lists/mdg-country-codes.csv
-        |countryCodesJsonFilename=location-autocomplete-canonical-list.json
-        |euCountryCodesCsvFilename=code_lists/mdg-country-codes-eu.csv
+        |countryCodesJsonFilename=code_lists/location-autocomplete-canonical-list.json
         |
         |microservice.services.nrs.host=localhostnrs
         |microservice.services.nrs.port=7654
@@ -110,9 +108,7 @@ class AppConfigSpec extends AnyWordSpec with Matchers {
         |google-analytics.token=N/A
         |google-analytics.host=localhostGoogle
         |
-        |countryCodesCsvFilename=code_lists/mdg-country-codes.csv
         |countryCodesJsonFilename=location-autocomplete-canonical-list.json
-        |euCountryCodesCsvFilename=code_lists/mdg-country-codes-eu.csv
         |
         |microservice.services.nrs.host=localhostnrs
         |microservice.services.nrs.port=7654

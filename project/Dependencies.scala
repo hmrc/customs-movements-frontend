@@ -14,8 +14,7 @@ object Dependencies {
     "uk.gov.hmrc.mongo"     %% "hmrc-mongo-play-30"                    % hmrcMongoVersion,
     "org.webjars.npm"       %  "accessible-autocomplete"               % "3.0.0",
     "commons-codec"         %  "commons-codec"                         % "1.17.1",
-    "javax.xml.bind"        %  "jaxb-api"                              % "2.3.1",
-    "com.github.tototoshi"  %% "scala-csv"                             % "1.4.1",
+    "javax.xml.bind"        %  "jaxb-api"                              % "2.3.1"
   )
 
   val test: Seq[ModuleID] = List(

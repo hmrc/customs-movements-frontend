@@ -19,10 +19,13 @@ package models.viewmodels.ilequery
 import base.UnitSpec
 import models.notifications.queries.Transport
 import models.viewmodels.decoder.Decoder
+import play.api.{Environment, Mode}
+import utils.JsonFile
 
 class IleQueryCodeConverterSpec extends UnitSpec {
 
-  val converter = new IleQueryCodeConverter(new Decoder)
+  private lazy val jsonFile = new JsonFile(Environment.simple(mode = Mode.Test))
+  val converter = new IleQueryCodeConverter(new Decoder(jsonFile))
 
   "IleQueryCodeConverter" should {
 

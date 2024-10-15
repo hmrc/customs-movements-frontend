@@ -43,7 +43,7 @@ class JourneyRefinerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
   private val user = SignedInUser("eori", Enrolments(Set.empty))
   private val answers = AssociateUcrAnswers()
   private val cache = Cache("eori", answers)
-  private val request = AuthenticatedRequest(FakeRequest().withSession(SessionHelper.answerCacheId -> cache.uuid), user)
+  private val request = AuthenticatedRequest(FakeRequest().withSession(SessionHelper.ANSWER_CACHE_ID -> cache.uuid), user)
   private val redirectResult = Results.Redirect(controllers.routes.ChoiceController.displayChoices)
 
   private val refiner = new JourneyRefiner(movementRepository, arriveDepartAllowList)
@@ -54,7 +54,7 @@ class JourneyRefinerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
   }
 
   "refine" should {
-    FakeRequest().withSession(SessionHelper.answerCacheId -> "answerCache.uuid")
+    FakeRequest().withSession(SessionHelper.ANSWER_CACHE_ID -> "answerCache.uuid")
 
     "add cache to the request" when {
       "cache contains non-empty answers" in {

@@ -21,7 +21,7 @@ import controllers.summary.routes.MovementConfirmationController
 import forms._
 import models.ReturnToStartException
 import models.cache.{DisassociateUcrAnswers, JourneyType}
-import models.confirmation.FlashKeys
+import models.requests.SessionHelper
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.MockitoSugar.{mock, reset, verify, when}
@@ -125,8 +125,8 @@ class DisassociateUcrSummaryControllerSpec extends ControllerLayerSpec with Scal
 
         val result = controller(DisassociateUcrAnswers(Some(ucr))).submit(postRequest(Json.obj()))
 
-        session(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.DISSOCIATE_UCR.toString)
-        session(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
+        session(result).get(SessionHelper.JOURNEY_TYPE) mustBe Some(JourneyType.DISSOCIATE_UCR.toString)
+        session(result).get(SessionHelper.CONVERSATION_ID) mustBe Some(conversationId)
       }
     }
   }

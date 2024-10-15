@@ -41,14 +41,16 @@ class ChoiceController @Inject() (authenticate: AuthAction, cacheRepository: Cac
 ) extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
   val displayChoices: Action[AnyContent] = authenticate.async { implicit request =>
-    val maybeAnswerCacheId = SessionHelper.getValue(SessionHelper.answerCacheId)
+    val maybeAnswerCacheId = SessionHelper.getValue(SessionHelper.ANSWER_CACHE_ID)
 
-    maybeAnswerCacheId.map { cacheId =>
+    val futureResult = maybeAnswerCacheId.map { cacheId =>
       cacheRepository.findByEoriAndAnswerCacheId(request.eori, cacheId).map(_.flatMap(_.answers)).map {
         case Some(answers) => Ok(choicePage(form.fill(Choice(answers.`type`))))
         case None          => Ok(choicePage(form))
       }
     }.getOrElse(Future.successful(Ok(choicePage(form))))
+
+    futureResult.map(_.withSession(SessionHelper.clearAllReceiptPageSessionKeys()))
   }
 
   val submitChoice: Action[AnyContent] = authenticate.async { implicit request =>
@@ -74,5 +76,5 @@ class ChoiceController @Inject() (authenticate: AuthAction, cacheRepository: Cac
   def saveCache(eori: String, answer: Option[UcrBlock] => Answers, call: Call)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     cacheRepository
       .upsert(Cache(eori, answer.apply(None)))
-      .map(answerCache => Redirect(call).addingToSession(SessionHelper.answerCacheId -> answerCache.uuid))
+      .map(answerCache => Redirect(call).addingToSession(SessionHelper.ANSWER_CACHE_ID -> answerCache.uuid))
 }

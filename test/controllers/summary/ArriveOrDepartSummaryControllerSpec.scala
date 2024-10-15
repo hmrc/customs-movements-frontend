@@ -20,7 +20,8 @@ import controllers.ControllerLayerSpec
 import controllers.summary.routes.MovementConfirmationController
 import forms.ConsignmentReferences
 import models.cache.{ArrivalAnswers, DepartureAnswers, JourneyType, MovementAnswers}
-import models.confirmation.{FlashKeys, SubmissionResult}
+import models.confirmation.SubmissionResult
+import models.requests.SessionHelper
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -115,10 +116,10 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
 
         val result = controller(ArrivalAnswers(Some(consignmentRefs))).submit()(postRequest(emptyForm))
 
-        session(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.ARRIVE.toString)
-        session(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
-        session(result).get(FlashKeys.UCR) mustBe Some(dummyUcr)
-        session(result).get(FlashKeys.UCR_TYPE) mustBe Some(dummyUcrType)
+        session(result).get(SessionHelper.JOURNEY_TYPE) mustBe Some(JourneyType.ARRIVE.toString)
+        session(result).get(SessionHelper.CONVERSATION_ID) mustBe Some(conversationId)
+        session(result).get(SessionHelper.UCR) mustBe Some(dummyUcr)
+        session(result).get(SessionHelper.UCR_TYPE) mustBe Some(dummyUcrType)
       }
     }
 
@@ -148,10 +149,10 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
 
         val result = controller(DepartureAnswers(Some(consignmentRefs))).submit()(postRequest(emptyForm))
 
-        session(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.DEPART.toString)
-        session(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
-        session(result).get(FlashKeys.UCR) mustBe Some(dummyUcr)
-        session(result).get(FlashKeys.UCR_TYPE) mustBe Some(dummyUcrType)
+        session(result).get(SessionHelper.JOURNEY_TYPE) mustBe Some(JourneyType.DEPART.toString)
+        session(result).get(SessionHelper.CONVERSATION_ID) mustBe Some(conversationId)
+        session(result).get(SessionHelper.UCR) mustBe Some(dummyUcr)
+        session(result).get(SessionHelper.UCR_TYPE) mustBe Some(dummyUcrType)
       }
     }
   }

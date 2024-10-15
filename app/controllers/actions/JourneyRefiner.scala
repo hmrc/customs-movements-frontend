@@ -43,7 +43,7 @@ class JourneyRefiner @Inject() (cacheRepository: CacheRepository, arriveDepartAl
 
   private def toJourneyRequest[A](request: AuthenticatedRequest[A], types: JourneyType*): Future[Option[JourneyRequest[A]]] = {
     val eori = request.user.eori
-    val maybeAnswerCacheId = SessionHelper.getValue(SessionHelper.answerCacheId)(request)
+    val maybeAnswerCacheId = SessionHelper.getValue(SessionHelper.ANSWER_CACHE_ID)(request)
 
     maybeAnswerCacheId.map { answerCacheId =>
       cacheRepository.findByEoriAndAnswerCacheId(eori, answerCacheId).map { cacheOption =>

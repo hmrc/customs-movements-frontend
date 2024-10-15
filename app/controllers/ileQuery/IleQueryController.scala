@@ -104,14 +104,14 @@ class IleQueryController @Inject() (
           case ducrInfo: DucrInfo =>
             val ucrBlock = UcrBlock(ucr = ducrInfo.ucr, ucrType = Ducr)
             cacheRepository.upsert(Cache(request.eori, ucrBlock, true)).map { answerCache =>
-              Ok(ileQueryDucrResponsePage(ducrInfo, response.parentMucr)).addingToSession(SessionHelper.answerCacheId -> answerCache.uuid)
+              Ok(ileQueryDucrResponsePage(ducrInfo, response.parentMucr)).addingToSession(SessionHelper.ANSWER_CACHE_ID -> answerCache.uuid)
             }
 
           case mucrInfo: MucrInfo =>
             val ucrBlock = UcrBlock(ucr = mucrInfo.ucr, ucrType = Mucr)
             cacheRepository.upsert(Cache(request.eori, ucrBlock, true)).map { answerCache =>
               Ok(ileQueryMucrResponsePage(mucrInfo, response.parentMucr, response.sortedChildrenUcrs))
-                .addingToSession(SessionHelper.answerCacheId -> answerCache.uuid)
+                .addingToSession(SessionHelper.ANSWER_CACHE_ID -> answerCache.uuid)
             }
 
           case _ => Future.successful(loadingPageResult)

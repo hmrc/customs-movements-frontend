@@ -45,7 +45,7 @@ class TypedJourneyRefinerTest extends AnyWordSpec with Matchers with BeforeAndAf
   private val departureAnswers = DepartureAnswers()
   private val cacheWithArrivalAnswers = Cache("eori", arrivalAnswers)
   private val cacheWithDepartureAnswers = Cache("eori", departureAnswers)
-  private val request = AuthenticatedRequest(FakeRequest().withSession(SessionHelper.answerCacheId -> cacheWithArrivalAnswers.uuid), user)
+  private val request = AuthenticatedRequest(FakeRequest().withSession(SessionHelper.ANSWER_CACHE_ID -> cacheWithArrivalAnswers.uuid), user)
 
   private val refiner = new JourneyRefiner(movementRepository, arriveDepartAllowList)
 

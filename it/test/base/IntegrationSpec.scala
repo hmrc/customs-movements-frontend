@@ -83,14 +83,14 @@ trait IntegrationSpec
   }
 
   protected def get(call: Call, answerUuid: String): Future[Result] =
-    route(app, FakeRequest("GET", call.url).withSession("authToken" -> "Token some-token", SessionHelper.answerCacheId -> answerUuid)).get
+    route(app, FakeRequest("GET", call.url).withSession("authToken" -> "Token some-token", SessionHelper.ANSWER_CACHE_ID -> answerUuid)).get
 
   protected def post[T](call: Call, answerUuid: String, payload: (String, String)*): Future[Result] = {
     val request: Request[AnyContentAsFormUrlEncoded] =
       CSRFTokenHelper.addCSRFToken(
         FakeRequest("POST", call.url)
           .withFormUrlEncodedBody(payload: _*)
-          .withSession("authToken" -> "Token some-token", SessionHelper.answerCacheId -> answerUuid)
+          .withSession("authToken" -> "Token some-token", SessionHelper.ANSWER_CACHE_ID -> answerUuid)
       )
     route(app, request).get
   }

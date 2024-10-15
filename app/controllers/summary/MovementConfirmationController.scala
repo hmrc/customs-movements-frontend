@@ -33,8 +33,7 @@ class MovementConfirmationController @Inject() (authenticate: AuthAction, mcc: M
 
   val displayPage: Action[AnyContent] = authenticate { implicit request =>
     Confirmation().map { confirmation =>
-      SessionHelper.removeValue(SessionHelper.answerCacheId)
-      Ok(confirmationPage(confirmation))
+      Ok(confirmationPage(confirmation)).withSession(SessionHelper.removeValue(SessionHelper.ANSWER_CACHE_ID))
     }
       .getOrElse(throw ReturnToStartException)
   }

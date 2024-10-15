@@ -21,7 +21,7 @@ import controllers.summary.routes.MovementConfirmationController
 import models.ReturnToStartException
 import models.cache.DisassociateUcrAnswers
 import models.cache.JourneyType.DISSOCIATE_UCR
-import models.confirmation.FlashKeys._
+import models.requests.SessionHelper._
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.SubmissionService

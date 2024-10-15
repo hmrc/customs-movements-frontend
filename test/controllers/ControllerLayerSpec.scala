@@ -43,10 +43,10 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
   protected val user = SignedInUser("eori", Enrolments(Set.empty))
   protected def getRequest(): Request[AnyContent] = FakeRequest(GET, "/").withCSRFToken
 
-  protected def getRequest(cache: Cache) = FakeRequest().withSession(SessionHelper.answerCacheId -> cache.uuid).withCSRFToken
+  protected def getRequest(cache: Cache) = FakeRequest().withSession(SessionHelper.ANSWER_CACHE_ID -> cache.uuid).withCSRFToken
   protected def postRequest[T](body: T, cache: Cache)(implicit wts: Writes[T]): Request[AnyContentAsJson] =
     FakeRequest("POST", "/")
-      .withSession(SessionHelper.answerCacheId -> cache.uuid)
+      .withSession(SessionHelper.ANSWER_CACHE_ID -> cache.uuid)
       .withJsonBody(wts.writes(body))
       .withCSRFToken
 

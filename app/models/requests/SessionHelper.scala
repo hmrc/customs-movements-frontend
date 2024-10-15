@@ -19,11 +19,21 @@ package models.requests
 import play.api.mvc.{Request, Session}
 
 object SessionHelper {
-  val answerCacheId = "answerCacheId"
+  val ANSWER_CACHE_ID = "ANSWER_CACHE_ID"
+  val CONVERSATION_ID = "CONVERSATION_ID"
+  val JOURNEY_TYPE = "JOURNEY_TYPE"
+  val MUCR = "MUCR"
+  val UCR = "UCR"
+  val UCR_TYPE = "UCR_TYPE"
+
+  private val receiptPageSessionKeys = List(CONVERSATION_ID, JOURNEY_TYPE, MUCR, UCR, UCR_TYPE)
 
   def getValue(key: String)(implicit request: Request[_]): Option[String] =
     request.session.data.get(key)
 
   def removeValue(key: String)(implicit request: Request[_]): Session =
     request.session - key
+
+  def clearAllReceiptPageSessionKeys()(implicit request: Request[_]): Session =
+    request.session -- receiptPageSessionKeys
 }

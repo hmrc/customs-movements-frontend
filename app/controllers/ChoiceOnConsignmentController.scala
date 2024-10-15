@@ -87,9 +87,9 @@ class ChoiceOnConsignmentController @Inject() (
   }
 
   private def processWithCacheAndUcr(eori: String, f: CacheAndUcr => Future[Result])(implicit request: AuthenticatedRequest[_]): Future[Result] = {
-    val maybeAnswerCacheId = SessionHelper.getValue(SessionHelper.answerCacheId)(request)
+    val maybeAnswerCacheId = SessionHelper.getValue(SessionHelper.ANSWER_CACHE_ID)(request)
 
-    maybeAnswerCacheId.map { answerCacheId =>
+    val futureResult = maybeAnswerCacheId.map { answerCacheId =>
       cacheRepository.findByEoriAndAnswerCacheId(eori, answerCacheId).flatMap { cacheOption =>
         (for {
           cache <- cacheOption
@@ -100,5 +100,7 @@ class ChoiceOnConsignmentController @Inject() (
         }
       }
     }.getOrElse(Future.successful(Redirect(ChoiceController.displayChoices)))
+
+    futureResult.map(_.withSession(SessionHelper.clearAllReceiptPageSessionKeys()))
   }
 }

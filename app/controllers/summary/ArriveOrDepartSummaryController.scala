@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.summary.routes.MovementConfirmationController
 import models.cache.JourneyType.{ARRIVE, DEPART}
 import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
-import models.confirmation.FlashKeys._
+import models.requests.SessionHelper._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SubmissionService

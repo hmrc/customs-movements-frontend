@@ -19,7 +19,7 @@ package models.confirmation
 import forms.ConsignmentReferences
 import models.cache.JourneyType
 import models.cache.JourneyType.JourneyType
-import models.confirmation.FlashKeys._
+import models.requests.SessionHelper._
 import play.api.mvc.Request
 
 case class Confirmation(journeyType: JourneyType, conversationId: String, consignmentRefs: Option[ConsignmentReferences], mucr: Option[String])

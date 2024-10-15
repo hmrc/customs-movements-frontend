@@ -21,7 +21,7 @@ import controllers.summary.routes.MovementConfirmationController
 import forms.ShutMucr
 import models.ReturnToStartException
 import models.cache.{JourneyType, ShutMucrAnswers}
-import models.confirmation.FlashKeys
+import models.requests.SessionHelper
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -103,8 +103,8 @@ class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with ScalaFuture
 
         val result = controller(ShutMucrAnswers(Some(shutMucr))).submit(postRequest(JsObject(Seq.empty)))
 
-        session(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.SHUT_MUCR.toString)
-        session(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
+        session(result).get(SessionHelper.JOURNEY_TYPE) mustBe Some(JourneyType.SHUT_MUCR.toString)
+        session(result).get(SessionHelper.CONVERSATION_ID) mustBe Some(conversationId)
       }
     }
   }

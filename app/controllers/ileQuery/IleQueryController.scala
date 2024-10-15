@@ -27,7 +27,7 @@ import models.UcrBlock
 import models.cache.{Cache, IleQuery}
 import models.notifications.queries.IleQueryResponseExchangeData.{SuccessfulResponseExchangeData, UcrNotFoundResponseExchangeData}
 import models.notifications.queries.{DucrInfo, IleQueryResponseExchange, MucrInfo}
-import models.requests.AuthenticatedRequest
+import models.requests.{AuthenticatedRequest, SessionHelper}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
@@ -103,14 +103,15 @@ class IleQueryController @Inject() (
 
           case ducrInfo: DucrInfo =>
             val ucrBlock = UcrBlock(ucr = ducrInfo.ucr, ucrType = Ducr)
-            cacheRepository.upsert(Cache(request.eori, ucrBlock, true)).map { _ =>
-              Ok(ileQueryDucrResponsePage(ducrInfo, response.parentMucr))
+            cacheRepository.upsert(Cache(request.eori, ucrBlock, true)).map { answerCache =>
+              Ok(ileQueryDucrResponsePage(ducrInfo, response.parentMucr)).addingToSession(SessionHelper.answerCacheId -> answerCache.uuid)
             }
 
           case mucrInfo: MucrInfo =>
             val ucrBlock = UcrBlock(ucr = mucrInfo.ucr, ucrType = Mucr)
-            cacheRepository.upsert(Cache(request.eori, ucrBlock, true)).map { _ =>
+            cacheRepository.upsert(Cache(request.eori, ucrBlock, true)).map { answerCache =>
               Ok(ileQueryMucrResponsePage(mucrInfo, response.parentMucr, response.sortedChildrenUcrs))
+                .addingToSession(SessionHelper.answerCacheId -> answerCache.uuid)
             }
 
           case _ => Future.successful(loadingPageResult)

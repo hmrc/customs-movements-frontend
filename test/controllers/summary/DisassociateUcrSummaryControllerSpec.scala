@@ -100,17 +100,17 @@ class DisassociateUcrSummaryControllerSpec extends ControllerLayerSpec with Scal
       val conversationId = "conversationId"
 
       "call SubmissionService" in {
-        when(submissionService.submit(any(), any[DisassociateUcrAnswers])(any())).thenReturn(Future.successful(conversationId))
+        when(submissionService.submit(any(), any[DisassociateUcrAnswers], any())(any())).thenReturn(Future.successful(conversationId))
         val cachedAnswers = DisassociateUcrAnswers(Some(ucr))
 
         controller(cachedAnswers).submit(postRequest()).futureValue
 
         val expectedEori = SuccessfulAuth().operator.eori
-        verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers))(any())
+        verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers), any())(any())
       }
 
       "return SEE_OTHER (303) that redirects to DisassociateUcrConfirmation" in {
-        when(submissionService.submit(any(), any[DisassociateUcrAnswers])(any())).thenReturn(Future.successful(conversationId))
+        when(submissionService.submit(any(), any[DisassociateUcrAnswers], any())(any())).thenReturn(Future.successful(conversationId))
 
         val result =
           controller(DisassociateUcrAnswers(Some(ucr))).submit(postRequest(Json.obj()))
@@ -121,7 +121,7 @@ class DisassociateUcrSummaryControllerSpec extends ControllerLayerSpec with Scal
       }
 
       "return response with Movement Type and Conversation Id in flash" in {
-        when(submissionService.submit(any(), any[DisassociateUcrAnswers])(any())).thenReturn(Future.successful(conversationId))
+        when(submissionService.submit(any(), any[DisassociateUcrAnswers], any())(any())).thenReturn(Future.successful(conversationId))
 
         val result = controller(DisassociateUcrAnswers(Some(ucr))).submit(postRequest(Json.obj()))
 

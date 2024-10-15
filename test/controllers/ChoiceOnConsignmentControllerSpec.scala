@@ -51,6 +51,11 @@ class ChoiceOnConsignmentControllerSpec extends ControllerLayerSpec with MockCac
       global
     )
 
+  private def genCache(ucrType: UcrType = Mucr): Cache =
+    Cache("eori", UcrBlock(ucr = "ucr", ucrType = ucrType), true)
+
+  private val cache = genCache()
+
   override def beforeEach(): Unit = {
     super.beforeEach()
     givenTheCacheIsEmpty()
@@ -64,11 +69,6 @@ class ChoiceOnConsignmentControllerSpec extends ControllerLayerSpec with MockCac
     super.afterEach()
   }
 
-  private def genCache(ucrType: UcrType = Mucr): Cache =
-    Cache("eori", UcrBlock(ucr = "ucr", ucrType = ucrType), true)
-
-  private val cache = genCache()
-
   private def theResponseForm: Form[Choice] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Choice]])
     verify(choicePage).apply(captor.capture(), any())(any(), any())
@@ -81,13 +81,14 @@ class ChoiceOnConsignmentControllerSpec extends ControllerLayerSpec with MockCac
 
       "invoked with no answer in cache" in {
         givenTheCacheContains(cache)
-        status(controller.displayChoices(getRequest())) mustBe OK
+
+        status(controller.displayChoices(getRequest(cache))) mustBe OK
         theResponseForm.value mustBe empty
       }
 
       "invoked with answer in cache" in {
         givenTheCacheContains(Cache("eori", ArrivalAnswers(), UcrBlock(ucr = "ucr", ucrType = Mucr), true))
-        status(controller.displayChoices(getRequest())) mustBe OK
+        status(controller.displayChoices(getRequest(cache))) mustBe OK
         theResponseForm.value mustBe Some(Arrival)
       }
     }
@@ -100,13 +101,15 @@ class ChoiceOnConsignmentControllerSpec extends ControllerLayerSpec with MockCac
       }
 
       "the cache does not contain Answer and UcrBlock" in {
-        givenTheCacheContains(Cache("eori"))
-        testChoicePageRedirect(controller.displayChoices(getRequest()))
+        val nonMatchingCache = Cache("eori")
+        givenTheCacheContains(nonMatchingCache)
+        testChoicePageRedirect(controller.displayChoices(getRequest(nonMatchingCache)))
       }
 
       "the cache contains Answer but not UcrBlock" in {
-        givenTheCacheContains(Cache("eori", ArrivalAnswers()))
-        testChoicePageRedirect(controller.displayChoices(getRequest()))
+        val nonMatchingCache = Cache("eori", ArrivalAnswers())
+        givenTheCacheContains(nonMatchingCache)
+        testChoicePageRedirect(controller.displayChoices(getRequest(nonMatchingCache)))
       }
     }
   }
@@ -117,7 +120,7 @@ class ChoiceOnConsignmentControllerSpec extends ControllerLayerSpec with MockCac
       "form is incorrect" in {
         givenTheCacheContains(cache)
         val incorrectForm = Json.obj("choice" -> "Incorrect")
-        status(controller.submitChoice(postRequest(incorrectForm))) mustBe BAD_REQUEST
+        status(controller.submitChoice(postRequest(incorrectForm, cache))) mustBe BAD_REQUEST
       }
     }
 
@@ -207,7 +210,7 @@ class ChoiceOnConsignmentControllerSpec extends ControllerLayerSpec with MockCac
     givenTheCacheContains(cache)
     val body = Json.obj("choice" -> choice.value)
 
-    val result = controller.submitChoice(postRequest(body))
+    val result = controller.submitChoice(postRequest(body, cache))
 
     status(result) mustBe SEE_OTHER
     redirectLocation(result).get mustBe expectedCall.url

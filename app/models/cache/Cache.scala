@@ -22,8 +22,10 @@ import play.api.libs.json._
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.Instant
+import java.util.UUID
 
 case class Cache(
+  uuid: String,
   eori: String,
   answers: Option[Answers],
   ucrBlock: Option[UcrBlock],
@@ -44,14 +46,23 @@ object Cache {
   implicit val format: OFormat[Cache] = Json.format[Cache]
 
   def apply(eori: String): Cache =
-    new Cache(eori, None, None, false, None)
+    new Cache(UUID.randomUUID().toString, eori, None, None, false, None)
 
   def apply(eori: String, ucrBlock: UcrBlock, ucrBlockFromIleQuery: Boolean): Cache =
-    new Cache(eori, None, Some(ucrBlock), ucrBlockFromIleQuery, None)
+    new Cache(UUID.randomUUID().toString, eori, None, Some(ucrBlock), ucrBlockFromIleQuery, None)
 
   def apply(eori: String, answers: Answers, ucrBlock: UcrBlock, ucrBlockFromIleQuery: Boolean): Cache =
-    new Cache(eori, Some(answers), Some(ucrBlock), ucrBlockFromIleQuery, None)
+    new Cache(UUID.randomUUID().toString, eori, Some(answers), Some(ucrBlock), ucrBlockFromIleQuery, None)
 
   def apply(eori: String, answers: Answers): Cache =
-    new Cache(eori, Some(answers), None, false, None)
+    new Cache(UUID.randomUUID().toString, eori, Some(answers), None, false, None)
+
+  def apply(
+    eori: String,
+    answers: Option[Answers],
+    ucrBlock: Option[UcrBlock],
+    ucrBlockFromIleQuery: Boolean,
+    ducrPartChiefChoice: Option[DucrPartChiefChoice]
+  ): Cache =
+    new Cache(UUID.randomUUID().toString, eori, answers, ucrBlock, ucrBlockFromIleQuery, ducrPartChiefChoice)
 }

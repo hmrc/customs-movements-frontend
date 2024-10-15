@@ -80,17 +80,17 @@ class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with ScalaFuture
       val conversationId = "conversationId"
 
       "call SubmissionService" in {
-        when(submissionService.submit(any(), any[ShutMucrAnswers])(any())).thenReturn(Future.successful(conversationId))
+        when(submissionService.submit(any(), any[ShutMucrAnswers], any())(any())).thenReturn(Future.successful(conversationId))
         val cachedAnswers = ShutMucrAnswers(shutMucr = Some(shutMucr))
 
         controller(cachedAnswers).submit(postRequest()).futureValue
 
         val expectedEori = SuccessfulAuth().operator.eori
-        verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers))(any())
+        verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers), any())(any())
       }
 
       "return 303 (SEE_OTHER) that redirects to ShutMucrConfirmationController" in {
-        when(submissionService.submit(any(), any[ShutMucrAnswers])(any())).thenReturn(Future.successful(conversationId))
+        when(submissionService.submit(any(), any[ShutMucrAnswers], any())(any())).thenReturn(Future.successful(conversationId))
 
         val result = controller(ShutMucrAnswers(Some(shutMucr))).submit(postRequest(JsObject(Seq.empty)))
 
@@ -99,7 +99,7 @@ class ShutMucrSummaryControllerSpec extends ControllerLayerSpec with ScalaFuture
       }
 
       "return response with Movement Type and Conversation Id in flash" in {
-        when(submissionService.submit(any(), any[ShutMucrAnswers])(any())).thenReturn(Future.successful(conversationId))
+        when(submissionService.submit(any(), any[ShutMucrAnswers], any())(any())).thenReturn(Future.successful(conversationId))
 
         val result = controller(ShutMucrAnswers(Some(shutMucr))).submit(postRequest(JsObject(Seq.empty)))
 

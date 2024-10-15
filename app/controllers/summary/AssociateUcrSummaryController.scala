@@ -62,7 +62,7 @@ class AssociateUcrSummaryController @Inject() (
     val ucr = answers.consignmentReferences.map(_.referenceValue)
     val mucr = answers.mucrOptions.map(_.mucr)
 
-    submissionService.submit(request.eori, answers).map { conversationId =>
+    submissionService.submit(request.eori, answers, request.cache.uuid).map { conversationId =>
       val sessionValues = List(
         Some(CONVERSATION_ID -> conversationId),
         Some(JOURNEY_TYPE -> answers.`type`.toString),

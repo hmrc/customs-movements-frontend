@@ -24,7 +24,7 @@ import forms.Choice
 import forms.Choice._
 import models.UcrBlock
 import models.cache._
-import models.requests.AuthenticatedRequest
+import models.requests.{AuthenticatedRequest, SessionHelper}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -86,14 +86,19 @@ class ChoiceOnConsignmentController @Inject() (
     } else Future.successful(Redirect(controllers.routes.ChoiceOnConsignmentController.displayChoices))
   }
 
-  private def processWithCacheAndUcr(eori: String, f: CacheAndUcr => Future[Result]): Future[Result] =
-    cacheRepository.findByEori(eori).flatMap { maybeCache =>
-      (for {
-        cache <- maybeCache
-        ucrBlock <- cache.ucrBlock
-      } yield CacheAndUcr(cache, ucrBlock)) match {
-        case Some(cacheAndUcr) => f(cacheAndUcr)
-        case _                 => Future.successful(Redirect(ChoiceController.displayChoices))
+  private def processWithCacheAndUcr(eori: String, f: CacheAndUcr => Future[Result])(implicit request: AuthenticatedRequest[_]): Future[Result] = {
+    val maybeAnswerCacheId = SessionHelper.getValue(SessionHelper.answerCacheId)(request)
+
+    maybeAnswerCacheId.map { answerCacheId =>
+      cacheRepository.findByEoriAndAnswerCacheId(eori, answerCacheId).flatMap { cacheOption =>
+        (for {
+          cache <- cacheOption
+          ucrBlock <- cache.ucrBlock
+        } yield CacheAndUcr(cache, ucrBlock)) match {
+          case Some(cacheAndUcr) => f(cacheAndUcr)
+          case _                 => Future.successful(Redirect(ChoiceController.displayChoices))
+        }
       }
-    }
+    }.getOrElse(Future.successful(Redirect(ChoiceController.displayChoices)))
+  }
 }

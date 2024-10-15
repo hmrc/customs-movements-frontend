@@ -92,17 +92,17 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
     "everything works correctly and user is on Arrival journey" should {
 
       "call SubmissionService" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(submissionResult))
+        when(submissionService.submit(any(), any[MovementAnswers], any())(any())).thenReturn(Future.successful(submissionResult))
         val cachedAnswers = ArrivalAnswers(Some(consignmentRefs))
 
         controller(cachedAnswers).submit()(postRequest(emptyForm)).futureValue
 
         val expectedEori = SuccessfulAuth().operator.eori
-        verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers))(any())
+        verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers), any())(any())
       }
 
       "return SEE_OTHER (303) that redirects to MovementConfirmationController" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(submissionResult))
+        when(submissionService.submit(any(), any[MovementAnswers], any())(any())).thenReturn(Future.successful(submissionResult))
 
         val result = controller(ArrivalAnswers(Some(consignmentRefs))).submit()(postRequest(emptyForm))
 
@@ -111,7 +111,7 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
       }
 
       "return response with Movement Type, Conversation Id, UCR, and UCR Type in flash" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(submissionResult))
+        when(submissionService.submit(any(), any[MovementAnswers], any())(any())).thenReturn(Future.successful(submissionResult))
 
         val result = controller(ArrivalAnswers(Some(consignmentRefs))).submit()(postRequest(emptyForm))
 
@@ -125,17 +125,17 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
     "everything works correctly and user is on Departure journey" should {
 
       "call SubmissionService" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(submissionResult))
+        when(submissionService.submit(any(), any[MovementAnswers], any())(any())).thenReturn(Future.successful(submissionResult))
         val cachedAnswers = DepartureAnswers(Some(consignmentRefs))
 
         controller(cachedAnswers).submit()(postRequest(emptyForm)).futureValue
 
         val expectedEori = SuccessfulAuth().operator.eori
-        verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers))(any())
+        verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers), any())(any())
       }
 
       "return SEE_OTHER (303) that redirects to MovementConfirmationController" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(submissionResult))
+        when(submissionService.submit(any(), any[MovementAnswers], any())(any())).thenReturn(Future.successful(submissionResult))
 
         val result = controller(DepartureAnswers(Some(consignmentRefs))).submit()(postRequest(emptyForm))
 
@@ -144,7 +144,7 @@ class ArriveOrDepartSummaryControllerSpec extends ControllerLayerSpec with Scala
       }
 
       "return response with Movement Type, Conversation Id, UCR, and UCR Type in flash" in {
-        when(submissionService.submit(any(), any[MovementAnswers])(any())).thenReturn(Future.successful(submissionResult))
+        when(submissionService.submit(any(), any[MovementAnswers], any())(any())).thenReturn(Future.successful(submissionResult))
 
         val result = controller(DepartureAnswers(Some(consignmentRefs))).submit()(postRequest(emptyForm))
 

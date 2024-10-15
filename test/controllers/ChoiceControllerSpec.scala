@@ -71,26 +71,29 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
       }
 
       "invoked with data in cache" in {
-        givenTheCacheContains(Cache("eori", ArrivalAnswers()))
-        val result = controller.displayChoices(getRequest())
+        val cache = Cache("eori", ArrivalAnswers())
+        givenTheCacheContains(cache)
+        val result = controller.displayChoices(getRequest(cache))
 
         status(result) mustBe OK
         theResponseForm.value mustBe Some(Arrival)
       }
 
       "invoked with cache containing UcrBlock but no Answer" in {
-        givenTheCacheContains(Cache("eori", UcrBlock(ucr = "ucr", ucrType = Mucr), ucrBlockFromIleQuery = false))
+        val cache = Cache("eori", UcrBlock(ucr = "ucr", ucrType = Mucr), ucrBlockFromIleQuery = false)
+        givenTheCacheContains(cache)
 
-        val result = controller.displayChoices(getRequest())
+        val result = controller.displayChoices(getRequest(cache))
 
         status(result) mustBe OK
         theResponseForm.value mustBe empty
       }
 
       "invoked with cache containing Answer and UcrBlock" in {
-        givenTheCacheContains(Cache("eori", ArrivalAnswers(), UcrBlock(ucr = "ucr", ucrType = Mucr), ucrBlockFromIleQuery = true))
+        val cache = Cache("eori", ArrivalAnswers(), UcrBlock(ucr = "ucr", ucrType = Mucr), ucrBlockFromIleQuery = true)
+        givenTheCacheContains(cache)
 
-        val result = controller.displayChoices(getRequest())
+        val result = controller.displayChoices(getRequest(cache))
 
         status(result) mustBe OK
         theResponseForm.value mustBe Some(Arrival)

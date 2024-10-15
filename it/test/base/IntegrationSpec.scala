@@ -21,6 +21,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder
 import connectors.{AuditWiremockTestServer, AuthWiremockTestServer, MovementsBackendWiremockTestServer}
 import models.cache.{Answers, Cache}
+import models.requests.SessionHelper
 import models.{DateTimeProvider, UcrBlock}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.Eventually
@@ -81,12 +82,16 @@ trait IntegrationSpec
     super.afterEach()
   }
 
-  protected def get(call: Call): Future[Result] =
-    route(app, FakeRequest("GET", call.url).withSession("authToken" -> "Token some-token")).get
+  protected def get(call: Call, answerUuid: String): Future[Result] =
+    route(app, FakeRequest("GET", call.url).withSession("authToken" -> "Token some-token", SessionHelper.answerCacheId -> answerUuid)).get
 
-  protected def post[T](call: Call, payload: (String, String)*): Future[Result] = {
+  protected def post[T](call: Call, answerUuid: String, payload: (String, String)*): Future[Result] = {
     val request: Request[AnyContentAsFormUrlEncoded] =
-      CSRFTokenHelper.addCSRFToken(FakeRequest("POST", call.url).withFormUrlEncodedBody(payload: _*).withSession("authToken" -> "Token some-token"))
+      CSRFTokenHelper.addCSRFToken(
+        FakeRequest("POST", call.url)
+          .withFormUrlEncodedBody(payload: _*)
+          .withSession("authToken" -> "Token some-token", SessionHelper.answerCacheId -> answerUuid)
+      )
     route(app, request).get
   }
 
@@ -95,11 +100,15 @@ trait IntegrationSpec
 
   protected def theAnswersFor(eori: String): Option[Answers] = theCacheFor(eori).flatMap(_.answers)
 
-  protected def givenCacheFor(cache: Cache): Unit = cacheRepository.insertOne(cache)
+  protected def givenCacheFor(cache: Cache): String = {
+    cacheRepository.insertOne(cache)
+    cache.uuid
+  }
 
-  protected def givenCacheFor(eori: String, answers: Answers): Unit = givenCacheFor(Cache(eori, answers))
+  protected def givenCacheFor(eori: String, answers: Answers): String =
+    givenCacheFor(Cache(eori, answers))
 
-  protected def givenCacheFor(eori: String, answers: Answers, ucrBlock: UcrBlock): Unit =
+  protected def givenCacheFor(eori: String, answers: Answers, ucrBlock: UcrBlock): String =
     givenCacheFor(Cache(eori, answers, ucrBlock, false))
 
   protected def verifyEventually(requestPatternBuilder: RequestPatternBuilder): Unit = eventually(WireMock.verify(requestPatternBuilder))

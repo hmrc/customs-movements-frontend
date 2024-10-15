@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package repositories
+package models.requests
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.mvc.{Request, Session}
 
-object SearchParameters {
-  implicit val format: OFormat[SearchParameters] = Json.format[SearchParameters]
-}
+object SessionHelper {
+  val answerCacheId = "answerCacheId"
 
-case class SearchParameters(
-  eori: Option[String] = None,
-  providerId: Option[String] = None,
-  conversationId: Option[String] = None,
-  uuid: Option[String] = None
-) {
+  def getValue(key: String)(implicit request: Request[_]): Option[String] =
+    request.session.data.get(key)
 
-  def isEmpty: Boolean = eori.isEmpty && providerId.isEmpty && conversationId.isEmpty && uuid.isEmpty
-  def isDefined: Boolean = !isEmpty
+  def removeValue(key: String)(implicit request: Request[_]): Session =
+    request.session - key
 }

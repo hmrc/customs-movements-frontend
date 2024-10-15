@@ -18,7 +18,7 @@ package controllers.actions
 
 import controllers.routes.ChoiceController
 import models.cache.JourneyType.{ARRIVE, DEPART, JourneyType}
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.requests.{AuthenticatedRequest, JourneyRequest, SessionHelper}
 import play.api.mvc.{ActionRefiner, Result, Results}
 import repositories.CacheRepository
 
@@ -43,15 +43,18 @@ class JourneyRefiner @Inject() (cacheRepository: CacheRepository, arriveDepartAl
 
   private def toJourneyRequest[A](request: AuthenticatedRequest[A], types: JourneyType*): Future[Option[JourneyRequest[A]]] = {
     val eori = request.user.eori
+    val maybeAnswerCacheId = SessionHelper.getValue(SessionHelper.answerCacheId)(request)
 
-    cacheRepository.findByEori(eori).map { cacheOption =>
-      for {
-        cache <- cacheOption
-        answers <- cache.answers
-        if types.isEmpty || types.contains(answers.`type`)
-        if isUserPermittedArriveDepartAccess(answers.`type`, eori, arriveDepartAllowList)
-      } yield JourneyRequest(cache, request)
-    }
+    maybeAnswerCacheId.map { answerCacheId =>
+      cacheRepository.findByEoriAndAnswerCacheId(eori, answerCacheId).map { cacheOption =>
+        for {
+          cache <- cacheOption
+          answers <- cache.answers
+          if types.isEmpty || types.contains(answers.`type`)
+          if isUserPermittedArriveDepartAccess(answers.`type`, eori, arriveDepartAllowList)
+        } yield JourneyRequest(cache, request)
+      }
+    }.getOrElse(Future.successful(None))
   }
 
   private def orRedirect[A](journeyOption: Option[JourneyRequest[A]]): Either[Result, JourneyRequest[A]] =

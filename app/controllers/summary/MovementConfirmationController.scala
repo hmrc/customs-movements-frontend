@@ -19,6 +19,7 @@ package controllers.summary
 import controllers.actions.AuthAction
 import models.ReturnToStartException
 import models.confirmation.Confirmation
+import models.requests.SessionHelper
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -31,8 +32,10 @@ class MovementConfirmationController @Inject() (authenticate: AuthAction, mcc: M
     extends FrontendController(mcc) with I18nSupport {
 
   val displayPage: Action[AnyContent] = authenticate { implicit request =>
-    Confirmation()
-      .map(confirmation => Ok(confirmationPage(confirmation)))
+    Confirmation().map { confirmation =>
+      SessionHelper.removeValue(SessionHelper.answerCacheId)
+      Ok(confirmationPage(confirmation))
+    }
       .getOrElse(throw ReturnToStartException)
   }
 }

@@ -52,7 +52,7 @@ class ArriveOrDepartSummaryController @Inject() (
   val submit: Action[AnyContent] = authAndValidJourney.async { implicit request =>
     val answers = request.answersAs[MovementAnswers]
 
-    submissionService.submit(request.eori, answers).map { submissionResult =>
+    submissionService.submit(request.eori, answers, request.cache.uuid).map { submissionResult =>
       Redirect(MovementConfirmationController.displayPage)
         .addingToSession(
           CONVERSATION_ID -> submissionResult.conversationId,

@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.DucrPartChiefChoice
 import models.cache.JourneyType.JourneyType
 import models.cache.{Answers, Cache}
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.requests.{AuthenticatedRequest, JourneyRequest, SessionHelper}
 import models.{SignedInUser, UcrBlock}
 import org.mockito.MockitoSugar.mock
 import org.scalatest.BeforeAndAfterEach
@@ -42,6 +42,14 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
 
   protected val user = SignedInUser("eori", Enrolments(Set.empty))
   protected def getRequest(): Request[AnyContent] = FakeRequest(GET, "/").withCSRFToken
+
+  protected def getRequest(cache: Cache) = FakeRequest().withSession(SessionHelper.answerCacheId -> cache.uuid).withCSRFToken
+  protected def postRequest[T](body: T, cache: Cache)(implicit wts: Writes[T]): Request[AnyContentAsJson] =
+    FakeRequest("POST", "/")
+      .withSession(SessionHelper.answerCacheId -> cache.uuid)
+      .withJsonBody(wts.writes(body))
+      .withCSRFToken
+
   protected def postRequest(): Request[AnyContent] = FakeRequest(POST, "/").withCSRFToken
   protected def postRequest[T](body: T)(implicit wts: Writes[T]): Request[AnyContentAsJson] =
     FakeRequest("POST", "/").withJsonBody(wts.writes(body)).withCSRFToken

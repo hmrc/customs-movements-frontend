@@ -176,17 +176,17 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
       val conversationId = "conversationId"
 
       "call SubmissionService" in {
-        when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful(conversationId))
+        when(submissionService.submit(any(), any[AssociateUcrAnswers], any())(any())).thenReturn(Future.successful(conversationId))
         val cachedAnswers = AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))
 
         controller(cachedAnswers).submit(postRequest()).futureValue
 
         val expectedEori = SuccessfulAuth().operator.eori
-        verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers))(any())
+        verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers), any())(any())
       }
 
       "return SEE_OTHER (303) that redirects to AssociateUcrConfirmation" in {
-        when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful(conversationId))
+        when(submissionService.submit(any(), any[AssociateUcrAnswers], any())(any())).thenReturn(Future.successful(conversationId))
 
         val result =
           controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))).submit(postRequest(Json.obj()))
@@ -196,7 +196,7 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
       }
 
       "return response with Movement Type and Conversation Id in flash" in {
-        when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful(conversationId))
+        when(submissionService.submit(any(), any[AssociateUcrAnswers], any())(any())).thenReturn(Future.successful(conversationId))
 
         val result =
           controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))).submit(postRequest(Json.obj()))

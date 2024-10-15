@@ -19,7 +19,7 @@ package repositories
 import com.mongodb.ErrorCategory.DUPLICATE_KEY
 import com.mongodb.client.model.ReturnDocument
 import org.mongodb.scala.bson.BsonDocument
-import org.mongodb.scala.model.Filters.equal
+import org.mongodb.scala.model.Filters.{and, equal}
 import org.mongodb.scala.model.FindOneAndReplaceOptions
 import org.mongodb.scala.{MongoCollection, MongoWriteException}
 import play.api.libs.json.Json
@@ -54,10 +54,10 @@ trait RepositoryOps[T] {
    Find one and replace with "document: T" if a document with keyId=keyValue exists,
    or create "document: T" if a document with keyId=keyValue does NOT exists.
    */
-  def findOneAndReplace[V](keyId: String, keyValue: V, document: T): Future[T] =
+  def findOneAndReplace[V](keyId1: String, keyValue1: V, keyId2: String, keyValue2: V, document: T): Future[T] =
     collection
       .findOneAndReplace(
-        filter = equal(keyId, keyValue),
+        filter = and(equal(keyId1, keyValue1), equal(keyId2, keyValue2)),
         replacement = document,
         options = FindOneAndReplaceOptions().upsert(true).returnDocument(ReturnDocument.AFTER)
       )
@@ -78,6 +78,9 @@ trait RepositoryOps[T] {
 
   def removeEvery[V](keyId: String, keyValue: V): Future[Unit] =
     collection.deleteMany(equal(keyId, keyValue)).toFuture().map(_ => ())
+
+  def removeEvery[V](keyId1: String, keyValue1: V, keyId2: String, keyValue2: V): Future[Unit] =
+    collection.deleteMany(and(equal(keyId1, keyValue1), equal(keyId2, keyValue2))).toFuture().map(_ => ())
 
   def size: Future[Long] = collection.countDocuments().toFuture()
 }

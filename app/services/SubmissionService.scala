@@ -44,7 +44,7 @@ class SubmissionService @Inject() (
   private val success = "Success"
   private val failed = "Failed"
 
-  def submit(eori: String, answers: DisassociateUcrAnswers)(implicit hc: HeaderCarrier): Future[String] = {
+  def submit(eori: String, answers: DisassociateUcrAnswers, cachUuid: String)(implicit hc: HeaderCarrier): Future[String] = {
     val ucr = answers.ucr.getOrElse(throw ReturnToStartException).ucr
     val exchange = answers.ucr.map(_.kind) match {
       case Some(UcrType.Ducr) => DisassociateDUCRRequest(eori, ucr)
@@ -56,12 +56,14 @@ class SubmissionService @Inject() (
       .submit(exchange)
       .andThen {
         case Success(conversationId) =>
-          repository.removeByEori(eori).flatMap(_ => auditService.auditDisassociate(eori, ucr, success, Some(conversationId)))
+          repository
+            .removeByEoriAndAnswerCacheId(eori, cachUuid)
+            .flatMap(_ => auditService.auditDisassociate(eori, ucr, success, Some(conversationId)))
         case Failure(_) => auditService.auditDisassociate(eori, ucr, failed)
       }
   }
 
-  def submit(eori: String, answers: AssociateUcrAnswers)(implicit hc: HeaderCarrier): Future[String] = {
+  def submit(eori: String, answers: AssociateUcrAnswers, cachUuid: String)(implicit hc: HeaderCarrier): Future[String] = {
     val mucr = answers.mucrOptions.map(_.mucr).getOrElse(throw ReturnToStartException)
     val ucr = answers.associateUcr.map(_.ucr).getOrElse(throw ReturnToStartException)
     val exchange = answers.associateUcr.map(_.kind) match {
@@ -74,24 +76,28 @@ class SubmissionService @Inject() (
       .submit(exchange)
       .andThen {
         case Success(conversationId) =>
-          repository.removeByEori(eori).map(_ => auditService.auditAssociate(eori, mucr, ucr, success, Some(conversationId)))
+          repository
+            .removeByEoriAndAnswerCacheId(eori, cachUuid)
+            .map(_ => auditService.auditAssociate(eori, mucr, ucr, success, Some(conversationId)))
         case Failure(conversationId) => auditService.auditAssociate(eori, mucr, ucr, failed)
       }
   }
 
-  def submit(eori: String, answers: ShutMucrAnswers)(implicit hc: HeaderCarrier): Future[String] = {
+  def submit(eori: String, answers: ShutMucrAnswers, cachUuid: String)(implicit hc: HeaderCarrier): Future[String] = {
     val mucr = answers.shutMucr.map(_.mucr).getOrElse(throw ReturnToStartException)
 
     connector
       .submit(ShutMUCRRequest(eori, mucr))
       .andThen {
         case Success(conversationId) =>
-          repository.removeByEori(eori).flatMap(_ => auditService.auditShutMucr(eori, mucr, success, Some(conversationId)))
+          repository
+            .removeByEoriAndAnswerCacheId(eori, cachUuid)
+            .flatMap(_ => auditService.auditShutMucr(eori, mucr, success, Some(conversationId)))
         case Failure(_) => auditService.auditShutMucr(eori, mucr, failed)
       }
   }
 
-  def submit(eori: String, answers: MovementAnswers)(implicit hc: HeaderCarrier): Future[SubmissionResult] = {
+  def submit(eori: String, answers: MovementAnswers, cachUuid: String)(implicit hc: HeaderCarrier): Future[SubmissionResult] = {
     val journeyType = answers.`type`
     val data = movementBuilder.createMovementRequest(eori, answers)
     val timer = metrics.startTimer(Choice(journeyType))
@@ -100,7 +106,7 @@ class SubmissionService @Inject() (
 
     (for {
       conversationId <- connector.submit(data)
-      _ <- repository.removeByEori(eori)
+      _ <- repository.removeByEoriAndAnswerCacheId(eori, cachUuid)
     } yield SubmissionResult(conversationId, data.consignmentReference)).andThen {
       case Success(subResult) => auditService.auditMovements(data, success, movementAuditType(journeyType), Some(subResult.conversationId))
       case Failure(_)         => auditService.auditMovements(data, failed, movementAuditType(journeyType))

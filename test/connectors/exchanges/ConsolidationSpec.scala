@@ -41,6 +41,12 @@ class ConsolidationSpec extends AnyWordSpec with Matchers {
       Consolidation.format.reads(associateMucrJson) mustBe JsSuccess(expectedResult)
     }
 
+    "correct read Associate Ducr Part request" in {
+      val associateDucrPartJson = Json.obj("consolidationType" -> DucrPartAssociation.typeName, "eori" -> validEori, "mucr" -> mucr, "ucr" -> mucr)
+      val expectedResult = AssociateDUCRPartRequest(eori = validEori, mucr = mucr, ucr = mucr)
+      Consolidation.format.reads(associateDucrPartJson) mustBe JsSuccess(expectedResult)
+    }
+
     "correct read Disassociate Ducr request" in {
       val disassociateDucrJson = Json.obj("consolidationType" -> DucrDisassociation.typeName, "eori" -> validEori, "ucr" -> ducr)
       val expectedResult = DisassociateDUCRRequest(eori = validEori, ucr = ducr)
@@ -51,6 +57,12 @@ class ConsolidationSpec extends AnyWordSpec with Matchers {
       val disassociateMucrJson = Json.obj("consolidationType" -> MucrDisassociation.typeName, "eori" -> validEori, "ucr" -> mucr)
       val expectedResult = DisassociateMUCRRequest(eori = validEori, ucr = mucr)
       Consolidation.format.reads(disassociateMucrJson) mustBe JsSuccess(expectedResult)
+    }
+
+    "correct read Disassociate Ducr Part request" in {
+      val disassociateDucrPartJson = Json.obj("consolidationType" -> DucrPartDisassociation.typeName, "eori" -> validEori, "ucr" -> ducr)
+      val expectedResult = DisassociateDUCRPartRequest(eori = validEori, ucr = ducr)
+      Consolidation.format.reads(disassociateDucrPartJson) mustBe JsSuccess(expectedResult)
     }
 
     "correct read Shut Mucr request" in {

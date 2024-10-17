@@ -36,7 +36,7 @@ trait MockCache extends BeforeAndAfterEach {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     given(cacheRepository.upsert(any())).willAnswer(withTheCacheUpserted)
-    given(cacheRepository.removeByEori(any())).willReturn(Future.successful((): Unit))
+    given(cacheRepository.removeByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful((): Unit))
   }
 
   override protected def afterEach(): Unit = {
@@ -45,10 +45,10 @@ trait MockCache extends BeforeAndAfterEach {
   }
 
   protected def givenTheCacheContains(content: Cache): Unit =
-    given(cacheRepository.findByEori(any())).willReturn(Future.successful(Some(content)))
+    given(cacheRepository.findByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful(Some(content)))
 
   protected def givenTheCacheIsEmpty(): Unit =
-    given(cacheRepository.findByEori(any())).willReturn(Future.successful(None))
+    given(cacheRepository.findByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful(None))
 
   protected def theCacheUpserted: Cache = {
     val captor: ArgumentCaptor[Cache] = ArgumentCaptor.forClass(classOf[Cache])

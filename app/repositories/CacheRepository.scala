@@ -19,6 +19,7 @@ package repositories
 import models.cache.Cache
 import org.mongodb.scala.model.Indexes.ascending
 import org.mongodb.scala.model.{IndexModel, IndexOptions}
+import repositories.CacheRepository.{eoriField, uuidField}
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
@@ -34,17 +35,21 @@ class CacheRepository @Inject() (mc: MongoComponent)(implicit ec: ExecutionConte
   override def classTag: ClassTag[Cache] = implicitly[ClassTag[Cache]]
   implicit val executionContext: ExecutionContext = ec
 
-  def findByEori(eori: String): Future[Option[Cache]] = findOne("eori", eori)
+  def findByEoriAndAnswerCacheId(eori: String, answerCacheId: String): Future[Option[Cache]] =
+    findAll(SearchParameters(eori = Some(eori), uuid = Some(answerCacheId))).map(_.headOption)(ec)
 
-  def removeByEori(eori: String): Future[Unit] = removeEvery("eori", eori)
+  def removeByEoriAndAnswerCacheId(eori: String, answerCacheId: String): Future[Unit] = removeEvery(eoriField, eori, uuidField, answerCacheId)
 
   def upsert(cache: Cache): Future[Cache] =
-    findOneAndReplace("eori", cache.eori, cache)
+    findOneAndReplace(eoriField, cache.eori, uuidField, cache.uuid, cache)
 }
 
 object CacheRepository {
+  private val eoriField = "eori"
+  private val uuidField = "uuid"
+
   val indexes: Seq[IndexModel] = Seq(
-    IndexModel(ascending("eori"), IndexOptions().name("eoriIdx")),
+    IndexModel(ascending(eoriField), IndexOptions().name("eoriIdx")),
     IndexModel(ascending("updated"), IndexOptions().name("ttl").expireAfter(3600, SECONDS))
   )
 }

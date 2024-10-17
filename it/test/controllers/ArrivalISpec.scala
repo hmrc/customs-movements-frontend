@@ -40,10 +40,10 @@ class ArrivalISpec extends IntegrationSpec {
       "return 200" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+        val answerUuid = givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
 
         // When
-        val response = get(SpecificDateTimeController.displayPage)
+        val response = get(SpecificDateTimeController.displayPage, answerUuid)
 
         // Then
         status(response) mustBe OK
@@ -55,10 +55,10 @@ class ArrivalISpec extends IntegrationSpec {
         "user elects to enter date time" in {
           // Given
           givenAuthSuccess("eori")
-          givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+          val answerUuid = givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
 
           // When
-          val response = post(SpecificDateTimeController.submit, "choice" -> SpecificDateTimeChoice.UserDateTime)
+          val response = post(SpecificDateTimeController.submit, answerUuid, "choice" -> SpecificDateTimeChoice.UserDateTime)
 
           // Then
           status(response) mustBe SEE_OTHER
@@ -73,10 +73,10 @@ class ArrivalISpec extends IntegrationSpec {
         "user elects to current date time" in {
           // Given
           givenAuthSuccess("eori")
-          givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+          val answerUuid = givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
 
           // When
-          val response = post(SpecificDateTimeController.submit, "choice" -> SpecificDateTimeChoice.CurrentDateTime)
+          val response = post(SpecificDateTimeController.submit, answerUuid, "choice" -> SpecificDateTimeChoice.CurrentDateTime)
 
           // Then
           status(response) mustBe SEE_OTHER
@@ -98,10 +98,10 @@ class ArrivalISpec extends IntegrationSpec {
       "return 200" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+        val answerUuid = givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
 
         // When
-        val response = get(MovementDetailsController.displayPage)
+        val response = get(MovementDetailsController.displayPage, answerUuid)
 
         // Then
         status(response) mustBe OK
@@ -112,11 +112,12 @@ class ArrivalISpec extends IntegrationSpec {
       "continue" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
+        val answerUuid = givenCacheFor("eori", ArrivalAnswers(consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345"))))
 
         // When
         val response = post(
           MovementDetailsController.saveMovementDetails,
+          answerUuid,
           "dateOfArrival.day" -> date.getDayOfMonth.toString,
           "dateOfArrival.month" -> date.getMonthValue.toString,
           "dateOfArrival.year" -> date.getYear.toString,
@@ -143,7 +144,7 @@ class ArrivalISpec extends IntegrationSpec {
       "return 200" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor(
+        val answerUuid = givenCacheFor(
           "eori",
           ArrivalAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
@@ -152,7 +153,7 @@ class ArrivalISpec extends IntegrationSpec {
         )
 
         // When
-        val response = get(LocationController.displayPage)
+        val response = get(LocationController.displayPage, answerUuid)
 
         // Then
         status(response) mustBe OK
@@ -163,7 +164,7 @@ class ArrivalISpec extends IntegrationSpec {
       "continue" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor(
+        val answerUuid = givenCacheFor(
           "eori",
           ArrivalAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
@@ -172,7 +173,7 @@ class ArrivalISpec extends IntegrationSpec {
         )
 
         // When
-        val response = post(LocationController.saveLocation, "code" -> "GBAUEMAEMAEMA")
+        val response = post(LocationController.saveLocation, answerUuid, "code" -> "GBAUEMAEMAEMA")
 
         // Then
         status(response) mustBe SEE_OTHER
@@ -194,7 +195,7 @@ class ArrivalISpec extends IntegrationSpec {
       "return 200" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor(
+        val answerUuid = givenCacheFor(
           "eori",
           ArrivalAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
@@ -204,7 +205,7 @@ class ArrivalISpec extends IntegrationSpec {
         )
 
         // When
-        val response = get(ArriveOrDepartSummaryController.displayPage)
+        val response = get(ArriveOrDepartSummaryController.displayPage, answerUuid)
 
         // Then
         status(response) mustBe OK
@@ -215,7 +216,7 @@ class ArrivalISpec extends IntegrationSpec {
       "continue" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor(
+        val answerUuid = givenCacheFor(
           "eori",
           ArrivalAnswers(
             consignmentReferences = Some(ConsignmentReferences("M", "GB/123-12345")),
@@ -226,7 +227,7 @@ class ArrivalISpec extends IntegrationSpec {
         givenTheMovementsBackendAcceptsTheMovement()
 
         // When
-        val response = post(ArriveOrDepartSummaryController.submit)
+        val response = post(ArriveOrDepartSummaryController.submit, answerUuid)
 
         // Then
         status(response) mustBe SEE_OTHER

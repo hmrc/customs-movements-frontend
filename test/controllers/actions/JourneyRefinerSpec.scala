@@ -18,7 +18,7 @@ package controllers.actions
 
 import models.SignedInUser
 import models.cache.{AssociateUcrAnswers, Cache}
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.requests.{AuthenticatedRequest, JourneyRequest, SessionHelper}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito.`given`
@@ -41,9 +41,9 @@ class JourneyRefinerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
   private val arriveDepartAllowList = mock[ArriveDepartAllowList]
   private val block = mock[JourneyRequest[_] => Future[Result]]
   private val user = SignedInUser("eori", Enrolments(Set.empty))
-  private val request = AuthenticatedRequest(FakeRequest(), user)
   private val answers = AssociateUcrAnswers()
   private val cache = Cache("eori", answers)
+  private val request = AuthenticatedRequest(FakeRequest().withSession(SessionHelper.ANSWER_CACHE_ID -> cache.uuid), user)
   private val redirectResult = Results.Redirect(controllers.routes.ChoiceController.displayChoices)
 
   private val refiner = new JourneyRefiner(movementRepository, arriveDepartAllowList)
@@ -54,11 +54,12 @@ class JourneyRefinerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
   }
 
   "refine" should {
+    FakeRequest().withSession(SessionHelper.ANSWER_CACHE_ID -> "answerCache.uuid")
 
     "add cache to the request" when {
       "cache contains non-empty answers" in {
         given(block.apply(any())).willReturn(Future.successful(Results.Ok))
-        given(movementRepository.findByEori("eori")).willReturn(Future.successful(Some(cache)))
+        given(movementRepository.findByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful(Some(cache)))
 
         await(refiner.invokeBlock(request, block)) mustBe Results.Ok
 
@@ -75,14 +76,14 @@ class JourneyRefinerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
     "block request" when {
 
       "cache is empty" in {
-        given(movementRepository.findByEori("eori")).willReturn(Future.successful(None))
+        given(movementRepository.findByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful(None))
 
         await(refiner.invokeBlock(request, block)) mustBe redirectResult
       }
 
       "cached answers are empty" in {
         val emptyCache = Cache("eori", None, None, false, None)
-        given(movementRepository.findByEori("eori")).willReturn(Future.successful(Some(emptyCache)))
+        given(movementRepository.findByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful(Some(emptyCache)))
 
         await(refiner.invokeBlock(request, block)) mustBe redirectResult
       }

@@ -22,7 +22,8 @@ import forms.ShutMucr
 import models.ReturnToStartException
 import models.cache.JourneyType.SHUT_MUCR
 import models.cache.ShutMucrAnswers
-import models.confirmation.FlashKeys._
+import models.requests.SessionHelper
+import models.requests.SessionHelper._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SubmissionService
@@ -44,6 +45,7 @@ class ShutMucrSummaryController @Inject() (
   private val authAndValidJourney = authenticate andThen journeyRefiner(SHUT_MUCR)
 
   val displayPage: Action[AnyContent] = authAndValidJourney { implicit request =>
+    SessionHelper.clearAllReceiptPageSessionKeys()
     val mucr: ShutMucr = request.answersAs[ShutMucrAnswers].shutMucr.getOrElse(throw ReturnToStartException)
     Ok(page(mucr))
   }
@@ -53,7 +55,7 @@ class ShutMucrSummaryController @Inject() (
     val ucrType = answers.consignmentReferences.map(_.reference)
     val ucr = answers.consignmentReferences.map(_.referenceValue)
 
-    submissionService.submit(request.eori, answers).map { conversationId =>
+    submissionService.submit(request.eori, answers, request.cache.uuid).map { conversationId =>
       val sessionValues = List(
         Some(CONVERSATION_ID -> conversationId),
         Some(JOURNEY_TYPE -> answers.`type`.toString),

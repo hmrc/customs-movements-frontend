@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.summary.routes.MovementConfirmationController
 import models.cache.JourneyType.{ARRIVE, DEPART}
 import models.cache.{ArrivalAnswers, DepartureAnswers, MovementAnswers}
-import models.confirmation.FlashKeys._
+import models.requests.SessionHelper._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SubmissionService
@@ -52,7 +52,7 @@ class ArriveOrDepartSummaryController @Inject() (
   val submit: Action[AnyContent] = authAndValidJourney.async { implicit request =>
     val answers = request.answersAs[MovementAnswers]
 
-    submissionService.submit(request.eori, answers).map { submissionResult =>
+    submissionService.submit(request.eori, answers, request.cache.uuid).map { submissionResult =>
       Redirect(MovementConfirmationController.displayPage)
         .addingToSession(
           CONVERSATION_ID -> submissionResult.conversationId,

@@ -30,10 +30,10 @@ class ShutMucrISpec extends IntegrationSpec {
       "return 200" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor("eori", ShutMucrAnswers(shutMucr = Some(ShutMucr("GB/123-12345"))))
+        val answerUuid = givenCacheFor("eori", ShutMucrAnswers(shutMucr = Some(ShutMucr("GB/123-12345"))))
 
         // When
-        val response = get(ShutMucrSummaryController.displayPage)
+        val response = get(ShutMucrSummaryController.displayPage, answerUuid)
 
         // Then
         status(response) mustBe OK
@@ -44,11 +44,11 @@ class ShutMucrISpec extends IntegrationSpec {
       "continue" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor("eori", ShutMucrAnswers(shutMucr = Some(ShutMucr("GB/82F9-0N2F6500040010TO120P0A30998"))))
+        val answerUuid = givenCacheFor("eori", ShutMucrAnswers(shutMucr = Some(ShutMucr("GB/82F9-0N2F6500040010TO120P0A30998"))))
         givenMovementsBackendAcceptsTheConsolidation()
 
         // When
-        val response = post(ShutMucrSummaryController.submit)
+        val response = post(ShutMucrSummaryController.submit, answerUuid)
 
         // Then
         status(response) mustBe SEE_OTHER

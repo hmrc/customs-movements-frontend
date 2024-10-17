@@ -21,7 +21,7 @@ import forms.ConsignmentReferences
 import models.ReturnToStartException
 import models.cache.JourneyType._
 import models.confirmation.Confirmation
-import models.confirmation.FlashKeys._
+import models.requests.SessionHelper._
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import org.scalatest.GivenWhenThen

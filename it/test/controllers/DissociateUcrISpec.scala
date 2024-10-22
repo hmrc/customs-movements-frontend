@@ -30,10 +30,11 @@ class DissociateUcrISpec extends IntegrationSpec {
       "return 200" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor("eori", DisassociateUcrAnswers(ucr = Some(DisassociateUcr(kind = UcrType.Mucr, mucr = Some("GB/321-54321"), ducr = None))))
+        val answerUuid =
+          givenCacheFor("eori", DisassociateUcrAnswers(ucr = Some(DisassociateUcr(kind = UcrType.Mucr, mucr = Some("GB/321-54321"), ducr = None))))
 
         // When
-        val response = get(DisassociateUcrSummaryController.displayPage)
+        val response = get(DisassociateUcrSummaryController.displayPage, answerUuid)
 
         // Then
         status(response) mustBe OK
@@ -44,11 +45,12 @@ class DissociateUcrISpec extends IntegrationSpec {
       "continue" in {
         // Given
         givenAuthSuccess("eori")
-        givenCacheFor("eori", DisassociateUcrAnswers(ucr = Some(DisassociateUcr(kind = UcrType.Mucr, mucr = Some("GB/321-54321"), ducr = None))))
+        val answerUuid =
+          givenCacheFor("eori", DisassociateUcrAnswers(ucr = Some(DisassociateUcr(kind = UcrType.Mucr, mucr = Some("GB/321-54321"), ducr = None))))
         givenMovementsBackendAcceptsTheConsolidation()
 
         // When
-        val response = post(DisassociateUcrSummaryController.submit)
+        val response = post(DisassociateUcrSummaryController.submit, answerUuid)
 
         // Then
         status(response) mustBe SEE_OTHER

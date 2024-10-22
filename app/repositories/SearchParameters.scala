@@ -22,8 +22,13 @@ object SearchParameters {
   implicit val format: OFormat[SearchParameters] = Json.format[SearchParameters]
 }
 
-case class SearchParameters(eori: Option[String] = None, providerId: Option[String] = None, conversationId: Option[String] = None) {
+case class SearchParameters(
+  eori: Option[String] = None,
+  providerId: Option[String] = None,
+  conversationId: Option[String] = None,
+  uuid: Option[String] = None
+) {
 
-  def isEmpty: Boolean = eori.isEmpty && providerId.isEmpty && conversationId.isEmpty
+  def isEmpty: Boolean = eori.isEmpty && providerId.isEmpty && conversationId.isEmpty && uuid.isEmpty
   def isDefined: Boolean = !isEmpty
 }

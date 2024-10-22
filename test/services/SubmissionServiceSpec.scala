@@ -58,6 +58,10 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(audit, connector, repository, movementBuilder)
+
+    given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful(conversationId))
+    given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful(conversationId))
+    given(repository.removeByEoriAndAnswerCacheId(anyString(), anyString())).willReturn(Future.successful((): Unit))
   }
 
   override def afterEach(): Unit = {
@@ -65,31 +69,27 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
     super.afterEach()
   }
 
+  private val uuid = "1234566"
+
   "Submit Associate" should {
 
     "delegate to connector" when {
 
       "Associate DUCR" in {
-        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful(conversationId))
-        given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
-
         val answers = AssociateUcrAnswers(None, Some(MucrOptions(MucrOptions.Create, mucr)), Some(AssociateUcr(UcrType.Ducr, ucr)))
-        await(service.submit(validEori, answers))
+        await(service.submit(validEori, answers, uuid))
 
         theAssociationSubmitted mustBe AssociateDUCRRequest(validEori, mucr, ucr)
-        verify(repository).removeByEori(validEori)
+        verify(repository).removeByEoriAndAnswerCacheId(validEori, uuid)
         verify(audit).auditAssociate(validEori, mucr, ucr, "Success", Some(conversationId))
       }
 
       "Associate MUCR" in {
-        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful(conversationId))
-        given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
-
         val answers = AssociateUcrAnswers(None, Some(MucrOptions(MucrOptions.Create, mucr)), Some(AssociateUcr(UcrType.Mucr, ucr)))
-        await(service.submit(validEori, answers))
+        await(service.submit(validEori, answers, uuid))
 
         theAssociationSubmitted mustBe AssociateMUCRRequest(validEori, mucr, ucr)
-        verify(repository).removeByEori(validEori)
+        verify(repository).removeByEoriAndAnswerCacheId(validEori, uuid)
         verify(audit).auditAssociate(validEori, mucr, ucr, "Success", Some(conversationId))
       }
     }
@@ -99,18 +99,18 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
       val answers = AssociateUcrAnswers(None, Some(MucrOptions(MucrOptions.Create, mucr)), Some(AssociateUcr(UcrType.Ducr, ucr)))
       intercept[RuntimeException] {
-        await(service.submit(validEori, answers))
+        await(service.submit(validEori, answers, uuid))
       }
 
       theAssociationSubmitted mustBe AssociateDUCRRequest(validEori, mucr, ucr)
-      verify(repository, never()).removeByEori(validEori)
+      verify(repository, never()).removeByEoriAndAnswerCacheId(meq(validEori), meq(uuid))
       verify(audit).auditAssociate(validEori, mucr, ucr, "Failed")
     }
 
     "handle missing ucr" in {
       val answers = AssociateUcrAnswers(None, None)
       intercept[Throwable] {
-        await(service.submit(validEori, answers))
+        await(service.submit(validEori, answers, uuid))
       } mustBe ReturnToStartException
 
       verifyNoMoreInteractions(repository)
@@ -129,26 +129,24 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
     "delegate to connector" when {
 
       "Disassociate MUCR" in {
-        given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful(conversationId))
-        given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
 
         val answers = DisassociateUcrAnswers(Some(DisassociateUcr(UcrType.Mucr, None, Some(ucr))))
-        await(service.submit(validEori, answers))
+        await(service.submit(validEori, answers, uuid))
 
         theDisassociationSubmitted mustBe DisassociateMUCRRequest(validEori, ucr)
-        verify(repository).removeByEori(validEori)
+        verify(repository).removeByEoriAndAnswerCacheId(validEori, uuid)
         verify(audit).auditDisassociate(validEori, ucr, "Success", Some(conversationId))
       }
 
       "Disassociate DUCR" in {
         given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful(conversationId))
-        given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
+        given(repository.removeByEoriAndAnswerCacheId(anyString(), anyString())).willReturn(Future.successful((): Unit))
 
         val answers = DisassociateUcrAnswers(Some(DisassociateUcr(UcrType.Ducr, Some(ucr), None)))
-        await(service.submit(validEori, answers))
+        await(service.submit(validEori, answers, uuid))
 
         theDisassociationSubmitted mustBe DisassociateDUCRRequest(validEori, ucr)
-        verify(repository).removeByEori(validEori)
+        verify(repository).removeByEoriAndAnswerCacheId(validEori, uuid)
         verify(audit).auditDisassociate(validEori, ucr, "Success", Some(conversationId))
       }
     }
@@ -158,11 +156,11 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
       val answers = DisassociateUcrAnswers(Some(DisassociateUcr(UcrType.Mucr, None, Some(ucr))))
       intercept[RuntimeException] {
-        await(service.submit(validEori, answers))
+        await(service.submit(validEori, answers, uuid))
       }
 
       theDisassociationSubmitted mustBe DisassociateMUCRRequest(validEori, ucr)
-      verify(repository, never()).removeByEori(validEori)
+      verify(repository, never()).removeByEoriAndAnswerCacheId(validEori, uuid)
       verify(audit).auditDisassociate(validEori, ucr, "Failed")
     }
 
@@ -171,7 +169,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
       "block is empty" in {
         val answers = DisassociateUcrAnswers(None)
         intercept[Throwable] {
-          await(service.submit(validEori, answers))
+          await(service.submit(validEori, answers, uuid))
         } mustBe ReturnToStartException
 
         verifyNoMoreInteractions(repository)
@@ -183,7 +181,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
         "Disassociate MUCR" in {
           val answers = DisassociateUcrAnswers(Some(DisassociateUcr(UcrType.Mucr, None, None)))
           intercept[Throwable] {
-            await(service.submit(validEori, answers))
+            await(service.submit(validEori, answers, uuid))
           } mustBe ReturnToStartException
 
           verifyNoMoreInteractions(repository)
@@ -193,7 +191,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
         "Disassociate DUCR" in {
           val answers = DisassociateUcrAnswers(Some(DisassociateUcr(UcrType.Ducr, None, None)))
           intercept[Throwable] {
-            await(service.submit(validEori, answers))
+            await(service.submit(validEori, answers, uuid))
           } mustBe ReturnToStartException
 
           verifyNoMoreInteractions(repository)
@@ -203,7 +201,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
         "Disassociate DUCR Part" in {
           val answers = DisassociateUcrAnswers(Some(DisassociateUcr(UcrType.DucrPart, None, None)))
           intercept[Throwable] {
-            await(service.submit(validEori, answers))
+            await(service.submit(validEori, answers, uuid))
           } mustBe ReturnToStartException
 
           verifyNoMoreInteractions(repository)
@@ -222,14 +220,11 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
   "Submit ShutMUCR" should {
 
     "delegate to connector" in {
-      given(connector.submit(any[Consolidation]())(any())).willReturn(Future.successful(conversationId))
-      given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
-
       val answers = ShutMucrAnswers(Some(ShutMucr(mucr)))
-      await(service.submit(validEori, answers))
+      await(service.submit(validEori, answers, uuid))
 
       theShutMucrSubmitted mustBe ShutMUCRRequest(validEori, mucr)
-      verify(repository).removeByEori(validEori)
+      verify(repository).removeByEoriAndAnswerCacheId(validEori, uuid)
       verify(audit).auditShutMucr(validEori, mucr, "Success", Some(conversationId))
     }
 
@@ -238,18 +233,18 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
       val answers = ShutMucrAnswers(Some(ShutMucr(mucr)))
       intercept[RuntimeException] {
-        await(service.submit(validEori, answers))
+        await(service.submit(validEori, answers, uuid))
       }
 
       theShutMucrSubmitted mustBe ShutMUCRRequest(validEori, mucr)
-      verify(repository, never()).removeByEori(validEori)
+      verify(repository, never()).removeByEoriAndAnswerCacheId(validEori, uuid)
       verify(audit).auditShutMucr(validEori, mucr, "Failed")
     }
 
     "handle missing mucr" in {
       val answers = ShutMucrAnswers(None)
       intercept[Throwable] {
-        await(service.submit(validEori, answers))
+        await(service.submit(validEori, answers, uuid))
       } mustBe ReturnToStartException
 
       verifyNoMoreInteractions(repository)
@@ -270,8 +265,6 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
       "everything works correctly" should {
 
         "return same UCR as in the answers" in {
-          given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
-          given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful(conversationId))
           given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit], any[Option[String]])(any()))
             .willReturn(Future.successful(AuditResult.Success))
@@ -279,13 +272,11 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
           val answers = validArrivalAnswers
 
-          val submissionResult = await(service.submit(validEori, answers))
+          val submissionResult = await(service.submit(validEori, answers, uuid))
           submissionResult mustBe SubmissionResult(conversationId, answers.consignmentReferences.get)
         }
 
         "call MovementBuilder, AuditService, backend Connector, CacheRepository and AuditService again" in {
-          given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
-          given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful(conversationId))
           given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit], any[Option[String]])(any()))
             .willReturn(Future.successful(AuditResult.Success))
@@ -294,13 +285,13 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
           val answers = validArrivalAnswers
 
-          await(service.submit(validEori, answers))
+          await(service.submit(validEori, answers, uuid))
 
           val inOrder = Mockito.inOrder(movementBuilder, repository, audit, connector)
           inOrder.verify(movementBuilder).createMovementRequest(meq(validEori), meq(answers))
           inOrder.verify(audit).auditAllPagesUserInput(meq(validEori), meq(answers))(any())
           inOrder.verify(connector).submit(meq(arrivalExchange))(any())
-          inOrder.verify(repository).removeByEori(meq(validEori))
+          inOrder.verify(repository).removeByEoriAndAnswerCacheId(meq(validEori), meq(uuid))
           inOrder.verify(audit).auditMovements(meq(arrivalExchange), meq("Success"), meq(AuditType.AuditArrival), meq(Some(conversationId)))(any())
         }
       }
@@ -312,7 +303,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
           val answers = validArrivalAnswers
 
           intercept[Throwable] {
-            await(service.submit(validEori, answers))
+            await(service.submit(validEori, answers, uuid))
           } mustBe ReturnToStartException
         }
 
@@ -322,7 +313,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
           val answers = validArrivalAnswers
 
           intercept[Throwable] {
-            await(service.submit(validEori, answers))
+            await(service.submit(validEori, answers, uuid))
           }
 
           verifyNoMoreInteractions(audit)
@@ -335,7 +326,6 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
         "not call CacheRepository" in {
           given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.failed(new RuntimeException("Error")))
-          given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit], any[Option[String]])(any()))
             .willReturn(Future.successful(AuditResult.Success))
           given(movementBuilder.createMovementRequest(anyString(), any[MovementAnswers])).willReturn(validArrivalMovementRequest)
@@ -343,7 +333,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
           val answers = validArrivalAnswers
 
           intercept[Throwable] {
-            await(service.submit(validEori, answers))
+            await(service.submit(validEori, answers, uuid))
           }
 
           verifyNoMoreInteractions(repository)
@@ -351,7 +341,6 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
         "call AuditService second time with failed result" in {
           given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.failed(new RuntimeException("Error")))
-          given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit], any[Option[String]])(any()))
             .willReturn(Future.successful(AuditResult.Success))
           val arrivalExchange = validArrivalMovementRequest
@@ -360,7 +349,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
           val answers = validArrivalAnswers
 
           intercept[Throwable] {
-            await(service.submit(validEori, answers))
+            await(service.submit(validEori, answers, uuid))
           }
 
           verify(audit).auditMovements(meq(arrivalExchange), meq("Failed"), meq(AuditType.AuditArrival), meq(None))(any())
@@ -373,8 +362,6 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
       "everything works correctly" should {
 
         "return same UCR as in the answers" in {
-          given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
-          given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful(conversationId))
           given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit], any[Option[String]])(any()))
             .willReturn(Future.successful(AuditResult.Success))
@@ -382,13 +369,11 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
           val answers = validDepartureAnswers
 
-          val submissionResult = await(service.submit(validEori, answers))
+          val submissionResult = await(service.submit(validEori, answers, uuid))
           submissionResult mustBe SubmissionResult(conversationId, answers.consignmentReferences.get)
         }
 
         "call MovementBuilder, AuditService, backend Connector, CacheRepository and AuditService again" in {
-          given(repository.removeByEori(anyString())).willReturn(Future.successful((): Unit))
-          given(connector.submit(any[MovementRequest]())(any())).willReturn(Future.successful(conversationId))
           given(audit.auditAllPagesUserInput(anyString(), any[MovementAnswers])(any())).willReturn(Future.successful(AuditResult.Success))
           given(audit.auditMovements(any[MovementRequest], anyString(), any[AuditType.Audit], any[Option[String]])(any()))
             .willReturn(Future.successful(AuditResult.Success))
@@ -397,13 +382,13 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
 
           val answers = validDepartureAnswers
 
-          await(service.submit(validEori, answers))
+          await(service.submit(validEori, answers, uuid))
 
           val inOrder = Mockito.inOrder(movementBuilder, repository, audit, connector)
           inOrder.verify(movementBuilder).createMovementRequest(meq(validEori), meq(answers))
           inOrder.verify(audit).auditAllPagesUserInput(meq(validEori), meq(answers))(any())
           inOrder.verify(connector).submit(meq(departureExchange))(any())
-          inOrder.verify(repository).removeByEori(meq(validEori))
+          inOrder.verify(repository).removeByEoriAndAnswerCacheId(meq(validEori), meq(uuid))
           inOrder
             .verify(audit)
             .auditMovements(meq(departureExchange), meq("Success"), meq(AuditType.AuditDeparture), meq(Some(conversationId)))(any())
@@ -417,7 +402,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
           val answers = validDepartureAnswers
 
           intercept[Throwable] {
-            await(service.submit(validEori, answers))
+            await(service.submit(validEori, answers, uuid))
           } mustBe ReturnToStartException
         }
 
@@ -427,7 +412,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
           val answers = validDepartureAnswers
 
           intercept[Throwable] {
-            await(service.submit(validEori, answers))
+            await(service.submit(validEori, answers, uuid))
           }
 
           verifyNoMoreInteractions(audit)
@@ -448,7 +433,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
           val answers = validDepartureAnswers
 
           intercept[Throwable] {
-            await(service.submit(validEori, answers))
+            await(service.submit(validEori, answers, uuid))
           }
 
           verifyNoMoreInteractions(repository)
@@ -465,7 +450,7 @@ class SubmissionServiceSpec extends UnitSpec with MovementsMetricsStub with Befo
           val answers = validDepartureAnswers
 
           intercept[Throwable] {
-            await(service.submit(validEori, answers))
+            await(service.submit(validEori, answers, uuid))
           }
 
           verify(audit).auditMovements(meq(departureExchange), meq("Failed"), meq(AuditType.AuditDeparture), meq(None))(any())

@@ -21,7 +21,7 @@ import controllers.summary.routes.MovementConfirmationController
 import models.ReturnToStartException
 import models.cache.DisassociateUcrAnswers
 import models.cache.JourneyType.DISSOCIATE_UCR
-import models.confirmation.FlashKeys._
+import models.requests.SessionHelper._
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.SubmissionService
@@ -55,7 +55,7 @@ class DisassociateUcrSummaryController @Inject() (
     val ucrType = answers.consignmentReferences.map(_.reference)
     val ucr = answers.consignmentReferences.map(_.referenceValue)
 
-    submissionService.submit(request.eori, answers).map { conversationId =>
+    submissionService.submit(request.eori, answers, request.cache.uuid).map { conversationId =>
       val sessionValues = List[Option[(String, String)]](
         Some(CONVERSATION_ID -> conversationId),
         Some(JOURNEY_TYPE -> answers.`type`.toString),

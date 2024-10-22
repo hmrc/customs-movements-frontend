@@ -22,7 +22,7 @@ import forms.UcrType._
 import forms._
 import models.ReturnToStartException
 import models.cache.{AssociateUcrAnswers, JourneyType}
-import models.confirmation.FlashKeys
+import models.requests.SessionHelper
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.MockitoSugar.{mock, reset, verify, when}
@@ -176,17 +176,17 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
       val conversationId = "conversationId"
 
       "call SubmissionService" in {
-        when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful(conversationId))
+        when(submissionService.submit(any(), any[AssociateUcrAnswers], any())(any())).thenReturn(Future.successful(conversationId))
         val cachedAnswers = AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))
 
         controller(cachedAnswers).submit(postRequest()).futureValue
 
         val expectedEori = SuccessfulAuth().operator.eori
-        verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers))(any())
+        verify(submissionService).submit(meq(expectedEori), meq(cachedAnswers), any())(any())
       }
 
       "return SEE_OTHER (303) that redirects to AssociateUcrConfirmation" in {
-        when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful(conversationId))
+        when(submissionService.submit(any(), any[AssociateUcrAnswers], any())(any())).thenReturn(Future.successful(conversationId))
 
         val result =
           controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))).submit(postRequest(Json.obj()))
@@ -196,13 +196,13 @@ class AssociateUcrSummaryControllerSpec extends ControllerLayerSpec with ScalaFu
       }
 
       "return response with Movement Type and Conversation Id in flash" in {
-        when(submissionService.submit(any(), any[AssociateUcrAnswers])(any())).thenReturn(Future.successful(conversationId))
+        when(submissionService.submit(any(), any[AssociateUcrAnswers], any())(any())).thenReturn(Future.successful(conversationId))
 
         val result =
           controller(AssociateUcrAnswers(mucrOptions = Some(mucrOptions), associateUcr = Some(associateUcr))).submit(postRequest(Json.obj()))
 
-        session(result).get(FlashKeys.JOURNEY_TYPE) mustBe Some(JourneyType.ASSOCIATE_UCR.toString)
-        session(result).get(FlashKeys.CONVERSATION_ID) mustBe Some(conversationId)
+        session(result).get(SessionHelper.JOURNEY_TYPE) mustBe Some(JourneyType.ASSOCIATE_UCR.toString)
+        session(result).get(SessionHelper.CONVERSATION_ID) mustBe Some(conversationId)
       }
     }
   }

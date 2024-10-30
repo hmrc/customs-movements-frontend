@@ -478,23 +478,6 @@ ducrPartDetails.dissociate_ucr.heading = Datgysylltu’r llwyth
 ducrPartDetails.associate_ucr.heading = Cysylltu’r llwyth
 ducrPartDetails.depart.heading = Nodi bod llwyth wedi ymadael
 
-ducrPartChief.ARRIVE.heading = Nodi bod llwyth wedi cyrraedd
-ducrPartChief.ARRIVE.question = A ydych am nodi bod Rhan DUCR wedi cyrraedd?
-ducrPartChief.DEPART.heading = Nodi bod llwyth wedi ymadael
-ducrPartChief.DEPART.question = A ydych am nodi bod y Rhan DUCR a gafodd ei chreu yn y system CHIEF wedi ymadael?
-ducrPartChief.ASSOCIATE_UCR.heading = Cysylltu’r llwyth
-ducrPartChief.ASSOCIATE_UCR.question = A ydych am gysylltu’r Rhan DUCR a gafodd ei chreu yn y system CHIEF?
-ducrPartChief.DISSOCIATE_UCR.heading = Datgysylltu’r llwyth
-ducrPartChief.DISSOCIATE_UCR.question = A ydych am ddatgysylltu’r Rhan DUCR a gafodd ei chreu yn y system CHIEF?
-ducrPartChief.bodyParagraph = Mae ‘Rhan DUCR’ yn gyfeirnod opsiynol sydd ar gael yn y gwasanaeth CHIEF yn unig, ac mae’n cael ei ddefnyddio i helpu adnabod DUCR. Os na wnaethoch greu’r datganiad hwn yn y gwasanaeth CHIEF, ni fydd Rhan DUCR gan y llwyth.
-ducrPartChief.isDucrPart = Iawn
-ducrPartChief.ARRIVE.notDucrPart = Nid oes Rhan DUCR gan y llwyth rwyf am nodi ei fod wedi cyrraedd
-ducrPartChief.DEPART.notDucrPart = Na. Nid yw’r llwyth rwyf am nodi ei fod wedi ymadael yn Rhan o’r DUCR
-ducrPartChief.ASSOCIATE_UCR.notDucrPart = Na. Nid yw’r llwyth rwyf am ei gysylltu’n Rhan o’r DUCR
-ducrPartChief.DISSOCIATE_UCR.notDucrPart = Na. Nid yw’r llwyth rwyf am ei ddatgysylltu’n Rhan o’r DUCR
-ducrPartChief.input.error.empty = Dewiswch yr opsiwn rydych chi ei eisiau
-ducrPartChief.input.error.incorrectValue = Dewiswch opsiwn dilys
-
 sessionTimout.title = Er eich diogelwch, gwnaethom eich allgofnodi
 sessionTimout.signin.button = Mewngofnodi
 

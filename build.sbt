@@ -3,7 +3,7 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 val appName = "customs-movements-frontend"
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / scalaVersion := "2.13.15"
 
 PlayKeys.devSettings := List("play.server.http.port" -> "6796")
 
@@ -24,7 +24,7 @@ lazy val it = (project in file("it"))
 lazy val commonSettings = List(
   scalacOptions ++= scalacFlags,
   retrieveManaged := true,
-  libraryDependencies ++= Dependencies.compile ++ Dependencies.test,
+  libraryDependencies ++= Dependencies(),
   TwirlKeys.templateImports ++= List.empty
 )
 

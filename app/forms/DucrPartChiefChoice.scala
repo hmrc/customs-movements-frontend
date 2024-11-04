@@ -16,13 +16,10 @@
 
 package forms
 
-import forms.EnhancedMapping.requiredRadio
-import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
-import utils.validators.forms.FieldValidator.isContainedIn
 
 case class DucrPartChiefChoice(choice: String) {
-  def isDucrPart = choice == DucrPartChiefChoice.IsDucrPart
+  def isDucrPart: Boolean = choice == DucrPartChiefChoice.IsDucrPart
 }
 
 object DucrPartChiefChoice {
@@ -30,15 +27,4 @@ object DucrPartChiefChoice {
   implicit val format: OFormat[DucrPartChiefChoice] = Json.format[DucrPartChiefChoice]
 
   val IsDucrPart = "ducr_part_yes"
-  val NotDucrPart = "ducr_part_no"
-
-  val allChoices = Seq(IsDucrPart, NotDucrPart)
-
-  val mapping: Mapping[DucrPartChiefChoice] =
-    Forms.mapping(
-      "choice" -> requiredRadio("ducrPartChief.input.error.empty")
-        .verifying("ducrPartChief.input.error.incorrectValue", isContainedIn(allChoices))
-    )(DucrPartChiefChoice.apply)(DucrPartChiefChoice.unapply)
-
-  def form(): Form[DucrPartChiefChoice] = Form(mapping)
 }

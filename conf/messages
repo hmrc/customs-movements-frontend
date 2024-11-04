@@ -503,23 +503,6 @@ ducrPartDetails.dissociate_ucr.heading = Disassociate consignment
 ducrPartDetails.associate_ucr.heading = Associate consignment
 ducrPartDetails.depart.heading = Depart consignment
 
-ducrPartChief.ARRIVE.heading = Arrive consignment
-ducrPartChief.ARRIVE.question = Do you want to arrive a DUCR Part?
-ducrPartChief.DEPART.heading = Depart consignment
-ducrPartChief.DEPART.question = Do you want to depart a DUCR Part?
-ducrPartChief.ASSOCIATE_UCR.heading = Associate consignment
-ducrPartChief.ASSOCIATE_UCR.question = Do you want to associate a DUCR Part?
-ducrPartChief.DISSOCIATE_UCR.heading = Disassociate consignment
-ducrPartChief.DISSOCIATE_UCR.question = Do you want to disassociate a DUCR Part?
-ducrPartChief.bodyParagraph = A DUCR Part is an optional reference number only available in CHIEF and is used to help identify a DUCR. If you have not created this declaration in CHIEF, the consignment will not have a DUCR Part.
-ducrPartChief.isDucrPart = Yes
-ducrPartChief.ARRIVE.notDucrPart = No, the consignment I want to arrive does not have a DUCR Part
-ducrPartChief.DEPART.notDucrPart = No, the consignment I want to depart does not have a DUCR Part
-ducrPartChief.ASSOCIATE_UCR.notDucrPart = No, the consignment I want to associate does not have a DUCR Part
-ducrPartChief.DISSOCIATE_UCR.notDucrPart = No, the consignment I want to disassociate does not have a DUCR Part
-ducrPartChief.input.error.empty = Select the option you want
-ducrPartChief.input.error.incorrectValue = Choose valid option
-
 sessionTimout.title = For your security, we signed you out
 sessionTimout.signin.button = Sign in
 

@@ -41,8 +41,6 @@ class AppConfig @Inject() (
 
   lazy val appName: String = namedAppName
 
-  val maybeTdrHashSalt = loadOptionalConfig("secret.tdrHashSalt")
-
   val analyticsToken = loadConfig(s"google-analytics.token")
   val analyticsHost = loadConfig(s"google-analytics.host")
 

@@ -21,14 +21,13 @@ import config.AppConfig
 import controllers.routes
 import models.SignedInUser
 import models.requests.AuthenticatedRequest
-import models.AuthKey.{enrolment, eoriIdentifierKey, hashIdentifierKey}
+import models.AuthKey.{enrolment, eoriIdentifierKey}
 import play.api.{Configuration, Logging}
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import utils.HashingUtils.generateHashOfValue
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -56,22 +55,14 @@ class AuthActionImpl @Inject() (
 
         validateEnrolments(eori)
 
-        val userProvidedEoriHash = allUserEnrolments
-          .flatMap(_.getIdentifier(hashIdentifierKey))
-          .map(_.value)
-          .headOption
-          .getOrElse("NoHashProvided")
-
         val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments)
-        val maybeHiddenSalt = appConfig.maybeTdrHashSalt
 
         val onAllowList = allowListAuthentication(cdsLoggedInUser.eori)
-        val tdrSecretMatches = tdrSecretAuthentication(cdsLoggedInUser.eori, maybeHiddenSalt, userProvidedEoriHash)
 
-        if (onAllowList && tdrSecretMatches)
+        if (onAllowList)
           block(new AuthenticatedRequest(request, cdsLoggedInUser))
         else {
-          logger.warn(s"User rejected with onAllowList=$onAllowList & tdrSecretMatches=$tdrSecretMatches")
+          logger.warn(s"User rejected with onAllowList=$onAllowList")
           Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad))
         }
       } recover {
@@ -99,18 +90,6 @@ class AuthActionImpl @Inject() (
     eoriOnAllowList
   }
 
-  private def tdrSecretAuthentication(eori: String, maybeHiddenSalt: Option[String], providedHash: String): Boolean =
-    maybeHiddenSalt match {
-      case None => true
-      case Some(hiddenSalt) =>
-        val hashOfPayload = generateHashOfValue(eori, hiddenSalt)
-        val matchingHash = providedHash.equalsIgnoreCase(hashOfPayload)
-
-        if (!matchingHash)
-          logger.info("Authentication Rejected: User's TDRSecret does not match")
-
-        matchingHash
-    }
 }
 
 @ImplementedBy(classOf[AuthActionImpl])

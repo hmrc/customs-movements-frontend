@@ -33,7 +33,7 @@
     govukPanel: GovukPanel,
     printButton: print_page_button,
     pageTitle: pageTitle,
-    govukTable: GovukTable,
+    govukSummaryList: GovukSummaryList,
     link: link,
     govukInsetText: GovukInsetText,
     exitSurvey: exit_survey,
@@ -56,24 +56,24 @@
 ) {
     @govukPanel(Panel(title = Text(messages(s"confirmation.title.${confirmation.journeyType}"))))
 
-    @govukTable(Table(
-        rows = Seq(
+    @govukSummaryList(SummaryList(
+        rows = List(
             confirmation.consignmentRefs.map { case ConsignmentReferences(ucrType, ucrValue) =>
-                Seq(
-                    TableRow(
-                        content = Text(messages(s"confirmation.${ucrType.toString.toUpperCase}")), classes = "govuk-!-font-weight-bold"
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages(s"confirmation.${ucrType.toString.toUpperCase}"))
                     ),
-                    TableRow(
+                    value = Value(
                         content = HtmlContent(ucrValue)
                     )
                 )
             },
             confirmation.mucr.map { mucr =>
-                Seq(
-                    TableRow(
-                        content = Text(messages("confirmation.MUCR")), classes = "govuk-!-font-weight-bold"
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("confirmation.MUCR"))
                     ),
-                    TableRow(
+                    value = Value(
                         content = HtmlContent(mucr)
                     )
                 )

@@ -19,7 +19,7 @@ package controllers.actions
 import base.MockAuthConnector
 import controllers.routes
 import models.requests.AuthenticatedRequest
-import models.AuthKey.{enrolment, eoriIdentifierKey, hashIdentifierKey}
+import models.AuthKey.{enrolment, eoriIdentifierKey}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito.given
@@ -53,7 +53,6 @@ class AuthActionSpec extends AnyWordSpec with Matchers with Stubs with MockAuthC
     reset(allowList)
     reset(authConnectorMock)
 
-    when(appConfig.maybeTdrHashSalt).thenReturn(None)
     when(allowList.allows(any())).thenReturn(true)
   }
 
@@ -74,17 +73,6 @@ class AuthActionSpec extends AnyWordSpec with Matchers with Stubs with MockAuthC
           theAuthCondition mustBe Enrolment(enrolment)
         }
 
-        "TDRSecret is required" in {
-          when(appConfig.maybeTdrHashSalt).thenReturn(Some("SomeSuperSecret"))
-          authorizedUser()
-
-          given(block.apply(any())).willReturn(Future.successful(controllerResponse))
-
-          val result: Result = await(action.invokeBlock(FakeRequest(), block))
-
-          result mustBe controllerResponse
-          theAuthCondition mustBe Enrolment(enrolment)
-        }
       }
     }
 
@@ -112,29 +100,6 @@ class AuthActionSpec extends AnyWordSpec with Matchers with Stubs with MockAuthC
 
         val result: Result = await(action.invokeBlock(FakeRequest(), block))
         result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
-      }
-
-      "maybeTdrHashSalt config key is set and" when {
-
-        "user does not provide a TDRSecret value" in {
-          when(appConfig.maybeTdrHashSalt).thenReturn(Some("SomeSuperSecret"))
-          val enrolments = Set(Enrolment(enrolment, Seq(EnrolmentIdentifier(eoriIdentifierKey, "eori")), "state"))
-          given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(enrolments)))
-
-          val result: Result = await(action.invokeBlock(FakeRequest(), block))
-          result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
-        }
-
-        "user provides an incorrect TDRSecret value" in {
-          when(appConfig.maybeTdrHashSalt).thenReturn(Some("SomeSuperSecret"))
-          val enrolments = Set(
-            Enrolment(enrolment, Seq(EnrolmentIdentifier(eoriIdentifierKey, "eori"), EnrolmentIdentifier(hashIdentifierKey, "tdrSecret")), "state")
-          )
-          given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(enrolments)))
-
-          val result: Result = await(action.invokeBlock(FakeRequest(), block))
-          result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
-        }
       }
 
       "an NoActiveSession exception is thrown" in {

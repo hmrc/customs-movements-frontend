@@ -98,16 +98,16 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
         val view = page(Confirmation(answer.`type`, conversationId, Some(consignmentRefs(ucrType)), None))
 
         "render table with one row" in {
-          view.getElementsByClass("govuk-table__row").size mustBe 1
+          view.getElementsByClass("govuk-summary-list__row").size mustBe 1
         }
 
         "render a row with DUCR or MUCR based on input" in {
           ucrType match {
-            case Ducr | DucrPart => view.getElementsByClass("govuk-table__cell").first must containMessage("confirmation.D")
-            case Mucr            => view.getElementsByClass("govuk-table__cell").first() must containMessage("confirmation.MUCR")
+            case Ducr | DucrPart => view.getElementsByClass("govuk-summary-list__key").first must containMessage("confirmation.D")
+            case Mucr            => view.getElementsByClass("govuk-summary-list__key").first must containMessage("confirmation.MUCR")
           }
 
-          view.getElementsByClass("govuk-table__cell").get(1) must containText(dummyUcr)
+          view.getElementsByClass("govuk-summary-list__value").first must containText(dummyUcr)
         }
       }
 
@@ -119,21 +119,21 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
       val view = page(Confirmation(answer.`type`, conversationId, Some(consignmentRefs(ucrType)), Some(dummyUcr)))
 
       "render table with two rows" in {
-        view.getElementsByClass("govuk-table__row").size mustBe 2
+        view.getElementsByClass("govuk-summary-list__row").size mustBe 2
       }
 
       "render a row with DUCR or MUCR based on input" in {
         ucrType match {
-          case Ducr | DucrPart => view.getElementsByClass("govuk-table__cell").first must containMessage("confirmation.D")
-          case Mucr            => view.getElementsByClass("govuk-table__cell").first() must containMessage("confirmation.MUCR")
+          case Ducr | DucrPart => view.getElementsByClass("govuk-summary-list__key").first must containMessage("confirmation.D")
+          case Mucr            => view.getElementsByClass("govuk-summary-list__key").first must containMessage("confirmation.MUCR")
         }
 
-        view.getElementsByClass("govuk-table__cell").get(1) must containText(dummyUcr)
+        view.getElementsByClass("govuk-summary-list__value").first must containText(dummyUcr)
       }
 
       "render a second row with MUCR" in {
-        view.getElementsByClass("govuk-table__cell").get(2) must containMessage("confirmation.MUCR")
-        view.getElementsByClass("govuk-table__cell").get(3) must containText(dummyUcr)
+        view.getElementsByClass("govuk-summary-list__key").last must containMessage("confirmation.MUCR")
+        view.getElementsByClass("govuk-summary-list__value").last must containText(dummyUcr)
       }
     }
   }
@@ -146,12 +146,12 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
     val view = page(Confirmation(answer.`type`, conversationId, Some(consignmentRefs(ucrType)), None))
 
     "render table with one row" in {
-      view.getElementsByClass("govuk-table__row").size mustBe 1
+      view.getElementsByClass("govuk-summary-list__row").size mustBe 1
     }
 
     "render a row with MUCR based on input" in {
-      view.getElementsByClass("govuk-table__cell").first() must containMessage("confirmation.MUCR")
-      view.getElementsByClass("govuk-table__cell").get(1) must containText(dummyUcr)
+      view.getElementsByClass("govuk-summary-list__key").first must containMessage("confirmation.MUCR")
+      view.getElementsByClass("govuk-summary-list__value").first must containText(dummyUcr)
     }
   }
 }

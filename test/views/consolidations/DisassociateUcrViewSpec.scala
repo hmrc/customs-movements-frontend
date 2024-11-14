@@ -141,28 +141,28 @@ class DisassociateUcrViewSpec extends ViewSpec with Injector {
       val view: Document = createView(form.fillAndValidate(DisassociateUcr(Ducr, ducr = Some(""), mucr = None)))
 
       view must haveGovUkGlobalErrorSummary
-      view must haveGovUkFieldError("ducr", messages("disassociate.ucr.ducr.empty"))
+      view must haveGovUkFieldError("ducr", messages("disassociate.ucr.ducr.error.empty"))
     }
 
     "display DUCR invalid" in {
       val view: Document = createView(form.fillAndValidate(DisassociateUcr(Ducr, ducr = Some("DUCR"), mucr = None)))
 
       view must haveGovUkGlobalErrorSummary
-      view must haveGovUkFieldError("ducr", messages("disassociate.ucr.ducr.error"))
+      view must haveGovUkFieldError("ducr", messages("disassociate.ucr.ducr.error.invalid"))
     }
 
     "display MUCR empty" in {
       val view: Document = createView(form.fillAndValidate(DisassociateUcr(Mucr, ducr = None, mucr = Some(""))))
 
       view must haveGovUkGlobalErrorSummary
-      view must haveGovUkFieldError("mucr", messages("disassociate.ucr.mucr.empty"))
+      view must haveGovUkFieldError("mucr", messages("disassociate.ucr.mucr.error.empty"))
     }
 
     "display MUCR invalid" in {
       val view: Document = createView(form.fillAndValidate(DisassociateUcr(Mucr, ducr = None, mucr = Some("MUCR"))))
 
       view must haveGovUkGlobalErrorSummary
-      view must haveGovUkFieldError("mucr", messages("disassociate.ucr.mucr.error"))
+      view must haveGovUkFieldError("mucr", messages("disassociate.ucr.mucr.error.invalid"))
     }
   }
 }

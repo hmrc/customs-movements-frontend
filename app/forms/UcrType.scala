@@ -35,9 +35,7 @@ object UcrType {
     case DucrPart.formValue => DucrPart
   }
 
-  private val noRadioSelectedErrorKey = "associate.ucr.error.unselected"
-
-  val formatter: Formatter[UcrType] = new Formatter[UcrType] {
+  def formatter(noRadioSelectedErrorKey: String): Formatter[UcrType] = new Formatter[UcrType] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], UcrType] =
       data
         .get(key)

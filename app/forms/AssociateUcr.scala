@@ -47,7 +47,7 @@ object AssociateUcr {
       }
 
     Forms.mapping(
-      "kind" -> of[UcrType](UcrType.formatter),
+      "kind" -> of[UcrType](UcrType.formatter("associate.ucr.error.unselected")),
       "ducr" -> mandatoryIfEqual(
         "kind",
         Ducr.formValue,

@@ -35,20 +35,20 @@ object DisassociateUcr {
 
   val mapping =
     Forms.mapping(
-      "kind" -> of[UcrType](UcrType.formatter),
+      "kind" -> of[UcrType](UcrType.formatter("disassociate.ucr.error.unselected")),
       "ducr" -> mandatoryIfEqual(
         "kind",
         Ducr.formValue,
         text()
-          .verifying("disassociate.ucr.ducr.empty", nonEmpty)
-          .verifying("disassociate.ucr.ducr.error", isEmpty or validDucrIgnoreCase)
+          .verifying("disassociate.ucr.ducr.error.empty", nonEmpty)
+          .verifying("disassociate.ucr.ducr.error.invalid", isEmpty or validDucrIgnoreCase)
       ),
       "mucr" -> mandatoryIfEqual(
         "kind",
         Mucr.formValue,
         text()
-          .verifying("disassociate.ucr.mucr.empty", nonEmpty)
-          .verifying("disassociate.ucr.mucr.error", isEmpty or validMucrIgnoreCase)
+          .verifying("disassociate.ucr.mucr.error.empty", nonEmpty)
+          .verifying("disassociate.ucr.mucr.error.invalid", isEmpty or validMucrIgnoreCase)
       )
     )(form2Data)(DisassociateUcr.unapply)
 

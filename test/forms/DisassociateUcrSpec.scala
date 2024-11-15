@@ -62,9 +62,40 @@ class DisassociateUcrSpec extends UnitSpec {
     }
 
     "return an error" when {
+
+      "radio option kind not present" in {
+        val form = DisassociateUcr.form.bind(Json.obj("other" -> ""), JsonBindMaxChars)
+        form.errors mustBe Seq(FormError("kind", List("disassociate.ucr.error.unselected")))
+      }
+
+      "radio option kind value neither Mucr or Ducr" in {
+        val form = DisassociateUcr.form.bind(Json.obj("kind" -> ""), JsonBindMaxChars)
+        form.errors mustBe Seq(FormError("kind", List("disassociate.ucr.error.unselected")))
+      }
+
+      "provided with Mucr that is empty" in {
+        val form = DisassociateUcr.form.bind(Json.obj("kind" -> "mucr", "mucr" -> ""), JsonBindMaxChars)
+        form.errors mustBe Seq(FormError("mucr", List("disassociate.ucr.mucr.error.empty")))
+      }
+
+      "provided with Mucr that is invalid" in {
+        val form = DisassociateUcr.form.bind(Json.obj("kind" -> "mucr", "mucr" -> "invalid"), JsonBindMaxChars)
+        form.errors mustBe Seq(FormError("mucr", List("disassociate.ucr.mucr.error.invalid")))
+      }
+
       "provided with Mucr that is over 35 characters long" in {
-        val form = DisassociateUcr.form.bind(Json.obj("kind" -> "mucr", "mucr" -> " gb/abced1234-15804test12345678901234 "), JsonBindMaxChars)
-        form.errors mustBe Seq(FormError("mucr", "disassociate.ucr.mucr.error"))
+        val form = DisassociateUcr.form.bind(Json.obj("kind" -> "mucr", "mucr" -> "gb/abced1234-15804test12345678901234"), JsonBindMaxChars)
+        form.errors mustBe Seq(FormError("mucr", List("disassociate.ucr.mucr.error.invalid")))
+      }
+
+      "provided with Ducr that is empty" in {
+        val form = DisassociateUcr.form.bind(Json.obj("kind" -> "ducr", "ducr" -> ""), JsonBindMaxChars)
+        form.errors mustBe Seq(FormError("ducr", List("disassociate.ucr.ducr.error.empty")))
+      }
+
+      "provided with Ducr that is invalid" in {
+        val form = DisassociateUcr.form.bind(Json.obj("kind" -> "ducr", "ducr" -> "invalid"), JsonBindMaxChars)
+        form.errors mustBe Seq(FormError("ducr", List("disassociate.ucr.ducr.error.invalid")))
       }
     }
   }

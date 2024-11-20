@@ -112,20 +112,19 @@
     @if(betaBannerConfig.isBetaBannerEnabled) {
       @phaseBanner("BETA")
     }
+
     @if(showLanguageSwitch && appConfig.languages.contains("cy")) {
         @hmrcLanguageSelectHelper()
     }
+
+    <div class="govuk-back-link-div">
+        @backButton.map(back =>
+            govukBackLink(BackLink(back.call.url, attributes = Map("id" -> "back-link"), content = Text(back.title)))
+        )
+    </div>
 }
 
 @content = {
-    <div class="govuk-back-link-div">
-    @backButton.map(back =>
-        govukBackLink(BackLink(
-            content = Text(back.title),
-            attributes = Map("id" -> "back-link"),
-            href = back.call.url
-        )))
-    </div>
     @contentBlock
     @hmrcReportTechnicalIssue()
 

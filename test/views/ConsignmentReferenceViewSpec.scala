@@ -37,7 +37,8 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector {
 
   private val goodsDirection = JourneyType.ARRIVE
 
-  def createView(frm: Form[ConsignmentReferences] = form(goodsDirection))(implicit request: JourneyRequest[_]): Appendable = page(frm)
+  def createView(frm: Form[ConsignmentReferences] = form(goodsDirection))(implicit request: JourneyRequest[_]): Appendable =
+    page(frm)
 
   "View" should {
 
@@ -81,8 +82,7 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector {
 
       backButton mustBe defined
       backButton.get must haveHref(ChoiceController.displayChoices)
-      backButton.get must containMessage("site.back.previousQuestion")
-
+      backButton.get must containMessage("site.back.toStartPage")
     }
 
     "render error summary" when {

@@ -80,7 +80,7 @@
 
 @govukLayout(
     title = Title("associate.ucr.summary.title"),
-    backButton = Some(BackButton(messages("site.back"), backUrl)),
+    backButton = Some(BackButton(messages("site.back.previousQuestion"), backUrl)),
     useCustomContentWidth = true
 ) {
     @formHelper(action = AssociateUcrSummaryController.submit, Symbol("autoComplete") -> "off") {

@@ -42,7 +42,7 @@
 
 @govukLayout(
     title = Title("shutMucr.summary.title"),
-    backButton = Some(BackButton(messages("site.back"), backUrl)),
+    backButton = Some(BackButton(messages("site.back.previousQuestion"), backUrl)),
     useCustomContentWidth = true
 ) {
     @formHelper(action = ShutMucrSummaryController.submit, Symbol("autoComplete") -> "off") {

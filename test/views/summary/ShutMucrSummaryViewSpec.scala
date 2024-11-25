@@ -18,7 +18,6 @@ package views.summary
 
 import base.Injector
 import controllers.consolidations.routes.ShutMucrController
-import controllers.routes.ChoiceOnConsignmentController
 import forms.ShutMucr
 import models.cache.ShutMucrAnswers
 import models.requests.JourneyRequest
@@ -75,14 +74,14 @@ class ShutMucrSummaryViewSpec extends ViewSpec with Injector {
       val backButton = shutMucrSummaryPage(shutMucr).getBackButton
 
       backButton mustBe defined
-      backButton.get must haveHref(ChoiceOnConsignmentController.displayChoices)
+      backButton.get must haveHref(backButtonDefaultCall)
     }
 
     "have 'Back' button when on a NON-'Find a consignment' journey" in {
       val backButton = shutMucrSummaryPage(shutMucr).getBackButton
 
       backButton mustBe defined
-      backButton.get must haveHref(ShutMucrController.displayPage)
+      backButton.get must haveHref(backButtonDefaultCall)
     }
   }
 }

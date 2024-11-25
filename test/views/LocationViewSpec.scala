@@ -17,7 +17,6 @@
 package views
 
 import base.Injector
-import controllers.routes
 import forms.Location
 import models.cache.{ArrivalAnswers, DepartureAnswers}
 import models.requests.JourneyRequest
@@ -74,8 +73,8 @@ class LocationViewSpec extends ViewSpec with Injector {
       val backButton = createView().getBackButton
 
       backButton mustBe defined
-      backButton.get must containMessage("site.back.previousQuestion")
-      backButton.get must haveHref(routes.MovementDetailsController.displayPage)
+      backButton.get must containMessage("site.back")
+      backButton.get must haveHref(backButtonDefaultCall)
     }
 
     checkAllSaveButtonsAreDisplayed(createView(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))

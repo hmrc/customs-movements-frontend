@@ -34,15 +34,9 @@
 
 @(associateUcr: AssociateUcr, mucr: String)(implicit request: JourneyRequest[_], messages: Messages)
 
-@backlink = @{AssociateUcrController.displayPage
-}
-
-@href = @{AssociateUcrController.displayPage.url
-}
-
 @govukLayout(
     title = Title("associate.ucr.summary.title"),
-    backButton = Some(BackButton(messages("site.back.previousQuestion"), backlink)),
+    backButton = Some(BackButton()),
     useCustomContentWidth = true
 ) {
     @formHelper(action = AssociateUcrSummaryController.submit, Symbol("autoComplete") -> "off") {
@@ -59,7 +53,7 @@
                         content = Text(associateUcr.ucr)
                     ),
                     actions = Some(Actions(items = Seq(ActionItem(
-                        href = href,
+                        href = AssociateUcrController.displayPage.url,
                         content = HtmlContent(linkContent(messages("site.change"))),
                         visuallyHiddenText = Some(messages("site.change.hint.associate.ucr", associateUcr.kind.formValue.toUpperCase()))
                     ))))

@@ -54,6 +54,13 @@
 
 @useTimeoutDialog = @{ request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]]}
 
+@backLink = @{
+  backButton.map { back =>
+      val attributes = Map("id" -> "back-link", "data-module" -> "hmrc-back-link")
+      govukBackLink(BackLink(href = back.call.url, attributes = attributes, content = Text(messages(back.title))))
+  }
+}
+
 @head = {
     @if(useTimeoutDialog) {
         @hmrcHead(
@@ -118,9 +125,7 @@
     }
 
     <div class="govuk-back-link-div">
-        @backButton.map(back =>
-            govukBackLink(BackLink(back.call.url, attributes = Map("id" -> "back-link"), content = Text(back.title)))
-        )
+        @backLink
     </div>
 }
 

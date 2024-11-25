@@ -17,7 +17,6 @@
 package views
 
 import base.Injector
-import controllers.routes
 import forms.Transport
 import models.cache.ArrivalAnswers
 import models.requests.JourneyRequest
@@ -76,16 +75,14 @@ class TransportViewSpec extends ViewSpec with Injector {
     }
 
     "display \"Back\" button that links to Location page" in {
-
       val backButton = createPage().getElementById("back-link")
 
-      backButton.text() must be(messages("site.back.previousQuestion"))
-      backButton must haveHref(routes.LocationController.displayPage)
+      backButton.text() must be(messages("site.back"))
+      backButton must haveHref(backButtonDefaultCall)
     }
 
     checkSaveAndReturnToSummaryButtonIsHidden(createPage())
 
     checkAllSaveButtonsAreDisplayed(createPage(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))
   }
-
 }

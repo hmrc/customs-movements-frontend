@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.consolidations.routes.{AssociateUcrController, ManageMucrController, MucrOptionsController}
+@import controllers.consolidations.routes.AssociateUcrController
 @import forms.{UcrType, AssociateUcr, MucrOptions}
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -34,14 +34,9 @@
 
 @(form: Form[AssociateUcr], mucrOptions: MucrOptions)(implicit request: JourneyRequest[_], messages: Messages)
 
-@backUrl = @{
-    if (request.cache.ucrBlockFromIleQuery) ManageMucrController.displayPage
-    else MucrOptionsController.displayPage
-}
-
 @govukLayout(
   title = Title("associate.ucr.title", None, Seq(mucrOptions.mucr), hasErrors = form.hasErrors || form.hasGlobalErrors),
-  backButton = Some(BackButton(messages("site.back.previousQuestion"), backUrl))
+  backButton = Some(BackButton())
 ) {
     @formHelper(action = AssociateUcrController.submit, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)

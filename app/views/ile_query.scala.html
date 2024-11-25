@@ -16,7 +16,6 @@
 
 @import components.gds.{errorSummary, gds_main_template, pageTitle}
 @import controllers.ileQuery.routes.FindConsignmentController
-@import controllers.routes.ChoiceController
 @import uk.gov.hmrc.govukfrontend.views.html.components.{Button, FormWithCSRF, GovukButton, Text}
 @import views.components.BackButton
 @import views.html.components.gds.{exportsInputText, link}
@@ -38,7 +37,7 @@
 
 @govukLayout(
   title = Title("ileQuery.title", hasErrors = form.hasErrors || form.hasGlobalErrors),
-  backButton = Some(BackButton(messages("site.back.toStartPage"), ChoiceController.displayChoices))
+  backButton = Some(BackButton())
 ) {
     @formHelper(action = FindConsignmentController.submitPage, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)

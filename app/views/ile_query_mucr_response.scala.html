@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.ileQuery.routes.FindConsignmentController
 @import models.notifications.queries.{MucrInfo, UcrInfo}
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukTag, Tag, Text}
 @import views.components.BackButton
@@ -39,7 +38,7 @@
 @govukLayout(
     useCustomContentWidth = true,
     title = Title("ileQueryResponse.mucr.title"),
-    backButton = Some(BackButton(messages("site.back"), FindConsignmentController.displayPage))
+    backButton = Some(BackButton())
 ) {
     <div class="govuk-grid-row">
 

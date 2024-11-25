@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.routes.{MovementDetailsController, SpecificDateTimeController}
 @import forms.{Location, SpecificDateTimeChoice}
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -36,11 +35,6 @@
 
 @(form: Form[Location], consignmentReference: String, specificDateTimeChoice: Option[SpecificDateTimeChoice])(implicit request: JourneyRequest[_], messages: Messages)
 
-@backUrl = @{specificDateTimeChoice.map(_.choice) match {
-    case Some(SpecificDateTimeChoice.CurrentDateTime) => SpecificDateTimeController.displayPage
-    case _ => MovementDetailsController.displayPage
-}}
-
 @heading = {
     <h1 class="govuk-heading govuk-heading-xl">
         @messages("location.question")
@@ -53,7 +47,7 @@
 
 @govukLayout(
   title = Title("location.question", hasErrors = form.hasErrors || form.hasGlobalErrors),
-  backButton = Some(BackButton(messages("site.back.previousQuestion"), backUrl))
+  backButton = Some(BackButton())
 ) {
     @formHelper(action = controllers.routes.LocationController.saveLocation, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)

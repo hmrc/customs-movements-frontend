@@ -179,7 +179,7 @@ class DepartureSummaryViewSpec extends ViewSpec with Injector {
       val backButton = page(answers).getBackButton
 
       backButton mustBe defined
-      backButton.get must haveHref(TransportController.displayPage)
+      backButton.get must haveHref(backButtonDefaultCall)
     }
 
     "render 'Confirm and submit' button on page" in {

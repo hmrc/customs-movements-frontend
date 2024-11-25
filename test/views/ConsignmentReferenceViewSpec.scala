@@ -27,7 +27,6 @@ import play.api.data.{Form, FormError}
 import play.api.mvc.AnyContentAsEmpty
 import play.twirl.api.HtmlFormat.Appendable
 import views.html.consignment_references
-import controllers.routes.ChoiceController
 
 class ConsignmentReferenceViewSpec extends ViewSpec with Injector {
 
@@ -81,8 +80,8 @@ class ConsignmentReferenceViewSpec extends ViewSpec with Injector {
       val backButton = createView().getBackButton
 
       backButton mustBe defined
-      backButton.get must haveHref(ChoiceController.displayChoices)
-      backButton.get must containMessage("site.back.toStartPage")
+      backButton.get must haveHref(backButtonDefaultCall)
+      backButton.get must containMessage("site.back")
     }
 
     "render error summary" when {

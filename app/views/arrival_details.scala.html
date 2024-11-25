@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.routes.{MovementDetailsController, SpecificDateTimeController}
+@import controllers.routes.MovementDetailsController
 @import forms.ArrivalDetails
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.Title
@@ -38,8 +38,8 @@
 
 @govukLayout(
   title = Title("arrivalDetails.header", hasErrors = form.hasErrors || form.hasGlobalErrors),
-  backButton = Some(BackButton(messages("site.back.previousQuestion"), SpecificDateTimeController.displayPage))) {
-
+  backButton = Some(BackButton())
+) {
   @formHelper(action = MovementDetailsController.saveMovementDetails, Symbol("autoComplete") -> "off") {
     @errorSummary(DateTimeErrors.processErrors(form.errors, "dateOfArrival", "timeOfArrival"))
 

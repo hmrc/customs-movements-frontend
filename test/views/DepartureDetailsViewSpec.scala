@@ -17,7 +17,6 @@
 package views
 
 import base.Injector
-import controllers.routes.SpecificDateTimeController
 import forms.DepartureDetails
 import forms.common.{Date, Time}
 import models.cache.DepartureAnswers
@@ -76,8 +75,8 @@ class DepartureDetailsViewSpec extends ViewSpec with Injector {
         val backButton = createView(form).getBackButton
 
         backButton mustBe defined
-        backButton.get must haveHref(SpecificDateTimeController.displayPage)
-        backButton.get must containMessage("site.back.previousQuestion")
+        backButton.get must haveHref(backButtonDefaultCall)
+        backButton.get must containMessage("site.back")
       }
 
       "have section header" in {

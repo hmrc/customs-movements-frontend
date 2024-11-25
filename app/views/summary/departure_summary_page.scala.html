@@ -50,7 +50,7 @@
 
 @govukLayout(
     title = Title("summary.departure.title"),
-    backButton = Some(BackButton(messages("site.back.previousQuestion"), TransportController.displayPage)),
+    backButton = Some(BackButton()),
     useCustomContentWidth = true
 ) {
     @formHelper(action = ArriveOrDepartSummaryController.submit, Symbol("autoComplete") -> "off") {

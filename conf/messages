@@ -96,6 +96,8 @@ global.error.pageNotFound.message = Please check that you have entered the corre
 movement.sectionHeading.depart = Depart consignment {0}
 movement.sectionHeading.arrive = Arrive consignment {0}
 
+movement.choice.linkText.arrival = Arrive consignment
+
 movement.choice.title = What do you want to do?
 movement.choice.title.consignment = What do you want to do with this consignment?
 movement.choice.section = Consignment {0}

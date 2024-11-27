@@ -22,6 +22,8 @@
 @import models.requests.AuthenticatedRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.Title
+@import views.helpers.ChoicePageLinkHelper
+@import views.helpers.ChoicePageLink
 
 @this(
   govukLayout: gds_main_template,
@@ -30,7 +32,9 @@
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
   formHelper: FormWithCSRF,
-  arriveDepartAllowList: ArriveDepartAllowList
+  arriveDepartAllowList: ArriveDepartAllowList,
+  link: link,
+  choicePageLinkHelper: ChoicePageLinkHelper
 )
 
 @(form: Form[Choice])(implicit request: AuthenticatedRequest[_], messages: Messages)
@@ -100,6 +104,13 @@
 @govukLayout(title = Title("movement.choice.title", hasErrors = form.hasErrors || form.hasGlobalErrors)) {
     @formHelper(action = ChoiceController.submitChoice, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
+
+        @choicePageLinkHelper.generateChoiceOption(ChoicePageLink(messages(s"movement.choice.${Arrival.value.toLowerCase}.label"),
+            messages("movement.choice.arrival.hint"), messages("movement.choice.linkText.arrival"),
+            Call("GET", "/")))
+//TODO the others here
+
+
 
         @govukRadios(Radios(
             name = "choice",

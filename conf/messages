@@ -99,6 +99,8 @@ movement.sectionHeading.arrive = Arrive consignment {0}
 movement.choice.linkText.find = Find a CDS consignment
 movement.choice.linkText.departure = Depart consignment
 movement.choice.linkText.arrival = Arrive consignment
+movement.choice.linkText.associate = Associate consignment
+
 
 movement.choice.title = Manage external customs movements
 movement.choice.title.consignment = What do you want to do with this consignment?

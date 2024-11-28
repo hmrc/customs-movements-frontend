@@ -70,6 +70,16 @@
     )
 
 
+    @choicePageLinkHelper.generateChoiceOption(
+        ChoicePageLink(
+            messages(s"movement.choice.${AssociateUCR.value.toLowerCase}.label"),
+            messages("movement.choice.associateucr.hint"),
+            messages("movement.choice.linkText.associate"),
+            Call("GET", "/customs-movements/consignment-references")
+        )
+    )
+
+
   </hr>
 
 }

@@ -16,6 +16,7 @@
 
 package views.helpers
 
+import controllers.routes
 import forms.Choice
 import play.api.mvc.Call
 import play.twirl.api.Html
@@ -26,27 +27,25 @@ import javax.inject.{Inject, Singleton}
 case class ChoicePageLink(title: String, description: String, linkText: String, link: Call)
 
 @Singleton
-class ChoicePageLinkHelper @Inject()(
-                                      heading: heading,
-                                      link: link
-                                    ) {
+class ChoicePageLinkHelper @Inject() (heading: heading, link: link) {
 
   def generateChoiceOption(choice: Choice)(implicit messages: Messages): Html = {
     val choicePageLink = ChoicePageLink(
       messages(s"movement.choice.${choice.value.toLowerCase}.label"),
       messages(s"movement.choice.${choice.value.toLowerCase}.hint"),
       messages(s"movement.choice.linkText.${choice.value.toLowerCase}"),
-      Call("GET", s"/customs-movements/choice/${ choice.value }")
+      routes.ChoiceController.submitChoice(choice.value)
     )
 
-    new Html(List(
-      heading(choicePageLink.title, "govuk-heading-m", "h2"),
-      paragraphBody(choicePageLink.description),
-      link(
-        message = Html(choicePageLink.linkText),
-        href = choicePageLink.link,
-        target = "_self",
-      ))
+    new Html(
+      List(
+        heading(choicePageLink.title, "govuk-heading-m", "h2"),
+        paragraphBody(choicePageLink.description),
+        link(
+          message = Html(choicePageLink.linkText),
+          href = choicePageLink.link,
+          target = "_self")
+      )
     )
   }
 

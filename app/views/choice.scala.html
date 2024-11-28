@@ -41,6 +41,16 @@
 
 @govukLayout(title = Title("movement.choice.title", hasErrors = form.hasErrors || form.hasGlobalErrors)) {
 
+
+    @choicePageLinkHelper.generateChoiceOption(
+        ChoicePageLink(
+            messages(s"movement.choice.${FindConsignment.value.toLowerCase}.label"),
+            messages("movement.choice.findconsignment.hint"),
+            messages("movement.choice.linkText.find"),
+            Call("GET", "/customs-movements/consignment-references")
+        )
+    )
+
     @choicePageLinkHelper.generateChoiceOption(
         ChoicePageLink(
             messages(s"movement.choice.${Departure.value.toLowerCase}.label"),
@@ -58,6 +68,7 @@
             Call("GET", "/customs-movements/consignment-references")
         )
     )
+
 
   </hr>
 

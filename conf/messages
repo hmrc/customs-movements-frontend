@@ -96,6 +96,7 @@ global.error.pageNotFound.message = Please check that you have entered the corre
 movement.sectionHeading.depart = Depart consignment {0}
 movement.sectionHeading.arrive = Arrive consignment {0}
 
+movement.choice.linkText.find = Find a CDS consignment
 movement.choice.linkText.departure = Depart consignment
 movement.choice.linkText.arrival = Arrive consignment
 

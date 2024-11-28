@@ -34,11 +34,12 @@ class ChoicePageLinkHelper @Inject()(
     new Html(List(
       heading(cpl.title, "govuk-heading-m", "h2"),
       paragraphBody(cpl.description),
-    link(
+      link(
         message = Html(cpl.linkText),
         href = cpl.link,
-        target = "_blank"
-      )))
+        target = "_self",
+      ))
+    )
 
   }
 

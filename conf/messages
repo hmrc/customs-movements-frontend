@@ -98,7 +98,7 @@ movement.sectionHeading.arrive = Arrive consignment {0}
 
 movement.choice.linkText.arrival = Arrive consignment
 
-movement.choice.title = What do you want to do?
+movement.choice.title = Manage external customs movements
 movement.choice.title.consignment = What do you want to do with this consignment?
 movement.choice.section = Consignment {0}
 movement.choice.arrival.label = Arrive

@@ -43,6 +43,15 @@
 
     @choicePageLinkHelper.generateChoiceOption(
         ChoicePageLink(
+            messages(s"movement.choice.${Departure.value.toLowerCase}.label"),
+            messages("movement.choice.departure.hint"),
+            messages("movement.choice.linkText.departure"),
+            Call("GET", "/customs-movements/consignment-references")
+        )
+    )
+
+    @choicePageLinkHelper.generateChoiceOption(
+        ChoicePageLink(
             messages(s"movement.choice.${Arrival.value.toLowerCase}.label"),
             messages("movement.choice.arrival.hint"),
             messages("movement.choice.linkText.arrival"),

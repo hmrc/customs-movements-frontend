@@ -31,55 +31,32 @@
   govukRadios: GovukRadios,
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
-  formHelper: FormWithCSRF,
   arriveDepartAllowList: ArriveDepartAllowList,
   link: link,
-  choicePageLinkHelper: ChoicePageLinkHelper
+  choicePageLinkHelper: ChoicePageLinkHelper,
+  pageTitle: pageTitle
 )
 
 @(form: Form[Choice])(implicit request: AuthenticatedRequest[_], messages: Messages)
 
 @govukLayout(title = Title("movement.choice.title", hasErrors = form.hasErrors || form.hasGlobalErrors)) {
 
+    @pageTitle(text = messages("movement.choice.title"), classes = "govuk-heading-xl")
 
-    @choicePageLinkHelper.generateChoiceOption(
-        ChoicePageLink(
-            messages(s"movement.choice.${FindConsignment.value.toLowerCase}.label"),
-            messages("movement.choice.findconsignment.hint"),
-            messages("movement.choice.linkText.find"),
-            Call("GET", "/customs-movements/consignment-references")
-        )
-    )
-
-    @choicePageLinkHelper.generateChoiceOption(
-        ChoicePageLink(
-            messages(s"movement.choice.${Departure.value.toLowerCase}.label"),
-            messages("movement.choice.departure.hint"),
-            messages("movement.choice.linkText.departure"),
-            Call("GET", "/customs-movements/consignment-references")
-        )
-    )
-
-    @choicePageLinkHelper.generateChoiceOption(
-        ChoicePageLink(
-            messages(s"movement.choice.${Arrival.value.toLowerCase}.label"),
-            messages("movement.choice.arrival.hint"),
-            messages("movement.choice.linkText.arrival"),
-            Call("GET", "/customs-movements/consignment-references")
-        )
-    )
-
-
-    @choicePageLinkHelper.generateChoiceOption(
-        ChoicePageLink(
-            messages(s"movement.choice.${AssociateUCR.value.toLowerCase}.label"),
-            messages("movement.choice.associateucr.hint"),
-            messages("movement.choice.linkText.associate"),
-            Call("GET", "/customs-movements/consignment-references")
-        )
-    )
-
-
-  </hr>
+    // TODO: best approach for CSS
+    <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">@choicePageLinkHelper.generateChoiceOption(FindConsignment)</div>
+    <hr>
+    <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">@choicePageLinkHelper.generateChoiceOption(Arrival)</div>
+    <hr>
+    <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">@choicePageLinkHelper.generateChoiceOption(Departure)</div>
+    <hr>
+    <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">@choicePageLinkHelper.generateChoiceOption(AssociateUCR)</div>
+    <hr>
+    <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">@choicePageLinkHelper.generateChoiceOption(DisassociateUCR)</div>
+    <hr>
+    <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">@choicePageLinkHelper.generateChoiceOption(ShutMUCR)</div>
+    <hr>
+    <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">@choicePageLinkHelper.generateChoiceOption(Submissions)</div>
+    </hr>
 
 }

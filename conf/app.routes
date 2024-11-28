@@ -14,7 +14,7 @@ GET         /                                    controllers.RootController.disp
 
 # Choice page
 GET         /choice                              controllers.ChoiceController.displayChoices
-POST        /choice                              controllers.ChoiceController.submitChoice
+GET         /choice/:choice                      controllers.ChoiceController.submitChoice(choice: String)
 
 # Choice on selected Consignment page
 GET         /choice-on-consignment               controllers.ChoiceOnConsignmentController.displayChoices

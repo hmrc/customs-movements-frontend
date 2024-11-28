@@ -42,7 +42,7 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
 
     List(ArrivalAnswers(), DepartureAnswers(), AssociateUcrAnswers(), DisassociateUcrAnswers(), ShutMucrAnswers()).foreach { answer =>
       s"provided with ${answer.`type`} Journey Type" should {
-        implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(answer)
+        implicit val request: JourneyRequest[_] = journeyRequest(answer)
         val view = page(Confirmation(answer.`type`, conversationId, Some(consignmentRefs()), None))
 
         "render back button" in {

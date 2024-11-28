@@ -17,8 +17,6 @@
 package views.consolidations
 
 import base.Injector
-import controllers.consolidations.routes.ManageMucrController
-import controllers.routes.{ChoiceController, ChoiceOnConsignmentController}
 import forms.DucrPartChiefChoice.IsDucrPart
 import forms.UcrType.Mucr
 import forms.{DucrPartChiefChoice, ManageMucrChoice, MucrOptions}
@@ -96,8 +94,8 @@ class MucrOptionsViewSpec extends ViewSpec with Injector {
 
           backButton mustBe defined
           backButton.foreach { button =>
-            button must haveHref(ChoiceController.displayChoices)
-            button must containMessage("site.back.previousQuestion")
+            button must haveHref(backButtonDefaultCall)
+            button must containMessage("site.back")
           }
         }
       }
@@ -112,8 +110,8 @@ class MucrOptionsViewSpec extends ViewSpec with Injector {
 
           backButton mustBe defined
           backButton.foreach { button =>
-            button must haveHref(ChoiceController.displayChoices)
-            button must containMessage("site.back.previousQuestion")
+            button must haveHref(backButtonDefaultCall)
+            button must containMessage("site.back")
           }
         }
       }
@@ -127,8 +125,8 @@ class MucrOptionsViewSpec extends ViewSpec with Injector {
 
           backButton mustBe defined
           backButton.foreach { button =>
-            button must haveHref(ManageMucrController.displayPage)
-            button must containMessage("site.back.previousQuestion")
+            button must haveHref(backButtonDefaultCall)
+            button must containMessage("site.back")
           }
         }
       }
@@ -142,8 +140,8 @@ class MucrOptionsViewSpec extends ViewSpec with Injector {
 
           backButton mustBe defined
           backButton.foreach { button =>
-            button must haveHref(ChoiceOnConsignmentController.displayChoices)
-            button must containMessage("site.back.previousQuestion")
+            button must haveHref(backButtonDefaultCall)
+            button must containMessage("site.back")
           }
         }
       }

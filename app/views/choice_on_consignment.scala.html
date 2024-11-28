@@ -17,7 +17,6 @@
 @import forms.Choice._
 @import forms.Choice
 @import controllers.actions.ArriveDepartAllowList
-@import controllers.ileQuery.routes.IleQueryController
 @import controllers.routes.ChoiceOnConsignmentController
 @import forms.UcrType.Mucr
 @import models.requests.AuthenticatedRequest
@@ -81,7 +80,7 @@
 
 @govukLayout(
   title = Title("movement.choice.title.consignment", hasErrors = form.hasErrors || form.hasGlobalErrors),
-  backButton = Some(BackButton(messages("site.back"), IleQueryController.getConsignmentData(ucrBlock.ucr)))
+  backButton = Some(BackButton())
 ) {
     @formHelper(action = ChoiceOnConsignmentController.submitChoice, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)

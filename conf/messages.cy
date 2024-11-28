@@ -46,7 +46,6 @@ error.mucr.format = Mae’n rhaid i Brif Gyfeirnod Unigryw y Llwyth (MUCR) gynnw
 
 site.back = Yn ôl
 site.back.toStartPage = Yn ôl i’r dudalen ddewis
-site.back.previousQuestion = Yn ôl i’r cwestiwn blaenorol
 site.link.backToGovUk = Yn ôl i GOV.UK
 site.edit = Newid
 site.save_and_continue = Cadw ac yn eich blaen

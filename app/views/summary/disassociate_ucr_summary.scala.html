@@ -15,7 +15,6 @@
  *@
 
 @import controllers.consolidations.routes.DisassociateUcrController
-@import controllers.routes.ChoiceOnConsignmentController
 @import controllers.summary.routes.DisassociateUcrSummaryController
 @import forms.DisassociateUcr
 @import models.requests.JourneyRequest
@@ -37,17 +36,9 @@
 
 @kind = @{ disassociateUcr.kind }
 
-@href = @{DisassociateUcrController.displayPage.url
-}
-
-@backUrl = @{
-    if (request.cache.ucrBlockFromIleQuery) ChoiceOnConsignmentController.displayChoices
-    else  DisassociateUcrController.displayPage
-}
-
 @govukLayout(
     title = Title("disassociate.ucr.summary.title"),
-    backButton = Some(BackButton(messages("site.back"), backUrl)),
+    backButton = Some(BackButton()),
     useCustomContentWidth = true
 )  {
     @formHelper(action = DisassociateUcrSummaryController.submit, Symbol("autoComplete") -> "off") {
@@ -68,7 +59,7 @@
                     actions =
                         if (request.cache.ucrBlockFromIleQuery) None
                         else Some(Actions(items = Seq(ActionItem(
-                            href = href,
+                            href = DisassociateUcrController.displayPage.url,
                             content = HtmlContent(linkContent(messages("site.change"))),
                             visuallyHiddenText = Some(messages("site.change.hint.disassociate.ucr", kind.toString.toUpperCase))
                         ))))

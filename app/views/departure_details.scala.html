@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.routes.{MovementDetailsController, SpecificDateTimeController}
+@import controllers.routes.MovementDetailsController
 @import forms.DepartureDetails
 @import forms.common.DateTimeErrors
 @import models.requests.RequestWithAnswers
@@ -38,7 +38,7 @@
 
 @govukLayout(
   title = Title("departureDetails.header", hasErrors = form.hasErrors || form.hasGlobalErrors),
-  backButton = Some(BackButton(messages("site.back.previousQuestion"), SpecificDateTimeController.displayPage))
+  backButton = Some(BackButton())
 ) {
     @formHelper(action = MovementDetailsController.saveMovementDetails, Symbol("autoComplete") -> "off") {
         @errorSummary(DateTimeErrors.processErrors(form.errors, "dateOfDeparture", "timeOfDeparture"))

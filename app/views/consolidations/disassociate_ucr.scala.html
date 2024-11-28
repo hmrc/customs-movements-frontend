@@ -15,7 +15,6 @@
  *@
 
 @import controllers.consolidations.routes.DisassociateUcrController
-@import controllers.routes.ChoiceController
 @import forms.{DisassociateUcr, UcrType}
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -37,7 +36,7 @@
 
 @govukLayout(
   title = Title("disassociate.ucr.title", hasErrors = form.hasErrors || form.hasGlobalErrors),
-  backButton = Some(BackButton(messages("site.back.previousQuestion"), ChoiceController.displayChoices))
+  backButton = Some(BackButton())
 ) {
     @formHelper(action = DisassociateUcrController.submit, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)

@@ -15,8 +15,7 @@
  *@
 
 @import config.ExternalServicesConfig
-@import controllers.consolidations.routes.{ManageMucrController,MucrOptionsController}
-@import controllers.routes.{ChoiceOnConsignmentController, ChoiceController}
+@import controllers.consolidations.routes.MucrOptionsController
 @import forms.{ManageMucrChoice, MucrOptions}
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -43,17 +42,9 @@
     <a target="_blank" href=@config.previousDocumentsDataElementUrl>@messages("mucrOptions.paragraph.link")</a>
 }
 
-@backUrl = @{
-    if (request.cache.ucrBlockFromIleQuery) {
-        if (manageMucrChoice.isDefined) ManageMucrController.displayPage
-        else ChoiceOnConsignmentController.displayChoices
-    }
-    else ChoiceController.displayChoices
-}
-
 @govukLayout(
   title = Title("mucrOptions.title", hasErrors = form.hasErrors || form.hasGlobalErrors),
-  backButton = Some(BackButton(messages("site.back.previousQuestion"), backUrl))
+  backButton = Some(BackButton())
 ) {
     @formHelper(action = MucrOptionsController.save, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)

@@ -18,7 +18,6 @@ package views
 
 import base.{Injector, OverridableInjector}
 import controllers.actions.ArriveDepartAllowList
-import controllers.ileQuery.routes.IleQueryController
 import controllers.routes.ChoiceOnConsignmentController
 import forms.Choice._
 import forms.UcrType.Mucr
@@ -113,7 +112,7 @@ class ChoiceOnConsignmentViewSpec extends ViewSpec with BeforeAndAfterEach with 
           val backButton = view.getElementById("back-link")
 
           backButton.text mustBe messages("site.back")
-          backButton must haveHref(IleQueryController.getConsignmentData(ucrBlock.ucr))
+          backButton must haveHref(backButtonDefaultCall)
         }
 
         "display the expected Consignment header" in {

@@ -18,7 +18,6 @@ package views
 
 import base.Injector
 import connectors.exchanges.ActionType.{ConsolidationType, MovementType}
-import controllers.routes.ChoiceController
 import forms.UcrType
 import models.UcrBlock
 import models.submissions.Submission
@@ -54,8 +53,8 @@ class MovementsViewSpec extends ViewSpec with Injector {
     "contain back button" in {
       val backButton = emptyPage.getElementById("back-link")
 
-      backButton must containMessage("site.back.toStartPage")
-      backButton must haveHref(ChoiceController.displayChoices)
+      backButton must containMessage("site.back")
+      backButton must haveHref(backButtonDefaultCall)
     }
 
     "contain header" in {

@@ -17,7 +17,6 @@
 package views
 
 import base.Injector
-import controllers.routes.ChoiceController
 import forms.IleQueryForm
 import org.jsoup.nodes.Element
 import play.api.mvc.{AnyContent, Request}
@@ -48,8 +47,8 @@ class IleQueryViewSpec extends ViewSpec with Injector {
     }
 
     "render a 'Back' button" in {
-      view.getElementById("back-link") must haveAttribute("href", ChoiceController.displayChoices.url)
-      view.getElementById("back-link") must containMessage("site.back.toStartPage")
+      view.getElementById("back-link") must haveAttribute("href", backButtonDefaultCall.url)
+      view.getElementById("back-link") must containMessage("site.back")
     }
 
     "render page header" in {

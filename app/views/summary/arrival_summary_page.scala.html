@@ -45,15 +45,11 @@
     }.getOrElse("")
 }
 
-@hrefForReferenceType = @{ConsignmentReferencesController.displayPage.url
-}
-
-@hrefForReferenceValue = @{ConsignmentReferencesController.displayPage.url
-}
+@changeHref = @{ ConsignmentReferencesController.displayPage.url }
 
 @govukLayout(
     title = Title("summary.arrival.title"),
-    backButton = Some(BackButton(messages("site.back"), LocationController.displayPage)),
+    backButton = Some(BackButton()),
     useCustomContentWidth = true
 ) {
     @formHelper(action = ArriveOrDepartSummaryController.submit, Symbol("autoComplete") -> "off") {
@@ -73,7 +69,7 @@
                         actions =
                             if (request.cache.ucrBlockFromIleQuery) None
                             else Some(Actions(items = Seq(ActionItem(
-                                href = hrefForReferenceType,
+                                href = changeHref,
                                 content = HtmlContent(linkContent(messages("site.change"))),
                                 visuallyHiddenText = Some(messages("summary.referenceType.change"))
                             ))))
@@ -88,7 +84,7 @@
                         actions =
                             if (request.cache.ucrBlockFromIleQuery) None
                             else Some(Actions(items = Seq(ActionItem(
-                                href = hrefForReferenceValue,
+                                href = changeHref,
                                 content = HtmlContent(linkContent(messages("site.change"))),
                                 visuallyHiddenText = Some(messages("summary.referenceValue.change"))
                             ))))

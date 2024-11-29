@@ -43,20 +43,18 @@
 
     @pageTitle(text = messages("movement.choice.title"), classes = "govuk-heading-xl")
 
-    // TODO: best approach for CSS
-    <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">@choicePageLinkHelper.generateChoiceOption(FindConsignment)</div>
+    @choicePageLinkHelper.generateChoiceOption(FindConsignment)
     <hr>
-    <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">@choicePageLinkHelper.generateChoiceOption(Arrival)</div>
+    @choicePageLinkHelper.generateChoiceOption(Arrival)
     <hr>
-    <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">@choicePageLinkHelper.generateChoiceOption(Departure)</div>
+    @choicePageLinkHelper.generateChoiceOption(Departure)
     <hr>
-    <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">@choicePageLinkHelper.generateChoiceOption(AssociateUCR)</div>
+    @choicePageLinkHelper.generateChoiceOption(AssociateUCR)
     <hr>
-    <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">@choicePageLinkHelper.generateChoiceOption(DisassociateUCR)</div>
+    @choicePageLinkHelper.generateChoiceOption(DisassociateUCR)
     <hr>
-    <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">@choicePageLinkHelper.generateChoiceOption(ShutMUCR)</div>
+    @choicePageLinkHelper.generateChoiceOption(ShutMUCR)
     <hr>
-    <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">@choicePageLinkHelper.generateChoiceOption(Submissions)</div>
-    </hr>
+    @choicePageLinkHelper.generateChoiceOption(Submissions)
 
 }

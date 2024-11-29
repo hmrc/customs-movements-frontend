@@ -16,9 +16,8 @@
 
 package controllers
 
-import controllers.consolidations.routes.{DisassociateUcrController, MucrOptionsController, ShutMucrController}
 import controllers.ileQuery.routes.FindConsignmentController
-import controllers.routes.{ConsignmentReferencesController, SubmissionsController}
+import controllers.routes.{ConsignmentReferencesController, DisassociateUcrController, MucrOptionsController, ShutMucrController, SubmissionsController}
 import forms.Choice._
 import forms.UcrType.Mucr
 import forms._
@@ -28,7 +27,6 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar.{mock, reset, verify, when}
 import play.api.data.Form
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import repository.MockCache
@@ -104,9 +102,8 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
   "ChoiceController.submitChoice" should {
 
     "throw an IllegalArgumentException" when {
-      "form is incorrect" in {
-        val incorrectForm = Json.obj("choice" -> "Incorrect")
-        val result = controller.submitChoice(postRequest(incorrectForm))
+      "link is incorrect" in {
+        val result = controller.submitChoice("incorrect")(getRequest())
         status(result) mustBe BAD_REQUEST
       }
     }
@@ -114,68 +111,49 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
     "create cache and return 303 (SEE_OTHER)" when {
 
       "choice is Find Consignment" in {
-        val findConsignmentForm = Json.obj("choice" -> FindConsignment.value)
-        val result = controller.submitChoice(postRequest(findConsignmentForm))
+        val result = controller.submitChoice(FindConsignment.value)(getRequest())
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(FindConsignmentController.displayPage.url)
         theCacheUpserted.answers mustBe None
       }
 
       "choice is Arrival" in {
-        val arrivalForm = Json.obj("choice" -> Arrival.value)
-
-        val result = controller.submitChoice(postRequest(arrivalForm))
-
+        val result = controller.submitChoice(Arrival.value)(getRequest())
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(ConsignmentReferencesController.displayPage.url)
         theCacheUpserted.answers mustBe Some(ArrivalAnswers())
       }
 
       "choice is Departure" in {
-        val departureForm = Json.obj("choice" -> Departure.value)
-
-        val result = controller.submitChoice(postRequest(departureForm))
-
+        val result = controller.submitChoice(Departure.value)(getRequest())
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(ConsignmentReferencesController.displayPage.url)
         theCacheUpserted.answers mustBe Some(DepartureAnswers())
       }
 
       "choice is Associate Ducr" in {
-        val associateDUCRForm = Json.obj("choice" -> AssociateUCR.value)
-
-        val result = controller.submitChoice(postRequest(associateDUCRForm))
-
+        val result = controller.submitChoice(AssociateUCR.value)(getRequest())
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(MucrOptionsController.displayPage.url)
         theCacheUpserted.answers mustBe Some(AssociateUcrAnswers())
       }
 
       "choice is Disassociate Ducr" in {
-        val disassociateDUCRForm = Json.obj("choice" -> DisassociateUCR.value)
-
-        val result = controller.submitChoice(postRequest(disassociateDUCRForm))
-
+        val result = controller.submitChoice(DisassociateUCR.value)(getRequest())
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(DisassociateUcrController.displayPage.url)
         theCacheUpserted.answers mustBe Some(DisassociateUcrAnswers())
       }
 
       "choice is Shut Mucr" in {
-        val shutMucrForm = Json.obj("choice" -> ShutMUCR.value)
-
-        val result = controller.submitChoice(postRequest(shutMucrForm))
-
+        val result = controller.submitChoice(ShutMUCR.value)(getRequest())
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(ShutMucrController.displayPage.url)
         theCacheUpserted.answers mustBe Some(ShutMucrAnswers())
       }
 
       "choice is Submission" in {
-        val submissionsForm = Json.obj("choice" -> Submissions.value)
-
-        val result = controller.submitChoice(postRequest(submissionsForm))
-
+        val result = controller.submitChoice(Submissions.value)(getRequest())
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(SubmissionsController.displayPage.url)
         theCacheUpserted.answers mustBe None

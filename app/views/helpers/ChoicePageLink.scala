@@ -37,11 +37,13 @@ class ChoicePageLinkHelper @Inject() (heading: heading, link: link) {
       routes.ChoiceController.submitChoice(choice.value)
     )
 
-    val choiceContent = new Html(List(
+    val choiceContent = new Html(
+      List(
         heading(choicePageLink.title, "govuk-heading-m", "h2"),
         paragraphBody(choicePageLink.description),
         link(message = Html(choicePageLink.linkText), href = choicePageLink.link, target = "_self")
-      ))
+      )
+    )
 
     choiceLine(choiceContent, choice.value.toLowerCase)
   }

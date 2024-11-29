@@ -16,8 +16,9 @@
 
 package controllers
 
+import controllers.consolidations.routes.{DisassociateUcrController, MucrOptionsController, ShutMucrController}
 import controllers.ileQuery.routes.FindConsignmentController
-import controllers.routes.{ConsignmentReferencesController, DisassociateUcrController, MucrOptionsController, ShutMucrController, SubmissionsController}
+import controllers.routes.{ConsignmentReferencesController, SubmissionsController}
 import forms.Choice._
 import forms.UcrType.Mucr
 import forms._
@@ -101,10 +102,10 @@ class ChoiceControllerSpec extends ControllerLayerSpec with MockCache {
 
   "ChoiceController.submitChoice" should {
 
-    "throw an IllegalArgumentException" when {
-      "link is incorrect" in {
+    "return page not found" when {
+      "path parameter incorrect" in {
         val result = controller.submitChoice("incorrect")(getRequest())
-        status(result) mustBe BAD_REQUEST
+        status(result) mustBe NOT_FOUND
       }
     }
 

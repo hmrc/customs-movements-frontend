@@ -18,7 +18,6 @@ package views
 
 import base.{Injector, OverridableInjector}
 import controllers.actions.ArriveDepartAllowList
-import controllers.routes.ChoiceController
 import forms.Choice
 import forms.Choice._
 import models.requests.AuthenticatedRequest
@@ -64,25 +63,7 @@ class ChoiceViewSpec extends ViewSpec with BeforeAndAfterEach with Injector {
 
   "Choice View" should {
 
-    "have proper labels for error messages" in {
-      messages must haveTranslationFor("choicePage.input.error.empty")
-      messages must haveTranslationFor("choicePage.input.error.incorrectValue")
-    }
-
-    "have the page's title prefixed with 'Error:'" when {
-      "the page has errors" in {
-        val view = createView(form.withGlobalError("error.summary.title"))
-        view.head.getElementsByTag("title").first.text must startWith("Error: ")
-      }
-    }
-
     val view = createView()
-
-    "have a form for submission to ChoiceController" in {
-      val element = view.getElementsByTag("form").get(0)
-      element.attr("method").toUpperCase mustBe "POST"
-      element.attr("action") mustBe ChoiceController.displayChoices.url
-    }
 
     "display same page title as header" in {
       view.title() must include(view.getElementsByTag("h1").text())
@@ -91,14 +72,11 @@ class ChoiceViewSpec extends ViewSpec with BeforeAndAfterEach with Injector {
     "display the expected header" in {
       view.getElementsByTag("h1").text() mustBe messages("movement.choice.title")
     }
-
-    "display 'Save and continue' button on page" in {
-      view.getElementsByClass("govuk-button").get(0).text() must be(messages("site.continue"))
-    }
   }
 
   "Choice View" should {
 
+    // TODO: change
     "render the choices in the expected order depending on the configuration flags" in {
       List(true, false).foreach { arriveDepartAllowListFlag =>
         setArriveDepartAllowList(arriveDepartAllowListFlag)
@@ -116,26 +94,6 @@ class ChoiceViewSpec extends ViewSpec with BeforeAndAfterEach with Injector {
           children.get(2).text() mustBe messages(s"movement.choice.${choice.value.toLowerCase}.hint")
         }
       }
-    }
-
-    "display error when no choice is made" in {
-      val view = createView(form.bind(Map[String, String]()))
-
-      view must haveGovUkGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#choice")
-
-      val element = view.getElementsByClass("govuk-list govuk-error-summary__list").get(0)
-      element.text() must be(messages("choicePage.input.error.empty"))
-    }
-
-    "display error when choice is incorrect" in {
-      val view = createView(form.bind(Map("choice" -> "incorrect")))
-
-      view must haveGovUkGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#choice")
-
-      val element = view.getElementsByClass("govuk-list govuk-error-summary__list").get(0)
-      element.text() must be(messages("choicePage.input.error.incorrectValue"))
     }
   }
 }

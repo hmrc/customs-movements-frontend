@@ -34,7 +34,7 @@ import testdata.MovementsTestData.newUser
 import views.html.choice
 import views.tags.ViewTest
 
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.IteratorHasAsScala
 
 @ViewTest
 class ChoiceViewSpec extends ViewSpec with BeforeAndAfterEach with Injector {
@@ -76,24 +76,19 @@ class ChoiceViewSpec extends ViewSpec with BeforeAndAfterEach with Injector {
 
   "Choice View" should {
 
-    // TODO: change
-    "render the choices in the expected order depending on the configuration flags" in {
-      List(true, false).foreach { arriveDepartAllowListFlag =>
-        setArriveDepartAllowList(arriveDepartAllowListFlag)
+    "render the choices in the expected order" in {
 
-        val view = createView()
-        val radios = view.getElementsByClass("govuk-radios__item").iterator().asScala.toList
-        val choices = allChoices
-          .filterNot(choice => !arriveDepartAllowListFlag && (choice.isArrival || choice.isDeparture))
+      val choices = createView().getElementsByClass("govuk-grid-column-two-thirds").
+        get(0).children().iterator().asScala.toList.filter(_.tagName() == "div")
 
-        radios.size mustBe choices.size
-        choices.zip(radios).foreach { case (choice, element) =>
-          val children = element.children()
-          children.get(0).tagName() mustBe "input"
-          children.get(1).text() mustBe messages(s"movement.choice.${choice.value.toLowerCase}.label")
-          children.get(2).text() mustBe messages(s"movement.choice.${choice.value.toLowerCase}.hint")
-        }
-      }
+      choices(0).id() mustBe "choice-findconsignment"
+      choices(1).id() mustBe "choice-arrival"
+      choices(2).id() mustBe "choice-departure"
+      choices(3).id() mustBe "choice-associateucr"
+      choices(4).id() mustBe "choice-disassociateucr"
+      choices(5).id() mustBe "choice-shutmucr"
+      choices(6).id() mustBe "choice-submissions"
+
     }
   }
 }

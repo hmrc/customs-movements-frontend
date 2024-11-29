@@ -17,7 +17,6 @@
 package views
 
 import base.Injector
-import controllers.routes.{ChoiceOnConsignmentController, ConsignmentReferencesController}
 import forms.DucrPartChiefChoice.IsDucrPart
 import forms.{DucrPartChiefChoice, SpecificDateTimeChoice}
 import models.cache.{ArrivalAnswers, Cache, DepartureAnswers}
@@ -67,7 +66,7 @@ class SpecificDateTimeViewSpec extends ViewSpec with Injector {
 
         backButton mustBe defined
         backButton.foreach { button =>
-          button must haveHref(ChoiceOnConsignmentController.displayChoices)
+          button must haveHref(backButtonDefaultCall)
           button must containMessage("site.back")
         }
       }
@@ -82,8 +81,8 @@ class SpecificDateTimeViewSpec extends ViewSpec with Injector {
 
           backButton mustBe defined
           backButton.foreach { button =>
-            button must haveHref(ConsignmentReferencesController.displayPage)
-            button must containMessage("site.back.previousQuestion")
+            button must haveHref(backButtonDefaultCall)
+            button must containMessage("site.back")
           }
         }
       }
@@ -96,7 +95,7 @@ class SpecificDateTimeViewSpec extends ViewSpec with Injector {
 
           backButton mustBe defined
           backButton.foreach { button =>
-            button must haveHref(ConsignmentReferencesController.displayPage)
+            button must haveHref(backButtonDefaultCall)
             button must containMessage("site.back")
           }
         }

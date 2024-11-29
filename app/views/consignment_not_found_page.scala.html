@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.ileQuery.routes.FindConsignmentController
 @import controllers.routes.ChoiceController
 @import uk.gov.hmrc.govukfrontend.views.html.components.{Button, GovukButton, Text}
 @import views.components.BackButton
@@ -27,7 +26,7 @@
 
 @govukLayout(
     title = Title("ileQueryResponse.ucrNotFound.title"),
-    backButton = Some(BackButton(messages("site.back"), FindConsignmentController.displayPage))
+    backButton = Some(BackButton())
 ) {
     @pageTitle(text = messages("ileQueryResponse.ucrNotFound.title"), classes = "govuk-heading-xl")
 

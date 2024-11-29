@@ -27,8 +27,8 @@
 @govukLayout(
     useCustomContentWidth = true,
     title = Title("ileQueryResponse.timeout.title"),
-    backButton = Some(BackButton(messages("site.back"), controllers.ileQuery.routes.FindConsignmentController.displayPage))) {
-
+    backButton = Some(BackButton())
+) {
   @pageTitle(text = messages("ileQueryResponse.timeout.heading"), classes = "govuk-heading-xl govuk-!-width-two-thirds")
 
   <p class="govuk-body govuk-!-margin-bottom-4">@messages("ileQueryResponse.timeout.body", {ucr})</p>

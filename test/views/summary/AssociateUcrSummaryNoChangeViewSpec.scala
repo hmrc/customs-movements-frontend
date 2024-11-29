@@ -51,29 +51,29 @@ class AssociateUcrSummaryNoChangeViewSpec extends ViewSpec with Injector {
     }
 
     "render back button" when {
-      def validateBackButton(backButton: Option[Element], call: Call): Unit = {
+      def validateBackButton(backButton: Option[Element]): Unit = {
         backButton mustBe defined
         backButton.foreach { button =>
-          button must haveHref(call)
+          button must haveHref(backButtonDefaultCall)
           button must containMessage("site.back")
         }
       }
 
       "query Ducr" in {
         val view = createView("DUCR", "MUCR", UcrType.Mucr, None)
-        validateBackButton(view.getBackButton, MucrOptionsController.displayPage)
+        validateBackButton(view.getBackButton)
       }
 
       "query Mucr and Associate this consignment to another" in {
         val mucrChoice = Some(ManageMucrChoice(ManageMucrChoice.AssociateThisMucr))
         val view = createView("MUCR", "MUCR", UcrType.Mucr, mucrChoice)
-        validateBackButton(view.getBackButton, MucrOptionsController.displayPage)
+        validateBackButton(view.getBackButton)
       }
 
       "query Mucr and Associate another consignment to this one" in {
         val mucrChoice = Some(ManageMucrChoice(ManageMucrChoice.AssociateAnotherMucr))
         val view = createView("MUCR", "MUCR", UcrType.Mucr, mucrChoice)
-        validateBackButton(view.getBackButton, AssociateUcrController.displayPage)
+        validateBackButton(view.getBackButton)
       }
     }
 

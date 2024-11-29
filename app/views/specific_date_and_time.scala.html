@@ -15,7 +15,7 @@
  *@
 
 @import components.gds._
-@import controllers.routes.{ChoiceOnConsignmentController, ConsignmentReferencesController, SpecificDateTimeController}
+@import controllers.routes.SpecificDateTimeController
 @import forms.SpecificDateTimeChoice
 @import forms.UcrType.Ducr
 @import models.requests.JourneyRequest
@@ -37,14 +37,9 @@
 
 @sectionHeaderKey = @{s"specific.datetime.${request.answers.`type`.toString.toLowerCase}.heading"}
 
-@backUrl = @{
-    if (request.cache.ucrBlockFromIleQuery) ChoiceOnConsignmentController.displayChoices
-    else  ConsignmentReferencesController.displayPage
-}
-
 @govukLayout(
   title = Title("specific.datetime.heading", hasErrors = form.hasErrors || form.hasGlobalErrors),
-  backButton = Some(BackButton(messages("site.back.previousQuestion"), backUrl))
+  backButton = Some(BackButton())
 ) {
     @formHelper(action = SpecificDateTimeController.submit, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)

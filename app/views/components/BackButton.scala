@@ -17,4 +17,4 @@
 package views.components
 import play.api.mvc.Call
 
-case class BackButton(title: String, call: Call)
+case class BackButton(title: String = "site.back", call: Call = Call("GET", "#"))

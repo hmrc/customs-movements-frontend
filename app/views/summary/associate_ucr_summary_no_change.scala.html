@@ -36,13 +36,6 @@
   manageMucrChoice: Option[ManageMucrChoice]
 )(implicit request: Request[_], messages: Messages)
 
-@backUrl = @{
-    manageMucrChoice.map(_.choice) match {
-        case Some(choice) if choice == ManageMucrChoice.AssociateAnotherMucr => AssociateUcrController.displayPage
-        case _ => MucrOptionsController.displayPage
-    }
-}
-
 @changeUrl = @{
     manageMucrChoice.map(_.choice) match {
         case Some(choice) if choice == ManageMucrChoice.AssociateAnotherMucr => AssociateUcrController.displayPage.url
@@ -80,7 +73,7 @@
 
 @govukLayout(
     title = Title("associate.ucr.summary.title"),
-    backButton = Some(BackButton(messages("site.back"), backUrl)),
+    backButton = Some(BackButton()),
     useCustomContentWidth = true
 ) {
     @formHelper(action = AssociateUcrSummaryController.submit, Symbol("autoComplete") -> "off") {

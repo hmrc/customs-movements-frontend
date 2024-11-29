@@ -51,7 +51,7 @@
 
 @govukLayout(
     title = Title(s"confirmation.title.${confirmation.journeyType}"),
-    backButton = Some(BackButton(messages("site.back.toStartPage"), ChoiceController.displayChoices)),
+    backButton = Some(BackButton("site.back.toStartPage", ChoiceController.displayChoices)),
     showLanguageSwitch = true
 ) {
     @govukPanel(Panel(title = Text(messages(s"confirmation.title.${confirmation.journeyType}"))))

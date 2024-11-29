@@ -16,7 +16,6 @@
 
 @import config.AppConfig
 @import controllers.consolidations.routes.ShutMucrController
-@import controllers.routes.ChoiceController
 @import forms.ShutMucr
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.BackButton
@@ -38,7 +37,7 @@
 
 @govukLayout(
   title = Title("shutMucr.title", hasErrors = form.hasErrors || form.hasGlobalErrors),
-  backButton = Some(BackButton(messages("site.back.toStartPage"), ChoiceController.displayChoices))
+  backButton = Some(BackButton())
 ) {
     @formHelper(action = ShutMucrController.submitForm, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)

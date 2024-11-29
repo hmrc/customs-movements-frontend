@@ -27,7 +27,7 @@ import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.Messages
-import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import testdata.CommonTestData.validEori
@@ -35,6 +35,8 @@ import uk.gov.hmrc.auth.core.Enrolments
 import views.spec.ViewMatchers
 
 class ViewSpec extends AnyWordSpec with Matchers with ViewMatchers with MessagesStub with CSRFSupport with OptionValues {
+
+  val backButtonDefaultCall: Call = Call("GET", "#")
 
   implicit protected def htmlBodyOf(html: Html): Document = Jsoup.parse(html.toString())
 

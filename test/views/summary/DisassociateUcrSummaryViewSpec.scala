@@ -18,7 +18,6 @@ package views.summary
 
 import base.Injector
 import controllers.consolidations.routes.DisassociateUcrController
-import controllers.routes.ChoiceOnConsignmentController
 import forms.DucrPartChiefChoice.IsDucrPart
 import forms.UcrType.Ducr
 import forms.{DisassociateUcr, DucrPartChiefChoice}
@@ -59,7 +58,7 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector {
       val view = page(disassociateUcr)
       val changeButton = view.getElementsByClass("govuk-link").get(3)
       changeButton must containMessage("site.change")
-      changeButton must haveAttribute("href", controllers.consolidations.routes.DisassociateUcrController.displayPage.url)
+      changeButton must haveAttribute("href", DisassociateUcrController.displayPage.url)
     }
 
     "not display 'Change' link when on 'Find a consignment' journey" in {
@@ -74,7 +73,7 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector {
         val backButton = page(disassociateUcr).getBackButton
 
         backButton mustBe defined
-        backButton.get must haveHref(ChoiceOnConsignmentController.displayChoices)
+        backButton.get must haveHref(backButtonDefaultCall)
       }
     }
 
@@ -86,7 +85,7 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector {
           val backButton = page(disassociateUcr).getBackButton
 
           backButton mustBe defined
-          backButton.get must haveHref(DisassociateUcrController.displayPage)
+          backButton.get must haveHref(backButtonDefaultCall)
         }
       }
     }
@@ -97,7 +96,7 @@ class DisassociateUcrSummaryViewSpec extends ViewSpec with Injector {
           val backButton = page(disassociateUcr).getBackButton
 
           backButton mustBe defined
-          backButton.get must haveHref(DisassociateUcrController.displayPage)
+          backButton.get must haveHref(backButtonDefaultCall)
         }
       }
     }

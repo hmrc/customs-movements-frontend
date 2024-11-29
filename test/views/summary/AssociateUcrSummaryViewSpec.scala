@@ -25,7 +25,7 @@ import models.UcrBlock
 import models.cache.{AssociateUcrAnswers, Cache}
 import models.requests.JourneyRequest
 import org.scalatest.Assertion
-import play.api.mvc.{AnyContentAsEmpty, Call}
+import play.api.mvc.AnyContentAsEmpty
 import play.twirl.api.Html
 import testdata.CommonTestData.validEori
 import views.ViewSpec
@@ -57,7 +57,7 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
       "the entered ucr is of type 'DucrPart" in {
         val cache = Cache(validEori, None, None, ucrBlockFromIleQuery = false, Some(DucrPartChiefChoice(IsDucrPart)))
         implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(cache)
-        testBackButton(MucrOptionsController.displayPage)
+        testBackButton
       }
     }
 
@@ -65,12 +65,12 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
 
       "the entered ucr is of type 'Mucr" in {
         implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(AssociateUcrAnswers(), Some(UcrBlock("ucr", Mucr)))
-        testBackButton(AssociateUcrController.displayPage)
+        testBackButton
       }
 
       "the entered ucr is of type 'Ducr" in {
         implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(AssociateUcrAnswers(), Some(UcrBlock("ucr", Ducr)))
-        testBackButton(AssociateUcrController.displayPage)
+        testBackButton
       }
     }
 
@@ -101,11 +101,11 @@ class AssociateUcrSummaryViewSpec extends ViewSpec with Injector {
     }
   }
 
-  private def testBackButton(call: Call)(implicit request: JourneyRequest[_]): Assertion = {
+  private def testBackButton(implicit request: JourneyRequest[_]): Assertion = {
     val view = createView("MUCR", "DUCR")
     val backButton = view.getBackButton
     backButton mustBe defined
-    backButton.get must haveHref(AssociateUcrController.displayPage)
+    backButton.get must haveHref(backButtonDefaultCall)
     backButton.get must containMessage("site.back")
   }
 }

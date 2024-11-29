@@ -40,7 +40,7 @@ class IleQueryTimeoutViewSpec extends ViewSpec with Injector {
 
     "display back button linking to Find Consignment page" in {
 
-      view.getElementById("back-link") must haveHref(controllers.ileQuery.routes.FindConsignmentController.displayPage)
+      view.getElementById("back-link") must haveHref(backButtonDefaultCall)
     }
 
     "display heading" in {

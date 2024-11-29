@@ -15,7 +15,6 @@
  *@
 
 @import controllers.consolidations.routes.ShutMucrController
-@import controllers.routes.ChoiceOnConsignmentController
 @import controllers.summary.routes.ShutMucrSummaryController
 @import forms.ShutMucr
 @import models.requests.JourneyRequest
@@ -35,14 +34,9 @@
 
 @(shutMucr: ShutMucr)(implicit request: JourneyRequest[_], messages: Messages)
 
-@backUrl = @{
-    if (request.cache.ucrBlockFromIleQuery) ChoiceOnConsignmentController.displayChoices
-    else ShutMucrController.displayPage
-}
-
 @govukLayout(
     title = Title("shutMucr.summary.title"),
-    backButton = Some(BackButton(messages("site.back"), backUrl)),
+    backButton = Some(BackButton()),
     useCustomContentWidth = true
 ) {
     @formHelper(action = ShutMucrSummaryController.submit, Symbol("autoComplete") -> "off") {

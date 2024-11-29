@@ -54,7 +54,11 @@ class ChoiceController @Inject() (authenticate: AuthAction, cacheRepository: Cac
   }
 
   def submitChoice(choice: String): Action[AnyContent] = authenticate.async { implicit request =>
-    nextPage(Choice(choice))
+    try
+      nextPage(Choice(choice))
+    catch {
+      case e: IllegalArgumentException => Future.successful(NotFound)
+    }
   }
 
   def nextPage(choice: Choice)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =

@@ -93,11 +93,11 @@ movement.sectionHeading.depart = Ymadael llwyth {0}
 movement.sectionHeading.arrive = Cyrraedd llwyth {0}
 
 movement.choice.linkText.findconsignment = Dod o hyd i lwyth
-movement.choice.linkText.arrival = Arrive llwyth
-movement.choice.linkText.departure = Depart llwyth
-movement.choice.linkText.associateucr = Associate llwyths
-movement.choice.linkText.disassociateucr = Disassociate llwyths
-movement.choice.linkText.shutmucr = Cau a MUCR
+movement.choice.linkText.arrival = Cyrraedd llwyth
+movement.choice.linkText.departure = Ymadael llwyth
+movement.choice.linkText.associateucr = Cysylltu llwyths
+movement.choice.linkText.disassociateucr = Datgysylltu llwyths
+movement.choice.linkText.shutmucr = Cau MUCR
 movement.choice.linkText.submissions = Bwrw golwg dros geisiadau
 
 movement.choice.title = Beth hoffech ei wneud?

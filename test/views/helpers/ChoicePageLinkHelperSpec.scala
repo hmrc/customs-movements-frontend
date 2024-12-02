@@ -38,7 +38,7 @@ class ChoicePageLinkHelperSpec extends UnitSpec with Injector {
     "Generating choices" in {
       val document: Document = instance.generateChoiceOption(FindConsignment)
 
-      val div = document.getElementById("choice-findconsignment")
+      val div = document.getElementById("findConsignment")
       div.children().get(0).tagName() mustBe "h2"
       div.children().get(1).tagName() mustBe "p"
       div.children().get(2).tagName() mustBe "a"

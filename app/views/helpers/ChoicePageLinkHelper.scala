@@ -45,7 +45,7 @@ class ChoicePageLinkHelper @Inject() (heading: heading, link: link) {
       )
     )
 
-    choiceLine(choiceContent, choice.value.toLowerCase)
+    choiceLine(choiceContent, choice.value)
   }
 
 }

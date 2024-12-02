@@ -87,13 +87,13 @@ class ChoiceViewSpec extends ViewSpec with BeforeAndAfterEach with Injector {
         .toList
         .filter(_.tagName() == "div")
 
-      choices(0).id() mustBe "choice-findconsignment"
-      choices(1).id() mustBe "choice-arrival"
-      choices(2).id() mustBe "choice-departure"
-      choices(3).id() mustBe "choice-associateucr"
-      choices(4).id() mustBe "choice-disassociateucr"
-      choices(5).id() mustBe "choice-shutmucr"
-      choices(6).id() mustBe "choice-submissions"
+      choices(0).id() mustBe "findConsignment"
+      choices(1).id() mustBe "arrival"
+      choices(2).id() mustBe "departure"
+      choices(3).id() mustBe "associateUCR"
+      choices(4).id() mustBe "disassociateUCR"
+      choices(5).id() mustBe "shutMUCR"
+      choices(6).id() mustBe "submissions"
 
     }
   }

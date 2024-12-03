@@ -100,7 +100,7 @@ movement.choice.linkText.disassociateucr = Datgysylltu llwyths
 movement.choice.linkText.shutmucr = Cau MUCR
 movement.choice.linkText.submissions = Bwrw golwg dros geisiadau
 
-movement.choice.title = Beth hoffech ei wneud?
+movement.choice.title = Rheoli symudiadau tollau allanol
 movement.choice.title.consignment = Beth hoffech ei wneud â’r llwyth hwn?
 movement.choice.section = Llwyth {0}
 

@@ -53,7 +53,7 @@ class ChoiceISpec extends IntegrationSpec {
       "Departure" in {
         givenAuthSuccess("eori")
 
-        val response = post(ChoiceController.submitChoice, answerCacheId, "choice" -> Choice.Departure.value)
+        val response = get(ChoiceController.submitChoice(Choice.Departure.value), answerCacheId)
 
         status(response) mustBe SEE_OTHER
         theAnswersFor("eori") mustBe Some(DepartureAnswers())
@@ -62,7 +62,7 @@ class ChoiceISpec extends IntegrationSpec {
       "Arrival" in {
         givenAuthSuccess("eori")
 
-        val response = post(ChoiceController.submitChoice, answerCacheId, "choice" -> Choice.Arrival.value)
+        val response = get(ChoiceController.submitChoice(Choice.Arrival.value), answerCacheId)
 
         status(response) mustBe SEE_OTHER
         theAnswersFor("eori") mustBe Some(ArrivalAnswers())
@@ -71,7 +71,7 @@ class ChoiceISpec extends IntegrationSpec {
       "Associate UCR" in {
         givenAuthSuccess("eori")
 
-        val response = post(ChoiceController.submitChoice, answerCacheId, "choice" -> Choice.AssociateUCR.value)
+        val response = get(ChoiceController.submitChoice(Choice.AssociateUCR.value), answerCacheId)
 
         status(response) mustBe SEE_OTHER
         theAnswersFor("eori") mustBe Some(AssociateUcrAnswers())
@@ -80,7 +80,7 @@ class ChoiceISpec extends IntegrationSpec {
       "Disassociate UCR" in {
         givenAuthSuccess("eori")
 
-        val response = post(ChoiceController.submitChoice, answerCacheId, "choice" -> Choice.DisassociateUCR.value)
+        val response = get(ChoiceController.submitChoice(Choice.DisassociateUCR.value), answerCacheId)
 
         status(response) mustBe SEE_OTHER
         theAnswersFor("eori") mustBe Some(DisassociateUcrAnswers())
@@ -89,7 +89,7 @@ class ChoiceISpec extends IntegrationSpec {
       "Shut MUCR" in {
         givenAuthSuccess("eori")
 
-        val response = post(ChoiceController.submitChoice, answerCacheId, "choice" -> Choice.ShutMUCR.value)
+        val response = get(ChoiceController.submitChoice(Choice.ShutMUCR.value), answerCacheId)
 
         status(response) mustBe SEE_OTHER
         theAnswersFor("eori") mustBe Some(ShutMucrAnswers())

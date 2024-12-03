@@ -92,16 +92,26 @@ global.error.pageNotFound.message = Gwiriwch eich bod wedi nodi’r cyfeiriad gw
 movement.sectionHeading.depart = Ymadael llwyth {0}
 movement.sectionHeading.arrive = Cyrraedd llwyth {0}
 
-movement.choice.title = Beth hoffech ei wneud?
+movement.choice.linkText.findconsignment = Dod o hyd i lwyth
+movement.choice.linkText.arrival = Cyrraedd llwyth
+movement.choice.linkText.departure = Ymadael llwyth
+movement.choice.linkText.associateucr = Cysylltu llwyths
+movement.choice.linkText.disassociateucr = Datgysylltu llwyths
+movement.choice.linkText.shutmucr = Cau MUCR
+movement.choice.linkText.submissions = Bwrw golwg dros geisiadau
+
+movement.choice.title = Rheoli symudiadau tollau allanol
 movement.choice.title.consignment = Beth hoffech ei wneud â’r llwyth hwn?
 movement.choice.section = Llwyth {0}
+
+movement.choice.findconsignment.label = Dod o hyd i lwyth
 movement.choice.arrival.label = Cyrraedd
 movement.choice.departure.label = Ymadael
 movement.choice.associateucr.label = Cysylltu
 movement.choice.disassociateucr.label = Datgysylltu
-movement.choice.findconsignment.label = Dod o hyd i lwyth
 movement.choice.shutmucr.label = Cau
 movement.choice.submissions.label = Bwrw golwg dros geisiadau
+
 movement.arrival = Nodi bod nwyddau wedi cyrraedd
 movement.departure = Nodi bod nwyddau wedi ymadael
 

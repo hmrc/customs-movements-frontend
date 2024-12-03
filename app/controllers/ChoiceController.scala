@@ -53,13 +53,15 @@ class ChoiceController @Inject() (authenticate: AuthAction, cacheRepository: Cac
     futureResult.map(_.withSession(SessionHelper.clearAllReceiptPageSessionKeys()))
   }
 
-  val submitChoice: Action[AnyContent] = authenticate.async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(formWithErrors => Future.successful(BadRequest(choicePage(formWithErrors))), nextPage)
+  def submitChoice(choice: String): Action[AnyContent] = authenticate.async { implicit request =>
+    try
+      nextPage(Choice(choice))
+    catch {
+      case e: IllegalArgumentException => Future.successful(NotFound)
+    }
   }
 
-  private def nextPage(choice: Choice)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
+  def nextPage(choice: Choice)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     (choice: @unchecked) match {
       case FindConsignment => resetCache(request.eori, FindConsignmentController.displayPage)
       case Arrival         => saveCache(request.eori, ArrivalAnswers.fromUcr, ConsignmentReferencesController.displayPage)

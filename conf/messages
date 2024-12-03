@@ -95,16 +95,26 @@ global.error.pageNotFound.message = Please check that you have entered the corre
 movement.sectionHeading.depart = Depart consignment {0}
 movement.sectionHeading.arrive = Arrive consignment {0}
 
-movement.choice.title = What do you want to do?
+movement.choice.linkText.findconsignment = Find a CDS consignment
+movement.choice.linkText.arrival = Arrive consignment
+movement.choice.linkText.departure = Depart consignment
+movement.choice.linkText.associateucr = Associate consignments
+movement.choice.linkText.disassociateucr = Disassociate consignments
+movement.choice.linkText.shutmucr = Shut a MUCR
+movement.choice.linkText.submissions = View consignment requests
+
+movement.choice.title = Manage external customs movements
 movement.choice.title.consignment = What do you want to do with this consignment?
 movement.choice.section = Consignment {0}
+
+movement.choice.findconsignment.label = Find a CDS consignment
 movement.choice.arrival.label = Arrive
 movement.choice.departure.label = Depart
 movement.choice.associateucr.label = Associate
 movement.choice.disassociateucr.label = Disassociate
-movement.choice.findconsignment.label = Find a consignment
 movement.choice.shutmucr.label = Shut
 movement.choice.submissions.label = View requests
+
 movement.arrival = Arrive goods
 movement.departure = Depart goods
 
@@ -115,7 +125,6 @@ movement.choice.associateucr.hint = UCR numbers can be associated with other UCR
 movement.choice.disassociateucr.hint = UCR numbers can also be disassociated from other UCR numbers. For example, an export may be moved out of a container.
 movement.choice.shutmucr.hint = Shut stops further associations to a MUCR. For example, a container with a MUCR might be closed to further associations because it is full.
 movement.choice.submissions.hint = View all requests you have made using this service to arrive, depart, associate, disassociate, and shut consignments.
-
 
 startPage.title.sectionHeader = Guidance
 startPage.title = Tell HMRC when goods arrive at or leave a UK port

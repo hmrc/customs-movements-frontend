@@ -89,22 +89,22 @@ global.error.pageNotFound.title = Heb ddod o hyd i’r dudalen
 global.error.pageNotFound.heading = Ni ellir dod o hyd i’r dudalen hon
 global.error.pageNotFound.message = Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywir.
 
-movement.sectionHeading.depart = Ymadael llwyth {0}
-movement.sectionHeading.arrive = Cyrraedd llwyth {0}
+movement.sectionHeading.depart = Nodi bod llwyth wedi ymadael {0}
+movement.sectionHeading.arrive = Nodi bod llwyth wedi cyrraedd {0}
 
-movement.choice.linkText.findconsignment = Dod o hyd i lwyth
-movement.choice.linkText.arrival = Cyrraedd llwyth
-movement.choice.linkText.departure = Ymadael llwyth
-movement.choice.linkText.associateucr = Cysylltu llwyths
-movement.choice.linkText.disassociateucr = Datgysylltu llwyths
+movement.choice.linkText.findconsignment = Dod o hyd i lwyth CDS
+movement.choice.linkText.arrival = Nodi bod llwyth wedi cyrraedd
+movement.choice.linkText.departure = Nodi bod llwyth wedi ymadael
+movement.choice.linkText.associateucr = Llwythi cysylltiedig
+movement.choice.linkText.disassociateucr = Llwythi nad ydynt yn gysylltiedig
 movement.choice.linkText.shutmucr = Cau MUCR
-movement.choice.linkText.submissions = Bwrw golwg dros geisiadau
+movement.choice.linkText.submissions = Bwrw golwg dros geisiadau am lwyth
 
-movement.choice.title = Rheoli symudiadau tollau allanol
+movement.choice.title = Rheoli symudiadau allanol o ran y tollau
 movement.choice.title.consignment = Beth hoffech ei wneud â’r llwyth hwn?
 movement.choice.section = Llwyth {0}
 
-movement.choice.findconsignment.label = Dod o hyd i lwyth
+movement.choice.findconsignment.label = Dod o hyd i lwyth CDS
 movement.choice.arrival.label = Cyrraedd
 movement.choice.departure.label = Ymadael
 movement.choice.associateucr.label = Cysylltu
@@ -148,8 +148,8 @@ startPage.buttonName = Dechrau nawr
 choicePage.input.error.empty = Dewiswch yr opsiwn rydych chi ei eisiau
 choicePage.input.error.incorrectValue = Dewiswch opsiwn dilys
 
-consignment.references.ARRIVE.heading = Nodi bod y llwyth wedi cyrraedd
-consignment.references.DEPART.heading = Nodi bod y llwyth wedi ymadael
+consignment.references.ARRIVE.heading = Nodi bod llwyth wedi cyrraedd
+consignment.references.DEPART.heading = Nodi bod llwyth wedi ymadael
 consignment.references.ARRIVE.question = Pa lwyth ydych am nodi ei fod wedi cyrraedd?
 consignment.references.DEPART.question = Pa lwyth rydych am nodi ei fod wedi ymadael?
 consignment.references.ducr = Datganiad o Gyfeirnod Unigryw y Llwyth (DUCR)
@@ -170,15 +170,15 @@ consignment.references.expander.content = Cyfeirnod sy’n nodi datganiad unigol
 consignment.references.expander.content.link = gweler cyfrol 3 o’r tariff masnach ar gyfer CDS (yn agor tab newydd).
 
 specific.datetime.heading = A oes angen i chi ychwanegu dyddiad ac amser penodol ar gyfer y cais hwn?
-specific.datetime.arrive.heading = Nodi bod y llwyth hwn wedi cyrraedd: {0}
-specific.datetime.depart.heading = Nodi bod y llwyth hwn wedi ymadael: {0}
+specific.datetime.arrive.heading = Nodi bod llwyth wedi cyrraedd {0}
+specific.datetime.depart.heading = Nodi bod llwyth wedi ymadael {0}
 specific.datetime.userDateTime = Iawn
 specific.datetime.currentDateTime = Na, defnyddio’r dyddiad a’r amser cyfredol
 specific.datetime.input.error.empty = Dewiswch ‘Iawn’ os oes angen i chi ychwanegu dyddiad ac amser penodol
 specific.datetime.input.error.incorrectValue = Dewiswch opsiwn dilys
 
 arrivalDetails.title = Dyddiad ac amser cyrraedd
-arrivalDetails.sectionHeading = Nodi bod llwyth cyrraedd {0}
+arrivalDetails.sectionHeading = Nodi bod llwyth wedi cyrraedd {0}
 arrivalDetails.header = Nodwch ddyddiad ac amser cyrraedd
 arrivalDetails.date.question = Dyddiad cyrraedd
 arrivalDetails.date.hint = Er enghraifft, 1 8 2021.

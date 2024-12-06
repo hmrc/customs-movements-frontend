@@ -24,6 +24,7 @@
 @import components.gds._
 @import services.Countries
 @import models.requests.RequestWithAnswers
+@import views.html.helper.CSPNonce
 
 @this(
     govukLayout: gds_main_template,
@@ -133,3 +134,17 @@
     }
 }
 
+<script @CSPNonce.attr>
+        //grab the contents of the default select element's aria-describedby attribute and add its contents into the auto-complete's aria-describedby attribute
+        let defaultSelectComp = document.querySelector('select.govuk-form-group');
+        console.log(defaultSelectComp)
+        let fieldPrefix = defaultSelectComp.getAttribute('name').replace(/\./g, "_")
+        let defaultAriaDescribedBy = defaultSelectComp.getAttribute('aria-describedby')
+        let autoCompleteElement = document.getElementById(fieldPrefix)
+
+        if (autoCompleteElement != null && defaultAriaDescribedBy != null)
+        {
+            let existingAriaValue= autoCompleteElement.getAttribute('aria-describedby')
+            autoCompleteElement.setAttribute('aria-describedby', existingAriaValue + ' ' + defaultAriaDescribedBy)
+        }
+</script>

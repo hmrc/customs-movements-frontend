@@ -70,6 +70,7 @@ To avoid problems, we need to remove [] from field.
     @input_accessible_autocomplete(
         field = field,
         emptySelectValue = emptySelectValue,
-        items = items
+        items = items,
+        allErrors.headOption.map(_ => s"error-message-${field.name}-input")
     )
 </div>

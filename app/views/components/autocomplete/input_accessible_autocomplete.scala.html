@@ -17,7 +17,7 @@
 @import views.components.autocomplete.AutoCompleteItem
 @import views.html.helper.CSPNonce
 
-@(field: Field, emptySelectValue: String, items: List[AutoCompleteItem])(implicit request: Request[_])
+@(field: Field, emptySelectValue: String, items: List[AutoCompleteItem], errorDescribeBy: Option[String] = None)(implicit request: Request[_])
 
 @*
 Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
@@ -34,7 +34,7 @@ To avoid problems, we need to remove [] from field.
 }
 
 <div id="@(fieldNameWithoutBrackets)-container" class="autocomplete__wrapper govuk-input--width-20">
-    <select class="govuk-form-group" id="@(fieldNameWithoutBrackets)" name="@field.name" value="@field.value" data-gov-select-autocomplete="true">
+    <select class="govuk-form-group" id="@(fieldNameWithoutBrackets)" @if(!errorDescribeBy.isEmpty) {aria-describedby="@{errorDescribeBy}"} name="@field.name" value="@field.value" data-gov-select-autocomplete="true">
         <option value="">@emptySelectValue</option>
         @items.map { i =>
             <option value="@i.value" @if(selectedValue == i.value) {selected="selected"}>@i.label</option>

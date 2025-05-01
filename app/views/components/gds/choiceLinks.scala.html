@@ -16,12 +16,12 @@
 
 @this()
 
-@(linksAndText: Map[String, String])(implicit messages: Messages)
+@(linksAndText: Map[String, String])
 
 <div class="govuk-body choice-links">
  @for(l <- linksAndText) {
  <div>
-  <a class="govuk-link govuk-link--no-visited-state" href="@{l._1}">@messages(s"${l._2}")</a>
+  <a class="govuk-link govuk-link--no-visited-state" href="@{l._1}">@{l._2}</a>
  </div>
  }
 </div>

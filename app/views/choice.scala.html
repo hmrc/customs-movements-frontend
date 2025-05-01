@@ -22,15 +22,12 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.Title
 @import views.html.components.gds._
-@import views.helpers.ChoicePageLinkHelper
-@import views.helpers.ChoicePageLink
 
 @this(
   govukLayout: gds_main_template,
   heading: heading,
   choiceLinks: choiceLinks,
-  pageTitle: pageTitle,
-  choicePageLinkHelper: ChoicePageLinkHelper
+  pageTitle: pageTitle
 )
 
 @(form: Form[Choice])(implicit request: AuthenticatedRequest[_], messages: Messages)
@@ -39,11 +36,9 @@
 
     @pageTitle(text = messages("movement.choice.title"), classes = "govuk-heading-l govuk-!-static-padding-bottom-5")
 
-    @choicePageLinkHelper.generateChoiceOption(FindCondignment)
-
-<!--    @heading(messages("movement.choice.findConsignment.label"), classes = "govuk-heading-m", tier = "h2")-->
-<!--    @paragraphBody(messages("movement.choice.findConsignment.hint"))-->
-<!--    @choiceLinks(Map(routes.ChoiceController.submitChoice(Choice.FindConsignment.value).url -> messages("movement.choice.linkText.findConsignment")))-->
+    @heading(messages("movement.choice.findConsignment.label"), classes = "govuk-heading-m", tier = "h2")
+    @paragraphBody(messages("movement.choice.findConsignment.hint"))
+    @choiceLinks(Map(routes.ChoiceController.submitChoice(Choice.FindConsignment.value).url -> messages("movement.choice.linkText.findConsignment")))
 
     @heading(messages("movement.choice.arrivalDeparture.label"), classes = "govuk-heading-m", tier = "h2")
     @choiceLinks(Map(routes.ChoiceController.submitChoice(Choice.Arrival.value).url -> messages("movement.choice.linkText.arrival"),

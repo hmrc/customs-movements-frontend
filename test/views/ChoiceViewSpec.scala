@@ -85,15 +85,15 @@ class ChoiceViewSpec extends ViewSpec with BeforeAndAfterEach with Injector {
         .iterator()
         .asScala
         .toList
-        .filter(_.tagName() == "div")
+        .filter(_.tagName() == "a")
 
-      choices(0).id() mustBe "findConsignment"
-      choices(1).id() mustBe "arrival"
-      choices(2).id() mustBe "departure"
-      choices(3).id() mustBe "associateUCR"
-      choices(4).id() mustBe "disassociateUCR"
-      choices(5).id() mustBe "shutMUCR"
-      choices(6).id() mustBe "submissions"
+      choices(0).attribute("href").getValue must include("findConsignment")
+      choices(1).attribute("href").getValue must include("arrival")
+      choices(2).attribute("href").getValue must include("departure")
+      choices(3).attribute("href").getValue must include("associateUCR")
+      choices(4).attribute("href").getValue must include("disassociateUCR")
+      choices(5).attribute("href").getValue must include("shutMUCR")
+      choices(6).attribute("href").getValue must include("submissions")
 
     }
   }

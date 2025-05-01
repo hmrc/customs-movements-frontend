@@ -92,36 +92,35 @@ global.error.pageNotFound.message = Gwiriwch eich bod wedi nodi’r cyfeiriad gw
 movement.sectionHeading.depart = Nodi bod llwyth wedi ymadael {0}
 movement.sectionHeading.arrive = Nodi bod llwyth wedi cyrraedd {0}
 
-movement.choice.linkText.findconsignment = Dod o hyd i lwyth CDS
+movement.choice.linkText.findConsignment = Dod o hyd i lwyth CDS
 movement.choice.linkText.arrival = Nodi bod llwyth wedi cyrraedd
 movement.choice.linkText.departure = Nodi bod llwyth wedi ymadael
-movement.choice.linkText.associateucr = Llwythi cysylltiedig
-movement.choice.linkText.disassociateucr = Llwythi nad ydynt yn gysylltiedig
-movement.choice.linkText.shutmucr = Cau MUCR
+movement.choice.linkText.associateUCR = Llwythi cysylltiedig
+movement.choice.linkText.disassociateUCR = Llwythi nad ydynt yn gysylltiedig
+movement.choice.linkText.shutMUCR = Cau MUCR
 movement.choice.linkText.submissions = Bwrw golwg dros geisiadau am lwyth
 
 movement.choice.title = Rheoli symudiadau allanol o ran y tollau
 movement.choice.title.consignment = Beth hoffech ei wneud â’r llwyth hwn?
 movement.choice.section = Llwyth {0}
 
-movement.choice.findconsignment.label = Dod o hyd i lwyth CDS
-movement.choice.arrival.label = Cyrraedd
-movement.choice.departure.label = Ymadael
-movement.choice.associateucr.label = Cysylltu
-movement.choice.disassociateucr.label = Datgysylltu
-movement.choice.shutmucr.label = Cau
+movement.choice.findConsignment.label = Dod o hyd i lwyth CDS
+movement.choice.arrivalDeparture.label = Cyflwyno cais am nwyddau’n cyrraedd neu ymadael
+movement.choice.associateUCRDisassociateUCRShutMUCR.label = Cysylltu
 movement.choice.submissions.label = Bwrw golwg dros geisiadau
+
+movement.choiceOnConsignment.arrival.label = Cyrraedd
+movement.choiceOnConsignment.departure.label = Ymadael
+movement.choiceOnConsignment.associateucr.label = Cysylltu
+movement.choiceOnConsignment.disassociateucr.label = Datgysylltu
+movement.choiceOnConsignment.shutmucr.label = Cau
 
 movement.arrival = Nodi bod nwyddau wedi cyrraedd
 movement.departure = Nodi bod nwyddau wedi ymadael
 
-movement.choice.findconsignment.hint = Gwirio cynnydd MUCR neu DUCR penodol drwy’r tollau. Er enghraifft, er mwyn gweld a yw’r llwyth yn barod i ‘gyrraedd’.
-movement.choice.arrival.hint = Defnyddir negeseuon ‘cyrraedd’ i roi gwybod i’r tollau fod nwyddau wedi cyrraedd maes awyr neu borthladd codi.
-movement.choice.departure.hint = Defnyddir negeseuon ‘ymadael’ i roi gwybod i’r tollau fod nwyddau wedi gadael y DU.
-movement.choice.associateucr.hint = Gellir cysylltu rhifau Cyfeirnod Unigryw y Llwyth (UCR) â rhifau UCR eraill. Er enghraifft, gellir symud sawl allforyn sydd â gwahanol DUCR i gynhwysydd o dan un MUCR.
-movement.choice.disassociateucr.hint = Gellir hefyd datgysylltu rhifau UCR rhag rhifau UCR eraill. Er enghraifft, pan fydd allforyn yn cael ei symud allan o gynhwysydd.
-movement.choice.shutmucr.hint = Mae’r weithred o gau yn atal unrhyw gysylltiadau eraill â MUCR. Er enghraifft, os bydd cynhwysydd â MUCR yn cael ei gau a fyddai’n atal unrhyw gysylltiadau eraill achos ei fod yn llawn.
-movement.choice.submissions.hint = Bwrw golwg dros yr holl geisiadau rydych wedi eu gwneud gan ddefnyddio’r gwasanaeth hwn i wneud y canlynol i’r llwythi: cyrraedd, ymadael, cysylltu, datgysylltu a chau.
+movement.choice.findConsignment.hint = Gwirio manylion a chynnydd symudiad ar gyfer llwyth CDS.
+movement.choice.associateUCRDisassociateUCRShutMUCR.hint = Cysylltu neu ddatgysylltu DUCR neu MUCR neu gau MUCR i atal unrhyw gysylltiadau eraill.
+movement.choice.submissions.hint = Bwrw golwg dros yr holl geisiadau rydych wedi eu gwneud gan ddefnyddio’r gwasanaeth hwn.
 
 
 startPage.title.sectionHeader = Arweiniad

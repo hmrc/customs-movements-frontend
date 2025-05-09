@@ -103,7 +103,7 @@ movement.choice.linkText.disassociateUCR = Disassociate consignment
 movement.choice.linkText.shutMUCR = Shut a MUCR
 movement.choice.linkText.submissions = View consignment requests
 
-movement.choice.title = Manage external customs movements
+movement.choice.title = Manage export customs movements
 movement.choice.title.consignment = What do you want to do with this consignment?
 movement.choice.section = Consignment {0}
 

@@ -18,9 +18,9 @@
 
 @(linksAndText: Map[String, String])
 
-<div class="govuk-body choice-links">
+<div class="govuk-body choice-section">
  @for(l <- linksAndText) {
- <div>
+ <div class="govuk-!-padding-bottom-1 choice-link">
   <a class="govuk-link govuk-link--no-visited-state" href="@{l._1}">@{l._2}</a>
  </div>
  }

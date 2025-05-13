@@ -68,7 +68,7 @@ site.change.hint.shut.mucr = Change MUCR to be shut.
 site.inputText.ducr.label = Enter an existing DUCR
 site.inputText.mucr.label = Enter an existing MUCR
 site.inputText.newMucr.label = Enter a new MUCR
-site.inputText.newMucr.label.hint = For example ‘GB/123456789100-AB123’.
+site.inputText.newMucr.label.hint = For example GB/123456789100-AB123.
 
 site.accessibility.error = Error:
 
@@ -447,7 +447,7 @@ notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Route of
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Status of entry is:
 
 ileQuery.title = Find a consignment
-ileQuery.hint = Enter a Master Consignment Reference (MUCR) or Declaration Consignment Reference (DUCR) to find your consignment. </br></br>For example 'GB/123456789100-AB123'.
+ileQuery.hint = Enter a Master Consignment Reference (MUCR) or Declaration Consignment Reference (DUCR) to find your consignment. </br></br>For example GB/123456789100-AB123.
 ileQuery.ucr.empty = Enter a Unique Consignment Reference
 ileQuery.ucr.incorrect = Unique Consignment Reference is incorrect
 

@@ -45,7 +45,7 @@ class IleQueryTimeoutViewSpec extends ViewSpec with Injector {
 
     "display heading" in {
 
-      view.getElementsByClass("govuk-heading-xl").first() must containMessage("ileQueryResponse.timeout.heading")
+      view.getElementsByClass("govuk-heading-l").first() must containMessage("ileQueryResponse.timeout.heading")
     }
 
     "display queried UCR" in {

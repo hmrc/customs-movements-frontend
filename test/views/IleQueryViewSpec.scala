@@ -52,7 +52,7 @@ class IleQueryViewSpec extends ViewSpec with Injector {
     }
 
     "render page header" in {
-      view.getElementsByClass("govuk-label--xl").first.text mustBe messages("ileQuery.title")
+      view.getElementsByClass("govuk-label--l").first.text mustBe messages("ileQuery.title")
     }
 
     "render error summary" when {

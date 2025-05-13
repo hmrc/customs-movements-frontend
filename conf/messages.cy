@@ -65,7 +65,7 @@ site.change.hint.shut.mucr = Newid MUCR i gael ei gau.
 site.inputText.ducr.label = Nodwch DUCR presennol
 site.inputText.mucr.label = Nodwch MUCR presennol
 site.inputText.newMucr.label = Nodwch MUCR newydd
-site.inputText.newMucr.label.hint = Er enghraifft ‘GB/123456789100-AB123’.
+site.inputText.newMucr.label.hint = Er enghraifft GB/123456789100-AB123.
 
 site.accessibility.error = Gwall
 
@@ -427,7 +427,7 @@ notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Y llwybr
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Y statws mynediad yw
 
 ileQuery.title = Dod o hyd i lwyth
-ileQuery.hint = Chwilio yn ôl Prif Gyfeirnod Unigryw y Llwyth (MUCR) neu Ddatganiad o Gyfeirnod Unigryw y Llwyth (DUCR). </br></br>Er enghraifft 'GB/123456789100-AB123'.
+ileQuery.hint = Chwilio yn ôl Prif Gyfeirnod Unigryw y Llwyth (MUCR) neu Ddatganiad o Gyfeirnod Unigryw y Llwyth (DUCR). </br></br>Er enghraifft GB/123456789100-AB123.
 ileQuery.ucr.empty = Nodwch Gyfeirnod Unigryw y Llwyth
 ileQuery.ucr.incorrect = Mae Cyfeirnod Unigryw y Llwyth yn anghywir
 

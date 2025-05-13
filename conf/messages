@@ -103,7 +103,7 @@ movement.choice.linkText.disassociateUCR = Disassociate consignment
 movement.choice.linkText.shutMUCR = Shut a MUCR
 movement.choice.linkText.submissions = View consignment requests
 
-movement.choice.title = Manage export customs movements
+movement.choice.title = Manage customs movements for exports
 movement.choice.title.consignment = What do you want to do with this consignment?
 movement.choice.section = Consignment {0}
 
@@ -482,7 +482,7 @@ ileQueryResponse.links.manageConsignment = Manage this consignment
 ileQueryResponse.links.findConsignment = Find another CDS consignment
 
 ileQueryResponse.ucrNotFound.title = The requested UCR does not exist
-ileQueryResponse.ucrNotFound.message = {0} does not exist
+ileQueryResponse.ucrNotFound.message = {0} does not exist.
 
 ileCode.unknown = Unknown
 

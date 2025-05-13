@@ -92,21 +92,21 @@ global.error.pageNotFound.message = Gwiriwch eich bod wedi nodi’r cyfeiriad gw
 movement.sectionHeading.depart = Nodi bod llwyth wedi ymadael {0}
 movement.sectionHeading.arrive = Nodi bod llwyth wedi cyrraedd {0}
 
-movement.choice.linkText.findConsignment = Dod o hyd i lwyth CDS
+movement.choice.linkText.findConsignment = Dod o hyd i lwyth
 movement.choice.linkText.arrival = Nodi bod llwyth wedi cyrraedd
 movement.choice.linkText.departure = Nodi bod llwyth wedi ymadael
-movement.choice.linkText.associateUCR = Llwythi cysylltiedig
-movement.choice.linkText.disassociateUCR = Llwythi nad ydynt yn gysylltiedig
+movement.choice.linkText.associateUCR = Cysylltu’r llwyth
+movement.choice.linkText.disassociateUCR = Datgysylltu’r llwyth
 movement.choice.linkText.shutMUCR = Cau MUCR
 movement.choice.linkText.submissions = Bwrw golwg dros geisiadau am lwyth
 
-movement.choice.title = Rheoli symudiadau allanol o ran y tollau
+movement.choice.title = Rheoli symudiadau tollau ar gyfer allforion
 movement.choice.title.consignment = Beth hoffech ei wneud â’r llwyth hwn?
 movement.choice.section = Llwyth {0}
 
 movement.choice.findConsignment.label = Dod o hyd i lwyth CDS
 movement.choice.arrivalDeparture.label = Cyflwyno cais am nwyddau’n cyrraedd neu ymadael
-movement.choice.associateUCRDisassociateUCRShutMUCR.label = Cysylltu
+movement.choice.associateUCRDisassociateUCRShutMUCR.label = Cysylltu, datgysylltu neu gau
 movement.choice.submissions.label = Bwrw golwg dros geisiadau
 
 movement.choiceOnConsignment.arrival.label = Cyrraedd
@@ -302,7 +302,7 @@ shutMucr.expander.title	= Help â MUCR
 shutMucr.expander.content = Fel arfer, defnyddir Prif Gyfeirnod Unigryw y Llwyth (MUCRau) i gysylltu Datganiadau o Gyfeirnod Unigryw y Llwyth (DUCRau) lluosog. Er enghraifft, pan fydd cynhwysydd yn dal nifer o lwythi gan wahanol allforwyr, ac mae gan bob un ohonynt DUCR. Mae fformat MUCRau yn amrywio yn dibynnu ar y math o gludiant dros y ffin, er enghraifft awyr. I gael rhagor o wybodaeth, gweler [].
 shutMucr.expander.content.link = cyfrol 3 o’r tariff masnach ar gyfer CDS (yn agor tab newydd)
 
-mucrOptions.heading = Cysylltu llwyth {0}
+mucrOptions.heading = Cysylltu’r llwyth {0}
 mucrOptions.paragraph = I wirio’r fformat cywir, gweler yr adran ‘Nodiadau’ ar {0}.
 mucrOptions.paragraph.link = elfen ddata 2/1 Dogfennau Blaenorol (yn agor tab newydd)
 mucrOptions.title = Crëwch neu nodwch Brif Gyfeirnod Unigryw y Llwyth (MUCR) i gysylltu ag ef
@@ -313,7 +313,7 @@ mucrOptions.reference.value.error.empty = Nodwch MUCR
 mucrOptions.reference.value.error.invalid = Mae’n rhaid i Brif Gyfeirnod Unigryw y Llwyth (MUCR) gynnwys llythrennau, rhifau, comas, cysylltnodau a blaenslaesys yn unig
 
 manageMucr.title = Beth hoffech ei gysylltu?
-manageMucr.heading = Cysylltu llwyth {0}
+manageMucr.heading = Cysylltu’r llwyth {0}
 manageMucr.input.error.empty = Dewiswch beth rydych am ei gysylltu
 manageMucr.input.error.incorrectValue = Dewiswch opsiwn dilys
 manageMucr.associate.this.consignment = Cysylltu’r llwyth hwn ag un arall

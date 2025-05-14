@@ -79,22 +79,18 @@ class ChoiceViewSpec extends ViewSpec with BeforeAndAfterEach with Injector {
     "render the choices in the expected order" in {
 
       val choices = createView()
-        .getElementsByClass("govuk-grid-column-two-thirds")
-        .get(0)
-        .children()
+        .getElementsByClass("choice-link")
         .iterator()
         .asScala
         .toList
-        .filter(_.tagName() == "div")
 
-      choices(0).id() mustBe "findConsignment"
-      choices(1).id() mustBe "arrival"
-      choices(2).id() mustBe "departure"
-      choices(3).id() mustBe "associateUCR"
-      choices(4).id() mustBe "disassociateUCR"
-      choices(5).id() mustBe "shutMUCR"
-      choices(6).id() mustBe "submissions"
-
+      choices.head.text() mustBe "Find consignment"
+      choices(1).text() mustBe "Arrive consignment"
+      choices(2).text() mustBe "Depart consignment"
+      choices(3).text() mustBe "Associate consignment"
+      choices(4).text() mustBe "Disassociate consignment"
+      choices(5).text() mustBe "Shut a MUCR"
+      choices(6).text() mustBe "View consignment requests"
     }
   }
 }

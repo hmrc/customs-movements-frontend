@@ -14,6 +14,18 @@
  * limitations under the License.
  *@
 
-@(message: Html, id: String)
+@this()
 
-<div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6" id="@id">@message</div>
+@(linksAndText: Map[String, String])
+
+<div class="govuk-body choice-section">
+ @for(l <- linksAndText) {
+ <div class="govuk-!-padding-bottom-1 choice-link">
+  <a class="govuk-link govuk-link--no-visited-state" href="@{l._1}">@{l._2}</a>
+ </div>
+ }
+</div>
+
+@{
+//$COVERAGE-OFF$
+}

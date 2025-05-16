@@ -47,6 +47,7 @@ class AppConfig @Inject() (
   lazy val authUrl = servicesConfig.baseUrl("auth")
   val loginUrl = loadConfig("urls.login")
   val loginContinueUrl = loadConfig("urls.loginContinue")
+  val signOut = loadConfig("urls.signOut")
 
   val eoriService: String = loadConfig("urls.eoriService")
   val cdsRegister: String = loadConfig("urls.cdsRegister")

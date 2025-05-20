@@ -80,10 +80,6 @@ unauthorised.paragraph.1.bullet.2.link = get access to the Customs Declaration S
 unauthorised.paragraph.2 = If you’ve already applied for an EORI number, you can {0}.
 unauthorised.paragraph.2.link = check the status of your application
 
-unauthorised.tdr.heading = The EORI you entered is not valid on the customs declaration test service
-unauthorised.tdr.body = You need to contact {0} to ensure access has been set up for your EORI number.
-unauthorised.tdr.body.link = cdsexportsuiteam@hmrc.gov.uk
-
 global.error.title = There is a problem - Declare customs exports for CDS Exports - GOV.UK
 global.error.heading = There is a problem with a service.
 global.error.message = Please try again later.

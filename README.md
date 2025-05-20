@@ -31,8 +31,6 @@ The list of feature flags and what they are responsible for:
 
 `betaBanner = [enabled/disabled]` - When enabled, all pages in the service have BETA banner.
 
-`tdrUnauthorisedMessage = [enabled/disabled]` - When enabled, the unauthorised error page will display TDR specific content.
-
 ### Allow lists
 This service has two configurable allow lists that follow the standard behaviour of it list is empty then everyone is allowed, if it is populated with one or more values then only those values are allowed:
 
@@ -52,9 +50,6 @@ These scripts can be found in the docs directory.
 ## ILE Query
 
 A flow diagram for ILE Query is available on [Confluence](https://confluence.tools.tax.service.gov.uk/display/CD/ILE+Query+flow+diagram).
-
-## TDRSecret values for a given EORI
-As this service deployed in ExternalTest as part of the CDS Trader Dress Rehearsal, an additional enrolment value of 'TDRSecret' is required for a user to successfully authenticate in this environment.
 
 ## License
 

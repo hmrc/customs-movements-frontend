@@ -77,10 +77,6 @@ unauthorised.paragraph.1.bullet.2.link = gael mynediad at y Gwasanaeth Datganiad
 unauthorised.paragraph.2 = Os ydych wedi gwneud cais am rif EORI eisoes, gallwch {0}.
 unauthorised.paragraph.2.link = wirio statws eich cais
 
-unauthorised.tdr.heading = Nid yw’r EORI a nodwyd gennych yn ddilys eto ar wasanaeth prawf y CDS
-unauthorised.tdr.body = Cysylltwch â {0} i sicrhau bod mynediad wedi’i drefnu ar gyfer eich rhif EORI.
-unauthorised.tdr.body.link = cdsexportsuiteam@hmrc.gov.uk
-
 global.error.title = Mae yna broblem – Gwneud datganiad allforion tollau ar gyfer Allforion y Gwasanaeth Datganiadau Tollau (CDS) - GOV.UK
 global.error.heading = Mae problem gyda’r gwasanaeth hwn.
 global.error.message = Rhowch gynnig arall arni yn nes ymlaen.

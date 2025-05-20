@@ -1,7 +1,9 @@
 service.name = Nodi bod allforion CDS wedi cyrraedd ac ymadael
 
 title.format = {0} - {1} - GOV.UK
+title.withErrors.format = Gwall: {0} - {1} - GOV.UK
 title.withSection.format = {0} {1} - {2} - GOV.UK
+title.withErrors.withSection.format = Gwall: {0} - {1} - {2} - GOV.UK
 
 feedback = Gwasanaeth newydd yn hwn – bydd eich {0} yn ein helpu i’w wella.
 feedback.link = adborth
@@ -397,6 +399,14 @@ notifications.elem.title.DucrPartDisassociation = Mae’r cais i ddatgysylltu’
 notifications.elem.title.MucrDisassociation = Mae’r cais i ddatgysylltu’r MUCR hwn wedi dod i law
 notifications.elem.title.ShutMucr = Mae’r cais i gau’r MUCR wedi dod i law
 
+notifications.elem.title.Arrival.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’r cais am nodi bod nwyddau’n cyrraedd wedi’i brosesu’n llwyddiannus
+notifications.elem.title.Departure.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’r cais am nodi bod nwyddau’n ymadael wedi’i brosesu’n llwyddiannus
+notifications.elem.title.DucrAssociation.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’r cais am gysylltu’r DUCR hwn wedi’i brosesu’n llwyddiannus
+notifications.elem.title.DucrDisassociation.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’r cais am ddatgysylltu’r DUCR hwn wedi’i brosesu’n llwyddiannus
+notifications.elem.title.DucrPartAssociation.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’r cais am gysylltu’r Rhan hon o’r DUCR wedi’i brosesu’n llwyddiannus
+notifications.elem.title.MucrAssociation.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’r cais am gysylltu’r MUCR hwn wedi’i brosesu’n llwyddiannus
+notifications.elem.title.MucrDisassociation.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’r cais am ddatgysylltu’r MUCR hwn wedi’i brosesu’n llwyddiannus
+notifications.elem.title.ShutMucr.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’r cais am gau’r MUCR wedi’i brosesu’n llwyddiannus.
 notifications.elem.title.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Cais wedi dod i law
 notifications.elem.title.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed = Cais wedi ei rwystro
 notifications.elem.title.inventoryLinkingControlResponse.Rejected = Cais wedi ei wrthod
@@ -414,7 +424,15 @@ notifications.elem.content.DucrPartDisassociation = Mae’ch cais i ddatgysylltu
 notifications.elem.content.MucrDisassociation = Mae’ch cais i ddatgysylltu’r MUCR hwn wedi dod i law.
 notifications.elem.content.ShutMucr = Mae’ch cais i gau’r MUCR hwn wedi dod i law.
 notifications.elem.content.footer = Byddwn yn rhoi gwybod i chi pan fydd wedi bod yn llwyddiannus.
-
+notifications.elem.content.Arrival.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’ch cais am nodi bod nwyddau’n cyrraedd wedi’i gydnabod a’i brosesu.
+notifications.elem.content.Departure.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’ch cais am nodi bod nwyddau’n ymadael wedi’i gydnabod a’i brosesu.
+notifications.elem.content.DucrAssociation.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’ch cais am gysylltu’r DUCR hwn wedi’i gydnabod a’i brosesu.
+notifications.elem.content.DucrDisassociation.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’ch cais am ddatgysylltu’r DUCR hwn wedi’i gydnabod a’i brosesu.
+notifications.elem.content.DucrPartAssociation.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’ch cais am gysylltu’r Rhan hon o’r DUCR wedi’i gydnabod a’i brosesu.
+notifications.elem.content.DucrPartDisassociation.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’ch cais am ddatgysylltu’r Rhan hon o’r DUCR wedi’i gydnabod a’i brosesu.
+notifications.elem.content.MucrAssociation.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’ch cais am gysylltu’r MUCR hwn wedi’i gydnabod a’i brosesu.
+notifications.elem.content.MucrDisassociation.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’ch cais am ddatgysylltu’r MUCR hwn wedi’i gydnabod a’i brosesu.
+notifications.elem.content.ShutMucr.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’r cais am gau’r MUCR wedi’i gydnabod a’i brosesu.
 notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Mae’ch cais wedi cael ei gydnabod a’i brosesu.
 notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed.singleError = Mae’r gwall canlynol yn rhwystro’ch cais
 notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed.multiError = Mae’r gwallau canlynol yn rhwystro’ch cais
@@ -467,7 +485,10 @@ ileCode.unknown = Dadgysylltiol
 
 ileQueryResponse.timeout.title = Mae problem wedi codi
 ileQueryResponse.timeout.heading = Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth
+ileQueryResponse.timeout.body = Nid oes unrhyw ganlyniadau ar gyfer UCR {0} ar hyn o bryd.
 ileQueryResponse.timeout.message = Rhowch gynnig arall arni yn nes ymlaen
+ileQueryResponse.timeout.nch = Os bydd y broblem hon yn parhau, defnyddiwch yr opsiynau ‘help’ ar y {0}.
+ileQueryResponse.timeout.nch.linkText.0 = Ganolfan Clirio Genedlaethol
 
 ducrPartDetails.title = Manylion y Rhan o’r DUCR
 ducrPartDetails.heading = Gallwch ddefnyddio’r gwasanaeth hwn os cafodd eich datganiad gwreiddiol ei wneud yn y system CHIEF.

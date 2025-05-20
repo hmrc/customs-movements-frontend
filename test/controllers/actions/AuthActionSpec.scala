@@ -61,18 +61,15 @@ class AuthActionSpec extends AnyWordSpec with Matchers with Stubs with MockAuthC
 
     "delegate to controller" when {
 
-      "auth success for eori on allow list" when {
-        "TDRSecret is not required" in {
-          authorizedUser()
+      "auth success for eori on allow list" in {
+        authorizedUser()
 
-          given(block.apply(any())).willReturn(Future.successful(controllerResponse))
+        given(block.apply(any())).willReturn(Future.successful(controllerResponse))
 
-          val result: Result = await(action.invokeBlock(FakeRequest(), block))
+        val result: Result = await(action.invokeBlock(FakeRequest(), block))
 
-          result mustBe controllerResponse
-          theAuthCondition mustBe Enrolment(enrolment)
-        }
-
+        result mustBe controllerResponse
+        theAuthCondition mustBe Enrolment(enrolment)
       }
     }
 

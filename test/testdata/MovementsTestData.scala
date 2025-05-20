@@ -16,32 +16,29 @@
 
 package testdata
 
-import java.time.format.DateTimeFormatter
-import java.time.{Instant, LocalDate, LocalTime, ZoneId}
 import connectors.exchanges.ActionType.MovementType
 import connectors.exchanges.{ActionType, MovementDetailsRequest, MovementRequest}
 import forms.Transport.ModesOfTransport
 import forms._
 import forms.common.{Date, Time}
-import models.now
+import models.AuthKey.{enrolment, eoriIdentifierKey}
 import models.cache.{ArrivalAnswers, DepartureAnswers, IleQuery}
 import models.submissions.Submission
-import models.{SignedInUser, UcrBlock}
-import models.AuthKey.{enrolment, eoriIdentifierKey, hashIdentifierKey}
+import models.{now, SignedInUser, UcrBlock}
 import testdata.CommonTestData._
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
+
+import java.time.format.DateTimeFormatter
+import java.time.{Instant, LocalDate, LocalTime, ZoneId}
 
 object MovementsTestData {
 
   private val zoneId: ZoneId = ZoneId.of("Europe/London")
   val movementDetails = new MovementDetails(zoneId)
 
-  def newUser(eori: String, tdrSecret: Option[String] = None): SignedInUser = {
+  def newUser(eori: String): SignedInUser = {
     val eoriEnrolment = Set(Enrolment(enrolment).withIdentifier(eoriIdentifierKey, eori))
-    val enrolmentSet =
-      tdrSecret.map(secret => eoriEnrolment + Enrolment(enrolment).withIdentifier(hashIdentifierKey, secret)).getOrElse(eoriEnrolment)
-
-    SignedInUser(eori, Enrolments(enrolmentSet))
+    SignedInUser(eori, Enrolments(eoriEnrolment))
   }
 
   def exampleSubmission(

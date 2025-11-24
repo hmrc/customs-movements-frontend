@@ -430,7 +430,7 @@ notifications.elem.content.DucrDisassociation.inventoryLinkingControlResponse.Ac
 notifications.elem.content.DucrPartDisassociation.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Your request to disassociate this DUCR Part has been acknowledged and processed.
 notifications.elem.content.MucrDisassociation.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Your request to disassociate this MUCR has been acknowledged and processed.
 notifications.elem.content.ShutMucr.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Shut MUCR request has been acknowledged and processed.
-notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed = ??
+notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Your request has been acknowledged and processed.
 notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed.singleError = The following error is blocking your request:
 notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed.multiError = The following errors are blocking your request:
 notifications.elem.content.inventoryLinkingControlResponse.Rejected.singleError = Your request has been rejected because of the following error:

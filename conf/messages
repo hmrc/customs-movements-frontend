@@ -2,7 +2,6 @@ service.name = Arrive and depart CDS exports
 
 title.format = {0} - {1} - GOV.UK
 title.withErrors.format = Error: {0} - {1} - GOV.UK
-
 title.withSection.format = {0} - {1} - {2} - GOV.UK
 title.withErrors.withSection.format = Error: {0} - {1} - {2} - GOV.UK
 
@@ -422,7 +421,6 @@ notifications.elem.content.DucrPartDisassociation = Your request to disassociate
 notifications.elem.content.MucrDisassociation = Your request to disassociate this MUCR has been submitted and is pending.
 notifications.elem.content.ShutMucr = Your request to shut this MUCR has been submitted and is pending.
 notifications.elem.content.footer = Check back later to see if it has been successful.
-
 notifications.elem.content.Arrival.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Your request to arrive has been acknowledged and processed.
 notifications.elem.content.Departure.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Your request to depart has been acknowledged and processed.
 notifications.elem.content.DucrAssociation.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Your request to associate this DUCR has been acknowledged and processed.
@@ -432,6 +430,7 @@ notifications.elem.content.DucrDisassociation.inventoryLinkingControlResponse.Ac
 notifications.elem.content.DucrPartDisassociation.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Your request to disassociate this DUCR Part has been acknowledged and processed.
 notifications.elem.content.MucrDisassociation.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Your request to disassociate this MUCR has been acknowledged and processed.
 notifications.elem.content.ShutMucr.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Shut MUCR request has been acknowledged and processed.
+notifications.elem.content.inventoryLinkingControlResponse.AcknowledgedAndProcessed = Your request has been acknowledged and processed.
 notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed.singleError = The following error is blocking your request:
 notifications.elem.content.inventoryLinkingControlResponse.PartiallyAcknowledgedAndProcessed.multiError = The following errors are blocking your request:
 notifications.elem.content.inventoryLinkingControlResponse.Rejected.singleError = Your request has been rejected because of the following error:
@@ -477,7 +476,7 @@ ileQueryResponse.associated.status = Status
 ileQueryResponse.links.manageConsignment = Manage this consignment
 ileQueryResponse.links.findConsignment = Find another CDS consignment
 
-ileQueryResponse.ucrNotFound.title = The requested UCR does not exist
+ileQueryResponse.ucrNotFound.title = No matching consignments found
 ileQueryResponse.ucrNotFound.message = {0} does not exist.
 
 ileCode.unknown = Unknown

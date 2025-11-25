@@ -120,7 +120,6 @@ movement.choice.findConsignment.hint = Gwirio manylion a chynnydd symudiad ar gy
 movement.choice.associateUCRDisassociateUCRShutMUCR.hint = Cysylltu neu ddatgysylltu DUCR neu MUCR neu gau MUCR i atal unrhyw gysylltiadau eraill.
 movement.choice.submissions.hint = Bwrw golwg dros yr holl geisiadau rydych wedi eu gwneud gan ddefnyddio’r gwasanaeth hwn.
 
-
 startPage.title.sectionHeader = Arweiniad
 startPage.title = Rhoi gwybod i CThEF pan fydd nwyddau’n cyrraedd neu’n gadael porthladd yn y DU
 startPage.description = Defnyddiwch y Gwasanaeth Datganiadau Tollau i roi gwybod i CThEF pan fydd nwyddau sydd i’w hallforio o’r UE wedi cyrraedd neu adael porthladd yn y DU.
@@ -378,6 +377,8 @@ submissions.ducrdisassociation = Datgysylltu DUCR
 submissions.ducrpartdisassociation = Datgysylltu Rhan o’r DUCR
 submissions.mucrdisassociation = Datgysylltu MUCR
 
+# This part uses ActionType instances' values to differentiate between messages
+
 notifications.title = Manylion yr hysbysiad
 notifications.mucr = MUCR: {0}
 notifications.ducr = DUCR: {0}
@@ -452,6 +453,7 @@ ileQueryResponse.ducr.title = Gwybodaeth am y llwyth
 ileQueryResponse.mucr.title = Gwybodaeth am y llwyth
 ileQueryResponse.previousMovements = Ceisiadau symud blaenorol
 ileQueryResponse.previousMovements.type = Math
+ileQueryResponse.previousMovements.type.eaa = Cais am gyraeddiadau disgwyliedig (EAA)
 ileQueryResponse.previousMovements.type.eal = Cais nwyddau sy’n cyrraedd (EAL)
 ileQueryResponse.previousMovements.type.edl = Cais nwyddau sy’n ymadael (EDL)
 ileQueryResponse.previousMovements.type.ret = Cais ôl-weithredol ar gyfer nwyddau sy’n cyrraedd
@@ -474,8 +476,8 @@ ileQueryResponse.associated.status = Statws
 ileQueryResponse.links.manageConsignment = Rheoli’r llwyth hwn
 ileQueryResponse.links.findConsignment = Dod o hyd i lwyth arall CDS
 
-ileQueryResponse.ucrNotFound.title = Nid yw’r UCR y gofynnwyd amdano’n bodoli
-ileQueryResponse.ucrNotFound.message = Nid yw {0} yn bodoli
+ileQueryResponse.ucrNotFound.title = Does dim llwythi sy’n cyd-fynd wedi’u canfod
+ileQueryResponse.ucrNotFound.message = Nid yw {0} yn bodoli.
 
 ileCode.unknown = Dadgysylltiol
 

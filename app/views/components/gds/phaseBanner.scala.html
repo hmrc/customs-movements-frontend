@@ -29,12 +29,12 @@
       s"${appConfig.giveFeedbackLink}$backUrl"
     }
 
-  val link = s"""<a class="govuk-link" href="$betaFeedbackUrl">${messages("feedback.link")}</a>"""
+  val link = s"""<a href="$betaFeedbackUrl" class="govuk-link" target="_blank">${messages("feedback.link")}</a>"""
   Html(messages("feedback", link))
 }
 
 @govukPhaseBanner(PhaseBanner(
-  tag = Some(Tag(Text(phase), "beta")),
+  tag = Some(Tag(Text(phase))),
   content = HtmlContent(feedbackBanner),
   classes ="govuk-!-display-none-print"
 ))

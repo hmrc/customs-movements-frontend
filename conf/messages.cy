@@ -5,8 +5,8 @@ title.withErrors.format = Gwall: {0} - {1} - GOV.UK
 title.withSection.format = {0} {1} - {2} - GOV.UK
 title.withErrors.withSection.format = Gwall: {0} - {1} - {2} - GOV.UK
 
-feedback = Gwasanaeth newydd yn hwn – bydd eich {0} yn ein helpu i’w wella.
-feedback.link = adborth
+feedback = Gwasanaeth newydd yw hwn. Rhowch help i ni ei wella, a {0}.
+feedback.link = rhoi eich adborth (yn agor tab newydd)
 
 site.print = Argraffu’r dudalen hon
 

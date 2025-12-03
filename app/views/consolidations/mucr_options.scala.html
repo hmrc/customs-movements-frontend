@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.BackButton
 @import views.html.components.gds._
+@import views.helpers.ErrorMapper.prefixedErrorMessage
 @import views.helpers.Title
 
 @this(
@@ -91,7 +92,7 @@
                     )
                 )
             ),
-            errorMessage = form("createOrAdd").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form("createOrAdd").error.map(prefixedErrorMessage(_))
         ))
 
         @saveButtons()

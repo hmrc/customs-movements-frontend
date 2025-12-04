@@ -61,7 +61,12 @@ To avoid problems, we need to remove [] from field.
     </label>
     @if(isPageHeading) {</h1>}
 
-    @allErrors.map { error => <span id="error-message-@{field.name}-input" class="govuk-error-message">@error</span> }
+    @allErrors.map { error =>
+        <p id="error-message-@{field.name}-input" class="govuk-error-message">
+            <span class="govuk-visually-hidden">@messages("site.accessibility.error")</span>
+            @error
+        </p>
+    }
 
     @hintText.map { ht =>
         <span class="govuk-hint" id="@(fieldNameWithoutBrackets)-hint">@ht</span>

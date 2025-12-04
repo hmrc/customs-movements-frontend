@@ -20,6 +20,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.BackButton
 @import views.html.components.gds._
+@import views.helpers.ErrorMapper.prefixedErrorMessage
 @import views.helpers.Title
 
 @this(
@@ -69,7 +70,7 @@
                     conditionalHtml = Some(exportsInputText(form("mucr"), "site.inputText.mucr.label"))
                 )
             ),
-            errorMessage = form("kind").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form("kind").error.map(prefixedErrorMessage(_))
         ))
 
         @saveButtons()

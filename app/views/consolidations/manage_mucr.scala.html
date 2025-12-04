@@ -18,6 +18,7 @@
 @import forms.ManageMucrChoice
 @import models.requests.RequestWithAnswers
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.ErrorMapper.prefixedErrorMessage
 @import views.helpers.Title
 @import views.components.BackButton
 @import views.html.components.gds._
@@ -63,7 +64,7 @@
                     checked = form("choice").value.contains(ManageMucrChoice.AssociateAnotherMucr)
                 )
             ),
-            errorMessage = form("choice").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form("choice").error.map(prefixedErrorMessage(_))
         ))
 
         @saveButtons()

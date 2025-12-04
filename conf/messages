@@ -5,8 +5,8 @@ title.withErrors.format = Error: {0} - {1} - GOV.UK
 title.withSection.format = {0} - {1} - {2} - GOV.UK
 title.withErrors.withSection.format = Error: {0} - {1} - {2} - GOV.UK
 
-feedback = This is a new service - your {0} will help us to improve it.
-feedback.link = feedback
+feedback = This is a new service. Help us improve it and {0} .
+feedback.link = give your feedback (opens in new tab)
 
 site.print = Print this page
 
@@ -69,7 +69,7 @@ site.inputText.mucr.label = Enter an existing MUCR
 site.inputText.newMucr.label = Enter a new MUCR
 site.inputText.newMucr.label.hint = For example GB/123456789100-AB123.
 
-site.accessibility.error = Error:
+site.accessibility.error = Error
 
 unauthorised.heading = To continue, you need to get access to the Customs Declaration Service (CDS)
 unauthorised.paragraph.1 = To use this service, you’ll need to:

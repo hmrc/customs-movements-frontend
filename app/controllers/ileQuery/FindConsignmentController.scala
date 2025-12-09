@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package controllers.ileQuery
 import controllers.actions.AuthAction
 import controllers.ileQuery.routes.IleQueryController
 import forms.IleQueryForm.form
+import models.requests.SessionHelper
+import models.requests.SessionHelper._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
@@ -32,12 +34,26 @@ class FindConsignmentController @Inject() (authenticate: AuthAction, mcc: Messag
     extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
   val displayPage: Action[AnyContent] = authenticate { implicit request =>
-    Ok(ileQueryPage(form))
+    SessionHelper.clearAllReceiptPageSessionKeys()
+    val savedUcr = request.session.get(UCR)
+    val filledForm = savedUcr match {
+      case Some(ucr) => form.fill(ucr)
+      case None      => form
+    }
+    Ok(ileQueryPage(filledForm))
   }
 
   val submitPage: Action[AnyContent] = authenticate { implicit request =>
     form
       .bindFromRequest()
-      .fold(formWithErrors => BadRequest(ileQueryPage(formWithErrors)), validUcr => Redirect(IleQueryController.getConsignmentData(validUcr)))
+      .fold(
+        formWithErrors => BadRequest(ileQueryPage(formWithErrors)),
+        validUcr => {
+          val sessionValues = List(Some(UCR -> validUcr)).flatten
+
+          Redirect(IleQueryController.getConsignmentData(validUcr))
+            .addingToSession(sessionValues: _*)
+        }
+      )
   }
 }

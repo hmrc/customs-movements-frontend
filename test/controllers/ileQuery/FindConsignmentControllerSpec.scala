@@ -30,7 +30,6 @@ import views.html.ile_query
 class FindConsignmentControllerSpec extends ControllerLayerSpec with MockIleQueryCache with MockCache {
 
   private val ileQueryPage = mock[ile_query]
-
   private val controller = new FindConsignmentController(SuccessfulAuth(), stubMessagesControllerComponents(), ileQueryPage)
 
   override protected def beforeEach(): Unit = {
@@ -46,28 +45,22 @@ class FindConsignmentControllerSpec extends ControllerLayerSpec with MockIleQuer
   "FindConsignmentController on displayPage" should {
     "return Ok status (200)" in {
       val result = controller.displayPage(getRequest())
-
       status(result) mustBe OK
     }
   }
 
   "FindConsignmentController on submitPage" when {
-
     "provide with correct form" should {
 
       "return SeeOther status (303)" in {
         val correctForm = Json.obj(("ucr", JsString(correctUcr)))
-
         val result = controller.submitPage(postRequest(correctForm))
-
         status(result) mustBe SEE_OTHER
       }
 
       "redirect to Consignment Details page" in {
         val correctForm = Json.obj(("ucr", JsString(correctUcr)))
-
         val result = controller.submitPage(postRequest(correctForm))
-
         redirectLocation(result).get mustBe IleQueryController.getConsignmentData(correctUcr).url
       }
     }
@@ -75,9 +68,7 @@ class FindConsignmentControllerSpec extends ControllerLayerSpec with MockIleQuer
     "provided with incorrect form" should {
       "return BadRequest status (400)" in {
         val incorrectForm = JsString("1234")
-
         val result = controller.submitPage(postRequest(incorrectForm))
-
         status(result) mustBe BAD_REQUEST
       }
     }

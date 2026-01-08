@@ -92,10 +92,7 @@ class DisassociateUcrControllerSpec extends ControllerLayerSpec with MockCache w
 
         println(correctForm)
 
-        val test = Map(
-          "eori" -> "GB717572504502811",
-          "ucr"  -> "ABC12345"
-        )
+        val test = Map("eori" -> "GB717572504502811", "ucr" -> "ABC12345")
 
         val result = controller(DisassociateUcrAnswers()).submit(postFormRequest(test))
         status(result) mustBe SEE_OTHER

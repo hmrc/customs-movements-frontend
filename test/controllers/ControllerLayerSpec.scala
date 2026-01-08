@@ -51,8 +51,14 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
       .withCSRFToken
 
   protected def postRequest(): Request[AnyContent] = FakeRequest(POST, "/").withCSRFToken
+
   protected def postRequest[T](body: T)(implicit wts: Writes[T]): Request[AnyContentAsJson] =
     FakeRequest("POST", "/").withJsonBody(wts.writes(body)).withCSRFToken
+
+  protected def postFormRequest(data: Map[String, String]): Request[AnyContentAsFormUrlEncoded] =
+    FakeRequest("POST", "/")
+      .withFormUrlEncodedBody(data.toSeq: _*)
+      .withCSRFToken
 
   protected def postRequestAsFormUrlEncoded(body: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
     FakeRequest("POST", "/")

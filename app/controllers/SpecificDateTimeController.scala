@@ -30,7 +30,6 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat.Appendable
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.specific_date_and_time
 
@@ -47,7 +46,7 @@ class SpecificDateTimeController @Inject() (
   dateTimeProvider: DateTimeProvider,
   navigator: Navigator
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport {
 
   val displayPage: Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)) { implicit request =>
     val choice = request.answersAs[MovementAnswers].specificDateTimeChoice

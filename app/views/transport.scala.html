@@ -117,9 +117,7 @@
             hint = Some(Hint(
               content = Text(messages("transport.transportId.hint"))
             )),
-            errorMessage =
-              form("transportId").error.map(prefixedErrorMessage(_))
-            )
+            errorMessage = form("transportId").error.map(prefixedErrorMessage(_))
         ))
 
         @components.autocomplete.field_accessible_autocomplete(

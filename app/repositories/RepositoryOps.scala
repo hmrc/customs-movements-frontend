@@ -21,7 +21,7 @@ import com.mongodb.client.model.ReturnDocument
 import org.mongodb.scala.bson.BsonDocument
 import org.mongodb.scala.model.Filters.{and, equal}
 import org.mongodb.scala.model.FindOneAndReplaceOptions
-import org.mongodb.scala.{MongoCollection, MongoWriteException}
+import org.mongodb.scala.{MongoCollection, MongoWriteException, ObservableFuture}
 import play.api.libs.json.Json
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,7 +32,7 @@ trait RepositoryOps[T] {
   implicit def classTag: ClassTag[T]
   implicit val executionContext: ExecutionContext
 
-  val collection: MongoCollection[T]
+  def collection: MongoCollection[T]
 
   def findAll: Future[Seq[T]] =
     collection.find().toFuture()
@@ -62,6 +62,7 @@ trait RepositoryOps[T] {
         options = FindOneAndReplaceOptions().upsert(true).returnDocument(ReturnDocument.AFTER)
       )
       .toFuture()
+      .map(t => t.head)
 
   def insertOne(document: T): Future[Either[WriteError, T]] =
     collection
@@ -82,9 +83,9 @@ trait RepositoryOps[T] {
   def removeEvery[V](keyId1: String, keyValue1: V, keyId2: String, keyValue2: V): Future[Unit] =
     collection.deleteMany(and(equal(keyId1, keyValue1), equal(keyId2, keyValue2))).toFuture().map(_ => ())
 
-  def size: Future[Long] = collection.countDocuments().toFuture()
+  def size: Future[Seq[Long]] = collection.countDocuments().toFuture()
 }
 
-sealed abstract class WriteError(message: String)
+sealed abstract class WriteError(val message: String)
 
-case class DuplicateKey(message: String) extends WriteError(message)
+case class DuplicateKey(override val message: String) extends WriteError(message)

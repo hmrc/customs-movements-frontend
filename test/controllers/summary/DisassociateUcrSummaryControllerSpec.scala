@@ -24,7 +24,8 @@ import models.cache.{DisassociateUcrAnswers, JourneyType}
 import models.requests.SessionHelper
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.MockitoSugar.{mock, reset, verify, when}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.libs.json.Json
 import play.api.test.Helpers._

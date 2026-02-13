@@ -18,7 +18,6 @@ package controllers
 
 import controllers.actions.{AuthAction, JourneyRefiner}
 import controllers.summary.routes.ArriveOrDepartSummaryController
-import controllers.navigation.Navigator
 import forms.Transport
 import forms.Transport._
 
@@ -29,7 +28,6 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.transport
 
@@ -41,10 +39,9 @@ class TransportController @Inject() (
   getJourney: JourneyRefiner,
   cache: CacheRepository,
   mcc: MessagesControllerComponents,
-  transportPage: transport,
-  navigator: Navigator
+  transportPage: transport
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport {
 
   val displayPage: Action[AnyContent] = (authenticate andThen getJourney(JourneyType.DEPART)) { implicit request =>
     val answers = request.answersAs[DepartureAnswers]

@@ -34,7 +34,7 @@ object ShutMucr {
     "mucr" -> text()
       .verifying("error.mucr.empty", nonEmpty)
       .verifying("error.mucr.format", isEmpty or validMucrIgnoreCase)
-  )(form2Data)(ShutMucr.unapply)
+  )(form2Data)(s => Some(s.mucr))
 
   def form(): Form[ShutMucr] = Form(mapping)
 }

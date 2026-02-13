@@ -17,6 +17,7 @@
 package connectors
 
 import play.api.libs.json.{Json, Writes}
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, StringContextOps}
 

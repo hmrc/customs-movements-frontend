@@ -24,7 +24,6 @@ import models.cache.JourneyType.DISSOCIATE_UCR
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.consolidations.disassociate_ucr
 
@@ -39,7 +38,7 @@ class DisassociateUcrController @Inject() (
   cacheRepository: CacheRepository,
   page: disassociate_ucr
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport {
 
   val displayPage: Action[AnyContent] = (authenticate andThen getJourney(DISSOCIATE_UCR)) { implicit request =>
     request.answersAs[DisassociateUcrAnswers].ucr match {

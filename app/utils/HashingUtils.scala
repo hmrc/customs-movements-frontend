@@ -16,11 +16,11 @@
 
 package utils
 
+import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.HmacAlgorithms
 
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
-import javax.xml.bind.DatatypeConverter
 
 object HashingUtils {
   private val algorithm = HmacAlgorithms.HMAC_SHA_256.toString
@@ -32,6 +32,6 @@ object HashingUtils {
     hmac.init(secretSpec)
 
     val sig = hmac.doFinal(value.getBytes("UTF-8"))
-    DatatypeConverter.printHexBinary(sig)
+    new String(Hex.encodeHex(sig, false))
   }
 }

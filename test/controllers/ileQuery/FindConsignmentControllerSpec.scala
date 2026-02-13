@@ -19,7 +19,8 @@ package controllers.ileQuery
 import controllers.ControllerLayerSpec
 import controllers.ileQuery.routes.IleQueryController
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar.{mock, reset, when}
+import org.mockito.Mockito.{reset, when}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.libs.json.{JsString, Json}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat

@@ -19,8 +19,10 @@ package repository
 import models.cache.Cache
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.BDDMockito.given
-import org.mockito.MockitoSugar.{mock, reset, verify}
+import org.mockito.BDDMockito.`given`
+import org.mockito.Mockito.{reset, verify}
+import org.scalatestplus.mockito.MockitoSugar.mock
+
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.Answer
 import org.scalatest.{BeforeAndAfterEach, Suite}
@@ -35,8 +37,8 @@ trait MockCache extends BeforeAndAfterEach {
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    given(cacheRepository.upsert(any())).willAnswer(withTheCacheUpserted)
-    given(cacheRepository.removeByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful((): Unit))
+    `given`(cacheRepository.upsert(any())).willAnswer(withTheCacheUpserted)
+    `given`(cacheRepository.removeByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful((): Unit))
   }
 
   override protected def afterEach(): Unit = {
@@ -45,10 +47,10 @@ trait MockCache extends BeforeAndAfterEach {
   }
 
   protected def givenTheCacheContains(content: Cache): Unit =
-    given(cacheRepository.findByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful(Some(content)))
+    `given`(cacheRepository.findByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful(Some(content)))
 
   protected def givenTheCacheIsEmpty(): Unit =
-    given(cacheRepository.findByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful(None))
+    `given`(cacheRepository.findByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful(None))
 
   protected def theCacheUpserted: Cache = {
     val captor: ArgumentCaptor[Cache] = ArgumentCaptor.forClass(classOf[Cache])

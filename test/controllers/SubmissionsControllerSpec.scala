@@ -21,7 +21,8 @@ import models.now
 import models.submissions.Submission
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
-import org.mockito.MockitoSugar.{mock, reset, verify, when}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat

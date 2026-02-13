@@ -17,7 +17,6 @@
 package repositories
 
 import com.mongodb.client.model.Indexes.ascending
-import config.AppConfig
 import models.cache.IleQuery
 import org.mongodb.scala.bson.BsonDocument
 import org.mongodb.scala.model.{IndexModel, IndexOptions}
@@ -31,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
 @Singleton
-class IleQueryRepository @Inject() (mongo: MongoComponent, appConfig: AppConfig)(implicit ec: ExecutionContext)
+class IleQueryRepository @Inject() (mongo: MongoComponent)(implicit ec: ExecutionContext)
     extends PlayMongoRepository[IleQuery](mongo, "ileQueries", IleQuery.format, IleQueryRepository.indexes) with RepositoryOps[IleQuery] {
 
   override def classTag: ClassTag[IleQuery] = implicitly[ClassTag[IleQuery]]

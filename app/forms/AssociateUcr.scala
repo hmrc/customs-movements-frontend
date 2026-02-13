@@ -43,7 +43,6 @@ object AssociateUcr {
       value.kind match {
         case Ducr | DucrPart => Some((value.kind, Some(value.ucr), None))
         case Mucr            => Some((value.kind, None, Some(value.ucr)))
-        case _               => None
       }
 
     Forms.mapping(

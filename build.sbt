@@ -3,7 +3,7 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 val appName = "customs-movements-frontend"
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.16"
+ThisBuild / scalaVersion := "3.3.7"
 
 PlayKeys.devSettings := List("play.server.http.port" -> "6796")
 
@@ -23,27 +23,20 @@ lazy val it = (project in file("it"))
 
 lazy val commonSettings = List(
   scalacOptions ++= scalacFlags,
+  scalacOptions := scalacOptions.value.distinct,
   retrieveManaged := true,
   libraryDependencies ++= Dependencies(),
   TwirlKeys.templateImports ++= List.empty
 )
 
+
 lazy val scalacFlags = List(
-  "-deprecation",                                // warn about use of deprecated APIs
-  "-encoding", "UTF-8",                          // source files are in UTF-8
-  "-feature",                                    // warn about misused language features
+  "-feature",
   "-language:implicitConversions",
-  "-unchecked",                                  // warn about unchecked type parameters
-  //"-Wconf:any:warning-verbose",
-  "-Wconf:cat=unused-imports&src=routes/.*:s",   // silent "unused import" warnings from Play routes
-  "-Wconf:cat=unused-imports&src=twirl/.*:is",   // silent "unused import" warnings from Twirl templates
-  "-Wextra-implicit",
-  "-Xcheckinit",
-  "-Xfatal-warnings",                            // warnings are fatal!!
-  "-Ywarn-numeric-widen",
-  "-Wconf:cat=unused&src=.*routes.*:s", // silence private val defaultPrefix in class Routes is never used
-  "-Wconf:msg=eq not selected from this instance:s", // silence eq not selected from this instance warning
-  "-Wconf:msg=While parsing annotations in:s" // silence While parsing annotations in warning
+  "-Xfatal-warnings",
+  "-Wconf:src=target/.*:s",
+  "-Wconf:msg=eq not selected from this instance:s",
+  "-Wconf:msg=While parsing annotations in:s"
 )
 
 // Prevent the "No processor claimed any of these annotations" warning

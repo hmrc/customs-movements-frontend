@@ -23,7 +23,8 @@ import forms.Choice._
 import models.requests.AuthenticatedRequest
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar.{mock, reset, when}
+import org.mockito.Mockito.{reset, when}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.inject.bind

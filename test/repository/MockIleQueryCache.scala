@@ -16,7 +16,8 @@
 
 package repository
 
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito.reset
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import repositories.IleQueryRepository
 

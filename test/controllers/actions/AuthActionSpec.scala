@@ -22,9 +22,10 @@ import models.requests.AuthenticatedRequest
 import models.AuthKey.{enrolment, eoriIdentifierKey}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.`given`
 import org.mockito.Mockito.{reset, when}
-import org.mockito.MockitoSugar.{mock, verify}
+import org.mockito.Mockito.verify
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.BeforeAndAfterEach
@@ -53,6 +54,8 @@ class AuthActionSpec extends AnyWordSpec with Matchers with Stubs with MockAuthC
     reset(allowList)
     reset(authConnectorMock)
 
+    when(appConfig.loginUrl).thenReturn("http://localhost:9949/auth-login-stub/gg-sign-in")
+    when(appConfig.loginContinueUrl).thenReturn("http://localhost:9000/customs-movements")
     when(allowList.allows(any())).thenReturn(true)
   }
 
@@ -64,7 +67,7 @@ class AuthActionSpec extends AnyWordSpec with Matchers with Stubs with MockAuthC
       "auth success for eori on allow list" in {
         authorizedUser()
 
-        given(block.apply(any())).willReturn(Future.successful(controllerResponse))
+        `given`(block.apply(any())).willReturn(Future.successful(controllerResponse))
 
         val result: Result = await(action.invokeBlock(FakeRequest(), block))
 
@@ -77,15 +80,15 @@ class AuthActionSpec extends AnyWordSpec with Matchers with Stubs with MockAuthC
 
       "eori value provided is missing from allowList" in {
         val enrolments = Set(Enrolment(enrolment, Seq(EnrolmentIdentifier(eoriIdentifierKey, "eori")), "state"))
-        given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(enrolments)))
-        given(allowList.allows(any())).willReturn(false)
+        `given`(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(enrolments)))
+        `given`(allowList.allows(any())).willReturn(false)
 
         val result: Result = await(action.invokeBlock(FakeRequest(), block))
         result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
       }
 
       "role is missing" in {
-        given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set.empty)))
+        `given`(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(Set.empty)))
 
         val result: Result = await(action.invokeBlock(FakeRequest(), block))
         result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
@@ -93,21 +96,21 @@ class AuthActionSpec extends AnyWordSpec with Matchers with Stubs with MockAuthC
 
       "eori is missing" in {
         val enrolments = Set(Enrolment(enrolment, Seq.empty, "state"))
-        given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(enrolments)))
+        `given`(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.successful(Enrolments(enrolments)))
 
         val result: Result = await(action.invokeBlock(FakeRequest(), block))
         result mustBe Results.Redirect(routes.UnauthorisedController.onPageLoad)
       }
 
       "an NoActiveSession exception is thrown" in {
-        given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.failed(new MissingBearerToken("")))
+        `given`(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any())).willReturn(Future.failed(new MissingBearerToken("")))
 
         val result: Result = await(action.invokeBlock(FakeRequest(), block))
         result mustBe Results.Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.loginContinueUrl)))
       }
 
       "an AuthorisationException exception is thrown" in {
-        given(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any()))
+        `given`(authConnectorMock.authorise(any(), any[Retrieval[Enrolments]]())(any(), any()))
           .willReturn(Future.failed(new IncorrectCredentialStrength("")))
 
         val result: Result = await(action.invokeBlock(FakeRequest(), block))

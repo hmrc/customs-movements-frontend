@@ -35,7 +35,7 @@ class SpecificDateTimeViewSpec extends ViewSpec with Injector {
 
   private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())
 
-  private def createView(implicit request: JourneyRequest[_] = request): Html = page(form, "some-reference")
+  private def createView(implicit request: JourneyRequest[_]): Html = page(form, "some-reference")
 
   "SpecificDateTime View on empty page" should {
 
@@ -47,11 +47,11 @@ class SpecificDateTimeViewSpec extends ViewSpec with Injector {
     }
 
     "display page title" in {
-      createView().getElementsByTag("h1").first() must containMessage("specific.datetime.heading")
+      createView(this.request).getElementsByTag("h1").first() must containMessage("specific.datetime.heading")
     }
 
     "have the correct section header for the Arrival journey" in {
-      createView().getElementById("section-header") must containMessage("specific.datetime.arrive.heading", "some-reference")
+      createView(this.request).getElementById("section-header") must containMessage("specific.datetime.arrive.heading", "some-reference")
     }
 
     "have the correct section header for the Departure journey" in {
@@ -91,7 +91,7 @@ class SpecificDateTimeViewSpec extends ViewSpec with Injector {
     "display 'Back' button that links to the /consignment-references page" when {
       "on a NON-'Find a consignment' journey and" when {
         "the Ucr is not of DucrPart type" in {
-          val backButton = createView().getBackButton
+          val backButton = createView(this.request).getBackButton
 
           backButton mustBe defined
           backButton.foreach { button =>
@@ -104,6 +104,6 @@ class SpecificDateTimeViewSpec extends ViewSpec with Injector {
 
     checkAllSaveButtonsAreDisplayed(createView(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))
 
-    checkSaveAndReturnToSummaryButtonIsHidden(createView())
+    checkSaveAndReturnToSummaryButtonIsHidden(createView(this.request))
   }
 }

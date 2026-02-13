@@ -28,7 +28,6 @@ import models.requests.{AuthenticatedRequest, SessionHelper}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.choice
 
@@ -38,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ChoiceController @Inject() (authenticate: AuthAction, cacheRepository: CacheRepository, mcc: MessagesControllerComponents, choicePage: choice)(
   implicit ec: ExecutionContext
-) extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
+) extends FrontendController(mcc) with I18nSupport {
 
   val displayChoices: Action[AnyContent] = authenticate.async { implicit request =>
     val maybeAnswerCacheId = SessionHelper.getValue(SessionHelper.ANSWER_CACHE_ID)
@@ -57,7 +56,7 @@ class ChoiceController @Inject() (authenticate: AuthAction, cacheRepository: Cac
     try
       nextPage(Choice(choice))
     catch {
-      case e: IllegalArgumentException => Future.successful(NotFound)
+      case _: IllegalArgumentException => Future.successful(NotFound)
     }
   }
 

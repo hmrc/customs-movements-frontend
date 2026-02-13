@@ -22,7 +22,8 @@ import models.requests.{AuthenticatedRequest, JourneyRequest, SessionHelper}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito.`given`
-import org.mockito.MockitoSugar.{mock, reset, verify}
+import org.mockito.Mockito.{reset, verify}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.must.Matchers
@@ -58,8 +59,8 @@ class JourneyRefinerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
 
     "add cache to the request" when {
       "cache contains non-empty answers" in {
-        given(block.apply(any())).willReturn(Future.successful(Results.Ok))
-        given(movementRepository.findByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful(Some(cache)))
+        `given`(block.apply(any())).willReturn(Future.successful(Results.Ok))
+        `given`(movementRepository.findByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful(Some(cache)))
 
         await(refiner.invokeBlock(request, block)) mustBe Results.Ok
 
@@ -76,14 +77,14 @@ class JourneyRefinerSpec extends AnyWordSpec with Matchers with BeforeAndAfterEa
     "block request" when {
 
       "cache is empty" in {
-        given(movementRepository.findByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful(None))
+        `given`(movementRepository.findByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful(None))
 
         await(refiner.invokeBlock(request, block)) mustBe redirectResult
       }
 
       "cached answers are empty" in {
         val emptyCache = Cache("eori", None, None, false, None)
-        given(movementRepository.findByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful(Some(emptyCache)))
+        `given`(movementRepository.findByEoriAndAnswerCacheId(any(), any())).willReturn(Future.successful(Some(emptyCache)))
 
         await(refiner.invokeBlock(request, block)) mustBe redirectResult
       }

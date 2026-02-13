@@ -59,7 +59,7 @@ object DucrPartDetails {
         .transform[String](_.trim.toUpperCase, identity)
         .verifying("ducrPartDetails.ducrPartId.empty", nonEmpty)
         .verifying("ducrPartDetails.ducrPartId.invalid", isEmpty or isValidDucrPartId)
-    )(bind)(unapply)
+    )(bind)(d => Some((d.ducr, d.ducrPartId)))
   }
 
   def form(): Form[DucrPartDetails] = Form(mapping)

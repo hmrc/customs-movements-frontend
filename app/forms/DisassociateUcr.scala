@@ -50,7 +50,7 @@ object DisassociateUcr {
           .verifying("disassociate.ucr.mucr.error.empty", nonEmpty)
           .verifying("disassociate.ucr.mucr.error.invalid", isEmpty or validMucrIgnoreCase)
       )
-    )(form2Data)(DisassociateUcr.unapply)
+    )(form2Data)(d => Some((d.kind, d.ducr, d.mucr)))
 
   def form2Data(kind: UcrType, ducr: Option[String], mucr: Option[String]): DisassociateUcr =
     new DisassociateUcr(kind, ducr.map(_.trim.toUpperCase), mucr.map(_.trim.toUpperCase))

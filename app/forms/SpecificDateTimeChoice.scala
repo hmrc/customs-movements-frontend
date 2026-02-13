@@ -36,7 +36,7 @@ object SpecificDateTimeChoice {
     Forms.mapping(
       "choice" -> requiredRadio("specific.datetime.input.error.empty")
         .verifying("specific.datetime.input.error.incorrectValue", isContainedIn(allChoices))
-    )(SpecificDateTimeChoice.apply)(SpecificDateTimeChoice.unapply)
+    )(SpecificDateTimeChoice.apply)(s => Some(s.choice))
 
   def form(): Form[SpecificDateTimeChoice] = Form(mapping)
 }

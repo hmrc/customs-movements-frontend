@@ -17,7 +17,7 @@
 package base
 
 import metrics.MovementsMetrics
-import org.mockito.MockitoSugar.mock
+import org.scalatestplus.mockito.MockitoSugar.mock
 
 trait MockMovementsMetrics {
   val mockMovementsMetrics: MovementsMetrics = mock[MovementsMetrics]

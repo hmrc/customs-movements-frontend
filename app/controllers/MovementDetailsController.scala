@@ -28,7 +28,6 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import play.twirl.api.Html
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{arrival_details, departure_details}
 
@@ -46,7 +45,7 @@ class MovementDetailsController @Inject() (
   departureDetailsPage: departure_details,
   navigator: Navigator
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport {
 
   private val journeyAction = authenticate andThen getJourney(JourneyType.ARRIVE, JourneyType.DEPART)
 

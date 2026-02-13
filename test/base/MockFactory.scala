@@ -20,7 +20,8 @@ import models.notifications.Notification
 import models.submissions.Submission
 import models.viewmodels.notificationspage.{NotificationPageSingleElementFactory, NotificationsPageSingleElement}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar.{mock, when}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar.mock
 import play.twirl.api.HtmlFormat
 
 object MockFactory {

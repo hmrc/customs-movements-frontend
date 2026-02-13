@@ -67,7 +67,7 @@ object Location {
           validateCountry and validateLocationType and validateQualifierCode and noShorterThan(10) and noLongerThan(17)
         )
       )
-  )(form2Data)(Location.unapply)
+  )(form2Data)(loc => Some(loc.code))
 
   def form(): Form[Location] = Form(mapping)
 

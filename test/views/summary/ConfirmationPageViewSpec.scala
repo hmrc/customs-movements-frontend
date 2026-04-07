@@ -80,7 +80,10 @@ class ConfirmationPageViewSpec extends ViewSpec with Injector {
         }
 
         "hide language switch" in {
-          view.getElementsByClass("hmrc-language-select").text() must be("English Newid yr iaith ir Gymraeg Cymraeg")
+          val languageSwitch = view.getElementsByClass("hmrc-service-navigation-language-select").first()
+
+          languageSwitch.text() must include("ENG")
+          languageSwitch.text() must include("CYM")
         }
 
         "display a 'Print' button" in {

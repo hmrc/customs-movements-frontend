@@ -40,7 +40,8 @@
     betaBannerConfig: BetaBannerConfig,
     hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
     hmrcReportTechnicalIssue: HmrcReportTechnicalIssueHelper,
-    hmrcFooter: HmrcStandardFooter
+    hmrcFooter: HmrcStandardFooter,
+    config: play.api.Configuration
 )
 
 @(
@@ -134,7 +135,7 @@
     beforeContentBlock = Some(beforeContentBlock),
     bodyEndBlock = None,
     scriptsBlock = Some(hmrcScripts()),
-    headerBlock = Some(siteHeader()),
+    headerBlock = Some(siteHeader()(request, messages, config)),
     footerBlock = Some(hmrcFooter())
   )(content)
 } else {
@@ -144,7 +145,7 @@
     beforeContentBlock = Some(beforeContentBlock),
     bodyEndBlock = None,
     scriptsBlock = Some(hmrcScripts()),
-    headerBlock = Some(siteHeader()),
+    headerBlock = Some(siteHeader()(request, messages, config)),
     footerBlock = Some(hmrcFooter())
   )(content)
 }

@@ -24,7 +24,7 @@
 
 @this(hmrcHeader: HmrcHeader)
 
-@()(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages, con: play.api.Configuration)
 
 @signOutHref = @{
   if (request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]])

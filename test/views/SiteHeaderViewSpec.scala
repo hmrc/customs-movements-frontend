@@ -18,6 +18,7 @@ package views
 
 import base.Injector
 import controllers.routes.ChoiceController
+import play.api.Configuration
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 import views.html.components.gds.siteHeader
@@ -27,8 +28,16 @@ class SiteHeaderViewSpec extends ViewSpec with Injector {
   "SiteHeader component" should {
     "render service name with link to 'Choice' page" in {
       implicit val request: Request[_] = FakeRequest().withCSRFToken
+      implicit val config: Configuration = instanceOf[Configuration]
+
       val headerTemplate = instanceOf[siteHeader]
-      val serviceNameLink = headerTemplate().getElementsByClass("govuk-header__service-name").first
+
+      val serviceNameLink = headerTemplate()
+        .getElementsByClass("govuk-service-navigation__service-name")
+        .first()
+        .getElementsByTag("a")
+        .first()
+
       serviceNameLink must haveHref(ChoiceController.displayChoices)
       serviceNameLink must containMessage("service.name")
     }

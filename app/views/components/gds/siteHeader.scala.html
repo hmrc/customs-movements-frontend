@@ -18,10 +18,13 @@
 @import models.requests.{AuthenticatedRequest, JourneyRequest}
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.{Header, HmrcHeader}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.header.v2._
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.servicenavigation._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 @this(hmrcHeader: HmrcHeader)
 
-@()(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages, con: play.api.Configuration)
 
 @signOutHref = @{
   if (request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]])
@@ -29,11 +32,18 @@
   else None
 }
 
-@hmrcHeader(Header(
-    homepageUrl = "https://www.gov.uk",
-    serviceName = Some(messages("service.name")),
-    serviceUrl = ChoiceController.displayChoices.url,
-    language = if(messages.lang.code == "en") language.En else language.Cy,
-    containerClasses = "govuk-width-container",
-    signOutHref = signOutHref
-))
+@hmrcHeader(
+    HeaderParams(
+        headerUrls = HeaderUrls(
+            homepageUrl = "https://www.gov.uk",
+            signOutHref = signOutHref
+        ),
+        language = if (messages.lang.code == "cy") language.Cy else language.En,
+        serviceNavigation = Some(
+            ServiceNavigation(
+                serviceName = Some(messages("service.name")),
+                serviceUrl = Some(ChoiceController.displayChoices.url)
+            ).withLanguageToggle()
+        )
+    )
+)

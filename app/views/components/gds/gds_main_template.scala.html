@@ -34,7 +34,6 @@
     siteHeader: siteHeader,
     hmrcHead: HmrcHead,
     hmrcScripts: HmrcScripts,
-    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     phaseBanner: phaseBanner,
     timeoutDialogConfig: TimeoutDialogConfig,
@@ -42,14 +41,13 @@
     hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
     hmrcReportTechnicalIssue: HmrcReportTechnicalIssueHelper,
     hmrcFooter: HmrcStandardFooter,
-    appConfig: AppConfig
+    config: play.api.Configuration
 )
 
 @(
     title: Title,
     backButton: Option[BackButton] = None,
-    useCustomContentWidth: Boolean = false,
-    showLanguageSwitch: Boolean = true
+    useCustomContentWidth: Boolean = false
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @useTimeoutDialog = @{ request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]]}
@@ -120,10 +118,6 @@
       @phaseBanner("Beta")
     }
 
-    @if(showLanguageSwitch && appConfig.languages.contains("cy")) {
-        @hmrcLanguageSelectHelper()
-    }
-
     <div class="govuk-back-link-div">
         @backLink
     </div>
@@ -132,7 +126,6 @@
 @content = {
     @contentBlock
     @hmrcReportTechnicalIssue()
-
 }
 
 @if(useCustomContentWidth) {
@@ -142,7 +135,7 @@
     beforeContentBlock = Some(beforeContentBlock),
     bodyEndBlock = None,
     scriptsBlock = Some(hmrcScripts()),
-    headerBlock = Some(siteHeader()),
+    headerBlock = Some(siteHeader()(request, messages, config)),
     footerBlock = Some(hmrcFooter())
   )(content)
 } else {
@@ -152,7 +145,7 @@
     beforeContentBlock = Some(beforeContentBlock),
     bodyEndBlock = None,
     scriptsBlock = Some(hmrcScripts()),
-    headerBlock = Some(siteHeader()),
+    headerBlock = Some(siteHeader()(request, messages, config)),
     footerBlock = Some(hmrcFooter())
   )(content)
 }

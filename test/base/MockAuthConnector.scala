@@ -50,8 +50,4 @@ trait MockAuthConnector extends Stubs with Injector {
     when(eoriAllowListMock.allows(any())).thenReturn(true)
   }
 
-//  def userWithoutEori(user: SignedInUser = newUser("")): Unit = {
-//    when(authConnectorMock.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any())).thenThrow(InsufficientEnrolments())
-//    when(eoriAllowListMock.allows(any())).thenReturn(true)
-//  }
 }

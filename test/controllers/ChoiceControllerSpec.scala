@@ -26,7 +26,8 @@ import models.UcrBlock
 import models.cache._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar.{mock, reset, verify, when}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.data.Form
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat

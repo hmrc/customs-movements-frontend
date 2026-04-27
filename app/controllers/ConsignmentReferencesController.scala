@@ -28,7 +28,6 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.CacheRepository
-import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.consignment_references
 
@@ -44,7 +43,7 @@ class ConsignmentReferencesController @Inject() (
   consignmentReferencesPage: consignment_references,
   navigator: Navigator
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport {
 
   val displayPage: Action[AnyContent] = (authenticate andThen getJourney(ARRIVE, DEPART)) { implicit request =>
     val references = request.answersAs[MovementAnswers].consignmentReferences

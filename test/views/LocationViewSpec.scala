@@ -32,7 +32,7 @@ class LocationViewSpec extends ViewSpec with Injector {
 
   private implicit val request: JourneyRequest[AnyContentAsEmpty.type] = journeyRequest(ArrivalAnswers())
 
-  private def createView(implicit request: JourneyRequest[_] = request): Html = page(form, "some-reference", None)
+  private def createView(implicit request: JourneyRequest[_]): Html = page(form, "some-reference", None)
 
   "Location View on empty page" should {
 
@@ -44,11 +44,11 @@ class LocationViewSpec extends ViewSpec with Injector {
     }
 
     "display page title" in {
-      createView().getElementsByTag("h1").first() must containMessage("location.question")
+      createView(this.request).getElementsByTag("h1").first() must containMessage("location.question")
     }
 
     "have the correct section header for the Arrival journey" in {
-      createView().getElementById("section-header") must containMessage("movement.sectionHeading.arrive", "some-reference")
+      createView(this.request).getElementById("section-header") must containMessage("movement.sectionHeading.arrive", "some-reference")
     }
 
     "have the correct section header for the Departure journey" in {
@@ -57,20 +57,20 @@ class LocationViewSpec extends ViewSpec with Injector {
     }
 
     "display body text" in {
-      createView().getElementById("code-body-para").text() mustBe messages("location.body.paragraph")
+      createView(this.request).getElementById("code-body-para").text() mustBe messages("location.body.paragraph")
     }
 
     "display input hint" in {
-      createView().getElementById("code-hint-para").text() mustBe messages("location.hint.paragraph")
+      createView(this.request).getElementById("code-hint-para").text() mustBe messages("location.hint.paragraph")
     }
 
     "display goods location expander" in {
-      createView().getElementsByClass("govuk-details__summary-text").first() must containHtml(messages("location.expander.title"))
+      createView(this.request).getElementsByClass("govuk-details__summary-text").first() must containHtml(messages("location.expander.title"))
     }
 
     "display 'Back' button that links to Movement Details" in {
 
-      val backButton = createView().getBackButton
+      val backButton = createView(this.request).getBackButton
 
       backButton mustBe defined
       backButton.get must containMessage("site.back")
@@ -79,6 +79,6 @@ class LocationViewSpec extends ViewSpec with Injector {
 
     checkAllSaveButtonsAreDisplayed(createView(journeyRequest(ArrivalAnswers(readyToSubmit = Some(true)))))
 
-    checkSaveAndReturnToSummaryButtonIsHidden(createView())
+    checkSaveAndReturnToSummaryButtonIsHidden(createView(this.request))
   }
 }

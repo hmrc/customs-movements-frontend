@@ -28,8 +28,8 @@ import models.notifications.ResponseType.ControlResponse
 import models.notifications.queries.DucrInfo
 import models.notifications.queries.IleQueryResponseExchangeData.SuccessfulResponseExchangeData
 import models.submissions.Submission
-import org.mockito.BDDMockito.given
-import org.mockito.MockitoSugar.mock
+import org.mockito.BDDMockito.`given`
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.time.{Millis, Seconds, Span}
@@ -56,7 +56,7 @@ class CustomsDeclareExportsMovementsConnectorSpec extends AnyWordSpec with Injec
   implicit private val hc: HeaderCarrier = HeaderCarrier()
 
   private val config = mock[AppConfig]
-  given(config.customsDeclareExportsMovements).willReturn(downstreamURL)
+  `given`(config.customsDeclareExportsMovements).willReturn(downstreamURL)
 
   private val httpClientV2: HttpClientV2 = instanceOf[HttpClientV2]
   private val connector = new CustomsDeclareExportsMovementsConnector(config, httpClientV2)

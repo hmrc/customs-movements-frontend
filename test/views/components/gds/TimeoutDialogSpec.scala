@@ -27,6 +27,7 @@ import models.requests.AuthenticatedRequest
 import play.api.Configuration
 import play.api.data.Form
 import play.api.inject.bind
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import testdata.CommonTestData.validEori
 import uk.gov.hmrc.auth.core.Enrolments
@@ -37,10 +38,9 @@ import views.html.choice
 import scala.jdk.CollectionConverters.IterableHasAsScala
 
 class TimeoutDialogSpec extends ViewSpec with Injector {
-
   "Timeout Dialog" should {
     "display the timeout dialog when user is signed in" in {
-      implicit val request = FakeRequest().withCSRFToken
+      implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
       val form: Form[Choice] = Choice.form
       val authenticatedRequest = AuthenticatedRequest(FakeRequest().withCSRFToken, SignedInUser(validEori, Enrolments(Set.empty)))
 

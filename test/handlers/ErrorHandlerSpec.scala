@@ -24,7 +24,8 @@ import models.AuthKey.enrolment
 import models.ReturnToStartException
 import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito.`given`
-import org.mockito.MockitoSugar.{mock, reset}
+import org.mockito.Mockito.reset
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.{HeaderNames, Status}
 import play.api.i18n.{Lang, Messages, MessagesApi}
@@ -44,7 +45,7 @@ class ErrorHandlerSpec extends ControllerLayerSpec with Injector {
   private val errorHandler = new ErrorHandler(appConfig, messagesApi, errorTemplate)(global)
 
   override def beforeEach(): Unit =
-    given(messagesApi.preferred(any[RequestHeader]())).willReturn(messages)
+    `given`(messagesApi.preferred(any[RequestHeader]())).willReturn(messages)
 
   override def afterEach(): Unit = reset(messagesApi, appConfig)
 
@@ -63,8 +64,8 @@ class ErrorHandlerSpec extends ControllerLayerSpec with Injector {
     }
 
     "handle no active session authorisation exception" in {
-      given(appConfig.loginUrl).willReturn("login-url")
-      given(appConfig.loginContinueUrl).willReturn("login-continue-url")
+      `given`(appConfig.loginUrl).willReturn("login-url")
+      `given`(appConfig.loginContinueUrl).willReturn("login-continue-url")
 
       val result = errorHandler.resolveError(request, new NoActiveSession("A user is not logged in") {}).futureValue
 

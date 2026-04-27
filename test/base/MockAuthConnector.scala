@@ -22,7 +22,8 @@ import models.SignedInUser
 import org.apache.pekko.stream.testkit.NoMaterializer
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar.{mock, when}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.mvc.PlayBodyParsers
 import testdata.CommonTestData.validEori
 import testdata.MovementsTestData._
@@ -49,8 +50,4 @@ trait MockAuthConnector extends Stubs with Injector {
     when(eoriAllowListMock.allows(any())).thenReturn(true)
   }
 
-  def userWithoutEori(user: SignedInUser = newUser("")): Unit = {
-    when(authConnectorMock.authorise(any(), ArgumentMatchers.eq(allEnrolments))(any(), any())).thenThrow(InsufficientEnrolments())
-    when(eoriAllowListMock.allows(any())).thenReturn(true)
-  }
 }

@@ -54,7 +54,7 @@ object Transport {
     "nationality" -> text()
       .verifying("transport.nationality.empty", nonEmpty)
       .verifying("transport.nationality.error", isEmpty or (input => isValidCountryCode(input.toUpperCase)))
-  )(form2Data)(Transport.unapply)
+  )(form2Data)(t => Some((t.modeOfTransport, t.transportId, t.nationality)))
 
   private def form2Data(modeOfTransport: String, transportId: String, nationality: String): Transport =
     new Transport(modeOfTransport.trim, transportId.trim, nationality.trim.toUpperCase)

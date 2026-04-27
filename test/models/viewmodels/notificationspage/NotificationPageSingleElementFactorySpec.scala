@@ -24,7 +24,8 @@ import models.notifications.Notification
 import models.submissions.Submission
 import models.viewmodels.notificationspage.converters._
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.MockitoSugar.{mock, reset, verify, when}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty

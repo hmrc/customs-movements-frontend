@@ -21,7 +21,8 @@ import models.requests.RequestWithAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito.`given`
-import org.mockito.MockitoSugar.{mock, reset, verify}
+import org.mockito.Mockito.{reset, verify}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import play.api.http.Status
 import play.api.mvc._
@@ -32,9 +33,8 @@ trait MockNavigator extends BeforeAndAfterEach { self: Suite =>
   protected val aRedirectToTheNextPage: Result = mock[Result]
 
   override protected def beforeEach(): Unit = {
-    given(navigator.continueTo(any[Call])(any[RequestWithAnswers[AnyContent]]))
-      .willReturn(aRedirectToTheNextPage)
-    given(aRedirectToTheNextPage.header).willReturn(ResponseHeader(Status.SEE_OTHER))
+    `given`(navigator.continueTo(any[Call])(any[RequestWithAnswers[AnyContent]])).willReturn(aRedirectToTheNextPage)
+    `given`(aRedirectToTheNextPage.header).willReturn(ResponseHeader(Status.SEE_OTHER))
   }
 
   override protected def afterEach(): Unit = {

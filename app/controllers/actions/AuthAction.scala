@@ -46,8 +46,8 @@ class AuthActionImpl @Inject() (
       HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised(Enrolment(enrolment))
-      .retrieve(allEnrolments) { allEnrolments: Enrolments =>
-        val allUserEnrolments = allEnrolments.enrolments
+      .retrieve(allEnrolments) { (enrolments: Enrolments) =>
+        val allUserEnrolments = enrolments.enrolments
 
         val eori = allUserEnrolments
           .flatMap(_.getIdentifier(eoriIdentifierKey))
@@ -55,7 +55,7 @@ class AuthActionImpl @Inject() (
 
         validateEnrolments(eori)
 
-        val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments)
+        val cdsLoggedInUser = SignedInUser(eori.get.value, enrolments)
 
         val onAllowList = allowListAuthentication(cdsLoggedInUser.eori)
 

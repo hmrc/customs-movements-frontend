@@ -29,7 +29,8 @@ import models.notifications.queries.IleQueryResponseExchangeData.{SuccessfulResp
 import models.notifications.queries._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
-import org.mockito.MockitoSugar.{mock, reset, verify, verifyNoMoreInteractions, when}
+import org.mockito.Mockito.{reset, verify, verifyNoMoreInteractions, when}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.libs.json.Json
 import play.api.mvc.Results.InternalServerError
 import play.api.mvc.{AnyContent, Headers, Request}

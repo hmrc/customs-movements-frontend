@@ -79,7 +79,7 @@ class SubmissionService @Inject() (
           repository
             .removeByEoriAndAnswerCacheId(eori, cacheUuid)
             .map(_ => auditService.auditAssociate(eori, mucr, ucr, success, Some(conversationId)))
-        case Failure(conversationId) => auditService.auditAssociate(eori, mucr, ucr, failed)
+        case Failure(_) => auditService.auditAssociate(eori, mucr, ucr, failed)
       }
   }
 

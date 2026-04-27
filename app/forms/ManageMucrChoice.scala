@@ -35,7 +35,8 @@ object ManageMucrChoice {
     Forms.mapping(
       "choice" -> requiredRadio("manageMucr.input.error.empty")
         .verifying("manageMucr.input.error.incorrectValue", isContainedIn(allChoices))
-    )(ManageMucrChoice.apply)(ManageMucrChoice.unapply)
+    )(ManageMucrChoice.apply)(_ => Some(ManageMucrChoice.allChoices.head))
 
   def form: Form[ManageMucrChoice] = Form(mapping)
+
 }

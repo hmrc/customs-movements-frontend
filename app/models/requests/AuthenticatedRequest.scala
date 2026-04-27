@@ -21,6 +21,6 @@ import models.cache.JourneyNotSelectedAnswers
 import play.api.mvc.{Request, WrappedRequest}
 
 case class AuthenticatedRequest[A](request: Request[A], user: SignedInUser) extends WrappedRequest[A](request) with RequestWithAnswers[A] {
-  lazy val eori: String = user.eori
+  override val eori: String = user.eori
   def answers: JourneyNotSelectedAnswers.type = JourneyNotSelectedAnswers
 }

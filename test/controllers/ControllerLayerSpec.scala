@@ -23,10 +23,10 @@ import models.cache.JourneyType.JourneyType
 import models.cache.{Answers, Cache}
 import models.requests.{AuthenticatedRequest, JourneyRequest, SessionHelper}
 import models.{SignedInUser, UcrBlock}
-import org.mockito.MockitoSugar.mock
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.Messages
-import play.api.libs.json.Writes
+import play.api.libs.json.{JsBoolean, JsNull, JsNumber, JsObject, JsString, JsValue, Writes}
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -44,15 +44,27 @@ abstract class ControllerLayerSpec extends UnitSpec with BeforeAndAfterEach with
   protected def getRequest(): Request[AnyContent] = FakeRequest(GET, "/").withCSRFToken
 
   protected def getRequest(cache: Cache) = FakeRequest().withSession(SessionHelper.ANSWER_CACHE_ID -> cache.uuid).withCSRFToken
-  protected def postRequest[T](body: T, cache: Cache)(implicit wts: Writes[T]): Request[AnyContentAsJson] =
+  protected def postRequest[T](body: T, cache: Cache)(implicit wts: Writes[T]): Request[AnyContentAsFormUrlEncoded] =
     FakeRequest("POST", "/")
       .withSession(SessionHelper.ANSWER_CACHE_ID -> cache.uuid)
-      .withJsonBody(wts.writes(body))
+      .withFormUrlEncodedBody(jsonToFormFields(wts.writes(body)): _*)
       .withCSRFToken
 
   protected def postRequest(): Request[AnyContent] = FakeRequest(POST, "/").withCSRFToken
-  protected def postRequest[T](body: T)(implicit wts: Writes[T]): Request[AnyContentAsJson] =
-    FakeRequest("POST", "/").withJsonBody(wts.writes(body)).withCSRFToken
+  protected def postRequest[T](body: T)(implicit wts: Writes[T]): Request[AnyContentAsFormUrlEncoded] =
+    FakeRequest("POST", "/").withFormUrlEncodedBody(jsonToFormFields(wts.writes(body)): _*).withCSRFToken
+
+  private def jsonToFormFields(js: JsValue, prefix: String = ""): Seq[(String, String)] = js match {
+    case JsObject(fields) =>
+      fields.toSeq.flatMap { case (key, value) =>
+        jsonToFormFields(value, if (prefix.isEmpty) key else s"$prefix.$key")
+      }
+    case JsString(s)  => Seq(prefix -> s)
+    case JsNumber(n)  => Seq(prefix -> n.toString)
+    case JsBoolean(b) => Seq(prefix -> b.toString)
+    case JsNull       => Seq.empty
+    case _            => Seq.empty
+  }
 
   protected def postRequestAsFormUrlEncoded(body: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
     FakeRequest("POST", "/")

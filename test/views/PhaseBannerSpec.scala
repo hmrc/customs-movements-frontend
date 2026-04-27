@@ -18,7 +18,8 @@ package views
 
 import base.OverridableInjector
 import config.AppConfig
-import org.mockito.MockitoSugar.{mock, reset, when}
+import org.mockito.Mockito.{reset, when}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.mvc.AnyContentAsEmpty

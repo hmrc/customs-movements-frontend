@@ -113,8 +113,6 @@ class IleQueryController @Inject() (
               Ok(ileQueryMucrResponsePage(mucrInfo, response.parentMucr, response.sortedChildrenUcrs))
                 .addingToSession(SessionHelper.ANSWER_CACHE_ID -> answerCache.uuid)
             }
-
-          case _ => Future.successful(loadingPageResult)
         }
 
       case Some(response: UcrNotFoundResponseExchangeData) =>

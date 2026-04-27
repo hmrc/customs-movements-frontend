@@ -23,7 +23,8 @@ import models.ReturnToStartException
 import models.cache.DepartureAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar.{mock, reset, verify, when}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString, JsValue}
@@ -39,14 +40,7 @@ class TransportControllerSpec extends ControllerLayerSpec with MockCache with Op
   private val mockTransportPage = mock[transport]
 
   private def controller(answers: DepartureAnswers) =
-    new TransportController(
-      SuccessfulAuth(),
-      ValidJourney(answers),
-      cacheRepository,
-      stubMessagesControllerComponents(),
-      mockTransportPage,
-      navigator
-    )(global)
+    new TransportController(SuccessfulAuth(), ValidJourney(answers), cacheRepository, stubMessagesControllerComponents(), mockTransportPage)(global)
 
   private val consignmentReferences = ConsignmentReferences("reference", "referenceValue")
 

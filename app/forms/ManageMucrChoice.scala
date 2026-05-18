@@ -31,11 +31,13 @@ object ManageMucrChoice {
 
   val allChoices = Seq(AssociateThisMucr, AssociateAnotherMucr)
 
+  def unapply(mucrChoice: ManageMucrChoice): Option[String] = Some(mucrChoice.choice)
+
   val mapping: Mapping[ManageMucrChoice] =
     Forms.mapping(
       "choice" -> requiredRadio("manageMucr.input.error.empty")
         .verifying("manageMucr.input.error.incorrectValue", isContainedIn(allChoices))
-    )(ManageMucrChoice.apply)(_ => Some(ManageMucrChoice.allChoices.head))
+    )(ManageMucrChoice.apply)(ManageMucrChoice.unapply)
 
   def form: Form[ManageMucrChoice] = Form(mapping)
 

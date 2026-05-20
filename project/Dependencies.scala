@@ -3,7 +3,7 @@ import sbt.*
 object Dependencies {
 
   val bootstrapPlayVersion = "10.7.0"
-  val frontendPlayVersion = "13.3.0"
+  val frontendPlayVersion = "13.7.0"
   val hmrcMongoVersion = "2.12.0"
 
   val compile: Seq[ModuleID] = List(

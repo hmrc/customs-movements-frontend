@@ -35,12 +35,12 @@ import scala.util.{Failure, Success}
 
 @Singleton
 class SubmissionService @Inject() (
-                                    repository: CacheRepository,
-                                    connector: CustomsDeclareExportsMovementsConnector,
-                                    auditService: AuditService,
-                                    metrics: MovementsMetrics,
-                                    movementBuilder: MovementBuilder
-                                  )(implicit ec: ExecutionContext) {
+  repository: CacheRepository,
+  connector: CustomsDeclareExportsMovementsConnector,
+  auditService: AuditService,
+  metrics: MovementsMetrics,
+  movementBuilder: MovementBuilder
+)(implicit ec: ExecutionContext) {
 
   private val success = "Success"
   private val failed = "Failed"

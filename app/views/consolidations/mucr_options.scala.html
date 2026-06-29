@@ -40,7 +40,7 @@
 @(form: Form[MucrOptions], ucrBlock: Option[UcrBlock], manageMucrChoice: Option[ManageMucrChoice])(implicit request: JourneyRequest[_], messages: Messages)
 
 @previousDocumentsDataElementLink = {
-    <a target="_blank" href=@config.previousDocumentsDataElementUrl>@messages("mucrOptions.paragraph.link")</a>
+    <a class="govuk-link" target="_blank" href=@config.previousDocumentsDataElementUrl>@messages("mucrOptions.paragraph.link")</a>
 }
 
 @govukLayout(

@@ -30,16 +30,17 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
 
 @Singleton
 class SubmissionService @Inject() (
-  repository: CacheRepository,
-  connector: CustomsDeclareExportsMovementsConnector,
-  auditService: AuditService,
-  metrics: MovementsMetrics,
-  movementBuilder: MovementBuilder
-)(implicit ec: ExecutionContext) {
+                                    repository: CacheRepository,
+                                    connector: CustomsDeclareExportsMovementsConnector,
+                                    auditService: AuditService,
+                                    metrics: MovementsMetrics,
+                                    movementBuilder: MovementBuilder
+                                  )(implicit ec: ExecutionContext) {
 
   private val success = "Success"
   private val failed = "Failed"
@@ -54,12 +55,17 @@ class SubmissionService @Inject() (
 
     connector
       .submit(exchange)
-      .andThen {
-        case Success(conversationId) =>
-          repository
-            .removeByEoriAndAnswerCacheId(eori, cacheUuid)
-            .flatMap(_ => auditService.auditDisassociate(eori, ucr, success, Some(conversationId)))
-        case Failure(_) => auditService.auditDisassociate(eori, ucr, failed)
+      .flatMap { conversationId =>
+        repository
+          .removeByEoriAndAnswerCacheId(eori, cacheUuid)
+          .map { _ =>
+            auditService.auditDisassociate(eori, ucr, success, Some(conversationId))
+            conversationId
+          }
+      }
+      .recoverWith { case NonFatal(e) =>
+        auditService.auditDisassociate(eori, ucr, failed)
+        Future.failed(e)
       }
   }
 
@@ -74,12 +80,17 @@ class SubmissionService @Inject() (
 
     connector
       .submit(exchange)
-      .andThen {
-        case Success(conversationId) =>
-          repository
-            .removeByEoriAndAnswerCacheId(eori, cacheUuid)
-            .map(_ => auditService.auditAssociate(eori, mucr, ucr, success, Some(conversationId)))
-        case Failure(_) => auditService.auditAssociate(eori, mucr, ucr, failed)
+      .flatMap { conversationId =>
+        repository
+          .removeByEoriAndAnswerCacheId(eori, cacheUuid)
+          .map { _ =>
+            auditService.auditAssociate(eori, mucr, ucr, success, Some(conversationId))
+            conversationId
+          }
+      }
+      .recoverWith { case NonFatal(e) =>
+        auditService.auditAssociate(eori, mucr, ucr, failed)
+        Future.failed(e)
       }
   }
 
@@ -88,12 +99,17 @@ class SubmissionService @Inject() (
 
     connector
       .submit(ShutMUCRRequest(eori, mucr))
-      .andThen {
-        case Success(conversationId) =>
-          repository
-            .removeByEoriAndAnswerCacheId(eori, cacheUuid)
-            .flatMap(_ => auditService.auditShutMucr(eori, mucr, success, Some(conversationId)))
-        case Failure(_) => auditService.auditShutMucr(eori, mucr, failed)
+      .flatMap { conversationId =>
+        repository
+          .removeByEoriAndAnswerCacheId(eori, cacheUuid)
+          .map { _ =>
+            auditService.auditShutMucr(eori, mucr, success, Some(conversationId))
+            conversationId
+          }
+      }
+      .recoverWith { case NonFatal(e) =>
+        auditService.auditShutMucr(eori, mucr, failed)
+        Future.failed(e)
       }
   }
 

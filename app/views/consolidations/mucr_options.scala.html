@@ -51,49 +51,45 @@
         @errorSummary(form.errors)
 
         @sectionHeader(messages("mucrOptions.heading", ucrBlock.map(_.ucr).getOrElse("")))
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="declarantExporter-error" }>
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @pageTitle(messages("mucrOptions.title"))
+            </legend>
 
-        @pageTitle(messages("mucrOptions.title"))
+            @paragraphBody(messages("mucrOptions.paragraph", previousDocumentsDataElementLink))
 
-        @paragraphBody(messages("mucrOptions.paragraph", previousDocumentsDataElementLink))
-
-        @govukRadios(Radios(
-            name = "createOrAdd",
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("mucrOptions.title")),
-                    isPageHeading = true,
-                    classes = "govuk-visually-hidden"
-                ))
-            )),
-            items = Seq(
-                RadioItem(
-                    value = Some("create"),
-                    content = Text(messages("mucrOptions.create")),
-                    checked = form("createOrAdd").value.contains("create"),
-                    conditionalHtml = Some(
-                        exportsInputText(
-                            field = form("newMucr"),
-                            labelKey = "site.inputText.newMucr.label",
-                            hintContent = Some(Text(messages("site.inputText.newMucr.label.hint"))),
-                            inputClasses = "govuk-input govuk-input--width-20"
+            @govukRadios(Radios(
+                name = "createOrAdd",
+                items = Seq(
+                    RadioItem(
+                        value = Some("create"),
+                        content = Text(messages("mucrOptions.create")),
+                        checked = form("createOrAdd").value.contains("create"),
+                        conditionalHtml = Some(
+                            exportsInputText(
+                                field = form("newMucr"),
+                                labelKey = "site.inputText.newMucr.label",
+                                hintContent = Some(Text(messages("site.inputText.newMucr.label.hint"))),
+                                inputClasses = "govuk-input govuk-input--width-20"
+                            )
+                        )
+                    ),
+                    RadioItem(
+                        value = Some("add"),
+                        content = Text(messages("mucrOptions.add")),
+                        checked = form("createOrAdd").value.contains("add"),
+                        conditionalHtml = Some(
+                            exportsInputText(
+                                field = form("existingMucr"),
+                                labelKey = "site.inputText.mucr.label",
+                                inputClasses = "govuk-input govuk-input--width-20"
+                            )
                         )
                     )
                 ),
-                RadioItem(
-                    value = Some("add"),
-                    content = Text(messages("mucrOptions.add")),
-                    checked = form("createOrAdd").value.contains("add"),
-                    conditionalHtml = Some(
-                        exportsInputText(
-                            field = form("existingMucr"),
-                            labelKey = "site.inputText.mucr.label",
-                            inputClasses = "govuk-input govuk-input--width-20"
-                        )
-                    )
-                )
-            ),
-            errorMessage = form("createOrAdd").error.map(prefixedErrorMessage(_))
-        ))
+                errorMessage = form("createOrAdd").error.map(prefixedErrorMessage(_))
+            ))
+        </fieldset>
 
         @saveButtons()
     }

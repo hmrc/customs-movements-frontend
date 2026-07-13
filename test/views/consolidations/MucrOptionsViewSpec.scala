@@ -60,6 +60,10 @@ class MucrOptionsViewSpec extends ViewSpec with Injector {
       createView().getTitle must containMessage("mucrOptions.title")
     }
 
+    "display a single title" in {
+      createView().getElementsByTag("h1").size() mustBe 1
+    }
+
     "have the correct heading" in {
       createView().getElementById("section-header") must containMessage("mucrOptions.heading", "mucr")
     }

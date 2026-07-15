@@ -71,6 +71,8 @@ site.inputText.newMucr.label.hint = Er enghraifft GB/123456789100-AB123.
 
 site.accessibility.error = Gwall
 
+site.newTab = (yn agor tab newydd)
+
 unauthorised.heading = Er mwyn mynd yn eich blaen, mae angen i chi gael mynediad at y Gwasanaeth Datganiadau Tollau (CDS)
 unauthorised.paragraph.1 = I ddefnyddio’r gwasanaeth hwn, bydd angen i chi
 unauthorised.paragraph.1.bullet.1 = {0} os nad oes gennych un

@@ -71,6 +71,8 @@ site.inputText.newMucr.label.hint = For example GB/123456789100-AB123.
 
 site.accessibility.error = Error
 
+site.newTab = (opens in new tab)
+
 unauthorised.heading = To continue, you need to get access to the Customs Declaration Service (CDS)
 unauthorised.paragraph.1 = To use this service, you’ll need to:
 unauthorised.paragraph.1.bullet.1 = {0} if you do not have one

@@ -74,7 +74,10 @@ class IleQueryViewSpec extends ViewSpec with Injector {
     }
 
     "contain input field hint" in {
-      view.getElementById("ucr-hint").html.contains(messages("ileQuery.hint"))
+      val hint = view.getElementById("ucr-hint").html
+
+      hint must include(messages("ileQuery.hint.line1"))
+      hint must include(messages("ileQuery.hint.line2"))
     }
 
     "contain submit button" in {

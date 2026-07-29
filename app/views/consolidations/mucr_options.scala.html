@@ -31,7 +31,6 @@
     exportsInputText: exportsInputText,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
-
     formHelper: FormWithCSRF,
     saveButtons: saveButtons,
     config: ExternalServicesConfig
@@ -51,12 +50,12 @@
         @errorSummary(form.errors)
 
         @sectionHeader(messages("mucrOptions.heading", ucrBlock.map(_.ucr).getOrElse("")))
-        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="declarantExporter-error" }>
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="MucrOptions-error" }>
             <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
                 @pageTitle(messages("mucrOptions.title"))
+                @paragraphBody(messages("mucrOptions.paragraph", previousDocumentsDataElementLink), id = Some("tariff-info"))
             </legend>
 
-            @paragraphBody(messages("mucrOptions.paragraph", previousDocumentsDataElementLink))
 
             @govukRadios(Radios(
                 name = "createOrAdd",

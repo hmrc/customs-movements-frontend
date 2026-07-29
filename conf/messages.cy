@@ -1,4 +1,4 @@
-service.name = Nodi bod allforion CDS wedi cyrraedd ac ymadael
+service.name = Gwasanaeth Datganiadau Tollau (CDS): rheoli allforion sy’n cyrraedd ac yn gadael
 
 title.format = {0} - {1} - GOV.UK
 title.withErrors.format = Gwall: {0} - {1} - GOV.UK
@@ -104,7 +104,7 @@ movement.choice.title = Rheoli symudiadau tollau ar gyfer allforion
 movement.choice.title.consignment = Beth hoffech ei wneud â’r llwyth hwn?
 movement.choice.section = Llwyth {0}
 
-movement.choice.findConsignment.label = Dod o hyd i lwyth CDS
+movement.choice.findConsignment.label = Dod o hyd i lwyth
 movement.choice.arrivalDeparture.label = Cyflwyno cais am nwyddau’n cyrraedd neu ymadael
 movement.choice.associateUCRDisassociateUCRShutMUCR.label = Cysylltu, datgysylltu neu gau
 movement.choice.submissions.label = Bwrw golwg dros geisiadau
@@ -118,8 +118,8 @@ movement.choiceOnConsignment.shutmucr.label = Cau
 movement.arrival = Nodi bod nwyddau wedi cyrraedd
 movement.departure = Nodi bod nwyddau wedi ymadael
 
-movement.choice.findConsignment.hint = Gwirio manylion a chynnydd symudiad ar gyfer llwyth CDS.
-movement.choice.associateUCRDisassociateUCRShutMUCR.hint = Cysylltu neu ddatgysylltu DUCR neu MUCR neu gau MUCR i atal unrhyw gysylltiadau eraill.
+movement.choice.findConsignment.hint = Gwirio manylion a chynnydd symudiad ar gyfer llwyth.
+movement.choice.associateUCRDisassociateUCRShutMUCR.hint = Cysylltwch neu datgysylltwch gyfeirnod unigryw y llwyth ar gyfer datganiad (DUCR) neu brif gyfeirnod unigryw y llwythi (MUCR) i stopio cysylltiadau pellach.
 movement.choice.submissions.hint = Bwrw golwg dros yr holl geisiadau rydych wedi eu gwneud gan ddefnyddio’r gwasanaeth hwn.
 
 startPage.title.sectionHeader = Arweiniad
@@ -150,7 +150,7 @@ consignment.references.ARRIVE.heading = Nodi bod llwyth wedi cyrraedd
 consignment.references.DEPART.heading = Nodi bod llwyth wedi ymadael
 consignment.references.ARRIVE.question = Pa lwyth ydych am nodi ei fod wedi cyrraedd?
 consignment.references.DEPART.question = Pa lwyth rydych am nodi ei fod wedi ymadael?
-consignment.references.ducr = Datganiad o Gyfeirnod Unigryw y Llwyth (DUCR)
+consignment.references.ducr = Cyfeirnod Unigryw y Llwyth ar gyfer Datganiad (DUCR)
 consignment.references.ducr.hint = Er enghraifft, 9GB123456789012-INVOICE123/4.
 consignment.references.mucr = Prif Gyfeirnod Unigryw y Llwyth (MUCR)
 consignment.references.ducrPart = Rhan DUCR
@@ -278,7 +278,7 @@ summary.departure.time.change = Newid yr amser ymadael
 disassociate.ucr.title = Pa lwyth rydych am ei dynnu?
 disassociate.ucr.heading = Tynnu oddi ar yr MUCR
 disassociate.ucr.error.unselected = Dewiswch ba lwyth rydych am ei dynnu
-disassociate.ucr.ducr = Datganiad o Gyfeirnod Unigryw y Llwyth (DUCR)
+disassociate.ucr.ducr = Cyfeirnod Unigryw y Llwyth ar gyfer Datganiad (DUCR)
 disassociate.ucr.ducr.hint = Er enghraifft, 9GB123456789012-INVOICE123/4.
 disassociate.ucr.ducr.error.invalid = Mae’n rhaid i’r Datganiad o Gyfeirnod Unigryw y Llwyth (DUCR) fod yn y fformat cywir.
 disassociate.ucr.ducr.error.empty = Nodwch Ddatganiad o Gyfeirnod Unigryw y Llwyth
@@ -322,7 +322,7 @@ associate.ucr.title = Pa lwyth rydych am ei ychwanegu at MUCR {0}?
 associate.ucr.heading = Pa lwyth rydych am ei ychwanegu?
 associate.ucr.sectionHeader = Ychwanegu at MUCR {0}
 associate.ucr.error.unselected = Dewiswch pa lwyth rydych am ei ychwanegu
-associate.ucr.ducr = Datganiad o Gyfeirnod Unigryw y Llwyth (DUCR)
+associate.ucr.ducr = Cyfeirnod Unigryw y Llwyth ar gyfer Datganiad (DUCR)
 associate.ucr.ducr.hint = Er enghraifft, 9GB123456789012-INVOICE123/4.
 associate.ucr.ducr.error.empty = Nodwch DUCR
 associate.ucr.ducr.error.invalid = Mae’n rhaid i’r Datganiad o Gyfeirnod Unigryw y Llwyth (DUCR) fod yn y fformat cywir.
@@ -444,7 +444,7 @@ notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Y llwybr
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Y statws mynediad yw
 
 ileQuery.title = Dod o hyd i lwyth
-ileQuery.hint = Chwilio yn ôl Prif Gyfeirnod Unigryw y Llwyth (MUCR) neu Ddatganiad o Gyfeirnod Unigryw y Llwyth (DUCR). </br></br>Er enghraifft GB/123456789100-AB123.
+ileQuery.hint = Nodwch Brif Gyfeirnod Unigryw y Llwyth (MUCR) neu Gyfeirnod Unigryw y Llwyth ar gyfer Datganiad (DUCR) i ddod o hyd i’ch llwyth. </br></br>Er enghraifft GB/123456789100-AB123.
 ileQuery.ucr.empty = Nodwch Gyfeirnod Unigryw y Llwyth
 ileQuery.ucr.incorrect = Mae Cyfeirnod Unigryw y Llwyth yn anghywir
 

@@ -444,7 +444,8 @@ notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Y llwybr
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Y statws mynediad yw
 
 ileQuery.title = Dod o hyd i lwyth
-ileQuery.hint = Nodwch Brif Gyfeirnod Unigryw y Llwyth (MUCR) neu Gyfeirnod Unigryw y Llwyth ar gyfer Datganiad (DUCR) i ddod o hyd i’ch llwyth. </br></br>Er enghraifft GB/123456789100-AB123.
+ileQuery.hint.line1 = Nodwch Brif Gyfeirnod Unigryw y Llwyth (MUCR) neu Gyfeirnod Unigryw y Llwyth ar gyfer Datganiad (DUCR) i ddod o hyd i’ch llwyth.
+ileQuery.hint.line2 = Er enghraifft GB/123456789100-AB123.
 ileQuery.ucr.empty = Nodwch Gyfeirnod Unigryw y Llwyth
 ileQuery.ucr.incorrect = Mae Cyfeirnod Unigryw y Llwyth yn anghywir
 

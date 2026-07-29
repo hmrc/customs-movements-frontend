@@ -444,7 +444,8 @@ notifications.elem.content.inventoryLinkingMovementTotalsResponse.roe = Route of
 notifications.elem.content.inventoryLinkingMovementTotalsResponse.soe = Status of entry is:
 
 ileQuery.title = Find a consignment
-ileQuery.hint = Enter a Master Unique Consignment Reference (MUCR) or Declaration Unique Consignment Reference (DUCR) to find your consignment. </br></br>For example GB/123456789100-AB123.
+ileQuery.hint.line1 = Enter a Master Unique Consignment Reference (MUCR) or Declaration Unique Consignment Reference (DUCR) to find your consignment.
+ileQuery.hint.line2 = For example GB/123456789100-AB123.
 ileQuery.ucr.empty = Enter a Unique Consignment Reference
 ileQuery.ucr.incorrect = Unique Consignment Reference is incorrect
 

@@ -45,7 +45,12 @@
         @exportsInputText(
             field = form("ucr"),
             labelKey = "ileQuery.title",
-            hintContent = Some(HtmlContent(messages("ileQuery.hint"))),
+            hintContent = Some(HtmlContent(
+                s"""
+                |<p>${messages("ileQuery.hint.line1")}</p>
+                |<p>${messages("ileQuery.hint.line2")}</p>
+                """.stripMargin
+            )),
             isPageHeading = true,
             headingClasses = "govuk-label--l",
             inputClasses = "govuk-input govuk-input--width-20"

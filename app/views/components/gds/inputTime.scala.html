@@ -38,7 +38,7 @@
 @ampmField = @{form(s"$fieldName.ampm")}
 @allErrors = @{timeField.errors ++ hourField.errors ++ minuteField.errors ++ ampmField.errors}
 
-<div class="govuk-form-group @{if(allErrors.nonEmpty) "govuk-form-group--error"}">
+<div class="govuk-form-group @if(allErrors.nonEmpty) {govuk-form-group--error}">
     <fieldset class="govuk-fieldset" role="group" aria-describedby="@{fieldName}-hint">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
             @label

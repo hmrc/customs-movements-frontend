@@ -76,7 +76,7 @@
     backButton = Some(BackButton()),
     useCustomContentWidth = true
 ) {
-    @formHelper(action = AssociateUcrSummaryController.submit, Symbol("autoComplete") -> "off") {
+    @formHelper(action = AssociateUcrSummaryController.submit) {
 
         @pageTitle(messages("associate.ucr.summary.title"))
 

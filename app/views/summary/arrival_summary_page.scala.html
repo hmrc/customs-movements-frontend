@@ -55,7 +55,7 @@
     backButton = Some(BackButton()),
     useCustomContentWidth = true
 ) {
-    @formHelper(action = ArriveOrDepartSummaryController.submit, Symbol("autoComplete") -> "off") {
+    @formHelper(action = ArriveOrDepartSummaryController.submit) {
 
         @pageTitle(messages("summary.arrival.title"))
 

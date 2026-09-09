@@ -49,7 +49,7 @@
   title = Title("location.question", hasErrors = form.hasErrors || form.hasGlobalErrors),
   backButton = Some(BackButton())
 ) {
-    @formHelper(action = controllers.routes.LocationController.saveLocation, Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.routes.LocationController.saveLocation) {
         @errorSummary(form.errors)
 
         @sectionHeader(messages(s"movement.sectionHeading.${request.answers.`type`.toString.toLowerCase}", consignmentReference))

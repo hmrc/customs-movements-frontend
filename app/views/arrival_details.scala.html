@@ -40,7 +40,7 @@
   title = Title("arrivalDetails.header", hasErrors = form.hasErrors || form.hasGlobalErrors),
   backButton = Some(BackButton())
 ) {
-  @formHelper(action = MovementDetailsController.saveMovementDetails, Symbol("autoComplete") -> "off") {
+  @formHelper(action = MovementDetailsController.saveMovementDetails) {
     @errorSummary(DateTimeErrors.processErrors(form.errors, "dateOfArrival", "timeOfArrival"))
 
     @sectionHeader(messages("arrivalDetails.sectionHeading", consignmentReferenceValue))

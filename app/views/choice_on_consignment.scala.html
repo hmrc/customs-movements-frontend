@@ -83,7 +83,7 @@
   title = Title("movement.choice.title.consignment", hasErrors = form.hasErrors || form.hasGlobalErrors),
   backButton = Some(BackButton())
 ) {
-    @formHelper(action = ChoiceOnConsignmentController.submitChoice, Symbol("autoComplete") -> "off") {
+    @formHelper(action = ChoiceOnConsignmentController.submitChoice) {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("movement.choice.section", ucrBlock.ucr))

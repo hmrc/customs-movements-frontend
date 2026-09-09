@@ -39,7 +39,7 @@
     backButton = Some(BackButton()),
     useCustomContentWidth = true
 ) {
-    @formHelper(action = ShutMucrSummaryController.submit, Symbol("autoComplete") -> "off") {
+    @formHelper(action = ShutMucrSummaryController.submit) {
 
         @pageTitle(messages("shutMucr.summary.title"))
 

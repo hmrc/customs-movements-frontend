@@ -44,7 +44,7 @@
     title = Title("transport.title", hasErrors = form.hasErrors || form.hasGlobalErrors),
     backButton = Some(BackButton())
 ) {
-    @formHelper(action = TransportController.saveTransport, Symbol("autoComplete") -> "off") {
+    @formHelper(action = TransportController.saveTransport) {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("transport.heading", consignmentReference))

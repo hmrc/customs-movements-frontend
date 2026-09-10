@@ -39,7 +39,7 @@
   title = Title("disassociate.ucr.title", hasErrors = form.hasErrors || form.hasGlobalErrors),
   backButton = Some(BackButton())
 ) {
-    @formHelper(action = DisassociateUcrController.submit, Symbol("autoComplete") -> "off") {
+    @formHelper(action = DisassociateUcrController.submit) {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("disassociate.ucr.heading"))

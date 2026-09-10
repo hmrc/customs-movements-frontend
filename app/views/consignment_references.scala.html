@@ -47,7 +47,7 @@
   title = Title(headerKey, Some(sectionHeaderKey), hasErrors = form.hasErrors || form.hasGlobalErrors),
   backButton = Some(BackButton())
 ) {
-  @formHelper(action = ConsignmentReferencesController.saveConsignmentReferences, Symbol("autoComplete") -> "off") {
+  @formHelper(action = ConsignmentReferencesController.saveConsignmentReferences) {
     @errorSummary(form.errors)
 
     @sectionHeader(messages(sectionHeaderKey))

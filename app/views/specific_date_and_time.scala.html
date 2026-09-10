@@ -42,7 +42,7 @@
   title = Title("specific.datetime.heading", hasErrors = form.hasErrors || form.hasGlobalErrors),
   backButton = Some(BackButton())
 ) {
-    @formHelper(action = SpecificDateTimeController.submit, Symbol("autoComplete") -> "off") {
+    @formHelper(action = SpecificDateTimeController.submit) {
         @errorSummary(form.errors)
 
         @sectionHeader(messages(sectionHeaderKey, consignmentReferenceValue))

@@ -39,7 +39,7 @@
   title = Title("ileQuery.title", hasErrors = form.hasErrors || form.hasGlobalErrors),
   backButton = Some(BackButton())
 ) {
-    @formHelper(action = FindConsignmentController.submitPage, Symbol("autoComplete") -> "off") {
+    @formHelper(action = FindConsignmentController.submitPage) {
         @errorSummary(form.errors)
 
         @exportsInputText(

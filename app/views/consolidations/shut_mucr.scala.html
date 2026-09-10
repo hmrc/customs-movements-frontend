@@ -39,7 +39,7 @@
   title = Title("shutMucr.title", hasErrors = form.hasErrors || form.hasGlobalErrors),
   backButton = Some(BackButton())
 ) {
-    @formHelper(action = ShutMucrController.submitForm, Symbol("autoComplete") -> "off") {
+    @formHelper(action = ShutMucrController.submitForm) {
         @errorSummary(form.errors)
 
         @exportsInputText(

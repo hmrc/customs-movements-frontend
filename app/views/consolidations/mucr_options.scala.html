@@ -46,7 +46,7 @@
   title = Title("mucrOptions.title", hasErrors = form.hasErrors || form.hasGlobalErrors),
   backButton = Some(BackButton())
 ) {
-    @formHelper(action = MucrOptionsController.save, Symbol("autoComplete") -> "off") {
+    @formHelper(action = MucrOptionsController.save) {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("mucrOptions.heading", ucrBlock.map(_.ucr).getOrElse("")))

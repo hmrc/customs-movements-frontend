@@ -3,4 +3,4 @@ digital-service: CDS Exports
 serviceNowMapping: SNSVC0019201
 test-repositories:
   - movements-ui-acceptance-tests
-  - exports-movements-performance-tests
+  - cds-movements-performance-tests

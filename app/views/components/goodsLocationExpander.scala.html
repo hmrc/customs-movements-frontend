@@ -43,23 +43,11 @@
     @heading(messages("location.expander.paragraph1.title"), classes = "govuk-heading-s", tier = "h2")
     @govukHint(Hint(content = paragraphLayout(1)))
 
-    @heading(messages("location.expander.paragraph2.title"), classes = "govuk-heading-s", tier = "h2")
-    @govukHint(Hint(content = paragraphLayout(2)))
-
     @heading(messages("location.expander.paragraph3.title"), classes = "govuk-heading-s", tier = "h2")
     @govukHint(Hint(
         content = HtmlContent(link(
             message = Html(messages("location.expander.paragraph3.link1.text") + s"<span class='govuk-visually-hidden'>${messages("site.newTab")}</span>"),
             href = Call("GET", appConfig.locationCodeForAirports),
-            target = "_blank"
-        ))
-    ))
-
-     @heading(messages("location.expander.paragraph4.title"), classes = "govuk-heading-s", tier = "h2")
-     @govukHint(Hint(
-        content = HtmlContent(link(
-            message = Html(messages("location.expander.paragraph4.link1.text") + s"<span class='govuk-visually-hidden'>${messages("site.newTab")}</span>"),
-            href = Call("GET", appConfig.certificateOfAgreementAirports),
             target = "_blank"
         ))
     ))
@@ -91,17 +79,11 @@
         ))
     ))
 
-    @heading(messages("location.expander.paragraph8.title"), classes = "govuk-heading-s", tier = "h2")
     @govukHint(Hint(
         content = HtmlContent(messages("location.expander.paragraph8.text",
             link(
                 message = Html(messages("location.expander.paragraph8.link1.text") + s"<span class='govuk-visually-hidden'>${messages("site.newTab")}</span>"),
                 href = Call("GET", appConfig.goodsLocationCodesForDataElement),
-                target = "_blank"
-            ),
-            link(
-                message = Html(messages("location.expander.paragraph8.link2.text") + s"<span class='govuk-visually-hidden'>${messages("site.newTab")}</span>"),
-                href = Call("GET", appConfig.tariffCdsChiefSupplement),
                 target = "_blank"
             )
         ))

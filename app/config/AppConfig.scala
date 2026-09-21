@@ -55,14 +55,11 @@ class AppConfig @Inject() (
 
   val customsDecCompletionRequirements = loadConfig("urls.customsDecCompletionRequirements")
   val locationCodeForAirports = loadConfig("urls.locationCodeForAirports")
-  val certificateOfAgreementAirports = loadConfig("urls.certificateOfAgreementAirports")
   val locationCodeForMaritimePorts = loadConfig("urls.locationCodeForMaritimePorts")
   val locationCodeForTempStorage = loadConfig("urls.locationCodeForTempStorage")
   val designatedExportPlaceCodes = loadConfig("urls.designatedExportPlaceCodes")
-  val locationCodesForCsePremises = loadConfig("urls.locationCodesForCsePremises")
   val previousProcedureCodesUrl = loadConfig("urls.previousProcedureCodes")
   val goodsLocationCodesForDataElement = loadConfig("urls.goodsLocationCodesForDataElement")
-  val tariffCdsChiefSupplement = loadConfig("urls.tariffCdsChiefSupplement")
   val guidanceOnDucrAndMucr = loadConfig("urls.guidanceOnDucrAndMucr")
   val nationalClearanceHub = loadConfig("urls.nationalClearanceHub")
 

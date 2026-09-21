@@ -39,13 +39,10 @@ class AppConfigSpec extends AnyWordSpec with Matchers {
         |urls.previousProcedureCodes = "http://previousProcedureCodes"
         |urls.customsDecCompletionRequirements="http://customsDecCompletionRequirements"
         |urls.locationCodeForAirports="http://locationCodeForAirports"
-        |urls.certificateOfAgreementAirports="http://certificateOfAgreementAirports"
         |urls.locationCodeForMaritimePorts="http://locationCodeForMaritimePorts"
         |urls.locationCodeForTempStorage="http://locationCodeForTempStorage"
         |urls.designatedExportPlaceCodes="http://designatedExportPlaceCodes"
-        |urls.locationCodesForCsePremises="http://locationCodesForCsePremises"
         |urls.goodsLocationCodesForDataElement="http://goodsLocationCodesForDataElement"
-        |urls.tariffCdsChiefSupplement="http://tariffCdsChiefSupplement"
         |urls.guidanceOnDucrAndMucr="http://guidanceOnDucrAndMucr"
         |urls.nationalClearanceHub = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/national-clearance-hub"
         |
@@ -93,13 +90,10 @@ class AppConfigSpec extends AnyWordSpec with Matchers {
         |urls.previousProcedureCodes = "http://previousProcedureCodes"
         |urls.customsDecCompletionRequirements="http://customsDecCompletionRequirements"
         |urls.locationCodeForAirports="http://locationCodeForAirports"
-        |urls.certificateOfAgreementAirports="http://certificateOfAgreementAirports"
         |urls.locationCodeForMaritimePorts="http://locationCodeForMaritimePorts"
         |urls.locationCodeForTempStorage="http://locationCodeForTempStorage"
         |urls.designatedExportPlaceCodes="http://designatedExportPlaceCodes"
-        |urls.locationCodesForCsePremises="http://locationCodesForCsePremises"
         |urls.goodsLocationCodesForDataElement="http://goodsLocationCodesForDataElement"
-        |urls.tariffCdsChiefSupplement="http://tariffCdsChiefSupplement"
         |urls.guidanceOnDucrAndMucr="http://guidanceOnDucrAndMucr"
         |urls.nationalClearanceHub = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/national-clearance-hub"
         |
@@ -169,10 +163,6 @@ class AppConfigSpec extends AnyWordSpec with Matchers {
       validConfigService.locationCodeForAirports must be("http://locationCodeForAirports")
     }
 
-    "have certificateOfAgreementAirports URL" in {
-      validConfigService.certificateOfAgreementAirports must be("http://certificateOfAgreementAirports")
-    }
-
     "have locationCodeForMaritimePorts URL" in {
       validConfigService.locationCodeForMaritimePorts must be("http://locationCodeForMaritimePorts")
     }
@@ -185,16 +175,8 @@ class AppConfigSpec extends AnyWordSpec with Matchers {
       validConfigService.designatedExportPlaceCodes must be("http://designatedExportPlaceCodes")
     }
 
-    "have locationCodesForCsePremises URL" in {
-      validConfigService.locationCodesForCsePremises must be("http://locationCodesForCsePremises")
-    }
-
     "have goodsLocationCodesForDataElement URL" in {
       validConfigService.goodsLocationCodesForDataElement must be("http://goodsLocationCodesForDataElement")
-    }
-
-    "have tariffCdsChiefSupplement URL" in {
-      validConfigService.tariffCdsChiefSupplement must be("http://tariffCdsChiefSupplement")
     }
 
     "have nationalClearanceHub URL" in {

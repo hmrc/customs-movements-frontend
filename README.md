@@ -2,9 +2,9 @@
 # customs-movements-frontend
 
 ## About
-This public-facing microservice is part of the Customs Exports Declaration Service (CEDS). It is designed to work in tandem with the [customs-declare-exports](https://github.com/hmrc/customs-declare-exports) back-end service.
+This public-facing microservice is part of the Customs Exports Declaration Service (CEDS). It is designed to work in tandem with the [customs-declare-exports-movements](https://github.com/hmrc/customs-declare-exports-movements) back-end service.
 
-It provides functionality for traders to submit and manage exports declarations (create, amend, copy and cancel declarations, view submissions and their notifications, and manage saved drafts).
+Its responsibility is to allow users submit Movements and Consolidations for their Export Declarations.
 
 | Key                             | Value                                                                                                        | 
 |---------------------------------|--------------------------------------------------------------------------------------------------------------|
